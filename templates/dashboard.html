@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Trading</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-wrapper">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo-box">
+                <h2>TradingBot</h2>
+                <p>Signal Center</p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('dashboard') }}" class="nav-link active">📊 Dashboard</a>
+                <a href="{{ url_for('pricing') }}" class="nav-link">💎 Premium</a>
+                <a href="{{ url_for('logout') }}" class="nav-link logout-link">🚪 Déconnexion</a>
+            </nav>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main-content">
+
+            <!-- HEADER -->
+            <header class="topbar">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p class="subtitle">Bienvenue, {{ email }}</p>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:12px;">
+                    {% if is_premium %}
+                        <span style="background:#10b981; color:white; padding:6px 12px; border-radius:999px; font-size:12px; font-weight:600;">
+                            👑 Premium
+                        </span>
+                    {% else %}
+                        <span style="background:#374151; color:white; padding:6px 12px; border-radius:999px; font-size:12px; font-weight:600;">
+                            Gratuit
+                        </span>
+                    {% endif %}
+                    <div class="live-badge">● Live</div>
+                </div>
+            </header>
+
+            <!-- BANNIÈRE PREMIUM -->
+            {% if is_premium %}
+            <section style="background: linear-gradient(90deg, #1f2937, #111827); padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 20px; flex-wrap: wrap;">
+                <div>
+                    <h3 style="margin: 0;">👑 Compte Premium actif</h3>
+                    <p style="margin: 6px 0 0 0; opacity: 0.85;">
+                        Accès complet aux signaux, statistiques et fonctionnalités avancées.
+                    </p>
+                </div>
+
+                <form action="{{ url_for('create_customer_portal_session') }}" method="POST">
+                    <button type="submit" style="background: #10b981; color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        Gérer mon abonnement
+                    </button>
+                </form>
+            </section>
+            {% else %}
+            <section class="premium-banner">
+                <div>
+                    <h3>Passe au Premium 💎</h3>
+                    <p>Débloque l’historique complet, tous les signaux et le suivi avancé.</p>
+                </div>
+                <a href="{{ url_for('pricing') }}" class="upgrade-btn">Voir l’offre</a>
+            </section>
+            {% endif %}
+
+            <!-- STATS -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-label">Total signaux</span>
+                    <h3>{{ total_signals }}</h3>
+                </div>
+
+                <div class="stat-card buy-card">
+                    <span class="stat-label">BUY</span>
+                    <h3>{{ total_buy }}</h3>
+                </div>
+
+                <div class="stat-card sell-card">
+                    <span class="stat-label">SELL</span>
+                    <h3>{{ total_sell }}</h3>
+                </div>
+
+                <div class="stat-card win-card">
+                    <span class="stat-label">Gagnants</span>
+                    <h3>{{ total_win }}</h3>
+                </div>
+
+                <div class="stat-card loss-card">
+                    <span class="stat-label">Perdants</span>
+                    <h3>{{ total_loss }}</h3>
+                </div>
+
+                <div class="stat-card open-card">
+                    <span class="stat-label">Ouverts</span>
+                    <h3>{{ total_open }}</h3>
+                </div>
+
+                <div class="stat-card highlight-card">
+                    <span class="stat-label">Winrate</span>
+                    <h3>{{ winrate }}%</h3>
+                </div>
+
+                <div class="stat-card pnl-card">
+                    <span class="stat-label">PnL estimé</span>
+                    <h3 class="{% if estimated_pnl >= 0 %}text-buy{% else %}text-sell{% endif %}">
+                        {{ estimated_pnl }}
+                    </h3>
+                </div>
+            </section>
+
+            <!-- PANELS -->
+            <section class="panel-grid">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2>Dernier signal</h2>
+                    </div>
+
+                    {% if last_signal %}
+                    <div class="signal-box">
+                        <div class="signal-row">
+                            <span>Actif</span>
+                            <strong>{{ last_signal.asset }}</strong>
+                        </div>
+
+                        <div class="signal-row">
+                            <span>Action</span>
+                            <strong class="{% if last_signal.action == 'BUY' %}text-buy{% else %}text-sell{% endif %}">
+                                {{ last_signal.action }}
+                            </strong>
+                        </div>
+
+                        <div class="signal-row">
+                            <span>Prix</span>
+                            <strong>{{ last_signal.entry_price }}</strong>
+                        </div>
+
+                        <div class="signal-row">
+                            <span>Stop Loss</span>
+                            <strong>{{ last_signal.stop_loss }}</strong>
+                        </div>
+
+                        <div class="signal-row">
+                            <span>Take Profit</span>
+                            <strong>{{ last_signal.take_profit }}</strong>
+                        </div>
+
+                        <div class="signal-row">
+                            <span>Status</span>
+                            <span class="status-pill
+                                {% if last_signal.status == 'WIN' %}status-win
+                                {% elif last_signal.status == 'LOSS' %}status-loss
+                                {% else %}status-open{% endif %}">
+                                {{ last_signal.status }}
+                            </span>
+                        </div>
+
+                        <div class="signal-row">
+                            <span>Date</span>
+                            <strong>{{ last_signal.created_at }}</strong>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="empty-text">Aucun signal disponible pour le moment.</p>
+                    {% endif %}
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2>Performance du jour</h2>
+                    </div>
+
+                    <div class="summary-box">
+                        <div class="summary-item">
+                            <span>Trades du jour</span>
+                            <strong>{{ today_trades }}</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Gagnants</span>
+                            <strong class="text-buy">{{ today_wins }}</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Perdants</span>
+                            <strong class="text-sell">{{ today_losses }}</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>PnL</span>
+                            <strong class="{% if today_pnl >= 0 %}text-buy{% else %}text-sell{% endif %}">
+                                {{ today_pnl }}
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHARTS -->
+            <section class="chart-grid">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2>Répartition des statuts</h2>
+                    </div>
+                    <div class="chart-box medium-chart">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2>BUY / SELL</h2>
+                    </div>
+                    <div class="chart-box medium-chart">
+                        <canvas id="actionChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-header">
+                    <h2>PnL cumulatif</h2>
+                </div>
+                <div class="chart-box large-chart">
+                    <canvas id="pnlChart"></canvas>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-header">
+                    <h2>Capital simulé</h2>
+                </div>
+
+                <div class="summary-box" style="margin-bottom: 20px;">
+                    <div class="summary-item">
+                        <span>Capital initial</span>
+                        <strong>{{ initial_capital }}</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Capital actuel</span>
+                        <strong>{{ current_capital }}</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Rendement</span>
+                        <strong class="{% if capital_return_pct >= 0 %}text-buy{% else %}text-sell{% endif %}">
+                            {{ capital_return_pct }}%
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="chart-box large-chart">
+                    <canvas id="capitalChart"></canvas>
+                </div>
+            </section>
+
+            <!-- TABLE -->
+            <section class="panel table-panel">
+                <div class="panel-header">
+                    <h2>Historique</h2>
+                </div>
+
+                {% if not is_premium %}
+                <p class="empty-text" style="margin-bottom: 15px;">
+                    Mode gratuit : seuls les 5 derniers signaux sont affichés.
+                </p>
+                {% endif %}
+
+                <div class="table-wrapper">
+                    <table class="signals-table">
+                        <thead>
+                            <tr>
+                                <th>Actif</th>
+                                <th>Action</th>
+                                <th>Prix</th>
+                                <th>Stop Loss</th>
+                                <th>Take Profit</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if signals %}
+                                {% for s in signals %}
+                                <tr>
+                                    <td>{{ s.asset }}</td>
+                                    <td>
+                                        <span class="{% if s.action == 'BUY' %}badge-buy{% else %}badge-sell{% endif %}">
+                                            {{ s.action }}
+                                        </span>
+                                    </td>
+                                    <td>{{ s.entry_price }}</td>
+                                    <td>{{ s.stop_loss }}</td>
+                                    <td>{{ s.take_profit }}</td>
+                                    <td>
+                                        <span class="status-pill
+                                            {% if s.status == 'WIN' %}status-win
+                                            {% elif s.status == 'LOSS' %}status-loss
+                                            {% else %}status-open{% endif %}">
+                                            {{ s.status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ s.created_at }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="empty-text">Aucun signal disponible.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        const statusChartElement = document.getElementById("statusChart");
+        if (statusChartElement) {
+            new Chart(statusChartElement, {
+                type: "doughnut",
+                data: {
+                    labels: ["WIN", "LOSS", "OPEN"],
+                    datasets: [{
+                        data: [{{ total_win }}, {{ total_loss }}, {{ total_open }}]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        const actionChartElement = document.getElementById("actionChart");
+        if (actionChartElement) {
+            new Chart(actionChartElement, {
+                type: "bar",
+                data: {
+                    labels: ["BUY", "SELL"],
+                    datasets: [{
+                        data: [{{ total_buy }}, {{ total_sell }}]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        const pnlChartElement = document.getElementById("pnlChart");
+        if (pnlChartElement) {
+            new Chart(pnlChartElement, {
+                type: "line",
+                data: {
+                    labels: {{ pnl_labels | tojson }},
+                    datasets: [{
+                        label: "PnL cumulatif",
+                        data: {{ pnl_values | tojson }},
+                        tension: 0.25
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        const capitalChartElement = document.getElementById("capitalChart");
+        if (capitalChartElement) {
+            new Chart(capitalChartElement, {
+                type: "line",
+                data: {
+                    labels: {{ capital_labels | tojson }},
+                    datasets: [{
+                        label: "Capital",
+                        data: {{ capital_values | tojson }},
+                        tension: 0.25
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

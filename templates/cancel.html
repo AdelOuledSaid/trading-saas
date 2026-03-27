@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement annulé</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-body">
+    <div class="pricing-page">
+        <div class="pricing-header">
+            <h1>Paiement annulé</h1>
+            <p>Aucun abonnement n’a été activé.</p>
+        </div>
+
+        <div class="pricing-footer-link">
+            <a href="{{ url_for('pricing') }}">← Retour aux offres</a>
+        </div>
+    </div>
+</body>
+</html>

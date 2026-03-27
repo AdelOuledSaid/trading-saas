@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement réussi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-body">
+    <div class="pricing-page">
+        <div class="pricing-header">
+            <h1>Paiement réussi ✅</h1>
+            <p>Merci pour votre abonnement.</p>
+
+            {% if session_data %}
+                <p>ID session : {{ session_data.id }}</p>
+            {% endif %}
+
+            <p>Votre accès Premium sera activé automatiquement en quelques instants.</p>
+        </div>
+
+        <div class="pricing-footer-link">
+            <a href="{{ url_for('dashboard') }}">→ Aller au dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

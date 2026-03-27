@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offres Premium</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-body">
+
+    <div class="pricing-page">
+        <div class="pricing-header">
+            <h1>Choisissez votre offre</h1>
+            <p>Accédez aux signaux trading et aux performances avancées</p>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-wrapper" style="max-width: 900px; margin: 0 auto 20px auto;">
+                    {% for message in messages %}
+                        <p class="message" style="text-align:center; margin-bottom: 12px;">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="pricing-grid">
+            <div class="pricing-card free-plan">
+                <h2>Gratuit</h2>
+                <p class="price">0€<span>/mois</span></p>
+
+                <ul>
+                    <li>Accès aux 5 derniers signaux</li>
+                    <li>Dashboard limité</li>
+                    <li>Vue générale des statistiques</li>
+                </ul>
+
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboard') }}" class="pricing-btn secondary-btn">
+                        Continuer gratuitement
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('register') }}" class="pricing-btn secondary-btn">
+                        Commencer
+                    </a>
+                {% endif %}
+            </div>
+
+            <div class="pricing-card premium-plan">
+                <div class="badge-top">Populaire</div>
+
+                <h2>Premium</h2>
+                <p class="price">19€<span>/mois</span></p>
+
+                <ul>
+                    <li>Accès à tous les signaux</li>
+                    <li>Historique complet</li>
+                    <li>Suivi Telegram en direct</li>
+                    <li>Dashboard complet</li>
+                    <li>Statistiques avancées</li>
+                </ul>
+
+                {% if current_user.is_authenticated %}
+                    {% if current_user.is_premium %}
+                        <div style="display:flex; flex-direction:column; gap:12px;">
+                            <a href="{{ url_for('dashboard') }}" class="pricing-btn secondary-btn">
+                                Vous êtes déjà Premium
+                            </a>
+
+                            <form action="{{ url_for('create_customer_portal_session') }}" method="POST">
+                                <button
+                                    type="submit"
+                                    class="pricing-btn primary-btn"
+                                    style="border:none; cursor:pointer; width:100%;"
+                                >
+                                    Gérer mon abonnement
+                                </button>
+                            </form>
+                        </div>
+
+                        <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85;">
+                            Votre abonnement est actif. Vous pouvez gérer votre formule, votre carte bancaire
+                            ou annuler votre abonnement depuis l’espace Stripe.
+                        </p>
+                    {% else %}
+                        <form action="{{ url_for('create_checkout_session') }}" method="POST">
+                            <button
+                                type="submit"
+                                class="pricing-btn primary-btn"
+                                style="border:none; cursor:pointer; width:100%;"
+                            >
+                                S’abonner maintenant
+                            </button>
+                        </form>
+
+                        <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85;">
+                            Paiement sécurisé via Stripe. Abonnement mensuel sans engagement.
+                        </p>
+                    {% endif %}
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="pricing-btn primary-btn">
+                        Se connecter pour s’abonner
+                    </a>
+
+                    <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85;">
+                        Connectez-vous pour activer votre abonnement Premium.
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="pricing-footer-link">
+            <a href="{{ url_for('home') }}">← Retour à l’accueil</a>
+        </div>
+    </div>
+
+</body>
+</html>

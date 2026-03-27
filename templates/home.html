@@ -1,0 +1,33 @@
+<!DOCTYPE html> 
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Signals</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenue sur Trading Signals 🚀</h1>
+        <p>Recevez des signaux trading premium.</p>
+
+        <div class="links">
+            <a href="{{ url_for('register') }}">Créer un compte</a>
+            <a href="{{ url_for('login') }}">Se connecter</a>
+
+            <!-- 👉 AJOUT ICI -->
+            <a href="{{ url_for('pricing') }}" class="premium-link">
+                💎 Voir les offres Premium
+            </a>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <p class="message">{{ message }}</p>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
