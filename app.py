@@ -234,14 +234,10 @@ def logout():
 
 
 
-
 @app.route("/pricing")
 def pricing():
     if current_user.is_authenticated:
         sync_user_premium_status(current_user)
-
-        # 🔥 FORCE REFRESH USER
-        login_user(current_user)
 
     return render_template(
         "pricing.html",
