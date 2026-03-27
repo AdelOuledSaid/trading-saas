@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -6,28 +6,182 @@
     <title>Trading Signals</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-    <div class="container">
-        <h1>Bienvenue sur Trading Signals 🚀</h1>
-        <p>Recevez des signaux trading premium.</p>
+<body class="dashboard-body">
 
-        <div class="links">
-            <a href="{{ url_for('register') }}">Créer un compte</a>
-            <a href="{{ url_for('login') }}">Se connecter</a>
+    <div style="min-height:100vh; background: radial-gradient(circle at top, rgba(37,99,235,0.18), transparent 35%), linear-gradient(180deg, #06122d 0%, #030b1f 100%); color:white;">
 
-            <!-- 👉 AJOUT ICI -->
-            <a href="{{ url_for('pricing') }}" class="premium-link">
-                💎 Voir les offres Premium
-            </a>
-        </div>
+        <!-- HEADER -->
+        <header style="display:flex; justify-content:space-between; align-items:center; padding:28px 42px; border-bottom:1px solid rgba(255,255,255,0.05);">
+            <div>
+                <h2 style="margin:0; font-size:34px; font-weight:800;">TradingBot</h2>
+                <p style="margin:4px 0 0 0; color:#94a3b8;">Signal Center</p>
+            </div>
 
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-            {% for message in messages %}
-              <p class="message">{{ message }}</p>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
+            <nav style="display:flex; gap:14px; flex-wrap:wrap;">
+                <a href="{{ url_for('login') }}" style="text-decoration:none; color:white; padding:10px 16px; border-radius:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06);">
+                    Se connecter
+                </a>
+                <a href="{{ url_for('register') }}" style="text-decoration:none; color:#06122d; padding:10px 16px; border-radius:10px; background:white; font-weight:700;">
+                    Créer un compte
+                </a>
+            </nav>
+        </header>
+
+        <!-- HERO -->
+        <section style="max-width:1200px; margin:0 auto; padding:80px 32px 48px 32px; display:grid; grid-template-columns:1.2fr 0.8fr; gap:40px; align-items:center;">
+            <div>
+                <div style="display:inline-block; padding:8px 14px; border-radius:999px; background:rgba(16,185,129,0.12); color:#34d399; font-size:13px; font-weight:700; margin-bottom:18px;">
+                    📡 Signaux trading en temps réel
+                </div>
+
+                <h1 style="font-size:62px; line-height:1.02; margin:0 0 18px 0; font-weight:900; letter-spacing:-1.5px;">
+                    Recevez des signaux premium dans une interface claire et professionnelle.
+                </h1>
+
+                <p style="font-size:19px; color:#a7b6cf; max-width:760px; line-height:1.7; margin-bottom:28px;">
+                    Accédez à vos signaux BUY / SELL, à l’historique complet, aux statistiques avancées,
+                    au suivi Telegram en direct et à un dashboard pensé comme un vrai produit SaaS.
+                </p>
+
+                <div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:24px;">
+                    <a href="{{ url_for('register') }}" style="text-decoration:none; color:#06122d; background:white; padding:14px 22px; border-radius:12px; font-weight:800; box-shadow:0 12px 28px rgba(255,255,255,0.12);">
+                        Commencer maintenant
+                    </a>
+
+                    <a href="{{ url_for('pricing') }}" style="text-decoration:none; color:white; background:linear-gradient(90deg,#2563eb,#7c3aed); padding:14px 22px; border-radius:12px; font-weight:800; box-shadow:0 12px 28px rgba(37,99,235,0.25);">
+                        💎 Voir les offres Premium
+                    </a>
+                </div>
+
+                <div style="display:flex; gap:20px; flex-wrap:wrap; color:#93a4c1; font-size:15px;">
+                    <span>✔️ Dashboard complet</span>
+                    <span>✔️ Suivi Telegram</span>
+                    <span>✔️ Signaux premium</span>
+                </div>
+            </div>
+
+            <!-- HERO CARD -->
+            <div style="background:linear-gradient(180deg, rgba(10,20,46,0.96), rgba(6,14,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:24px; padding:28px; box-shadow:0 22px 50px rgba(0,0,0,0.28);">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:22px;">
+                    <div>
+                        <p style="margin:0; color:#8ea2c7; font-size:14px;">Aperçu Premium</p>
+                        <h3 style="margin:6px 0 0 0; font-size:28px;">Dashboard Live</h3>
+                    </div>
+                    <span style="background:rgba(16,185,129,0.12); color:#34d399; padding:8px 12px; border-radius:999px; font-size:13px; font-weight:700;">
+                        ● Live
+                    </span>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px;">
+                    <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
+                        <p style="margin:0; color:#93a4c1; font-size:14px;">Total signaux</p>
+                        <h3 style="margin:10px 0 0 0; font-size:34px;">128</h3>
+                    </div>
+
+                    <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
+                        <p style="margin:0; color:#93a4c1; font-size:14px;">Winrate</p>
+                        <h3 style="margin:10px 0 0 0; font-size:34px; color:#4ade80;">67%</h3>
+                    </div>
+                </div>
+
+                <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px; margin-bottom:14px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="color:#93a4c1;">Dernier signal</span>
+                        <span style="background:rgba(34,197,94,0.16); color:#4ade80; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700;">
+                            BUY
+                        </span>
+                    </div>
+                    <h4 style="margin:14px 0 6px 0; font-size:24px;">BTCUSD</h4>
+                    <p style="margin:0; color:#9fb0c9;">Signal envoyé avec suivi Telegram et historique complet.</p>
+                </div>
+
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                    <span style="background:rgba(59,130,246,0.12); color:#60a5fa; padding:8px 12px; border-radius:999px; font-size:13px; font-weight:700;">
+                        📈 BUY / SELL
+                    </span>
+                    <span style="background:rgba(168,85,247,0.12); color:#c084fc; padding:8px 12px; border-radius:999px; font-size:13px; font-weight:700;">
+                        📊 Stats avancées
+                    </span>
+                    <span style="background:rgba(16,185,129,0.12); color:#34d399; padding:8px 12px; border-radius:999px; font-size:13px; font-weight:700;">
+                        📲 Telegram
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- FLASH MESSAGES -->
+        <section style="max-width:1200px; margin:0 auto; padding:0 32px;">
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <div style="margin-bottom:24px;">
+                    {% for message in messages %}
+                      <p style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.06); padding:14px 16px; border-radius:12px; color:#dbe7ff;">
+                          {{ message }}
+                      </p>
+                    {% endfor %}
+                </div>
+              {% endif %}
+            {% endwith %}
+        </section>
+
+        <!-- FEATURES -->
+        <section style="max-width:1200px; margin:0 auto; padding:12px 32px 70px 32px;">
+            <div style="text-align:center; margin-bottom:34px;">
+                <h2 style="font-size:40px; margin-bottom:10px;">Tout ce qu’il faut pour suivre vos signaux</h2>
+                <p style="color:#9eb0cb; font-size:18px; max-width:760px; margin:0 auto;">
+                    Une interface pensée pour transformer des signaux de trading en un produit propre, lisible et premium.
+                </p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:20px;">
+                <div style="background:linear-gradient(180deg, rgba(8,18,44,0.98), rgba(5,13,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:20px; padding:24px;">
+                    <div style="font-size:28px; margin-bottom:12px;">📊</div>
+                    <h3 style="margin:0 0 10px 0;">Dashboard avancé</h3>
+                    <p style="margin:0; color:#9eb0cb; line-height:1.7;">
+                        Consultez les statistiques clés, le winrate, le PnL estimé et les performances en un coup d’œil.
+                    </p>
+                </div>
+
+                <div style="background:linear-gradient(180deg, rgba(8,18,44,0.98), rgba(5,13,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:20px; padding:24px;">
+                    <div style="font-size:28px; margin-bottom:12px;">📲</div>
+                    <h3 style="margin:0 0 10px 0;">Alertes Telegram</h3>
+                    <p style="margin:0; color:#9eb0cb; line-height:1.7;">
+                        Recevez vos notifications de signaux et vos événements d’abonnement directement sur Telegram.
+                    </p>
+                </div>
+
+                <div style="background:linear-gradient(180deg, rgba(8,18,44,0.98), rgba(5,13,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:20px; padding:24px;">
+                    <div style="font-size:28px; margin-bottom:12px;">💎</div>
+                    <h3 style="margin:0 0 10px 0;">Abonnement Premium</h3>
+                    <p style="margin:0; color:#9eb0cb; line-height:1.7;">
+                        Débloquez l’historique complet, la gestion d’abonnement Stripe et une expérience plus avancée.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA FINAL -->
+        <section style="max-width:1200px; margin:0 auto; padding:0 32px 80px 32px;">
+            <div style="background:linear-gradient(90deg, #1d4ed8, #6d28d9); border-radius:24px; padding:36px; display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap; box-shadow:0 20px 40px rgba(37,99,235,0.18);">
+                <div>
+                    <h2 style="margin:0 0 10px 0; font-size:36px;">Prêt à passer au niveau supérieur ?</h2>
+                    <p style="margin:0; color:rgba(255,255,255,0.9); font-size:18px;">
+                        Créez votre compte et commencez à suivre vos signaux dans une interface premium.
+                    </p>
+                </div>
+
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                    <a href="{{ url_for('register') }}" style="text-decoration:none; background:white; color:#0f172a; padding:14px 18px; border-radius:12px; font-weight:800;">
+                        Créer un compte
+                    </a>
+                    <a href="{{ url_for('pricing') }}" style="text-decoration:none; background:rgba(255,255,255,0.14); color:white; padding:14px 18px; border-radius:12px; font-weight:800; border:1px solid rgba(255,255,255,0.18);">
+                        Voir Premium
+                    </a>
+                </div>
+            </div>
+        </section>
+
     </div>
+
 </body>
 </html>

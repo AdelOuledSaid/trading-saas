@@ -8,110 +8,234 @@
 </head>
 <body class="dashboard-body">
 
-    <div class="pricing-page">
-        <div class="pricing-header">
-            <h1>Choisissez votre offre</h1>
-            <p>Accédez aux signaux trading et aux performances avancées</p>
-        </div>
+    <div style="min-height:100vh; background: radial-gradient(circle at top, rgba(124,58,237,0.14), transparent 35%), linear-gradient(180deg, #06122d 0%, #030b1f 100%); color:white;">
 
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="flash-wrapper" style="max-width: 900px; margin: 0 auto 20px auto;">
-                    {% for message in messages %}
-                        <p class="message" style="text-align:center; margin-bottom: 12px;">{{ message }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-
-        <div class="pricing-grid">
-            <div class="pricing-card free-plan">
-                <h2>Gratuit</h2>
-                <p class="price">0€<span>/mois</span></p>
-
-                <ul>
-                    <li>Accès aux 5 derniers signaux</li>
-                    <li>Dashboard limité</li>
-                    <li>Vue générale des statistiques</li>
-                </ul>
-
-                {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('dashboard') }}" class="pricing-btn secondary-btn">
-                        Continuer gratuitement
-                    </a>
-                {% else %}
-                    <a href="{{ url_for('register') }}" class="pricing-btn secondary-btn">
-                        Commencer
-                    </a>
-                {% endif %}
+        <!-- HEADER -->
+        <header style="display:flex; justify-content:space-between; align-items:center; padding:28px 42px; border-bottom:1px solid rgba(255,255,255,0.05); flex-wrap:wrap; gap:18px;">
+            <div>
+                <h2 style="margin:0; font-size:34px; font-weight:800;">TradingBot</h2>
+                <p style="margin:4px 0 0 0; color:#94a3b8;">Signal Center</p>
             </div>
 
-            <div class="pricing-card premium-plan">
-                <div class="badge-top">Populaire</div>
-
-                <h2>Premium</h2>
-                <p class="price">19€<span>/mois</span></p>
-
-                <ul>
-                    <li>Accès à tous les signaux</li>
-                    <li>Historique complet</li>
-                    <li>Suivi Telegram en direct</li>
-                    <li>Dashboard complet</li>
-                    <li>Statistiques avancées</li>
-                </ul>
+            <nav style="display:flex; gap:12px; flex-wrap:wrap;">
+                <a href="{{ url_for('home') }}" style="text-decoration:none; color:white; padding:10px 16px; border-radius:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06);">
+                    Accueil
+                </a>
 
                 {% if current_user.is_authenticated %}
-                    {% if current_user.is_premium %}
-                        <div style="display:flex; flex-direction:column; gap:12px;">
-                            <a href="{{ url_for('dashboard') }}" class="pricing-btn secondary-btn">
-                                Vous êtes déjà Premium
+                    <a href="{{ url_for('dashboard') }}" style="text-decoration:none; color:white; padding:10px 16px; border-radius:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06);">
+                        Dashboard
+                    </a>
+                    <a href="{{ url_for('logout') }}" style="text-decoration:none; color:#fecaca; padding:10px 16px; border-radius:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06);">
+                        Déconnexion
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" style="text-decoration:none; color:white; padding:10px 16px; border-radius:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06);">
+                        Se connecter
+                    </a>
+                    <a href="{{ url_for('register') }}" style="text-decoration:none; color:#06122d; padding:10px 16px; border-radius:10px; background:white; font-weight:700;">
+                        Créer un compte
+                    </a>
+                {% endif %}
+            </nav>
+        </header>
+
+        <!-- HERO -->
+        <section style="max-width:1200px; margin:0 auto; padding:72px 32px 26px 32px; text-align:center;">
+            <div style="display:inline-block; padding:8px 14px; border-radius:999px; background:rgba(168,85,247,0.14); color:#c084fc; font-size:13px; font-weight:700; margin-bottom:18px;">
+                💎 Offres & abonnement
+            </div>
+
+            <h1 style="font-size:58px; line-height:1.05; margin:0 0 16px 0; font-weight:900; letter-spacing:-1.4px;">
+                Choisissez l’offre adaptée à votre trading
+            </h1>
+
+            <p style="max-width:820px; margin:0 auto; font-size:19px; color:#a7b6cf; line-height:1.75;">
+                Débloquez les signaux complets, l’historique détaillé, les statistiques avancées
+                et le suivi en direct dans une interface premium pensée pour un vrai SaaS.
+            </p>
+        </section>
+
+        <!-- FLASH -->
+        <section style="max-width:1100px; margin:0 auto; padding:0 32px 8px 32px;">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:18px;">
+                        {% for message in messages %}
+                            <p style="margin:0; text-align:center; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.06); padding:14px 16px; border-radius:12px; color:#dbe7ff;">
+                                {{ message }}
+                            </p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </section>
+
+        <!-- CARDS -->
+        <section style="max-width:1200px; margin:0 auto; padding:12px 32px 24px 32px;">
+            <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:24px; align-items:stretch;">
+
+                <!-- FREE -->
+                <div style="background:linear-gradient(180deg, rgba(8,18,44,0.98), rgba(5,13,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:26px; padding:32px; box-shadow:0 20px 50px rgba(0,0,0,0.20); display:flex; flex-direction:column;">
+                    <div style="margin-bottom:18px;">
+                        <div style="display:inline-block; padding:8px 12px; border-radius:999px; background:rgba(255,255,255,0.05); color:#cbd5e1; font-size:13px; font-weight:700; margin-bottom:12px;">
+                            Plan de base
+                        </div>
+                        <h2 style="margin:0 0 10px 0; font-size:34px;">Gratuit</h2>
+                        <p style="font-size:46px; font-weight:900; margin:0;">
+                            0€
+                            <span style="font-size:17px; color:#9fb0c9; font-weight:600;">/mois</span>
+                        </p>
+                    </div>
+
+                    <p style="margin:0 0 22px 0; color:#9fb0c9; line-height:1.7; font-size:16px;">
+                        Une version simple pour découvrir la plateforme et consulter les derniers signaux disponibles.
+                    </p>
+
+                    <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:28px;">
+                        <div style="background:rgba(255,255,255,0.03); border-radius:14px; padding:14px 16px;">✔️ Accès aux 5 derniers signaux</div>
+                        <div style="background:rgba(255,255,255,0.03); border-radius:14px; padding:14px 16px;">✔️ Dashboard limité</div>
+                        <div style="background:rgba(255,255,255,0.03); border-radius:14px; padding:14px 16px;">✔️ Vue générale des statistiques</div>
+                    </div>
+
+                    <div style="margin-top:auto;">
+                        {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('dashboard') }}" style="display:block; text-align:center; text-decoration:none; background:rgba(255,255,255,0.05); color:white; padding:14px 18px; border-radius:14px; font-weight:800; border:1px solid rgba(255,255,255,0.08);">
+                                Continuer gratuitement
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('register') }}" style="display:block; text-align:center; text-decoration:none; background:rgba(255,255,255,0.05); color:white; padding:14px 18px; border-radius:14px; font-weight:800; border:1px solid rgba(255,255,255,0.08);">
+                                Commencer
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- PREMIUM -->
+                <div style="position:relative; background:linear-gradient(180deg, rgba(17,24,39,0.98), rgba(8,18,44,0.98)); border:1px solid rgba(168,85,247,0.24); border-radius:26px; padding:32px; box-shadow:0 24px 60px rgba(124,58,237,0.18); display:flex; flex-direction:column; overflow:hidden;">
+                    <div style="position:absolute; top:18px; right:18px; background:linear-gradient(90deg, #7c3aed, #2563eb); color:white; padding:8px 12px; border-radius:999px; font-size:12px; font-weight:800;">
+                        Populaire
+                    </div>
+
+                    <div style="margin-bottom:18px;">
+                        <div style="display:inline-block; padding:8px 12px; border-radius:999px; background:rgba(168,85,247,0.14); color:#c084fc; font-size:13px; font-weight:700; margin-bottom:12px;">
+                            Accès complet
+                        </div>
+                        <h2 style="margin:0 0 10px 0; font-size:34px;">Premium</h2>
+                        <p style="font-size:46px; font-weight:900; margin:0;">
+                            19€
+                            <span style="font-size:17px; color:#9fb0c9; font-weight:600;">/mois</span>
+                        </p>
+                    </div>
+
+                    <p style="margin:0 0 22px 0; color:#b6c4da; line-height:1.7; font-size:16px;">
+                        L’offre complète pour exploiter tous les signaux, les statistiques avancées
+                        et gérer facilement votre abonnement.
+                    </p>
+
+                    <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:28px;">
+                        <div style="background:rgba(255,255,255,0.04); border-radius:14px; padding:14px 16px;">✔️ Accès à tous les signaux</div>
+                        <div style="background:rgba(255,255,255,0.04); border-radius:14px; padding:14px 16px;">✔️ Historique complet</div>
+                        <div style="background:rgba(255,255,255,0.04); border-radius:14px; padding:14px 16px;">✔️ Suivi Telegram en direct</div>
+                        <div style="background:rgba(255,255,255,0.04); border-radius:14px; padding:14px 16px;">✔️ Dashboard complet</div>
+                        <div style="background:rgba(255,255,255,0.04); border-radius:14px; padding:14px 16px;">✔️ Statistiques avancées</div>
+                    </div>
+
+                    <div style="margin-top:auto;">
+                        {% if current_user.is_authenticated %}
+                            {% if current_user.is_premium %}
+                                <div style="display:flex; flex-direction:column; gap:12px;">
+                                    <a href="{{ url_for('dashboard') }}" style="display:block; text-align:center; text-decoration:none; background:rgba(255,255,255,0.05); color:white; padding:14px 18px; border-radius:14px; font-weight:800; border:1px solid rgba(255,255,255,0.08);">
+                                        Vous êtes déjà Premium
+                                    </a>
+
+                                    <form action="{{ url_for('create_customer_portal_session') }}" method="POST">
+                                        <button type="submit" style="width:100%; border:none; cursor:pointer; background:linear-gradient(90deg, #7c3aed, #2563eb); color:white; padding:14px 18px; border-radius:14px; font-weight:800; box-shadow:0 14px 28px rgba(124,58,237,0.22);">
+                                            Gérer mon abonnement
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85; color:#b6c4da;">
+                                    Votre abonnement est actif. Vous pouvez gérer votre formule, votre carte bancaire
+                                    ou annuler votre abonnement depuis l’espace Stripe.
+                                </p>
+                            {% else %}
+                                <form action="{{ url_for('create_checkout_session') }}" method="POST">
+                                    <button type="submit" style="width:100%; border:none; cursor:pointer; background:linear-gradient(90deg, #7c3aed, #2563eb); color:white; padding:14px 18px; border-radius:14px; font-weight:800; box-shadow:0 14px 28px rgba(124,58,237,0.22);">
+                                        S’abonner maintenant
+                                    </button>
+                                </form>
+
+                                <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85; color:#b6c4da;">
+                                    Paiement sécurisé via Stripe. Abonnement mensuel sans engagement.
+                                </p>
+                            {% endif %}
+                        {% else %}
+                            <a href="{{ url_for('login') }}" style="display:block; text-align:center; text-decoration:none; background:linear-gradient(90deg, #7c3aed, #2563eb); color:white; padding:14px 18px; border-radius:14px; font-weight:800; box-shadow:0 14px 28px rgba(124,58,237,0.22);">
+                                Se connecter pour s’abonner
                             </a>
 
-                            <form action="{{ url_for('create_customer_portal_session') }}" method="POST">
-                                <button
-                                    type="submit"
-                                    class="pricing-btn primary-btn"
-                                    style="border:none; cursor:pointer; width:100%;"
-                                >
-                                    Gérer mon abonnement
-                                </button>
-                            </form>
-                        </div>
+                            <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85; color:#b6c4da;">
+                                Connectez-vous pour activer votre abonnement Premium.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
 
-                        <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85;">
-                            Votre abonnement est actif. Vous pouvez gérer votre formule, votre carte bancaire
-                            ou annuler votre abonnement depuis l’espace Stripe.
-                        </p>
-                    {% else %}
-                        <form action="{{ url_for('create_checkout_session') }}" method="POST">
-                            <button
-                                type="submit"
-                                class="pricing-btn primary-btn"
-                                style="border:none; cursor:pointer; width:100%;"
-                            >
-                                S’abonner maintenant
-                            </button>
-                        </form>
-
-                        <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85;">
-                            Paiement sécurisé via Stripe. Abonnement mensuel sans engagement.
-                        </p>
-                    {% endif %}
-                {% else %}
-                    <a href="{{ url_for('login') }}" class="pricing-btn primary-btn">
-                        Se connecter pour s’abonner
-                    </a>
-
-                    <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85;">
-                        Connectez-vous pour activer votre abonnement Premium.
-                    </p>
-                {% endif %}
             </div>
-        </div>
+        </section>
 
-        <div class="pricing-footer-link">
-            <a href="{{ url_for('home') }}">← Retour à l’accueil</a>
-        </div>
+        <!-- FEATURES -->
+        <section style="max-width:1200px; margin:0 auto; padding:10px 32px 34px 32px;">
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:20px;">
+                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:20px; padding:22px;">
+                    <div style="font-size:28px; margin-bottom:10px;">📊</div>
+                    <h3 style="margin:0 0 10px 0;">Statistiques avancées</h3>
+                    <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                        Suivez le winrate, le PnL et l’évolution des performances directement dans votre dashboard.
+                    </p>
+                </div>
+
+                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:20px; padding:22px;">
+                    <div style="font-size:28px; margin-bottom:10px;">📲</div>
+                    <h3 style="margin:0 0 10px 0;">Notifications instantanées</h3>
+                    <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                        Recevez les signaux et les événements importants directement via Telegram.
+                    </p>
+                </div>
+
+                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:20px; padding:22px;">
+                    <div style="font-size:28px; margin-bottom:10px;">🔐</div>
+                    <h3 style="margin:0 0 10px 0;">Gestion simple</h3>
+                    <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                        Gérez votre abonnement, votre carte bancaire et vos options directement dans Stripe.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA BOTTOM -->
+        <section style="max-width:1200px; margin:0 auto; padding:0 32px 80px 32px;">
+            <div style="background:linear-gradient(90deg, #1d4ed8, #6d28d9); border-radius:24px; padding:34px; display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap; box-shadow:0 20px 40px rgba(37,99,235,0.18);">
+                <div>
+                    <h2 style="margin:0 0 10px 0; font-size:34px;">Passez au niveau supérieur</h2>
+                    <p style="margin:0; color:rgba(255,255,255,0.9); font-size:18px;">
+                        Débloquez une expérience complète et suivez tous vos signaux comme un vrai produit premium.
+                    </p>
+                </div>
+
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                    <a href="{{ url_for('home') }}" style="text-decoration:none; background:white; color:#0f172a; padding:14px 18px; border-radius:12px; font-weight:800;">
+                        Retour accueil
+                    </a>
+                    <a href="{{ url_for('dashboard') if current_user.is_authenticated else url_for('register') }}" style="text-decoration:none; background:rgba(255,255,255,0.14); color:white; padding:14px 18px; border-radius:12px; font-weight:800; border:1px solid rgba(255,255,255,0.18);">
+                        {% if current_user.is_authenticated %}Voir mon dashboard{% else %}Créer un compte{% endif %}
+                    </a>
+                </div>
+            </div>
+        </section>
+
     </div>
 
 </body>
