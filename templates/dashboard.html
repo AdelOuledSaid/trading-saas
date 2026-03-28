@@ -49,13 +49,13 @@
                 </div>
             </header>
 
-            <!-- BANNIÈRE PREMIUM -->
+            <!-- PREMIUM BANNER -->
             {% if is_premium %}
             <section style="background:linear-gradient(90deg, rgba(31,41,55,0.98), rgba(17,24,39,0.98)); padding:24px; border-radius:18px; display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; gap:20px; flex-wrap:wrap; border:1px solid rgba(255,255,255,0.06); box-shadow:0 10px 30px rgba(0,0,0,0.18);">
                 <div>
                     <h3 style="margin:0; font-size:30px;">👑 Compte Premium actif</h3>
                     <p style="margin:8px 0 0 0; opacity:0.85; font-size:16px;">
-                        Accès complet aux signaux, statistiques avancées et gestion d’abonnement.
+                        Accès complet aux signaux, statistiques avancées, courbes et gestion d’abonnement.
                     </p>
                 </div>
 
@@ -66,12 +66,19 @@
                 </form>
             </section>
             {% else %}
-            <section class="premium-banner" style="margin-bottom:24px; border-radius:18px; box-shadow:0 10px 30px rgba(37,99,235,0.18);">
+            <section style="margin-bottom:24px; border-radius:18px; padding:24px; background:linear-gradient(90deg, rgba(29,78,216,0.98), rgba(109,40,217,0.98)); box-shadow:0 10px 30px rgba(37,99,235,0.20); display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;">
                 <div>
-                    <h3 style="margin-bottom:6px;">Passe au Premium 💎</h3>
-                    <p>Débloque l’historique complet, tous les signaux et le suivi avancé.</p>
+                    <h3 style="margin:0 0 8px 0; font-size:28px; color:white;">Débloque la version Premium 💎</h3>
+                    <p style="margin:0; color:rgba(255,255,255,0.92); font-size:16px; max-width:760px; line-height:1.7;">
+                        Accède à l’historique complet, aux graphiques de performance, au PnL cumulatif, au capital simulé et aux statistiques avancées.
+                    </p>
                 </div>
-                <a href="{{ url_for('pricing') }}" class="upgrade-btn">Voir l’offre</a>
+
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                    <a href="{{ url_for('pricing') }}" style="text-decoration:none; background:white; color:#0f172a; padding:12px 18px; border-radius:12px; font-weight:800;">
+                        Voir l’offre Premium
+                    </a>
+                </div>
             </section>
             {% endif %}
 
@@ -102,6 +109,7 @@
                     <h3 style="margin-top:12px; font-size:42px;">{{ total_sell }}</h3>
                 </div>
 
+                {% if is_premium %}
                 <div class="stat-card win-card" style="position:relative; overflow:hidden;">
                     <div style="display:flex; align-items:center; justify-content:space-between;">
                         <span class="stat-label" style="margin:0;">💰 Gagnants</span>
@@ -143,6 +151,61 @@
                         {{ estimated_pnl }}
                     </h3>
                 </div>
+                {% else %}
+                <div class="stat-card" style="position:relative; overflow:hidden; background:linear-gradient(180deg, rgba(20,26,68,0.98), rgba(8,14,38,0.98)); border:1px solid rgba(124,58,237,0.25);">
+                    <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));"></div>
+                    <div style="position:relative;">
+                        <div style="display:flex; align-items:center; justify-content:space-between;">
+                            <span class="stat-label" style="margin:0;">🔒 Gagnants</span>
+                            <span style="font-size:18px;">🏆</span>
+                        </div>
+                        <h3 style="margin-top:12px; font-size:42px; filter:blur(3px); opacity:0.75;">128</h3>
+                        <p style="margin:10px 0 0 0; color:#c4b5fd; font-size:13px; font-weight:700;">Réservé Premium</p>
+                    </div>
+                </div>
+
+                <div class="stat-card" style="position:relative; overflow:hidden; background:linear-gradient(180deg, rgba(20,26,68,0.98), rgba(8,14,38,0.98)); border:1px solid rgba(124,58,237,0.25);">
+                    <div style="position:relative;">
+                        <div style="display:flex; align-items:center; justify-content:space-between;">
+                            <span class="stat-label" style="margin:0;">🔒 Perdants</span>
+                            <span style="font-size:18px;">⚠️</span>
+                        </div>
+                        <h3 style="margin-top:12px; font-size:42px; filter:blur(3px); opacity:0.75;">34</h3>
+                        <p style="margin:10px 0 0 0; color:#c4b5fd; font-size:13px; font-weight:700;">Réservé Premium</p>
+                    </div>
+                </div>
+
+                <div class="stat-card" style="position:relative; overflow:hidden; background:linear-gradient(180deg, rgba(20,26,68,0.98), rgba(8,14,38,0.98)); border:1px solid rgba(124,58,237,0.25);">
+                    <div style="position:relative;">
+                        <div style="display:flex; align-items:center; justify-content:space-between;">
+                            <span class="stat-label" style="margin:0;">🔒 Winrate</span>
+                            <span style="font-size:18px;">%</span>
+                        </div>
+                        <h3 style="margin-top:12px; font-size:42px; filter:blur(3px); opacity:0.75;">67%</h3>
+                        <p style="margin:10px 0 0 0; color:#c4b5fd; font-size:13px; font-weight:700;">Réservé Premium</p>
+                    </div>
+                </div>
+
+                <div class="stat-card" style="position:relative; overflow:hidden; background:linear-gradient(180deg, rgba(20,26,68,0.98), rgba(8,14,38,0.98)); border:1px solid rgba(124,58,237,0.25);">
+                    <div style="position:relative;">
+                        <div style="display:flex; align-items:center; justify-content:space-between;">
+                            <span class="stat-label" style="margin:0;">🔒 PnL estimé</span>
+                            <span style="font-size:18px;">💹</span>
+                        </div>
+                        <h3 style="margin-top:12px; font-size:42px; filter:blur(3px); opacity:0.75;">+342</h3>
+                        <p style="margin:10px 0 0 0; color:#c4b5fd; font-size:13px; font-weight:700;">Réservé Premium</p>
+                    </div>
+                </div>
+
+                <div class="stat-card" style="display:flex; align-items:center; justify-content:center; min-height:140px; text-align:center; background:linear-gradient(180deg, rgba(20,26,68,0.98), rgba(8,14,38,0.98)); border:1px solid rgba(124,58,237,0.25);">
+                    <div>
+                        <p style="margin:0 0 10px 0; color:#c4b5fd; font-weight:700;">Débloque toutes les analyses</p>
+                        <a href="{{ url_for('pricing') }}" style="text-decoration:none; color:white; font-weight:800; background:linear-gradient(90deg,#2563eb,#7c3aed); padding:10px 14px; border-radius:10px; display:inline-block;">
+                            Passer Premium
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
             </section>
 
             <!-- PANELS -->
@@ -201,6 +264,7 @@
                     {% endif %}
                 </div>
 
+                {% if is_premium %}
                 <div class="panel" style="border-radius:18px;">
                     <div class="panel-header">
                         <h2>Performance du jour</h2>
@@ -227,9 +291,71 @@
                         </div>
                     </div>
                 </div>
+                {% else %}
+                <div class="panel" style="border-radius:18px; position:relative; overflow:hidden; background:linear-gradient(180deg, rgba(20,26,68,0.98), rgba(8,14,38,0.98)); border:1px solid rgba(124,58,237,0.22);">
+                    <div class="panel-header">
+                        <h2>Performance du jour</h2>
+                    </div>
+
+                    <div style="padding:10px 0 4px 0;">
+                        <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; filter:blur(4px); opacity:0.7; pointer-events:none;">
+                            <div style="background:rgba(255,255,255,0.03); border-radius:12px; padding:14px;">Trades du jour: 8</div>
+                            <div style="background:rgba(255,255,255,0.03); border-radius:12px; padding:14px;">Gagnants: 6</div>
+                            <div style="background:rgba(255,255,255,0.03); border-radius:12px; padding:14px;">Perdants: 2</div>
+                            <div style="background:rgba(255,255,255,0.03); border-radius:12px; padding:14px;">PnL: +180</div>
+                        </div>
+
+                        <div style="margin-top:16px;">
+                            <p class="empty-text">🔒 Passez Premium pour voir la performance détaillée du jour.</p>
+                            <a href="{{ url_for('pricing') }}" style="display:inline-block; margin-top:10px; text-decoration:none; color:white; background:linear-gradient(90deg,#2563eb,#7c3aed); padding:10px 14px; border-radius:10px; font-weight:800;">
+                                Débloquer maintenant
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </section>
 
+            <!-- PREMIUM PREVIEW -->
+            {% if not is_premium %}
+            <section class="panel" style="border-radius:18px; margin-bottom:24px; background:linear-gradient(90deg, rgba(17,24,39,0.98), rgba(8,18,44,0.98)); border:1px solid rgba(124,58,237,0.18);">
+                <div class="panel-header">
+                    <h2>Aperçu Premium</h2>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1.2fr 0.8fr; gap:24px; align-items:center;">
+                    <div>
+                        <h3 style="margin:0 0 12px 0; font-size:28px;">Transforme ton dashboard en outil de décision</h3>
+                        <p style="margin:0 0 18px 0; color:#a7b6cf; line-height:1.8;">
+                            Débloque les statistiques avancées, le PnL cumulatif, le capital simulé, l’historique complet et les analyses réservées aux membres Premium.
+                        </p>
+
+                        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px;">
+                            <span style="background:rgba(59,130,246,0.12); color:#93c5fd; padding:8px 12px; border-radius:999px; font-size:13px; font-weight:700;">📈 Courbes avancées</span>
+                            <span style="background:rgba(168,85,247,0.12); color:#c084fc; padding:8px 12px; border-radius:999px; font-size:13px; font-weight:700;">💸 PnL détaillé</span>
+                            <span style="background:rgba(16,185,129,0.12); color:#34d399; padding:8px 12px; border-radius:999px; font-size:13px; font-weight:700;">📊 Historique complet</span>
+                        </div>
+
+                        <a href="{{ url_for('pricing') }}" style="display:inline-block; text-decoration:none; background:linear-gradient(90deg,#2563eb,#7c3aed); color:white; padding:13px 18px; border-radius:12px; font-weight:800;">
+                            Voir les offres Premium
+                        </a>
+                    </div>
+
+                    <div style="background:rgba(255,255,255,0.03); border-radius:18px; padding:20px; border:1px solid rgba(255,255,255,0.05);">
+                        <p style="margin:0 0 10px 0; color:#9fb0c9;">Ce que débloque Premium</p>
+                        <div style="display:flex; flex-direction:column; gap:12px;">
+                            <div style="background:rgba(255,255,255,0.03); border-radius:12px; padding:14px;">✔ Winrate et statistiques avancées</div>
+                            <div style="background:rgba(255,255,255,0.03); border-radius:12px; padding:14px;">✔ Courbes PnL et capital</div>
+                            <div style="background:rgba(255,255,255,0.03); border-radius:12px; padding:14px;">✔ Historique complet des signaux</div>
+                            <div style="background:rgba(255,255,255,0.03); border-radius:12px; padding:14px;">✔ Accès complet à la plateforme</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+
             <!-- CHARTS -->
+            {% if is_premium %}
             <section class="chart-grid">
                 <div class="panel" style="border-radius:18px;">
                     <div class="panel-header">
@@ -285,6 +411,30 @@
                     <canvas id="capitalChart"></canvas>
                 </div>
             </section>
+            {% else %}
+            <section class="panel" style="border-radius:18px; background:linear-gradient(180deg, rgba(20,26,68,0.98), rgba(8,14,38,0.98)); border:1px solid rgba(124,58,237,0.20);">
+                <div class="panel-header">
+                    <h2>Graphiques & analyses Premium</h2>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:center;">
+                    <div>
+                        <p class="empty-text" style="margin-bottom:14px;">
+                            🔒 Les graphiques, le PnL cumulatif et le capital simulé sont réservés aux membres Premium.
+                        </p>
+                        <a href="{{ url_for('pricing') }}" style="text-decoration:none; background:linear-gradient(90deg,#2563eb,#7c3aed); color:white; padding:12px 16px; border-radius:10px; font-weight:800; display:inline-block;">
+                            Passer Premium
+                        </a>
+                    </div>
+
+                    <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:16px; border:1px solid rgba(255,255,255,0.05);">
+                        <div style="height:180px; border-radius:12px; background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02)); display:flex; align-items:center; justify-content:center; color:#c4b5fd; font-weight:700;">
+                            Aperçu des graphiques Premium
+                        </div>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
 
             <!-- TABLE -->
             <section class="panel table-panel" style="border-radius:18px;">
@@ -293,12 +443,15 @@
                 </div>
 
                 {% if not is_premium %}
-                <div style="background:#111827; padding:15px; border-radius:10px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.06);">
-                    🔒 Accès limité — Passe Premium pour voir tout l’historique
+                <div style="background:linear-gradient(90deg, rgba(17,24,39,0.98), rgba(15,23,42,0.98)); padding:16px; border-radius:12px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+                    <div>
+                        <strong style="display:block; margin-bottom:4px;">🔒 Historique limité</strong>
+                        <span style="color:#9fb0c9;">Mode gratuit : seuls les 5 derniers signaux sont affichés.</span>
+                    </div>
+                    <a href="{{ url_for('pricing') }}" style="text-decoration:none; background:linear-gradient(90deg,#2563eb,#7c3aed); color:white; padding:10px 14px; border-radius:10px; font-weight:800;">
+                        Voir tout l’historique
+                    </a>
                 </div>
-                <p class="empty-text" style="margin-bottom:15px;">
-                    Mode gratuit : seuls les 5 derniers signaux sont affichés.
-                </p>
                 {% endif %}
 
                 <div class="table-wrapper">
@@ -351,6 +504,7 @@
         </main>
     </div>
 
+    {% if is_premium %}
     <script>
         const statusChartElement = document.getElementById("statusChart");
         if (statusChartElement) {
@@ -424,6 +578,7 @@
             });
         }
     </script>
+    {% endif %}
 
 </body>
 </html>

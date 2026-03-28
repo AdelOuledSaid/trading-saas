@@ -12,30 +12,64 @@
 
         {% include "partials/navbar.html" %}
 
-        <div style="max-width:900px; margin:0 auto; padding:80px 32px;">
+        <section style="max-width:1000px; margin:0 auto; padding:80px 32px;">
             <div style="background:linear-gradient(180deg, rgba(8,18,44,0.98), rgba(5,13,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:28px; padding:42px; box-shadow:0 20px 50px rgba(0,0,0,0.28); text-align:center;">
+
                 <div style="display:inline-block; padding:8px 14px; border-radius:999px; background:rgba(239,68,68,0.12); color:#fca5a5; font-size:13px; font-weight:700; margin-bottom:18px;">
                     ❌ Paiement annulé
                 </div>
 
-                <h1 style="margin:0 0 12px 0; font-size:46px; font-weight:900; color:white;">
-                    Paiement annulé
+                <h1 style="margin:0 0 12px 0; font-size:52px; font-weight:900; letter-spacing:-1.2px;">
+                    Abonnement non activé
                 </h1>
 
-                <p style="margin:0 0 18px 0; font-size:18px; color:#a7b6cf; line-height:1.7;">
-                    Aucun abonnement n’a été activé. Vous pouvez revenir aux offres et réessayer à tout moment.
+                <p style="max-width:760px; margin:0 auto 24px auto; color:#a7b6cf; font-size:18px; line-height:1.8;">
+                    Aucun paiement n’a été validé. Votre compte reste sur l’offre gratuite,
+                    mais vous pouvez reprendre l’abonnement à tout moment pour débloquer toutes les fonctionnalités Premium.
                 </p>
 
-                <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:24px;">
-                    <a href="{{ url_for('pricing') }}" style="text-decoration:none; background:linear-gradient(90deg, #7c3aed, #2563eb); color:white; padding:14px 18px; border-radius:12px; font-weight:800;">
-                        Retour aux offres
+                <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin:30px 0;">
+                    <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
+                        <div style="font-size:28px; margin-bottom:10px;">📊</div>
+                        <h3 style="margin:0 0 8px 0;">Statistiques avancées</h3>
+                        <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                            Débloquez les analyses détaillées et le suivi complet.
+                        </p>
+                    </div>
+
+                    <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
+                        <div style="font-size:28px; margin-bottom:10px;">📈</div>
+                        <h3 style="margin:0 0 8px 0;">Historique complet</h3>
+                        <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                            Accédez à tous les signaux au lieu des 5 derniers seulement.
+                        </p>
+                    </div>
+
+                    <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
+                        <div style="font-size:28px; margin-bottom:10px;">💎</div>
+                        <h3 style="margin:0 0 8px 0;">Dashboard Premium</h3>
+                        <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                            Profitez d’une expérience plus complète et plus professionnelle.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:22px;">
+                    <a href="{{ url_for('pricing') }}" style="text-decoration:none; background:linear-gradient(90deg, #7c3aed, #2563eb); color:white; padding:14px 18px; border-radius:12px; font-weight:800; box-shadow:0 14px 28px rgba(124,58,237,0.18);">
+                        Revenir aux offres
                     </a>
-                    <a href="{{ url_for('home') }}" style="text-decoration:none; background:rgba(255,255,255,0.05); color:white; padding:14px 18px; border-radius:12px; font-weight:800; border:1px solid rgba(255,255,255,0.08);">
-                        Retour accueil
+
+                    <a href="{{ url_for('dashboard') }}" style="text-decoration:none; background:rgba(255,255,255,0.05); color:white; padding:14px 18px; border-radius:12px; font-weight:800; border:1px solid rgba(255,255,255,0.08);">
+                        Retour au dashboard
                     </a>
                 </div>
+
+                <p style="margin:22px 0 0 0; color:#8ea2c7; font-size:14px;">
+                    Vous pouvez réessayer quand vous voulez depuis la page Premium.
+                </p>
             </div>
-        </div>
+        </section>
+
     </div>
 
 </body>

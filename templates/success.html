@@ -12,36 +12,73 @@
 
         {% include "partials/navbar.html" %}
 
-        <div style="max-width:900px; margin:0 auto; padding:80px 32px;">
+        <section style="max-width:1000px; margin:0 auto; padding:80px 32px;">
             <div style="background:linear-gradient(180deg, rgba(8,18,44,0.98), rgba(5,13,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:28px; padding:42px; box-shadow:0 20px 50px rgba(0,0,0,0.28); text-align:center;">
+
                 <div style="display:inline-block; padding:8px 14px; border-radius:999px; background:rgba(16,185,129,0.12); color:#34d399; font-size:13px; font-weight:700; margin-bottom:18px;">
                     ✅ Paiement confirmé
                 </div>
 
-                <h1 style="margin:0 0 12px 0; font-size:46px; font-weight:900; color:white;">
-                    Paiement réussi
+                <h1 style="margin:0 0 12px 0; font-size:52px; font-weight:900; letter-spacing:-1.2px;">
+                    Bienvenue dans l’espace Premium
                 </h1>
 
-                <p style="margin:0 0 18px 0; font-size:18px; color:#a7b6cf; line-height:1.7;">
-                    Merci pour votre abonnement. Votre accès Premium sera activé automatiquement en quelques instants.
+                <p style="max-width:760px; margin:0 auto 22px auto; color:#a7b6cf; font-size:18px; line-height:1.8;">
+                    Merci pour votre abonnement. Votre accès Premium est en cours d’activation.
+                    Vous allez maintenant pouvoir consulter l’historique complet, les statistiques avancées,
+                    le PnL cumulatif et le capital simulé.
                 </p>
 
                 {% if session_data %}
-                    <p style="margin:0 0 18px 0; color:#dbe7ff; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); padding:14px 16px; border-radius:12px;">
-                        ID session : {{ session_data.id }}
+                <div style="max-width:620px; margin:0 auto 24px auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:16px; padding:16px 18px;">
+                    <p style="margin:0; color:#dbe7ff;">
+                        <strong>ID session :</strong> {{ session_data.id }}
                     </p>
+                </div>
                 {% endif %}
 
-                <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:24px;">
-                    <a href="{{ url_for('dashboard') }}" style="text-decoration:none; background:linear-gradient(90deg, #10b981, #059669); color:white; padding:14px 18px; border-radius:12px; font-weight:800;">
+                <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin:30px 0;">
+                    <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
+                        <div style="font-size:28px; margin-bottom:10px;">📊</div>
+                        <h3 style="margin:0 0 8px 0;">Stats avancées</h3>
+                        <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                            Accès au winrate, au PnL et aux analyses détaillées.
+                        </p>
+                    </div>
+
+                    <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
+                        <div style="font-size:28px; margin-bottom:10px;">📈</div>
+                        <h3 style="margin:0 0 8px 0;">Historique complet</h3>
+                        <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                            Consultez tous vos signaux sans limitation.
+                        </p>
+                    </div>
+
+                    <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
+                        <div style="font-size:28px; margin-bottom:10px;">💎</div>
+                        <h3 style="margin:0 0 8px 0;">Expérience Premium</h3>
+                        <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                            Un dashboard plus complet, plus riche et plus professionnel.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:22px;">
+                    <a href="{{ url_for('dashboard') }}" style="text-decoration:none; background:linear-gradient(90deg, #10b981, #059669); color:white; padding:14px 18px; border-radius:12px; font-weight:800; box-shadow:0 14px 28px rgba(16,185,129,0.18);">
                         Aller au dashboard
                     </a>
+
                     <a href="{{ url_for('pricing') }}" style="text-decoration:none; background:rgba(255,255,255,0.05); color:white; padding:14px 18px; border-radius:12px; font-weight:800; border:1px solid rgba(255,255,255,0.08);">
-                        Voir les offres
+                        Voir mon offre
                     </a>
                 </div>
+
+                <p style="margin:22px 0 0 0; color:#8ea2c7; font-size:14px;">
+                    Si l’activation n’apparaît pas immédiatement, rechargez la page du dashboard dans quelques instants.
+                </p>
             </div>
-        </div>
+        </section>
+
     </div>
 
 </body>
