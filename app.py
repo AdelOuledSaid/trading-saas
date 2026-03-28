@@ -409,7 +409,19 @@ def debug_user():
 @premium_required
 def premium_data():
     return "🔥 Données premium secrètes"
+@app.route("/mentions-legales")
+def mentions_legales():
+    return render_template("mentions_legales.html")
 
+
+@app.route("/privacy")
+def privacy():
+    return render_template("privacy.html")
+
+
+@app.route("/cgu")
+def cgu():
+    return render_template("cgu.html")
 # =========================
 # STRIPE
 # =========================
