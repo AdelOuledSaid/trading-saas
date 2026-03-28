@@ -16,10 +16,26 @@ from werkzeug.security import generate_password_hash, check_password_hash
 load_dotenv()
 
 app = Flask(__name__)
+
+# ---- Core config
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "change-moi-plus-tard")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
+
+database_url = os.getenv("DATABASE_URL", "sqlite:///users.db")
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# ---- Security / cookies
+app.config["SESSION_COOKIE_SECURE"] = True
+app.config["REMEMBER_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["REMEMBER_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["PREFERRED_URL_SCHEME"] = "https"
+
+# ---- External services
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 
@@ -27,6 +43,8 @@ STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
 STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
 STRIPE_PRICE_ID = os.getenv("STRIPE_PRICE_ID", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
+
+TRADINGVIEW_WEBHOOK_SECRET = os.getenv("TRADINGVIEW_WEBHOOK_SECRET", "")
 DOMAIN = os.getenv("DOMAIN", "http://127.0.0.1:5000").rstrip("/")
 
 stripe.api_key = STRIPE_SECRET_KEY
@@ -46,7 +64,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
 
-    is_premium = db.Column(db.Boolean, default=False)
+    is_premium = db.Column(db.Boolean, default=False, nullable=False)
 
     stripe_customer_id = db.Column(db.String(255), nullable=True)
     stripe_subscription_id = db.Column(db.String(255), nullable=True)
@@ -76,7 +94,7 @@ def load_user(user_id):
 # =========================
 def send_telegram_message(message: str) -> None:
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
-        print("Telegram non configuré.")
+        app.logger.warning("Telegram non configuré.")
         return
 
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -87,71 +105,64 @@ def send_telegram_message(message: str) -> None:
 
     try:
         response = requests.post(url, json=payload, timeout=10)
-        print("TELEGRAM STATUS:", response.status_code)
-        print("TELEGRAM RESPONSE:", response.text)
+        app.logger.info("TELEGRAM STATUS: %s", response.status_code)
+        app.logger.info("TELEGRAM RESPONSE: %s", response.text)
     except Exception as e:
-        print("Erreur Telegram :", e)
+        app.logger.error("Erreur Telegram : %s", repr(e))
 
 # =========================
 # STRIPE HELPERS
 # =========================
+def get_subscription_status(subscription_id: str):
+    if not subscription_id or not STRIPE_SECRET_KEY:
+        return None
+
+    try:
+        subscription = stripe.Subscription.retrieve(subscription_id)
+        return subscription.get("status")
+    except Exception as e:
+        app.logger.error("Erreur récupération abonnement Stripe: %s", repr(e))
+        return None
+
+
 def has_active_stripe_subscription(user) -> bool:
     if not user:
-        print("DEBUG Stripe: user absent")
+        app.logger.warning("DEBUG Stripe: user absent")
         return False
 
     if not user.stripe_subscription_id:
-        print(f"DEBUG Stripe: pas de stripe_subscription_id pour {user.email}")
+        app.logger.info("DEBUG Stripe: pas de stripe_subscription_id pour %s", user.email)
         return False
 
-    if not STRIPE_SECRET_KEY:
-        print("DEBUG Stripe: STRIPE_SECRET_KEY manquant")
-        return False
+    status = get_subscription_status(user.stripe_subscription_id)
+    app.logger.info("DEBUG Stripe status pour %s = %s", user.email, status)
 
-    try:
-        subscription = stripe.Subscription.retrieve(user.stripe_subscription_id)
-        status = subscription["status"]
-
-        print("DEBUG Stripe subscription retrieve OK")
-        print("DEBUG email =", user.email)
-        print("DEBUG subscription_id =", user.stripe_subscription_id)
-        print("DEBUG status =", status)
-
-        return status in ["trialing", "active", "past_due"]
-
-    except Exception as e:
-        print("Erreur vérification abonnement Stripe:", repr(e))
-        return False
+    return status in ["trialing", "active", "past_due"]
 
 
 def sync_user_premium_status(user) -> None:
     if not user:
         return
 
-    print(
-        f"DEBUG sync avant -> "
-        f"email={user.email}, "
-        f"is_premium={user.is_premium}, "
-        f"customer_id={user.stripe_customer_id}, "
-        f"sub_id={user.stripe_subscription_id}"
+    app.logger.info(
+        "DEBUG sync avant -> email=%s, is_premium=%s, customer_id=%s, sub_id=%s",
+        user.email,
+        user.is_premium,
+        user.stripe_customer_id,
+        user.stripe_subscription_id
     )
 
     active = has_active_stripe_subscription(user)
 
-    print(f"DEBUG sync résultat Stripe -> active={active}")
-
     if active and not user.is_premium:
         user.is_premium = True
         db.session.commit()
-        print(f"✅ Synchronisation premium activée pour {user.email}")
+        app.logger.info("Premium synchronisé à TRUE pour %s", user.email)
 
     elif not active and user.is_premium and user.stripe_subscription_id:
         user.is_premium = False
         db.session.commit()
-        print(f"⚠️ Synchronisation premium désactivée pour {user.email}")
-
-    else:
-        print(f"DEBUG sync: aucun changement pour {user.email}")
+        app.logger.info("Premium synchronisé à FALSE pour %s", user.email)
 
 # =========================
 # PROTECTION PREMIUM
@@ -424,7 +435,7 @@ def create_checkout_session():
             customer = stripe.Customer.create(email=current_user.email)
             current_user.stripe_customer_id = customer["id"]
             db.session.commit()
-            print(f"✅ Nouveau client Stripe créé : {current_user.stripe_customer_id}")
+            app.logger.info("Nouveau client Stripe créé : %s", current_user.stripe_customer_id)
 
         session = stripe.checkout.Session.create(
             mode="subscription",
@@ -448,7 +459,7 @@ def create_checkout_session():
         return redirect(session.url, code=303)
 
     except Exception as e:
-        print("Erreur Stripe create_checkout_session:", repr(e))
+        app.logger.error("Erreur Stripe create_checkout_session: %s", repr(e))
         flash("Impossible de créer la session de paiement.")
         return redirect(url_for("pricing"))
 
@@ -472,7 +483,7 @@ def create_customer_portal_session():
         return redirect(session.url, code=303)
 
     except Exception as e:
-        print("Erreur Stripe customer portal:", repr(e))
+        app.logger.error("Erreur Stripe customer portal: %s", repr(e))
         flash("Impossible d'ouvrir le portail client.")
         return redirect(url_for("pricing"))
 
@@ -496,22 +507,18 @@ def success():
             if subscription_id and not current_user.stripe_subscription_id:
                 current_user.stripe_subscription_id = subscription_id
 
-            if subscription_id:
-                try:
-                    subscription = stripe.Subscription.retrieve(subscription_id)
-                    status = subscription.get("status")
-                    current_user.is_premium = status in ["trialing", "active", "past_due"]
-                except Exception as sub_error:
-                    print("Erreur récupération subscription Stripe:", repr(sub_error))
+            status = get_subscription_status(subscription_id) if subscription_id else None
+            current_user.is_premium = status in ["trialing", "active", "past_due"]
 
             db.session.commit()
 
-            print("DEBUG success session_id =", session_id)
-            print("DEBUG success session_data subscription =", subscription_id)
-            print("DEBUG success session_data customer =", customer_id)
+            app.logger.info("SUCCESS Stripe session_id=%s", session_id)
+            app.logger.info("SUCCESS customer_id=%s", customer_id)
+            app.logger.info("SUCCESS subscription_id=%s", subscription_id)
+            app.logger.info("SUCCESS status=%s", status)
 
         except Exception as e:
-            print("Erreur récupération session Stripe:", repr(e))
+            app.logger.error("Erreur récupération session Stripe: %s", repr(e))
 
     return render_template("success.html", session_data=session_data)
 
@@ -528,7 +535,7 @@ def stripe_webhook():
     sig_header = request.headers.get("Stripe-Signature")
 
     if not STRIPE_WEBHOOK_SECRET:
-        print("Webhook secret manquant")
+        app.logger.error("Webhook secret Stripe manquant")
         return "", 500
 
     try:
@@ -538,25 +545,21 @@ def stripe_webhook():
             secret=STRIPE_WEBHOOK_SECRET
         )
     except ValueError:
-        print("Payload invalide")
+        app.logger.error("Payload Stripe invalide")
         return "", 400
     except stripe.error.SignatureVerificationError:
-        print("Signature invalide")
+        app.logger.error("Signature Stripe invalide")
         return "", 400
 
     event_type = event["type"]
     data_object = event["data"]["object"]
 
-    print("Stripe event reçu:", event_type)
+    app.logger.info("Stripe event reçu: %s", event_type)
 
     try:
         if event_type == "checkout.session.completed":
             metadata = data_object.get("metadata", {})
-            user_id = metadata.get("user_id")
-
-            if not user_id:
-                user_id = data_object.get("client_reference_id")
-
+            user_id = metadata.get("user_id") or data_object.get("client_reference_id")
             customer_id = data_object.get("customer")
             subscription_id = data_object.get("subscription")
 
@@ -565,47 +568,36 @@ def stripe_webhook():
                 customer_details = data_object.get("customer_details", {})
                 customer_email = customer_details.get("email")
 
-            print("DEBUG checkout.session.completed")
-            print("user_id =", user_id)
-            print("customer_email =", customer_email)
-            print("customer_id =", customer_id)
-            print("subscription_id =", subscription_id)
-
             user = None
 
             if user_id:
                 try:
                     user = db.session.get(User, int(user_id))
                 except Exception as e:
-                    print("Erreur conversion user_id:", repr(e))
+                    app.logger.error("Erreur conversion user_id Stripe: %s", repr(e))
 
             if not user and customer_email:
                 user = User.query.filter_by(email=customer_email.strip().lower()).first()
 
             if user:
-                user.is_premium = True
                 user.stripe_customer_id = customer_id
                 user.stripe_subscription_id = subscription_id
                 db.session.commit()
-                print(f"✅ Premium activé pour {user.email}")
+
+                app.logger.info("Checkout terminé pour %s", user.email)
 
                 send_telegram_message(
-                    f"✅ Nouvel abonnement Premium\n"
+                    f"✅ Checkout Stripe terminé\n"
                     f"Utilisateur: {user.email}\n"
                     f"Subscription: {subscription_id}"
                 )
             else:
-                print("⚠️ Aucun utilisateur trouvé pour checkout.session.completed")
+                app.logger.warning("Aucun utilisateur trouvé pour checkout.session.completed")
 
         elif event_type == "customer.subscription.updated":
             customer_id = data_object.get("customer")
             subscription_id = data_object.get("id")
             status = data_object.get("status")
-
-            print("DEBUG customer.subscription.updated")
-            print("customer_id =", customer_id)
-            print("subscription_id =", subscription_id)
-            print("status =", status)
 
             user = None
 
@@ -620,17 +612,13 @@ def stripe_webhook():
                 user.stripe_subscription_id = subscription_id
                 user.is_premium = status in ["trialing", "active", "past_due"]
                 db.session.commit()
-                print(f"✅ Subscription updated: {user.email} -> {status}")
+                app.logger.info("Subscription updated: %s -> %s", user.email, status)
             else:
-                print("⚠️ Aucun utilisateur trouvé pour customer.subscription.updated")
+                app.logger.warning("Aucun utilisateur trouvé pour customer.subscription.updated")
 
         elif event_type == "customer.subscription.deleted":
             customer_id = data_object.get("customer")
             subscription_id = data_object.get("id")
-
-            print("DEBUG customer.subscription.deleted")
-            print("customer_id =", customer_id)
-            print("subscription_id =", subscription_id)
 
             user = None
 
@@ -644,7 +632,8 @@ def stripe_webhook():
                 user.is_premium = False
                 user.stripe_subscription_id = None
                 db.session.commit()
-                print(f"✅ Premium désactivé pour {user.email}")
+
+                app.logger.info("Premium désactivé pour %s", user.email)
 
                 send_telegram_message(
                     f"⚠️ Abonnement annulé\n"
@@ -652,15 +641,11 @@ def stripe_webhook():
                     f"Subscription: {subscription_id}"
                 )
             else:
-                print("⚠️ Aucun utilisateur trouvé pour customer.subscription.deleted")
+                app.logger.warning("Aucun utilisateur trouvé pour customer.subscription.deleted")
 
         elif event_type == "invoice.payment_succeeded":
             customer_id = data_object.get("customer")
             subscription_id = data_object.get("subscription")
-
-            print("DEBUG invoice.payment_succeeded")
-            print("customer_id =", customer_id)
-            print("subscription_id =", subscription_id)
 
             user = None
 
@@ -677,15 +662,14 @@ def stripe_webhook():
                 if subscription_id:
                     user.stripe_subscription_id = subscription_id
                 db.session.commit()
-                print(f"✅ Paiement réussi pour {user.email}")
+
+                app.logger.info("Paiement réussi pour %s", user.email)
+            else:
+                app.logger.warning("Aucun utilisateur trouvé pour invoice.payment_succeeded")
 
         elif event_type == "invoice.payment_failed":
             customer_id = data_object.get("customer")
             subscription_id = data_object.get("subscription")
-
-            print("DEBUG invoice.payment_failed")
-            print("customer_id =", customer_id)
-            print("subscription_id =", subscription_id)
 
             user = None
 
@@ -696,18 +680,20 @@ def stripe_webhook():
                 user = User.query.filter_by(stripe_customer_id=customer_id).first()
 
             if user:
-                print(f"❌ Paiement échoué pour {user.email}")
+                app.logger.warning("Paiement échoué pour %s", user.email)
 
                 send_telegram_message(
                     f"❌ Paiement Stripe échoué\n"
                     f"Utilisateur: {user.email}"
                 )
+            else:
+                app.logger.warning("Aucun utilisateur trouvé pour invoice.payment_failed")
 
         else:
-            print(f"ℹ️ Événement ignoré: {event_type}")
+            app.logger.info("Événement Stripe ignoré: %s", event_type)
 
     except Exception as e:
-        print("Erreur traitement webhook Stripe:", repr(e))
+        app.logger.error("Erreur traitement webhook Stripe: %s", repr(e))
         return "", 200
 
     return "", 200
@@ -721,6 +707,9 @@ def webhook():
 
     if not data:
         return {"error": "JSON manquant"}, 400
+
+    if TRADINGVIEW_WEBHOOK_SECRET and data.get("secret") != TRADINGVIEW_WEBHOOK_SECRET:
+        return {"error": "Non autorisé"}, 403
 
     try:
         asset = data.get("asset")

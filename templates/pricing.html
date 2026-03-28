@@ -217,8 +217,12 @@
                             {% if current_user.is_authenticated %}
                                 {% if current_user.is_premium %}
                                     <div style="display:flex; flex-direction:column; gap:12px;">
+                                        <div style="text-align:center; background:rgba(16,185,129,0.12); color:#34d399; padding:14px 18px; border-radius:14px; font-weight:800; border:1px solid rgba(16,185,129,0.2);">
+                                            ✅ Abonnement Premium actif
+                                        </div>
+
                                         <a href="{{ url_for('dashboard') }}" style="display:block; text-align:center; text-decoration:none; background:rgba(255,255,255,0.05); color:white; padding:14px 18px; border-radius:14px; font-weight:800; border:1px solid rgba(255,255,255,0.08);">
-                                            Vous êtes déjà Premium
+                                            Aller au dashboard
                                         </a>
 
                                         <form action="{{ url_for('create_customer_portal_session') }}" method="POST">
@@ -228,7 +232,7 @@
                                         </form>
                                     </div>
 
-                                    <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85; color:#b6c4da;">
+                                    <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85; color:#b6c4da; line-height:1.6;">
                                         Votre abonnement est actif. Vous pouvez gérer votre formule et vos informations de paiement depuis Stripe.
                                     </p>
                                 {% else %}
@@ -238,8 +242,8 @@
                                         </button>
                                     </form>
 
-                                    <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85; color:#b6c4da;">
-                                        Paiement sécurisé via Stripe. Abonnement mensuel simple à gérer.
+                                    <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85; color:#b6c4da; line-height:1.6;">
+                                        Paiement sécurisé via Stripe. Abonnement mensuel avec renouvellement automatique. Annulation à tout moment depuis le portail client Stripe.
                                     </p>
                                 {% endif %}
                             {% else %}
@@ -247,7 +251,7 @@
                                     Se connecter pour passer Premium
                                 </a>
 
-                                <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85; color:#b6c4da;">
+                                <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85; color:#b6c4da; line-height:1.6;">
                                     Connectez-vous pour activer votre abonnement Premium.
                                 </p>
                             {% endif %}
@@ -318,7 +322,7 @@
             </div>
         </section>
 
-        <!-- FAQ PRO MAX -->
+        <!-- FAQ -->
         <section style="max-width:1000px; margin:0 auto; padding:60px 32px 20px 32px;">
 
             <div style="text-align:center; margin-bottom:40px;">
@@ -363,6 +367,18 @@
                     <div class="faq-content">
                         <p>
                             Oui, vous pouvez annuler votre abonnement à tout moment depuis votre espace client Stripe en un clic.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header">
+                        <span>🔁 L’abonnement est-il reconduit automatiquement ?</span>
+                        <div class="faq-icon">+</div>
+                    </div>
+                    <div class="faq-content">
+                        <p>
+                            Oui, l’abonnement Premium est mensuel avec renouvellement automatique. Vous pouvez l’arrêter à tout moment depuis le portail client Stripe.
                         </p>
                     </div>
                 </div>
@@ -428,6 +444,13 @@
                     </a>
                 </div>
             </div>
+        </section>
+
+        <!-- LEGAL NOTE -->
+        <section style="max-width:1200px; margin:0 auto; padding:0 32px 40px 32px; text-align:center;">
+            <p style="color:#8fa3bf; font-size:14px; line-height:1.8; margin:0;">
+                En souscrivant à l’offre Premium, vous acceptez un abonnement mensuel avec renouvellement automatique, résiliable à tout moment depuis le portail client Stripe.
+            </p>
         </section>
 
     </div>
