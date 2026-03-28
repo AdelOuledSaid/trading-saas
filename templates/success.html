@@ -7,21 +7,42 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="dashboard-body">
-    <div class="pricing-page">
-        <div class="pricing-header">
-            <h1>Paiement réussi ✅</h1>
-            <p>Merci pour votre abonnement.</p>
 
-            {% if session_data %}
-                <p>ID session : {{ session_data.id }}</p>
-            {% endif %}
+    <div style="min-height:100vh; background: radial-gradient(circle at top, rgba(16,185,129,0.14), transparent 35%), linear-gradient(180deg, #06122d 0%, #030b1f 100%); color:white;">
 
-            <p>Votre accès Premium sera activé automatiquement en quelques instants.</p>
-        </div>
+        {% include "partials/navbar.html" %}
 
-        <div class="pricing-footer-link">
-            <a href="{{ url_for('dashboard') }}">→ Aller au dashboard</a>
+        <div style="max-width:900px; margin:0 auto; padding:80px 32px;">
+            <div style="background:linear-gradient(180deg, rgba(8,18,44,0.98), rgba(5,13,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:28px; padding:42px; box-shadow:0 20px 50px rgba(0,0,0,0.28); text-align:center;">
+                <div style="display:inline-block; padding:8px 14px; border-radius:999px; background:rgba(16,185,129,0.12); color:#34d399; font-size:13px; font-weight:700; margin-bottom:18px;">
+                    ✅ Paiement confirmé
+                </div>
+
+                <h1 style="margin:0 0 12px 0; font-size:46px; font-weight:900; color:white;">
+                    Paiement réussi
+                </h1>
+
+                <p style="margin:0 0 18px 0; font-size:18px; color:#a7b6cf; line-height:1.7;">
+                    Merci pour votre abonnement. Votre accès Premium sera activé automatiquement en quelques instants.
+                </p>
+
+                {% if session_data %}
+                    <p style="margin:0 0 18px 0; color:#dbe7ff; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); padding:14px 16px; border-radius:12px;">
+                        ID session : {{ session_data.id }}
+                    </p>
+                {% endif %}
+
+                <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:24px;">
+                    <a href="{{ url_for('dashboard') }}" style="text-decoration:none; background:linear-gradient(90deg, #10b981, #059669); color:white; padding:14px 18px; border-radius:12px; font-weight:800;">
+                        Aller au dashboard
+                    </a>
+                    <a href="{{ url_for('pricing') }}" style="text-decoration:none; background:rgba(255,255,255,0.05); color:white; padding:14px 18px; border-radius:12px; font-weight:800; border:1px solid rgba(255,255,255,0.08);">
+                        Voir les offres
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
+
 </body>
 </html>

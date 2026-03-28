@@ -29,15 +29,15 @@
         <main class="main-content">
 
             <!-- HEADER -->
-            <header class="topbar" style="margin-bottom: 24px;">
+            <header class="topbar" style="margin-bottom:24px;">
                 <div>
-                    <h1 style="margin-bottom: 6px;">Dashboard</h1>
-                    <p class="subtitle" style="margin: 0;">Bienvenue, {{ email }}</p>
+                    <h1 style="margin-bottom:6px;">Dashboard</h1>
+                    <p class="subtitle" style="margin:0;">Bienvenue, {{ email }}</p>
                 </div>
 
                 <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                     {% if is_premium %}
-                        <span style="background: linear-gradient(90deg, #10b981, #059669); color:white; padding:8px 14px; border-radius:999px; font-size:13px; font-weight:700; box-shadow:0 6px 18px rgba(16,185,129,0.25);">
+                        <span style="background:linear-gradient(90deg, #10b981, #059669); color:white; padding:8px 14px; border-radius:999px; font-size:13px; font-weight:700; box-shadow:0 6px 18px rgba(16,185,129,0.25);">
                             👑 Premium actif
                         </span>
                     {% else %}
@@ -51,22 +51,22 @@
 
             <!-- BANNIÈRE PREMIUM -->
             {% if is_premium %}
-            <section style="background: linear-gradient(90deg, rgba(31,41,55,0.98), rgba(17,24,39,0.98)); padding: 24px; border-radius: 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 20px; flex-wrap: wrap; border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 10px 30px rgba(0,0,0,0.18);">
+            <section style="background:linear-gradient(90deg, rgba(31,41,55,0.98), rgba(17,24,39,0.98)); padding:24px; border-radius:18px; display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; gap:20px; flex-wrap:wrap; border:1px solid rgba(255,255,255,0.06); box-shadow:0 10px 30px rgba(0,0,0,0.18);">
                 <div>
-                    <h3 style="margin: 0; font-size: 30px;">👑 Compte Premium actif</h3>
-                    <p style="margin: 8px 0 0 0; opacity: 0.85; font-size: 16px;">
+                    <h3 style="margin:0; font-size:30px;">👑 Compte Premium actif</h3>
+                    <p style="margin:8px 0 0 0; opacity:0.85; font-size:16px;">
                         Accès complet aux signaux, statistiques avancées et gestion d’abonnement.
                     </p>
                 </div>
 
                 <form action="{{ url_for('create_customer_portal_session') }}" method="POST">
-                    <button type="submit" style="background: linear-gradient(90deg, #10b981, #059669); color: white; border: none; padding: 12px 18px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 15px;">
+                    <button type="submit" style="background:linear-gradient(90deg, #10b981, #059669); color:white; border:none; padding:12px 18px; border-radius:10px; cursor:pointer; font-weight:700; font-size:15px;">
                         Gérer mon abonnement
                     </button>
                 </form>
             </section>
             {% else %}
-            <section class="premium-banner" style="margin-bottom:24px; border-radius:18px; box-shadow: 0 10px 30px rgba(37,99,235,0.18);">
+            <section class="premium-banner" style="margin-bottom:24px; border-radius:18px; box-shadow:0 10px 30px rgba(37,99,235,0.18);">
                 <div>
                     <h3 style="margin-bottom:6px;">Passe au Premium 💎</h3>
                     <p>Débloque l’historique complet, tous les signaux et le suivi avancé.</p>
@@ -264,7 +264,7 @@
                     <h2>Capital simulé</h2>
                 </div>
 
-                <div class="summary-box" style="margin-bottom: 20px;">
+                <div class="summary-box" style="margin-bottom:20px;">
                     <div class="summary-item">
                         <span>Capital initial</span>
                         <strong>{{ initial_capital }}</strong>
@@ -296,7 +296,7 @@
                 <div style="background:#111827; padding:15px; border-radius:10px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.06);">
                     🔒 Accès limité — Passe Premium pour voir tout l’historique
                 </div>
-                <p class="empty-text" style="margin-bottom: 15px;">
+                <p class="empty-text" style="margin-bottom:15px;">
                     Mode gratuit : seuls les 5 derniers signaux sont affichés.
                 </p>
                 {% endif %}

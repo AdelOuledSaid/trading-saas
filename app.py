@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from functools import wraps
 
 import requests
 import stripe
@@ -8,7 +9,6 @@ from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from functools import wraps
 
 # =========================
 # CONFIG
@@ -37,7 +37,6 @@ login_manager = LoginManager()
 login_manager.login_view = "login"
 login_manager.init_app(app)
 
-
 # =========================
 # MODELS
 # =========================
@@ -65,14 +64,12 @@ class Signal(db.Model):
     status = db.Column(db.String(20), default="OPEN")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-
 # =========================
 # LOGIN
 # =========================
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, int(user_id))
-
 
 # =========================
 # TELEGRAM
@@ -94,7 +91,6 @@ def send_telegram_message(message: str) -> None:
         print("TELEGRAM RESPONSE:", response.text)
     except Exception as e:
         print("Erreur Telegram :", e)
-
 
 # =========================
 # STRIPE HELPERS
@@ -166,6 +162,8 @@ def premium_required(f):
         if not current_user.is_authenticated:
             return redirect(url_for("login"))
 
+        sync_user_premium_status(current_user)
+
         if not current_user.is_premium:
             flash("Accès réservé aux utilisateurs Premium.")
             return redirect(url_for("pricing"))
@@ -173,6 +171,7 @@ def premium_required(f):
         return f(*args, **kwargs)
 
     return decorated_function
+
 # =========================
 # ROUTES
 # =========================
@@ -231,7 +230,6 @@ def logout():
     logout_user()
     flash("Tu es déconnecté.")
     return redirect(url_for("home"))
-
 
 
 @app.route("/pricing")
@@ -394,12 +392,13 @@ def debug_user():
         "stripe_subscription_id": current_user.stripe_subscription_id,
     }
 
-# 👉 AJOUT ICI
+
 @app.route("/premium-data")
 @login_required
 @premium_required
 def premium_data():
     return "🔥 Données premium secrètes"
+
 # =========================
 # STRIPE
 # =========================
@@ -421,16 +420,12 @@ def create_checkout_session():
         return redirect(url_for("pricing"))
 
     try:
-        # 1) créer un client Stripe une seule fois si absent
         if not current_user.stripe_customer_id:
-            customer = stripe.Customer.create(
-                email=current_user.email
-            )
+            customer = stripe.Customer.create(email=current_user.email)
             current_user.stripe_customer_id = customer["id"]
             db.session.commit()
             print(f"✅ Nouveau client Stripe créé : {current_user.stripe_customer_id}")
 
-        # 2) créer la session Checkout en réutilisant CE client Stripe
         session = stripe.checkout.Session.create(
             mode="subscription",
             payment_method_types=["card"],
@@ -456,6 +451,7 @@ def create_checkout_session():
         print("Erreur Stripe create_checkout_session:", repr(e))
         flash("Impossible de créer la session de paiement.")
         return redirect(url_for("pricing"))
+
 
 @app.route("/create-customer-portal-session", methods=["POST"])
 @login_required
@@ -490,9 +486,30 @@ def success():
     if session_id and STRIPE_SECRET_KEY:
         try:
             session_data = stripe.checkout.Session.retrieve(session_id)
+
+            customer_id = session_data.get("customer")
+            subscription_id = session_data.get("subscription")
+
+            if customer_id and not current_user.stripe_customer_id:
+                current_user.stripe_customer_id = customer_id
+
+            if subscription_id and not current_user.stripe_subscription_id:
+                current_user.stripe_subscription_id = subscription_id
+
+            if subscription_id:
+                try:
+                    subscription = stripe.Subscription.retrieve(subscription_id)
+                    status = subscription.get("status")
+                    current_user.is_premium = status in ["trialing", "active", "past_due"]
+                except Exception as sub_error:
+                    print("Erreur récupération subscription Stripe:", repr(sub_error))
+
+            db.session.commit()
+
             print("DEBUG success session_id =", session_id)
-            print("DEBUG success session_data subscription =", session_data["subscription"] if "subscription" in session_data else None)
-            print("DEBUG success session_data customer =", session_data["customer"] if "customer" in session_data else None)
+            print("DEBUG success session_data subscription =", subscription_id)
+            print("DEBUG success session_data customer =", customer_id)
+
         except Exception as e:
             print("Erreur récupération session Stripe:", repr(e))
 
@@ -534,15 +551,19 @@ def stripe_webhook():
 
     try:
         if event_type == "checkout.session.completed":
-            metadata = data_object["metadata"] if "metadata" in data_object else {}
-            user_id = metadata["user_id"] if "user_id" in metadata else None
+            metadata = data_object.get("metadata", {})
+            user_id = metadata.get("user_id")
 
-            if not user_id and "client_reference_id" in data_object:
-                user_id = data_object["client_reference_id"]
+            if not user_id:
+                user_id = data_object.get("client_reference_id")
 
-            customer_id = data_object["customer"] if "customer" in data_object else None
-            subscription_id = data_object["subscription"] if "subscription" in data_object else None
-            customer_email = data_object["customer_email"] if "customer_email" in data_object else None
+            customer_id = data_object.get("customer")
+            subscription_id = data_object.get("subscription")
+
+            customer_email = data_object.get("customer_email")
+            if not customer_email:
+                customer_details = data_object.get("customer_details", {})
+                customer_email = customer_details.get("email")
 
             print("DEBUG checkout.session.completed")
             print("user_id =", user_id)
@@ -577,9 +598,9 @@ def stripe_webhook():
                 print("⚠️ Aucun utilisateur trouvé pour checkout.session.completed")
 
         elif event_type == "customer.subscription.updated":
-            customer_id = data_object["customer"] if "customer" in data_object else None
-            subscription_id = data_object["id"] if "id" in data_object else None
-            status = data_object["status"] if "status" in data_object else None
+            customer_id = data_object.get("customer")
+            subscription_id = data_object.get("id")
+            status = data_object.get("status")
 
             print("DEBUG customer.subscription.updated")
             print("customer_id =", customer_id)
@@ -604,8 +625,8 @@ def stripe_webhook():
                 print("⚠️ Aucun utilisateur trouvé pour customer.subscription.updated")
 
         elif event_type == "customer.subscription.deleted":
-            customer_id = data_object["customer"] if "customer" in data_object else None
-            subscription_id = data_object["id"] if "id" in data_object else None
+            customer_id = data_object.get("customer")
+            subscription_id = data_object.get("id")
 
             print("DEBUG customer.subscription.deleted")
             print("customer_id =", customer_id)
@@ -634,8 +655,8 @@ def stripe_webhook():
                 print("⚠️ Aucun utilisateur trouvé pour customer.subscription.deleted")
 
         elif event_type == "invoice.payment_succeeded":
-            customer_id = data_object["customer"] if "customer" in data_object else None
-            subscription_id = data_object["subscription"] if "subscription" in data_object else None
+            customer_id = data_object.get("customer")
+            subscription_id = data_object.get("subscription")
 
             print("DEBUG invoice.payment_succeeded")
             print("customer_id =", customer_id)
@@ -659,8 +680,8 @@ def stripe_webhook():
                 print(f"✅ Paiement réussi pour {user.email}")
 
         elif event_type == "invoice.payment_failed":
-            customer_id = data_object["customer"] if "customer" in data_object else None
-            subscription_id = data_object["subscription"] if "subscription" in data_object else None
+            customer_id = data_object.get("customer")
+            subscription_id = data_object.get("subscription")
 
             print("DEBUG invoice.payment_failed")
             print("customer_id =", customer_id)
@@ -675,8 +696,6 @@ def stripe_webhook():
                 user = User.query.filter_by(stripe_customer_id=customer_id).first()
 
             if user:
-                user.is_premium = False
-                db.session.commit()
                 print(f"❌ Paiement échoué pour {user.email}")
 
                 send_telegram_message(
@@ -693,13 +712,12 @@ def stripe_webhook():
 
     return "", 200
 
-
 # =========================
 # WEBHOOK TRADINGVIEW
 # =========================
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    data = request.get_json()
+    data = request.get_json(silent=True)
 
     if not data:
         return {"error": "JSON manquant"}, 400
@@ -746,10 +764,12 @@ def webhook():
 
     return {"status": "ok"}
 
+
 @app.route("/test-telegram")
 def test_telegram():
     send_telegram_message("✅ Test Telegram depuis Flask")
     return "Message Telegram envoyé"
+
 # =========================
 # RUN
 # =========================
