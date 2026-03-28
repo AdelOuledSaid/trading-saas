@@ -7,8 +7,8 @@ import pandas as pd
 # =========================
 # CONFIG
 # =========================
-TELEGRAM_BOT_TOKEN = "8387452163:AAFER6X9GoT1jlZnfjZ33cTO_2SYo-1lUxI"
-TELEGRAM_CHAT_ID = "7240147510"
+TELEGRAM_BOT_TOKEN = "..............."
+TELEGRAM_CHAT_ID = "...................."
 
 COIN = "BTC"
 INTERVAL = "5m"

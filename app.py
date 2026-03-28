@@ -17,7 +17,6 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# ---- Core config
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "change-moi-plus-tard")
 
 database_url = os.getenv("DATABASE_URL", "sqlite:///users.db")
@@ -27,7 +26,6 @@ if database_url.startswith("postgres://"):
 app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# ---- Security / cookies
 app.config["SESSION_COOKIE_SECURE"] = True
 app.config["REMEMBER_COOKIE_SECURE"] = True
 app.config["SESSION_COOKIE_HTTPONLY"] = True
@@ -35,7 +33,6 @@ app.config["REMEMBER_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 app.config["PREFERRED_URL_SCHEME"] = "https"
 
-# ---- External services
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 
@@ -46,6 +43,9 @@ STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 
 TRADINGVIEW_WEBHOOK_SECRET = os.getenv("TRADINGVIEW_WEBHOOK_SECRET", "")
 DOMAIN = os.getenv("DOMAIN", "http://127.0.0.1:5000").rstrip("/")
+
+ALLOWED_ASSETS = ["BTCUSD", "ETHUSD", "SOLUSD", "XRPUSD", "GOLD", "US100", "US500", "FRA40"]
+ALLOWED_ACTIONS = ["BUY", "SELL"]
 
 stripe.api_key = STRIPE_SECRET_KEY
 
@@ -111,7 +111,7 @@ def send_telegram_message(message: str) -> None:
         app.logger.error("Erreur Telegram : %s", repr(e))
 
 # =========================
-# STRIPE HELPERS
+# HELPERS
 # =========================
 def get_subscription_status(subscription_id: str):
     if not subscription_id or not STRIPE_SECRET_KEY:
@@ -127,30 +127,18 @@ def get_subscription_status(subscription_id: str):
 
 def has_active_stripe_subscription(user) -> bool:
     if not user:
-        app.logger.warning("DEBUG Stripe: user absent")
         return False
 
     if not user.stripe_subscription_id:
-        app.logger.info("DEBUG Stripe: pas de stripe_subscription_id pour %s", user.email)
         return False
 
     status = get_subscription_status(user.stripe_subscription_id)
-    app.logger.info("DEBUG Stripe status pour %s = %s", user.email, status)
-
     return status in ["trialing", "active", "past_due"]
 
 
 def sync_user_premium_status(user) -> None:
     if not user:
         return
-
-    app.logger.info(
-        "DEBUG sync avant -> email=%s, is_premium=%s, customer_id=%s, sub_id=%s",
-        user.email,
-        user.is_premium,
-        user.stripe_customer_id,
-        user.stripe_subscription_id
-    )
 
     active = has_active_stripe_subscription(user)
 
@@ -164,9 +152,7 @@ def sync_user_premium_status(user) -> None:
         db.session.commit()
         app.logger.info("Premium synchronisé à FALSE pour %s", user.email)
 
-# =========================
-# PROTECTION PREMIUM
-# =========================
+
 def premium_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -182,6 +168,51 @@ def premium_required(f):
         return f(*args, **kwargs)
 
     return decorated_function
+
+
+def calculate_trade_pnl(signal) -> float:
+    trade_pnl = 0
+
+    if signal.status == "WIN":
+        if signal.action == "BUY" and signal.take_profit is not None:
+            trade_pnl = signal.take_profit - signal.entry_price
+        elif signal.action == "SELL" and signal.take_profit is not None:
+            trade_pnl = signal.entry_price - signal.take_profit
+
+    elif signal.status == "LOSS":
+        if signal.action == "BUY" and signal.stop_loss is not None:
+            trade_pnl = signal.stop_loss - signal.entry_price
+        elif signal.action == "SELL" and signal.stop_loss is not None:
+            trade_pnl = signal.entry_price - signal.stop_loss
+
+    return trade_pnl
+
+
+def get_asset_distances(asset: str, data: dict) -> tuple[float, float]:
+    asset = asset.upper()
+
+    if asset == "BTCUSD":
+        default_sl, default_tp = 100, 200
+    elif asset == "ETHUSD":
+        default_sl, default_tp = 40, 80
+    elif asset == "SOLUSD":
+        default_sl, default_tp = 6, 12
+    elif asset == "XRPUSD":
+        default_sl, default_tp = 0.02, 0.04
+    elif asset == "GOLD":
+        default_sl, default_tp = 5, 10
+    elif asset == "US100":
+        default_sl, default_tp = 80, 160
+    elif asset == "US500":
+        default_sl, default_tp = 20, 40
+    elif asset == "FRA40":
+        default_sl, default_tp = 35, 70
+    else:
+        default_sl, default_tp = 100, 200
+
+    sl_distance = float(data.get("sl_distance", default_sl))
+    tp_distance = float(data.get("tp_distance", default_tp))
+    return sl_distance, tp_distance
 
 # =========================
 # ROUTES
@@ -259,7 +290,16 @@ def pricing():
 def dashboard():
     sync_user_premium_status(current_user)
 
-    all_signals = Signal.query.order_by(Signal.created_at.asc()).all()
+    selected_asset = request.args.get("asset", "").strip().upper()
+    if selected_asset and selected_asset not in ALLOWED_ASSETS:
+        selected_asset = ""
+
+    base_query = Signal.query
+    if selected_asset:
+        base_query = base_query.filter_by(asset=selected_asset)
+
+    all_signals = base_query.order_by(Signal.created_at.asc()).all()
+    available_assets = [row[0] for row in db.session.query(Signal.asset).distinct().order_by(Signal.asset).all()]
 
     if current_user.is_premium:
         signals = all_signals
@@ -267,75 +307,34 @@ def dashboard():
         signals = all_signals[-5:]
 
     total_signals = len(all_signals)
-    total_buy = Signal.query.filter_by(action="BUY").count()
-    total_sell = Signal.query.filter_by(action="SELL").count()
+    total_buy = len([s for s in all_signals if s.action == "BUY"])
+    total_sell = len([s for s in all_signals if s.action == "SELL"])
 
-    total_win = Signal.query.filter_by(status="WIN").count()
-    total_loss = Signal.query.filter_by(status="LOSS").count()
-    total_open = Signal.query.filter_by(status="OPEN").count()
+    total_win = len([s for s in all_signals if s.status == "WIN"])
+    total_loss = len([s for s in all_signals if s.status == "LOSS"])
+    total_open = len([s for s in all_signals if s.status == "OPEN"])
 
     closed_trades = total_win + total_loss
     winrate = round((total_win / closed_trades) * 100, 2) if closed_trades > 0 else 0
 
     last_signal = all_signals[-1] if all_signals else None
 
-    estimated_pnl = 0
-    for s in all_signals:
-        if s.status == "WIN":
-            if s.action == "BUY" and s.take_profit is not None:
-                estimated_pnl += (s.take_profit - s.entry_price)
-            elif s.action == "SELL" and s.take_profit is not None:
-                estimated_pnl += (s.entry_price - s.take_profit)
-        elif s.status == "LOSS":
-            if s.action == "BUY" and s.stop_loss is not None:
-                estimated_pnl += (s.stop_loss - s.entry_price)
-            elif s.action == "SELL" and s.stop_loss is not None:
-                estimated_pnl += (s.entry_price - s.stop_loss)
-
-    estimated_pnl = round(estimated_pnl, 2)
+    estimated_pnl = round(sum(calculate_trade_pnl(s) for s in all_signals), 2)
 
     today = datetime.utcnow().date()
     today_signals = [s for s in all_signals if s.created_at.date() == today]
     today_trades = len(today_signals)
     today_wins = sum(1 for s in today_signals if s.status == "WIN")
     today_losses = sum(1 for s in today_signals if s.status == "LOSS")
-
-    today_pnl = 0
-    for s in today_signals:
-        if s.status == "WIN":
-            if s.action == "BUY" and s.take_profit is not None:
-                today_pnl += (s.take_profit - s.entry_price)
-            elif s.action == "SELL" and s.take_profit is not None:
-                today_pnl += (s.entry_price - s.take_profit)
-        elif s.status == "LOSS":
-            if s.action == "BUY" and s.stop_loss is not None:
-                today_pnl += (s.stop_loss - s.entry_price)
-            elif s.action == "SELL" and s.stop_loss is not None:
-                today_pnl += (s.entry_price - s.stop_loss)
-
-    today_pnl = round(today_pnl, 2)
+    today_pnl = round(sum(calculate_trade_pnl(s) for s in today_signals), 2)
 
     pnl_labels = []
     pnl_values = []
     cumulative_pnl = 0
 
     closed_signals = [s for s in all_signals if s.status in ["WIN", "LOSS"]]
-
     for idx, s in enumerate(closed_signals, start=1):
-        trade_pnl = 0
-
-        if s.status == "WIN":
-            if s.action == "BUY" and s.take_profit is not None:
-                trade_pnl = s.take_profit - s.entry_price
-            elif s.action == "SELL" and s.take_profit is not None:
-                trade_pnl = s.entry_price - s.take_profit
-        elif s.status == "LOSS":
-            if s.action == "BUY" and s.stop_loss is not None:
-                trade_pnl = s.stop_loss - s.entry_price
-            elif s.action == "SELL" and s.stop_loss is not None:
-                trade_pnl = s.entry_price - s.stop_loss
-
-        cumulative_pnl += trade_pnl
+        cumulative_pnl += calculate_trade_pnl(s)
         pnl_labels.append(f"Trade {idx}")
         pnl_values.append(round(cumulative_pnl, 2))
 
@@ -345,20 +344,7 @@ def dashboard():
     capital_values = []
 
     for idx, s in enumerate(closed_signals, start=1):
-        trade_pnl = 0
-
-        if s.status == "WIN":
-            if s.action == "BUY" and s.take_profit is not None:
-                trade_pnl = s.take_profit - s.entry_price
-            elif s.action == "SELL" and s.take_profit is not None:
-                trade_pnl = s.entry_price - s.take_profit
-        elif s.status == "LOSS":
-            if s.action == "BUY" and s.stop_loss is not None:
-                trade_pnl = s.stop_loss - s.entry_price
-            elif s.action == "SELL" and s.stop_loss is not None:
-                trade_pnl = s.entry_price - s.stop_loss
-
-        capital += trade_pnl
+        capital += calculate_trade_pnl(s)
         capital_labels.append(f"Trade {idx}")
         capital_values.append(round(capital, 2))
 
@@ -389,7 +375,9 @@ def dashboard():
         capital_return_pct=capital_return_pct,
         capital_labels=capital_labels,
         capital_values=capital_values,
-        is_premium=current_user.is_premium
+        is_premium=current_user.is_premium,
+        selected_asset=selected_asset,
+        available_assets=available_assets
     )
 
 
@@ -409,6 +397,8 @@ def debug_user():
 @premium_required
 def premium_data():
     return "🔥 Données premium secrètes"
+
+
 @app.route("/mentions-legales")
 def mentions_legales():
     return render_template("mentions_legales.html")
@@ -422,6 +412,7 @@ def privacy():
 @app.route("/cgu")
 def cgu():
     return render_template("cgu.html")
+
 # =========================
 # STRIPE
 # =========================
@@ -452,12 +443,7 @@ def create_checkout_session():
         session = stripe.checkout.Session.create(
             mode="subscription",
             payment_method_types=["card"],
-            line_items=[
-                {
-                    "price": STRIPE_PRICE_ID,
-                    "quantity": 1,
-                }
-            ],
+            line_items=[{"price": STRIPE_PRICE_ID, "quantity": 1}],
             customer=current_user.stripe_customer_id,
             client_reference_id=str(current_user.id),
             metadata={
@@ -524,11 +510,6 @@ def success():
 
             db.session.commit()
 
-            app.logger.info("SUCCESS Stripe session_id=%s", session_id)
-            app.logger.info("SUCCESS customer_id=%s", customer_id)
-            app.logger.info("SUCCESS subscription_id=%s", subscription_id)
-            app.logger.info("SUCCESS status=%s", status)
-
         except Exception as e:
             app.logger.error("Erreur récupération session Stripe: %s", repr(e))
 
@@ -565,7 +546,6 @@ def stripe_webhook():
 
     event_type = event["type"]
     data_object = event["data"]["object"]
-
     app.logger.info("Stripe event reçu: %s", event_type)
 
     try:
@@ -581,7 +561,6 @@ def stripe_webhook():
                 customer_email = customer_details.get("email")
 
             user = None
-
             if user_id:
                 try:
                     user = db.session.get(User, int(user_id))
@@ -596,15 +575,11 @@ def stripe_webhook():
                 user.stripe_subscription_id = subscription_id
                 db.session.commit()
 
-                app.logger.info("Checkout terminé pour %s", user.email)
-
                 send_telegram_message(
                     f"✅ Checkout Stripe terminé\n"
                     f"Utilisateur: {user.email}\n"
                     f"Subscription: {subscription_id}"
                 )
-            else:
-                app.logger.warning("Aucun utilisateur trouvé pour checkout.session.completed")
 
         elif event_type == "customer.subscription.updated":
             customer_id = data_object.get("customer")
@@ -612,10 +587,8 @@ def stripe_webhook():
             status = data_object.get("status")
 
             user = None
-
             if subscription_id:
                 user = User.query.filter_by(stripe_subscription_id=subscription_id).first()
-
             if not user and customer_id:
                 user = User.query.filter_by(stripe_customer_id=customer_id).first()
 
@@ -624,19 +597,14 @@ def stripe_webhook():
                 user.stripe_subscription_id = subscription_id
                 user.is_premium = status in ["trialing", "active", "past_due"]
                 db.session.commit()
-                app.logger.info("Subscription updated: %s -> %s", user.email, status)
-            else:
-                app.logger.warning("Aucun utilisateur trouvé pour customer.subscription.updated")
 
         elif event_type == "customer.subscription.deleted":
             customer_id = data_object.get("customer")
             subscription_id = data_object.get("id")
 
             user = None
-
             if subscription_id:
                 user = User.query.filter_by(stripe_subscription_id=subscription_id).first()
-
             if not user and customer_id:
                 user = User.query.filter_by(stripe_customer_id=customer_id).first()
 
@@ -645,25 +613,19 @@ def stripe_webhook():
                 user.stripe_subscription_id = None
                 db.session.commit()
 
-                app.logger.info("Premium désactivé pour %s", user.email)
-
                 send_telegram_message(
                     f"⚠️ Abonnement annulé\n"
                     f"Utilisateur: {user.email}\n"
                     f"Subscription: {subscription_id}"
                 )
-            else:
-                app.logger.warning("Aucun utilisateur trouvé pour customer.subscription.deleted")
 
         elif event_type == "invoice.payment_succeeded":
             customer_id = data_object.get("customer")
             subscription_id = data_object.get("subscription")
 
             user = None
-
             if subscription_id:
                 user = User.query.filter_by(stripe_subscription_id=subscription_id).first()
-
             if not user and customer_id:
                 user = User.query.filter_by(stripe_customer_id=customer_id).first()
 
@@ -675,34 +637,21 @@ def stripe_webhook():
                     user.stripe_subscription_id = subscription_id
                 db.session.commit()
 
-                app.logger.info("Paiement réussi pour %s", user.email)
-            else:
-                app.logger.warning("Aucun utilisateur trouvé pour invoice.payment_succeeded")
-
         elif event_type == "invoice.payment_failed":
             customer_id = data_object.get("customer")
             subscription_id = data_object.get("subscription")
 
             user = None
-
             if subscription_id:
                 user = User.query.filter_by(stripe_subscription_id=subscription_id).first()
-
             if not user and customer_id:
                 user = User.query.filter_by(stripe_customer_id=customer_id).first()
 
             if user:
-                app.logger.warning("Paiement échoué pour %s", user.email)
-
                 send_telegram_message(
                     f"❌ Paiement Stripe échoué\n"
                     f"Utilisateur: {user.email}"
                 )
-            else:
-                app.logger.warning("Aucun utilisateur trouvé pour invoice.payment_failed")
-
-        else:
-            app.logger.info("Événement Stripe ignoré: %s", event_type)
 
     except Exception as e:
         app.logger.error("Erreur traitement webhook Stripe: %s", repr(e))
@@ -724,21 +673,29 @@ def webhook():
         return {"error": "Non autorisé"}, 403
 
     try:
-        asset = data.get("asset")
-        action = data.get("action")
+        asset = str(data.get("asset", "")).strip().upper()
+        action = str(data.get("action", "")).strip().upper()
         entry_price = float(data.get("entry_price"))
     except Exception:
         return {"error": "Données invalides"}, 400
 
-    if not asset or action not in ["BUY", "SELL"]:
-        return {"error": "Paramètres invalides"}, 400
+    if asset not in ALLOWED_ASSETS:
+        return {"error": f"Actif non autorisé: {asset}"}, 400
+
+    if action not in ALLOWED_ACTIONS:
+        return {"error": f"Action non autorisée: {action}"}, 400
+
+    try:
+        sl_distance, tp_distance = get_asset_distances(asset, data)
+    except Exception:
+        return {"error": "Distances SL/TP invalides"}, 400
 
     if action == "BUY":
-        stop_loss = entry_price - 100
-        take_profit = entry_price + 200
+        stop_loss = entry_price - sl_distance
+        take_profit = entry_price + tp_distance
     else:
-        stop_loss = entry_price + 100
-        take_profit = entry_price - 200
+        stop_loss = entry_price + sl_distance
+        take_profit = entry_price - tp_distance
 
     signal = Signal(
         asset=asset,
@@ -756,14 +713,15 @@ def webhook():
         f"🚨 Nouveau signal\n"
         f"Actif: {asset}\n"
         f"Action: {action}\n"
-        f"Prix: {entry_price}\n"
+        f"Entrée: {entry_price}\n"
         f"SL: {stop_loss}\n"
         f"TP: {take_profit}\n"
-        f"Status: OPEN"
+        f"Statut: OPEN\n"
+        f"Heure: {signal.created_at.strftime('%Y-%m-%d %H:%M:%S')} UTC"
     )
     send_telegram_message(message)
 
-    return {"status": "ok"}
+    return {"status": "ok", "asset": asset, "action": action}
 
 
 @app.route("/test-telegram")
