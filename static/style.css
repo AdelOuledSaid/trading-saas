@@ -4,6 +4,12 @@
     box-sizing: border-box;
 }
 
+html,
+body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
 body.dashboard-body {
     font-family: Arial, sans-serif;
     background: #0f172a;
@@ -12,6 +18,26 @@ body.dashboard-body {
 
 a {
     text-decoration: none;
+}
+
+img,
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    min-width: 0;
 }
 
 .dashboard-wrapper {
@@ -560,6 +586,7 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 14px;
     padding: 18px 22px;
     cursor: pointer;
     font-weight: 700;
@@ -576,6 +603,7 @@ a {
     justify-content: center;
     font-weight: 900;
     transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
 .faq-item.active .faq-icon {
@@ -598,7 +626,45 @@ a {
     line-height: 1.7;
 }
 
+/* GENERIC RESPONSIVE LAYOUT CLASSES */
+.responsive-two-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: stretch;
+}
+
+.responsive-hero {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.responsive-three-cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.responsive-center-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+}
+
 /* RESPONSIVE */
+@media (max-width: 1100px) {
+    .main-content {
+        padding: 22px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 @media (max-width: 1000px) {
     .panel-grid {
         grid-template-columns: 1fr;
@@ -630,6 +696,34 @@ a {
     .premium-banner h3 {
         font-size: 22px;
     }
+
+    .main-content {
+        padding: 18px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .stat-card {
+        padding: 18px;
+        min-height: 110px;
+    }
+
+    .panel {
+        padding: 18px;
+    }
+
+    .signals-table th,
+    .signals-table td {
+        padding: 12px 10px;
+        font-size: 13px;
+    }
+
+    .responsive-three-cols {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 800px) {
@@ -647,5 +741,356 @@ a {
         flex-direction: column;
         align-items: flex-start;
         gap: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .responsive-two-cols,
+    .responsive-hero,
+    .responsive-three-cols {
+        grid-template-columns: 1fr !important;
+    }
+
+    .responsive-center-wrap {
+        padding: 18px;
+    }
+
+    .dashboard-wrapper {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 20px 16px;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-nav {
+        gap: 10px;
+    }
+
+    .main-content {
+        padding: 16px;
+    }
+
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .topbar h1 {
+        font-size: 30px;
+        line-height: 1.1;
+    }
+
+    .subtitle {
+        font-size: 15px;
+    }
+
+    .premium-banner {
+        padding: 18px;
+        border-radius: 16px;
+    }
+
+    .premium-banner h3 {
+        font-size: 22px;
+    }
+
+    .premium-banner p {
+        font-size: 15px;
+    }
+
+    .upgrade-btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .stats-grid,
+    .panel-grid,
+    .chart-grid,
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-box {
+        padding: 10px;
+    }
+
+    .medium-chart {
+        height: 220px;
+    }
+
+    .large-chart {
+        height: 260px;
+    }
+
+    .summary-item,
+    .signal-row {
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    .summary-item strong,
+    .signal-row strong {
+        font-size: 15px;
+    }
+
+    .badge-buy,
+    .badge-sell,
+    .status-pill {
+        min-width: auto;
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    .pricing-page {
+        padding: 28px 16px;
+    }
+
+    .pricing-header h1 {
+        font-size: 30px;
+    }
+
+    .pricing-card {
+        padding: 22px;
+    }
+
+    .price {
+        font-size: 34px;
+    }
+
+    .faq-header {
+        padding: 16px;
+        font-size: 15px;
+    }
+
+    .faq-content {
+        padding: 0 16px;
+    }
+
+    .faq-content p {
+        font-size: 14px;
+        padding-bottom: 16px;
+    }
+
+    h1[style*="font-size:62px"],
+    h1[style*="font-size:58px"],
+    h1[style*="font-size:52px"] {
+        font-size: 34px !important;
+        line-height: 1.15 !important;
+        letter-spacing: -0.5px !important;
+    }
+
+    h2[style*="font-size:40px"],
+    h2[style*="font-size:36px"],
+    h2[style*="font-size:34px"] {
+        font-size: 26px !important;
+        line-height: 1.2 !important;
+    }
+
+    p[style*="font-size:19px"],
+    p[style*="font-size:18px"] {
+        font-size: 16px !important;
+        line-height: 1.7 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        padding: 16px 14px;
+    }
+
+    .logo-box h2 {
+        font-size: 24px;
+    }
+
+    .logo-box p {
+        font-size: 14px;
+    }
+
+    .nav-link {
+        padding: 11px 12px;
+        font-size: 14px;
+    }
+
+    .main-content {
+        padding: 14px;
+    }
+
+    .topbar h1 {
+        font-size: 26px;
+    }
+
+    .live-badge {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    .stat-card {
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    .stat-card h3 {
+        font-size: 26px;
+    }
+
+    .panel {
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    .panel-header h2 {
+        font-size: 18px;
+    }
+
+    .medium-chart {
+        height: 200px;
+    }
+
+    .large-chart {
+        height: 220px;
+    }
+
+    .signals-table th,
+    .signals-table td {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+
+    .pricing-header h1 {
+        font-size: 26px;
+    }
+
+    .price {
+        font-size: 30px;
+    }
+
+    .faq-icon {
+        width: 24px;
+        height: 24px;
+        font-size: 14px;
+    }
+}
+/* =========================
+   NAVBAR PRO MAX
+========================= */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background: rgba(3, 11, 31, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 900;
+    color: white;
+}
+
+/* DESKTOP MENU */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.nav-links a {
+    color: #cbd5e1;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.nav-links a:hover {
+    color: white;
+}
+
+/* CTA */
+.cta-btn {
+    background: linear-gradient(90deg,#2563eb,#7c3aed);
+    padding: 10px 16px;
+    border-radius: 10px;
+    color: white !important;
+    font-weight: 700;
+}
+
+/* LOGOUT */
+.logout-btn {
+    color: #fca5a5 !important;
+}
+
+/* BURGER */
+.burger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.burger span {
+    width: 26px;
+    height: 3px;
+    background: white;
+    border-radius: 3px;
+    transition: 0.3s;
+}
+
+/* BURGER ANIMATION */
+.burger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.burger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.burger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* MOBILE MENU */
+.mobile-menu {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: #030b1f;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 24px;
+    transform: translateY(-120%);
+    transition: 0.3s ease;
+    z-index: 998;
+}
+
+.mobile-menu a {
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.mobile-menu.active {
+    transform: translateY(0);
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .nav-links {
+        display: none;
+    }
+
+    .burger {
+        display: flex;
     }
 }

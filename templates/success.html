@@ -31,13 +31,13 @@
 
                 {% if session_data %}
                 <div style="max-width:620px; margin:0 auto 24px auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:16px; padding:16px 18px;">
-                    <p style="margin:0; color:#dbe7ff;">
+                    <p style="margin:0; color:#dbe7ff; word-break:break-word;">
                         <strong>ID session :</strong> {{ session_data.id }}
                     </p>
                 </div>
                 {% endif %}
 
-                <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin:30px 0;">
+                <div class="responsive-three-cols" style="margin:30px 0;">
                     <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
                         <div style="font-size:28px; margin-bottom:10px;">📊</div>
                         <h3 style="margin:0 0 8px 0;">Stats avancées</h3>

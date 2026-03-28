@@ -1,34 +1,56 @@
-<header style="display:flex; justify-content:space-between; align-items:center; padding:28px 42px; border-bottom:1px solid rgba(255,255,255,0.05); flex-wrap:wrap; gap:18px;">
-    <div>
-        <a href="{{ url_for('home') }}" style="text-decoration:none; color:white;">
-            <h2 style="margin:0; font-size:34px; font-weight:800;">TradingBot</h2>
+<nav class="navbar">
+
+    <!-- LOGO -->
+    <div class="nav-left">
+        <a href="{{ url_for('home') }}" class="logo">
+            TradingBot
         </a>
-        <p style="margin:4px 0 0 0; color:#94a3b8;">Signal Center</p>
     </div>
 
-    <nav style="display:flex; gap:12px; flex-wrap:wrap;">
-        <a href="{{ url_for('home') }}" style="text-decoration:none; color:white; padding:10px 16px; border-radius:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06);">
-            Accueil
-        </a>
-
-        <a href="{{ url_for('pricing') }}" style="text-decoration:none; color:white; padding:10px 16px; border-radius:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06);">
-            Premium
-        </a>
+    <!-- MENU DESKTOP -->
+    <div class="nav-links" id="navLinks">
+        <a href="{{ url_for('home') }}">Accueil</a>
+        <a href="{{ url_for('pricing') }}">Pricing</a>
 
         {% if current_user.is_authenticated %}
-            <a href="{{ url_for('dashboard') }}" style="text-decoration:none; color:white; padding:10px 16px; border-radius:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06);">
-                Dashboard
-            </a>
-            <a href="{{ url_for('logout') }}" style="text-decoration:none; color:#fecaca; padding:10px 16px; border-radius:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06);">
-                Déconnexion
-            </a>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('logout') }}" class="logout-btn">Déconnexion</a>
         {% else %}
-            <a href="{{ url_for('login') }}" style="text-decoration:none; color:white; padding:10px 16px; border-radius:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06);">
-                Se connecter
-            </a>
-            <a href="{{ url_for('register') }}" style="text-decoration:none; color:#06122d; padding:10px 16px; border-radius:10px; background:white; font-weight:700;">
-                Créer un compte
-            </a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}" class="cta-btn">Commencer</a>
         {% endif %}
-    </nav>
-</header>
+    </div>
+
+    <!-- BURGER MOBILE -->
+    <div class="burger" id="burger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+    <a href="{{ url_for('home') }}">Accueil</a>
+    <a href="{{ url_for('pricing') }}">Pricing</a>
+
+    {% if current_user.is_authenticated %}
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Déconnexion</a>
+    {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}" class="cta-btn">Commencer</a>
+    {% endif %}
+</div>
+
+<!-- SCRIPT -->
+<script>
+const burger = document.getElementById("burger");
+const mobileMenu = document.getElementById("mobileMenu");
+
+burger.addEventListener("click", () => {
+    burger.classList.toggle("active");
+    mobileMenu.classList.toggle("active");
+});
+</script>

@@ -13,7 +13,7 @@
         {% include "partials/navbar.html" %}
 
         <!-- HERO -->
-        <section style="max-width:1200px; margin:0 auto; padding:80px 32px 48px 32px; display:grid; grid-template-columns:1.2fr 0.8fr; gap:40px; align-items:center;">
+        <section class="responsive-hero" style="max-width:1200px; margin:0 auto; padding:80px 32px 48px 32px;">
             <div>
                 <div style="display:inline-block; padding:8px 14px; border-radius:999px; background:rgba(16,185,129,0.12); color:#34d399; font-size:13px; font-weight:700; margin-bottom:18px;">
                     📡 Signaux trading en temps réel
@@ -57,7 +57,7 @@
                     </span>
                 </div>
 
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px;">
+                <div class="responsive-two-cols" style="gap:14px; margin-bottom:18px;">
                     <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
                         <p style="margin:0; color:#93a4c1; font-size:14px;">Total signaux</p>
                         <h3 style="margin:10px 0 0 0; font-size:34px;">128</h3>
@@ -118,7 +118,7 @@
                 </p>
             </div>
 
-            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:20px;">
+            <div class="responsive-three-cols">
                 <div style="background:linear-gradient(180deg, rgba(8,18,44,0.98), rgba(5,13,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:20px; padding:24px;">
                     <div style="font-size:28px; margin-bottom:12px;">📊</div>
                     <h3 style="margin:0 0 10px 0;">Dashboard avancé</h3>
