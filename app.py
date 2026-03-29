@@ -46,6 +46,7 @@ DOMAIN = os.getenv("DOMAIN", "http://127.0.0.1:5000").rstrip("/")
 
 ALLOWED_ASSETS = ["BTCUSD", "ETHUSD", "SOLUSD", "XRPUSD", "GOLD", "US100", "US500", "FRA40"]
 ALLOWED_ACTIONS = ["BUY", "SELL"]
+ALLOWED_EVENTS = ["OPEN", "TP", "SL"]
 
 stripe.api_key = STRIPE_SECRET_KEY
 
@@ -74,13 +75,20 @@ class User(UserMixin, db.Model):
 
 class Signal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+
+    trade_id = db.Column(db.String(120), unique=True, nullable=True, index=True)
+
     asset = db.Column(db.String(50), nullable=False)
     action = db.Column(db.String(10), nullable=False)
+
     entry_price = db.Column(db.Float, nullable=False)
-    stop_loss = db.Column(db.Float)
-    take_profit = db.Column(db.Float)
-    status = db.Column(db.String(20), default="OPEN")
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    stop_loss = db.Column(db.Float, nullable=True)
+    take_profit = db.Column(db.Float, nullable=True)
+
+    status = db.Column(db.String(20), default="OPEN", nullable=False)  # OPEN / WIN / LOSS
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    closed_at = db.Column(db.DateTime, nullable=True)
 
 # =========================
 # LOGIN
@@ -93,7 +101,6 @@ def load_user(user_id):
 # TELEGRAM HELPERS
 # =========================
 def format_price(value: float) -> str:
-    """Formate proprement les prix pour Telegram."""
     try:
         value = float(value)
     except Exception:
@@ -125,7 +132,6 @@ def action_emoji(action: str) -> str:
 
 
 def build_signal_telegram_message(signal) -> str:
-    """Message Telegram premium pour un nouveau signal."""
     asset = signal.asset.upper()
     action = signal.action.upper()
     asset_icon = asset_emoji(asset)
@@ -139,6 +145,7 @@ def build_signal_telegram_message(signal) -> str:
 {asset_icon} <b>Actif :</b> {asset}
 {dir_icon} <b>Direction :</b> {action}
 
+🆔 <b>Trade ID :</b> {signal.trade_id or "-"}
 💰 <b>Entrée :</b> {format_price(signal.entry_price)}
 🛑 <b>Stop Loss :</b> {format_price(signal.stop_loss)}
 🎯 <b>Take Profit :</b> {format_price(signal.take_profit)}
@@ -155,6 +162,7 @@ def build_tp_telegram_message(signal) -> str:
     action = signal.action.upper()
     asset_icon = asset_emoji(asset)
     dir_icon = action_emoji(action)
+    pnl = calculate_trade_pnl(signal)
 
     return f"""
 ✅ <b>TAKE PROFIT TOUCHÉ</b>
@@ -164,8 +172,10 @@ def build_tp_telegram_message(signal) -> str:
 {asset_icon} <b>Actif :</b> {asset}
 {dir_icon} <b>Direction :</b> {action}
 
+🆔 <b>Trade ID :</b> {signal.trade_id or "-"}
 💰 <b>Entrée :</b> {format_price(signal.entry_price)}
 🎯 <b>TP atteint :</b> {format_price(signal.take_profit)}
+💵 <b>PnL :</b> +{format_price(abs(pnl))}
 
 📌 <b>Statut :</b> 🟢 WIN
 🏆 <i>Trade gagnant clôturé</i>
@@ -177,6 +187,7 @@ def build_sl_telegram_message(signal) -> str:
     action = signal.action.upper()
     asset_icon = asset_emoji(asset)
     dir_icon = action_emoji(action)
+    pnl = calculate_trade_pnl(signal)
 
     return f"""
 ❌ <b>STOP LOSS TOUCHÉ</b>
@@ -186,8 +197,10 @@ def build_sl_telegram_message(signal) -> str:
 {asset_icon} <b>Actif :</b> {asset}
 {dir_icon} <b>Direction :</b> {action}
 
+🆔 <b>Trade ID :</b> {signal.trade_id or "-"}
 💰 <b>Entrée :</b> {format_price(signal.entry_price)}
 🛑 <b>SL atteint :</b> {format_price(signal.stop_loss)}
+💵 <b>PnL :</b> -{format_price(abs(pnl))}
 
 📌 <b>Statut :</b> 🔴 LOSS
 ⚠️ <i>Trade clôturé en perte</i>
@@ -204,7 +217,7 @@ def send_telegram_message(message: str) -> None:
         "chat_id": TELEGRAM_CHAT_ID,
         "text": message,
         "parse_mode": "HTML",
-        "disable_web_page_preview": True
+        "disable_web_page_preview": True,
     }
 
     try:
@@ -230,10 +243,7 @@ def get_subscription_status(subscription_id: str):
 
 
 def has_active_stripe_subscription(user) -> bool:
-    if not user:
-        return False
-
-    if not user.stripe_subscription_id:
+    if not user or not user.stripe_subscription_id:
         return False
 
     status = get_subscription_status(user.stripe_subscription_id)
@@ -275,7 +285,7 @@ def premium_required(f):
 
 
 def calculate_trade_pnl(signal) -> float:
-    trade_pnl = 0
+    trade_pnl = 0.0
 
     if signal.status == "WIN":
         if signal.action == "BUY" and signal.take_profit is not None:
@@ -289,7 +299,7 @@ def calculate_trade_pnl(signal) -> float:
         elif signal.action == "SELL" and signal.stop_loss is not None:
             trade_pnl = signal.entry_price - signal.stop_loss
 
-    return trade_pnl
+    return round(trade_pnl, 2)
 
 
 def get_asset_distances(asset: str, data: dict) -> tuple[float, float]:
@@ -317,6 +327,29 @@ def get_asset_distances(asset: str, data: dict) -> tuple[float, float]:
     sl_distance = float(data.get("sl_distance", default_sl))
     tp_distance = float(data.get("tp_distance", default_tp))
     return sl_distance, tp_distance
+
+
+def close_signal_as_result(signal: Signal, result_event: str) -> None:
+    signal.status = "WIN" if result_event == "TP" else "LOSS"
+    signal.closed_at = datetime.utcnow()
+    db.session.commit()
+
+
+def find_open_signal_for_closure(trade_id: str, asset: str) -> Signal | None:
+    signal = None
+
+    if trade_id:
+        signal = Signal.query.filter_by(trade_id=trade_id, status="OPEN").first()
+
+    if not signal and asset:
+        signal = (
+            Signal.query
+            .filter_by(asset=asset, status="OPEN")
+            .order_by(Signal.created_at.desc())
+            .first()
+        )
+
+    return signal
 
 # =========================
 # ROUTES
@@ -403,7 +436,11 @@ def dashboard():
         base_query = base_query.filter_by(asset=selected_asset)
 
     all_signals = base_query.order_by(Signal.created_at.asc()).all()
-    available_assets = [row[0] for row in db.session.query(Signal.asset).distinct().order_by(Signal.asset).all()]
+
+    available_assets = [
+        row[0]
+        for row in db.session.query(Signal.asset).distinct().order_by(Signal.asset).all()
+    ]
 
     if current_user.is_premium:
         signals = all_signals
@@ -434,7 +471,7 @@ def dashboard():
 
     pnl_labels = []
     pnl_values = []
-    cumulative_pnl = 0
+    cumulative_pnl = 0.0
 
     closed_signals = [s for s in all_signals if s.status in ["WIN", "LOSS"]]
     for idx, s in enumerate(closed_signals, start=1):
@@ -792,63 +829,125 @@ def webhook():
         app.logger.warning("Webhook TradingView refusé: secret invalide")
         return {"error": "Non autorisé"}, 403
 
-    try:
+    event_type = str(data.get("event", "OPEN")).strip().upper()
+
+    if event_type not in ALLOWED_EVENTS:
+        app.logger.warning("Webhook TradingView: event non autorisé -> %s", event_type)
+        return {"error": f"Event non autorisé: {event_type}"}, 400
+
+    # =========================
+    # OPEN
+    # =========================
+    if event_type == "OPEN":
+        try:
+            trade_id = str(data.get("trade_id", "")).strip()
+            asset = str(data.get("asset", "")).strip().upper()
+            action = str(data.get("action", "")).strip().upper()
+            entry_price = float(data.get("entry_price"))
+        except Exception:
+            app.logger.warning("Webhook TradingView OPEN: données invalides")
+            return {"error": "Données invalides"}, 400
+
+        if asset not in ALLOWED_ASSETS:
+            app.logger.warning("Webhook TradingView OPEN: actif non autorisé -> %s", asset)
+            return {"error": f"Actif non autorisé: {asset}"}, 400
+
+        if action not in ALLOWED_ACTIONS:
+            app.logger.warning("Webhook TradingView OPEN: action non autorisée -> %s", action)
+            return {"error": f"Action non autorisée: {action}"}, 400
+
+        try:
+            sl_distance, tp_distance = get_asset_distances(asset, data)
+        except Exception:
+            app.logger.warning("Webhook TradingView OPEN: distances invalides")
+            return {"error": "Distances SL/TP invalides"}, 400
+
+        if action == "BUY":
+            stop_loss = entry_price - sl_distance
+            take_profit = entry_price + tp_distance
+        else:
+            stop_loss = entry_price + sl_distance
+            take_profit = entry_price - tp_distance
+
+        # Évite doublon si même trade_id déjà reçu
+        if trade_id:
+            existing_signal = Signal.query.filter_by(trade_id=trade_id).first()
+            if existing_signal:
+                app.logger.info("Trade déjà existant, ignoré: %s", trade_id)
+                return {
+                    "status": "ignored",
+                    "reason": "trade_id already exists",
+                    "trade_id": trade_id
+                }, 200
+
+        signal = Signal(
+            trade_id=trade_id if trade_id else None,
+            asset=asset,
+            action=action,
+            entry_price=entry_price,
+            stop_loss=stop_loss,
+            take_profit=take_profit,
+            status="OPEN"
+        )
+
+        db.session.add(signal)
+        db.session.commit()
+
+        send_telegram_message(build_signal_telegram_message(signal))
+
+        app.logger.info(
+            "Signal OPEN enregistré | trade_id=%s asset=%s action=%s entry=%s",
+            trade_id, asset, action, entry_price
+        )
+
+        return {
+            "status": "ok",
+            "event": "OPEN",
+            "trade_id": signal.trade_id,
+            "asset": asset,
+            "action": action,
+            "entry_price": entry_price,
+            "stop_loss": stop_loss,
+            "take_profit": take_profit
+        }, 200
+
+    # =========================
+    # TP / SL
+    # =========================
+    if event_type in ["TP", "SL"]:
+        trade_id = str(data.get("trade_id", "")).strip()
         asset = str(data.get("asset", "")).strip().upper()
-        action = str(data.get("action", "")).strip().upper()
-        entry_price = float(data.get("entry_price"))
-    except Exception:
-        app.logger.warning("Webhook TradingView: données principales invalides")
-        return {"error": "Données invalides"}, 400
 
-    if asset not in ALLOWED_ASSETS:
-        app.logger.warning("Webhook TradingView: actif non autorisé -> %s", asset)
-        return {"error": f"Actif non autorisé: {asset}"}, 400
+        signal = find_open_signal_for_closure(trade_id=trade_id, asset=asset)
 
-    if action not in ALLOWED_ACTIONS:
-        app.logger.warning("Webhook TradingView: action non autorisée -> %s", action)
-        return {"error": f"Action non autorisée: {action}"}, 400
+        if not signal:
+            app.logger.warning(
+                "Aucun signal OPEN trouvé pour fermeture | trade_id=%s asset=%s",
+                trade_id, asset
+            )
+            return {"error": "Aucun signal OPEN trouvé"}, 404
 
-    try:
-        sl_distance, tp_distance = get_asset_distances(asset, data)
-    except Exception:
-        app.logger.warning("Webhook TradingView: distances invalides")
-        return {"error": "Distances SL/TP invalides"}, 400
+        close_signal_as_result(signal, event_type)
 
-    if action == "BUY":
-        stop_loss = entry_price - sl_distance
-        take_profit = entry_price + tp_distance
-    else:
-        stop_loss = entry_price + sl_distance
-        take_profit = entry_price - tp_distance
+        if event_type == "TP":
+            send_telegram_message(build_tp_telegram_message(signal))
+        else:
+            send_telegram_message(build_sl_telegram_message(signal))
 
-    signal = Signal(
-        asset=asset,
-        action=action,
-        entry_price=entry_price,
-        stop_loss=stop_loss,
-        take_profit=take_profit,
-        status="OPEN"
-    )
+        app.logger.info(
+            "Signal fermé | trade_id=%s asset=%s result=%s",
+            signal.trade_id, signal.asset, signal.status
+        )
 
-    db.session.add(signal)
-    db.session.commit()
+        return {
+            "status": "ok",
+            "event": event_type,
+            "trade_id": signal.trade_id,
+            "asset": signal.asset,
+            "result": signal.status
+        }, 200
 
-    telegram_message = build_signal_telegram_message(signal)
-    send_telegram_message(telegram_message)
-
-    app.logger.info(
-        "Signal enregistré et envoyé Telegram | asset=%s action=%s entry=%s",
-        asset, action, entry_price
-    )
-
-    return {
-        "status": "ok",
-        "asset": asset,
-        "action": action,
-        "entry_price": entry_price,
-        "stop_loss": stop_loss,
-        "take_profit": take_profit
-    }
+    return {"error": "Event inconnu"}, 400
 
 
 @app.route("/test-telegram")
@@ -876,10 +975,13 @@ def test_telegram():
 @app.route("/test-tp")
 def test_tp():
     class DummySignal:
+        trade_id = "TEST_TP_001"
         asset = "BTCUSD"
         action = "BUY"
         entry_price = 66375
         take_profit = 66420.73
+        stop_loss = 66352.13
+        status = "WIN"
 
     send_telegram_message(build_tp_telegram_message(DummySignal()))
     return "Message TP envoyé"
@@ -888,10 +990,13 @@ def test_tp():
 @app.route("/test-sl")
 def test_sl():
     class DummySignal:
+        trade_id = "TEST_SL_001"
         asset = "BTCUSD"
         action = "BUY"
         entry_price = 66375
+        take_profit = 66420.73
         stop_loss = 66352.13
+        status = "LOSS"
 
     send_telegram_message(build_sl_telegram_message(DummySignal()))
     return "Message SL envoyé"
