@@ -90,8 +90,110 @@ def load_user(user_id):
     return db.session.get(User, int(user_id))
 
 # =========================
-# TELEGRAM
+# TELEGRAM HELPERS
 # =========================
+def format_price(value: float) -> str:
+    """Formate proprement les prix pour Telegram."""
+    try:
+        value = float(value)
+    except Exception:
+        return str(value)
+
+    if abs(value) >= 1000:
+        return f"{value:,.2f}".replace(",", " ")
+    if abs(value) >= 1:
+        return f"{value:.2f}"
+    return f"{value:.6f}".rstrip("0").rstrip(".")
+
+
+def asset_emoji(asset: str) -> str:
+    mapping = {
+        "BTCUSD": "₿",
+        "ETHUSD": "⟠",
+        "SOLUSD": "🟣",
+        "XRPUSD": "💧",
+        "GOLD": "🥇",
+        "US100": "🇺🇸",
+        "US500": "📊",
+        "FRA40": "🇫🇷",
+    }
+    return mapping.get(asset.upper(), "📊")
+
+
+def action_emoji(action: str) -> str:
+    return "📈" if action.upper() == "BUY" else "📉"
+
+
+def build_signal_telegram_message(signal) -> str:
+    """Message Telegram premium pour un nouveau signal."""
+    asset = signal.asset.upper()
+    action = signal.action.upper()
+    asset_icon = asset_emoji(asset)
+    dir_icon = action_emoji(action)
+
+    return f"""
+🚨 <b>NOUVEAU SIGNAL PREMIUM</b>
+
+💎 <b>TradingSignals Premium</b>
+
+{asset_icon} <b>Actif :</b> {asset}
+{dir_icon} <b>Direction :</b> {action}
+
+💰 <b>Entrée :</b> {format_price(signal.entry_price)}
+🛑 <b>Stop Loss :</b> {format_price(signal.stop_loss)}
+🎯 <b>Take Profit :</b> {format_price(signal.take_profit)}
+
+📌 <b>Statut :</b> 🟡 OPEN
+🕒 <b>Heure :</b> {signal.created_at.strftime('%Y-%m-%d %H:%M:%S')} UTC
+
+⚡ <i>Signal envoyé automatiquement par TradingBot</i>
+""".strip()
+
+
+def build_tp_telegram_message(signal) -> str:
+    asset = signal.asset.upper()
+    action = signal.action.upper()
+    asset_icon = asset_emoji(asset)
+    dir_icon = action_emoji(action)
+
+    return f"""
+✅ <b>TAKE PROFIT TOUCHÉ</b>
+
+💎 <b>TradingSignals Premium</b>
+
+{asset_icon} <b>Actif :</b> {asset}
+{dir_icon} <b>Direction :</b> {action}
+
+💰 <b>Entrée :</b> {format_price(signal.entry_price)}
+🎯 <b>TP atteint :</b> {format_price(signal.take_profit)}
+
+📌 <b>Statut :</b> 🟢 WIN
+🏆 <i>Trade gagnant clôturé</i>
+""".strip()
+
+
+def build_sl_telegram_message(signal) -> str:
+    asset = signal.asset.upper()
+    action = signal.action.upper()
+    asset_icon = asset_emoji(asset)
+    dir_icon = action_emoji(action)
+
+    return f"""
+❌ <b>STOP LOSS TOUCHÉ</b>
+
+💎 <b>TradingSignals Premium</b>
+
+{asset_icon} <b>Actif :</b> {asset}
+{dir_icon} <b>Direction :</b> {action}
+
+💰 <b>Entrée :</b> {format_price(signal.entry_price)}
+🛑 <b>SL atteint :</b> {format_price(signal.stop_loss)}
+
+📌 <b>Statut :</b> 🔴 LOSS
+⚠️ <i>Trade clôturé en perte</i>
+""".strip()
+
+
 def send_telegram_message(message: str) -> None:
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
         app.logger.warning("Telegram non configuré.")
@@ -100,7 +202,9 @@ def send_telegram_message(message: str) -> None:
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {
         "chat_id": TELEGRAM_CHAT_ID,
-        "text": message
+        "text": message,
+        "parse_mode": "HTML",
+        "disable_web_page_preview": True
     }
 
     try:
@@ -576,9 +680,13 @@ def stripe_webhook():
                 db.session.commit()
 
                 send_telegram_message(
-                    f"✅ Checkout Stripe terminé\n"
-                    f"Utilisateur: {user.email}\n"
-                    f"Subscription: {subscription_id}"
+                    f"""
+✅ <b>CHECKOUT STRIPE TERMINÉ</b>
+
+👤 <b>Utilisateur :</b> {user.email}
+🧾 <b>Subscription :</b> {subscription_id}
+💳 <b>Statut :</b> En attente de synchronisation
+""".strip()
                 )
 
         elif event_type == "customer.subscription.updated":
@@ -614,9 +722,13 @@ def stripe_webhook():
                 db.session.commit()
 
                 send_telegram_message(
-                    f"⚠️ Abonnement annulé\n"
-                    f"Utilisateur: {user.email}\n"
-                    f"Subscription: {subscription_id}"
+                    f"""
+⚠️ <b>ABONNEMENT ANNULÉ</b>
+
+👤 <b>Utilisateur :</b> {user.email}
+🧾 <b>Subscription :</b> {subscription_id}
+🔒 <b>Premium :</b> désactivé
+""".strip()
                 )
 
         elif event_type == "invoice.payment_succeeded":
@@ -649,8 +761,12 @@ def stripe_webhook():
 
             if user:
                 send_telegram_message(
-                    f"❌ Paiement Stripe échoué\n"
-                    f"Utilisateur: {user.email}"
+                    f"""
+❌ <b>PAIEMENT STRIPE ÉCHOUÉ</b>
+
+👤 <b>Utilisateur :</b> {user.email}
+💳 <b>Action recommandée :</b> vérifier la carte bancaire
+""".strip()
                 )
 
     except Exception as e:
@@ -667,9 +783,13 @@ def webhook():
     data = request.get_json(silent=True)
 
     if not data:
+        app.logger.warning("Webhook TradingView: JSON manquant")
         return {"error": "JSON manquant"}, 400
 
+    app.logger.info("Webhook TradingView reçu: %s", data)
+
     if TRADINGVIEW_WEBHOOK_SECRET and data.get("secret") != TRADINGVIEW_WEBHOOK_SECRET:
+        app.logger.warning("Webhook TradingView refusé: secret invalide")
         return {"error": "Non autorisé"}, 403
 
     try:
@@ -677,17 +797,21 @@ def webhook():
         action = str(data.get("action", "")).strip().upper()
         entry_price = float(data.get("entry_price"))
     except Exception:
+        app.logger.warning("Webhook TradingView: données principales invalides")
         return {"error": "Données invalides"}, 400
 
     if asset not in ALLOWED_ASSETS:
+        app.logger.warning("Webhook TradingView: actif non autorisé -> %s", asset)
         return {"error": f"Actif non autorisé: {asset}"}, 400
 
     if action not in ALLOWED_ACTIONS:
+        app.logger.warning("Webhook TradingView: action non autorisée -> %s", action)
         return {"error": f"Action non autorisée: {action}"}, 400
 
     try:
         sl_distance, tp_distance = get_asset_distances(asset, data)
     except Exception:
+        app.logger.warning("Webhook TradingView: distances invalides")
         return {"error": "Distances SL/TP invalides"}, 400
 
     if action == "BUY":
@@ -709,25 +833,68 @@ def webhook():
     db.session.add(signal)
     db.session.commit()
 
-    message = (
-        f"🚨 Nouveau signal\n"
-        f"Actif: {asset}\n"
-        f"Action: {action}\n"
-        f"Entrée: {entry_price}\n"
-        f"SL: {stop_loss}\n"
-        f"TP: {take_profit}\n"
-        f"Statut: OPEN\n"
-        f"Heure: {signal.created_at.strftime('%Y-%m-%d %H:%M:%S')} UTC"
-    )
-    send_telegram_message(message)
+    telegram_message = build_signal_telegram_message(signal)
+    send_telegram_message(telegram_message)
 
-    return {"status": "ok", "asset": asset, "action": action}
+    app.logger.info(
+        "Signal enregistré et envoyé Telegram | asset=%s action=%s entry=%s",
+        asset, action, entry_price
+    )
+
+    return {
+        "status": "ok",
+        "asset": asset,
+        "action": action,
+        "entry_price": entry_price,
+        "stop_loss": stop_loss,
+        "take_profit": take_profit
+    }
 
 
 @app.route("/test-telegram")
 def test_telegram():
-    send_telegram_message("✅ Test Telegram depuis Flask")
+    test_message = """
+🚀 <b>TEST TELEGRAM RÉUSSI</b>
+
+💎 <b>TradingSignals Premium</b>
+
+📊 <b>Actif :</b> BTCUSD
+📈 <b>Direction :</b> BUY
+
+💰 <b>Entrée :</b> 66 375.00
+🛑 <b>Stop Loss :</b> 66 352.13
+🎯 <b>Take Profit :</b> 66 420.73
+
+📌 <b>Statut :</b> 🟡 OPEN
+⚡ <i>Connexion Flask → Telegram OK</i>
+""".strip()
+
+    send_telegram_message(test_message)
     return "Message Telegram envoyé"
+
+
+@app.route("/test-tp")
+def test_tp():
+    class DummySignal:
+        asset = "BTCUSD"
+        action = "BUY"
+        entry_price = 66375
+        take_profit = 66420.73
+
+    send_telegram_message(build_tp_telegram_message(DummySignal()))
+    return "Message TP envoyé"
+
+
+@app.route("/test-sl")
+def test_sl():
+    class DummySignal:
+        asset = "BTCUSD"
+        action = "BUY"
+        entry_price = 66375
+        stop_loss = 66352.13
+
+    send_telegram_message(build_sl_telegram_message(DummySignal()))
+    return "Message SL envoyé"
 
 # =========================
 # RUN
