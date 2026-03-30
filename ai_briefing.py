@@ -1,49 +1,79 @@
 import os
-from dotenv import load_dotenv
 from openai import OpenAI
+from dotenv import load_dotenv
 
 # Charger les variables d'environnement (.env)
 load_dotenv()
 
-# Initialisation client OpenAI
+# Initialisation du client OpenAI
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def generate_daily_briefing(btc_data: str, gold_data: str, eco_data: str) -> str:
-    prompt = f"""
-Tu es un analyste macro-financier professionnel.
+    """
+    Génère un briefing trading complet (BTC + OR + macro)
+    """
+
+    try:
+        prompt = f"""
+Tu es un analyste financier professionnel spécialisé en trading.
 
 Ta mission :
-Rédiger un briefing quotidien en français, clair, structuré et professionnel.
+Générer un briefing de marché clair, structuré et exploitable pour un trader.
 
-Règles importantes :
-- N'invente aucun chiffre
-- Utilise uniquement les données fournies
-- Sois concret, utile et lisible
-- Fais une analyse orientée trading court terme
-- Ajoute une conclusion opérationnelle
+Structure OBLIGATOIRE :
 
-Données BTC :
+## 1. Résumé exécutif
+- Vue globale du marché
+- Sentiment (risk-on / risk-off)
+
+## 2. Analyse du Bitcoin
+- Tendance
+- Niveaux clés
+- Scénarios possibles
+
+## 3. Analyse de l'Or
+- Tendance
+- Niveaux clés
+- Scénarios possibles
+
+## 4. Événements économiques
+- Impact attendu
+- Importance des événements
+
+## 5. Risques à surveiller
+- Volatilité
+- Cassures de niveaux
+- Faux signaux
+
+## 6. Conclusion opérationnelle
+- Lecture trading claire
+- Biais (achat / vente / prudence)
+
+Données :
+
+Bitcoin :
 {btc_data}
 
-Données OR :
+Or :
 {gold_data}
 
-Événements économiques :
+Macro :
 {eco_data}
 
-Structure obligatoire :
-1. Résumé exécutif
-2. Analyse du Bitcoin
-3. Analyse de l'Or
-4. Événements économiques du jour
-5. Risques à surveiller
-6. Conclusion opérationnelle
+Contraintes :
+- Style professionnel
+- Pas de phrases inutiles
+- Analyse concrète
+- Adapté au trading court terme
 """
 
-    response = client.responses.create(
-        model="gpt-5.4",
-        input=prompt
-    )
+        response = client.responses.create(
+            model="gpt-4.1-mini",
+            input=prompt
+        )
 
-    return response.output_text.strip()
+        return response.output[0].content[0].text
+
+    except Exception as e:
+        return f"❌ Erreur génération briefing : {str(e)}"
