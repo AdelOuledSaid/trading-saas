@@ -10,8 +10,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
-
 # =========================
 # CONFIG
 # =========================
@@ -61,6 +59,13 @@ login_manager.init_app(app)
 # =========================
 # MODELS
 # =========================
+class DailyBriefing(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, unique=True, nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
@@ -92,12 +97,14 @@ class Signal(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     closed_at = db.Column(db.DateTime, nullable=True)
 
+
 # =========================
 # LOGIN
 # =========================
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, int(user_id))
+
 
 # =========================
 # TELEGRAM HELPERS
@@ -229,6 +236,7 @@ def send_telegram_message(message: str) -> None:
     except Exception as e:
         app.logger.error("Erreur Telegram : %s", repr(e))
 
+
 # =========================
 # HELPERS
 # =========================
@@ -352,6 +360,7 @@ def find_open_signal_for_closure(trade_id: str, asset: str) -> Signal | None:
         )
 
     return signal
+
 
 # =========================
 # ROUTES
@@ -542,6 +551,16 @@ def premium_data():
     return "🔥 Données premium secrètes"
 
 
+@app.route("/briefing")
+@login_required
+@premium_required
+def briefing_page():
+    briefing = DailyBriefing.query.order_by(DailyBriefing.date.desc()).first()
+    if not briefing:
+        return "<pre>Aucun briefing disponible pour le moment.</pre>"
+    return f"<pre>{briefing.content}</pre>"
+
+
 @app.route("/mentions-legales")
 def mentions_legales():
     return render_template("mentions_legales.html")
@@ -555,6 +574,7 @@ def privacy():
 @app.route("/cgu")
 def cgu():
     return render_template("cgu.html")
+
 
 # =========================
 # STRIPE
@@ -814,6 +834,7 @@ def stripe_webhook():
 
     return "", 200
 
+
 # =========================
 # WEBHOOK TRADINGVIEW
 # =========================
@@ -822,7 +843,6 @@ def webhook():
     raw_body = request.get_data(as_text=True).strip()
     data = request.get_json(silent=True)
 
-    # Ignore les requêtes texte / vides envoyées par erreur
     if not data:
         app.logger.info("Webhook TradingView ignoré (non JSON): %s", raw_body)
         return {"status": "ignored", "reason": "non-json payload"}, 200
@@ -839,9 +859,6 @@ def webhook():
         app.logger.warning("Webhook TradingView: event non autorisé -> %s", event_type)
         return {"error": f"Event non autorisé: {event_type}"}, 400
 
-    # =========================
-    # OPEN
-    # =========================
     if event_type == "OPEN":
         try:
             trade_id = str(data.get("trade_id", "")).strip()
@@ -873,7 +890,6 @@ def webhook():
             stop_loss = entry_price + sl_distance
             take_profit = entry_price - tp_distance
 
-        # Évite doublon si même trade_id déjà reçu
         if trade_id:
             existing_signal = Signal.query.filter_by(trade_id=trade_id).first()
             if existing_signal:
@@ -915,9 +931,6 @@ def webhook():
             "take_profit": take_profit
         }, 200
 
-    # =========================
-    # TP / SL
-    # =========================
     if event_type in ["TP", "SL"]:
         trade_id = str(data.get("trade_id", "")).strip()
         asset = str(data.get("asset", "")).strip().upper()
@@ -1004,6 +1017,7 @@ def test_sl():
 
     send_telegram_message(build_sl_telegram_message(DummySignal()))
     return "Message SL envoyé"
+
 
 # =========================
 # RUN
