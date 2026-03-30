@@ -822,7 +822,7 @@ def webhook():
 
     # Ignore les requêtes texte / vides envoyées par erreur
     if not data:
-        app.logger.warning("Webhook TradingView ignoré (non JSON): %s", raw_body)
+        app.logger.info("Webhook TradingView ignoré (non JSON): %s", raw_body)
         return {"status": "ignored", "reason": "non-json payload"}, 200
 
     app.logger.info("Webhook TradingView reçu: %s", data)
