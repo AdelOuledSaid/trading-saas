@@ -11,7 +11,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from ai_briefing import generate_daily_briefing
-
+from market_data import get_btc_data, get_gold_data, get_economic_calendar
 # =========================
 # CONFIG
 # =========================
@@ -401,7 +401,10 @@ def ensure_daily_briefing():
         return existing
 
     try:
-        btc_data, gold_data, eco_data = get_default_briefing_inputs()
+        btc_data = get_btc_data()
+        gold_data = get_gold_data()
+        eco_data = get_economic_calendar()
+
         content = generate_daily_briefing(btc_data, gold_data, eco_data)
 
         briefing = DailyBriefing(
@@ -417,8 +420,6 @@ def ensure_daily_briefing():
     except Exception as e:
         app.logger.error("Erreur génération briefing: %s", repr(e))
         return None
-
-
 # =========================
 # ROUTES
 # =========================
