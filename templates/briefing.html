@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Briefing IA du jour</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-wrapper">
+
+        <aside class="sidebar">
+            <div class="logo-box">
+                <h2>TradingBot</h2>
+                <p>Signal Center</p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('dashboard') }}" class="nav-link">📊 Dashboard</a>
+                <a href="{{ url_for('briefing_page') }}" class="nav-link active">🧠 Briefing IA</a>
+                <a href="{{ url_for('pricing') }}" class="nav-link">💎 Premium</a>
+                <a href="{{ url_for('logout') }}" class="nav-link logout-link">🚪 Déconnexion</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+
+            <header class="topbar" style="margin-bottom:24px;">
+                <div>
+                    <h1 style="margin-bottom:6px;">🧠 Briefing IA du jour</h1>
+                    <p class="subtitle" style="margin:0;">
+                        Analyse premium du marché : Bitcoin, Or et contexte macro-économique
+                    </p>
+                </div>
+
+                <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                    <span style="background:linear-gradient(90deg, #10b981, #059669); color:white; padding:8px 14px; border-radius:999px; font-size:13px; font-weight:700; box-shadow:0 6px 18px rgba(16,185,129,0.25);">
+                        👑 Premium
+                    </span>
+
+                    {% if briefing %}
+                    <span style="background:rgba(37,99,235,0.18); color:#bfdbfe; padding:8px 14px; border-radius:999px; font-size:13px; font-weight:700;">
+                        📅 {{ briefing.date }}
+                    </span>
+                    {% endif %}
+                </div>
+            </header>
+
+            <section style="margin-bottom:24px; border-radius:18px; padding:24px; background:linear-gradient(90deg, rgba(29,78,216,0.98), rgba(109,40,217,0.98)); box-shadow:0 10px 30px rgba(37,99,235,0.20); display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;">
+                <div>
+                    <h3 style="margin:0 0 8px 0; font-size:28px; color:white;">Analyse quotidienne intelligente</h3>
+                    <p style="margin:0; color:rgba(255,255,255,0.92); font-size:16px; max-width:820px; line-height:1.7;">
+                        Ce briefing est généré automatiquement à partir des données marché et rédigé par IA pour fournir une lecture claire, exploitable et orientée trading.
+                    </p>
+                </div>
+
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                    <a href="{{ url_for('dashboard') }}" style="text-decoration:none; background:white; color:#0f172a; padding:12px 18px; border-radius:12px; font-weight:800;">
+                        ← Retour dashboard
+                    </a>
+                    <a href="{{ url_for('briefing_page') }}" style="text-decoration:none; background:rgba(255,255,255,0.16); color:white; padding:12px 18px; border-radius:12px; font-weight:800; border:1px solid rgba(255,255,255,0.16);">
+                        🔄 Actualiser
+                    </a>
+                </div>
+            </section>
+
+            {% if briefing %}
+            <section class="panel" style="border-radius:22px; background:linear-gradient(135deg, rgba(15,23,42,0.98), rgba(30,41,59,0.98)); border:1px solid rgba(255,255,255,0.06); box-shadow:0 14px 40px rgba(0,0,0,0.25); overflow:hidden;">
+                <div style="padding:24px 24px 18px 24px; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+                    <div>
+                        <h2 style="margin:0 0 8px 0; font-size:26px;">📘 Rapport complet</h2>
+                        <p style="margin:0; color:#9fb0c9; font-size:14px;">
+                            Briefing structuré : résumé exécutif, Bitcoin, Or, événements économiques, risques et conclusion opérationnelle.
+                        </p>
+                    </div>
+
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <span style="background:rgba(16,185,129,0.16); color:#a7f3d0; padding:8px 12px; border-radius:999px; font-size:12px; font-weight:700;">
+                            Généré automatiquement
+                        </span>
+                        <span style="background:rgba(255,255,255,0.06); color:#dbeafe; padding:8px 12px; border-radius:999px; font-size:12px; font-weight:700;">
+                            TradingBot Intelligence
+                        </span>
+                    </div>
+                </div>
+
+                <div style="padding:28px;">
+                    <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:18px; padding:24px;">
+                        <div style="white-space:pre-line; color:#e5eefc; line-height:1.9; font-size:16px;">
+                            {{ briefing.content }}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section style="margin-top:24px; display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:18px;">
+                <div class="panel" style="border-radius:18px;">
+                    <h3 style="margin-top:0;">⚡ Utilité</h3>
+                    <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                        Lecture rapide des scénarios de marché avec un angle orienté trading court terme.
+                    </p>
+                </div>
+
+                <div class="panel" style="border-radius:18px;">
+                    <h3 style="margin-top:0;">📊 Couverture</h3>
+                    <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                        Bitcoin, Or, événements économiques et risques de volatilité.
+                    </p>
+                </div>
+
+                <div class="panel" style="border-radius:18px;">
+                    <h3 style="margin-top:0;">🔒 Accès</h3>
+                    <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                        Réservé aux utilisateurs Premium avec génération automatique quotidienne.
+                    </p>
+                </div>
+            </section>
+            {% else %}
+            <section class="panel" style="border-radius:22px; padding:28px; background:linear-gradient(135deg, rgba(15,23,42,0.98), rgba(30,41,59,0.98)); border:1px solid rgba(255,255,255,0.06);">
+                <h2 style="margin-top:0;">Aucun briefing disponible</h2>
+                <p style="color:#9fb0c9; line-height:1.8;">
+                    Le briefing du jour n’est pas encore disponible ou n’a pas pu être généré.
+                </p>
+
+                <div style="margin-top:18px; display:flex; gap:12px; flex-wrap:wrap;">
+                    <a href="{{ url_for('briefing_page') }}" style="text-decoration:none; background:linear-gradient(90deg,#2563eb,#7c3aed); color:white; padding:12px 16px; border-radius:10px; font-weight:800;">
+                        Réessayer
+                    </a>
+                    <a href="{{ url_for('dashboard') }}" style="text-decoration:none; background:rgba(255,255,255,0.06); color:white; padding:12px 16px; border-radius:10px; font-weight:700;">
+                        Retour dashboard
+                    </a>
+                </div>
+            </section>
+            {% endif %}
+
+        </main>
+    </div>
+
+</body>
+</html>

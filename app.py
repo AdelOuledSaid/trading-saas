@@ -619,11 +619,7 @@ def premium_data():
 @premium_required
 def briefing_page():
     briefing = ensure_daily_briefing()
-
-    if not briefing:
-        return "<pre>Impossible de générer le briefing pour le moment.</pre>"
-
-    return f"<pre>{briefing.content}</pre>"
+    return render_template("briefing.html", briefing=briefing)
 
 
 @app.route("/mentions-legales")

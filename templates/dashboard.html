@@ -19,6 +19,7 @@
 
             <nav class="sidebar-nav">
                 <a href="{{ url_for('dashboard') }}" class="nav-link active">📊 Dashboard</a>
+                <a href="{{ url_for('briefing_page') }}" class="nav-link">🧠 Briefing IA</a>
                 <a href="{{ url_for('pricing') }}" class="nav-link">💎 Premium</a>
                 <a href="{{ url_for('logout') }}" class="nav-link logout-link">🚪 Déconnexion</a>
             </nav>
@@ -29,7 +30,9 @@
             <header class="topbar" style="margin-bottom:24px;">
                 <div>
                     <h1 style="margin-bottom:6px;">Dashboard</h1>
-                    <p class="subtitle" style="margin:0;">Bienvenue, {{ email }}</p>
+                    <p class="subtitle" style="margin:0;">
+                        Bienvenue, {{ email }}
+                    </p>
                 </div>
 
                 <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
@@ -51,22 +54,28 @@
                 <div>
                     <h3 style="margin:0; font-size:30px;">👑 Compte Premium actif</h3>
                     <p style="margin:8px 0 0 0; opacity:0.85; font-size:16px;">
-                        Accès complet aux signaux, statistiques avancées, courbes et gestion d’abonnement.
+                        Accès complet aux signaux, statistiques avancées, courbes, briefing IA quotidien et gestion d’abonnement.
                     </p>
                 </div>
 
-                <form action="{{ url_for('create_customer_portal_session') }}" method="POST">
-                    <button type="submit" style="background:linear-gradient(90deg, #10b981, #059669); color:white; border:none; padding:12px 18px; border-radius:10px; cursor:pointer; font-weight:700; font-size:15px;">
-                        Gérer mon abonnement
-                    </button>
-                </form>
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                    <a href="{{ url_for('briefing_page') }}" style="text-decoration:none; background:linear-gradient(90deg,#2563eb,#7c3aed); color:white; padding:12px 18px; border-radius:10px; font-weight:700; font-size:15px;">
+                        Voir le briefing IA
+                    </a>
+
+                    <form action="{{ url_for('create_customer_portal_session') }}" method="POST">
+                        <button type="submit" style="background:linear-gradient(90deg, #10b981, #059669); color:white; border:none; padding:12px 18px; border-radius:10px; cursor:pointer; font-weight:700; font-size:15px;">
+                            Gérer mon abonnement
+                        </button>
+                    </form>
+                </div>
             </section>
             {% else %}
             <section style="margin-bottom:24px; border-radius:18px; padding:24px; background:linear-gradient(90deg, rgba(29,78,216,0.98), rgba(109,40,217,0.98)); box-shadow:0 10px 30px rgba(37,99,235,0.20); display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;">
                 <div>
                     <h3 style="margin:0 0 8px 0; font-size:28px; color:white;">Débloque la version Premium 💎</h3>
                     <p style="margin:0; color:rgba(255,255,255,0.92); font-size:16px; max-width:760px; line-height:1.7;">
-                        Accède à l’historique complet, aux graphiques de performance, au PnL cumulatif, au capital simulé et aux statistiques avancées.
+                        Accède à l’historique complet, aux graphiques de performance, au PnL cumulatif, au capital simulé, aux statistiques avancées et au briefing IA quotidien.
                     </p>
                 </div>
 
@@ -74,6 +83,71 @@
                     <a href="{{ url_for('pricing') }}" style="text-decoration:none; background:white; color:#0f172a; padding:12px 18px; border-radius:12px; font-weight:800;">
                         Voir l’offre Premium
                     </a>
+                </div>
+            </section>
+            {% endif %}
+
+            {% if is_premium %}
+            <section class="panel" style="border-radius:18px; margin-bottom:24px; background:linear-gradient(135deg, rgba(15,23,42,0.98), rgba(30,41,59,0.98)); border:1px solid rgba(255,255,255,0.06);">
+                <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+                    <div>
+                        <h2 style="margin-bottom:6px;">🧠 Briefing IA du jour</h2>
+                        <p style="margin:0; color:#9fb0c9; font-size:14px;">
+                            Analyse synthétique BTC + Gold + contexte macro
+                        </p>
+                    </div>
+                    <a href="{{ url_for('briefing_page') }}" style="text-decoration:none; background:linear-gradient(90deg,#2563eb,#7c3aed); color:white; padding:10px 14px; border-radius:10px; font-weight:800;">
+                        Ouvrir le briefing complet
+                    </a>
+                </div>
+
+                {% if latest_briefing %}
+                    <div style="margin-top:10px; padding:20px; border-radius:16px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:14px;">
+                            <span style="display:inline-block; background:rgba(37,99,235,0.18); color:#bfdbfe; padding:8px 12px; border-radius:999px; font-size:12px; font-weight:700;">
+                                📅 {{ latest_briefing.date }}
+                            </span>
+
+                            <span style="display:inline-block; background:rgba(16,185,129,0.18); color:#a7f3d0; padding:8px 12px; border-radius:999px; font-size:12px; font-weight:700;">
+                                Généré automatiquement
+                            </span>
+                        </div>
+
+                        <div style="white-space:pre-line; color:#e5eefc; line-height:1.75; font-size:15px;">
+                            {{ latest_briefing.content[:900] }}{% if latest_briefing.content|length > 900 %}...{% endif %}
+                        </div>
+
+                        <div style="margin-top:18px;">
+                            <a href="{{ url_for('briefing_page') }}" style="text-decoration:none; color:#93c5fd; font-weight:700;">
+                                Lire l’analyse complète →
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <div style="margin-top:12px; padding:18px; border-radius:14px; background:rgba(255,255,255,0.03); color:#9fb0c9;">
+                        Aucun briefing disponible pour le moment.
+                    </div>
+                {% endif %}
+            </section>
+            {% else %}
+            <section class="panel" style="border-radius:18px; margin-bottom:24px; background:linear-gradient(135deg, rgba(15,23,42,0.98), rgba(30,41,59,0.98)); border:1px solid rgba(255,255,255,0.06);">
+                <div class="panel-header">
+                    <h2>🧠 Briefing IA du jour</h2>
+                </div>
+
+                <div style="padding:20px; border-radius:16px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05);">
+                    <p style="margin:0 0 10px 0; color:white; font-size:16px; font-weight:700;">
+                        Réservé aux membres Premium
+                    </p>
+                    <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                        Reçois chaque jour un briefing IA structuré avec l’analyse du Bitcoin, de l’or et des événements économiques importants.
+                    </p>
+
+                    <div style="margin-top:16px;">
+                        <a href="{{ url_for('pricing') }}" style="text-decoration:none; background:linear-gradient(90deg,#2563eb,#7c3aed); color:white; padding:10px 14px; border-radius:10px; font-weight:800; display:inline-block;">
+                            Débloquer le briefing IA
+                        </a>
+                    </div>
                 </div>
             </section>
             {% endif %}
