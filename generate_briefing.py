@@ -1,18 +1,19 @@
 from datetime import date
-from app import db, app
+from app import app, db, DailyBriefing
 from ai_briefing import generate_daily_briefing
-from app import DailyBriefing
+
 
 with app.app_context():
 
     today = date.today()
 
-    # Vérifier si déjà généré
+    # Vérifier si déjà généré aujourd'hui
     existing = DailyBriefing.query.filter_by(date=today).first()
 
     if existing:
-        print("Déjà généré aujourd'hui")
+        print("⚠️ Briefing déjà généré aujourd'hui")
     else:
+        # Données (temporaire)
         btc_data = """
 Prix actuel : 84250 USD
 Variation 24h : +1.8%
@@ -35,8 +36,11 @@ Résistance : 3100
 - 20:00 : Discours d'un membre de la Fed
 """
 
+        # Générer avec IA
+        print("⏳ Génération du briefing...")
         briefing = generate_daily_briefing(btc_data, gold_data, eco_data)
 
+        # Sauvegarde
         new_briefing = DailyBriefing(
             date=today,
             content=briefing
@@ -45,4 +49,4 @@ Résistance : 3100
         db.session.add(new_briefing)
         db.session.commit()
 
-        print("✅ Briefing enregistré")
+        print("✅ Briefing enregistré en base")

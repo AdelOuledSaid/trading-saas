@@ -1,5 +1,5 @@
-from app import db
+from app import app, db
 
-db.create_all()
-
-print("✅ Tables créées")
+with app.app_context():
+    db.create_all()
+    print("✅ Tables créées")
