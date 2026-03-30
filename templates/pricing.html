@@ -3,484 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Offres Premium</title>
+    <title>Premium - TradingBot</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="dashboard-body">
 
-    <div style="min-height:100vh; background:radial-gradient(circle at top, rgba(124,58,237,0.14), transparent 35%), linear-gradient(180deg, #06122d 0%, #030b1f 100%); color:white;">
+<div class="pricing-page">
 
-        {% include "partials/navbar.html" %}
+    <!-- HEADER -->
+    <div class="pricing-header">
+        <h1>💎 Passe au niveau supérieur</h1>
+        <p>
+            Accède aux signaux avancés, au briefing IA quotidien et aux statistiques professionnelles.
+        </p>
+    </div>
 
-        <!-- HERO -->
-        <section style="max-width:1200px; margin:0 auto; padding:72px 32px 26px 32px; text-align:center;">
-            <div style="display:inline-flex; align-items:center; gap:10px; padding:8px 14px; border-radius:999px; background:rgba(168,85,247,0.14); color:#c084fc; font-size:13px; font-weight:700; margin-bottom:18px;">
-                💎 Offres & abonnement
-            </div>
+    <!-- PRICING -->
+    <div class="pricing-grid">
 
-            <h1 style="font-size:58px; line-height:1.05; margin:0 0 16px 0; font-weight:900; letter-spacing:-1.4px;">
-                Passez d’un simple aperçu à un vrai dashboard de performance
-            </h1>
+        <!-- FREE PLAN -->
+        <div class="pricing-card">
+            <h2>Gratuit</h2>
+            <div class="price">0€ <span>/ mois</span></div>
 
-            <p style="max-width:900px; margin:0 auto; font-size:19px; color:#a7b6cf; line-height:1.8;">
-                Débloquez l’historique complet, les statistiques avancées, le PnL cumulatif,
-                le capital simulé et une expérience pensée comme un vrai SaaS premium.
-            </p>
+            <ul>
+                <li>✔️ Accès aux signaux en temps réel</li>
+                <li>✔️ Dashboard basique</li>
+                <li>✔️ Historique limité</li>
+                <li>❌ Briefing IA quotidien</li>
+                <li>❌ Statistiques avancées</li>
+                <li>❌ PnL & capital simulé</li>
+            </ul>
 
-            <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:28px;">
-                {% if current_user.is_authenticated and not current_user.is_premium %}
-                    <form action="{{ url_for('create_checkout_session') }}" method="POST" style="margin:0;">
-                        <button type="submit" style="border:none; cursor:pointer; text-decoration:none; background:linear-gradient(90deg,#7c3aed,#2563eb); color:white; padding:15px 22px; border-radius:14px; font-weight:800; box-shadow:0 14px 28px rgba(124,58,237,0.22); font-size:16px;">
-                            Débloquer Premium maintenant
-                        </button>
-                    </form>
-                {% elif current_user.is_authenticated and current_user.is_premium %}
-                    <a href="{{ url_for('dashboard') }}" style="text-decoration:none; background:linear-gradient(90deg,#10b981,#059669); color:white; padding:15px 22px; border-radius:14px; font-weight:800; box-shadow:0 14px 28px rgba(16,185,129,0.20);">
-                        Aller à mon dashboard Premium
-                    </a>
-                {% else %}
-                    <a href="{{ url_for('register') }}" style="text-decoration:none; background:linear-gradient(90deg,#7c3aed,#2563eb); color:white; padding:15px 22px; border-radius:14px; font-weight:800; box-shadow:0 14px 28px rgba(124,58,237,0.22);">
-                        Créer un compte
-                    </a>
-                {% endif %}
+            <a href="{{ url_for('dashboard') }}" class="pricing-btn secondary-btn">
+                Plan actuel
+            </a>
+        </div>
 
-                <a href="{{ url_for('dashboard') if current_user.is_authenticated else url_for('login') }}" style="text-decoration:none; background:rgba(255,255,255,0.06); color:white; padding:15px 22px; border-radius:14px; font-weight:800; border:1px solid rgba(255,255,255,0.08);">
-                    Voir le dashboard
-                </a>
-            </div>
+        <!-- PREMIUM PLAN -->
+        <div class="pricing-card premium-plan">
+            <div class="badge-top">🔥 RECOMMANDÉ</div>
 
-            <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:20px;">
-                <span style="background:rgba(16,185,129,0.12); color:#34d399; padding:8px 12px; border-radius:999px; font-size:13px; font-weight:700;">
-                    ✅ Paiement sécurisé Stripe
-                </span>
-                <span style="background:rgba(59,130,246,0.12); color:#93c5fd; padding:8px 12px; border-radius:999px; font-size:13px; font-weight:700;">
-                    ✅ Activation rapide
-                </span>
-                <span style="background:rgba(168,85,247,0.12); color:#c084fc; padding:8px 12px; border-radius:999px; font-size:13px; font-weight:700;">
-                    ✅ Annulation simple
-                </span>
-            </div>
-        </section>
+            <h2>Premium</h2>
+            <div class="price">19€ <span>/ mois</span></div>
 
-        <!-- FLASH -->
-        <section style="max-width:1100px; margin:0 auto; padding:0 32px 8px 32px;">
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:18px;">
-                        {% for message in messages %}
-                            <p style="margin:0; text-align:center; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.06); padding:14px 16px; border-radius:12px; color:#dbe7ff;">
-                                {{ message }}
-                            </p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            {% endwith %}
-        </section>
+            <ul>
+                <li>✔️ Tous les signaux en temps réel</li>
+                <li>✔️ Historique complet</li>
+                <li>✔️ Statistiques avancées</li>
+                <li>✔️ PnL cumulatif</li>
+                <li>✔️ Capital simulé</li>
+                <li>🧠 Briefing IA quotidien (BTC + Gold)</li>
+                <li>📊 Dashboard professionnel</li>
+                <li>⚡ Accès prioritaire aux nouvelles features</li>
+            </ul>
 
-        <!-- SOCIAL PROOF -->
-        <section style="max-width:1200px; margin:0 auto; padding:0 32px 26px 32px;">
-            <div style="background:linear-gradient(90deg, rgba(17,24,39,0.98), rgba(8,18,44,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:24px; padding:24px; box-shadow:0 18px 40px rgba(0,0,0,0.16);">
-                <div class="responsive-three-cols" style="grid-template-columns:repeat(4, 1fr); text-align:center; gap:18px;">
-                    <div>
-                        <div style="font-size:30px; font-weight:900;">+120</div>
-                        <p style="margin:6px 0 0 0; color:#9fb0c9;">signaux analysés</p>
-                    </div>
-                    <div>
-                        <div style="font-size:30px; font-weight:900;">Live</div>
-                        <p style="margin:6px 0 0 0; color:#9fb0c9;">suivi en temps réel</p>
-                    </div>
-                    <div>
-                        <div style="font-size:30px; font-weight:900;">Premium</div>
-                        <p style="margin:6px 0 0 0; color:#9fb0c9;">expérience complète</p>
-                    </div>
-                    <div>
-                        <div style="font-size:30px; font-weight:900;">Stripe</div>
-                        <p style="margin:6px 0 0 0; color:#9fb0c9;">paiement sécurisé</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- VALUE BLOCKS -->
-        <section style="max-width:1200px; margin:0 auto; padding:0 32px 28px 32px;">
-            <div class="responsive-three-cols">
-                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:20px; padding:22px; text-align:center;">
-                    <div style="font-size:32px; margin-bottom:10px;">📊</div>
-                    <h3 style="margin:0 0 10px 0;">Analyses avancées</h3>
-                    <p style="margin:0; color:#9fb0c9; line-height:1.7;">
-                        Winrate, PnL, capital simulé et vue d’ensemble complète des performances.
-                    </p>
-                </div>
-
-                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:20px; padding:22px; text-align:center;">
-                    <div style="font-size:32px; margin-bottom:10px;">📈</div>
-                    <h3 style="margin:0 0 10px 0;">Historique complet</h3>
-                    <p style="margin:0; color:#9fb0c9; line-height:1.7;">
-                        Accédez à tous les signaux pour analyser votre progression dans le temps.
-                    </p>
-                </div>
-
-                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:20px; padding:22px; text-align:center;">
-                    <div style="font-size:32px; margin-bottom:10px;">💎</div>
-                    <h3 style="margin:0 0 10px 0;">Expérience Premium</h3>
-                    <p style="margin:0; color:#9fb0c9; line-height:1.7;">
-                        Une interface plus riche, plus lisible et pensée comme un vrai produit SaaS.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- PRICING CARDS -->
-        <section style="max-width:1200px; margin:0 auto; padding:12px 32px 24px 32px;">
-            <div class="responsive-two-cols" style="gap:24px;">
-
-                <!-- FREE -->
-                <div style="background:linear-gradient(180deg, rgba(8,18,44,0.98), rgba(5,13,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:26px; padding:32px; box-shadow:0 20px 50px rgba(0,0,0,0.20); display:flex; flex-direction:column;">
-                    <div style="margin-bottom:18px;">
-                        <div style="display:inline-block; padding:8px 12px; border-radius:999px; background:rgba(255,255,255,0.05); color:#cbd5e1; font-size:13px; font-weight:700; margin-bottom:12px;">
-                            Plan de base
-                        </div>
-                        <h2 style="margin:0 0 10px 0; font-size:34px;">Gratuit</h2>
-                        <p style="font-size:46px; font-weight:900; margin:0;">
-                            0€
-                            <span style="font-size:17px; color:#9fb0c9; font-weight:600;">/mois</span>
-                        </p>
-                    </div>
-
-                    <p style="margin:0 0 22px 0; color:#9fb0c9; line-height:1.7; font-size:16px;">
-                        Une version simple pour découvrir la plateforme et consulter un aperçu des signaux.
-                    </p>
-
-                    <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:28px;">
-                        <div style="background:rgba(255,255,255,0.03); border-radius:14px; padding:14px 16px;">✔️ Accès aux 5 derniers signaux</div>
-                        <div style="background:rgba(255,255,255,0.03); border-radius:14px; padding:14px 16px;">✔️ Dashboard limité</div>
-                        <div style="background:rgba(255,255,255,0.03); border-radius:14px; padding:14px 16px;">✔️ Vue générale BUY / SELL</div>
-                        <div style="background:rgba(255,255,255,0.03); border-radius:14px; padding:14px 16px; color:#7487a6;">✖ Statistiques avancées</div>
-                        <div style="background:rgba(255,255,255,0.03); border-radius:14px; padding:14px 16px; color:#7487a6;">✖ PnL et capital simulé</div>
-                        <div style="background:rgba(255,255,255,0.03); border-radius:14px; padding:14px 16px; color:#7487a6;">✖ Historique complet</div>
-                    </div>
-
-                    <div style="margin-top:auto;">
-                        {% if current_user.is_authenticated %}
-                            <a href="{{ url_for('dashboard') }}" style="display:block; text-align:center; text-decoration:none; background:rgba(255,255,255,0.05); color:white; padding:14px 18px; border-radius:14px; font-weight:800; border:1px solid rgba(255,255,255,0.08);">
-                                Continuer gratuitement
-                            </a>
-                        {% else %}
-                            <a href="{{ url_for('register') }}" style="display:block; text-align:center; text-decoration:none; background:rgba(255,255,255,0.05); color:white; padding:14px 18px; border-radius:14px; font-weight:800; border:1px solid rgba(255,255,255,0.08);">
-                                Commencer
-                            </a>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- PREMIUM -->
-                <div style="position:relative; background:linear-gradient(180deg, rgba(17,24,39,0.98), rgba(8,18,44,0.98)); border:1px solid rgba(168,85,247,0.28); border-radius:26px; padding:32px; box-shadow:0 24px 60px rgba(124,58,237,0.20); display:flex; flex-direction:column; overflow:hidden;">
-                    <div style="position:absolute; top:18px; right:18px; background:linear-gradient(90deg, #7c3aed, #2563eb); color:white; padding:8px 12px; border-radius:999px; font-size:12px; font-weight:800;">
-                        Le plus choisi
-                    </div>
-
-                    <div style="position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at top right, rgba(124,58,237,0.10), transparent 30%);"></div>
-
-                    <div style="position:relative;">
-                        <div style="margin-bottom:18px;">
-                            <div style="display:inline-block; padding:8px 12px; border-radius:999px; background:rgba(168,85,247,0.14); color:#c084fc; font-size:13px; font-weight:700; margin-bottom:12px;">
-                                Accès complet
-                            </div>
-                            <h2 style="margin:0 0 10px 0; font-size:34px;">Premium</h2>
-                            <p style="font-size:46px; font-weight:900; margin:0;">
-                                19€
-                                <span style="font-size:17px; color:#9fb0c9; font-weight:600;">/mois</span>
-                            </p>
-                        </div>
-
-                        <p style="margin:0 0 22px 0; color:#b6c4da; line-height:1.7; font-size:16px;">
-                            L’offre complète pour exploiter tout le potentiel du dashboard et suivre vos performances de manière avancée.
-                        </p>
-
-                        <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:28px;">
-                            <div style="background:rgba(255,255,255,0.04); border-radius:14px; padding:14px 16px;">✔️ Accès à tous les signaux</div>
-                            <div style="background:rgba(255,255,255,0.04); border-radius:14px; padding:14px 16px;">✔️ Historique complet</div>
-                            <div style="background:rgba(255,255,255,0.04); border-radius:14px; padding:14px 16px;">✔️ Winrate et statistiques avancées</div>
-                            <div style="background:rgba(255,255,255,0.04); border-radius:14px; padding:14px 16px;">✔️ PnL cumulatif</div>
-                            <div style="background:rgba(255,255,255,0.04); border-radius:14px; padding:14px 16px;">✔️ Capital simulé</div>
-                            <div style="background:rgba(255,255,255,0.04); border-radius:14px; padding:14px 16px;">✔️ Gestion simple de l’abonnement</div>
-                        </div>
-
-                        <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.14); border-radius:14px; padding:14px 16px; margin-bottom:22px;">
-                            <strong style="display:block; margin-bottom:6px; color:#d1fae5;">Pourquoi choisir Premium ?</strong>
-                            <span style="color:#b6c4da; line-height:1.7;">
-                                Vous passez d’un simple aperçu à un vrai tableau de bord de suivi de performance.
-                            </span>
-                        </div>
-
-                        <div style="margin-top:auto;">
-                            {% if current_user.is_authenticated %}
-                                {% if current_user.is_premium %}
-                                    <div style="display:flex; flex-direction:column; gap:12px;">
-                                        <div style="text-align:center; background:rgba(16,185,129,0.12); color:#34d399; padding:14px 18px; border-radius:14px; font-weight:800; border:1px solid rgba(16,185,129,0.2);">
-                                            ✅ Abonnement Premium actif
-                                        </div>
-
-                                        <a href="{{ url_for('dashboard') }}" style="display:block; text-align:center; text-decoration:none; background:rgba(255,255,255,0.05); color:white; padding:14px 18px; border-radius:14px; font-weight:800; border:1px solid rgba(255,255,255,0.08);">
-                                            Aller au dashboard
-                                        </a>
-
-                                        <form action="{{ url_for('create_customer_portal_session') }}" method="POST">
-                                            <button type="submit" style="width:100%; border:none; cursor:pointer; background:linear-gradient(90deg, #7c3aed, #2563eb); color:white; padding:14px 18px; border-radius:14px; font-weight:800; box-shadow:0 14px 28px rgba(124,58,237,0.22);">
-                                                Gérer mon abonnement
-                                            </button>
-                                        </form>
-                                    </div>
-
-                                    <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85; color:#b6c4da; line-height:1.6;">
-                                        Votre abonnement est actif. Vous pouvez gérer votre formule et vos informations de paiement depuis Stripe.
-                                    </p>
-                                {% else %}
-                                    <form action="{{ url_for('create_checkout_session') }}" method="POST">
-                                        <button type="submit" style="width:100%; border:none; cursor:pointer; background:linear-gradient(90deg, #7c3aed, #2563eb); color:white; padding:16px 18px; border-radius:14px; font-weight:800; box-shadow:0 14px 28px rgba(124,58,237,0.22); font-size:16px;">
-                                            Débloquer Premium maintenant
-                                        </button>
-                                    </form>
-
-                                    <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85; color:#b6c4da; line-height:1.6;">
-                                        Paiement sécurisé via Stripe. Abonnement mensuel avec renouvellement automatique. Annulation à tout moment depuis le portail client Stripe.
-                                    </p>
-                                {% endif %}
-                            {% else %}
-                                <a href="{{ url_for('login') }}" style="display:block; text-align:center; text-decoration:none; background:linear-gradient(90deg, #7c3aed, #2563eb); color:white; padding:16px 18px; border-radius:14px; font-weight:800; box-shadow:0 14px 28px rgba(124,58,237,0.22); font-size:16px;">
-                                    Se connecter pour passer Premium
-                                </a>
-
-                                <p style="margin-top:14px; text-align:center; font-size:14px; opacity:0.85; color:#b6c4da; line-height:1.6;">
-                                    Connectez-vous pour activer votre abonnement Premium.
-                                </p>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- COMPARISON -->
-        <section style="max-width:1200px; margin:0 auto; padding:10px 32px 34px 32px;">
-            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:24px; padding:26px;">
-                <div style="text-align:center; margin-bottom:22px;">
-                    <h2 style="margin:0 0 10px 0; font-size:34px;">Comparatif rapide</h2>
-                    <p style="margin:0; color:#9fb0c9;">Visualisez immédiatement la différence entre le plan Gratuit et Premium.</p>
-                </div>
-
-                <div class="responsive-two-cols" style="gap:18px;">
-                    <div style="background:rgba(255,255,255,0.02); border-radius:18px; padding:20px;">
-                        <h3 style="margin-top:0;">Gratuit</h3>
-                        <div style="display:flex; flex-direction:column; gap:12px; color:#dbe7ff;">
-                            <div>✔ 5 derniers signaux</div>
-                            <div>✔ Vue simple BUY / SELL</div>
-                            <div>✔ Dashboard de base</div>
-                            <div style="color:#7487a6;">✖ Winrate détaillé</div>
-                            <div style="color:#7487a6;">✖ PnL avancé</div>
-                            <div style="color:#7487a6;">✖ Historique complet</div>
-                        </div>
-                    </div>
-
-                    <div style="background:linear-gradient(180deg, rgba(20,26,68,0.98), rgba(8,14,38,0.98)); border:1px solid rgba(124,58,237,0.25); border-radius:18px; padding:20px;">
-                        <h3 style="margin-top:0;">Premium</h3>
-                        <div style="display:flex; flex-direction:column; gap:12px; color:#dbe7ff;">
-                            <div>✔ Tous les signaux</div>
-                            <div>✔ Historique complet</div>
-                            <div>✔ Winrate et statistiques avancées</div>
-                            <div>✔ PnL cumulatif</div>
-                            <div>✔ Capital simulé</div>
-                            <div>✔ Expérience complète</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TRUST -->
-        <section style="max-width:1200px; margin:0 auto; padding:0 32px 30px 32px;">
-            <div class="responsive-three-cols">
-                <div style="background:rgba(255,255,255,0.03); border-radius:18px; border:1px solid rgba(255,255,255,0.05); padding:20px;">
-                    <h3 style="margin:0 0 8px 0;">🔒 Sécurité</h3>
-                    <p style="margin:0; color:#9fb0c9; line-height:1.7;">
-                        Tous les paiements passent par Stripe avec une infrastructure reconnue et sécurisée.
-                    </p>
-                </div>
-                <div style="background:rgba(255,255,255,0.03); border-radius:18px; border:1px solid rgba(255,255,255,0.05); padding:20px;">
-                    <h3 style="margin:0 0 8px 0;">⚙ Gestion simple</h3>
-                    <p style="margin:0; color:#9fb0c9; line-height:1.7;">
-                        Gérez votre abonnement, votre carte et vos options directement depuis le portail Stripe.
-                    </p>
-                </div>
-                <div style="background:rgba(255,255,255,0.03); border-radius:18px; border:1px solid rgba(255,255,255,0.05); padding:20px;">
-                    <h3 style="margin:0 0 8px 0;">🚀 Activation rapide</h3>
-                    <p style="margin:0; color:#9fb0c9; line-height:1.7;">
-                        Une fois le paiement validé, votre compte Premium peut être activé presque immédiatement.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- FAQ -->
-        <section style="max-width:1000px; margin:0 auto; padding:60px 32px 20px 32px;">
-
-            <div style="text-align:center; margin-bottom:40px;">
-                <h2 style="font-size:42px; margin-bottom:12px;">Questions fréquentes</h2>
-                <p style="color:#9fb0c9; font-size:18px;">
-                    Tout ce que vous devez savoir avant de passer Premium
-                </p>
-            </div>
-
-            <div class="faq-container">
-
-                <div class="faq-item">
-                    <div class="faq-header">
-                        <span>💎 Que contient l’offre Premium ?</span>
-                        <div class="faq-icon">+</div>
-                    </div>
-                    <div class="faq-content">
-                        <p>
-                            L’offre Premium vous donne accès à tous les signaux, l’historique complet,
-                            les statistiques avancées, le PnL cumulatif, le capital simulé et le suivi en temps réel.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-header">
-                        <span>💳 Le paiement est-il sécurisé ?</span>
-                        <div class="faq-icon">+</div>
-                    </div>
-                    <div class="faq-content">
-                        <p>
-                            Oui, tous les paiements sont sécurisés via Stripe. Vos données bancaires ne sont jamais stockées sur notre plateforme.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-header">
-                        <span>⏱ Puis-je annuler à tout moment ?</span>
-                        <div class="faq-icon">+</div>
-                    </div>
-                    <div class="faq-content">
-                        <p>
-                            Oui, vous pouvez annuler votre abonnement à tout moment depuis votre espace client Stripe en un clic.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-header">
-                        <span>🔁 L’abonnement est-il reconduit automatiquement ?</span>
-                        <div class="faq-icon">+</div>
-                    </div>
-                    <div class="faq-content">
-                        <p>
-                            Oui, l’abonnement Premium est mensuel avec renouvellement automatique. Vous pouvez l’arrêter à tout moment depuis le portail client Stripe.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-header">
-                        <span>📊 Les signaux sont-ils fiables ?</span>
-                        <div class="faq-icon">+</div>
-                    </div>
-                    <div class="faq-content">
-                        <p>
-                            Les signaux sont générés à partir de stratégies analytiques avancées.
-                            Les performances passées ne garantissent pas les résultats futurs.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-header">
-                        <span>📲 Vais-je recevoir les signaux en temps réel ?</span>
-                        <div class="faq-icon">+</div>
-                    </div>
-                    <div class="faq-content">
-                        <p>
-                            Oui, les utilisateurs Premium reçoivent les signaux en temps réel via Telegram et directement sur le dashboard.
-                        </p>
-                    </div>
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- CTA FINAL -->
-        <section style="max-width:1200px; margin:0 auto; padding:0 32px 80px 32px;">
-            <div style="background:linear-gradient(90deg, #1d4ed8, #6d28d9); border-radius:24px; padding:34px; display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap; box-shadow:0 20px 40px rgba(37,99,235,0.18);">
-                <div>
-                    <h2 style="margin:0 0 10px 0; font-size:34px;">Prêt à débloquer la version complète ?</h2>
-                    <p style="margin:0; color:rgba(255,255,255,0.9); font-size:18px;">
-                        Passez Premium aujourd’hui et analysez réellement vos performances.
-                    </p>
-                </div>
-
-                <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                    {% if current_user.is_authenticated and not current_user.is_premium %}
-                        <form action="{{ url_for('create_checkout_session') }}" method="POST" style="margin:0;">
-                            <button type="submit" style="border:none; cursor:pointer; background:white; color:#0f172a; padding:14px 18px; border-radius:12px; font-weight:800;">
-                                Débloquer Premium
-                            </button>
-                        </form>
-                    {% elif current_user.is_authenticated and current_user.is_premium %}
-                        <a href="{{ url_for('dashboard') }}" style="text-decoration:none; background:white; color:#0f172a; padding:14px 18px; border-radius:12px; font-weight:800;">
-                            Aller au dashboard
-                        </a>
-                    {% else %}
-                        <a href="{{ url_for('register') }}" style="text-decoration:none; background:white; color:#0f172a; padding:14px 18px; border-radius:12px; font-weight:800;">
-                            Créer un compte
-                        </a>
-                    {% endif %}
-
-                    <a href="{{ url_for('dashboard') if current_user.is_authenticated else url_for('home') }}" style="text-decoration:none; background:rgba(255,255,255,0.14); color:white; padding:14px 18px; border-radius:12px; font-weight:800; border:1px solid rgba(255,255,255,0.18);">
-                        {% if current_user.is_authenticated %}Voir mon dashboard{% else %}Retour accueil{% endif %}
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- LEGAL NOTE -->
-        <section style="max-width:1200px; margin:0 auto; padding:0 32px 40px 32px; text-align:center;">
-            <p style="color:#8fa3bf; font-size:14px; line-height:1.8; margin:0;">
-                En souscrivant à l’offre Premium, vous acceptez un abonnement mensuel avec renouvellement automatique, résiliable à tout moment depuis le portail client Stripe.
-            </p>
-        </section>
+            <form action="{{ url_for('create_checkout_session') }}" method="POST">
+                <button type="submit" class="pricing-btn primary-btn">
+                    Passer Premium 🚀
+                </button>
+            </form>
+        </div>
 
     </div>
 
-    <script>
-    document.querySelectorAll(".faq-header").forEach(header => {
-        header.addEventListener("click", () => {
-            const item = header.parentElement;
-            const content = item.querySelector(".faq-content");
-            const isOpen = item.classList.contains("active");
+    <!-- SOCIAL PROOF -->
+    <section class="panel" style="margin-top:40px;">
+        <div class="panel-header">
+            <h2>Pourquoi choisir TradingBot ?</h2>
+        </div>
 
-            document.querySelectorAll(".faq-item").forEach(i => {
-                i.classList.remove("active");
-                i.querySelector(".faq-content").style.maxHeight = null;
-            });
+        <div class="responsive-three-cols">
 
-            if (!isOpen) {
-                item.classList.add("active");
-                content.style.maxHeight = content.scrollHeight + "px";
-            }
-        });
-    });
-    </script>
-<div style="text-align:center; margin-top:40px; font-size:13px; opacity:0.8;">
-    <a href="/mentions-legales">Mentions légales</a> |
-    <a href="/privacy">Politique de confidentialité</a> |
-    <a href="/cgu">Conditions générales</a>
-    <p style="margin-top:10px;">
-        © 2026 TradingBot — Tous droits réservés
-    </p>
+            <div class="stat-card">
+                <h3>⚡ Ultra rapide</h3>
+                <p>Signaux envoyés en temps réel avec latence minimale.</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>📈 Performance</h3>
+                <p>Optimisé pour maximiser le winrate et le rendement.</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>🧠 IA intégrée</h3>
+                <p>Briefing quotidien intelligent basé sur le marché réel.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="panel" style="margin-top:40px;">
+        <div class="panel-header">
+            <h2>Questions fréquentes</h2>
+        </div>
+
+        <div class="faq-container">
+
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFAQ(this)">
+                    <span>Le service est-il automatique ?</span>
+                    <div class="faq-icon">+</div>
+                </div>
+                <div class="faq-content">
+                    <p>
+                        Oui, les signaux sont générés automatiquement via des stratégies algorithmiques avancées.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFAQ(this)">
+                    <span>Puis-je annuler à tout moment ?</span>
+                    <div class="faq-icon">+</div>
+                </div>
+                <div class="faq-content">
+                    <p>
+                        Oui, tu peux annuler ton abonnement à tout moment depuis ton dashboard.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFAQ(this)">
+                    <span>Le briefing IA est-il fiable ?</span>
+                    <div class="faq-icon">+</div>
+                </div>
+                <div class="faq-content">
+                    <p>
+                        Le briefing utilise des données réelles + IA pour donner une analyse claire,
+                        mais il ne remplace pas une décision de trading personnelle.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <div style="text-align:center; margin-top:50px;">
+        <h2 style="margin-bottom:10px;">Prêt à passer au niveau pro ?</h2>
+        <p style="color:#9fb0c9; margin-bottom:20px;">
+            Rejoins les utilisateurs Premium et maximise tes résultats 📈
+        </p>
+
+        <form action="{{ url_for('create_checkout_session') }}" method="POST">
+            <button type="submit" class="primary-link-btn">
+                🚀 Devenir Premium maintenant
+            </button>
+        </form>
+    </div>
+
 </div>
+
+<!-- SCRIPT FAQ -->
+<script>
+function toggleFAQ(el) {
+    const item = el.parentElement;
+    item.classList.toggle("active");
+
+    const content = item.querySelector(".faq-content");
+
+    if (item.classList.contains("active")) {
+        content.style.maxHeight = content.scrollHeight + "px";
+    } else {
+        content.style.maxHeight = null;
+    }
+}
+</script>
+
 </body>
 </html>
