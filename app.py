@@ -10,6 +10,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from ai_briefing import generate_daily_briefing
+
 # =========================
 # CONFIG
 # =========================
@@ -345,7 +347,7 @@ def close_signal_as_result(signal: Signal, result_event: str) -> None:
     db.session.commit()
 
 
-def find_open_signal_for_closure(trade_id: str, asset: str) -> Signal | None:
+def find_open_signal_for_closure(trade_id: str, asset: str):
     signal = None
 
     if trade_id:
@@ -360,6 +362,61 @@ def find_open_signal_for_closure(trade_id: str, asset: str) -> Signal | None:
         )
 
     return signal
+
+
+# =========================
+# BRIEFING HELPERS
+# =========================
+def get_default_briefing_inputs():
+    btc_data = """
+Prix actuel : 84250 USD
+Variation 24h : +1.8%
+Tendance court terme : haussière
+Support : 83500
+Résistance : 85000
+"""
+
+    gold_data = """
+Prix actuel : 3085 USD
+Variation 24h : -0.4%
+Tendance court terme : neutre à baissière
+Support : 3068
+Résistance : 3100
+"""
+
+    eco_data = """
+- 14:30 : Inflation CPI USA
+- 16:00 : Indice de confiance des consommateurs
+- 20:00 : Discours d'un membre de la Fed
+"""
+
+    return btc_data, gold_data, eco_data
+
+
+def ensure_daily_briefing():
+    today = datetime.utcnow().date()
+    existing = DailyBriefing.query.filter_by(date=today).first()
+
+    if existing:
+        return existing
+
+    try:
+        btc_data, gold_data, eco_data = get_default_briefing_inputs()
+        content = generate_daily_briefing(btc_data, gold_data, eco_data)
+
+        briefing = DailyBriefing(
+            date=today,
+            content=content
+        )
+
+        db.session.add(briefing)
+        db.session.commit()
+        app.logger.info("Briefing du jour généré automatiquement.")
+        return briefing
+
+    except Exception as e:
+        app.logger.error("Erreur génération briefing: %s", repr(e))
+        return None
 
 
 # =========================
@@ -503,6 +560,10 @@ def dashboard():
     current_capital = round(capital, 2)
     capital_return_pct = round(((current_capital - initial_capital) / initial_capital) * 100, 2)
 
+    latest_briefing = None
+    if current_user.is_premium:
+        latest_briefing = ensure_daily_briefing()
+
     return render_template(
         "dashboard.html",
         email=current_user.email,
@@ -529,7 +590,8 @@ def dashboard():
         capital_values=capital_values,
         is_premium=current_user.is_premium,
         selected_asset=selected_asset,
-        available_assets=available_assets
+        available_assets=available_assets,
+        latest_briefing=latest_briefing
     )
 
 
@@ -555,9 +617,11 @@ def premium_data():
 @login_required
 @premium_required
 def briefing_page():
-    briefing = DailyBriefing.query.order_by(DailyBriefing.date.desc()).first()
+    briefing = ensure_daily_briefing()
+
     if not briefing:
-        return "<pre>Aucun briefing disponible pour le moment.</pre>"
+        return "<pre>Impossible de générer le briefing pour le moment.</pre>"
+
     return f"<pre>{briefing.content}</pre>"
 
 
@@ -1020,10 +1084,14 @@ def test_sl():
 
 
 # =========================
-# RUN
+# INIT DB
 # =========================
 with app.app_context():
     db.create_all()
 
+
+# =========================
+# RUN
+# =========================
 if __name__ == "__main__":
     app.run(debug=True)
