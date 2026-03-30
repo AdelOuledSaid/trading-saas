@@ -817,11 +817,13 @@ def stripe_webhook():
 # =========================
 @app.route("/webhook", methods=["POST"])
 def webhook():
+    raw_body = request.get_data(as_text=True).strip()
     data = request.get_json(silent=True)
 
+    # Ignore les requêtes texte / vides envoyées par erreur
     if not data:
-        app.logger.warning("Webhook TradingView: JSON manquant")
-        return {"error": "JSON manquant"}, 400
+        app.logger.warning("Webhook TradingView ignoré (non JSON): %s", raw_body)
+        return {"status": "ignored", "reason": "non-json payload"}, 200
 
     app.logger.info("Webhook TradingView reçu: %s", data)
 
