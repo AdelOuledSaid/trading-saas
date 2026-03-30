@@ -10,71 +10,90 @@
 
 <div class="pricing-page">
 
-    <!-- HEADER -->
     <div class="pricing-header">
-        <h1>💎 Passe au niveau supérieur</h1>
-        <p>
-            Accède aux signaux avancés, au briefing IA quotidien et aux statistiques professionnelles.
-        </p>
+        <h1>💎 Choisis ton plan</h1>
+        <p>Commence simple, monte en puissance, ou passe en VIP.</p>
     </div>
 
-    <!-- PRICING -->
-    <div class="pricing-grid">
+    <div class="pricing-grid pricing-grid-3">
 
-        <!-- FREE PLAN -->
         <div class="pricing-card">
-            <h2>Gratuit</h2>
-            <div class="price">0€ <span>/ mois</span></div>
-
+            <h2>Basic</h2>
+            <div class="price">9€ <span>/ mois</span></div>
             <ul>
-                <li>✔️ Accès aux signaux en temps réel</li>
+                <li>✔️ Signaux en temps réel</li>
                 <li>✔️ Dashboard basique</li>
                 <li>✔️ Historique limité</li>
                 <li>❌ Briefing IA quotidien</li>
-                <li>❌ Statistiques avancées</li>
-                <li>❌ PnL & capital simulé</li>
+                <li>❌ Stats avancées</li>
+                <li>❌ Telegram VIP</li>
             </ul>
 
-            <a href="{{ url_for('dashboard') }}" class="pricing-btn secondary-btn">
-                Plan actuel
-            </a>
+            {% if user_plan == "basic" %}
+                <a href="{{ url_for('dashboard') }}" class="pricing-btn secondary-btn">Plan actuel</a>
+            {% else %}
+                <form action="{{ url_for('create_checkout_session') }}" method="POST">
+                    <input type="hidden" name="plan" value="basic">
+                    <button type="submit" class="pricing-btn secondary-btn">Choisir Basic</button>
+                </form>
+            {% endif %}
         </div>
 
-        <!-- PREMIUM PLAN -->
         <div class="pricing-card premium-plan">
-            <div class="badge-top">🔥 RECOMMANDÉ</div>
-
+            <div class="badge-top">🔥 POPULAIRE</div>
             <h2>Premium</h2>
             <div class="price">19€ <span>/ mois</span></div>
-
             <ul>
-                <li>✔️ Tous les signaux en temps réel</li>
+                <li>✔️ Tous les signaux</li>
                 <li>✔️ Historique complet</li>
                 <li>✔️ Statistiques avancées</li>
                 <li>✔️ PnL cumulatif</li>
                 <li>✔️ Capital simulé</li>
-                <li>🧠 Briefing IA quotidien (BTC + Gold)</li>
-                <li>📊 Dashboard professionnel</li>
-                <li>⚡ Accès prioritaire aux nouvelles features</li>
+                <li>✔️ Briefing IA quotidien</li>
+                <li>❌ Telegram VIP</li>
             </ul>
 
-            <form action="{{ url_for('create_checkout_session') }}" method="POST">
-                <button type="submit" class="pricing-btn primary-btn">
-                    Passer Premium 🚀
-                </button>
-            </form>
+            {% if user_plan == "premium" %}
+                <a href="{{ url_for('dashboard') }}" class="pricing-btn primary-btn">Plan actuel</a>
+            {% else %}
+                <form action="{{ url_for('create_checkout_session') }}" method="POST">
+                    <input type="hidden" name="plan" value="premium">
+                    <button type="submit" class="pricing-btn primary-btn">Choisir Premium</button>
+                </form>
+            {% endif %}
+        </div>
+
+        <div class="pricing-card">
+            <div class="badge-top">👑 VIP</div>
+            <h2>VIP</h2>
+            <div class="price">39€ <span>/ mois</span></div>
+            <ul>
+                <li>✔️ Tout le Premium</li>
+                <li>✔️ Telegram VIP privé</li>
+                <li>✔️ Alertes prioritaires</li>
+                <li>✔️ Accès anticipé aux nouveautés</li>
+                <li>✔️ Briefings enrichis</li>
+                <li>✔️ Support prioritaire</li>
+            </ul>
+
+            {% if user_plan == "vip" %}
+                <a href="{{ url_for('dashboard') }}" class="pricing-btn primary-btn">Plan actuel</a>
+            {% else %}
+                <form action="{{ url_for('create_checkout_session') }}" method="POST">
+                    <input type="hidden" name="plan" value="vip">
+                    <button type="submit" class="pricing-btn primary-btn">Choisir VIP</button>
+                </form>
+            {% endif %}
         </div>
 
     </div>
 
-    <!-- SOCIAL PROOF -->
     <section class="panel" style="margin-top:40px;">
         <div class="panel-header">
             <h2>Pourquoi choisir TradingBot ?</h2>
         </div>
 
         <div class="responsive-three-cols">
-
             <div class="stat-card">
                 <h3>⚡ Ultra rapide</h3>
                 <p>Signaux envoyés en temps réel avec latence minimale.</p>
@@ -89,89 +108,9 @@
                 <h3>🧠 IA intégrée</h3>
                 <p>Briefing quotidien intelligent basé sur le marché réel.</p>
             </div>
-
         </div>
     </section>
-
-    <!-- FAQ -->
-    <section class="panel" style="margin-top:40px;">
-        <div class="panel-header">
-            <h2>Questions fréquentes</h2>
-        </div>
-
-        <div class="faq-container">
-
-            <div class="faq-item">
-                <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>Le service est-il automatique ?</span>
-                    <div class="faq-icon">+</div>
-                </div>
-                <div class="faq-content">
-                    <p>
-                        Oui, les signaux sont générés automatiquement via des stratégies algorithmiques avancées.
-                    </p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>Puis-je annuler à tout moment ?</span>
-                    <div class="faq-icon">+</div>
-                </div>
-                <div class="faq-content">
-                    <p>
-                        Oui, tu peux annuler ton abonnement à tout moment depuis ton dashboard.
-                    </p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>Le briefing IA est-il fiable ?</span>
-                    <div class="faq-icon">+</div>
-                </div>
-                <div class="faq-content">
-                    <p>
-                        Le briefing utilise des données réelles + IA pour donner une analyse claire,
-                        mais il ne remplace pas une décision de trading personnelle.
-                    </p>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- CTA FINAL -->
-    <div style="text-align:center; margin-top:50px;">
-        <h2 style="margin-bottom:10px;">Prêt à passer au niveau pro ?</h2>
-        <p style="color:#9fb0c9; margin-bottom:20px;">
-            Rejoins les utilisateurs Premium et maximise tes résultats 📈
-        </p>
-
-        <form action="{{ url_for('create_checkout_session') }}" method="POST">
-            <button type="submit" class="primary-link-btn">
-                🚀 Devenir Premium maintenant
-            </button>
-        </form>
-    </div>
 
 </div>
-
-<!-- SCRIPT FAQ -->
-<script>
-function toggleFAQ(el) {
-    const item = el.parentElement;
-    item.classList.toggle("active");
-
-    const content = item.querySelector(".faq-content");
-
-    if (item.classList.contains("active")) {
-        content.style.maxHeight = content.scrollHeight + "px";
-    } else {
-        content.style.maxHeight = null;
-    }
-}
-</script>
-
 </body>
 </html>

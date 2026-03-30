@@ -12,6 +12,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from ai_briefing import generate_daily_briefing
 from market_data import get_btc_data, get_gold_data, get_economic_calendar
+
 # =========================
 # CONFIG
 # =========================
@@ -40,7 +41,9 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
 STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
-STRIPE_PRICE_ID = os.getenv("STRIPE_PRICE_ID", "")
+STRIPE_PRICE_BASIC = os.getenv("STRIPE_PRICE_BASIC", "")
+STRIPE_PRICE_PREMIUM = os.getenv("STRIPE_PRICE_PREMIUM", "")
+STRIPE_PRICE_VIP = os.getenv("STRIPE_PRICE_VIP", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 
 TRADINGVIEW_WEBHOOK_SECRET = os.getenv("TRADINGVIEW_WEBHOOK_SECRET", "")
@@ -75,6 +78,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(255), nullable=False)
 
     is_premium = db.Column(db.Boolean, default=False, nullable=False)
+    plan = db.Column(db.String(20), default="free", nullable=False)
 
     stripe_customer_id = db.Column(db.String(255), nullable=True)
     stripe_subscription_id = db.Column(db.String(255), nullable=True)
@@ -240,6 +244,59 @@ def send_telegram_message(message: str) -> None:
 
 
 # =========================
+# PLAN HELPERS
+# =========================
+def get_price_id_for_plan(plan: str) -> str:
+    plan = (plan or "").strip().lower()
+
+    if plan == "basic":
+        return STRIPE_PRICE_BASIC
+    if plan == "premium":
+        return STRIPE_PRICE_PREMIUM
+    if plan == "vip":
+        return STRIPE_PRICE_VIP
+
+    return ""
+
+
+def normalize_plan(plan: str) -> str:
+    plan = (plan or "").strip().lower()
+    if plan in ["basic", "premium", "vip"]:
+        return plan
+    return "free"
+
+
+def user_has_plan(user, required_plan: str) -> bool:
+    hierarchy = {
+        "free": 0,
+        "basic": 1,
+        "premium": 2,
+        "vip": 3,
+    }
+    current = hierarchy.get((user.plan or "free").lower(), 0)
+    needed = hierarchy.get(required_plan.lower(), 0)
+    return current >= needed
+
+
+def plan_required(required_plan):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated:
+                return redirect(url_for("login"))
+
+            sync_user_premium_status(current_user)
+
+            if not user_has_plan(current_user, required_plan):
+                flash(f"Accès réservé au plan {required_plan.upper()} ou supérieur.")
+                return redirect(url_for("pricing"))
+
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
+
+# =========================
 # HELPERS
 # =========================
 def get_subscription_status(subscription_id: str):
@@ -268,15 +325,27 @@ def sync_user_premium_status(user) -> None:
 
     active = has_active_stripe_subscription(user)
 
-    if active and not user.is_premium:
-        user.is_premium = True
-        db.session.commit()
-        app.logger.info("Premium synchronisé à TRUE pour %s", user.email)
+    if active:
+        changed = False
 
-    elif not active and user.is_premium and user.stripe_subscription_id:
-        user.is_premium = False
-        db.session.commit()
-        app.logger.info("Premium synchronisé à FALSE pour %s", user.email)
+        if not user.is_premium:
+            user.is_premium = True
+            changed = True
+
+        if (user.plan or "free") == "free":
+            user.plan = "basic"
+            changed = True
+
+        if changed:
+            db.session.commit()
+            app.logger.info("Premium synchronisé à TRUE pour %s", user.email)
+
+    else:
+        if user.is_premium and user.stripe_subscription_id:
+            user.is_premium = False
+            user.plan = "free"
+            db.session.commit()
+            app.logger.info("Premium synchronisé à FALSE pour %s", user.email)
 
 
 def premium_required(f):
@@ -420,6 +489,8 @@ def ensure_daily_briefing():
     except Exception as e:
         app.logger.error("Erreur génération briefing: %s", repr(e))
         return None
+
+
 # =========================
 # ROUTES
 # =========================
@@ -487,7 +558,8 @@ def pricing():
 
     return render_template(
         "pricing.html",
-        stripe_publishable_key=STRIPE_PUBLISHABLE_KEY
+        stripe_publishable_key=STRIPE_PUBLISHABLE_KEY,
+        user_plan=current_user.plan if current_user.is_authenticated else "free"
     )
 
 
@@ -562,7 +634,7 @@ def dashboard():
     capital_return_pct = round(((current_capital - initial_capital) / initial_capital) * 100, 2)
 
     latest_briefing = None
-    if current_user.is_premium:
+    if user_has_plan(current_user, "premium"):
         latest_briefing = ensure_daily_briefing()
 
     return render_template(
@@ -590,6 +662,7 @@ def dashboard():
         capital_labels=capital_labels,
         capital_values=capital_values,
         is_premium=current_user.is_premium,
+        user_plan=current_user.plan,
         selected_asset=selected_asset,
         available_assets=available_assets,
         latest_briefing=latest_briefing
@@ -602,6 +675,7 @@ def debug_user():
     return {
         "email": current_user.email,
         "is_premium": current_user.is_premium,
+        "plan": current_user.plan,
         "stripe_customer_id": current_user.stripe_customer_id,
         "stripe_subscription_id": current_user.stripe_subscription_id,
     }
@@ -609,14 +683,14 @@ def debug_user():
 
 @app.route("/premium-data")
 @login_required
-@premium_required
+@plan_required("basic")
 def premium_data():
     return "🔥 Données premium secrètes"
 
 
 @app.route("/briefing")
 @login_required
-@premium_required
+@plan_required("premium")
 def briefing_page():
     briefing = ensure_daily_briefing()
     return render_template("briefing.html", briefing=briefing)
@@ -643,17 +717,18 @@ def cgu():
 @app.route("/create-checkout-session", methods=["POST"])
 @login_required
 def create_checkout_session():
-    if current_user.is_premium:
-        flash("Votre compte est déjà Premium.")
+    selected_plan = normalize_plan(request.form.get("plan"))
+    price_id = get_price_id_for_plan(selected_plan)
+
+    if selected_plan == "free" or not price_id:
+        flash("Plan invalide.")
         return redirect(url_for("pricing"))
 
     if has_active_stripe_subscription(current_user):
-        current_user.is_premium = True
-        db.session.commit()
         flash("Un abonnement actif existe déjà sur votre compte.")
         return redirect(url_for("pricing"))
 
-    if not STRIPE_SECRET_KEY or not STRIPE_PRICE_ID:
+    if not STRIPE_SECRET_KEY:
         flash("Stripe n'est pas configuré correctement.")
         return redirect(url_for("pricing"))
 
@@ -667,12 +742,13 @@ def create_checkout_session():
         session = stripe.checkout.Session.create(
             mode="subscription",
             payment_method_types=["card"],
-            line_items=[{"price": STRIPE_PRICE_ID, "quantity": 1}],
+            line_items=[{"price": price_id, "quantity": 1}],
             customer=current_user.stripe_customer_id,
             client_reference_id=str(current_user.id),
             metadata={
                 "user_id": str(current_user.id),
                 "user_email": current_user.email,
+                "plan": selected_plan,
             },
             success_url=f"{DOMAIN}/success?session_id={{CHECKOUT_SESSION_ID}}",
             cancel_url=f"{DOMAIN}/cancel",
@@ -722,6 +798,8 @@ def success():
 
             customer_id = session_data.get("customer")
             subscription_id = session_data.get("subscription")
+            metadata = session_data.get("metadata", {})
+            selected_plan = normalize_plan(metadata.get("plan"))
 
             if customer_id and not current_user.stripe_customer_id:
                 current_user.stripe_customer_id = customer_id
@@ -731,6 +809,9 @@ def success():
 
             status = get_subscription_status(subscription_id) if subscription_id else None
             current_user.is_premium = status in ["trialing", "active", "past_due"]
+
+            if current_user.is_premium and selected_plan != "free":
+                current_user.plan = selected_plan
 
             db.session.commit()
 
@@ -778,6 +859,7 @@ def stripe_webhook():
             user_id = metadata.get("user_id") or data_object.get("client_reference_id")
             customer_id = data_object.get("customer")
             subscription_id = data_object.get("subscription")
+            selected_plan = normalize_plan(metadata.get("plan"))
 
             customer_email = data_object.get("customer_email")
             if not customer_email:
@@ -797,6 +879,8 @@ def stripe_webhook():
             if user:
                 user.stripe_customer_id = customer_id
                 user.stripe_subscription_id = subscription_id
+                user.plan = selected_plan if selected_plan != "free" else "basic"
+                user.is_premium = True
                 db.session.commit()
 
                 send_telegram_message(
@@ -805,7 +889,8 @@ def stripe_webhook():
 
 👤 <b>Utilisateur :</b> {user.email}
 🧾 <b>Subscription :</b> {subscription_id}
-💳 <b>Statut :</b> En attente de synchronisation
+💎 <b>Plan :</b> {user.plan.upper()}
+💳 <b>Statut :</b> Premium activé
 """.strip()
                 )
 
@@ -824,6 +909,10 @@ def stripe_webhook():
                 user.stripe_customer_id = customer_id
                 user.stripe_subscription_id = subscription_id
                 user.is_premium = status in ["trialing", "active", "past_due"]
+
+                if user.is_premium and user.plan == "free":
+                    user.plan = "basic"
+
                 db.session.commit()
 
         elif event_type == "customer.subscription.deleted":
@@ -838,6 +927,7 @@ def stripe_webhook():
 
             if user:
                 user.is_premium = False
+                user.plan = "free"
                 user.stripe_subscription_id = None
                 db.session.commit()
 
@@ -847,6 +937,7 @@ def stripe_webhook():
 
 👤 <b>Utilisateur :</b> {user.email}
 🧾 <b>Subscription :</b> {subscription_id}
+🔒 <b>Plan :</b> FREE
 🔒 <b>Premium :</b> désactivé
 """.strip()
                 )
@@ -863,6 +954,8 @@ def stripe_webhook():
 
             if user:
                 user.is_premium = True
+                if user.plan == "free":
+                    user.plan = "basic"
                 if customer_id:
                     user.stripe_customer_id = customer_id
                 if subscription_id:
