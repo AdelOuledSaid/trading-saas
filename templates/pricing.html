@@ -53,6 +53,10 @@
                 <li>❌ Telegram VIP</li>
             </ul>
 
+            <div class="offer-persuasion">
+                Le meilleur équilibre entre prix, performance et fonctionnalités.
+            </div>
+
             {% if user_plan == "premium" %}
                 <a href="{{ url_for('dashboard') }}" class="pricing-btn primary-btn">Plan actuel</a>
             {% else %}
@@ -76,6 +80,10 @@
                 <li>✔️ Support prioritaire</li>
             </ul>
 
+            <div class="offer-persuasion">
+                Pour les utilisateurs qui veulent l’expérience la plus complète.
+            </div>
+
             {% if user_plan == "vip" %}
                 <a href="{{ url_for('dashboard') }}" class="pricing-btn primary-btn">Plan actuel</a>
             {% else %}
@@ -88,30 +96,31 @@
 
     </div>
 
-    <!-- PREUVES -->
+    <!-- PROOF -->
     <section class="panel" style="margin-top:40px;">
         <div class="panel-header">
             <h2>📊 Résultats récents</h2>
         </div>
 
         <div class="responsive-three-cols">
-            <div class="stat-card" style="text-align:center;">
+            <div class="stat-card conversion-stat" style="text-align:center;">
                 <h3>+327%</h3>
                 <p style="margin-top:10px; color:#9fb0c9;">Performance cumulée</p>
             </div>
 
-            <div class="stat-card" style="text-align:center;">
+            <div class="stat-card conversion-stat" style="text-align:center;">
                 <h3>73%</h3>
                 <p style="margin-top:10px; color:#9fb0c9;">Winrate moyen</p>
             </div>
 
-            <div class="stat-card" style="text-align:center;">
+            <div class="stat-card conversion-stat" style="text-align:center;">
                 <h3>+1200 trades</h3>
                 <p style="margin-top:10px; color:#9fb0c9;">Historique analysé</p>
             </div>
         </div>
     </section>
 
+    <!-- WHY -->
     <section class="panel" style="margin-top:40px;">
         <div class="panel-header">
             <h2>Pourquoi choisir TradingBot ?</h2>
@@ -135,6 +144,17 @@
         </div>
     </section>
 
+    <!-- URGENCY -->
+    <section class="panel fomo-panel" style="margin-top:40px; text-align:center;">
+        <div class="fomo-badge">⚠️ Offre limitée</div>
+        <h2 style="margin:18px 0 10px 0;">Les places VIP restent limitées</h2>
+        <p style="color:#9fb0c9; max-width:760px; margin:0 auto; line-height:1.8;">
+            Pour préserver la qualité du service, le nombre d’utilisateurs VIP reste limité.
+            Rejoins maintenant la plateforme avant la prochaine hausse de prix.
+        </p>
+    </section>
+
+    <!-- FAQ -->
     <section class="panel" style="margin-top:40px;">
         <div class="panel-header">
             <h2>Questions fréquentes</h2>
