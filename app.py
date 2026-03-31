@@ -1,9 +1,10 @@
 import os
-from datetime import datetime
-from functools import wraps
-
+import random
 import requests
 import stripe
+
+from datetime import datetime, timedelta
+from functools import wraps
 from dotenv import load_dotenv
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -38,6 +39,7 @@ app.config["PREFERRED_URL_SCHEME"] = "https"
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
+TELEGRAM_VIP_INVITE_LINK = os.getenv("TELEGRAM_VIP_INVITE_LINK", "")
 
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
 STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
@@ -45,7 +47,7 @@ STRIPE_PRICE_BASIC = os.getenv("STRIPE_PRICE_BASIC", "")
 STRIPE_PRICE_PREMIUM = os.getenv("STRIPE_PRICE_PREMIUM", "")
 STRIPE_PRICE_VIP = os.getenv("STRIPE_PRICE_VIP", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
-TELEGRAM_VIP_INVITE_LINK = os.getenv("TELEGRAM_VIP_INVITE_LINK", "")
+
 TRADINGVIEW_WEBHOOK_SECRET = os.getenv("TRADINGVIEW_WEBHOOK_SECRET", "")
 DOMAIN = os.getenv("DOMAIN", "http://127.0.0.1:5000").rstrip("/")
 
@@ -98,7 +100,7 @@ class Signal(db.Model):
     stop_loss = db.Column(db.Float, nullable=True)
     take_profit = db.Column(db.Float, nullable=True)
 
-    status = db.Column(db.String(20), default="OPEN", nullable=False)  # OPEN / WIN / LOSS
+    status = db.Column(db.String(20), default="OPEN", nullable=False)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     closed_at = db.Column(db.DateTime, nullable=True)
@@ -339,30 +341,12 @@ def sync_user_premium_status(user) -> None:
         if changed:
             db.session.commit()
             app.logger.info("Premium synchronisé à TRUE pour %s", user.email)
-
     else:
         if user.is_premium and user.stripe_subscription_id:
             user.is_premium = False
             user.plan = "free"
             db.session.commit()
             app.logger.info("Premium synchronisé à FALSE pour %s", user.email)
-
-
-def premium_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not current_user.is_authenticated:
-            return redirect(url_for("login"))
-
-        sync_user_premium_status(current_user)
-
-        if not current_user.is_premium:
-            flash("Accès réservé aux utilisateurs Premium.")
-            return redirect(url_for("pricing"))
-
-        return f(*args, **kwargs)
-
-    return decorated_function
 
 
 def calculate_trade_pnl(signal) -> float:
@@ -436,32 +420,6 @@ def find_open_signal_for_closure(trade_id: str, asset: str):
 # =========================
 # BRIEFING HELPERS
 # =========================
-def get_default_briefing_inputs():
-    btc_data = """
-Prix actuel : 84250 USD
-Variation 24h : +1.8%
-Tendance court terme : haussière
-Support : 83500
-Résistance : 85000
-"""
-
-    gold_data = """
-Prix actuel : 3085 USD
-Variation 24h : -0.4%
-Tendance court terme : neutre à baissière
-Support : 3068
-Résistance : 3100
-"""
-
-    eco_data = """
-- 14:30 : Inflation CPI USA
-- 16:00 : Indice de confiance des consommateurs
-- 20:00 : Discours d'un membre de la Fed
-"""
-
-    return btc_data, gold_data, eco_data
-
-
 def ensure_daily_briefing():
     today = datetime.utcnow().date()
     existing = DailyBriefing.query.filter_by(date=today).first()
@@ -489,6 +447,99 @@ def ensure_daily_briefing():
     except Exception as e:
         app.logger.error("Erreur génération briefing: %s", repr(e))
         return None
+
+
+# =========================
+# FAKE DATA HELPERS
+# =========================
+def get_fake_asset_base_price(asset: str) -> float:
+    prices = {
+        "BTCUSD": 68000,
+        "ETHUSD": 3200,
+        "SOLUSD": 140,
+        "XRPUSD": 0.62,
+        "GOLD": 3050,
+        "US100": 18200,
+        "US500": 5400,
+        "FRA40": 8100,
+    }
+    return prices.get(asset.upper(), 1000)
+
+
+def generate_fake_signal(asset: str, created_at: datetime, idx: int) -> Signal:
+    asset = asset.upper()
+    action = random.choice(["BUY", "SELL"])
+
+    base_price = get_fake_asset_base_price(asset)
+
+    if asset == "BTCUSD":
+        entry_price = round(base_price + random.uniform(-2500, 2500), 2)
+        sl_distance = random.uniform(120, 260)
+        tp_distance = random.uniform(180, 420)
+    elif asset == "ETHUSD":
+        entry_price = round(base_price + random.uniform(-180, 180), 2)
+        sl_distance = random.uniform(20, 60)
+        tp_distance = random.uniform(30, 90)
+    elif asset == "SOLUSD":
+        entry_price = round(base_price + random.uniform(-12, 12), 2)
+        sl_distance = random.uniform(3, 8)
+        tp_distance = random.uniform(5, 14)
+    elif asset == "XRPUSD":
+        entry_price = round(base_price + random.uniform(-0.08, 0.08), 4)
+        sl_distance = random.uniform(0.01, 0.025)
+        tp_distance = random.uniform(0.015, 0.04)
+    elif asset == "GOLD":
+        entry_price = round(base_price + random.uniform(-35, 35), 2)
+        sl_distance = random.uniform(4, 10)
+        tp_distance = random.uniform(7, 18)
+    elif asset == "US100":
+        entry_price = round(base_price + random.uniform(-350, 350), 2)
+        sl_distance = random.uniform(45, 110)
+        tp_distance = random.uniform(70, 190)
+    elif asset == "US500":
+        entry_price = round(base_price + random.uniform(-90, 90), 2)
+        sl_distance = random.uniform(12, 26)
+        tp_distance = random.uniform(18, 42)
+    elif asset == "FRA40":
+        entry_price = round(base_price + random.uniform(-180, 180), 2)
+        sl_distance = random.uniform(22, 50)
+        tp_distance = random.uniform(35, 85)
+    else:
+        entry_price = round(base_price + random.uniform(-100, 100), 2)
+        sl_distance = random.uniform(10, 20)
+        tp_distance = random.uniform(15, 30)
+
+    decimals = 4 if asset == "XRPUSD" else 2
+
+    if action == "BUY":
+        stop_loss = round(entry_price - sl_distance, decimals)
+        take_profit = round(entry_price + tp_distance, decimals)
+    else:
+        stop_loss = round(entry_price + sl_distance, decimals)
+        take_profit = round(entry_price - tp_distance, decimals)
+
+    r = random.random()
+    if r < 0.68:
+        status = "WIN"
+        closed_at = created_at + timedelta(hours=random.randint(1, 18), minutes=random.randint(5, 55))
+    elif r < 0.90:
+        status = "LOSS"
+        closed_at = created_at + timedelta(hours=random.randint(1, 18), minutes=random.randint(5, 55))
+    else:
+        status = "OPEN"
+        closed_at = None
+
+    return Signal(
+        trade_id=f"FAKE_{asset}_{created_at.strftime('%Y%m%d%H%M%S')}_{idx}",
+        asset=asset,
+        action=action,
+        entry_price=entry_price,
+        stop_loss=stop_loss,
+        take_profit=take_profit,
+        status=status,
+        created_at=created_at,
+        closed_at=closed_at
+    )
 
 
 # =========================
@@ -600,7 +651,6 @@ def dashboard():
     winrate = round((total_win / closed_trades) * 100, 2) if closed_trades > 0 else 0
 
     last_signal = all_signals[-1] if all_signals else None
-
     estimated_pnl = round(sum(calculate_trade_pnl(s) for s in all_signals), 2)
 
     today = datetime.utcnow().date()
@@ -824,6 +874,7 @@ def success():
 
     return render_template("success.html", session_data=session_data, vip_link=vip_link)
 
+
 @app.route("/cancel")
 @login_required
 def cancel():
@@ -896,6 +947,17 @@ def stripe_webhook():
 💳 <b>Statut :</b> Premium activé
 """.strip()
                 )
+
+                if user.plan == "vip":
+                    send_telegram_message(
+                        f"""
+👑 <b>NOUVEAU CLIENT VIP</b>
+
+👤 <b>Utilisateur :</b> {user.email}
+🧾 <b>Subscription :</b> {subscription_id}
+🔗 <b>Action :</b> envoyer / vérifier l'accès Telegram VIP
+""".strip()
+                    )
 
         elif event_type == "customer.subscription.updated":
             customer_id = data_object.get("customer")
@@ -1124,6 +1186,52 @@ def webhook():
     return {"error": "Event inconnu"}, 400
 
 
+# =========================
+# FAKE DATA ROUTES
+# =========================
+@app.route("/seed-fake-signals")
+def seed_fake_signals():
+    existing_fake = Signal.query.filter(Signal.trade_id.like("FAKE_%")).count()
+    if existing_fake > 0:
+        return f"Des fake signals existent déjà ({existing_fake}). Supprime-les d'abord si tu veux regénérer."
+
+    assets = ["BTCUSD", "ETHUSD", "SOLUSD", "XRPUSD", "GOLD", "US100", "US500", "FRA40"]
+    total_to_create = 120
+    now = datetime.utcnow()
+
+    fake_signals = []
+
+    for i in range(total_to_create):
+        asset = random.choice(assets)
+        days_ago = random.randint(0, 44)
+        hours_ago = random.randint(0, 23)
+        minutes_ago = random.randint(0, 59)
+
+        created_at = now - timedelta(days=days_ago, hours=hours_ago, minutes=minutes_ago)
+        signal = generate_fake_signal(asset=asset, created_at=created_at, idx=i + 1)
+        fake_signals.append(signal)
+
+    db.session.bulk_save_objects(fake_signals)
+    db.session.commit()
+
+    return f"{len(fake_signals)} fake signals ajoutés avec succès."
+
+
+@app.route("/delete-fake-signals")
+def delete_fake_signals():
+    fake_signals = Signal.query.filter(Signal.trade_id.like("FAKE_%")).all()
+
+    count = len(fake_signals)
+    for signal in fake_signals:
+        db.session.delete(signal)
+
+    db.session.commit()
+    return f"{count} fake signals supprimés."
+
+
+# =========================
+# TEST ROUTES
+# =========================
 @app.route("/test-telegram")
 def test_telegram():
     test_message = """
