@@ -3,110 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paiement réussi</title>
+    <title>Paiement réussi - ApexSignals</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
+
 <body class="dashboard-body">
 
-    <div style="min-height:100vh; background: radial-gradient(circle at top, rgba(16,185,129,0.14), transparent 35%), linear-gradient(180deg, #06122d 0%, #030b1f 100%); color:white;">
+{% include "partials/navbar.html" %}
 
-        {% include "partials/navbar.html" %}
+<section style="max-width:900px; margin:auto; padding:80px 20px; text-align:center;">
 
-        <section style="max-width:1000px; margin:0 auto; padding:80px 32px;">
-            <div style="background:linear-gradient(180deg, rgba(8,18,44,0.98), rgba(5,13,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:28px; padding:42px; box-shadow:0 20px 50px rgba(0,0,0,0.28); text-align:center;">
+    <h1 style="font-size:50px;">✅ Paiement réussi</h1>
 
-                <div style="display:inline-block; padding:8px 14px; border-radius:999px; background:rgba(16,185,129,0.12); color:#34d399; font-size:13px; font-weight:700; margin-bottom:18px;">
-                    ✅ Paiement confirmé
-                </div>
+    <p style="color:#9fb0c9; font-size:18px;">
+        Bienvenue sur ApexSignals 🚀
+    </p>
 
-                <h1 style="margin:0 0 12px 0; font-size:52px; font-weight:900; letter-spacing:-1.2px;">
-                    Bienvenue dans l’espace {{ current_user.plan|capitalize }}
-                </h1>
-
-                <p style="max-width:760px; margin:0 auto 22px auto; color:#a7b6cf; font-size:18px; line-height:1.8;">
-                    Merci pour votre abonnement. Votre accès est maintenant actif.
-                    Vous pouvez profiter de toutes les fonctionnalités selon votre plan.
-                </p>
-
-                {% if session_data %}
-                <div style="max-width:620px; margin:0 auto 24px auto; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:16px; padding:16px 18px;">
-                    <p style="margin:0; color:#dbe7ff; word-break:break-word;">
-                        <strong>ID session :</strong> {{ session_data.id }}
-                    </p>
-                </div>
-                {% endif %}
-
-                <!-- 🔥 VIP TELEGRAM BLOCK -->
-                {% if current_user.plan == "vip" and vip_link %}
-                <div style="margin:30px auto; max-width:700px; background:linear-gradient(90deg, rgba(245,158,11,0.15), rgba(217,119,6,0.15)); border:1px solid rgba(245,158,11,0.28); border-radius:20px; padding:26px; box-shadow:0 10px 30px rgba(245,158,11,0.12);">
-                    
-                    <div style="font-size:40px; margin-bottom:10px;">👑</div>
-
-                    <h2 style="margin-bottom:10px; color:white; font-size:30px; font-weight:900;">
-                        Accès VIP Telegram activé
-                    </h2>
-
-                    <p style="color:#fde68a; line-height:1.7; margin-bottom:20px;">
-                        Votre plan VIP vous donne accès au canal privé Telegram avec les signaux en temps réel,
-                        alertes prioritaires et contenu exclusif.
-                    </p>
-
-                    <a href="{{ vip_link }}" target="_blank"
-                       style="display:inline-block; background:linear-gradient(90deg,#f59e0b,#d97706); color:white; padding:14px 22px; border-radius:12px; font-weight:900; box-shadow:0 10px 25px rgba(245,158,11,0.25);">
-                        🚀 Rejoindre le Telegram VIP
-                    </a>
-
-                    <p style="margin-top:14px; font-size:13px; color:#fde68a;">
-                        ⚠️ Ce lien est privé. Ne le partagez pas.
-                    </p>
-                </div>
-                {% endif %}
-
-                <!-- FEATURES -->
-                <div class="responsive-three-cols" style="margin:30px 0;">
-                    <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
-                        <div style="font-size:28px; margin-bottom:10px;">📊</div>
-                        <h3 style="margin:0 0 8px 0;">Stats avancées</h3>
-                        <p style="margin:0; color:#9fb0c9; line-height:1.7;">
-                            Accès au winrate, au PnL et aux analyses détaillées.
-                        </p>
-                    </div>
-
-                    <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
-                        <div style="font-size:28px; margin-bottom:10px;">📈</div>
-                        <h3 style="margin:0 0 8px 0;">Historique complet</h3>
-                        <p style="margin:0; color:#9fb0c9; line-height:1.7;">
-                            Consultez tous vos signaux sans limitation.
-                        </p>
-                    </div>
-
-                    <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
-                        <div style="font-size:28px; margin-bottom:10px;">💎</div>
-                        <h3 style="margin:0 0 8px 0;">Expérience Premium</h3>
-                        <p style="margin:0; color:#9fb0c9; line-height:1.7;">
-                            Une expérience complète et professionnelle.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- CTA -->
-                <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:22px;">
-                    <a href="{{ url_for('dashboard') }}" style="text-decoration:none; background:linear-gradient(90deg, #10b981, #059669); color:white; padding:14px 18px; border-radius:12px; font-weight:800;">
-                        Aller au dashboard
-                    </a>
-
-                    <a href="{{ url_for('pricing') }}" style="text-decoration:none; background:rgba(255,255,255,0.05); color:white; padding:14px 18px; border-radius:12px; font-weight:800;">
-                        Voir mon offre
-                    </a>
-                </div>
-
-                <p style="margin:22px 0 0 0; color:#8ea2c7; font-size:14px;">
-                    Si l’activation n’apparaît pas immédiatement, rechargez la page du dashboard.
-                </p>
-            </div>
-        </section>
-
+    <div style="margin-top:30px;">
+        <a href="{{ url_for('dashboard') }}" class="primary-link-btn">
+            Accéder au dashboard
+        </a>
     </div>
+
+    <!-- VIP TELEGRAM -->
+    <div style="margin-top:40px;">
+        <p>🔥 Accès VIP Telegram :</p>
+
+        <a href="https://t.me/TON_LIEN_ICI"
+           target="_blank"
+           style="background:#0088cc; padding:14px 18px; border-radius:10px; color:white; font-weight:800;">
+           Rejoindre le groupe VIP
+        </a>
+    </div>
+
+</section>
 
 </body>
 </html>

@@ -3,297 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Signals - TradingBot</title>
+    <title>ApexSignals - Signaux Trading Premium</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
+
 <body class="dashboard-body">
 
-<div style="min-height:100vh; background: radial-gradient(circle at top, rgba(37,99,235,0.20), transparent 35%), radial-gradient(circle at right top, rgba(124,58,237,0.12), transparent 28%), linear-gradient(180deg, #06122d 0%, #030b1f 100%); color:white;">
+<div style="min-height:100vh; background: radial-gradient(circle at top, rgba(37,99,235,0.18), transparent 35%), linear-gradient(180deg, #06122d 0%, #030b1f 100%);">
 
-    {% include "partials/navbar.html" %}
+{% include "partials/navbar.html" %}
 
-    <!-- HERO -->
-    <section class="responsive-hero" style="max-width:1240px; margin:0 auto; padding:90px 32px 56px 32px; align-items:center;">
-        <div>
-            <div style="display:inline-flex; align-items:center; gap:8px; padding:8px 14px; border-radius:999px; background:rgba(16,185,129,0.12); color:#34d399; font-size:13px; font-weight:800; margin-bottom:20px; border:1px solid rgba(52,211,153,0.12);">
-                <span>📡</span>
-                <span>Signaux trading en temps réel</span>
-            </div>
+<section class="responsive-hero" style="max-width:1200px; margin:auto; padding:80px 32px;">
+    <div>
+        <h1 style="font-size:60px; font-weight:900;">
+            ApexSignals 🚀
+        </h1>
 
-            <h1 style="font-size:64px; line-height:0.98; margin:0 0 20px 0; font-weight:900; letter-spacing:-1.5px; max-width:780px;">
-                Des signaux premium,
-                <span style="background:linear-gradient(90deg,#60a5fa,#a78bfa); -webkit-background-clip:text; background-clip:text; color:transparent;">
-                    des preuves visibles,
-                </span>
-                un dashboard qui inspire confiance.
-            </h1>
+        <p style="color:#9fb0c9; font-size:18px;">
+            Signaux trading premium + dashboard pro + Telegram VIP.
+        </p>
 
-            <p style="font-size:19px; color:#a7b6cf; max-width:760px; line-height:1.8; margin-bottom:30px;">
-                Suivez vos signaux BUY / SELL, consultez l’historique complet, visualisez votre PnL,
-                surveillez votre capital simulé et profitez d’une expérience claire, rapide et premium.
-            </p>
-
-            <div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:26px;">
-                <a href="{{ url_for('register') }}" style="text-decoration:none; color:#06122d; background:white; padding:15px 24px; border-radius:14px; font-weight:900; box-shadow:0 14px 30px rgba(255,255,255,0.14);">
-                    Commencer maintenant
-                </a>
-
-                <a href="{{ url_for('pricing') }}" style="text-decoration:none; color:white; background:linear-gradient(90deg,#f59e0b,#d97706); padding:15px 24px; border-radius:14px; font-weight:900; box-shadow:0 14px 30px rgba(245,158,11,0.18);">
-                    🚀 Voir les offres premium
-                </a>
-            </div>
-
-            <div style="display:flex; gap:18px; flex-wrap:wrap; color:#93a4c1; font-size:15px;">
-                <span>✔️ Dashboard complet</span>
-                <span>✔️ Historique premium</span>
-                <span>✔️ Alertes Telegram</span>
-                <span>✔️ Statistiques avancées</span>
-            </div>
+        <div style="margin-top:20px;">
+            <a href="{{ url_for('pricing') }}" class="primary-link-btn">
+                🚀 Accéder aux signaux
+            </a>
         </div>
-
-        <!-- HERO CARD -->
-        <div style="background:linear-gradient(180deg, rgba(10,20,46,0.98), rgba(6,14,34,0.98)); border-radius:28px; padding:28px; border:1px solid rgba(255,255,255,0.06); box-shadow:0 20px 50px rgba(0,0,0,0.25); position:relative; overflow:hidden;">
-            <div style="position:absolute; top:-40px; right:-40px; width:140px; height:140px; background:radial-gradient(circle, rgba(37,99,235,0.22), transparent 70%);"></div>
-
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px;">
-                <div>
-                    <h3 style="font-size:30px; margin:0 0 6px 0;">Dashboard Live</h3>
-                    <p style="color:#9fb0c9; line-height:1.7; margin:0;">
-                        Aperçu d’un espace premium conçu pour convertir les visiteurs en abonnés.
-                    </p>
-                </div>
-                <div style="display:inline-block; background:rgba(16,185,129,0.14); color:#34d399; border-radius:999px; padding:8px 12px; font-size:12px; font-weight:800;">
-                    ● Live
-                </div>
-            </div>
-
-            <div style="display:grid; gap:14px; margin-bottom:16px;">
-                <div style="background:rgba(255,255,255,0.04); border-radius:16px; padding:18px; border:1px solid rgba(255,255,255,0.04);">
-                    <div style="font-size:13px; color:#9fb0c9;">Winrate moyen</div>
-                    <div style="font-size:34px; font-weight:900; color:white;">73%</div>
-                </div>
-
-                <div style="background:rgba(255,255,255,0.04); border-radius:16px; padding:18px; border:1px solid rgba(255,255,255,0.04);">
-                    <div style="font-size:13px; color:#9fb0c9;">PnL cumulé</div>
-                    <div style="font-size:34px; font-weight:900; color:#34d399;">+327%</div>
-                </div>
-
-                <div style="background:rgba(255,255,255,0.04); border-radius:16px; padding:18px; border:1px solid rgba(255,255,255,0.04);">
-                    <div style="font-size:13px; color:#9fb0c9;">Signaux analysés</div>
-                    <div style="font-size:34px; font-weight:900; color:white;">+1200</div>
-                </div>
-            </div>
-
-            <div style="background:linear-gradient(90deg, rgba(37,99,235,0.14), rgba(124,58,237,0.12)); border-radius:16px; padding:16px; border:1px solid rgba(255,255,255,0.05);">
-                <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
-                    <span style="font-size:14px; color:#dbe7ff; font-weight:700;">Dernier signal : BTCUSD BUY</span>
-                    <span style="font-size:13px; color:#34d399; font-weight:800;">TP touché</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- TRUST BAR -->
-    <section style="max-width:1200px; margin:0 auto; padding:0 32px 32px 32px; text-align:center;">
-        <div style="display:inline-block; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); padding:12px 20px; border-radius:999px; color:#cbd5e1; font-size:14px;">
-            +2 000 traders utilisent déjà TradingBot
-        </div>
-    </section>
-
-    <!-- RESULTS PRO -->
-    <section style="max-width:1200px; margin:0 auto; padding:40px 32px 60px 32px;">
-        <div class="panel" style="padding:30px; border-radius:24px;">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:24px;">
-                <span style="font-size:22px;">📊</span>
-                <h2 style="font-size:28px;">Résultats récents</h2>
-            </div>
-
-            <div class="responsive-three-cols">
-                <div class="stat-card conversion-stat" style="text-align:center;">
-                    <h3>+327%</h3>
-                    <p style="margin-top:10px; color:#9fb0c9;">Performance cumulée</p>
-                </div>
-
-                <div class="stat-card conversion-stat" style="text-align:center;">
-                    <h3>73%</h3>
-                    <p style="margin-top:10px; color:#9fb0c9;">Winrate moyen</p>
-                </div>
-
-                <div class="stat-card conversion-stat" style="text-align:center;">
-                    <h3>+1200</h3>
-                    <p style="margin-top:10px; color:#9fb0c9;">Trades analysés</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- WHY US -->
-    <section style="max-width:1200px; margin:0 auto; padding:0 32px 70px 32px;">
-        <div style="margin-bottom:30px;">
-            <h2 style="font-size:38px; margin-bottom:10px;">Pourquoi choisir TradingBot ?</h2>
-            <p style="color:#9fb0c9; max-width:700px;">
-                Une plateforme conçue pour maximiser vos performances avec une expérience simple et puissante.
-            </p>
-        </div>
-
-        <div class="responsive-three-cols">
-            <div class="panel conversion-card" style="padding:28px; border-radius:22px;">
-                <div style="font-size:34px;">⚡</div>
-                <h3 style="font-size:26px; margin:12px 0;">Ultra rapide</h3>
-                <p style="color:#9fb0c9;">
-                    Signaux envoyés en temps réel avec une latence ultra faible.
-                </p>
-            </div>
-
-            <div class="panel conversion-card" style="padding:28px; border-radius:22px;">
-                <div style="font-size:34px;">📈</div>
-                <h3 style="font-size:26px; margin:12px 0;">Performance</h3>
-                <p style="color:#9fb0c9;">
-                    Algorithmes optimisés pour maximiser le rendement et le winrate.
-                </p>
-            </div>
-
-            <div class="panel conversion-card" style="padding:28px; border-radius:22px;">
-                <div style="font-size:34px;">🧠</div>
-                <h3 style="font-size:26px; margin:12px 0;">IA intégrée</h3>
-                <p style="color:#9fb0c9;">
-                    Briefing intelligent basé sur les données réelles du marché.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- HOW IT WORKS -->
-    <section style="max-width:1200px; margin:0 auto; padding:0 32px 72px 32px;">
-        <div style="text-align:center; margin-bottom:32px;">
-            <h2 style="font-size:40px; margin-bottom:12px;">Comment ça marche</h2>
-            <p style="color:#9fb0c9; max-width:760px; margin:0 auto; line-height:1.8;">
-                Une expérience simple pour convertir un visiteur en utilisateur actif en quelques minutes.
-            </p>
-        </div>
-
-        <div class="responsive-three-cols">
-            <div class="panel" style="text-align:center;">
-                <div style="display:inline-flex; width:50px; height:50px; border-radius:999px; align-items:center; justify-content:center; background:rgba(37,99,235,0.18); color:#bfdbfe; font-weight:900; margin-bottom:14px;">1</div>
-                <h3 style="margin-bottom:10px;">Créer un compte</h3>
-                <p style="color:#9fb0c9; line-height:1.8;">
-                    Inscrivez-vous rapidement et accédez à votre espace personnel.
-                </p>
-            </div>
-
-            <div class="panel" style="text-align:center;">
-                <div style="display:inline-flex; width:50px; height:50px; border-radius:999px; align-items:center; justify-content:center; background:rgba(124,58,237,0.18); color:#ddd6fe; font-weight:900; margin-bottom:14px;">2</div>
-                <h3 style="margin-bottom:10px;">Choisir un plan</h3>
-                <p style="color:#9fb0c9; line-height:1.8;">
-                    Sélectionnez l’offre adaptée à votre niveau et à vos besoins.
-                </p>
-            </div>
-
-            <div class="panel" style="text-align:center;">
-                <div style="display:inline-flex; width:50px; height:50px; border-radius:999px; align-items:center; justify-content:center; background:rgba(16,185,129,0.18); color:#a7f3d0; font-weight:900; margin-bottom:14px;">3</div>
-                <h3 style="margin-bottom:10px;">Suivre les signaux</h3>
-                <p style="color:#9fb0c9; line-height:1.8;">
-                    Consultez l’historique, les performances et les signaux en temps réel.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- TESTIMONIALS -->
-    <section style="max-width:1200px; margin:0 auto; padding:0 32px 72px 32px;">
-        <div style="text-align:center; margin-bottom:30px;">
-            <h2 style="font-size:38px; margin-bottom:10px;">Ils utilisent TradingBot</h2>
-            <p style="color:#9fb0c9;">Des retours positifs qui renforcent la confiance.</p>
-        </div>
-
-        <div class="responsive-three-cols">
-            <div class="stat-card">
-                <p style="line-height:1.8; margin-bottom:12px;">"J’ai doublé mon capital en 2 mois."</p>
-                <strong>— Karim</strong>
-            </div>
-
-            <div class="stat-card">
-                <p style="line-height:1.8; margin-bottom:12px;">"Les signaux sont ultra précis et très simples à suivre."</p>
-                <strong>— Sarah</strong>
-            </div>
-
-            <div class="stat-card">
-                <p style="line-height:1.8; margin-bottom:12px;">"Meilleur bot que j’ai testé jusqu’à maintenant."</p>
-                <strong>— Mehdi</strong>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOMO -->
-    <section style="max-width:1200px; margin:0 auto; padding:0 32px 24px 32px; text-align:center;">
-        <div class="panel fomo-panel" style="padding:38px;">
-            <div class="fomo-badge">🔥 Places VIP limitées</div>
-            <h2 style="font-size:34px; margin:18px 0 12px 0;">Ne rate pas la prochaine hausse</h2>
-            <p style="color:#9fb0c9; line-height:1.8; max-width:760px; margin:0 auto;">
-                Pour maintenir la qualité du service et des performances, les places VIP restent limitées.
-                Rejoignez maintenant la plateforme avant la prochaine hausse tarifaire.
-            </p>
-        </div>
-    </section>
-
-    <!-- FINAL CTA -->
-    <section style="max-width:1200px; margin:0 auto; padding:24px 32px 90px 32px;">
-        <div class="conversion-cta-box">
-            <h2 style="font-size:40px; margin-bottom:12px;">Prêt à passer au niveau supérieur ?</h2>
-            <p style="color:rgba(255,255,255,0.92); max-width:760px; margin:0 auto 22px auto; line-height:1.8;">
-                Débloquez tous les signaux, les statistiques avancées, le suivi complet et l’expérience premium la plus convaincante.
-            </p>
-
-            <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap;">
-                <a href="{{ url_for('register') }}" style="text-decoration:none; color:#06122d; background:white; padding:15px 24px; border-radius:14px; font-weight:900;">
-                    Créer un compte
-                </a>
-                <a href="{{ url_for('pricing') }}" style="text-decoration:none; color:white; background:linear-gradient(90deg,#f59e0b,#d97706); padding:15px 24px; border-radius:14px; font-weight:900;">
-                    Voir les offres
-                </a>
-            </div>
-        </div>
-    </section>
+    </div>
+</section>
 
 </div>
-
-<!-- FOOTER -->
-<div style="text-align:center; margin-top:40px; font-size:13px; opacity:0.85; padding:0 20px 24px 20px;">
-    <a href="/mentions-legales">Mentions légales</a> |
-    <a href="/privacy">Politique de confidentialité</a> |
-    <a href="/cgu">Conditions générales</a>
-
-    <p style="margin-top:10px;">
-        © 2026 TradingBot — Tous droits réservés
-    </p>
-
-    <p style="font-size:12px; margin-top:8px;">
-        ⚠️ Le trading comporte des risques. Aucune garantie de gain.
-    </p>
-</div>
-
-<!-- SMALL FOMO POPUP -->
-<div id="fomoPopup" class="fomo-popup">
-    <div class="fomo-popup-title">🔥 Offre populaire</div>
-    <div class="fomo-popup-text">Le plan Premium est actuellement le plus choisi.</div>
-    <button class="fomo-popup-close" onclick="closeFomoPopup()">Fermer</button>
-</div>
-
-<script>
-setTimeout(() => {
-    const popup = document.getElementById("fomoPopup");
-    if (popup) {
-        popup.classList.add("show");
-    }
-}, 3500);
-
-function closeFomoPopup() {
-    const popup = document.getElementById("fomoPopup");
-    if (popup) {
-        popup.classList.remove("show");
-    }
-}
-</script>
 
 </body>
 </html>
