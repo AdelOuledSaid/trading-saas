@@ -1486,3 +1486,37 @@ button:hover {
         text-align: center;
     }
 }
+
+.navbar {
+    padding: 18px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background: rgba(3, 11, 31, 0.82);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+.nav-links a {
+    position: relative;
+}
+
+.nav-links a:not(.cta-btn):after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg,#2563eb,#7c3aed);
+    transition: 0.25s ease;
+}
+
+.nav-links a:not(.cta-btn):hover:after {
+    width: 100%;
+}
+
+.mobile-menu {
+    box-shadow: 0 16px 36px rgba(0,0,0,0.22);
+}
