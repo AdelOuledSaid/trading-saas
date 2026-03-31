@@ -88,6 +88,30 @@
 
     </div>
 
+    <!-- PREUVES -->
+    <section class="panel" style="margin-top:40px;">
+        <div class="panel-header">
+            <h2>📊 Résultats récents</h2>
+        </div>
+
+        <div class="responsive-three-cols">
+            <div class="stat-card" style="text-align:center;">
+                <h3>+327%</h3>
+                <p style="margin-top:10px; color:#9fb0c9;">Performance cumulée</p>
+            </div>
+
+            <div class="stat-card" style="text-align:center;">
+                <h3>73%</h3>
+                <p style="margin-top:10px; color:#9fb0c9;">Winrate moyen</p>
+            </div>
+
+            <div class="stat-card" style="text-align:center;">
+                <h3>+1200 trades</h3>
+                <p style="margin-top:10px; color:#9fb0c9;">Historique analysé</p>
+            </div>
+        </div>
+    </section>
+
     <section class="panel" style="margin-top:40px;">
         <div class="panel-header">
             <h2>Pourquoi choisir TradingBot ?</h2>
@@ -111,6 +135,80 @@
         </div>
     </section>
 
+    <section class="panel" style="margin-top:40px;">
+        <div class="panel-header">
+            <h2>Questions fréquentes</h2>
+        </div>
+
+        <div class="faq-container">
+
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFAQ(this)">
+                    <span>Le service est-il automatique ?</span>
+                    <div class="faq-icon">+</div>
+                </div>
+                <div class="faq-content">
+                    <p>
+                        Oui, les signaux sont générés automatiquement via des stratégies algorithmiques avancées.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFAQ(this)">
+                    <span>Puis-je annuler à tout moment ?</span>
+                    <div class="faq-icon">+</div>
+                </div>
+                <div class="faq-content">
+                    <p>
+                        Oui, tu peux annuler ton abonnement à tout moment depuis ton dashboard.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFAQ(this)">
+                    <span>Le briefing IA est-il fiable ?</span>
+                    <div class="faq-icon">+</div>
+                </div>
+                <div class="faq-content">
+                    <p>
+                        Le briefing utilise des données réelles + IA pour donner une analyse claire,
+                        mais il ne remplace pas une décision de trading personnelle.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div style="text-align:center; margin-top:50px;">
+        <h2 style="margin-bottom:10px;">Prêt à passer au niveau pro ?</h2>
+        <p style="color:#9fb0c9; margin-bottom:20px;">
+            Rejoins les utilisateurs Premium et maximise tes résultats 📈
+        </p>
+
+        <a href="{{ url_for('register') }}" class="primary-link-btn">
+            🚀 Créer mon compte maintenant
+        </a>
+    </div>
+
 </div>
+
+<script>
+function toggleFAQ(el) {
+    const item = el.parentElement;
+    item.classList.toggle("active");
+
+    const content = item.querySelector(".faq-content");
+
+    if (item.classList.contains("active")) {
+        content.style.maxHeight = content.scrollHeight + "px";
+    } else {
+        content.style.maxHeight = null;
+    }
+}
+</script>
+
 </body>
 </html>
