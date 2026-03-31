@@ -45,7 +45,7 @@ STRIPE_PRICE_BASIC = os.getenv("STRIPE_PRICE_BASIC", "")
 STRIPE_PRICE_PREMIUM = os.getenv("STRIPE_PRICE_PREMIUM", "")
 STRIPE_PRICE_VIP = os.getenv("STRIPE_PRICE_VIP", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
-
+TELEGRAM_VIP_INVITE_LINK = os.getenv("TELEGRAM_VIP_INVITE_LINK", "")
 TRADINGVIEW_WEBHOOK_SECRET = os.getenv("TRADINGVIEW_WEBHOOK_SECRET", "")
 DOMAIN = os.getenv("DOMAIN", "http://127.0.0.1:5000").rstrip("/")
 
@@ -791,6 +791,7 @@ def create_customer_portal_session():
 def success():
     session_id = request.args.get("session_id")
     session_data = None
+    vip_link = None
 
     if session_id and STRIPE_SECRET_KEY:
         try:
@@ -818,8 +819,10 @@ def success():
         except Exception as e:
             app.logger.error("Erreur récupération session Stripe: %s", repr(e))
 
-    return render_template("success.html", session_data=session_data)
+    if (current_user.plan or "").lower() == "vip" and TELEGRAM_VIP_INVITE_LINK:
+        vip_link = TELEGRAM_VIP_INVITE_LINK
 
+    return render_template("success.html", session_data=session_data, vip_link=vip_link)
 
 @app.route("/cancel")
 @login_required
