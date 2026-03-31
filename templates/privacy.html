@@ -1,42 +1,234 @@
-<h1>Politique de confidentialité</h1>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium - TradingBot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-body">
 
-<h2>Données collectées</h2>
-<p>Nous collectons les données suivantes :</p>
-<ul>
-<li>Email</li>
-<li>Données de connexion</li>
+<div class="pricing-page">
 
-</ul>
+    <div class="pricing-header">
+        <h1>💎 Choisis ton plan</h1>
+        <p>Commence simple, monte en puissance, ou passe en VIP.</p>
+    </div>
 
-<h2>Utilisation</h2>
-<p>Ces données sont utilisées pour :</p>
-<ul>
-<li>Gestion des comptes utilisateurs</li>
-<li>Accès aux services Premium</li>
-<li>Amélioration du service</li>
-</ul>
+    <div class="pricing-grid pricing-grid-3">
 
-<h2>Paiements</h2>
-<p>
-Les paiements sont sécurisés et traités par Stripe.
-Nous n’avons jamais accès aux données bancaires.
-</p>
+        <div class="pricing-card">
+            <h2>Basic</h2>
+            <div class="price">9€ <span>/ mois</span></div>
+            <ul>
+                <li>✔️ Signaux en temps réel</li>
+                <li>✔️ Dashboard basique</li>
+                <li>✔️ Historique limité</li>
+                <li>❌ Briefing IA quotidien</li>
+                <li>❌ Stats avancées</li>
+                <li>❌ Telegram VIP</li>
+            </ul>
 
-<h2>Conservation</h2>
-<p>
-Les données sont conservées uniquement le temps nécessaire au service.
-</p>
+            {% if user_plan == "basic" %}
+                <a href="{{ url_for('dashboard') }}" class="pricing-btn secondary-btn">Plan actuel</a>
+            {% else %}
+                <form action="{{ url_for('create_checkout_session') }}" method="POST">
+                    <input type="hidden" name="plan" value="basic">
+                    <button type="submit" class="pricing-btn secondary-btn">Choisir Basic</button>
+                </form>
+            {% endif %}
+        </div>
 
-<h2>Droits utilisateurs</h2>
-<p>
-Conformément au RGPD, vous pouvez demander :
-- accès
-- modification
-- suppression
+        <div class="pricing-card premium-plan">
+            <div class="badge-top">🔥 POPULAIRE</div>
+            <h2>Premium</h2>
+            <div class="price">19€ <span>/ mois</span></div>
+            <ul>
+                <li>✔️ Tous les signaux</li>
+                <li>✔️ Historique complet</li>
+                <li>✔️ Statistiques avancées</li>
+                <li>✔️ PnL cumulatif</li>
+                <li>✔️ Capital simulé</li>
+                <li>✔️ Briefing IA quotidien</li>
+                <li>❌ Telegram VIP</li>
+            </ul>
 
-</p>
+            <div class="offer-persuasion">
+                Le meilleur équilibre entre prix, performance et fonctionnalités.
+            </div>
 
-<h2>Sécurité</h2>
-<p>
-Nous mettons en place des mesures techniques pour protéger les données.
-</p>
+            {% if user_plan == "premium" %}
+                <a href="{{ url_for('dashboard') }}" class="pricing-btn primary-btn">Plan actuel</a>
+            {% else %}
+                <form action="{{ url_for('create_checkout_session') }}" method="POST">
+                    <input type="hidden" name="plan" value="premium">
+                    <button type="submit" class="pricing-btn primary-btn">Choisir Premium</button>
+                </form>
+            {% endif %}
+        </div>
+
+        <div class="pricing-card">
+            <div class="badge-top">👑 VIP</div>
+            <h2>VIP</h2>
+            <div class="price">39€ <span>/ mois</span></div>
+            <ul>
+                <li>✔️ Tout le Premium</li>
+                <li>✔️ Telegram VIP privé</li>
+                <li>✔️ Alertes prioritaires</li>
+                <li>✔️ Accès anticipé aux nouveautés</li>
+                <li>✔️ Briefings enrichis</li>
+                <li>✔️ Support prioritaire</li>
+            </ul>
+
+            <div class="offer-persuasion">
+                Pour les utilisateurs qui veulent l’expérience la plus complète.
+            </div>
+
+            {% if user_plan == "vip" %}
+                <a href="{{ url_for('dashboard') }}" class="pricing-btn primary-btn">Plan actuel</a>
+            {% else %}
+                <form action="{{ url_for('create_checkout_session') }}" method="POST">
+                    <input type="hidden" name="plan" value="vip">
+                    <button type="submit" class="pricing-btn primary-btn">Choisir VIP</button>
+                </form>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- PROOF -->
+    <section class="panel" style="margin-top:40px;">
+        <div class="panel-header">
+            <h2>📊 Résultats récents</h2>
+        </div>
+
+        <div class="responsive-three-cols">
+            <div class="stat-card conversion-stat" style="text-align:center;">
+                <h3>+327%</h3>
+                <p style="margin-top:10px; color:#9fb0c9;">Performance cumulée</p>
+            </div>
+
+            <div class="stat-card conversion-stat" style="text-align:center;">
+                <h3>73%</h3>
+                <p style="margin-top:10px; color:#9fb0c9;">Winrate moyen</p>
+            </div>
+
+            <div class="stat-card conversion-stat" style="text-align:center;">
+                <h3>+1200 trades</h3>
+                <p style="margin-top:10px; color:#9fb0c9;">Historique analysé</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHY -->
+    <section class="panel" style="margin-top:40px;">
+        <div class="panel-header">
+            <h2>Pourquoi choisir TradingBot ?</h2>
+        </div>
+
+        <div class="responsive-three-cols">
+            <div class="stat-card">
+                <h3>⚡ Ultra rapide</h3>
+                <p>Signaux envoyés en temps réel avec latence minimale.</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>📈 Performance</h3>
+                <p>Optimisé pour maximiser le winrate et le rendement.</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>🧠 IA intégrée</h3>
+                <p>Briefing quotidien intelligent basé sur le marché réel.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- URGENCY -->
+    <section class="panel fomo-panel" style="margin-top:40px; text-align:center;">
+        <div class="fomo-badge">⚠️ Offre limitée</div>
+        <h2 style="margin:18px 0 10px 0;">Les places VIP restent limitées</h2>
+        <p style="color:#9fb0c9; max-width:760px; margin:0 auto; line-height:1.8;">
+            Pour préserver la qualité du service, le nombre d’utilisateurs VIP reste limité.
+            Rejoins maintenant la plateforme avant la prochaine hausse de prix.
+        </p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="panel" style="margin-top:40px;">
+        <div class="panel-header">
+            <h2>Questions fréquentes</h2>
+        </div>
+
+        <div class="faq-container">
+
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFAQ(this)">
+                    <span>Le service est-il automatique ?</span>
+                    <div class="faq-icon">+</div>
+                </div>
+                <div class="faq-content">
+                    <p>
+                        Oui, les signaux sont générés automatiquement via des stratégies algorithmiques avancées.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFAQ(this)">
+                    <span>Puis-je annuler à tout moment ?</span>
+                    <div class="faq-icon">+</div>
+                </div>
+                <div class="faq-content">
+                    <p>
+                        Oui, tu peux annuler ton abonnement à tout moment depuis ton dashboard.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFAQ(this)">
+                    <span>Le briefing IA est-il fiable ?</span>
+                    <div class="faq-icon">+</div>
+                </div>
+                <div class="faq-content">
+                    <p>
+                        Le briefing utilise des données réelles + IA pour donner une analyse claire,
+                        mais il ne remplace pas une décision de trading personnelle.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div style="text-align:center; margin-top:50px;">
+        <h2 style="margin-bottom:10px;">Prêt à passer au niveau pro ?</h2>
+        <p style="color:#9fb0c9; margin-bottom:20px;">
+            Rejoins les utilisateurs Premium et maximise tes résultats 📈
+        </p>
+
+        <a href="{{ url_for('register') }}" class="primary-link-btn">
+            🚀 Créer mon compte maintenant
+        </a>
+    </div>
+
+</div>
+
+<script>
+function toggleFAQ(el) {
+    const item = el.parentElement;
+    item.classList.toggle("active");
+
+    const content = item.querySelector(".faq-content");
+
+    if (item.classList.contains("active")) {
+        content.style.maxHeight = content.scrollHeight + "px";
+    } else {
+        content.style.maxHeight = null;
+    }
+}
+</script>
+
+</body>
+</html>
