@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexSignals - FAQ</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+</head>
+<body class="home-body">
+
+{% include "partials/navbar.html" %}
+
+<section class="inner-hero">
+    <div class="section-container">
+        <span class="hero-badge">FAQ</span>
+        <h1 class="inner-page-title">Questions fréquentes sur ApexSignals</h1>
+        <p class="inner-page-text">
+            Une page FAQ rassure, clarifie l’expérience et donne au site un niveau de finition plus professionnel.
+        </p>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="faq-container">
+
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFAQ(this)">
+                    <span>Que propose ApexSignals ?</span>
+                    <div class="faq-icon">+</div>
+                </div>
+                <div class="faq-content">
+                    <p>
+                        ApexSignals propose un environnement premium avec page Offres, page Signaux,
+                        Trading Lab, Résultats et espace membre.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFAQ(this)">
+                    <span>Quels marchés sont suivis ?</span>
+                    <div class="faq-icon">+</div>
+                </div>
+                <div class="faq-content">
+                    <p>
+                        La plateforme met en avant les marchés les plus demandés comme Bitcoin,
+                        Ethereum, Gold, US100, US30 et FRA40.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFAQ(this)">
+                    <span>À quoi sert le Trading Lab ?</span>
+                    <div class="faq-icon">+</div>
+                </div>
+                <div class="faq-content">
+                    <p>
+                        Le Trading Lab apporte une dimension plus experte au site avec des contenus
+                        sur la structure d’un signal, la lecture du marché et la gestion du risque.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFAQ(this)">
+                    <span>Puis-je accéder au dashboard ?</span>
+                    <div class="faq-icon">+</div>
+                </div>
+                <div class="faq-content">
+                    <p>
+                        Oui, l’espace membre permet de centraliser les blocs importants dans une interface dédiée.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="section-container footer-inner">
+        <div class="footer-brand">
+            <h3>ApexSignals</h3>
+            <p>FAQ, contact, résultats et Trading Lab pour une plateforme plus complète.</p>
+        </div>
+
+        <div class="footer-links">
+            <a href="{{ url_for('home') }}">Accueil</a>
+            <a href="{{ url_for('pricing') }}">Offres</a>
+            <a href="{{ url_for('results') }}">Résultats</a>
+            <a href="{{ url_for('contact') }}">Contact</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+function toggleFAQ(el) {
+    const item = el.parentElement;
+    item.classList.toggle("active");
+
+    const content = item.querySelector(".faq-content");
+
+    if (item.classList.contains("active")) {
+        content.style.maxHeight = content.scrollHeight + "px";
+    } else {
+        content.style.maxHeight = null;
+    }
+}
+</script>
+
+</body>
+</html>

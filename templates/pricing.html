@@ -101,23 +101,21 @@
         </div>
 
     </div>
+
 </div>
 
 <footer class="site-footer">
     <div class="section-container footer-inner">
         <div class="footer-brand">
             <h3>ApexSignals</h3>
-            <p>Signaux de trading premium sur crypto, gold et indices.</p>
+            <p>Signaux premium, résultats, Trading Lab et espace membre.</p>
         </div>
 
         <div class="footer-links">
             <a href="{{ url_for('home') }}">Accueil</a>
-            <a href="{{ url_for('pricing') }}">Offres</a>
-            {% if current_user.is_authenticated %}
-                <a href="{{ url_for('dashboard') }}">Dashboard</a>
-            {% else %}
-                <a href="{{ url_for('login') }}">Connexion</a>
-            {% endif %}
+            <a href="{{ url_for('results') }}">Résultats</a>
+            <a href="{{ url_for('trading_lab') }}">Trading Lab</a>
+            <a href="{{ url_for('contact') }}">Contact</a>
         </div>
     </div>
 </footer>

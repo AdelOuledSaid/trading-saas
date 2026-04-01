@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexSignals - Signaux</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+</head>
+<body class="home-body">
+
+{% include "partials/navbar.html" %}
+
+<section class="inner-hero">
+    <div class="section-container">
+        <span class="hero-badge">Signaux ApexSignals</span>
+        <h1 class="inner-page-title">Vue d’ensemble des signaux et marchés suivis</h1>
+        <p class="inner-page-text">
+            Cette page centralise les catégories principales, les actifs suivis et la logique
+            de lecture rapide utilisée sur la plateforme.
+        </p>
+    </div>
+</section>
+
+<section class="section-standard" id="crypto">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Crypto</span>
+            <h2>Actifs crypto sous surveillance</h2>
+        </div>
+
+        <div class="markets-grid">
+            <div class="market-card" id="bitcoin">
+                <div class="market-icon btc-bg">₿</div>
+                <h3>Bitcoin</h3>
+                <p>Signal central de la structure crypto et des mouvements dominants.</p>
+            </div>
+
+            <div class="market-card" id="ethereum">
+                <div class="market-icon eth-bg">Ξ</div>
+                <h3>Ethereum</h3>
+                <p>Actif de référence pour les scénarios liés au marché altcoin.</p>
+            </div>
+
+            <div class="market-card">
+                <div class="market-icon eth-bg">S</div>
+                <h3>Solana</h3>
+                <p>Actif dynamique pour les séquences de momentum et d’impulsion.</p>
+            </div>
+
+            <div class="market-card">
+                <div class="market-icon btc-bg">A</div>
+                <h3>Altcoins</h3>
+                <p>Zone de surveillance des mouvements secondaires et opportunités ciblées.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard" id="gold">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Métaux</span>
+            <h2>Gold et lecture des actifs refuge</h2>
+        </div>
+
+        <div class="feature-home-card solo-card">
+            <h3>Gold</h3>
+            <p>
+                Le Gold reste un actif clé pour observer les réactions du marché dans les phases
+                de stress, de repli ou de réévaluation macroéconomique.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard" id="indices">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Indices</span>
+            <h2>Indices les plus suivis sur la plateforme</h2>
+        </div>
+
+        <div class="markets-grid">
+            <div class="market-card" id="us100">
+                <div class="market-icon us100-bg">NQ</div>
+                <h3>US100</h3>
+                <p>Indice technologique majeur, populaire pour les séquences intraday.</p>
+            </div>
+
+            <div class="market-card" id="us30">
+                <div class="market-icon us100-bg">DJ</div>
+                <h3>US30</h3>
+                <p>Indice directionnel utile pour les lectures plus macro et structurelles.</p>
+            </div>
+
+            <div class="market-card">
+                <div class="market-icon us100-bg">FR</div>
+                <h3>FRA40</h3>
+                <p>Indice suivi pour compléter la lecture des flux européens.</p>
+            </div>
+
+            <div class="market-card" id="forex">
+                <div class="market-icon gold-bg">FX</div>
+                <h3>Forex</h3>
+                <p>Lecture de devises pour une vue plus complète du marché global.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard" id="opportunites">
+    <div class="section-container">
+        <div class="proof-box">
+            <div class="proof-left">
+                <span class="proof-badge">Opportunités du jour</span>
+                <h2>Une lecture simple des setups à surveiller</h2>
+                <p>
+                    L’objectif n’est pas d’afficher trop d’informations, mais de mettre en avant
+                    les zones qui comptent le plus pour les membres.
+                </p>
+            </div>
+
+            <div class="proof-right">
+                <div class="proof-card">
+                    <strong>Momentum</strong>
+                    <span>Actifs sous impulsion forte ou rupture de structure.</span>
+                </div>
+                <div class="proof-card">
+                    <strong>Réaction</strong>
+                    <span>Zones techniques à surveiller pour les reprises ou rejets.</span>
+                </div>
+                <div class="proof-card">
+                    <strong>Priorité</strong>
+                    <span>Actifs les plus lisibles selon la structure du moment.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="section-container footer-inner">
+        <div class="footer-brand">
+            <h3>ApexSignals</h3>
+            <p>Suivi multi-actifs, lecture claire des setups et expérience premium.</p>
+        </div>
+
+        <div class="footer-links">
+            <a href="{{ url_for('home') }}">Accueil</a>
+            <a href="{{ url_for('pricing') }}">Offres</a>
+            <a href="{{ url_for('results') }}">Résultats</a>
+            <a href="{{ url_for('trading_lab') }}">Trading Lab</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

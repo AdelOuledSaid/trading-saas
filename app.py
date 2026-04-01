@@ -1282,7 +1282,59 @@ def test_sl():
 
     send_telegram_message(build_sl_telegram_message(DummySignal()))
     return "Message SL envoyé"
+# =========================
+# NEW PAGES (SITE PRO)
+# =========================
 
+@app.route("/signals")
+def signals_page():
+    return render_template("signals.html")
+
+
+@app.route("/trading-lab")
+def trading_lab():
+    return render_template("trading_lab.html")
+
+
+@app.route("/results")
+def results():
+    # On peut réutiliser tes données existantes pour rendre ça crédible
+
+    all_signals = Signal.query.order_by(Signal.created_at.desc()).limit(50).all()
+
+    total = len(all_signals)
+    wins = len([s for s in all_signals if s.status == "WIN"])
+    losses = len([s for s in all_signals if s.status == "LOSS"])
+
+    winrate = round((wins / (wins + losses)) * 100, 2) if (wins + losses) > 0 else 0
+
+    pnl = round(sum(calculate_trade_pnl(s) for s in all_signals), 2)
+
+    return render_template(
+        "results.html",
+        total_signals=total,
+        total_win=wins,
+        total_loss=losses,
+        winrate=winrate,
+        estimated_pnl=pnl,
+        signals=all_signals[:10]  # aperçu
+    )
+
+
+@app.route("/faq")
+def faq_page():
+    return render_template("faq.html")
+
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
+
+@app.route("/search")
+def search_page():
+    query = request.args.get("q", "")
+    return render_template("search.html", query=query)
 
 # =========================
 # INIT DB

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexSignals - Recherche</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="home-body">
+
+{% include "partials/navbar.html" %}
+
+<section class="inner-hero">
+    <div class="section-container">
+        <span class="hero-badge">Recherche</span>
+        <h1 class="inner-page-title">Résultat de recherche</h1>
+        <p class="inner-page-text">
+            Recherche saisie : <strong>{{ query }}</strong>
+        </p>
+    </div>
+</section>
+
+<div class="section-standard">
+    <div class="section-container">
+        <div class="feature-home-card solo-card">
+            <h3>Recherche prête à être développée</h3>
+            <p>
+                Cette page te permet déjà d’avoir une vraie barre de recherche visuelle.
+                Ensuite, tu pourras relier la logique à des actifs, pages ou contenus.
+            </p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

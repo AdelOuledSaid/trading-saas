@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexSignals - Trading Lab</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+</head>
+<body class="home-body">
+
+{% include "partials/navbar.html" %}
+
+<section class="inner-hero">
+    <div class="section-container">
+        <span class="hero-badge">Trading Lab</span>
+        <h1 class="inner-page-title">Un espace conçu pour comprendre la structure des signaux</h1>
+        <p class="inner-page-text">
+            Le Trading Lab ne remplace pas la pratique, mais il renforce la lisibilité du site
+            en donnant de la profondeur, de la pédagogie et une vraie dimension de plateforme.
+        </p>
+    </div>
+</section>
+
+<section class="section-standard" id="structure">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Structure</span>
+            <h2>Comprendre la composition d’un signal</h2>
+        </div>
+
+        <div class="features-home-grid">
+            <div class="feature-home-card">
+                <h3>Entrée</h3>
+                <p>Le niveau d’activation ou la zone centrale du setup.</p>
+            </div>
+            <div class="feature-home-card">
+                <h3>Take Profit</h3>
+                <p>La cible projetée pour la lecture du scénario positif.</p>
+            </div>
+            <div class="feature-home-card">
+                <h3>Stop Loss</h3>
+                <p>La zone d’invalidation affichée pour protéger la structure du trade.</p>
+            </div>
+            <div class="feature-home-card">
+                <h3>Contexte</h3>
+                <p>Le sens global du signal et l’environnement de marché associé.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard" id="lecture">
+    <div class="section-container">
+        <div class="proof-box">
+            <div class="proof-left">
+                <span class="proof-badge">Lecture du marché</span>
+                <h2>Lire une structure sans surcharger l’utilisateur</h2>
+                <p>
+                    Un bon site premium ne montre pas seulement des chiffres : il hiérarchise
+                    les informations pour rendre la lecture plus rapide.
+                </p>
+            </div>
+
+            <div class="proof-right">
+                <div class="proof-card">
+                    <strong>Tendance</strong>
+                    <span>Direction dominante et logique générale du marché.</span>
+                </div>
+                <div class="proof-card">
+                    <strong>Zone</strong>
+                    <span>Repères techniques importants ou points d’attention.</span>
+                </div>
+                <div class="proof-card">
+                    <strong>Timing</strong>
+                    <span>Moment où la structure devient plus lisible ou plus faible.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard" id="risk">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Gestion du risque</span>
+            <h2>Une lecture disciplinée avant tout</h2>
+        </div>
+
+        <div class="preview-links-grid">
+            <div class="preview-link-card">
+                <strong>Exposition</strong>
+                <span>Éviter de surcharger le capital sur un seul actif.</span>
+            </div>
+            <div class="preview-link-card">
+                <strong>Invalidation</strong>
+                <span>Comprendre qu’un stop protège la lecture autant que le capital.</span>
+            </div>
+            <div class="preview-link-card">
+                <strong>Patience</strong>
+                <span>Attendre une structure propre plutôt qu’entrer trop tôt.</span>
+            </div>
+            <div class="preview-link-card">
+                <strong>Répétition</strong>
+                <span>Construire une approche stable plutôt qu’un comportement impulsif.</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard" id="strategies">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Stratégies Apex</span>
+            <h2>Des angles de lecture cohérents avec la plateforme</h2>
+        </div>
+
+        <div class="features-home-grid">
+            <div class="feature-home-card">
+                <h3>Momentum</h3>
+                <p>Identifier les impulsions les plus lisibles sur les actifs majeurs.</p>
+            </div>
+            <div class="feature-home-card">
+                <h3>Continuation</h3>
+                <p>Suivre une structure déjà engagée quand le contexte reste propre.</p>
+            </div>
+            <div class="feature-home-card">
+                <h3>Réaction technique</h3>
+                <p>Observer les réponses du prix sur des zones surveillées.</p>
+            </div>
+            <div class="feature-home-card">
+                <h3>Filtrage</h3>
+                <p>Écarter les contextes trop brouillés ou trop peu lisibles.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard" id="psychologie">
+    <div class="section-container">
+        <div class="final-cta-box">
+            <span class="final-cta-badge">Psychologie & discipline</span>
+            <h2>Un bon signal ne suffit pas sans maîtrise personnelle</h2>
+            <p>
+                La lecture, la patience et la discipline donnent plus de valeur à la plateforme
+                que la simple accumulation de contenu.
+            </p>
+        </div>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="section-container footer-inner">
+        <div class="footer-brand">
+            <h3>ApexSignals</h3>
+            <p>Trading Lab, résultats, signaux et lecture simplifiée du marché.</p>
+        </div>
+
+        <div class="footer-links">
+            <a href="{{ url_for('home') }}">Accueil</a>
+            <a href="{{ url_for('signals_page') }}">Signaux</a>
+            <a href="{{ url_for('results') }}">Résultats</a>
+            <a href="{{ url_for('pricing') }}">Offres</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
