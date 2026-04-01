@@ -14,9 +14,10 @@
 <section class="inner-hero">
     <div class="section-container">
         <span class="hero-badge">FAQ</span>
-        <h1 class="inner-page-title">Questions fréquentes sur ApexSignals</h1>
+        <h1 class="inner-page-title">Questions fréquentes sur la plateforme</h1>
         <p class="inner-page-text">
-            Une page FAQ rassure, clarifie l’expérience et donne au site un niveau de finition plus professionnel.
+            Une FAQ propre renforce immédiatement la confiance, clarifie le fonctionnement
+            du site et améliore la perception globale de la marque.
         </p>
     </div>
 </section>
@@ -32,7 +33,7 @@
                 </div>
                 <div class="faq-content">
                     <p>
-                        ApexSignals propose un environnement premium avec page Offres, page Signaux,
+                        ApexSignals propose un univers premium avec page Offres, page Signaux,
                         Trading Lab, Résultats et espace membre.
                     </p>
                 </div>
@@ -40,13 +41,13 @@
 
             <div class="faq-item">
                 <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>Quels marchés sont suivis ?</span>
+                    <span>Quels actifs sont suivis ?</span>
                     <div class="faq-icon">+</div>
                 </div>
                 <div class="faq-content">
                     <p>
-                        La plateforme met en avant les marchés les plus demandés comme Bitcoin,
-                        Ethereum, Gold, US100, US30 et FRA40.
+                        La plateforme met en avant les actifs les plus demandés comme Bitcoin,
+                        Ethereum, Gold, US100, US30 et d’autres marchés complémentaires.
                     </p>
                 </div>
             </div>
@@ -58,20 +59,33 @@
                 </div>
                 <div class="faq-content">
                     <p>
-                        Le Trading Lab apporte une dimension plus experte au site avec des contenus
-                        sur la structure d’un signal, la lecture du marché et la gestion du risque.
+                        Le Trading Lab donne une vraie profondeur au site avec des repères sur
+                        la structure d’un signal, la lecture du marché et la gestion du risque.
                     </p>
                 </div>
             </div>
 
             <div class="faq-item">
                 <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>Puis-je accéder au dashboard ?</span>
+                    <span>Les résultats sont-ils visibles ?</span>
                     <div class="faq-icon">+</div>
                 </div>
                 <div class="faq-content">
                     <p>
-                        Oui, l’espace membre permet de centraliser les blocs importants dans une interface dédiée.
+                        Oui, une page Résultats permet d’afficher les statistiques, le winrate
+                        et un historique récent afin de renforcer la crédibilité du site.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFAQ(this)">
+                    <span>Puis-je accéder à un espace membre ?</span>
+                    <div class="faq-icon">+</div>
+                </div>
+                <div class="faq-content">
+                    <p>
+                        Oui, le dashboard centralise les blocs importants et apporte une vraie dimension plateforme.
                     </p>
                 </div>
             </div>
@@ -84,14 +98,14 @@
     <div class="section-container footer-inner">
         <div class="footer-brand">
             <h3>ApexSignals</h3>
-            <p>FAQ, contact, résultats et Trading Lab pour une plateforme plus complète.</p>
+            <p>FAQ, résultats, Trading Lab et navigation premium.</p>
         </div>
 
         <div class="footer-links">
             <a href="{{ url_for('home') }}">Accueil</a>
             <a href="{{ url_for('pricing') }}">Offres</a>
-            <a href="{{ url_for('results') }}">Résultats</a>
             <a href="{{ url_for('contact') }}">Contact</a>
+            <a href="{{ url_for('results') }}">Résultats</a>
         </div>
     </div>
 </footer>

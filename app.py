@@ -1335,7 +1335,9 @@ def contact():
 def search_page():
     query = request.args.get("q", "")
     return render_template("search.html", query=query)
-
+@app.route("/about")
+def about():
+    return render_template("about.html")
 # =========================
 # INIT DB
 # =========================

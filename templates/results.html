@@ -14,10 +14,10 @@
 <section class="inner-hero">
     <div class="section-container">
         <span class="hero-badge">Résultats</span>
-        <h1 class="inner-page-title">Une page dédiée aux performances et à l’historique</h1>
+        <h1 class="inner-page-title">Une vue claire des performances et de l’historique</h1>
         <p class="inner-page-text">
-            Cette page renforce la crédibilité de la plateforme en donnant une place claire
-            aux statistiques affichées et aux éléments de suivi.
+            Cette page met en avant les statistiques principales, la progression globale
+            et un aperçu des performances récentes pour renforcer la crédibilité du site.
         </p>
     </div>
 </section>
@@ -26,20 +26,20 @@
     <div class="section-container">
         <div class="home-stats-grid">
             <div class="home-stat-card">
-                <h3>73%</h3>
+                <h3>{{ total_signals }}</h3>
+                <p>Signaux analysés</p>
+            </div>
+            <div class="home-stat-card">
+                <h3>{{ total_win }}</h3>
+                <p>Trades gagnants</p>
+            </div>
+            <div class="home-stat-card">
+                <h3>{{ total_loss }}</h3>
+                <p>Trades perdants</p>
+            </div>
+            <div class="home-stat-card">
+                <h3>{{ winrate }}%</h3>
                 <p>Winrate moyen</p>
-            </div>
-            <div class="home-stat-card">
-                <h3>+327%</h3>
-                <p>Performance cumulée</p>
-            </div>
-            <div class="home-stat-card">
-                <h3>+1200</h3>
-                <p>Trades analysés</p>
-            </div>
-            <div class="home-stat-card">
-                <h3>3</h3>
-                <p>Niveaux d’abonnement</p>
             </div>
         </div>
     </div>
@@ -48,30 +48,37 @@
 <section class="section-standard">
     <div class="section-container">
         <div class="section-title">
-            <span>Historique</span>
-            <h2>Aperçu des résultats récents</h2>
+            <span>Performance</span>
+            <h2>Lecture synthétique des résultats</h2>
+            <p>
+                L’objectif n’est pas seulement d’afficher des chiffres, mais de rendre les performances
+                visibles, lisibles et cohérentes avec l’image premium du site.
+            </p>
         </div>
 
-        <div class="results-list">
-            <div class="result-row">
-                <span>BTCUSD BUY</span>
-                <strong class="text-buy">+2.1%</strong>
+        <div class="proof-box">
+            <div class="proof-left">
+                <span class="proof-badge">Résumé</span>
+                <h2>PnL estimé : {{ estimated_pnl }}</h2>
+                <p>
+                    Cette section permet d’afficher une synthèse rapide des données les plus importantes
+                    sans transformer la page en tableau complexe.
+                </p>
             </div>
-            <div class="result-row">
-                <span>ETHUSD SELL</span>
-                <strong>-0.6%</strong>
-            </div>
-            <div class="result-row">
-                <span>GOLD BUY</span>
-                <strong class="text-buy">+1.4%</strong>
-            </div>
-            <div class="result-row">
-                <span>US100 BUY</span>
-                <strong class="text-buy">+0.9%</strong>
-            </div>
-            <div class="result-row">
-                <span>BTCUSD BUY</span>
-                <strong class="text-buy">+1.7%</strong>
+
+            <div class="proof-right">
+                <div class="proof-card">
+                    <strong>Winrate</strong>
+                    <span>{{ winrate }}% sur les trades clôturés.</span>
+                </div>
+                <div class="proof-card">
+                    <strong>Volume</strong>
+                    <span>{{ total_signals }} signaux pris en compte dans l’aperçu.</span>
+                </div>
+                <div class="proof-card">
+                    <strong>Lecture</strong>
+                    <span>Une présentation plus claire donne plus de crédibilité au site.</span>
+                </div>
             </div>
         </div>
     </div>
@@ -79,30 +86,25 @@
 
 <section class="section-standard">
     <div class="section-container">
-        <div class="proof-box">
-            <div class="proof-left">
-                <span class="proof-badge">Lecture des résultats</span>
-                <h2>Une structure simple pour paraître plus crédible</h2>
-                <p>
-                    La page Résultats n’a pas besoin d’être complexe au départ. Elle doit surtout
-                    donner une vraie impression de suivi, de profondeur et de transparence visuelle.
-                </p>
-            </div>
+        <div class="section-title">
+            <span>Historique récent</span>
+            <h2>Derniers signaux affichés</h2>
+        </div>
 
-            <div class="proof-right">
-                <div class="proof-card">
-                    <strong>Historique</strong>
-                    <span>Une liste lisible des performances récentes.</span>
+        <div class="results-list">
+            {% for signal in signals %}
+                <div class="result-row">
+                    <span>{{ signal.asset }} • {{ signal.action }} • {{ signal.status }}</span>
+                    <strong class="{% if signal.status == 'WIN' %}text-buy{% endif %}">
+                        {{ signal.created_at.strftime('%d/%m/%Y %H:%M') }}
+                    </strong>
                 </div>
-                <div class="proof-card">
-                    <strong>Statistiques</strong>
-                    <span>Winrate, trades, performance cumulée et progression.</span>
+            {% else %}
+                <div class="result-row">
+                    <span>Aucun signal disponible pour le moment.</span>
+                    <strong>-</strong>
                 </div>
-                <div class="proof-card">
-                    <strong>Clarté</strong>
-                    <span>Une présentation propre vaut souvent mieux qu’un surplus de données.</span>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -111,7 +113,7 @@
     <div class="section-container footer-inner">
         <div class="footer-brand">
             <h3>ApexSignals</h3>
-            <p>Résultats, historique et expérience visuelle premium.</p>
+            <p>Résultats, historique et lecture premium des performances.</p>
         </div>
 
         <div class="footer-links">

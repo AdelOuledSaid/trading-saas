@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexSignals - Contact</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+</head>
+<body class="home-body">
+
+{% include "partials/navbar.html" %}
+
+<section class="inner-hero">
+    <div class="section-container">
+        <span class="hero-badge">Contact</span>
+        <h1 class="inner-page-title">Une page de contact claire et rassurante</h1>
+        <p class="inner-page-text">
+            Même sans système complexe au départ, une page contact bien présentée améliore
+            immédiatement le rendu professionnel du site.
+        </p>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container contact-grid">
+        <div class="feature-home-card">
+            <h3>Informations</h3>
+            <p><strong>Email :</strong> support@apexsignals.com</p>
+            <p><strong>Réponse :</strong> sous 24 à 48h</p>
+            <p><strong>Plateforme :</strong> ApexSignals Premium</p>
+            <p><strong>Objet :</strong> support, accès, informations générales</p>
+        </div>
+
+        <div class="contact-form-card">
+            <form class="contact-form">
+                <div class="form-group">
+                    <label>Nom</label>
+                    <input type="text" placeholder="Votre nom">
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" placeholder="Votre email">
+                </div>
+
+                <div class="form-group">
+                    <label>Sujet</label>
+                    <input type="text" placeholder="Sujet du message">
+                </div>
+
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea rows="6" placeholder="Votre message"></textarea>
+                </div>
+
+                <button type="submit" class="auth-submit-btn auth-submit-btn-blue">Envoyer</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="section-container footer-inner">
+        <div class="footer-brand">
+            <h3>ApexSignals</h3>
+            <p>Un univers plus crédible grâce à des pages claires, utiles et bien structurées.</p>
+        </div>
+
+        <div class="footer-links">
+            <a href="{{ url_for('home') }}">Accueil</a>
+            <a href="{{ url_for('faq_page') }}">FAQ</a>
+            <a href="{{ url_for('results') }}">Résultats</a>
+            <a href="{{ url_for('pricing') }}">Offres</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
