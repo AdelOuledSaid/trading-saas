@@ -8,128 +8,115 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
+
 <body class="dashboard-body">
 
-    <div class="dashboard-wrapper">
+{% include "partials/navbar.html" %}
 
-        <aside class="sidebar">
-            <div class="logo-box">
-                <h2>ApexSignals</h2>
-                <p>Signal Center</p>
+<div class="dashboard-wrapper">
+
+    <aside class="sidebar">
+        <div class="logo-box">
+            <h2>ApexSignals</h2>
+            <p>Signal Center</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('dashboard') }}" class="nav-link">📊 Dashboard</a>
+            <a href="{{ url_for('briefing_page') }}" class="nav-link active">🧠 Briefing IA</a>
+            <a href="{{ url_for('pricing') }}" class="nav-link">💎 Premium</a>
+            <a href="{{ url_for('logout') }}" class="nav-link logout-link">🚪 Déconnexion</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1>🧠 Briefing IA du jour</h1>
+                <p class="subtitle">
+                    Analyse premium du marché : Bitcoin, Or et contexte macro-économique
+                </p>
             </div>
 
-            <nav class="sidebar-nav">
-                <a href="{{ url_for('dashboard') }}" class="nav-link">📊 Dashboard</a>
-                <a href="{{ url_for('briefing_page') }}" class="nav-link active">🧠 Briefing IA</a>
-                <a href="{{ url_for('pricing') }}" class="nav-link">💎 Premium</a>
-                <a href="{{ url_for('logout') }}" class="nav-link logout-link">🚪 Déconnexion</a>
-            </nav>
-        </aside>
+            <div>
+                <span class="briefing-tag green">👑 Premium</span>
 
-        <main class="main-content">
+                {% if briefing %}
+                <span class="briefing-tag soft">📅 {{ briefing.date }}</span>
+                {% endif %}
+            </div>
+        </header>
 
-            <header class="topbar briefing-topbar">
-                <div>
-                    <h1>🧠 Briefing IA du jour</h1>
-                    <p class="subtitle">
-                        Analyse premium du marché : Bitcoin, Or et contexte macro-économique
-                    </p>
-                </div>
-
-                <div class="briefing-topbar-badges">
-                    <span class="briefing-badge briefing-badge-premium">👑 Premium</span>
-
-                    {% if briefing %}
-                    <span class="briefing-badge briefing-badge-date">📅 {{ briefing.date }}</span>
-                    {% endif %}
-                </div>
-            </header>
-
-            <section class="briefing-banner">
-                <div>
-                    <h3>Analyse quotidienne intelligente</h3>
-                    <p>
-                        Ce briefing est généré automatiquement à partir des données marché
-                        et rédigé par IA pour fournir une lecture claire, exploitable et orientée trading.
-                    </p>
-                </div>
-
-                <div class="briefing-banner-actions">
-                    <a href="{{ url_for('dashboard') }}" class="briefing-white-btn">
-                        ← Retour dashboard
-                    </a>
-                    <a href="{{ url_for('briefing_page') }}" class="briefing-outline-btn">
-                        🔄 Actualiser
-                    </a>
-                </div>
-            </section>
-
-            {% if briefing %}
-            <section class="panel briefing-report-panel">
-                <div class="briefing-report-header">
-                    <div>
-                        <h2>📘 Rapport complet</h2>
-                        <p>
-                            Briefing structuré : résumé exécutif, Bitcoin, Or, événements économiques,
-                            risques et conclusion opérationnelle.
-                        </p>
-                    </div>
-
-                    <div class="briefing-report-tags">
-                        <span class="briefing-tag green">Généré automatiquement</span>
-                        <span class="briefing-tag soft">ApexSignals Intelligence</span>
-                    </div>
-                </div>
-
-                <div class="briefing-report-body">
-                    <div class="briefing-report-content">
-                        {{ briefing.content }}
-                    </div>
-                </div>
-            </section>
-
-            <section class="briefing-info-grid">
-                <div class="panel briefing-info-card">
-                    <h3>⚡ Utilité</h3>
-                    <p>
-                        Lecture rapide des scénarios de marché avec un angle orienté trading court terme.
-                    </p>
-                </div>
-
-                <div class="panel briefing-info-card">
-                    <h3>📊 Couverture</h3>
-                    <p>
-                        Bitcoin, Or, événements économiques et risques de volatilité.
-                    </p>
-                </div>
-
-                <div class="panel briefing-info-card">
-                    <h3>🔒 Accès</h3>
-                    <p>
-                        Réservé aux utilisateurs Premium avec génération automatique quotidienne.
-                    </p>
-                </div>
-            </section>
-            {% else %}
-            <section class="panel briefing-empty-panel">
-                <h2>Aucun briefing disponible</h2>
+        <section class="premium-banner">
+            <div>
+                <h3>Analyse quotidienne intelligente</h3>
                 <p>
-                    Le briefing du jour n’est pas encore disponible ou n’a pas pu être généré.
+                    Ce briefing est généré automatiquement à partir des données marché
+                    et rédigé par IA pour fournir une lecture claire, exploitable et orientée trading.
                 </p>
+            </div>
 
-                <div class="briefing-empty-actions">
-                    <a href="{{ url_for('briefing_page') }}" class="primary-link-btn">
-                        Réessayer
-                    </a>
-                    <a href="{{ url_for('dashboard') }}" class="secondary-link-btn">
-                        Retour dashboard
-                    </a>
-                </div>
-            </section>
-            {% endif %}
+            <div class="banner-actions">
+                <a href="{{ url_for('dashboard') }}" class="upgrade-btn">
+                    ← Retour dashboard
+                </a>
+                <a href="{{ url_for('briefing_page') }}" class="secondary-link-btn">
+                    🔄 Actualiser
+                </a>
+            </div>
+        </section>
 
-        </main>
-    </div>
+        {% if briefing %}
+        <section class="panel">
+            <div class="panel-header">
+                <h2>📘 Rapport complet</h2>
+                <p class="table-subtitle">
+                    Résumé, Bitcoin, Or, macro, risques et stratégie.
+                </p>
+            </div>
+
+            <div class="briefing-preview-content">
+                {{ briefing.content }}
+            </div>
+        </section>
+
+        <section class="responsive-three-cols" style="margin-top:20px;">
+            <div class="panel">
+                <h3>⚡ Utilité</h3>
+                <p>Lecture rapide pour trading court terme.</p>
+            </div>
+
+            <div class="panel">
+                <h3>📊 Couverture</h3>
+                <p>Crypto, Gold, macro-économie.</p>
+            </div>
+
+            <div class="panel">
+                <h3>🔒 Accès</h3>
+                <p>Réservé aux utilisateurs Premium.</p>
+            </div>
+        </section>
+
+        {% else %}
+        <section class="panel">
+            <h2>Aucun briefing disponible</h2>
+            <p>Le briefing n’a pas encore été généré.</p>
+
+            <div class="banner-actions">
+                <a href="{{ url_for('briefing_page') }}" class="primary-link-btn">
+                    Réessayer
+                </a>
+                <a href="{{ url_for('dashboard') }}" class="secondary-link-btn">
+                    Retour dashboard
+                </a>
+            </div>
+        </section>
+        {% endif %}
+
+    </main>
+
+</div>
 
 </body>
 </html>
