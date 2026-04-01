@@ -1759,3 +1759,29 @@ select {
         font-size: 22px;
     }
 }
+
+/* =========================
+   FIX LOGO NAVBAR
+========================= */
+.logo img {
+    height: 42px;
+    width: auto;
+    object-fit: contain;
+
+    /* améliore visibilité */
+    filter: brightness(1.4) contrast(1.2);
+
+    /* glow léger premium */
+    drop-shadow: 0 0 10px rgba(59,130,246,0.4);
+}
+
+.logo span {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+
+    /* gradient premium */
+    background: linear-gradient(90deg, #3b82f6, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
