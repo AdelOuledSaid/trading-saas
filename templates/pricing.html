@@ -17,24 +17,26 @@
         <span class="pricing-kicker">Nos abonnements</span>
         <h1>Choisis le plan adapté à ton niveau</h1>
         <p>
-            Une tarification claire, une présentation simple et un accès progressif
-            aux fonctionnalités premium d’ApexSignals.
+            Trois offres claires pour démarrer, progresser ou passer à une expérience complète.
         </p>
     </div>
 
     <div class="pricing-grid pricing-grid-3">
 
-        <div class="pricing-card">
+        <!-- BASIC -->
+        <div class="pricing-card pricing-basic">
             <h2>Basic</h2>
             <div class="price">9€ <span>/ mois</span></div>
             <p class="pricing-subtext">Pour démarrer avec l’essentiel.</p>
+
             <ul>
-                <li>Signaux en temps réel</li>
-                <li>Dashboard basique</li>
-                <li>Historique limité</li>
-                <li>Accès simple à la plateforme</li>
-                <li>Navigation membre</li>
-                <li>Sans briefing IA avancé</li>
+                <li><span class="feature-yes">✔</span> Signaux en temps réel</li>
+                <li><span class="feature-yes">✔</span> Dashboard basique</li>
+                <li><span class="feature-yes">✔</span> Historique limité</li>
+                <li><span class="feature-yes">✔</span> Accès simple à la plateforme</li>
+                <li><span class="feature-no">✖</span> Statistiques avancées</li>
+                <li><span class="feature-no">✖</span> Briefing IA quotidien</li>
+                <li><span class="feature-no">✖</span> Telegram VIP</li>
             </ul>
 
             {% if user_plan == "basic" %}
@@ -47,162 +49,60 @@
             {% endif %}
         </div>
 
-        <div class="pricing-card premium-plan featured-card">
-            <div class="badge-top">Le plus populaire</div>
+        <!-- PREMIUM -->
+        <div class="pricing-card pricing-premium featured-card">
+            <div class="badge-top premium-badge">Le plus populaire</div>
             <h2>Premium</h2>
             <div class="price">19€ <span>/ mois</span></div>
             <p class="pricing-subtext">L’offre la plus équilibrée pour progresser.</p>
+
             <ul>
-                <li>Tous les signaux</li>
-                <li>Historique complet</li>
-                <li>Statistiques avancées</li>
-                <li>PnL cumulatif</li>
-                <li>Capital simulé</li>
-                <li>Briefing IA quotidien</li>
+                <li><span class="feature-yes">✔</span> Tous les signaux</li>
+                <li><span class="feature-yes">✔</span> Historique complet</li>
+                <li><span class="feature-yes">✔</span> Statistiques avancées</li>
+                <li><span class="feature-yes">✔</span> PnL cumulatif</li>
+                <li><span class="feature-yes">✔</span> Capital simulé</li>
+                <li><span class="feature-yes">✔</span> Briefing IA quotidien</li>
+                <li><span class="feature-no">✖</span> Telegram VIP privé</li>
             </ul>
 
             {% if user_plan == "premium" %}
-                <a href="{{ url_for('dashboard') }}" class="pricing-btn primary-btn">Plan actuel</a>
+                <a href="{{ url_for('dashboard') }}" class="pricing-btn premium-btn">Plan actuel</a>
             {% else %}
                 <form action="{{ url_for('create_checkout_session') }}" method="POST">
                     <input type="hidden" name="plan" value="premium">
-                    <button type="submit" class="pricing-btn primary-btn">Choisir Premium</button>
+                    <button type="submit" class="pricing-btn premium-btn">Choisir Premium</button>
                 </form>
             {% endif %}
         </div>
 
-        <div class="pricing-card">
+        <!-- VIP -->
+        <div class="pricing-card pricing-vip">
             <div class="badge-top vip-badge">VIP</div>
             <h2>VIP</h2>
             <div class="price">39€ <span>/ mois</span></div>
             <p class="pricing-subtext">Pour un accès plus complet et prioritaire.</p>
+
             <ul>
-                <li>Tout le Premium</li>
-                <li>Telegram VIP privé</li>
-                <li>Alertes prioritaires</li>
-                <li>Accès anticipé aux nouveautés</li>
-                <li>Briefings enrichis</li>
-                <li>Support prioritaire</li>
+                <li><span class="feature-yes">✔</span> Tout le Premium</li>
+                <li><span class="feature-yes">✔</span> Telegram VIP privé</li>
+                <li><span class="feature-yes">✔</span> Alertes prioritaires</li>
+                <li><span class="feature-yes">✔</span> Accès anticipé aux nouveautés</li>
+                <li><span class="feature-yes">✔</span> Briefings enrichis</li>
+                <li><span class="feature-yes">✔</span> Support prioritaire</li>
+                <li><span class="feature-yes">✔</span> Accès complet ApexSignals</li>
             </ul>
 
             {% if user_plan == "vip" %}
-                <a href="{{ url_for('dashboard') }}" class="pricing-btn primary-btn">Plan actuel</a>
+                <a href="{{ url_for('dashboard') }}" class="pricing-btn vip-btn">Plan actuel</a>
             {% else %}
                 <form action="{{ url_for('create_checkout_session') }}" method="POST">
                     <input type="hidden" name="plan" value="vip">
-                    <button type="submit" class="pricing-btn primary-btn">Choisir VIP</button>
+                    <button type="submit" class="pricing-btn vip-btn">Choisir VIP</button>
                 </form>
             {% endif %}
         </div>
 
-    </div>
-
-    <section class="pricing-info-section">
-        <div class="responsive-three-cols">
-
-            <div class="info-card">
-                <h3>+327%</h3>
-                <p>Performance cumulée affichée</p>
-            </div>
-
-            <div class="info-card">
-                <h3>73%</h3>
-                <p>Winrate moyen présenté</p>
-            </div>
-
-            <div class="info-card">
-                <h3>+1200</h3>
-                <p>Trades analysés dans l’historique</p>
-            </div>
-
-        </div>
-    </section>
-
-    <section class="pricing-benefits-section">
-        <div class="section-title">
-            <span>Pourquoi choisir ApexSignals</span>
-            <h2>Une plateforme conçue pour être lisible et premium</h2>
-            <p>
-                Notre objectif est de proposer une expérience plus propre, plus claire
-                et plus rassurante qu’une simple page de signaux.
-            </p>
-        </div>
-
-        <div class="responsive-three-cols">
-
-            <div class="info-card left-card">
-                <h3>Rapide</h3>
-                <p>Accès direct aux signaux, aux niveaux clés et à l’espace membre.</p>
-            </div>
-
-            <div class="info-card left-card">
-                <h3>Structuré</h3>
-                <p>Une hiérarchie visuelle claire pour mieux comprendre l’essentiel.</p>
-            </div>
-
-            <div class="info-card left-card">
-                <h3>Premium</h3>
-                <p>Design moderne, briefing enrichi et parcours utilisateur plus pro.</p>
-            </div>
-
-        </div>
-    </section>
-
-    <section class="faq-section-custom">
-        <div class="section-title">
-            <span>Questions fréquentes</span>
-            <h2>Tout ce qu’il faut savoir avant de choisir ton plan</h2>
-        </div>
-
-        <div class="faq-container">
-
-            <div class="faq-item">
-                <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>Le service est-il automatique ?</span>
-                    <div class="faq-icon">+</div>
-                </div>
-                <div class="faq-content">
-                    <p>
-                        Les signaux sont affichés automatiquement sur la plateforme selon la logique mise en place.
-                    </p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>Puis-je annuler à tout moment ?</span>
-                    <div class="faq-icon">+</div>
-                </div>
-                <div class="faq-content">
-                    <p>
-                        Oui, l’abonnement peut être arrêté selon les règles de gestion prévues dans ton espace.
-                    </p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>Quelle formule choisir pour commencer ?</span>
-                    <div class="faq-icon">+</div>
-                </div>
-                <div class="faq-content">
-                    <p>
-                        Le plan Premium est généralement le meilleur équilibre entre prix, fonctionnalités et expérience.
-                    </p>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <div class="pricing-final-cta">
-        <h2>Prêt à passer sur une expérience plus premium ?</h2>
-        <p>
-            Rejoins ApexSignals et accède à une plateforme claire, moderne et orientée performance.
-        </p>
-        <a href="{{ url_for('register') }}" class="primary-link-btn">
-            Créer mon compte
-        </a>
     </div>
 
 </div>
@@ -225,21 +125,6 @@
         </div>
     </div>
 </footer>
-
-<script>
-function toggleFAQ(el) {
-    const item = el.parentElement;
-    item.classList.toggle("active");
-
-    const content = item.querySelector(".faq-content");
-
-    if (item.classList.contains("active")) {
-        content.style.maxHeight = content.scrollHeight + "px";
-    } else {
-        content.style.maxHeight = null;
-    }
-}
-</script>
 
 </body>
 </html>
