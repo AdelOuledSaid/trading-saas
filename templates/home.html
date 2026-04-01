@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApexSignals | Signaux de trading premium</title>
-    <meta name="description" content="ApexSignals propose des signaux de trading premium sur crypto, or, indices et forex avec une interface moderne et professionnelle.">
+    <meta name="description" content="Recevez des signaux de trading premium sur crypto, gold et indices avec ApexSignals. Interface moderne, accès membre et expérience professionnelle.">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
@@ -12,7 +12,7 @@
 
     {% include "partials/navbar.html" %}
 
-    <section class="home-hero">
+    <section class="home-hero home-hero-clean">
         <div class="hero-bg-grid"></div>
         <div class="hero-glow hero-glow-1"></div>
         <div class="hero-glow hero-glow-2"></div>
@@ -20,22 +20,21 @@
         <div class="hero-container">
             <div class="hero-left">
                 <div class="hero-badge">
-                    Signaux premium • Crypto • Gold • Indices • Forex
+                    Signaux premium • Crypto • Gold • Indices
                 </div>
 
-                <h1>
-                    Des signaux de trading <span>premium</span> pour une expérience
-                    <span>claire, rapide et haut de gamme</span>
+                <h1 class="hero-title-clean">
+                    Des signaux de trading <span>clairs</span>, <span>rapides</span> et <span>premium</span>
                 </h1>
 
-                <p class="hero-text">
-                    Accède à une plateforme élégante pensée pour convertir et rassurer.
-                    Reçois des signaux sur les actifs les plus suivis du marché :
-                    Bitcoin, Ethereum, Gold, US100, Forex et plus encore.
+                <p class="hero-text hero-text-clean">
+                    Accédez à une expérience professionnelle dédiée aux marchés les plus suivis :
+                    Bitcoin, Ethereum, Gold et indices. Une interface moderne, un espace membre
+                    privé et une offre pensée pour aller à l’essentiel.
                 </p>
 
                 <div class="hero-actions">
-                    <a href="{{ url_for('pricing') }}" class="hero-btn-primary">Découvrir les offres</a>
+                    <a href="{{ url_for('pricing') }}" class="hero-btn-primary">Voir les offres</a>
 
                     {% if current_user.is_authenticated %}
                         <a href="{{ url_for('dashboard') }}" class="hero-btn-secondary">Accéder au dashboard</a>
@@ -44,48 +43,41 @@
                     {% endif %}
                 </div>
 
-                <div class="market-badges">
-                    <span class="market-badge btc">BTC</span>
-                    <span class="market-badge eth">ETH</span>
-                    <span class="market-badge sol">SOL</span>
-                    <span class="market-badge gold">GOLD</span>
-                    <span class="market-badge us100">US100</span>
-                    <span class="market-badge fx">FOREX</span>
-                </div>
-
-                <div class="hero-trust-row">
-                    <div class="trust-mini">
-                        <strong>Interface premium</strong>
-                        <span>Conçue pour rassurer</span>
+                <div class="hero-metrics">
+                    <div class="hero-metric-box">
+                        <strong>Crypto</strong>
+                        <span>BTC • ETH • SOL</span>
                     </div>
-                    <div class="trust-mini">
-                        <strong>Multi-actifs</strong>
-                        <span>Crypto, Gold, Indices</span>
+                    <div class="hero-metric-box">
+                        <strong>Gold</strong>
+                        <span>XAUUSD</span>
                     </div>
-                    <div class="trust-mini">
-                        <strong>Accès privé</strong>
-                        <span>Zone membre dédiée</span>
+                    <div class="hero-metric-box">
+                        <strong>Indices</strong>
+                        <span>US100 • US30 • FRA40</span>
                     </div>
                 </div>
             </div>
 
             <div class="hero-right">
-                <div class="hero-card main-preview-card">
+                <div class="hero-card premium-signal-card">
                     <div class="preview-top">
                         <div>
-                            <p class="preview-label">Signal en vedette</p>
+                            <p class="preview-label">Signal premium</p>
                             <h3>BTCUSD • BUY</h3>
                         </div>
-                        <span class="signal-status buy">Premium</span>
+                        <span class="signal-status buy">Actif</span>
                     </div>
 
-                    <div class="signal-mini-chart">
-                        <div class="chart-line"></div>
-                        <div class="chart-candle candle-1"></div>
-                        <div class="chart-candle candle-2"></div>
-                        <div class="chart-candle candle-3"></div>
-                        <div class="chart-candle candle-4"></div>
-                        <div class="chart-candle candle-5"></div>
+                    <div class="signal-clean-chart">
+                        <div class="chart-bars">
+                            <span class="bar b1"></span>
+                            <span class="bar b2"></span>
+                            <span class="bar b3"></span>
+                            <span class="bar b4"></span>
+                            <span class="bar b5"></span>
+                        </div>
+                        <div class="chart-trend-line"></div>
                     </div>
 
                     <div class="signal-infos">
@@ -104,21 +96,10 @@
                     </div>
 
                     <div class="asset-row">
-                        <div class="asset-pill">Bitcoin</div>
+                        <div class="asset-pill">BTCUSD</div>
                         <div class="asset-pill">Gold</div>
                         <div class="asset-pill">US100</div>
-                        <div class="asset-pill">Forex</div>
                     </div>
-                </div>
-
-                <div class="floating-mini-card floating-card-1">
-                    <span>BTC</span>
-                    <strong>Momentum haussier</strong>
-                </div>
-
-                <div class="floating-mini-card floating-card-2">
-                    <span>Gold</span>
-                    <strong>Zone clé détectée</strong>
                 </div>
             </div>
         </div>
@@ -127,33 +108,33 @@
     <section class="home-stats-section">
         <div class="section-container">
             <div class="section-title">
-                <span>Pourquoi ApexSignals</span>
-                <h2>Une vitrine premium qui inspire confiance</h2>
+                <span>ApexSignals</span>
+                <h2>Une expérience pensée pour l’essentiel</h2>
                 <p>
-                    Une meilleure présentation augmente la crédibilité, la perception de valeur
-                    et le taux de conversion de tes abonnements.
+                    Un environnement premium pour consulter rapidement vos opportunités de marché
+                    et accéder à vos offres en toute simplicité.
                 </p>
             </div>
 
             <div class="home-stats-grid">
                 <div class="home-stat-card">
                     <h3>24/7</h3>
-                    <p>Surveillance des marchés</p>
-                </div>
-
-                <div class="home-stat-card">
-                    <h3>Multi-Actifs</h3>
-                    <p>Crypto, Gold, Forex, Indices</p>
+                    <p>Suivi des marchés</p>
                 </div>
 
                 <div class="home-stat-card">
                     <h3>Premium</h3>
-                    <p>Dashboard réservé aux membres</p>
+                    <p>Accès réservé aux membres</p>
+                </div>
+
+                <div class="home-stat-card">
+                    <h3>Multi-Actifs</h3>
+                    <p>Crypto, Gold, Indices</p>
                 </div>
 
                 <div class="home-stat-card">
                     <h3>Simple</h3>
-                    <p>Une lecture rapide et claire</p>
+                    <p>Lecture rapide et claire</p>
                 </div>
             </div>
         </div>
@@ -162,11 +143,10 @@
     <section class="markets-section">
         <div class="section-container">
             <div class="section-title">
-                <span>Marchés couverts</span>
-                <h2>Les actifs les plus suivis du moment</h2>
+                <span>Marchés suivis</span>
+                <h2>Les actifs les plus demandés</h2>
                 <p>
-                    Une image plus premium passe aussi par des actifs immédiatement reconnaissables
-                    par les visiteurs du secteur trading.
+                    Une sélection concentrée sur les marchés les plus populaires et les plus recherchés.
                 </p>
             </div>
 
@@ -174,86 +154,25 @@
                 <div class="market-card">
                     <div class="market-icon btc-bg">₿</div>
                     <h3>Bitcoin</h3>
-                    <p>Le marché crypto le plus observé au monde, parfait pour capter l’attention immédiatement.</p>
+                    <p>Le marché crypto le plus suivi au monde.</p>
                 </div>
 
                 <div class="market-card">
                     <div class="market-icon eth-bg">Ξ</div>
                     <h3>Ethereum</h3>
-                    <p>Un actif incontournable pour renforcer l’identité moderne et crypto de la plateforme.</p>
+                    <p>Un actif incontournable pour une offre crypto premium.</p>
                 </div>
 
                 <div class="market-card">
                     <div class="market-icon gold-bg">Au</div>
                     <h3>Gold</h3>
-                    <p>Le métal refuge emblématique, idéal pour inspirer sérieux, stabilité et confiance.</p>
+                    <p>Le métal refuge emblématique des marchés.</p>
                 </div>
 
                 <div class="market-card">
                     <div class="market-icon us100-bg">NQ</div>
                     <h3>US100</h3>
-                    <p>Un indice très populaire chez les traders actifs, parfait pour élargir la portée commerciale.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="features-home-section">
-        <div class="section-container">
-            <div class="section-title">
-                <span>Expérience premium</span>
-                <h2>Conçu pour convaincre plus vite</h2>
-            </div>
-
-            <div class="features-home-grid">
-                <div class="feature-home-card">
-                    <h3>Landing page haut de gamme</h3>
-                    <p>Une première impression plus forte pour rassurer les visiteurs dès les premières secondes.</p>
-                </div>
-
-                <div class="feature-home-card">
-                    <h3>Navigation claire</h3>
-                    <p>Les utilisateurs comprennent rapidement où cliquer, quoi acheter et comment accéder au service.</p>
-                </div>
-
-                <div class="feature-home-card">
-                    <h3>Image de marque premium</h3>
-                    <p>Un design plus moderne augmente naturellement la valeur perçue de tes offres.</p>
-                </div>
-
-                <div class="feature-home-card">
-                    <h3>Compatible mobile</h3>
-                    <p>Le rendu reste propre, premium et lisible sur mobile, tablette et ordinateur.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="proof-section">
-        <div class="section-container">
-            <div class="proof-box">
-                <div class="proof-left">
-                    <span class="proof-badge">Positionnement premium</span>
-                    <h2>Le bon design augmente la confiance avant même le paiement</h2>
-                    <p>
-                        Une page d’accueil plus propre, plus structurée et plus haut de gamme
-                        améliore la crédibilité du service, surtout dans le domaine du trading.
-                    </p>
-                </div>
-
-                <div class="proof-right">
-                    <div class="proof-card">
-                        <strong>Crypto</strong>
-                        <span>BTC • ETH • SOL</span>
-                    </div>
-                    <div class="proof-card">
-                        <strong>Indices</strong>
-                        <span>US100 • US30 • FRA40</span>
-                    </div>
-                    <div class="proof-card">
-                        <strong>Safe Haven</strong>
-                        <span>Gold • zones techniques</span>
-                    </div>
+                    <p>Un indice très populaire chez les traders actifs.</p>
                 </div>
             </div>
         </div>
@@ -263,13 +182,13 @@
         <div class="section-container">
             <div class="final-cta-box">
                 <span class="final-cta-badge">ApexSignals Premium</span>
-                <h2>Transforme ta page d’accueil en vraie vitrine premium</h2>
+                <h2>Rejoignez l’expérience premium</h2>
                 <p>
-                    Une présentation plus élégante, plus crédible et plus orientée conversion
-                    pour attirer davantage d’utilisateurs vers tes offres.
+                    Débloquez vos accès, consultez vos signaux et profitez d’une plateforme plus claire,
+                    plus moderne et plus professionnelle.
                 </p>
                 <div class="final-cta-actions">
-                    <a href="{{ url_for('pricing') }}" class="hero-btn-primary">Voir les offres</a>
+                    <a href="{{ url_for('pricing') }}" class="hero-btn-primary">Découvrir les offres</a>
                     {% if not current_user.is_authenticated %}
                         <a href="{{ url_for('register') }}" class="hero-btn-secondary">Créer mon compte</a>
                     {% endif %}
@@ -282,7 +201,7 @@
         <div class="section-container footer-inner">
             <div class="footer-brand">
                 <h3>ApexSignals</h3>
-                <p>Signaux de trading premium dans une interface moderne et professionnelle.</p>
+                <p>Signaux de trading premium sur crypto, gold et indices.</p>
             </div>
 
             <div class="footer-links">
