@@ -1,38 +1,45 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApexSignals - Signaux Trading Premium</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-</head>
+<nav class="navbar">
+    <a href="{{ url_for('home') }}" class="logo">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="ApexSignals">
+        <span>ApexSignals</span>
+    </a>
 
-<body class="dashboard-body">
+    <div class="nav-links">
+        <a href="{{ url_for('home') }}">Accueil</a>
+        <a href="{{ url_for('pricing') }}">Offres</a>
 
-<div style="min-height:100vh; background: radial-gradient(circle at top, rgba(37,99,235,0.18), transparent 35%), linear-gradient(180deg, #06122d 0%, #030b1f 100%);">
-
-{% include "partials/navbar.html" %}
-
-<section class="responsive-hero" style="max-width:1200px; margin:auto; padding:80px 32px;">
-    <div>
-        <h1 style="font-size:60px; font-weight:900;">
-            ApexSignals 🚀
-        </h1>
-
-        <p style="color:#9fb0c9; font-size:18px;">
-            Signaux trading premium + dashboard pro + Telegram VIP.
-        </p>
-
-        <div style="margin-top:20px;">
-            <a href="{{ url_for('pricing') }}" class="primary-link-btn">
-                🚀 Accéder aux signaux
-            </a>
-        </div>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('logout') }}" class="logout-btn">Déconnexion</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Connexion</a>
+            <a href="{{ url_for('register') }}" class="cta-btn">Créer un compte</a>
+        {% endif %}
     </div>
-</section>
 
+    <div class="burger" onclick="toggleMobileMenu(this)">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</nav>
+
+<div id="mobileMenu" class="mobile-menu">
+    <a href="{{ url_for('home') }}">Accueil</a>
+    <a href="{{ url_for('pricing') }}">Offres</a>
+
+    {% if current_user.is_authenticated %}
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Déconnexion</a>
+    {% else %}
+        <a href="{{ url_for('login') }}">Connexion</a>
+        <a href="{{ url_for('register') }}" class="cta-btn" style="text-align:center;">Créer un compte</a>
+    {% endif %}
 </div>
 
-</body>
-</html>
+<script>
+function toggleMobileMenu(el) {
+    el.classList.toggle("active");
+    document.getElementById("mobileMenu").classList.toggle("active");
+}
+</script>
