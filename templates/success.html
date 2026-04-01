@@ -4,40 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paiement réussi - ApexSignals</title>
+    <meta name="description" content="Votre paiement ApexSignals a été validé avec succès.">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
+<body class="home-body success-page">
 
-<body class="dashboard-body">
+    {% include "_navbar.html" %}
 
-{% include "partials/navbar.html" %}
+    <section class="success-section">
+        <div class="hero-bg-grid"></div>
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
 
-<section style="max-width:900px; margin:auto; padding:80px 20px; text-align:center;">
+        <div class="section-container">
+            <div class="success-card">
+                <div class="success-icon">✅</div>
 
-    <h1 style="font-size:50px;">✅ Paiement réussi</h1>
+                <span class="success-badge">Paiement confirmé</span>
 
-    <p style="color:#9fb0c9; font-size:18px;">
-        Bienvenue sur ApexSignals 🚀
-    </p>
+                <h1>Paiement réussi</h1>
 
-    <div style="margin-top:30px;">
-        <a href="{{ url_for('dashboard') }}" class="primary-link-btn">
-            Accéder au dashboard
-        </a>
-    </div>
+                <p class="success-text">
+                    Bienvenue sur ApexSignals 🚀  
+                    Votre accès a bien été activé. Vous pouvez maintenant rejoindre votre espace membre
+                    et profiter de l’expérience premium.
+                </p>
 
-    <!-- VIP TELEGRAM -->
-    <div style="margin-top:40px;">
-        <p>🔥 Accès VIP Telegram :</p>
+                <div class="success-actions">
+                    <a href="{{ url_for('dashboard') }}" class="hero-btn-primary">
+                        Accéder au dashboard
+                    </a>
 
-        <a href="https://t.me/TON_LIEN_ICI"
-           target="_blank"
-           style="background:#0088cc; padding:14px 18px; border-radius:10px; color:white; font-weight:800;">
-           Rejoindre le groupe VIP
-        </a>
-    </div>
+                    <a href="{{ url_for('pricing') }}" class="hero-btn-secondary">
+                        Voir les offres
+                    </a>
+                </div>
 
-</section>
+                <div class="success-vip-box">
+                    <p class="success-vip-title">🔥 Accès VIP Telegram</p>
+
+                    <a href="https://t.me/TON_LIEN_ICI"
+                       target="_blank"
+                       class="telegram-vip-btn">
+                       Rejoindre le groupe VIP
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
 </body>
 </html>

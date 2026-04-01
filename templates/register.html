@@ -3,116 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription</title>
+    <title>Inscription - ApexSignals</title>
+    <meta name="description" content="Créez votre compte ApexSignals et accédez à une expérience de trading premium.">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
-<body class="dashboard-body">
+<body class="home-body auth-page">
 
-    <div style="min-height:100vh; background: radial-gradient(circle at top, rgba(124,58,237,0.14), transparent 35%), linear-gradient(180deg, #06122d 0%, #030b1f 100%); color:white;">
+    {% include "_navbar.html" %}
 
-        {% include "partials/navbar.html" %}
+    <section class="auth-section auth-section-register">
+        <div class="hero-bg-grid"></div>
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
 
-        <div class="responsive-center-wrap">
-            <div class="responsive-two-cols" style="width:100%; max-width:1100px;">
+        <div class="section-container">
+            <div class="auth-layout">
 
-                <!-- LEFT SIDE -->
-                <div style="background:linear-gradient(180deg, rgba(8,18,44,0.98), rgba(5,13,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:28px; padding:38px; box-shadow:0 20px 50px rgba(0,0,0,0.28); display:flex; flex-direction:column; justify-content:center;">
-                    <div style="display:inline-block; padding:8px 14px; border-radius:999px; background:rgba(168,85,247,0.14); color:#c084fc; font-size:13px; font-weight:700; margin-bottom:18px; width:max-content;">
+                <div class="auth-left auth-card">
+                    <div class="auth-badge auth-badge-purple">
                         🚀 Nouveau compte
                     </div>
 
-                    <h1 style="font-size:52px; line-height:1.05; margin:0 0 18px 0; font-weight:900; letter-spacing:-1.2px; color:white;">
+                    <h1 class="auth-title">
                         Créez votre espace trading en quelques secondes.
                     </h1>
 
-                    <p style="font-size:18px; color:#a7b6cf; line-height:1.7; margin:0 0 26px 0;">
-                        Rejoignez une interface propre et moderne pour suivre vos signaux, vos performances, vos statistiques et débloquer l’expérience Premium.
+                    <p class="auth-text">
+                        Rejoignez une interface propre et moderne pour suivre vos signaux,
+                        vos performances, vos statistiques et débloquer l’expérience Premium.
                     </p>
 
-                    <div style="display:flex; flex-direction:column; gap:14px;">
-                        <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:16px 18px; color:#dbe7ff;">
-                            ⚡ Création de compte rapide et simple
+                    <div class="auth-points">
+                        <div class="auth-point">
+                            <span class="auth-point-icon">⚡</span>
+                            <span>Création de compte rapide et simple</span>
                         </div>
-                        <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:16px 18px; color:#dbe7ff;">
-                            📊 Accès immédiat au dashboard
+                        <div class="auth-point">
+                            <span class="auth-point-icon">📊</span>
+                            <span>Accès immédiat au dashboard</span>
                         </div>
-                        <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:16px 18px; color:#dbe7ff;">
-                            💎 Possibilité de passer Premium à tout moment
+                        <div class="auth-point">
+                            <span class="auth-point-icon">💎</span>
+                            <span>Possibilité de passer Premium à tout moment</span>
                         </div>
                     </div>
 
-                    <div style="margin-top:26px;">
-                        <a href="{{ url_for('home') }}" style="color:#93c5fd; text-decoration:none; font-weight:600;">
-                            ← Retour à l’accueil
-                        </a>
+                    <div class="auth-back-link-wrap">
+                        <a href="{{ url_for('home') }}" class="auth-back-link">← Retour à l’accueil</a>
                     </div>
                 </div>
 
-                <!-- RIGHT SIDE -->
-                <div style="background:linear-gradient(180deg, rgba(10,20,46,0.98), rgba(6,14,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:28px; padding:38px; box-shadow:0 20px 50px rgba(0,0,0,0.28);">
-                    <div style="margin-bottom:26px;">
-                        <h2 style="margin:0 0 8px 0; font-size:34px; color:white;">Créer un compte</h2>
-                        <p style="margin:0; color:#9fb0c9; font-size:16px;">
-                            Remplissez les informations ci-dessous pour commencer.
-                        </p>
+                <div class="auth-right auth-card auth-form-card">
+                    <div class="auth-form-header">
+                        <h2>Créer un compte</h2>
+                        <p>Remplissez les informations ci-dessous pour commencer.</p>
                     </div>
 
                     {% with messages = get_flashed_messages() %}
                       {% if messages %}
-                        <div style="margin-bottom:20px; display:flex; flex-direction:column; gap:10px;">
+                        <div class="flash-stack">
                             {% for message in messages %}
-                              <p style="margin:0; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.06); padding:14px 16px; border-radius:12px; color:#dbe7ff;">
+                              <div class="flash-message">
                                   {{ message }}
-                              </p>
+                              </div>
                             {% endfor %}
                         </div>
                       {% endif %}
                     {% endwith %}
 
-                    <form method="POST" style="display:flex; flex-direction:column; gap:16px;">
-                        <div>
-                            <label style="display:block; margin-bottom:8px; color:#c8d4ea; font-weight:600;">Adresse email</label>
+                    <form method="POST" class="auth-form">
+                        <div class="form-group">
+                            <label for="register-email">Adresse email</label>
                             <input
+                                id="register-email"
                                 type="email"
                                 name="email"
                                 placeholder="Votre email"
                                 required
-                                style="width:100%; padding:15px 16px; border-radius:14px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); color:white; font-size:15px; outline:none; box-sizing:border-box;"
                             >
                         </div>
 
-                        <div>
-                            <label style="display:block; margin-bottom:8px; color:#c8d4ea; font-weight:600;">Mot de passe</label>
+                        <div class="form-group">
+                            <label for="register-password">Mot de passe</label>
                             <input
+                                id="register-password"
                                 type="password"
                                 name="password"
                                 placeholder="Votre mot de passe"
                                 required
-                                style="width:100%; padding:15px 16px; border-radius:14px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); color:white; font-size:15px; outline:none; box-sizing:border-box;"
                             >
                         </div>
 
-                        <button
-                            type="submit"
-                            style="margin-top:6px; background:linear-gradient(90deg, #7c3aed, #2563eb); color:white; border:none; padding:15px 18px; border-radius:14px; font-size:16px; font-weight:800; cursor:pointer; box-shadow:0 14px 28px rgba(124,58,237,0.22);"
-                        >
+                        <button type="submit" class="auth-submit-btn auth-submit-btn-purple">
                             Créer mon compte
                         </button>
                     </form>
 
-                    <div style="margin-top:22px; text-align:center;">
-                        <p style="color:#9fb0c9; margin:0 0 10px 0;">
-                            Déjà un compte ?
-                        </p>
-                        <a href="{{ url_for('login') }}" style="color:#93c5fd; text-decoration:none; font-weight:700;">
-                            Se connecter
-                        </a>
+                    <div class="auth-bottom-link">
+                        <p>Déjà un compte ?</p>
+                        <a href="{{ url_for('login') }}">Se connecter</a>
                     </div>
                 </div>
 
             </div>
         </div>
-    </div>
+    </section>
 
 </body>
 </html>

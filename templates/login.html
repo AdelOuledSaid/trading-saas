@@ -3,116 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion</title>
+    <title>Connexion - ApexSignals</title>
+    <meta name="description" content="Connectez-vous à votre compte ApexSignals pour accéder à votre dashboard premium.">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
-<body class="dashboard-body">
+<body class="home-body auth-page">
 
-    <div style="min-height:100vh; background: radial-gradient(circle at top, rgba(37,99,235,0.16), transparent 35%), linear-gradient(180deg, #06122d 0%, #030b1f 100%); color:white;">
+    {% include "_navbar.html" %}
 
-        {% include "partials/navbar.html" %}
+    <section class="auth-section auth-section-login">
+        <div class="hero-bg-grid"></div>
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
 
-        <div class="responsive-center-wrap">
-            <div class="responsive-two-cols" style="width:100%; max-width:1100px;">
+        <div class="section-container">
+            <div class="auth-layout">
 
-                <!-- LEFT SIDE -->
-                <div style="background:linear-gradient(180deg, rgba(8,18,44,0.98), rgba(5,13,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:28px; padding:38px; box-shadow:0 20px 50px rgba(0,0,0,0.28); display:flex; flex-direction:column; justify-content:center;">
-                    <div style="display:inline-block; padding:8px 14px; border-radius:999px; background:rgba(16,185,129,0.12); color:#34d399; font-size:13px; font-weight:700; margin-bottom:18px; width:max-content;">
+                <div class="auth-left auth-card">
+                    <div class="auth-badge auth-badge-green">
                         🔐 Accès sécurisé
                     </div>
 
-                    <h1 style="font-size:52px; line-height:1.05; margin:0 0 18px 0; font-weight:900; letter-spacing:-1.2px; color:white;">
+                    <h1 class="auth-title">
                         Connectez-vous à votre espace trading.
                     </h1>
 
-                    <p style="font-size:18px; color:#a7b6cf; line-height:1.7; margin:0 0 26px 0;">
-                        Retrouvez votre dashboard, vos statistiques, vos signaux et votre accès Premium dans une interface claire et professionnelle.
+                    <p class="auth-text">
+                        Retrouvez votre dashboard, vos statistiques, vos signaux
+                        et votre accès Premium dans une interface claire et professionnelle.
                     </p>
 
-                    <div style="display:flex; flex-direction:column; gap:14px;">
-                        <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:16px 18px; color:#dbe7ff;">
-                            📊 Dashboard complet et suivi des performances
+                    <div class="auth-points">
+                        <div class="auth-point">
+                            <span class="auth-point-icon">📊</span>
+                            <span>Dashboard complet et suivi des performances</span>
                         </div>
-                        <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:16px 18px; color:#dbe7ff;">
-                            📲 Notifications Telegram en direct
+                        <div class="auth-point">
+                            <span class="auth-point-icon">📲</span>
+                            <span>Notifications Telegram en direct</span>
                         </div>
-                        <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:16px 18px; color:#dbe7ff;">
-                            💎 Accès Premium et gestion d’abonnement
+                        <div class="auth-point">
+                            <span class="auth-point-icon">💎</span>
+                            <span>Accès Premium et gestion d’abonnement</span>
                         </div>
                     </div>
 
-                    <div style="margin-top:26px;">
-                        <a href="{{ url_for('home') }}" style="color:#93c5fd; text-decoration:none; font-weight:600;">
-                            ← Retour à l’accueil
-                        </a>
+                    <div class="auth-back-link-wrap">
+                        <a href="{{ url_for('home') }}" class="auth-back-link">← Retour à l’accueil</a>
                     </div>
                 </div>
 
-                <!-- RIGHT SIDE -->
-                <div style="background:linear-gradient(180deg, rgba(10,20,46,0.98), rgba(6,14,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:28px; padding:38px; box-shadow:0 20px 50px rgba(0,0,0,0.28);">
-                    <div style="margin-bottom:26px;">
-                        <h2 style="margin:0 0 8px 0; font-size:34px; color:white;">Connexion</h2>
-                        <p style="margin:0; color:#9fb0c9; font-size:16px;">
-                            Entrez vos identifiants pour accéder à votre compte.
-                        </p>
+                <div class="auth-right auth-card auth-form-card">
+                    <div class="auth-form-header">
+                        <h2>Connexion</h2>
+                        <p>Entrez vos identifiants pour accéder à votre compte.</p>
                     </div>
 
                     {% with messages = get_flashed_messages() %}
                       {% if messages %}
-                        <div style="margin-bottom:20px; display:flex; flex-direction:column; gap:10px;">
+                        <div class="flash-stack">
                             {% for message in messages %}
-                              <p style="margin:0; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.06); padding:14px 16px; border-radius:12px; color:#dbe7ff;">
+                              <div class="flash-message">
                                   {{ message }}
-                              </p>
+                              </div>
                             {% endfor %}
                         </div>
                       {% endif %}
                     {% endwith %}
 
-                    <form method="POST" style="display:flex; flex-direction:column; gap:16px;">
-                        <div>
-                            <label style="display:block; margin-bottom:8px; color:#c8d4ea; font-weight:600;">Adresse email</label>
+                    <form method="POST" class="auth-form">
+                        <div class="form-group">
+                            <label for="login-email">Adresse email</label>
                             <input
+                                id="login-email"
                                 type="email"
                                 name="email"
                                 placeholder="Votre email"
                                 required
-                                style="width:100%; padding:15px 16px; border-radius:14px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); color:white; font-size:15px; outline:none; box-sizing:border-box;"
                             >
                         </div>
 
-                        <div>
-                            <label style="display:block; margin-bottom:8px; color:#c8d4ea; font-weight:600;">Mot de passe</label>
+                        <div class="form-group">
+                            <label for="login-password">Mot de passe</label>
                             <input
+                                id="login-password"
                                 type="password"
                                 name="password"
                                 placeholder="Votre mot de passe"
                                 required
-                                style="width:100%; padding:15px 16px; border-radius:14px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); color:white; font-size:15px; outline:none; box-sizing:border-box;"
                             >
                         </div>
 
-                        <button
-                            type="submit"
-                            style="margin-top:6px; background:linear-gradient(90deg, #2563eb, #7c3aed); color:white; border:none; padding:15px 18px; border-radius:14px; font-size:16px; font-weight:800; cursor:pointer; box-shadow:0 14px 28px rgba(37,99,235,0.22);"
-                        >
+                        <button type="submit" class="auth-submit-btn auth-submit-btn-blue">
                             Se connecter
                         </button>
                     </form>
 
-                    <div style="margin-top:22px; text-align:center;">
-                        <p style="color:#9fb0c9; margin:0 0 10px 0;">
-                            Pas encore de compte ?
-                        </p>
-                        <a href="{{ url_for('register') }}" style="color:#93c5fd; text-decoration:none; font-weight:700;">
-                            Créer un compte
-                        </a>
+                    <div class="auth-bottom-link">
+                        <p>Pas encore de compte ?</p>
+                        <a href="{{ url_for('register') }}">Créer un compte</a>
                     </div>
                 </div>
 
             </div>
         </div>
-    </div>
+    </section>
 
 </body>
 </html>

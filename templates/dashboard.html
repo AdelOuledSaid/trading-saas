@@ -12,43 +12,103 @@
 
 <div class="dashboard-wrapper">
 
-    <div class="sidebar">
+    <aside class="sidebar">
         <div class="logo-box">
             <h2>ApexSignals</h2>
-            <p>Trading SaaS</p>
+            <p>Trading SaaS Premium</p>
         </div>
 
         <div class="sidebar-nav">
-            <a href="/dashboard" class="nav-link active">Dashboard</a>
-            <a href="/pricing" class="nav-link">Pricing</a>
-            <a href="/logout" class="nav-link logout-link">Logout</a>
+            <a href="{{ url_for('dashboard') }}" class="nav-link active">Dashboard</a>
+            <a href="{{ url_for('pricing') }}" class="nav-link">Pricing</a>
+            <a href="{{ url_for('home') }}" class="nav-link">Accueil</a>
+            <a href="{{ url_for('logout') }}" class="nav-link logout-link">Déconnexion</a>
         </div>
-    </div>
+    </aside>
 
-    <div class="main-content">
+    <main class="main-content">
 
         <div class="topbar">
-            <h1>Dashboard 📊</h1>
+            <div>
+                <h1>Dashboard 📊</h1>
+                <p class="subtitle">Vue rapide de la performance et de l’activité premium</p>
+            </div>
+            <div class="live-badge">● Live access</div>
+        </div>
+
+        <div class="premium-banner">
+            <div>
+                <h3>Espace membre ApexSignals</h3>
+                <p>
+                    Suivez vos statistiques principales, visualisez vos performances
+                    et gardez un accès rapide à votre environnement premium.
+                </p>
+            </div>
+            <a href="{{ url_for('pricing') }}" class="upgrade-btn">Voir les offres</a>
         </div>
 
         <div class="stats-grid">
-            <div class="stat-card">
-                <h3>73%</h3>
+            <div class="stat-card win-card">
                 <span class="stat-label">Winrate</span>
+                <h3>73%</h3>
             </div>
 
-            <div class="stat-card">
-                <h3>+320%</h3>
+            <div class="stat-card pnl-card">
                 <span class="stat-label">Performance</span>
+                <h3>+320%</h3>
             </div>
 
-            <div class="stat-card">
-                <h3>+1200</h3>
+            <div class="stat-card highlight-card">
                 <span class="stat-label">Trades</span>
+                <h3>+1200</h3>
             </div>
         </div>
 
-    </div>
+        <div class="panel-grid">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Résumé premium</h2>
+                </div>
+
+                <div class="summary-box">
+                    <div class="summary-item">
+                        <span>Marchés suivis</span>
+                        <strong>Crypto • Gold • Indices</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Statut du compte</span>
+                        <strong>Actif</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Accès</span>
+                        <strong>Dashboard sécurisé</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Signal aperçu</h2>
+                </div>
+
+                <div class="signal-box">
+                    <div class="signal-row">
+                        <span>Actif</span>
+                        <strong>BTCUSD</strong>
+                    </div>
+                    <div class="signal-row">
+                        <span>Direction</span>
+                        <strong class="text-buy">BUY</strong>
+                    </div>
+                    <div class="signal-row">
+                        <span>Confiance</span>
+                        <strong>Élevée</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
 
 </div>
 
