@@ -85,9 +85,9 @@
                 </div>
 
                 <div class="asset-row">
-                    <div class="asset-pill">Bitcoin</div>
-                    <div class="asset-pill">Gold</div>
-                    <div class="asset-pill">US100</div>
+                    <a href="{{ url_for('signals_btc') }}" class="asset-pill">Bitcoin</a>
+                    <a href="{{ url_for('signals_gold') }}" class="asset-pill">Gold</a>
+                    <a href="{{ url_for('signals_us100') }}" class="asset-pill">US100</a>
                 </div>
             </div>
         </div>
@@ -124,34 +124,34 @@
             <h2>Les actifs les plus observés sur la plateforme</h2>
             <p>
                 ApexSignals met en avant les marchés les plus populaires pour construire une plateforme
-                qui paraît plus riche, plus sérieuse et plus utile.
+                plus riche, plus sérieuse et plus lisible.
             </p>
         </div>
 
         <div class="markets-grid">
-            <div class="market-card">
+            <a href="{{ url_for('signals_btc') }}" class="market-card">
                 <div class="market-icon btc-bg">₿</div>
                 <h3>Bitcoin</h3>
                 <p>Actif principal pour lire les impulsions majeures et la structure crypto globale.</p>
-            </div>
+            </a>
 
-            <div class="market-card">
+            <a href="{{ url_for('signals_eth') }}" class="market-card">
                 <div class="market-icon eth-bg">Ξ</div>
                 <h3>Ethereum</h3>
                 <p>Référence complémentaire pour le momentum altcoin et les rotations du marché.</p>
-            </div>
+            </a>
 
-            <div class="market-card">
+            <a href="{{ url_for('signals_gold') }}" class="market-card">
                 <div class="market-icon gold-bg">Au</div>
                 <h3>Gold</h3>
                 <p>Valeur refuge surveillée pour donner une dimension plus macro à la plateforme.</p>
-            </div>
+            </a>
 
-            <div class="market-card">
+            <a href="{{ url_for('signals_us100') }}" class="market-card">
                 <div class="market-icon us100-bg">NQ</div>
                 <h3>US100</h3>
                 <p>Indice technologique populaire pour les mouvements rapides et lisibles.</p>
-            </div>
+            </a>
         </div>
     </div>
 </section>
@@ -168,25 +168,32 @@
         </div>
 
         <div class="features-home-grid">
-            <div class="feature-home-card">
+            <a href="{{ url_for('signals_page') }}" class="feature-home-card">
                 <h3>Signaux</h3>
                 <p>Une page dédiée aux actifs suivis, aux catégories et aux opportunités importantes.</p>
-            </div>
+            </a>
 
-            <div class="feature-home-card">
+            <a href="{{ url_for('results') }}" class="feature-home-card">
                 <h3>Résultats</h3>
                 <p>Une zone consacrée à la performance, au winrate, au volume de signaux et à l’historique.</p>
-            </div>
+            </a>
 
-            <div class="feature-home-card">
+            <a href="{{ url_for('trading_lab') }}" class="feature-home-card">
                 <h3>Trading Lab</h3>
                 <p>Un espace premium pour comprendre la structure des signaux et la logique des setups.</p>
-            </div>
+            </a>
 
-            <div class="feature-home-card">
-                <h3>Espace membre</h3>
-                <p>Un dashboard qui centralise les données importantes et renforce l’effet plateforme.</p>
-            </div>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard') }}" class="feature-home-card">
+                    <h3>Espace membre</h3>
+                    <p>Un dashboard qui centralise les données importantes et renforce l’effet plateforme.</p>
+                </a>
+            {% else %}
+                <a href="{{ url_for('register') }}" class="feature-home-card">
+                    <h3>Espace membre</h3>
+                    <p>Un dashboard qui centralise les données importantes et renforce l’effet plateforme.</p>
+                </a>
+            {% endif %}
         </div>
     </div>
 </section>
@@ -258,7 +265,7 @@
             <span>Explorer la plateforme</span>
             <h2>Des pages utiles qui rendent le site plus complet</h2>
             <p>
-                Chaque page a un rôle précis pour renforcer le rendu premium et éviter l’effet “site vide”.
+                Chaque page a un rôle précis pour renforcer le rendu premium et donner une navigation plus professionnelle.
             </p>
         </div>
 
@@ -289,8 +296,8 @@
 <section class="section-standard">
     <div class="section-container">
         <div class="section-title">
-            <span>Pourquoi ça paraît plus professionnel</span>
-            <h2>Des détails qui changent totalement l’image du site</h2>
+            <span>Pourquoi la plateforme paraît plus professionnelle</span>
+            <h2>Des détails qui changent totalement la perception du site</h2>
         </div>
 
         <div class="features-home-grid">
@@ -361,7 +368,7 @@
             <h2>Transforme une simple vitrine en vraie plateforme de trading</h2>
             <p>
                 Signaux, résultats, Trading Lab, FAQ, contact et espace membre :
-                chaque page renforce l’image premium et la crédibilité de ton site.
+                chaque page renforce l’image premium et la crédibilité du site.
             </p>
             <div class="final-cta-actions">
                 <a href="{{ url_for('pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>

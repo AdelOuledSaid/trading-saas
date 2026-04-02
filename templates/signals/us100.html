@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexSignals - US100 Signals</title>
+    <meta name="description" content="Suivez les signaux US100 sur ApexSignals avec statistiques, historique récent, lecture du marché et environnement premium.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+</head>
+<body class="home-body">
+
+{% include "partials/navbar.html" %}
+
+<section class="inner-hero">
+    <div class="section-container">
+        <span class="hero-badge">US100 Signals</span>
+        <h1 class="inner-page-title">Une page dédiée au US100 pour suivre les mouvements de l’indice technologique</h1>
+        <p class="inner-page-text">
+            Le US100 occupe une place importante dans ApexSignals pour les traders qui recherchent
+            des mouvements rapides, directionnels et lisibles. Cette page rassemble les signaux récents,
+            les statistiques principales et une lecture plus structurée d’un indice parmi les plus suivis.
+        </p>
+    </div>
+</section>
+
+<section class="home-stats-section">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Vue d’ensemble</span>
+            <h2>Les indicateurs essentiels du suivi US100</h2>
+            <p>
+                Ces données donnent une lecture immédiate de l’activité liée au US100 sur la plateforme,
+                avec les statistiques les plus utiles pour apprécier la fréquence, la qualité et la dynamique
+                des signaux enregistrés.
+            </p>
+        </div>
+
+        <div class="home-stats-grid">
+            <div class="home-stat-card">
+                <h3>{{ us100_total_signals or 0 }}</h3>
+                <p>Signaux US100 enregistrés</p>
+            </div>
+
+            <div class="home-stat-card">
+                <h3>{{ us100_winrate or 0 }}%</h3>
+                <p>Winrate observé sur les trades clôturés</p>
+            </div>
+
+            <div class="home-stat-card">
+                <h3>{{ us100_open_signals or 0 }}</h3>
+                <p>Signaux actuellement ouverts</p>
+            </div>
+
+            <div class="home-stat-card">
+                <h3>{{ us100_estimated_pnl or 0 }}</h3>
+                <p>PnL cumulé estimé sur le US100</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="proof-box">
+            <div class="proof-left">
+                <span class="proof-badge">Pourquoi le US100</span>
+                <h2>Un indice dynamique pour lire les impulsions du marché américain</h2>
+                <p>
+                    Le US100 est particulièrement apprécié pour ses mouvements rapides et sa capacité
+                    à produire des scénarios directionnels nets. Sa présence dans ApexSignals apporte
+                    une vraie dimension marchés indices à la plateforme et renforce son positionnement
+                    multi-actifs dans un cadre plus professionnel.
+                </p>
+            </div>
+
+            <div class="proof-right">
+                <div class="proof-card">
+                    <strong>Indice technologique</strong>
+                    <span>Le US100 concentre une forte attention grâce à son exposition aux grandes valeurs tech.</span>
+                </div>
+
+                <div class="proof-card">
+                    <strong>Dynamique rapide</strong>
+                    <span>Ses mouvements peuvent offrir des lectures claires et des scénarios à forte réactivité.</span>
+                </div>
+
+                <div class="proof-card">
+                    <strong>Valeur ajoutée</strong>
+                    <span>Une page dédiée US100 renforce la richesse perçue et la crédibilité de la plateforme.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Historique récent</span>
+            <h2>Les derniers signaux US100 publiés</h2>
+            <p>
+                Cette section présente les signaux récents liés au US100 avec leur direction,
+                leurs niveaux techniques et leur statut. La mise en page a été conçue pour offrir
+                une lecture rapide, fluide et cohérente avec l’univers premium d’ApexSignals.
+            </p>
+        </div>
+
+        <div class="btc-signals-table-wrap">
+            <table class="btc-signals-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Actif</th>
+                        <th>Direction</th>
+                        <th>Entrée</th>
+                        <th>Stop Loss</th>
+                        <th>Take Profit</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if us100_signals %}
+                        {% for signal in us100_signals %}
+                            <tr>
+                                <td>{{ signal.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                                <td>{{ signal.asset }}</td>
+                                <td>
+                                    <span class="{% if signal.action == 'BUY' %}text-buy{% endif %}">
+                                        {{ signal.action }}
+                                    </span>
+                                </td>
+                                <td>{{ signal.entry_price }}</td>
+                                <td>{{ signal.stop_loss }}</td>
+                                <td>{{ signal.take_profit }}</td>
+                                <td>
+                                    <span class="
+                                        {% if signal.status == 'WIN' %}
+                                            status-pill status-win
+                                        {% elif signal.status == 'LOSS' %}
+                                            status-pill status-loss
+                                        {% else %}
+                                            status-pill status-open
+                                        {% endif %}
+                                    ">
+                                        {{ signal.status }}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="empty-table-cell">
+                                Aucun signal US100 n’est disponible pour le moment.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Lecture du marché</span>
+            <h2>Le US100 apporte une lecture complémentaire à la crypto et au Gold</h2>
+            <p>
+                Le US100 donne une vision différente des flux de marché. Là où la crypto reflète
+                souvent le sentiment spéculatif et où le Gold apporte une lecture refuge, cet indice
+                technologique permet d’observer plus directement la dynamique du marché actions américain.
+            </p>
+        </div>
+
+        <div class="features-home-grid">
+            <div class="feature-home-card">
+                <h3>Mouvements directionnels</h3>
+                <p>
+                    Le US100 est souvent recherché pour ses séquences nettes, ses accélérations
+                    et sa capacité à offrir des structures plus lisibles.
+                </p>
+            </div>
+
+            <div class="feature-home-card">
+                <h3>Complément stratégique</h3>
+                <p>
+                    Il enrichit naturellement ApexSignals en ajoutant une grande catégorie d’actifs
+                    très populaire auprès des traders actifs.
+                </p>
+            </div>
+
+            <div class="feature-home-card">
+                <h3>Positionnement premium</h3>
+                <p>
+                    Une page dédiée à un indice majeur montre que la plateforme est pensée au-delà
+                    d’une simple offre crypto ou mono-marché.
+                </p>
+            </div>
+
+            <div class="feature-home-card">
+                <h3>Vision plus complète</h3>
+                <p>
+                    Le US100 participe à une lecture plus large des grands marchés suivis sur la plateforme,
+                    dans une logique multi-actifs cohérente.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="proof-box">
+            <div class="proof-left">
+                <span class="proof-badge">Structure d’un signal US100</span>
+                <h2>Des niveaux simples pour une lecture plus propre de l’indice</h2>
+                <p>
+                    Les signaux US100 gagnent en lisibilité lorsqu’ils sont présentés autour d’une structure claire :
+                    un point d’entrée, une invalidation, un objectif et un contexte. Cette logique renforce la qualité
+                    de la lecture et donne davantage de sens à l’historique affiché.
+                </p>
+                <div class="hero-actions">
+                    <a href="{{ url_for('trading_lab') }}" class="hero-btn-primary">Accéder au Trading Lab</a>
+                    <a href="{{ url_for('pricing') }}" class="hero-btn-secondary">Comparer les offres</a>
+                </div>
+            </div>
+
+            <div class="proof-right">
+                <div class="proof-card">
+                    <strong>Entrée</strong>
+                    <span>Le niveau à partir duquel le scénario sur l’indice devient exploitable.</span>
+                </div>
+
+                <div class="proof-card">
+                    <strong>Invalidation</strong>
+                    <span>Le stop loss permet d’encadrer la structure du signal et de préserver la discipline.</span>
+                </div>
+
+                <div class="proof-card">
+                    <strong>Projection</strong>
+                    <span>Le take profit matérialise l’objectif attendu si la dynamique se confirme.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Pourquoi une page dédiée</span>
+            <h2>Le US100 mérite un espace spécifique dans une plateforme sérieuse</h2>
+            <p>
+                Une plateforme premium organise ses marchés majeurs dans des pages distinctes.
+                Cela améliore la navigation, la perception de valeur et la crédibilité globale
+                de l’expérience proposée.
+            </p>
+        </div>
+
+        <div class="preview-links-grid">
+            <a href="{{ url_for('signals_page') }}" class="preview-link-card">
+                <strong>Vue globale des signaux</strong>
+                <span>Retrouvez l’ensemble des actifs et catégories suivis sur ApexSignals.</span>
+            </a>
+
+            <a href="{{ url_for('results') }}" class="preview-link-card">
+                <strong>Résultats</strong>
+                <span>Consultez les performances globales, le winrate et l’historique récent.</span>
+            </a>
+
+            <a href="{{ url_for('trading_lab') }}" class="preview-link-card">
+                <strong>Trading Lab</strong>
+                <span>Approfondissez la structure des setups et la logique des signaux.</span>
+            </a>
+
+            <a href="{{ url_for('pricing') }}" class="preview-link-card">
+                <strong>Offres</strong>
+                <span>Choisissez le niveau d’accès le plus adapté à votre progression.</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="final-cta-section">
+    <div class="section-container">
+        <div class="final-cta-box">
+            <span class="final-cta-badge">US100 • ApexSignals</span>
+            <h2>Suivre le US100 dans un environnement plus structuré</h2>
+            <p>
+                Une page dédiée, un historique lisible, des statistiques visibles et une logique de plateforme cohérente :
+                le US100 prend ici sa place dans un univers plus clair, plus crédible et plus premium.
+            </p>
+            <div class="final-cta-actions">
+                <a href="{{ url_for('pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboard') }}" class="hero-btn-secondary white-outline-btn">Accéder au dashboard</a>
+                {% else %}
+                    <a href="{{ url_for('register') }}" class="hero-btn-secondary white-outline-btn">Créer mon compte</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="section-container footer-inner">
+        <div class="footer-brand">
+            <h3>ApexSignals</h3>
+            <p>Une plateforme structurée pour présenter le US100 et les autres actifs de façon plus claire et plus premium.</p>
+        </div>
+
+        <div class="footer-links">
+            <a href="{{ url_for('home') }}">Accueil</a>
+            <a href="{{ url_for('signals_page') }}">Signaux</a>
+            <a href="{{ url_for('results') }}">Résultats</a>
+            <a href="{{ url_for('pricing') }}">Offres</a>
+            <a href="{{ url_for('trading_lab') }}">Trading Lab</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

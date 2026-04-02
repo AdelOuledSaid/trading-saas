@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexSignals - Structure d’un signal</title>
+    <meta name="description" content="Comprendre la structure d’un signal sur ApexSignals : entrée, stop loss, take profit et logique du setup.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+</head>
+<body class="home-body">
+
+{% include "partials/navbar.html" %}
+
+<section class="inner-hero">
+    <div class="section-container">
+        <span class="hero-badge">Trading Lab • Structure</span>
+        <h1 class="inner-page-title">Comprendre la structure d’un signal avec une lecture claire et professionnelle</h1>
+        <p class="inner-page-text">
+            Un bon signal n’est pas seulement une direction. Il repose sur une structure complète :
+            un point d’entrée, une invalidation, un objectif et un contexte. Cette page permet de mieux
+            comprendre cette logique et de relier les niveaux affichés à une lecture plus cohérente du marché.
+        </p>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Les éléments clés</span>
+            <h2>Une structure simple, lisible et exploitable</h2>
+            <p>
+                La qualité d’un signal dépend autant de sa présentation que de sa logique.
+                Une structure claire permet d’éviter les lectures trop floues et d’améliorer la compréhension.
+            </p>
+        </div>
+
+        <div class="features-home-grid">
+            <div class="feature-home-card">
+                <h3>Direction</h3>
+                <p>
+                    Le premier repère est le sens du scénario : achat ou vente.
+                    C’est la base de toute lecture du signal.
+                </p>
+            </div>
+
+            <div class="feature-home-card">
+                <h3>Entrée</h3>
+                <p>
+                    L’entrée correspond au niveau central à partir duquel le scénario prend forme
+                    et où la lecture du setup devient active.
+                </p>
+            </div>
+
+            <div class="feature-home-card">
+                <h3>Stop Loss</h3>
+                <p>
+                    L’invalidation protège la structure du trade. Elle sert à encadrer le risque
+                    et à donner une limite claire au scénario.
+                </p>
+            </div>
+
+            <div class="feature-home-card">
+                <h3>Take Profit</h3>
+                <p>
+                    La cible matérialise l’objectif du signal. Elle permet de visualiser le potentiel
+                    du scénario si la structure se déroule correctement.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="proof-box">
+            <div class="proof-left">
+                <span class="proof-badge">Pourquoi cette structure compte</span>
+                <h2>Un signal sans structure claire perd une grande partie de sa valeur</h2>
+                <p>
+                    Une plateforme premium doit aller au-delà de l’affichage brut. La structure donne un cadre,
+                    améliore la lecture et rend l’information plus crédible. Elle permet aussi de relier les résultats
+                    à une logique compréhensible plutôt qu’à une simple suite de chiffres.
+                </p>
+            </div>
+
+            <div class="proof-right">
+                <div class="proof-card">
+                    <strong>Cadre</strong>
+                    <span>Le signal devient plus lisible lorsqu’il s’inscrit dans une structure cohérente.</span>
+                </div>
+
+                <div class="proof-card">
+                    <strong>Hiérarchie</strong>
+                    <span>Chaque niveau a un rôle précis et n’est pas affiché au hasard.</span>
+                </div>
+
+                <div class="proof-card">
+                    <strong>Crédibilité</strong>
+                    <span>Une présentation structurée renforce immédiatement l’image de sérieux.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Lecture professionnelle</span>
+            <h2>Comment lire un signal de manière plus propre</h2>
+        </div>
+
+        <div class="preview-links-grid">
+            <div class="preview-link-card">
+                <strong>1. Identifier la direction</strong>
+                <span>Comprendre si le scénario repose sur une poursuite haussière ou baissière.</span>
+            </div>
+
+            <div class="preview-link-card">
+                <strong>2. Situer l’entrée</strong>
+                <span>Repérer le niveau qui active réellement le setup dans la lecture du marché.</span>
+            </div>
+
+            <div class="preview-link-card">
+                <strong>3. Encadrer le risque</strong>
+                <span>Lire l’invalidation comme une limite nécessaire à la cohérence du scénario.</span>
+            </div>
+
+            <div class="preview-link-card">
+                <strong>4. Visualiser l’objectif</strong>
+                <span>Mesurer la logique du mouvement visé plutôt que de voir une simple cible isolée.</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="final-cta-section">
+    <div class="section-container">
+        <div class="final-cta-box">
+            <span class="final-cta-badge">Structure d’un signal</span>
+            <h2>Une bonne lecture commence toujours par une bonne structure</h2>
+            <p>
+                Comprendre comment un signal est construit permet de mieux lire les setups, de mieux relier les niveaux
+                entre eux et d’appréhender la plateforme dans une logique plus professionnelle.
+            </p>
+            <div class="final-cta-actions">
+                <a href="{{ url_for('lab_risk') }}" class="hero-btn-primary light-btn">Voir la gestion du risque</a>
+                <a href="{{ url_for('signals_page') }}" class="hero-btn-secondary white-outline-btn">Retour aux signaux</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="section-container footer-inner">
+        <div class="footer-brand">
+            <h3>ApexSignals</h3>
+            <p>Une structure claire pour des signaux plus lisibles et plus cohérents.</p>
+        </div>
+
+        <div class="footer-links">
+            <a href="{{ url_for('trading_lab') }}">Trading Lab</a>
+            <a href="{{ url_for('lab_risk') }}">Risque</a>
+            <a href="{{ url_for('lab_psychology') }}">Psychologie</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

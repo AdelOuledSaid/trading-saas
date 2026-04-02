@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexSignals - Bitcoin Signals</title>
+    <meta name="description" content="Suivez les signaux Bitcoin sur ApexSignals avec statistiques, historique récent, lecture du marché et environnement premium.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+</head>
+<body class="home-body">
+
+{% include "partials/navbar.html" %}
+
+<section class="inner-hero">
+    <div class="section-container">
+        <span class="hero-badge">Bitcoin Signals</span>
+        <h1 class="inner-page-title">Une page dédiée à Bitcoin pour suivre les signaux avec plus de clarté</h1>
+        <p class="inner-page-text">
+            Bitcoin occupe une place centrale dans l’univers ApexSignals. Cette page rassemble les indicateurs essentiels,
+            les signaux récents, les repères de lecture du marché et une vision structurée d’un actif devenu incontournable
+            pour les traders les plus actifs.
+        </p>
+    </div>
+</section>
+
+<section class="home-stats-section">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Vue d’ensemble</span>
+            <h2>Les chiffres clés du suivi Bitcoin</h2>
+            <p>
+                Retrouvez ici une lecture rapide de l’activité BTCUSD sur la plateforme, avec les statistiques les plus utiles
+                pour apprécier le rythme, la qualité et la dynamique des signaux publiés.
+            </p>
+        </div>
+
+        <div class="home-stats-grid">
+            <div class="home-stat-card">
+                <h3>{{ btc_total_signals or 0 }}</h3>
+                <p>Signaux Bitcoin enregistrés</p>
+            </div>
+
+            <div class="home-stat-card">
+                <h3>{{ btc_winrate or 0 }}%</h3>
+                <p>Winrate observé sur les trades clôturés</p>
+            </div>
+
+            <div class="home-stat-card">
+                <h3>{{ btc_open_signals or 0 }}</h3>
+                <p>Signaux actuellement ouverts</p>
+            </div>
+
+            <div class="home-stat-card">
+                <h3>{{ btc_estimated_pnl or 0 }}</h3>
+                <p>PnL cumulé estimé sur BTCUSD</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="proof-box">
+            <div class="proof-left">
+                <span class="proof-badge">Pourquoi Bitcoin</span>
+                <h2>L’actif de référence pour lire la dynamique du marché crypto</h2>
+                <p>
+                    Bitcoin reste le repère principal pour comprendre le ton général du marché digital. Sa force directionnelle,
+                    ses zones de réaction et sa volatilité en font un actif clé dans toute approche structurée. Une page dédiée
+                    permet d’apporter plus de précision, plus de lisibilité et une présentation plus professionnelle.
+                </p>
+            </div>
+
+            <div class="proof-right">
+                <div class="proof-card">
+                    <strong>Référence globale</strong>
+                    <span>Bitcoin influence souvent la lecture et le sentiment du marché crypto dans son ensemble.</span>
+                </div>
+
+                <div class="proof-card">
+                    <strong>Volatilité lisible</strong>
+                    <span>Ses mouvements créent des scénarios clairs, suivis de près par les traders actifs.</span>
+                </div>
+
+                <div class="proof-card">
+                    <strong>Crédibilité renforcée</strong>
+                    <span>Une page BTC dédiée donne plus de profondeur et de sérieux à la plateforme.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Historique récent</span>
+            <h2>Les derniers signaux Bitcoin publiés</h2>
+            <p>
+                Cet historique met en avant les signaux BTCUSD les plus récents avec leur direction, leurs niveaux techniques
+                et leur statut. La présentation est pensée pour offrir une lecture rapide tout en conservant un rendu propre,
+                premium et exploitable.
+            </p>
+        </div>
+
+        <div class="btc-signals-table-wrap">
+            <table class="btc-signals-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Actif</th>
+                        <th>Direction</th>
+                        <th>Entrée</th>
+                        <th>Stop Loss</th>
+                        <th>Take Profit</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if btc_signals %}
+                        {% for signal in btc_signals %}
+                            <tr>
+                                <td>{{ signal.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                                <td>{{ signal.asset }}</td>
+                                <td>
+                                    <span class="{% if signal.action == 'BUY' %}text-buy{% endif %}">
+                                        {{ signal.action }}
+                                    </span>
+                                </td>
+                                <td>{{ signal.entry_price }}</td>
+                                <td>{{ signal.stop_loss }}</td>
+                                <td>{{ signal.take_profit }}</td>
+                                <td>
+                                    <span class="
+                                        {% if signal.status == 'WIN' %}
+                                            status-pill status-win
+                                        {% elif signal.status == 'LOSS' %}
+                                            status-pill status-loss
+                                        {% else %}
+                                            status-pill status-open
+                                        {% endif %}
+                                    ">
+                                        {{ signal.status }}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="empty-table-cell">
+                                Aucun signal Bitcoin n’est disponible pour le moment.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Lecture du marché</span>
+            <h2>Une présentation conçue pour rester claire et décisionnelle</h2>
+            <p>
+                L’intérêt d’une page dédiée ne se limite pas à afficher des données. Elle permet aussi de structurer
+                l’information autour d’une logique plus professionnelle, plus lisible et plus cohérente avec l’image
+                d’une plateforme premium.
+            </p>
+        </div>
+
+        <div class="features-home-grid">
+            <div class="feature-home-card">
+                <h3>Hiérarchie visuelle</h3>
+                <p>
+                    Les informations essentielles apparaissent immédiatement : direction, prix d’entrée, niveaux clés
+                    et statut du signal. Cela améliore l’expérience de lecture et la perception globale du site.
+                </p>
+            </div>
+
+            <div class="feature-home-card">
+                <h3>Lecture rapide</h3>
+                <p>
+                    Les visiteurs identifient en quelques secondes la dynamique récente de Bitcoin et la qualité
+                    des signaux affichés sur la plateforme.
+                </p>
+            </div>
+
+            <div class="feature-home-card">
+                <h3>Positionnement premium</h3>
+                <p>
+                    Une page par actif apporte une profondeur supplémentaire à la navigation et renforce la crédibilité
+                    du projet face à un site trop générique ou trop court.
+                </p>
+            </div>
+
+            <div class="feature-home-card">
+                <h3>Base évolutive</h3>
+                <p>
+                    Cette structure permet ensuite de décliner facilement la même logique pour Ethereum, Gold, US100
+                    et les autres marchés suivis sur ApexSignals.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="proof-box">
+            <div class="proof-left">
+                <span class="proof-badge">Structure d’un signal BTC</span>
+                <h2>Des repères simples pour mieux comprendre les setups</h2>
+                <p>
+                    Chaque signal Bitcoin peut être lu à travers une structure claire : un point d’entrée, une zone
+                    d’invalidation, un objectif et un contexte de marché. Cette logique donne plus de sens à l’affichage
+                    des données et permet de relier les résultats à une lecture plus disciplinée.
+                </p>
+                <div class="hero-actions">
+                    <a href="{{ url_for('trading_lab') }}" class="hero-btn-primary">Accéder au Trading Lab</a>
+                    <a href="{{ url_for('pricing') }}" class="hero-btn-secondary">Comparer les offres</a>
+                </div>
+            </div>
+
+            <div class="proof-right">
+                <div class="proof-card">
+                    <strong>Entrée</strong>
+                    <span>Le niveau central autour duquel le scénario prend forme.</span>
+                </div>
+
+                <div class="proof-card">
+                    <strong>Invalidation</strong>
+                    <span>Le stop loss sert à protéger la structure du trade et à clarifier le risque.</span>
+                </div>
+
+                <div class="proof-card">
+                    <strong>Objectif</strong>
+                    <span>Le take profit matérialise la cible attendue si le scénario se déroule correctement.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Pourquoi une page dédiée</span>
+            <h2>Bitcoin mérite un traitement spécifique dans une plateforme premium</h2>
+            <p>
+                Dans un environnement professionnel, les actifs majeurs ne sont pas noyés dans une seule page générique.
+                Ils bénéficient d’un espace dédié qui renforce à la fois l’expérience utilisateur et la perception de valeur.
+            </p>
+        </div>
+
+        <div class="preview-links-grid">
+            <a href="{{ url_for('signals_page') }}" class="preview-link-card">
+                <strong>Vue globale des signaux</strong>
+                <span>Retrouvez l’ensemble des catégories suivies sur la plateforme.</span>
+            </a>
+
+            <a href="{{ url_for('results') }}" class="preview-link-card">
+                <strong>Résultats</strong>
+                <span>Consultez les performances, le winrate et l’historique récent.</span>
+            </a>
+
+            <a href="{{ url_for('trading_lab') }}" class="preview-link-card">
+                <strong>Trading Lab</strong>
+                <span>Approfondissez la structure des signaux et la lecture du marché.</span>
+            </a>
+
+            <a href="{{ url_for('pricing') }}" class="preview-link-card">
+                <strong>Offres</strong>
+                <span>Choisissez le niveau d’accès le plus adapté à votre profil.</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="final-cta-section">
+    <div class="section-container">
+        <div class="final-cta-box">
+            <span class="final-cta-badge">BTCUSD • ApexSignals</span>
+            <h2>Suivre Bitcoin dans un environnement plus structuré</h2>
+            <p>
+                Une navigation claire, des statistiques visibles, un historique lisible et un Trading Lab cohérent :
+                tout est réuni pour faire de cette page Bitcoin un vrai point fort de la plateforme.
+            </p>
+            <div class="final-cta-actions">
+                <a href="{{ url_for('pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboard') }}" class="hero-btn-secondary white-outline-btn">Accéder au dashboard</a>
+                {% else %}
+                    <a href="{{ url_for('register') }}" class="hero-btn-secondary white-outline-btn">Créer mon compte</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="section-container footer-inner">
+        <div class="footer-brand">
+            <h3>ApexSignals</h3>
+            <p>Une plateforme structurée pour présenter Bitcoin et les autres actifs de façon plus claire et plus premium.</p>
+        </div>
+
+        <div class="footer-links">
+            <a href="{{ url_for('home') }}">Accueil</a>
+            <a href="{{ url_for('signals_page') }}">Signaux</a>
+            <a href="{{ url_for('results') }}">Résultats</a>
+            <a href="{{ url_for('pricing') }}">Offres</a>
+            <a href="{{ url_for('trading_lab') }}">Trading Lab</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

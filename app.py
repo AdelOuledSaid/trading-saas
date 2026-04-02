@@ -1338,6 +1338,146 @@ def search_page():
 @app.route("/about")
 def about():
     return render_template("about.html")
+
+
+
+
+#-----------------------
+#--------------------
+@app.route("/signals/btc")
+def signals_btc():
+    btc_signals = (
+        Signal.query
+        .filter_by(asset="BTCUSD")
+        .order_by(Signal.created_at.desc())
+        .limit(20)
+        .all()
+    )
+
+    btc_total_signals = Signal.query.filter_by(asset="BTCUSD").count()
+    btc_open_signals = Signal.query.filter_by(asset="BTCUSD", status="OPEN").count()
+    btc_win_signals = Signal.query.filter_by(asset="BTCUSD", status="WIN").count()
+    btc_loss_signals = Signal.query.filter_by(asset="BTCUSD", status="LOSS").count()
+
+    closed_count = btc_win_signals + btc_loss_signals
+    btc_winrate = round((btc_win_signals / closed_count) * 100, 2) if closed_count > 0 else 0
+
+    all_btc_signals = Signal.query.filter_by(asset="BTCUSD").all()
+    btc_estimated_pnl = round(sum(calculate_trade_pnl(s) for s in all_btc_signals), 2)
+
+    return render_template(
+        "signals/btc.html",
+        btc_signals=btc_signals,
+        btc_total_signals=btc_total_signals,
+        btc_open_signals=btc_open_signals,
+        btc_winrate=btc_winrate,
+        btc_estimated_pnl=btc_estimated_pnl
+    )
+
+
+@app.route("/signals/eth")
+def signals_eth():
+    eth_signals = (
+        Signal.query
+        .filter_by(asset="ETHUSD")
+        .order_by(Signal.created_at.desc())
+        .limit(20)
+        .all()
+    )
+
+    eth_total_signals = Signal.query.filter_by(asset="ETHUSD").count()
+    eth_open_signals = Signal.query.filter_by(asset="ETHUSD", status="OPEN").count()
+    eth_win_signals = Signal.query.filter_by(asset="ETHUSD", status="WIN").count()
+    eth_loss_signals = Signal.query.filter_by(asset="ETHUSD", status="LOSS").count()
+
+    closed_count = eth_win_signals + eth_loss_signals
+    eth_winrate = round((eth_win_signals / closed_count) * 100, 2) if closed_count > 0 else 0
+
+    all_eth_signals = Signal.query.filter_by(asset="ETHUSD").all()
+    eth_estimated_pnl = round(sum(calculate_trade_pnl(s) for s in all_eth_signals), 2)
+
+    return render_template(
+        "signals/eth.html",
+        eth_signals=eth_signals,
+        eth_total_signals=eth_total_signals,
+        eth_open_signals=eth_open_signals,
+        eth_winrate=eth_winrate,
+        eth_estimated_pnl=eth_estimated_pnl
+    )
+
+@app.route("/signals/gold")
+def signals_gold():
+    gold_signals = (
+        Signal.query
+        .filter_by(asset="GOLD")
+        .order_by(Signal.created_at.desc())
+        .limit(20)
+        .all()
+    )
+
+    gold_total_signals = Signal.query.filter_by(asset="GOLD").count()
+    gold_open_signals = Signal.query.filter_by(asset="GOLD", status="OPEN").count()
+    gold_win_signals = Signal.query.filter_by(asset="GOLD", status="WIN").count()
+    gold_loss_signals = Signal.query.filter_by(asset="GOLD", status="LOSS").count()
+
+    closed_count = gold_win_signals + gold_loss_signals
+    gold_winrate = round((gold_win_signals / closed_count) * 100, 2) if closed_count > 0 else 0
+
+    all_gold_signals = Signal.query.filter_by(asset="GOLD").all()
+    gold_estimated_pnl = round(sum(calculate_trade_pnl(s) for s in all_gold_signals), 2)
+
+    return render_template(
+        "signals/gold.html",
+        gold_signals=gold_signals,
+        gold_total_signals=gold_total_signals,
+        gold_open_signals=gold_open_signals,
+        gold_winrate=gold_winrate,
+        gold_estimated_pnl=gold_estimated_pnl
+    )
+@app.route("/signals/us100")
+def signals_us100():
+    us100_signals = (
+        Signal.query
+        .filter_by(asset="US100")
+        .order_by(Signal.created_at.desc())
+        .limit(20)
+        .all()
+    )
+
+    us100_total_signals = Signal.query.filter_by(asset="US100").count()
+    us100_open_signals = Signal.query.filter_by(asset="US100", status="OPEN").count()
+    us100_win_signals = Signal.query.filter_by(asset="US100", status="WIN").count()
+    us100_loss_signals = Signal.query.filter_by(asset="US100", status="LOSS").count()
+
+    closed_count = us100_win_signals + us100_loss_signals
+    us100_winrate = round((us100_win_signals / closed_count) * 100, 2) if closed_count > 0 else 0
+
+    all_us100_signals = Signal.query.filter_by(asset="US100").all()
+    us100_estimated_pnl = round(sum(calculate_trade_pnl(s) for s in all_us100_signals), 2)
+
+    return render_template(
+        "signals/us100.html",
+        us100_signals=us100_signals,
+        us100_total_signals=us100_total_signals,
+        us100_open_signals=us100_open_signals,
+        us100_winrate=us100_winrate,
+        us100_estimated_pnl=us100_estimated_pnl
+    )
+@app.route("/trading-lab")
+def trading_lab():
+    return render_template("trading_lab/index.html")
+
+@app.route("/trading-lab/structure")
+def lab_structure():
+    return render_template("trading_lab/structure.html")
+
+@app.route("/trading-lab/risk")
+def lab_risk():
+    return render_template("trading_lab/risk.html")
+
+@app.route("/trading-lab/psychology")
+def lab_psychology():
+    return render_template("trading_lab/psychology.html")
 # =========================
 # INIT DB
 # =========================
