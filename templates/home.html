@@ -117,6 +117,59 @@
     </div>
 </section>
 
+<section class="market-updates-section">
+    <div class="section-container">
+        <div class="market-updates-header">
+            <div>
+                <span class="market-updates-kicker">Marché en direct</span>
+                <h2>Market Updates</h2>
+            </div>
+
+            {% if market_updates and market_updates|length > 0 %}
+                <a href="{{ market_updates[0].url }}" target="_blank" rel="noopener noreferrer" class="market-updates-link">
+                    Voir plus
+                </a>
+            {% endif %}
+        </div>
+
+        {% if market_updates and market_updates|length > 0 %}
+            <div class="market-updates-grid">
+                {% for article in market_updates %}
+                <article class="market-news-card">
+                    <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer" class="market-news-image-link">
+                        <div class="market-news-image">
+                            {% if article.image %}
+                                <img src="{{ article.image }}" alt="{{ article.title }}">
+                            {% else %}
+                                <div class="market-news-image-fallback">Market News</div>
+                            {% endif %}
+                        </div>
+                    </a>
+
+                    <div class="market-news-meta">
+                        <span>{{ article.source }}</span>
+                    </div>
+
+                    <h3>
+                        <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer">
+                            {{ article.title }}
+                        </a>
+                    </h3>
+
+                    <p>
+                        {{ article.description[:140] ~ ('...' if article.description and article.description|length > 140 else '') }}
+                    </p>
+                </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="market-updates-empty">
+                <p>Les actualités du marché ne sont pas disponibles pour le moment.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
 <section class="markets-section">
     <div class="section-container">
         <div class="section-title">

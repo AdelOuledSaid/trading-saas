@@ -51,6 +51,8 @@ STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 TRADINGVIEW_WEBHOOK_SECRET = os.getenv("TRADINGVIEW_WEBHOOK_SECRET", "")
 DOMAIN = os.getenv("DOMAIN", "http://127.0.0.1:5000").rstrip("/")
 
+NEWS_API_KEY = os.getenv("NEWS_API_KEY", "")
+
 ALLOWED_ASSETS = ["BTCUSD", "ETHUSD", "SOLUSD", "XRPUSD", "GOLD", "US100", "US500", "FRA40"]
 ALLOWED_ACTIONS = ["BUY", "SELL"]
 ALLOWED_EVENTS = ["OPEN", "TP", "SL"]
@@ -450,6 +452,54 @@ def ensure_daily_briefing():
 
 
 # =========================
+# MARKET UPDATES HELPERS
+# =========================
+def get_market_updates():
+    if not NEWS_API_KEY:
+        app.logger.warning("NEWS_API_KEY manquante. Market Updates vide.")
+        return []
+
+    url = "https://newsapi.org/v2/everything"
+    params = {
+        "q": '(bitcoin OR btc OR ethereum OR eth OR gold OR "nasdaq" OR "us100" OR crypto)',
+        "language": "en",
+        "sortBy": "publishedAt",
+        "pageSize": 6,
+        "apiKey": NEWS_API_KEY,
+    }
+
+    try:
+        response = requests.get(url, params=params, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+
+        articles = []
+        for article in data.get("articles", []):
+            image_url = article.get("urlToImage")
+            title = article.get("title")
+            source = (article.get("source") or {}).get("name", "Source")
+            article_url = article.get("url")
+            description = article.get("description") or ""
+
+            if not title or not article_url:
+                continue
+
+            articles.append({
+                "title": title,
+                "description": description,
+                "image": image_url,
+                "source": source,
+                "url": article_url,
+            })
+
+        return articles[:6]
+
+    except Exception as e:
+        app.logger.error("Erreur récupération Market Updates: %s", repr(e))
+        return []
+
+
+# =========================
 # FAKE DATA HELPERS
 # =========================
 def get_fake_asset_base_price(asset: str) -> float:
@@ -547,7 +597,8 @@ def generate_fake_signal(asset: str, created_at: datetime, idx: int) -> Signal:
 # =========================
 @app.route("/")
 def home():
-    return render_template("home.html")
+    market_updates = get_market_updates()
+    return render_template("home.html", market_updates=market_updates)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -1282,21 +1333,18 @@ def test_sl():
 
     send_telegram_message(build_sl_telegram_message(DummySignal()))
     return "Message SL envoyé"
+
+
 # =========================
 # NEW PAGES (SITE PRO)
 # =========================
-
-
 @app.route("/signals")
 def signals_page():
     return render_template("signals/index.html")
 
 
-
 @app.route("/results")
 def results():
-    # On peut réutiliser tes données existantes pour rendre ça crédible
-
     all_signals = Signal.query.order_by(Signal.created_at.desc()).limit(50).all()
 
     total = len(all_signals)
@@ -1314,7 +1362,7 @@ def results():
         total_loss=losses,
         winrate=winrate,
         estimated_pnl=pnl,
-        signals=all_signals[:10]  # aperçu
+        signals=all_signals[:10]
     )
 
 
@@ -1332,15 +1380,13 @@ def contact():
 def search_page():
     query = request.args.get("q", "")
     return render_template("search.html", query=query)
+
+
 @app.route("/about")
 def about():
     return render_template("about.html")
 
 
-
-
-#-----------------------
-#--------------------
 @app.route("/signals/btc")
 def signals_btc():
     btc_signals = (
@@ -1402,6 +1448,7 @@ def signals_eth():
         eth_estimated_pnl=eth_estimated_pnl
     )
 
+
 @app.route("/signals/gold")
 def signals_gold():
     gold_signals = (
@@ -1431,6 +1478,8 @@ def signals_gold():
         gold_winrate=gold_winrate,
         gold_estimated_pnl=gold_estimated_pnl
     )
+
+
 @app.route("/signals/us100")
 def signals_us100():
     us100_signals = (
@@ -1460,21 +1509,28 @@ def signals_us100():
         us100_winrate=us100_winrate,
         us100_estimated_pnl=us100_estimated_pnl
     )
+
+
 @app.route("/trading-lab")
 def trading_lab():
     return render_template("trading_lab/index.html")
+
 
 @app.route("/trading-lab/structure")
 def lab_structure():
     return render_template("trading_lab/structure.html")
 
+
 @app.route("/trading-lab/risk")
 def lab_risk():
     return render_template("trading_lab/risk.html")
 
+
 @app.route("/trading-lab/psychology")
 def lab_psychology():
     return render_template("trading_lab/psychology.html")
+
+
 # =========================
 # INIT DB
 # =========================
