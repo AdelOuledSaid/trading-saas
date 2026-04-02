@@ -1287,10 +1287,10 @@ def test_sl():
 # =========================
 
 
+@app.route("/signals")
+def signals_page():
+    return render_template("signals/index.html")
 
-@app.route("/trading-lab")
-def trading_lab():
-    return render_template("trading_lab.html")
 
 
 @app.route("/results")
