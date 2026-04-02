@@ -1286,9 +1286,6 @@ def test_sl():
 # NEW PAGES (SITE PRO)
 # =========================
 
-@app.route("/signals")
-def signals_page():
-    return render_template("signals.html")
 
 
 @app.route("/trading-lab")
