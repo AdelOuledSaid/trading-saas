@@ -1,40 +1,45 @@
 <nav class="navbar">
+
+    <!-- LOGO -->
     <a href="{{ url_for('home') }}" class="logo logo-pro">
         <img src="{{ url_for('static', filename='logo.png') }}" alt="ApexSignals">
     </a>
 
+    <!-- MENU PRINCIPAL -->
     <div class="nav-links">
+
         <a href="{{ url_for('home') }}">Accueil</a>
 
-        <!-- SIGNaux -->
+        <!-- ===== SIGNAUX ===== -->
         <div class="nav-dropdown">
             <button class="nav-drop-btn" type="button">
                 Signaux <span>▾</span>
             </button>
             <div class="nav-dropdown-menu">
                 <a href="{{ url_for('signals_page') }}">Vue globale</a>
-                <a href="{{ url_for('signals_btc') }}">Bitcoin</a>
-                <a href="{{ url_for('signals_eth') }}">Ethereum</a>
-                <a href="{{ url_for('signals_gold') }}">Gold</a>
-                <a href="{{ url_for('signals_us100') }}">US100</a>
+                <a href="{{ url_for('signals_btc') }}">Bitcoin (BTC)</a>
+                <a href="{{ url_for('signals_eth') }}">Ethereum (ETH)</a>
+                <a href="{{ url_for('signals_gold') }}">Gold (XAU)</a>
+                <a href="{{ url_for('signals_us100') }}">US100 (Nasdaq)</a>
+                <hr>
                 <a href="{{ url_for('results') }}">Historique des signaux</a>
             </div>
         </div>
 
-        <!-- MARCHÉS -->
+        <!-- ===== MARCHÉS ===== -->
         <div class="nav-dropdown">
             <button class="nav-drop-btn" type="button">
                 Marchés <span>▾</span>
             </button>
             <div class="nav-dropdown-menu">
-                <a href="{{ url_for('signals_btc') }}">Crypto (BTC)</a>
-                <a href="{{ url_for('signals_eth') }}">Altcoins (ETH)</a>
-                <a href="{{ url_for('signals_us100') }}">Indices (US100)</a>
-                <a href="{{ url_for('signals_gold') }}">Gold</a>
+                <a href="{{ url_for('signals_btc') }}">Crypto</a>
+                <a href="{{ url_for('signals_eth') }}">Altcoins</a>
+                <a href="{{ url_for('signals_us100') }}">Indices</a>
+                <a href="{{ url_for('signals_gold') }}">Or (Gold)</a>
             </div>
         </div>
 
-        <!-- TRADING LAB -->
+        <!-- ===== TRADING LAB ===== -->
         <div class="nav-dropdown">
             <button class="nav-drop-btn" type="button">
                 Trading Lab <span>▾</span>
@@ -43,24 +48,29 @@
                 <a href="{{ url_for('trading_lab') }}">Vue globale</a>
                 <a href="{{ url_for('lab_structure') }}">Structure d’un signal</a>
                 <a href="{{ url_for('lab_risk') }}">Gestion du risque</a>
-                <a href="{{ url_for('lab_psychology') }}">Psychologie</a>
+                <a href="{{ url_for('lab_psychology') }}">Psychologie & discipline</a>
             </div>
         </div>
 
+        <!-- LIENS DIRECTS -->
         <a href="{{ url_for('results') }}">Résultats</a>
         <a href="{{ url_for('pricing') }}">Offres</a>
         <a href="{{ url_for('faq_page') }}">FAQ</a>
         <a href="{{ url_for('contact') }}">Contact</a>
         <a href="{{ url_for('about') }}">À propos</a>
+
     </div>
 
-    <!-- SEARCH + ACCOUNT -->
+    <!-- ===== SEARCH + ACCOUNT ===== -->
     <div class="nav-right">
+
+        <!-- SEARCH -->
         <form class="nav-search" action="{{ url_for('search_page') }}" method="GET">
             <input type="text" name="q" placeholder="Rechercher un actif, une page..." />
             <button type="submit">⌕</button>
         </form>
 
+        <!-- ACCOUNT -->
         <div class="nav-account">
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('dashboard') }}" class="account-btn">Dashboard</a>
@@ -70,26 +80,37 @@
                 <a href="{{ url_for('register') }}" class="cta-btn">Créer un compte</a>
             {% endif %}
         </div>
+
     </div>
 
+    <!-- BURGER -->
     <div class="burger" onclick="toggleMobileMenu(this)">
         <span></span>
         <span></span>
         <span></span>
     </div>
+
 </nav>
 
-<!-- MOBILE MENU -->
+
+<!-- ===== MOBILE MENU ===== -->
 <div id="mobileMenu" class="mobile-menu">
+
     <a href="{{ url_for('home') }}">Accueil</a>
 
-    <a href="{{ url_for('signals_page') }}">Signaux</a>
-    <a href="{{ url_for('signals_btc') }}">• BTC</a>
-    <a href="{{ url_for('signals_eth') }}">• ETH</a>
-    <a href="{{ url_for('signals_gold') }}">• Gold</a>
-    <a href="{{ url_for('signals_us100') }}">• US100</a>
+    <strong class="mobile-section-title">Signaux</strong>
+    <a href="{{ url_for('signals_page') }}">Vue globale</a>
+    <a href="{{ url_for('signals_btc') }}">Bitcoin</a>
+    <a href="{{ url_for('signals_eth') }}">Ethereum</a>
+    <a href="{{ url_for('signals_gold') }}">Gold</a>
+    <a href="{{ url_for('signals_us100') }}">US100</a>
 
-    <a href="{{ url_for('trading_lab') }}">Trading Lab</a>
+    <strong class="mobile-section-title">Trading Lab</strong>
+    <a href="{{ url_for('trading_lab') }}">Vue globale</a>
+    <a href="{{ url_for('lab_structure') }}">Structure</a>
+    <a href="{{ url_for('lab_risk') }}">Risque</a>
+    <a href="{{ url_for('lab_psychology') }}">Psychologie</a>
+
     <a href="{{ url_for('results') }}">Résultats</a>
     <a href="{{ url_for('pricing') }}">Offres</a>
     <a href="{{ url_for('faq_page') }}">FAQ</a>
@@ -103,7 +124,9 @@
         <a href="{{ url_for('login') }}">Connexion</a>
         <a href="{{ url_for('register') }}" class="cta-btn mobile-cta">Créer un compte</a>
     {% endif %}
+
 </div>
+
 
 <script>
 function toggleMobileMenu(el) {
