@@ -101,7 +101,7 @@ select {
 }
 
 /* =========================
-   NAVBAR PREMIUM UI
+   NAVBAR PREMIUM
 ========================= */
 .navbar {
     position: sticky;
@@ -117,7 +117,6 @@ select {
     -webkit-backdrop-filter: blur(18px);
     border-bottom: 1px solid rgba(226, 232, 240, 0.9);
     box-shadow: 0 10px 34px rgba(15, 23, 42, 0.06);
-    transition: all 0.25s ease;
 }
 
 .logo {
@@ -143,7 +142,7 @@ select {
 }
 
 /* =========================
-   MENU PRINCIPAL
+   NAV LINKS
 ========================= */
 .nav-links {
     display: flex;
@@ -200,10 +199,12 @@ select {
 }
 
 /* =========================
-   DROPDOWN
+   DROPDOWN FIX GLOBAL
 ========================= */
 .nav-dropdown {
     position: relative;
+    padding-bottom: 18px;
+    margin-bottom: -18px;
 }
 
 .nav-drop-btn span {
@@ -213,13 +214,13 @@ select {
 
 .nav-dropdown-menu {
     position: absolute;
-    top: calc(100% + 14px);
+    top: 100%;
     left: 50%;
-    transform: translateX(-50%) translateY(8px);
-    min-width: 290px;
+    transform: translateX(-50%) translateY(6px);
+    min-width: 280px;
     padding: 12px;
-    border-radius: 24px;
-    background: rgba(255, 255, 255, 0.96);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     border: 1px solid rgba(226, 232, 240, 0.95);
@@ -227,14 +228,25 @@ select {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: all 0.22s ease;
+    transition: all 0.18s ease;
+    z-index: 2000;
 }
 
-.nav-dropdown:hover .nav-dropdown-menu {
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown-menu:hover {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
     transform: translateX(-50%) translateY(0);
+}
+
+.nav-dropdown-menu::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    height: 20px;
 }
 
 .nav-dropdown-menu a {
@@ -255,7 +267,7 @@ select {
 }
 
 /* =========================
-   ZONE DROITE
+   NAV RIGHT
 ========================= */
 .nav-right {
     display: flex;
@@ -442,6 +454,15 @@ select {
 
 .mobile-menu a:hover {
     background: #f8fbff;
+}
+
+.mobile-section-title {
+    padding: 10px 14px 2px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
 }
 
 .mobile-cta {
@@ -765,7 +786,7 @@ select {
 .candle-5 { left: 74%; height: 74px; }
 
 /* =========================
-   SECTIONS HOME
+   SECTIONS
 ========================= */
 .home-stats-section,
 .markets-section,
@@ -815,7 +836,6 @@ select {
 .home-stat-card,
 .market-card,
 .feature-home-card,
-.info-card,
 .preview-link-card {
     background: rgba(255,255,255,0.88);
     border: 1px solid var(--border);
@@ -827,9 +847,8 @@ select {
 .home-stat-card:hover,
 .market-card:hover,
 .feature-home-card:hover,
-.pricing-card:hover,
-.info-card:hover,
-.preview-link-card:hover {
+.preview-link-card:hover,
+.pricing-card:hover {
     transform: translateY(-6px);
     box-shadow: var(--shadow-lg);
 }
@@ -941,11 +960,6 @@ select {
 
 .section-standard {
     padding: 56px 0;
-}
-
-.solo-card {
-    max-width: 900px;
-    margin: 0 auto;
 }
 
 /* =========================
@@ -1320,10 +1334,6 @@ select {
     cursor: pointer;
     transition: all 0.25s ease;
     text-decoration: none;
-}
-
-.pricing-btn:hover {
-    transform: translateY(-2px);
 }
 
 .secondary-btn {
@@ -1979,55 +1989,7 @@ select {
 }
 
 /* =========================
-   FOOTER
-========================= */
-.site-footer {
-    border-top: 1px solid var(--border);
-    background: rgba(255, 255, 255, 0.72);
-    padding: 26px 0;
-    backdrop-filter: blur(10px);
-}
-
-.footer-inner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.footer-brand h3 {
-    color: var(--text-main);
-    font-size: 20px;
-    font-weight: 900;
-    margin-bottom: 6px;
-}
-
-.footer-brand p {
-    color: var(--text-muted);
-    font-size: 14px;
-    line-height: 1.7;
-    max-width: 520px;
-}
-
-.footer-links {
-    display: flex;
-    gap: 18px;
-    flex-wrap: wrap;
-}
-
-.footer-links a {
-    color: var(--text-soft);
-    font-weight: 700;
-    transition: 0.2s ease;
-}
-
-.footer-links a:hover {
-    color: var(--text-main);
-}
-
-/* =========================
-   BTC SIGNALS TABLE
+   TABLE SIGNALS
 ========================= */
 .btc-signals-table-wrap {
     width: 100%;
@@ -2098,6 +2060,54 @@ select {
     background: #eff6ff;
     color: #2563eb;
     border: 1px solid #bfdbfe;
+}
+
+/* =========================
+   FOOTER
+========================= */
+.site-footer {
+    border-top: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.72);
+    padding: 26px 0;
+    backdrop-filter: blur(10px);
+}
+
+.footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.footer-brand h3 {
+    color: var(--text-main);
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 6px;
+}
+
+.footer-brand p {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.7;
+    max-width: 520px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.footer-links a {
+    color: var(--text-soft);
+    font-weight: 700;
+    transition: 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: var(--text-main);
 }
 
 /* =========================
