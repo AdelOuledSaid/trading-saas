@@ -14,6 +14,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from ai_briefing import generate_daily_briefing
 from market_data import get_btc_data, get_gold_data, get_economic_calendar
 from flask_caching import Cache
+cache = Cache(app, config={
+    "CACHE_TYPE": "SimpleCache",
+    "CACHE_DEFAULT_TIMEOUT": 300  # 5 minutes
+})
 # =========================
 # CONFIG
 # =========================
@@ -537,7 +541,7 @@ def format_big_number(value):
     return f"{value:.2f}"
 
 
-@cache.memoize(timeout=300)
+@cache.memoize(timeout=120)
 def get_crypto_market_live(ids="bitcoin,ethereum"):
     url = "https://api.coingecko.com/api/v3/simple/price"
     params = {
