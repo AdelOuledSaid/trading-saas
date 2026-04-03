@@ -13,7 +13,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from ai_briefing import generate_daily_briefing
 from market_data import get_btc_data, get_gold_data, get_economic_calendar
-
+from flask_caching import Cache
 # =========================
 # CONFIG
 # =========================
@@ -64,7 +64,14 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.login_view = "login"
 login_manager.init_app(app)
-
+# =========================
+# CACHE
+# =========================
+cache = Cache(config={
+    "CACHE_TYPE": "SimpleCache",
+    "CACHE_DEFAULT_TIMEOUT": 300
+})
+cache.init_app(app)
 # =========================
 # MODELS
 # =========================
@@ -499,6 +506,121 @@ def get_market_updates():
         return []
 
 
+
+# =========================
+# CRYPTO LIVE DATA (BTC + ETH)
+# =========================
+COINGECKO_API_KEY = os.getenv("COINGECKO_API_KEY", "")
+
+
+def coingecko_headers():
+    headers = {"accept": "application/json"}
+    if COINGECKO_API_KEY:
+        headers["x-cg-pro-api-key"] = COINGECKO_API_KEY
+    return headers
+
+
+def format_big_number(value):
+    try:
+        value = float(value)
+    except Exception:
+        return "..."
+
+    if value >= 1_000_000_000_000:
+        return f"{value / 1_000_000_000_000:.2f}T"
+    if value >= 1_000_000_000:
+        return f"{value / 1_000_000_000:.2f}B"
+    if value >= 1_000_000:
+        return f"{value / 1_000_000:.2f}M"
+    if value >= 1_000:
+        return f"{value / 1_000:.2f}K"
+    return f"{value:.2f}"
+
+
+@cache.memoize(timeout=300)
+def get_crypto_market_live(ids="bitcoin,ethereum"):
+    url = "https://api.coingecko.com/api/v3/simple/price"
+    params = {
+        "ids": ids,
+        "vs_currencies": "usd",
+        "include_market_cap": "true",
+        "include_24hr_vol": "true",
+        "include_24hr_change": "true",
+        "include_last_updated_at": "true",
+    }
+
+    try:
+        response = requests.get(url, params=params, headers=coingecko_headers(), timeout=15)
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        app.logger.error("Erreur crypto live: %s", repr(e))
+        return {}
+@cache.memoize(timeout=600)
+def get_asset_news(asset_key, limit=6):
+    if not NEWS_API_KEY:
+        return []
+
+    queries = {
+        "BTC": '(bitcoin OR btc)',
+        "ETH": '(ethereum OR eth)',
+    }
+
+    q = queries.get(asset_key.upper())
+    if not q:
+        return []
+
+    url = "https://newsapi.org/v2/everything"
+    params = {
+        "q": q,
+        "language": "en",
+        "sortBy": "publishedAt",
+        "pageSize": limit,
+        "apiKey": NEWS_API_KEY,
+    }
+
+    try:
+        response = requests.get(url, params=params, timeout=15)
+        response.raise_for_status()
+        data = response.json()
+
+        articles = []
+        for a in data.get("articles", []):
+            if not a.get("title") or not a.get("url"):
+                continue
+
+            articles.append({
+                "title": a["title"],
+                "description": a.get("description", ""),
+                "image": a.get("urlToImage"),
+                "source": a.get("source", {}).get("name", "Source"),
+                "url": a["url"],
+            })
+
+        return articles[:limit]
+
+    except Exception as e:
+        app.logger.error("Erreur news: %s", repr(e))
+        return []
+@cache.memoize(timeout=300)
+def get_fear_greed_live():
+    try:
+        r = requests.get("https://api.alternative.me/fng/?limit=1", timeout=10)
+        data = r.json()["data"][0]
+        return {
+            "value": data["value"],
+            "classification": data["value_classification"]
+        }
+    except:
+        return {"value": "...", "classification": "..."}
+@cache.memoize(timeout=300)
+def get_btc_dominance_live():
+    try:
+        r = requests.get("https://api.coingecko.com/api/v3/global", timeout=10)
+        data = r.json()["data"]
+        return round(data["market_cap_percentage"]["btc"], 2)
+    except:
+        return "..."
 # =========================
 # FAKE DATA HELPERS
 # =========================
@@ -1385,8 +1507,6 @@ def search_page():
 @app.route("/about")
 def about():
     return render_template("about.html")
-
-
 @app.route("/signals/btc")
 def signals_btc():
     btc_signals = (
@@ -1397,24 +1517,24 @@ def signals_btc():
         .all()
     )
 
-    btc_total_signals = Signal.query.filter_by(asset="BTCUSD").count()
-    btc_open_signals = Signal.query.filter_by(asset="BTCUSD", status="OPEN").count()
-    btc_win_signals = Signal.query.filter_by(asset="BTCUSD", status="WIN").count()
-    btc_loss_signals = Signal.query.filter_by(asset="BTCUSD", status="LOSS").count()
+    crypto = get_crypto_market_live()
+    btc = crypto.get("bitcoin", {})
 
-    closed_count = btc_win_signals + btc_loss_signals
-    btc_winrate = round((btc_win_signals / closed_count) * 100, 2) if closed_count > 0 else 0
-
-    all_btc_signals = Signal.query.filter_by(asset="BTCUSD").all()
-    btc_estimated_pnl = round(sum(calculate_trade_pnl(s) for s in all_btc_signals), 2)
+    btc_price = format_price(btc.get("usd")) if btc.get("usd") else "..."
+    btc_change = round(btc.get("usd_24h_change", 0), 2) if btc.get("usd_24h_change") else "..."
+    btc_market_cap = format_big_number(btc.get("usd_market_cap"))
+    btc_volume = format_big_number(btc.get("usd_24h_vol"))
 
     return render_template(
         "signals/btc.html",
         btc_signals=btc_signals,
-        btc_total_signals=btc_total_signals,
-        btc_open_signals=btc_open_signals,
-        btc_winrate=btc_winrate,
-        btc_estimated_pnl=btc_estimated_pnl
+        btc_price=btc_price,
+        btc_change_24h=btc_change,
+        btc_market_cap=btc_market_cap,
+        btc_volume_24h=btc_volume,
+        btc_news=get_asset_news("BTC"),
+        btc_dominance=get_btc_dominance_live(),
+        fear_greed=get_fear_greed_live()
     )
 
 
@@ -1428,25 +1548,25 @@ def signals_eth():
         .all()
     )
 
-    eth_total_signals = Signal.query.filter_by(asset="ETHUSD").count()
-    eth_open_signals = Signal.query.filter_by(asset="ETHUSD", status="OPEN").count()
-    eth_win_signals = Signal.query.filter_by(asset="ETHUSD", status="WIN").count()
-    eth_loss_signals = Signal.query.filter_by(asset="ETHUSD", status="LOSS").count()
+    crypto = get_crypto_market_live()
+    eth = crypto.get("ethereum", {})
 
-    closed_count = eth_win_signals + eth_loss_signals
-    eth_winrate = round((eth_win_signals / closed_count) * 100, 2) if closed_count > 0 else 0
-
-    all_eth_signals = Signal.query.filter_by(asset="ETHUSD").all()
-    eth_estimated_pnl = round(sum(calculate_trade_pnl(s) for s in all_eth_signals), 2)
+    eth_price = format_price(eth.get("usd")) if eth.get("usd") else "..."
+    eth_change = round(eth.get("usd_24h_change", 0), 2) if eth.get("usd_24h_change") else "..."
+    eth_market_cap = format_big_number(eth.get("usd_market_cap"))
+    eth_volume = format_big_number(eth.get("usd_24h_vol"))
 
     return render_template(
         "signals/eth.html",
         eth_signals=eth_signals,
-        eth_total_signals=eth_total_signals,
-        eth_open_signals=eth_open_signals,
-        eth_winrate=eth_winrate,
-        eth_estimated_pnl=eth_estimated_pnl
-    )
+        eth_price=eth_price,
+        eth_change_24h=eth_change,
+        eth_market_cap=eth_market_cap,
+        eth_volume_24h=eth_volume,
+        eth_news=get_asset_news("ETH"),
+        fear_greed=get_fear_greed_live()
+    )  
+
 
 
 @app.route("/signals/gold")
