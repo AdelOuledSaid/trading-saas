@@ -3509,3 +3509,21 @@ select {
         padding: 10px;
     }
 }
+
+.btc-badge {
+    gap: 10px;
+}
+
+.btc-badge-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    color: #fff;
+    font-weight: 900;
+    font-size: 16px;
+    box-shadow: 0 8px 18px rgba(245, 158, 11, 0.22);
+}
