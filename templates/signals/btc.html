@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApexSignals - Bitcoin Signals</title>
-    <meta name="description" content="Suivez les signaux Bitcoin sur ApexSignals avec statistiques, historique récent, lecture du marché et environnement premium.">
+    <meta name="description" content="Suivez Bitcoin sur ApexSignals avec un tableau de bord premium : signaux BTCUSD, historique récent, niveaux techniques, tendance, pédagogie marché et widget TradingView.">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
@@ -12,18 +12,70 @@
 
 {% include "partials/navbar.html" %}
 
-<section class="inner-hero">
+<!-- HERO -->
+<section class="inner-hero btc-hero">
     <div class="section-container">
-        <span class="hero-badge">Bitcoin Signals</span>
-        <h1 class="inner-page-title">Une page dédiée à Bitcoin pour suivre les signaux avec plus de clarté</h1>
-        <p class="inner-page-text">
-            Bitcoin occupe une place centrale dans l’univers ApexSignals. Cette page rassemble les indicateurs essentiels,
-            les signaux récents, les repères de lecture du marché et une vision structurée d’un actif devenu incontournable
-            pour les traders les plus actifs.
-        </p>
+        <div class="btc-hero-grid">
+            <div class="btc-hero-left">
+                <span class="hero-badge">Bitcoin Signals</span>
+                <h1 class="inner-page-title">Une page dédiée à Bitcoin pour suivre les signaux avec plus de clarté</h1>
+                <p class="inner-page-text">
+                    Bitcoin occupe une place centrale dans l’univers ApexSignals. Cette page rassemble les indicateurs essentiels,
+                    les signaux récents, les repères techniques, l’environnement de marché et une lecture structurée d’un actif
+                    devenu incontournable pour les traders les plus actifs.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="#btc-live-chart" class="hero-btn-primary">Voir le chart live</a>
+                    <a href="#btc-signals-history" class="hero-btn-secondary">Voir les derniers signaux</a>
+                </div>
+
+                <div class="hero-trust-row">
+                    <div class="trust-mini">
+                        <strong>Actif leader</strong>
+                        <span>Le benchmark principal du marché crypto.</span>
+                    </div>
+                    <div class="trust-mini">
+                        <strong>Lecture claire</strong>
+                        <span>Tendance, niveaux, historique et signaux réunis.</span>
+                    </div>
+                    <div class="trust-mini">
+                        <strong>Page premium</strong>
+                        <span>Une présentation plus crédible et plus experte.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btc-hero-right">
+                <div class="mini-market-card">
+                    <span class="mini-market-label">BTCUSD</span>
+                    <h3>{{ btc_price or "..." }}</h3>
+                    <p>Prix spot actuel</p>
+                </div>
+
+                <div class="mini-market-card">
+                    <span class="mini-market-label">Variation 24h</span>
+                    <h3>{{ btc_change_24h or "..." }}%</h3>
+                    <p>Évolution récente du marché</p>
+                </div>
+
+                <div class="mini-market-card">
+                    <span class="mini-market-label">Tendance</span>
+                    <h3>{{ btc_trend_label or "Neutre" }}</h3>
+                    <p>Lecture synthétique actuelle</p>
+                </div>
+
+                <div class="mini-market-card">
+                    <span class="mini-market-label">Volatilité</span>
+                    <h3>{{ btc_volatility_label or "Modérée" }}</h3>
+                    <p>Rythme du marché observé</p>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
+<!-- STATS -->
 <section class="home-stats-section">
     <div class="section-container">
         <div class="section-title">
@@ -59,6 +111,83 @@
     </div>
 </section>
 
+<!-- LIVE CHART + MARKET OVERVIEW -->
+<section class="section-standard" id="btc-live-chart">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Chart en direct</span>
+            <h2>Le graphique Bitcoin en temps réel</h2>
+            <p>
+                Suivez le comportement du BTCUSD directement depuis un graphique interactif. Cette zone permet aux visiteurs
+                d’analyser la tendance, les zones techniques, les cassures et la structure du prix dans un environnement professionnel.
+            </p>
+        </div>
+
+        <div class="btc-chart-layout">
+            <div class="btc-chart-box">
+                <div class="tradingview-widget-container">
+                    <div id="tradingview_btc_chart"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                    <script type="text/javascript">
+                        new TradingView.widget({
+                            "width": "100%",
+                            "height": 560,
+                            "symbol": "BINANCE:BTCUSDT",
+                            "interval": "240",
+                            "timezone": "Europe/Paris",
+                            "theme": "light",
+                            "style": "1",
+                            "locale": "fr",
+                            "toolbar_bg": "#f8f9fd",
+                            "enable_publishing": false,
+                            "hide_top_toolbar": false,
+                            "hide_legend": false,
+                            "save_image": false,
+                            "container_id": "tradingview_btc_chart"
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="btc-side-panel">
+                <div class="btc-info-card">
+                    <span class="panel-badge">Marché</span>
+                    <h3>Aperçu rapide</h3>
+                    <ul class="btc-info-list">
+                        <li><strong>Prix actuel :</strong> {{ btc_price or "..." }}</li>
+                        <li><strong>Variation 24h :</strong> {{ btc_change_24h or "..." }}%</li>
+                        <li><strong>Plus haut 24h :</strong> {{ btc_high_24h or "..." }}</li>
+                        <li><strong>Plus bas 24h :</strong> {{ btc_low_24h or "..." }}</li>
+                        <li><strong>Volume 24h :</strong> {{ btc_volume_24h or "..." }}</li>
+                    </ul>
+                </div>
+
+                <div class="btc-info-card">
+                    <span class="panel-badge">Structure</span>
+                    <h3>Niveaux importants</h3>
+                    <ul class="btc-info-list">
+                        <li><strong>Support 1 :</strong> {{ btc_support_1 or "..." }}</li>
+                        <li><strong>Support 2 :</strong> {{ btc_support_2 or "..." }}</li>
+                        <li><strong>Résistance 1 :</strong> {{ btc_resistance_1 or "..." }}</li>
+                        <li><strong>Résistance 2 :</strong> {{ btc_resistance_2 or "..." }}</li>
+                        <li><strong>Biais :</strong> {{ btc_trend_label or "Neutre" }}</li>
+                    </ul>
+                </div>
+
+                <div class="btc-info-card">
+                    <span class="panel-badge">Vision</span>
+                    <h3>Lecture ApexSignals</h3>
+                    <p>
+                        Bitcoin reste l’actif directeur du marché crypto. Une cassure nette d’une résistance majeure,
+                        ou la perte d’un support structurant, peut influencer le sentiment global sur l’ensemble des altcoins.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WHY BITCOIN -->
 <section class="section-standard">
     <div class="section-container">
         <div class="proof-box">
@@ -92,7 +221,96 @@
     </div>
 </section>
 
+<!-- MARKET STRUCTURE -->
 <section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Structure du marché</span>
+            <h2>Comment lire Bitcoin dans une logique de trading</h2>
+            <p>
+                Cette zone aide le visiteur à comprendre comment Bitcoin peut être interprété à travers quelques piliers :
+                tendance, zones clés, momentum, cassure et réaction sur niveaux.
+            </p>
+        </div>
+
+        <div class="features-home-grid">
+            <div class="feature-home-card">
+                <h3>Tendance dominante</h3>
+                <p>
+                    Le premier réflexe consiste à identifier si Bitcoin évolue en tendance haussière, baissière
+                    ou en range. Cette lecture évite de trader contre la structure principale du marché.
+                </p>
+            </div>
+
+            <div class="feature-home-card">
+                <h3>Supports et résistances</h3>
+                <p>
+                    Les zones techniques historiques restent essentielles. Ce sont souvent elles qui déterminent
+                    les rebonds, les rejets ou les cassures susceptibles de générer des signaux propres.
+                </p>
+            </div>
+
+            <div class="feature-home-card">
+                <h3>Volatilité et momentum</h3>
+                <p>
+                    Bitcoin peut accélérer brutalement. Comprendre la vitesse du mouvement aide à mieux situer
+                    la qualité d’un setup et le niveau de risque associé.
+                </p>
+            </div>
+
+            <div class="feature-home-card">
+                <h3>Confirmation du scénario</h3>
+                <p>
+                    Un bon signal BTC ne se limite pas à un prix d’entrée : il s’appuie sur un contexte,
+                    une invalidation claire et un objectif cohérent.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HISTORICAL TIMELINE -->
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Repères historiques</span>
+            <h2>Bitcoin à travers ses grandes étapes</h2>
+            <p>
+                Cette frise permet d’ajouter de la profondeur à la page et de rappeler pourquoi Bitcoin occupe une place unique
+                dans l’écosystème financier et crypto.
+            </p>
+        </div>
+
+        <div class="timeline-grid">
+            <div class="timeline-card">
+                <span class="timeline-year">2009</span>
+                <h3>Lancement du réseau</h3>
+                <p>Le réseau Bitcoin démarre avec une proposition radicale : une monnaie numérique décentralisée, sans autorité centrale.</p>
+            </div>
+
+            <div class="timeline-card">
+                <span class="timeline-year">2013–2017</span>
+                <h3>Premières grandes vagues</h3>
+                <p>Bitcoin gagne en visibilité mondiale et s’impose progressivement comme l’actif fondateur de tout l’univers crypto.</p>
+            </div>
+
+            <div class="timeline-card">
+                <span class="timeline-year">2020–2021</span>
+                <h3>Institutionnalisation</h3>
+                <p>L’arrivée d’acteurs institutionnels renforce sa crédibilité auprès d’un public financier beaucoup plus large.</p>
+            </div>
+
+            <div class="timeline-card">
+                <span class="timeline-year">Aujourd’hui</span>
+                <h3>Actif macro observé</h3>
+                <p>Bitcoin est désormais suivi comme un actif global, sensible aux taux, à la liquidité mondiale et au sentiment de risque.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SIGNALS TABLE -->
+<section class="section-standard" id="btc-signals-history">
     <div class="section-container">
         <div class="section-title">
             <span>Historique récent</span>
@@ -124,7 +342,7 @@
                                 <td>{{ signal.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
                                 <td>{{ signal.asset }}</td>
                                 <td>
-                                    <span class="{% if signal.action == 'BUY' %}text-buy{% endif %}">
+                                    <span class="{% if signal.action == 'BUY' %}text-buy{% else %}text-sell{% endif %}">
                                         {{ signal.action }}
                                     </span>
                                 </td>
@@ -159,54 +377,7 @@
     </div>
 </section>
 
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>Lecture du marché</span>
-            <h2>Une présentation conçue pour rester claire et décisionnelle</h2>
-            <p>
-                L’intérêt d’une page dédiée ne se limite pas à afficher des données. Elle permet aussi de structurer
-                l’information autour d’une logique plus professionnelle, plus lisible et plus cohérente avec l’image
-                d’une plateforme premium.
-            </p>
-        </div>
-
-        <div class="features-home-grid">
-            <div class="feature-home-card">
-                <h3>Hiérarchie visuelle</h3>
-                <p>
-                    Les informations essentielles apparaissent immédiatement : direction, prix d’entrée, niveaux clés
-                    et statut du signal. Cela améliore l’expérience de lecture et la perception globale du site.
-                </p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Lecture rapide</h3>
-                <p>
-                    Les visiteurs identifient en quelques secondes la dynamique récente de Bitcoin et la qualité
-                    des signaux affichés sur la plateforme.
-                </p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Positionnement premium</h3>
-                <p>
-                    Une page par actif apporte une profondeur supplémentaire à la navigation et renforce la crédibilité
-                    du projet face à un site trop générique ou trop court.
-                </p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Base évolutive</h3>
-                <p>
-                    Cette structure permet ensuite de décliner facilement la même logique pour Ethereum, Gold, US100
-                    et les autres marchés suivis sur ApexSignals.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
+<!-- EDUCATIONAL / TRADING LOGIC -->
 <section class="section-standard">
     <div class="section-container">
         <div class="proof-box">
@@ -244,14 +415,16 @@
     </div>
 </section>
 
+<!-- BTC INSIGHTS -->
 <section class="section-standard">
     <div class="section-container">
         <div class="section-title">
-            <span>Pourquoi une page dédiée</span>
-            <h2>Bitcoin mérite un traitement spécifique dans une plateforme premium</h2>
+            <span>Analyse & contexte</span>
+            <h2>Pourquoi Bitcoin mérite une page dédiée dans ApexSignals</h2>
             <p>
                 Dans un environnement professionnel, les actifs majeurs ne sont pas noyés dans une seule page générique.
-                Ils bénéficient d’un espace dédié qui renforce à la fois l’expérience utilisateur et la perception de valeur.
+                Ils bénéficient d’un espace dédié qui renforce à la fois l’expérience utilisateur, la profondeur éditoriale
+                et la perception de valeur.
             </p>
         </div>
 
@@ -279,13 +452,62 @@
     </div>
 </section>
 
+<!-- FAQ -->
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>FAQ Bitcoin</span>
+            <h2>Les questions fréquentes sur le suivi BTC</h2>
+            <p>
+                Une section FAQ apporte un rendu plus professionnel, améliore la compréhension du visiteur
+                et peut aussi renforcer la qualité perçue de la page.
+            </p>
+        </div>
+
+        <div class="faq-grid">
+            <div class="faq-card">
+                <h3>Pourquoi suivre Bitcoin en priorité ?</h3>
+                <p>
+                    Parce qu’il reste l’actif directeur du marché crypto. Son comportement influence souvent la dynamique globale
+                    et le sentiment des investisseurs.
+                </p>
+            </div>
+
+            <div class="faq-card">
+                <h3>Que signifie un signal BTCUSD ?</h3>
+                <p>
+                    Il s’agit d’un scénario de trading structuré autour d’un point d’entrée, d’un stop loss,
+                    d’un take profit et d’un contexte de marché donné.
+                </p>
+            </div>
+
+            <div class="faq-card">
+                <h3>Le chart live remplace-t-il les signaux ?</h3>
+                <p>
+                    Non. Il complète l’expérience. Les signaux donnent le scénario, le graphique permet de visualiser
+                    la structure du marché en temps réel.
+                </p>
+            </div>
+
+            <div class="faq-card">
+                <h3>Cette page peut-elle évoluer ?</h3>
+                <p>
+                    Oui. Elle peut intégrer ensuite la dominance BTC, la fear & greed, les données macro,
+                    des actualités, des heatmaps et davantage d’outils premium.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FINAL CTA -->
 <section class="final-cta-section">
     <div class="section-container">
         <div class="final-cta-box">
             <span class="final-cta-badge">BTCUSD • ApexSignals</span>
             <h2>Suivre Bitcoin dans un environnement plus structuré</h2>
             <p>
-                Une navigation claire, des statistiques visibles, un historique lisible et un Trading Lab cohérent :
+                Un chart live, des statistiques visibles, un historique lisible, des repères de marché et un Trading Lab cohérent :
                 tout est réuni pour faire de cette page Bitcoin un vrai point fort de la plateforme.
             </p>
             <div class="final-cta-actions">
@@ -304,7 +526,7 @@
     <div class="section-container footer-inner">
         <div class="footer-brand">
             <h3>ApexSignals</h3>
-            <p>Une plateforme structurée pour présenter Bitcoin et les autres actifs de façon plus claire et plus premium.</p>
+            <p>Une plateforme structurée pour présenter Bitcoin et les autres actifs de façon plus claire, plus experte et plus premium.</p>
         </div>
 
         <div class="footer-links">

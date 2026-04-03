@@ -3124,3 +3124,388 @@ select {
     height: auto;
     display: block;
 }
+
+/* =========================
+   BITCOIN PAGE PREMIUM
+========================= */
+
+.btc-hero {
+    padding-top: 74px;
+    padding-bottom: 42px;
+}
+
+.btc-hero-grid {
+    display: grid;
+    grid-template-columns: 1.08fr 0.92fr;
+    gap: 26px;
+    align-items: center;
+}
+
+.btc-hero-left {
+    max-width: 760px;
+}
+
+.btc-hero-right {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.mini-market-card {
+    background: rgba(255,255,255,0.84);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    border-radius: 22px;
+    padding: 22px 20px;
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(10px);
+    transition: var(--transition);
+}
+
+.mini-market-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.mini-market-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: var(--blue-soft);
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 800;
+    border: 1px solid #dbeafe;
+    margin-bottom: 14px;
+}
+
+.mini-market-card h3 {
+    color: var(--text-main);
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1.08;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+}
+
+.mini-market-card p {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+/* =========================
+   BTC CHART LAYOUT
+========================= */
+
+.btc-chart-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.55fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.btc-chart-box {
+    background: rgba(255,255,255,0.88);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    border-radius: 28px;
+    padding: 18px;
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+}
+
+.btc-chart-box .tradingview-widget-container,
+.btc-chart-box #tradingview_btc_chart {
+    width: 100%;
+}
+
+.btc-side-panel {
+    display: grid;
+    gap: 16px;
+}
+
+.btc-info-card {
+    background: rgba(255,255,255,0.88);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    border-radius: 22px;
+    padding: 22px 20px;
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(10px);
+}
+
+.panel-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #eff6ff, #f3e8ff);
+    color: var(--blue);
+    border: 1px solid #dbeafe;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 14px;
+}
+
+.btc-info-card h3 {
+    color: var(--text-main);
+    font-size: 24px;
+    font-weight: 900;
+    margin-bottom: 12px;
+    line-height: 1.2;
+}
+
+.btc-info-card p {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.btc-info-list {
+    list-style: none;
+    display: grid;
+    gap: 12px;
+    padding: 0;
+    margin: 0;
+}
+
+.btc-info-list li {
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #f8fbff;
+    border: 1px solid var(--border);
+    color: var(--text-soft);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.btc-info-list strong {
+    color: var(--text-main);
+    font-weight: 800;
+}
+
+/* =========================
+   BTC TIMELINE
+========================= */
+
+.timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.timeline-card {
+    position: relative;
+    background: rgba(255,255,255,0.86);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    border-radius: 24px;
+    padding: 26px 22px;
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(10px);
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+.timeline-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+}
+
+.timeline-card::before {
+    content: "";
+    position: absolute;
+    top: -38px;
+    right: -30px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(37,99,235,0.10), transparent 72%);
+    pointer-events: none;
+}
+
+.timeline-year {
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 12px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #eff6ff, #f3e8ff);
+    color: var(--blue);
+    border: 1px solid #dbeafe;
+    font-size: 13px;
+    font-weight: 900;
+    margin-bottom: 16px;
+}
+
+.timeline-card h3 {
+    color: var(--text-main);
+    font-size: 21px;
+    font-weight: 900;
+    line-height: 1.28;
+    margin-bottom: 10px;
+}
+
+.timeline-card p {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* =========================
+   FAQ GRID BTC
+========================= */
+
+.faq-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.faq-card {
+    background: rgba(255,255,255,0.88);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    border-radius: 22px;
+    padding: 24px 22px;
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(10px);
+    transition: var(--transition);
+}
+
+.faq-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+.faq-card h3 {
+    color: var(--text-main);
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1.35;
+    margin-bottom: 10px;
+}
+
+.faq-card p {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+/* =========================
+   BTC TABLE EXTRA POLISH
+========================= */
+
+.btc-signals-table-wrap {
+    backdrop-filter: blur(10px);
+}
+
+.btc-signals-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.btc-signals-table tbody td:first-child {
+    white-space: nowrap;
+}
+
+.text-sell {
+    color: var(--red) !important;
+    font-weight: 900;
+}
+
+/* =========================
+   BTC PAGE SMALL VISUAL UPGRADES
+========================= */
+
+.btc-hero .inner-page-title {
+    max-width: 980px;
+}
+
+.btc-hero .inner-page-text {
+    max-width: 860px;
+}
+
+.btc-hero .hero-actions {
+    margin-top: 28px;
+    margin-bottom: 0;
+}
+
+.btc-hero .hero-btn-primary,
+.btc-hero .hero-btn-secondary {
+    min-width: 210px;
+}
+
+.btc-chart-box iframe {
+    border-radius: 18px;
+}
+
+/* =========================
+   RESPONSIVE BITCOIN PAGE
+========================= */
+
+@media (max-width: 1100px) {
+    .btc-hero-grid,
+    .btc-chart-layout,
+    .timeline-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btc-hero-right {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .faq-grid,
+    .btc-hero-right {
+        grid-template-columns: 1fr;
+    }
+
+    .btc-chart-box {
+        padding: 14px;
+        border-radius: 22px;
+    }
+
+    .btc-info-card,
+    .mini-market-card,
+    .timeline-card,
+    .faq-card {
+        border-radius: 18px;
+    }
+}
+
+@media (max-width: 768px) {
+    .btc-hero {
+        padding-top: 50px;
+        padding-bottom: 20px;
+    }
+
+    .mini-market-card h3 {
+        font-size: 26px;
+    }
+
+    .btc-info-card h3 {
+        font-size: 22px;
+    }
+
+    .timeline-card h3,
+    .faq-card h3 {
+        font-size: 18px;
+    }
+
+    .btc-hero .hero-btn-primary,
+    .btc-hero .hero-btn-secondary {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .mini-market-card,
+    .btc-info-card,
+    .timeline-card,
+    .faq-card {
+        padding: 18px 16px;
+    }
+
+    .btc-chart-box {
+        padding: 10px;
+    }
+}
