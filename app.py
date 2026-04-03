@@ -14,17 +14,17 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from ai_briefing import generate_daily_briefing
 from market_data import get_btc_data, get_gold_data, get_economic_calendar
 from flask_caching import Cache
-cache = Cache(app, config={
-    "CACHE_TYPE": "SimpleCache",
-    "CACHE_DEFAULT_TIMEOUT": 300  # 5 minutes
-})
+
 # =========================
 # CONFIG
 # =========================
 load_dotenv()
 
 app = Flask(__name__)
-
+cache = Cache(app, config={
+    "CACHE_TYPE": "SimpleCache",
+    "CACHE_DEFAULT_TIMEOUT": 300  # 5 minutes
+})
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "change-moi-plus-tard")
 
 database_url = os.getenv("DATABASE_URL", "sqlite:///users.db")
