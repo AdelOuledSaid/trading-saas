@@ -66,80 +66,84 @@
                     <span class="signal-status buy">Actif</span>
                 </div>
 
-                <div class="signal-mini-chart premium-chart">
-                    <svg viewBox="0 0 560 260" width="100%" height="250" aria-label="Graphique BTCUSD">
-                        <defs>
-                            <linearGradient id="trendLine" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#10b981" />
-                                <stop offset="45%" stop-color="#3b82f6" />
-                                <stop offset="100%" stop-color="#7c3aed" />
-                            </linearGradient>
+                <div class="signal-mini-chart premium-chart trading-chart-pro">
+    <div class="chart-topbar">
+        <span class="chart-market">BTCUSD</span>
+        <span class="chart-timeframe">1H • Momentum haussier</span>
+    </div>
 
-                            <linearGradient id="candleBull" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" stop-color="#22c55e" />
-                                <stop offset="100%" stop-color="#2563eb" />
-                            </linearGradient>
+    <svg viewBox="0 0 560 260" width="100%" height="250" aria-label="Graphique BTCUSD premium">
+        <defs>
+            <linearGradient id="areaFill" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#4f7cff" stop-opacity="0.28"/>
+                <stop offset="100%" stop-color="#4f7cff" stop-opacity="0.02"/>
+            </linearGradient>
 
-                            <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
-                                <feGaussianBlur stdDeviation="3" result="blur"></feGaussianBlur>
-                                <feMerge>
-                                    <feMergeNode in="blur"></feMergeNode>
-                                    <feMergeNode in="SourceGraphic"></feMergeNode>
-                                </feMerge>
-                            </filter>
-                        </defs>
+            <linearGradient id="mainLine" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#22c55e"/>
+                <stop offset="50%" stop-color="#3b82f6"/>
+                <stop offset="100%" stop-color="#7c3aed"/>
+            </linearGradient>
 
-                        <!-- light background grid feeling -->
-                        <g opacity="0.20">
-                            <line x1="30" y1="40" x2="530" y2="40" stroke="#94a3b8" stroke-width="1"/>
-                            <line x1="30" y1="85" x2="530" y2="85" stroke="#94a3b8" stroke-width="1"/>
-                            <line x1="30" y1="130" x2="530" y2="130" stroke="#94a3b8" stroke-width="1"/>
-                            <line x1="30" y1="175" x2="530" y2="175" stroke="#94a3b8" stroke-width="1"/>
-                            <line x1="30" y1="220" x2="530" y2="220" stroke="#94a3b8" stroke-width="1"/>
+            <filter id="glowStrong" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="4" result="blur"></feGaussianBlur>
+                <feMerge>
+                    <feMergeNode in="blur"></feMergeNode>
+                    <feMergeNode in="SourceGraphic"></feMergeNode>
+                </feMerge>
+            </filter>
+        </defs>
 
-                            <line x1="60" y1="25" x2="60" y2="235" stroke="#94a3b8" stroke-width="1"/>
-                            <line x1="130" y1="25" x2="130" y2="235" stroke="#94a3b8" stroke-width="1"/>
-                            <line x1="200" y1="25" x2="200" y2="235" stroke="#94a3b8" stroke-width="1"/>
-                            <line x1="270" y1="25" x2="270" y2="235" stroke="#94a3b8" stroke-width="1"/>
-                            <line x1="340" y1="25" x2="340" y2="235" stroke="#94a3b8" stroke-width="1"/>
-                            <line x1="410" y1="25" x2="410" y2="235" stroke="#94a3b8" stroke-width="1"/>
-                            <line x1="480" y1="25" x2="480" y2="235" stroke="#94a3b8" stroke-width="1"/>
-                        </g>
+        <!-- horizontal guide -->
+        <g opacity="0.16">
+            <line x1="26" y1="50" x2="534" y2="50" stroke="#94a3b8" stroke-width="1"/>
+            <line x1="26" y1="95" x2="534" y2="95" stroke="#94a3b8" stroke-width="1"/>
+            <line x1="26" y1="140" x2="534" y2="140" stroke="#94a3b8" stroke-width="1"/>
+            <line x1="26" y1="185" x2="534" y2="185" stroke="#94a3b8" stroke-width="1"/>
+            <line x1="26" y1="230" x2="534" y2="230" stroke="#94a3b8" stroke-width="1"/>
+        </g>
 
-                        <!-- candlesticks -->
-                        <g opacity="0.98">
-                            <line x1="90" y1="200" x2="90" y2="105" stroke="#94a3b8" stroke-width="2"/>
-                            <rect x="80" y="135" width="20" height="45" rx="10" fill="url(#candleBull)"/>
+        <!-- area -->
+        <path
+            d="M40 190
+               C90 182, 110 170, 145 162
+               C185 154, 210 150, 245 138
+               C285 124, 315 114, 350 104
+               C390 94, 420 78, 455 68
+               C485 60, 510 56, 525 52
+               L525 236
+               L40 236 Z"
+            fill="url(#areaFill)">
+        </path>
 
-                            <line x1="170" y1="205" x2="170" y2="78" stroke="#94a3b8" stroke-width="2"/>
-                            <rect x="160" y="95" width="20" height="70" rx="10" fill="url(#candleBull)"/>
+        <!-- line -->
+        <path
+            d="M40 190
+               C90 182, 110 170, 145 162
+               C185 154, 210 150, 245 138
+               C285 124, 315 114, 350 104
+               C390 94, 420 78, 455 68
+               C485 60, 510 56, 525 52"
+            fill="none"
+            stroke="url(#mainLine)"
+            stroke-width="6"
+            stroke-linecap="round"
+            filter="url(#glowStrong)">
+        </path>
 
-                            <line x1="250" y1="194" x2="250" y2="92" stroke="#94a3b8" stroke-width="2"/>
-                            <rect x="240" y="112" width="20" height="58" rx="10" fill="url(#candleBull)"/>
+        <!-- current price line -->
+        <line x1="455" y1="24" x2="455" y2="236" stroke="#3b82f6" stroke-dasharray="5 6" stroke-width="2" opacity="0.35"/>
 
-                            <line x1="330" y1="205" x2="330" y2="56" stroke="#94a3b8" stroke-width="2"/>
-                            <rect x="320" y="78" width="20" height="80" rx="10" fill="url(#candleBull)"/>
+        <!-- dots -->
+        <circle cx="145" cy="162" r="8" fill="#ffffff" stroke="#3b82f6" stroke-width="3"/>
+        <circle cx="350" cy="104" r="8" fill="#ffffff" stroke="#3b82f6" stroke-width="3"/>
+        <circle cx="455" cy="68" r="11" fill="#ffffff" stroke="#2563eb" stroke-width="4"/>
 
-                            <line x1="410" y1="198" x2="410" y2="68" stroke="#94a3b8" stroke-width="2"/>
-                            <rect x="400" y="88" width="20" height="74" rx="10" fill="url(#candleBull)"/>
-                        </g>
-
-                        <!-- trend line -->
-                        <polyline
-                            points="60,160 150,142 240,124 330,102 420,82 500,68"
-                            fill="none"
-                            stroke="url(#trendLine)"
-                            stroke-width="5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            filter="url(#softGlow)"
-                        />
-
-                        <!-- signal points -->
-                        <circle cx="150" cy="142" r="10" fill="#ffffff" stroke="#3b82f6" stroke-width="3"/>
-                        <circle cx="420" cy="82" r="10" fill="#ffffff" stroke="#3b82f6" stroke-width="3"/>
-                    </svg>
-                </div>
+        <!-- price tag -->
+        <rect x="430" y="34" rx="10" ry="10" width="86" height="26" fill="#0f172a" opacity="0.92"/>
+        <text x="473" y="52" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">62 180</text>
+    </svg>
+</div>
 
                 <div class="signal-infos">
                     <div class="signal-info-box">
