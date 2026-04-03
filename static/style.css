@@ -2700,12 +2700,89 @@ select {
         opacity: 0.07;
     }
 
-    .home-hero::before {
-        width: 560px;
-        height: 560px;
-        right: -60px;
-        opacity: 0.07;
-    }
+ .home-hero::before {
+    content: "";
+    position: absolute;
+    right: -120px;
+    top: 80px;
+    width: 900px;
+    height: 620px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.09;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800'>\
+<defs>\
+<linearGradient id='arrowGrad' x1='0%' y1='0%' x2='100%' y2='0%'>\
+<stop offset='0%' stop-color='%2316a34a' stop-opacity='0.95'/>\
+<stop offset='55%' stop-color='%2384cc16' stop-opacity='0.92'/>\
+<stop offset='100%' stop-color='%2322c55e' stop-opacity='0.95'/>\
+</linearGradient>\
+<linearGradient id='greenCandle' x1='0%' y1='0%' x2='0%' y2='100%'>\
+<stop offset='0%' stop-color='%23a3e635'/>\
+<stop offset='100%' stop-color='%2316a34a'/>\
+</linearGradient>\
+<linearGradient id='redCandle' x1='0%' y1='0%' x2='0%' y2='100%'>\
+<stop offset='0%' stop-color='%23fb7185'/>\
+<stop offset='100%' stop-color='%23dc2626'/>\
+</linearGradient>\
+<filter id='softGlow'>\
+<feGaussianBlur stdDeviation='4' result='blur'/>\
+<feMerge>\
+<feMergeNode in='blur'/>\
+<feMergeNode in='SourceGraphic'/>\
+</feMerge>\
+</filter>\
+</defs>\
+
+<path d='M120 420 L300 300 L470 355 L650 440 L835 280 L820 345 L1000 170 L940 170 L1040 105 L1110 70 L1068 155 L1032 135 L1032 220 L845 370 L860 320 L652 500 L445 400 L265 338 L145 455 Z'
+fill='url(%23arrowGrad)' opacity='0.88' filter='url(%23softGlow)'/> \
+
+<line x1='160' y1='610' x2='160' y2='475' stroke='%23334155' stroke-width='4' opacity='0.55'/>\
+<rect x='142' y='520' width='36' height='90' rx='8' fill='url(%23redCandle)' opacity='0.92'/>\
+
+<line x1='235' y1='620' x2='235' y2='470' stroke='%23334155' stroke-width='4' opacity='0.55'/>\
+<rect x='217' y='565' width='36' height='55' rx='8' fill='url(%23greenCandle)' opacity='0.92'/>\
+
+<line x1='325' y1='625' x2='325' y2='410' stroke='%23334155' stroke-width='4' opacity='0.55'/>\
+<rect x='304' y='445' width='42' height='180' rx='8' fill='url(%23greenCandle)' opacity='0.92'/>\
+
+<line x1='415' y1='605' x2='415' y2='430' stroke='%23334155' stroke-width='4' opacity='0.55'/>\
+<rect x='394' y='460' width='42' height='145' rx='8' fill='url(%23greenCandle)' opacity='0.92'/>\
+
+<line x1='505' y1='560' x2='505' y2='430' stroke='%23334155' stroke-width='4' opacity='0.55'/>\
+<rect x='486' y='485' width='38' height='75' rx='8' fill='url(%23greenCandle)' opacity='0.92'/>\
+
+<line x1='595' y1='545' x2='595' y2='465' stroke='%23334155' stroke-width='4' opacity='0.55'/>\
+<rect x='576' y='490' width='38' height='42' rx='8' fill='url(%23redCandle)' opacity='0.92'/>\
+
+<line x1='695' y1='620' x2='695' y2='470' stroke='%23334155' stroke-width='4' opacity='0.55'/>\
+<rect x='675' y='495' width='40' height='95' rx='8' fill='url(%23redCandle)' opacity='0.92'/>\
+
+<line x1='790' y1='585' x2='790' y2='505' stroke='%23334155' stroke-width='4' opacity='0.55'/>\
+<rect x='772' y='535' width='36' height='35' rx='8' fill='url(%23greenCandle)' opacity='0.92'/>\
+
+<line x1='880' y1='555' x2='880' y2='445' stroke='%23334155' stroke-width='4' opacity='0.55'/>\
+<rect x='860' y='480' width='40' height='75' rx='8' fill='url(%23greenCandle)' opacity='0.92'/>\
+
+<line x1='970' y1='515' x2='970' y2='330' stroke='%23334155' stroke-width='4' opacity='0.55'/>\
+<rect x='949' y='380' width='42' height='135' rx='8' fill='url(%23greenCandle)' opacity='0.92'/>\
+
+<line x1='1065' y1='470' x2='1065' y2='280' stroke='%23334155' stroke-width='4' opacity='0.55'/>\
+<rect x='1042' y='305' width='46' height='165' rx='8' fill='url(%23greenCandle)' opacity='0.92'/>\
+
+<rect x='205' y='210' width='96' height='38' rx='19' fill='%23ecfdf3' stroke='%23bbf7d0' stroke-width='2' opacity='0.96'/>\
+<text x='253' y='235' text-anchor='middle' font-family='Arial' font-size='22' font-weight='700' fill='%2316a34a'>BUY</text>\
+
+<rect x='650' y='215' width='96' height='38' rx='19' fill='%23fef2f2' stroke='%23fecaca' stroke-width='2' opacity='0.96'/>\
+<text x='698' y='240' text-anchor='middle' font-family='Arial' font-size='22' font-weight='700' fill='%23dc2626'>SELL</text>\
+
+<rect x='930' y='115' width='96' height='38' rx='19' fill='%23ecfdf3' stroke='%23bbf7d0' stroke-width='2' opacity='0.96'/>\
+<text x='978' y='140' text-anchor='middle' font-family='Arial' font-size='22' font-weight='700' fill='%2316a34a'>BUY</text>\
+</svg>");
 }
 
 @media (max-width: 1050px) {
