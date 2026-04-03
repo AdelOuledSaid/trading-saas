@@ -2923,3 +2923,56 @@ select {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* =========================
+   FOOTER PRO
+========================= */
+.footer-pro {
+    display: grid;
+    grid-template-columns: 1.1fr 1.9fr;
+    gap: 36px;
+    align-items: start;
+}
+
+.footer-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+}
+
+.footer-col h4 {
+    color: var(--text-main);
+    font-size: 16px;
+    font-weight: 900;
+    margin-bottom: 14px;
+}
+
+.footer-col .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.footer-col .footer-links a {
+    color: var(--text-soft);
+    font-weight: 700;
+    transition: 0.2s ease;
+}
+
+.footer-col .footer-links a:hover {
+    color: var(--blue);
+    transform: translateX(2px);
+}
+
+@media (max-width: 900px) {
+    .footer-pro {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .footer-columns {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
