@@ -90,15 +90,55 @@ body.auth-page::after,
 body.success-page::after {
     content: "";
     position: fixed;
-    top: 110px;
+    top: 80px;
     right: -40px;
-    width: 980px;
-    height: 980px;
+    width: 1100px;
+    height: 800px;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.10;
-    background: url("/static/wolf-bg.png") no-repeat center;
+    opacity: 0.14;
+    background-repeat: no-repeat;
+    background-position: center;
     background-size: contain;
+    background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800'>\
+<defs>\
+<linearGradient id='lineGrad' x1='0%' y1='0%' x2='100%' y2='0%'>\
+<stop offset='0%' stop-color='%2322c55e' stop-opacity='0.45'/>\
+<stop offset='50%' stop-color='%233b82f6' stop-opacity='0.38'/>\
+<stop offset='100%' stop-color='%237c3aed' stop-opacity='0.35'/>\
+</linearGradient>\
+<linearGradient id='areaGrad' x1='0%' y1='0%' x2='0%' y2='100%'>\
+<stop offset='0%' stop-color='%233b82f6' stop-opacity='0.12'/>\
+<stop offset='100%' stop-color='%233b82f6' stop-opacity='0.01'/>\
+</linearGradient>\
+<filter id='glow'>\
+<feGaussianBlur stdDeviation='6' result='blur'/>\
+<feMerge>\
+<feMergeNode in='blur'/>\
+<feMergeNode in='SourceGraphic'/>\
+</feMerge>\
+</filter>\
+</defs>\
+<g opacity='0.18'>\
+<line x1='80' y1='120' x2='1120' y2='120' stroke='%2394a3b8' stroke-width='1'/>\
+<line x1='80' y1='240' x2='1120' y2='240' stroke='%2394a3b8' stroke-width='1'/>\
+<line x1='80' y1='360' x2='1120' y2='360' stroke='%2394a3b8' stroke-width='1'/>\
+<line x1='80' y1='480' x2='1120' y2='480' stroke='%2394a3b8' stroke-width='1'/>\
+<line x1='80' y1='600' x2='1120' y2='600' stroke='%2394a3b8' stroke-width='1'/>\
+<line x1='160' y1='80' x2='160' y2='700' stroke='%2394a3b8' stroke-width='1'/>\
+<line x1='320' y1='80' x2='320' y2='700' stroke='%2394a3b8' stroke-width='1'/>\
+<line x1='480' y1='80' x2='480' y2='700' stroke='%2394a3b8' stroke-width='1'/>\
+<line x1='640' y1='80' x2='640' y2='700' stroke='%2394a3b8' stroke-width='1'/>\
+<line x1='800' y1='80' x2='800' y2='700' stroke='%2394a3b8' stroke-width='1'/>\
+<line x1='960' y1='80' x2='960' y2='700' stroke='%2394a3b8' stroke-width='1'/>\
+</g>\
+<path d='M100 610 C180 600, 220 560, 290 545 C360 530, 420 500, 470 470 C540 425, 600 420, 660 360 C710 310, 760 320, 820 250 C870 195, 940 170, 1010 120 C1055 90, 1085 70, 1110 55 L1110 700 L100 700 Z' fill='url(%23areaGrad)'/>\
+<path d='M100 610 C180 600, 220 560, 290 545 C360 530, 420 500, 470 470 C540 425, 600 420, 660 360 C710 310, 760 320, 820 250 C870 195, 940 170, 1010 120 C1055 90, 1085 70, 1110 55' fill='none' stroke='url(%23lineGrad)' stroke-width='10' stroke-linecap='round' filter='url(%23glow)'/>\
+<circle cx='470' cy='470' r='10' fill='white' stroke='%233b82f6' stroke-width='4' opacity='0.6'/>\
+<circle cx='820' cy='250' r='11' fill='white' stroke='%233b82f6' stroke-width='4' opacity='0.7'/>\
+<circle cx='1110' cy='55' r='13' fill='white' stroke='%232563eb' stroke-width='5' opacity='0.85'/>\
+</svg>");
 }
 
 a {
