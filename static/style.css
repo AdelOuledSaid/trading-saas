@@ -544,64 +544,32 @@ select {
 .home-hero::before {
     content: "";
     position: absolute;
+    top: 80px;
     right: -120px;
-    top: -40px;
-    width: 980px;
-    height: 760px;
+    width: 760px;
+    height: 520px;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.16;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    background-image: url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 900'>\
-<defs>\
-<linearGradient id='marketGrad' x1='0%' y1='0%' x2='100%' y2='100%'>\
-<stop offset='0%' stop-color='%2394a3b8' stop-opacity='0.38'/>\
-<stop offset='50%' stop-color='%2364748b' stop-opacity='0.24'/>\
-<stop offset='100%' stop-color='%23cbd5e1' stop-opacity='0.22'/>\
-</linearGradient>\
-</defs>\
-
-<g fill='none' stroke='url(%23marketGrad)' stroke-width='1.2'>\
-<path d='M610 110 C760 130, 900 220, 980 360 C1050 485, 1050 640, 970 755 C880 875, 710 920, 560 885 C405 850, 290 760, 230 615 C180 495, 195 340, 290 230 C375 130, 480 95, 610 110 Z'/>\
-<path d='M610 130 C748 148, 875 233, 947 358 C1014 474, 1010 618, 938 730 C856 844, 704 885, 573 855 C436 825, 330 746, 273 617 C225 507, 237 364, 320 264 C394 175, 488 143, 610 130 Z'/>\
-<path d='M610 150 C735 166, 850 245, 914 355 C978 464, 971 598, 906 705 C831 813, 698 850, 585 825 C467 799, 369 730, 316 616 C272 519, 281 387, 351 296 C416 218, 496 190, 610 150 Z'/>\
-<path d='M610 170 C723 184, 826 257, 882 352 C942 454, 933 579, 874 680 C805 783, 691 815, 596 795 C497 770, 408 715, 359 615 C318 530, 325 410, 382 328 C439 260, 505 236, 610 170 Z'/>\
-<path d='M610 190 C710 202, 801 269, 849 349 C905 444, 894 559, 842 655 C780 752, 685 780, 608 765 C526 742, 446 699, 402 614 C365 541, 369 433, 413 360 C462 302, 514 283, 610 190 Z'/>\
-<path d='M610 210 C698 220, 777 281, 817 346 C869 434, 855 539, 810 630 C755 722, 679 745, 619 735 C555 713, 485 684, 445 613 C411 552, 412 456, 444 392 C485 344, 523 329, 610 210 Z'/>\
-<path d='M610 230 C685 238, 752 292, 784 343 C833 424, 817 520, 778 605 C729 691, 672 710, 631 705 C584 684, 523 668, 488 612 C458 563, 456 479, 475 424 C507 386, 531 376, 610 230 Z'/>\
-</g>\
-
-<g fill='none' stroke='%233b82f6' stroke-opacity='0.15' stroke-width='2'>\
-<path d='M130 690 C250 650, 350 610, 455 558 C575 498, 690 430, 825 315 C920 235, 1010 165, 1110 80'/>\
-</g>\
-
-<g fill='none' stroke='%237c3aed' stroke-opacity='0.12' stroke-width='2'>\
-<path d='M180 740 C300 705, 410 660, 525 600 C650 535, 760 460, 900 345 C995 270, 1070 200, 1140 130'/>\
-</g>\
-
-<g fill='%232563eb' fill-opacity='0.12'>\
-<circle cx='455' cy='558' r='10'/>\
-<circle cx='825' cy='315' r='12'/>\
-<circle cx='1110' cy='80' r='14'/>\
-</g>\
-</svg>");
+    opacity: 0.08;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 30% 60%, rgba(37, 99, 235, 0.10), transparent 26%),
+        radial-gradient(circle at 78% 28%, rgba(124, 58, 237, 0.08), transparent 24%);
+    filter: blur(8px);
 }
 
 .home-hero::after {
     content: "";
     position: absolute;
-    right: 120px;
-    top: 90px;
-    width: 260px;
-    height: 260px;
+    right: 60px;
+    bottom: 40px;
+    width: 320px;
+    height: 320px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(59,130,246,0.08), transparent 72%);
+    background: radial-gradient(circle, rgba(124,58,237,0.08), transparent 72%);
     pointer-events: none;
     z-index: 0;
-    filter: blur(10px);
+    filter: blur(12px);
 }
 
 .hero-bg-orb {
@@ -2673,15 +2641,15 @@ select {
     }
 
     body.home-body::after,
-    body.dashboard-body::after,
-    body.auth-page::after,
-    body.success-page::after {
-        width: 620px;
-        height: 620px;
-        right: -100px;
-        top: 160px;
-        opacity: 0.07;
-    }
+body.dashboard-body::after,
+body.auth-page::after,
+body.success-page::after {
+    width: 360px;
+    height: 360px;
+    right: -90px;
+    top: 180px;
+    opacity: 0.04;
+}
 
     .home-hero::before {
         width: 560px;
