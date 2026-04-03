@@ -21,10 +21,11 @@ from flask_caching import Cache
 load_dotenv()
 
 app = Flask(__name__)
-cache = Cache(app, config={
+cache = Cache(config={
     "CACHE_TYPE": "SimpleCache",
-    "CACHE_DEFAULT_TIMEOUT": 300  # 5 minutes
+    "CACHE_DEFAULT_TIMEOUT": 300
 })
+cache.init_app(app)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "change-moi-plus-tard")
 
 database_url = os.getenv("DATABASE_URL", "sqlite:///users.db")
@@ -71,11 +72,7 @@ login_manager.init_app(app)
 # =========================
 # CACHE
 # =========================
-cache = Cache(config={
-    "CACHE_TYPE": "SimpleCache",
-    "CACHE_DEFAULT_TIMEOUT": 300
-})
-cache.init_app(app)
+
 # =========================
 # MODELS
 # =========================
