@@ -15,80 +15,175 @@
 <div class="dashboard-wrapper">
 
     <!-- SIDEBAR -->
-    <aside class="sidebar">
+    <aside class="sidebar premium-sidebar">
         <div class="logo-box">
             <h2>ApexSignals</h2>
             <p>Espace membre premium</p>
+        </div>
+
+        <div class="sidebar-status-card">
+            <span class="sidebar-status-label">Statut du compte</span>
+            <strong>Accès actif</strong>
+            <small>Plan {{ user_plan | upper }}</small>
         </div>
 
         <div class="sidebar-nav">
             <a href="{{ url_for('dashboard') }}" class="nav-link active">📊 Dashboard</a>
             <a href="{{ url_for('pricing') }}" class="nav-link">💎 Offres</a>
             <a href="{{ url_for('home') }}" class="nav-link">🏠 Accueil</a>
+            <a href="{{ url_for('results') }}" class="nav-link">📈 Résultats</a>
+            <a href="{{ url_for('signals_page') }}" class="nav-link">⚡ Signaux</a>
             <a href="{{ url_for('logout') }}" class="nav-link logout-link">🚪 Déconnexion</a>
+        </div>
+
+        <div class="sidebar-mini-box">
+            <span>Marchés suivis</span>
+            <strong>BTC • ETH • Gold • US100</strong>
         </div>
     </aside>
 
     <!-- MAIN -->
-    <main class="main-content">
+    <main class="main-content dashboard-main-premium">
 
         <!-- HEADER -->
-        <div class="topbar">
+        <div class="topbar dashboard-topbar">
             <div>
+                <div class="dashboard-kicker">ApexSignals Member Area</div>
                 <h1>Dashboard</h1>
-                <p class="subtitle">Vue globale de ton activité et des performances</p>
+                <p class="subtitle">Vue globale de ton activité, des signaux et des performances</p>
             </div>
             <div class="live-badge">● Accès actif</div>
         </div>
 
-        <!-- BANNER -->
-        <div class="premium-banner">
-            <div>
+        <!-- HERO BANNER -->
+        <div class="premium-banner premium-banner-pro">
+            <div class="premium-banner-text">
+                <span class="banner-mini-badge">Plateforme active</span>
                 <h3>Bienvenue sur ApexSignals</h3>
                 <p>
                     Accède à tes signaux, analyse tes performances et optimise ton trading
-                    avec une interface claire et moderne.
+                    avec une interface plus claire, plus moderne et plus professionnelle.
                 </p>
             </div>
-            <a href="{{ url_for('pricing') }}" class="upgrade-btn">Améliorer mon plan</a>
+
+            <div class="premium-banner-actions">
+                <a href="{{ url_for('pricing') }}" class="upgrade-btn">Améliorer mon plan</a>
+                <a href="{{ url_for('signals_page') }}" class="account-btn dashboard-secondary-btn">Voir les signaux</a>
+            </div>
+        </div>
+
+        <!-- QUICK STRIP -->
+        <div class="dashboard-strip-grid">
+            <div class="dashboard-strip-card">
+                <span>Plan</span>
+                <strong>{{ user_plan | upper }}</strong>
+            </div>
+            <div class="dashboard-strip-card">
+                <span>Accès</span>
+                <strong>Sécurisé</strong>
+            </div>
+            <div class="dashboard-strip-card">
+                <span>Univers</span>
+                <strong>Crypto • Gold • Indices</strong>
+            </div>
+            <div class="dashboard-strip-card">
+                <span>Confiance signal</span>
+                <strong>Élevée</strong>
+            </div>
         </div>
 
         <!-- STATS -->
-        <div class="stats-grid">
+        <div class="stats-grid dashboard-stats-grid">
 
-            <div class="stat-card">
+            <div class="stat-card premium-stat-card">
                 <span class="stat-label">Winrate</span>
                 <h3>73%</h3>
+                <p class="stat-subtext">Lecture synthétique de la performance affichée</p>
             </div>
 
-            <div class="stat-card">
+            <div class="stat-card premium-stat-card">
                 <span class="stat-label">Performance</span>
                 <h3>+320%</h3>
+                <p class="stat-subtext">Progression mise en avant sur la plateforme</p>
             </div>
 
-            <div class="stat-card">
+            <div class="stat-card premium-stat-card">
                 <span class="stat-label">Trades</span>
                 <h3>+1200</h3>
+                <p class="stat-subtext">Historique de signaux et d’exécution</p>
             </div>
 
-            <div class="stat-card">
+            <div class="stat-card premium-stat-card">
                 <span class="stat-label">Actifs suivis</span>
                 <h3>6+</h3>
+                <p class="stat-subtext">Crypto, Gold et indices les plus suivis</p>
             </div>
 
         </div>
 
         <!-- MAIN GRID -->
-        <div class="panel-grid">
+        <div class="panel-grid dashboard-panel-grid">
 
             <!-- SIGNAL LIVE -->
-            <div class="panel">
-                <div class="panel-header">
-                    <h2>Signal en cours</h2>
+            <div class="panel dashboard-panel-large">
+                <div class="panel-header panel-header-flex">
+                    <div>
+                        <span class="panel-kicker">Signal live</span>
+                        <h2>Signal en cours</h2>
+                    </div>
+                    <span class="signal-status buy">BUY</span>
                 </div>
 
-                <div class="signal-box">
+                <div class="dashboard-live-chart">
+                    <svg viewBox="0 0 560 240" width="100%" height="220" aria-label="Graphique signal live BTCUSD">
+                        <defs>
+                            <linearGradient id="dashTrendLine" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#10b981" />
+                                <stop offset="50%" stop-color="#3b82f6" />
+                                <stop offset="100%" stop-color="#7c3aed" />
+                            </linearGradient>
+                        </defs>
 
+                        <g opacity="0.18">
+                            <line x1="30" y1="40" x2="530" y2="40" stroke="#94a3b8" stroke-width="1"/>
+                            <line x1="30" y1="80" x2="530" y2="80" stroke="#94a3b8" stroke-width="1"/>
+                            <line x1="30" y1="120" x2="530" y2="120" stroke="#94a3b8" stroke-width="1"/>
+                            <line x1="30" y1="160" x2="530" y2="160" stroke="#94a3b8" stroke-width="1"/>
+                            <line x1="30" y1="200" x2="530" y2="200" stroke="#94a3b8" stroke-width="1"/>
+                        </g>
+
+                        <g opacity="0.95">
+                            <line x1="85" y1="185" x2="85" y2="110" stroke="#94a3b8" stroke-width="2"/>
+                            <rect x="75" y="132" width="20" height="38" rx="10" fill="#22c55e"/>
+
+                            <line x1="165" y1="194" x2="165" y2="86" stroke="#94a3b8" stroke-width="2"/>
+                            <rect x="155" y="102" width="20" height="62" rx="10" fill="#3b82f6"/>
+
+                            <line x1="245" y1="185" x2="245" y2="96" stroke="#94a3b8" stroke-width="2"/>
+                            <rect x="235" y="116" width="20" height="44" rx="10" fill="#22c55e"/>
+
+                            <line x1="325" y1="198" x2="325" y2="62" stroke="#94a3b8" stroke-width="2"/>
+                            <rect x="315" y="84" width="20" height="74" rx="10" fill="#3b82f6"/>
+
+                            <line x1="405" y1="188" x2="405" y2="72" stroke="#94a3b8" stroke-width="2"/>
+                            <rect x="395" y="92" width="20" height="66" rx="10" fill="#22c55e"/>
+                        </g>
+
+                        <polyline
+                            points="55,158 145,138 235,126 325,100 415,82 500,66"
+                            fill="none"
+                            stroke="url(#dashTrendLine)"
+                            stroke-width="5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+
+                        <circle cx="145" cy="138" r="9" fill="#fff" stroke="#2563eb" stroke-width="3"/>
+                        <circle cx="415" cy="82" r="9" fill="#fff" stroke="#2563eb" stroke-width="3"/>
+                    </svg>
+                </div>
+
+                <div class="signal-box signal-box-premium">
                     <div class="signal-row">
                         <span>Actif</span>
                         <strong>BTCUSD</strong>
@@ -118,18 +213,17 @@
                         <span>Confiance</span>
                         <strong>Élevée</strong>
                     </div>
-
                 </div>
             </div>
 
             <!-- RESUME -->
-            <div class="panel">
+            <div class="panel dashboard-panel-side">
                 <div class="panel-header">
+                    <span class="panel-kicker">Compte membre</span>
                     <h2>Résumé du compte</h2>
                 </div>
 
                 <div class="summary-box">
-
                     <div class="summary-item">
                         <span>Statut</span>
                         <strong>Actif</strong>
@@ -149,53 +243,93 @@
                         <span>Marchés</span>
                         <strong>Crypto • Gold • Indices</strong>
                     </div>
+                </div>
 
+                <div class="dashboard-mini-cta">
+                    <h3>Besoin de plus de profondeur ?</h3>
+                    <p>Débloque plus de signaux et une expérience encore plus premium.</p>
+                    <a href="{{ url_for('pricing') }}" class="primary-link-btn">Voir les offres</a>
                 </div>
             </div>
 
         </div>
 
-        <!-- ACTIVITE -->
-        <div class="panel">
-            <div class="panel-header">
-                <h2>Activité récente</h2>
+        <!-- SECOND GRID -->
+        <div class="dashboard-bottom-grid">
+            <!-- ACTIVITE -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="panel-kicker">Historique court</span>
+                    <h2>Activité récente</h2>
+                </div>
+
+                <div class="summary-box">
+                    <div class="summary-item">
+                        <span>BTCUSD BUY</span>
+                        <strong class="text-buy">+2.1%</strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>ETHUSD SELL</span>
+                        <strong>-0.6%</strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>GOLD BUY</span>
+                        <strong class="text-buy">+1.4%</strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>US100 BUY</span>
+                        <strong class="text-buy">+0.9%</strong>
+                    </div>
+                </div>
             </div>
 
-            <div class="summary-box">
-
-                <div class="summary-item">
-                    <span>BTCUSD BUY</span>
-                    <strong class="text-buy">+2.1%</strong>
+            <!-- WATCHLIST -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="panel-kicker">Watchlist</span>
+                    <h2>Actifs surveillés</h2>
                 </div>
 
-                <div class="summary-item">
-                    <span>ETHUSD SELL</span>
-                    <strong>-0.6%</strong>
+                <div class="dashboard-watchlist">
+                    <div class="watch-item">
+                        <span>Bitcoin</span>
+                        <strong>BTCUSD</strong>
+                    </div>
+                    <div class="watch-item">
+                        <span>Ethereum</span>
+                        <strong>ETHUSD</strong>
+                    </div>
+                    <div class="watch-item">
+                        <span>Gold</span>
+                        <strong>XAUUSD</strong>
+                    </div>
+                    <div class="watch-item">
+                        <span>Nasdaq</span>
+                        <strong>US100</strong>
+                    </div>
                 </div>
-
-                <div class="summary-item">
-                    <span>GOLD BUY</span>
-                    <strong class="text-buy">+1.4%</strong>
-                </div>
-
-                <div class="summary-item">
-                    <span>US100 BUY</span>
-                    <strong class="text-buy">+0.9%</strong>
-                </div>
-
             </div>
         </div>
 
         <!-- CTA -->
-        <div class="panel" style="text-align:center; margin-top:20px;">
-            <h2 style="margin-bottom:10px;">Passe au niveau supérieur</h2>
-            <p style="color:#64748b; margin-bottom:20px;">
-                Accède aux fonctionnalités avancées et aux signaux premium.
+        <div class="panel dashboard-final-panel">
+            <h2>Passe au niveau supérieur</h2>
+            <p>
+                Accède aux fonctionnalités avancées, aux signaux premium
+                et à une expérience membre plus complète.
             </p>
 
-            <a href="{{ url_for('pricing') }}" class="primary-link-btn">
-                Voir les offres premium
-            </a>
+            <div class="dashboard-final-actions">
+                <a href="{{ url_for('pricing') }}" class="primary-link-btn">
+                    Voir les offres premium
+                </a>
+                <a href="{{ url_for('signals_page') }}" class="hero-btn-secondary">
+                    Explorer les signaux
+                </a>
+            </div>
         </div>
 
     </main>

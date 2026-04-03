@@ -51,7 +51,7 @@
             <button class="nav-drop-btn" type="button">
                 Infos <span>▾</span>
             </button>
-            <div class="nav-dropdown-menu">
+            <div class="nav-dropdown-menu nav-dropdown-menu-right">
                 <a href="{{ url_for('faq_page') }}">FAQ</a>
                 <a href="{{ url_for('contact') }}">Contact</a>
                 <a href="{{ url_for('about') }}">À propos</a>
@@ -62,7 +62,7 @@
     <div class="nav-right">
         <form class="nav-search" action="{{ url_for('search_page') }}" method="GET">
             <input type="text" name="q" placeholder="Rechercher un actif, une page...">
-            <button type="submit">⌕</button>
+            <button type="submit" aria-label="Rechercher">⌕</button>
         </form>
 
         <div class="nav-account">
@@ -92,6 +92,13 @@
     <a href="{{ url_for('signals_eth') }}">Ethereum</a>
     <a href="{{ url_for('signals_gold') }}">Gold</a>
     <a href="{{ url_for('signals_us100') }}">US100</a>
+    <a href="{{ url_for('results') }}">Historique des signaux</a>
+
+    <div class="mobile-section-title">Marchés</div>
+    <a href="{{ url_for('signals_btc') }}">Crypto (BTC)</a>
+    <a href="{{ url_for('signals_eth') }}">Altcoins (ETH)</a>
+    <a href="{{ url_for('signals_us100') }}">Indices (US100)</a>
+    <a href="{{ url_for('signals_gold') }}">Gold</a>
 
     <div class="mobile-section-title">Trading Lab</div>
     <a href="{{ url_for('trading_lab') }}">Vue globale</a>
@@ -124,4 +131,19 @@ function toggleMobileMenu(el) {
     el.classList.toggle("active");
     document.getElementById("mobileMenu").classList.toggle("active");
 }
+
+document.addEventListener("click", function (e) {
+    const burger = document.querySelector(".burger");
+    const mobileMenu = document.getElementById("mobileMenu");
+
+    if (!burger || !mobileMenu) return;
+
+    const clickedInsideMenu = mobileMenu.contains(e.target);
+    const clickedBurger = burger.contains(e.target);
+
+    if (!clickedInsideMenu && !clickedBurger) {
+        burger.classList.remove("active");
+        mobileMenu.classList.remove("active");
+    }
+});
 </script>
