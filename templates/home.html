@@ -297,36 +297,51 @@
             <span>Écosystème Apex</span>
             <h2>Une structure de site pensée comme une vraie plateforme</h2>
             <p>
-                Le site ne se limite plus à une page d’accueil et une page d’offres.
-                Il est organisé autour de plusieurs espaces complémentaires.
+                ApexSignals réunit les outils essentiels pour suivre le marché, filtrer les opportunités,
+                analyser les résultats et accéder à un environnement membre plus clair et plus professionnel.
             </p>
         </div>
 
         <div class="features-home-grid">
             <a href="{{ url_for('signals_page') }}" class="feature-home-card">
                 <h3>Signaux</h3>
-                <p>Une page dédiée aux actifs suivis, aux catégories et aux opportunités importantes.</p>
+                <p>
+                    Retrouvez les signaux les plus récents sur les actifs suivis, avec une lecture simple
+                    des entrées, des objectifs, des statuts et des marchés prioritaires du moment.
+                </p>
             </a>
 
             <a href="{{ url_for('results') }}" class="feature-home-card">
                 <h3>Résultats</h3>
-                <p>Une zone consacrée à la performance, au winrate, au volume de signaux et à l’historique.</p>
+                <p>
+                    Consultez l’historique récent, le winrate, les trades clôturés et la progression globale
+                    pour visualiser rapidement la dynamique de la plateforme.
+                </p>
             </a>
 
             <a href="{{ url_for('trading_lab') }}" class="feature-home-card">
                 <h3>Trading Lab</h3>
-                <p>Un espace premium pour comprendre la structure des signaux et la logique des setups.</p>
+                <p>
+                    Approfondissez la logique des setups, la structure des signaux, la gestion du risque
+                    et la lecture du marché dans une section pensée pour renforcer la compréhension.
+                </p>
             </a>
 
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('dashboard') }}" class="feature-home-card">
                     <h3>Espace membre</h3>
-                    <p>Un dashboard qui centralise les données importantes et renforce l’effet plateforme.</p>
+                    <p>
+                        Accédez à un dashboard centralisé avec vos données utiles, les signaux récents,
+                        les statistiques clés et une expérience plus premium au quotidien.
+                    </p>
                 </a>
             {% else %}
                 <a href="{{ url_for('register') }}" class="feature-home-card">
                     <h3>Espace membre</h3>
-                    <p>Un dashboard qui centralise les données importantes et renforce l’effet plateforme.</p>
+                    <p>
+                        Créez votre compte pour accéder à un espace plus complet, suivre les signaux,
+                        consulter les statistiques et profiter d’une navigation pensée pour les membres.
+                    </p>
                 </a>
             {% endif %}
         </div>
@@ -335,65 +350,120 @@
 
 <section class="platform-split-section">
     <div class="section-container platform-split-grid">
+
         <div class="platform-split-left">
-            <span class="proof-badge">Comment fonctionne ApexSignals</span>
-            <h2>Une expérience structurée en plusieurs étapes simples</h2>
+            <span class="proof-badge">Comment fonctionne Velwolef</span>
+
+            <h2>Une expérience pensée pour simplifier la prise de décision</h2>
+
             <p>
-                Le visiteur comprend plus facilement le site lorsque chaque étape est claire :
-                choisir une offre, suivre les signaux, consulter les résultats et approfondir avec le Trading Lab.
+                Velwolef a été conçu pour transformer la complexité des marchés financiers
+                en une lecture claire, rapide et exploitable. Chaque étape guide l’utilisateur
+                de l’analyse jusqu’à l’action, dans une interface moderne et structurée.
+            </p>
+
+            <p>
+                L’objectif est simple : filtrer le bruit du marché, mettre en avant les
+                meilleures opportunités et offrir une vision professionnelle accessible.
             </p>
         </div>
 
         <div class="platform-steps">
+
             <div class="platform-step-card">
-                <strong>1. Choisir un accès</strong>
-                <span>Basic, Premium ou VIP selon le niveau de lecture et de profondeur souhaité.</span>
+                <strong>1. Accéder à la plateforme</strong>
+                <span>
+                    Choisissez votre niveau (Basic, Premium ou VIP) pour débloquer les
+                    signaux, analyses et outils selon votre profil.
+                </span>
             </div>
+
             <div class="platform-step-card">
-                <strong>2. Explorer les signaux</strong>
-                <span>Découvrir les actifs suivis, les catégories et les opportunités mises en avant.</span>
+                <strong>2. Identifier les opportunités</strong>
+                <span>
+                    Accédez aux signaux en temps réel avec des entrées, stop loss et
+                    take profit clairement définis sur les actifs majeurs.
+                </span>
             </div>
+
             <div class="platform-step-card">
-                <strong>3. Suivre les résultats</strong>
-                <span>Observer l’historique, les statistiques et la progression affichée sur la plateforme.</span>
+                <strong>3. Suivre la performance</strong>
+                <span>
+                    Analysez les résultats, le winrate et l’historique pour comprendre
+                    la dynamique globale et renforcer votre prise de décision.
+                </span>
             </div>
+
+            <div class="platform-step-card">
+                <strong>4. Monter en compétence</strong>
+                <span>
+                    Approfondissez votre compréhension avec le Trading Lab :
+                    gestion du risque, psychologie et logique des setups.
+                </span>
+            </div>
+
         </div>
     </div>
 </section>
-
 <section class="proof-section">
     <div class="section-container">
         <div class="proof-box">
+
             <div class="proof-left">
-                <span class="proof-badge">Trading Lab</span>
-                <h2>Une section qui donne de la profondeur au site</h2>
+                <span class="proof-badge">Velwolef Trading Lab</span>
+
+                <h2>Un environnement conçu pour comprendre et maîtriser le marché</h2>
+
                 <p>
-                    Le Trading Lab améliore fortement l’image du site. Il apporte un cadre plus expert,
-                    plus pédagogique et plus crédible sans copier la structure des autres plateformes.
+                    Le Trading Lab de Velwolef ne se limite pas à de simples explications.
+                    Il apporte une approche structurée du trading pour transformer
+                    l’intuition en décision rationnelle.
                 </p>
+
+                <p>
+                    Chaque contenu est pensé pour renforcer la compréhension des signaux,
+                    améliorer la gestion du risque et développer une lecture plus professionnelle
+                    des marchés.
+                </p>
+
                 <div class="hero-actions">
-                    <a href="{{ url_for('trading_lab') }}" class="hero-btn-primary">Découvrir le Trading Lab</a>
+                    <a href="{{ url_for('trading_lab') }}" class="hero-btn-primary">
+                        Accéder au Trading Lab
+                    </a>
                 </div>
             </div>
 
             <div class="proof-right">
+
                 <div class="proof-card">
                     <strong>Structure d’un signal</strong>
-                    <span>Comprendre les éléments clés d’un setup sans surcharger l’information.</span>
+                    <span>
+                        Comprendre précisément pourquoi une entrée est prise,
+                        comment sont définis les niveaux et ce qui valide un setup.
+                    </span>
                 </div>
+
                 <div class="proof-card">
                     <strong>Gestion du risque</strong>
-                    <span>Donner plus de sérieux à la plateforme grâce à une lecture disciplinée.</span>
+                    <span>
+                        Appliquer une approche disciplinée pour protéger le capital
+                        et optimiser le ratio risque / rendement.
+                    </span>
                 </div>
+
                 <div class="proof-card">
                     <strong>Lecture du marché</strong>
-                    <span>Apporter de la profondeur avec une logique de tendance, zone et timing.</span>
+                    <span>
+                        Identifier les tendances, zones clés et timings pour
+                        prendre des décisions plus cohérentes.
+                    </span>
                 </div>
+
             </div>
+
         </div>
     </div>
 </section>
-
 <section class="home-preview-links">
     <div class="section-container">
         <div class="section-title">
@@ -428,32 +498,21 @@
     </div>
 </section>
 
-<section class="section-standard">
+<section class="final-cta-section">
     <div class="section-container">
-        <div class="section-title">
-            <span>Pourquoi la plateforme paraît plus professionnelle</span>
-            <h2>Des détails qui changent totalement la perception du site</h2>
-        </div>
-
-        <div class="features-home-grid">
-            <div class="feature-home-card">
-                <h3>Navigation riche</h3>
-                <p>Une navbar avec menus déroulants, recherche et pages dédiées renforce la perception de sérieux.</p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Contenu réparti</h3>
-                <p>Chaque page a une fonction précise au lieu de tout concentrer sur l’accueil.</p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Lecture structurée</h3>
-                <p>Les sections courtes, lisibles et hiérarchisées donnent un rendu beaucoup plus premium.</p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Image de marque</h3>
-                <p>Le mélange entre dashboard, résultats, pages métiers et Trading Lab crée une vraie identité.</p>
+        <div class="final-cta-box">
+            <span class="final-cta-badge">Velwolef Premium</span>
+            <h2>Accédez à une expérience de trading plus claire, plus structurée et plus professionnelle</h2>
+            <p>
+                Rejoignez Velwolef pour suivre les signaux, analyser les performances,
+                accéder au Trading Lab et évoluer dans un environnement pensé pour la clarté
+                et la prise de décision.
+            </p>
+            <div class="final-cta-actions">
+                <a href="{{ url_for('pricing') }}" class="hero-btn-primary light-btn">Choisir mon offre</a>
+                {% if not current_user.is_authenticated %}
+                    <a href="{{ url_for('register') }}" class="hero-btn-secondary white-outline-btn">Créer mon compte</a>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -496,24 +555,7 @@
     </div>
 </section>
 
-<section class="final-cta-section">
-    <div class="section-container">
-        <div class="final-cta-box">
-            <span class="final-cta-badge">ApexSignals Premium</span>
-            <h2>Transforme une simple vitrine en vraie plateforme de trading</h2>
-            <p>
-                Signaux, résultats, Trading Lab, FAQ, contact et espace membre :
-                chaque page renforce l’image premium et la crédibilité du site.
-            </p>
-            <div class="final-cta-actions">
-                <a href="{{ url_for('pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>
-                {% if not current_user.is_authenticated %}
-                    <a href="{{ url_for('register') }}" class="hero-btn-secondary white-outline-btn">Créer mon compte</a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</section>
+
 
 <footer class="site-footer">
     <div class="section-container footer-inner">
