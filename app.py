@@ -1543,36 +1543,152 @@ def signals_btc():
 
 
 @app.route("/signals/eth")
-def signals_eth():
-    eth_signals = (
-        Signal.query
-        .filter_by(asset="ETHUSD")
-        .order_by(Signal.created_at.desc())
-        .limit(20)
-        .all()
-    )
+def eth_signals_page():
 
-    crypto = get_crypto_market_live()
-    eth = crypto.get("ethereum", {})
+    # =========================
+    # MARKET DATA (CoinGecko)
+    # =========================
+    try:
+        url = "https://api.coingecko.com/api/v3/simple/price"
+        params = {
+            "ids": "ethereum",
+            "vs_currencies": "usd",
+            "include_market_cap": "true",
+            "include_24hr_vol": "true",
+            "include_24hr_change": "true"
+        }
 
-    eth_price = format_price(eth.get("usd")) if eth.get("usd") else "..."
-    eth_change = round(eth.get("usd_24h_change", 0), 2) if eth.get("usd_24h_change") else "..."
-    eth_market_cap = format_big_number(eth.get("usd_market_cap"))
-    eth_volume = format_big_number(eth.get("usd_24h_vol"))
+        res = requests.get(url, params=params, timeout=10)
+        data = res.json().get("ethereum", {})
 
+        eth_price = round(data.get("usd", 0), 2)
+        eth_change_24h = round(data.get("usd_24h_change", 0), 2)
+        eth_volume_24h = round(data.get("usd_24h_vol", 0) / 1e9, 2)
+        eth_market_cap = round(data.get("usd_market_cap", 0) / 1e9, 2)
+
+    except:
+        eth_price = eth_change_24h = eth_volume_24h = eth_market_cap = None
+
+    # =========================
+    # HIGH / LOW 24H
+    # =========================
+    try:
+        url = "https://api.coingecko.com/api/v3/coins/ethereum"
+        res = requests.get(url, timeout=10)
+        market = res.json().get("market_data", {})
+
+        eth_high_24h = round(market["high_24h"]["usd"], 2)
+        eth_low_24h = round(market["low_24h"]["usd"], 2)
+
+    except:
+        eth_high_24h = eth_low_24h = None
+
+    # =========================
+    # TREND (simple logique)
+    # =========================
+    if eth_change_24h:
+        if eth_change_24h > 2:
+            eth_trend_label = "Haussier 📈"
+        elif eth_change_24h < -2:
+            eth_trend_label = "Baissier 📉"
+        else:
+            eth_trend_label = "Neutre"
+    else:
+        eth_trend_label = "Neutre"
+
+    # =========================
+    # VOLATILITY
+    # =========================
+    if eth_change_24h:
+        if abs(eth_change_24h) > 4:
+            eth_volatility_label = "Élevée ⚡"
+        elif abs(eth_change_24h) > 2:
+            eth_volatility_label = "Modérée"
+        else:
+            eth_volatility_label = "Faible"
+    else:
+        eth_volatility_label = "Modérée"
+
+    # =========================
+    # SUPPORT / RESISTANCE (simple)
+    # =========================
+    try:
+        eth_support_1 = round(eth_price * 0.97, 2)
+        eth_support_2 = round(eth_price * 0.94, 2)
+
+        eth_resistance_1 = round(eth_price * 1.03, 2)
+        eth_resistance_2 = round(eth_price * 1.06, 2)
+    except:
+        eth_support_1 = eth_support_2 = eth_resistance_1 = eth_resistance_2 = None
+
+    # =========================
+    # FEAR & GREED
+    # =========================
+    try:
+        fg = requests.get("https://api.alternative.me/fng/", timeout=10).json()
+        fg_data = fg["data"][0]
+
+        fear_greed_value = fg_data["value"]
+        fear_greed_classification = fg_data["value_classification"]
+
+    except:
+        fear_greed_value = None
+        fear_greed_classification = None
+
+    # =========================
+    # NEWS
+    # =========================
+    eth_news = get_asset_news("ETH")
+
+    # =========================
+    # SIGNALS DB
+    # =========================
+    eth_signals = Signal.query.filter_by(asset="ETHUSD").order_by(Signal.created_at.desc()).limit(10).all()
+
+    total = len(eth_signals)
+    wins = len([s for s in eth_signals if s.status == "WIN"])
+
+    eth_total_signals = total
+    eth_open_signals = len([s for s in eth_signals if s.status == "OPEN"])
+
+    eth_winrate = round((wins / total) * 100, 2) if total > 0 else 0
+
+    # PnL simple estimation
+    eth_estimated_pnl = wins * 2 - (total - wins)
+
+    # =========================
+    # RENDER
+    # =========================
     return render_template(
         "signals/eth.html",
-        eth_signals=eth_signals,
+
         eth_price=eth_price,
-        eth_change_24h=eth_change,
+        eth_change_24h=eth_change_24h,
+        eth_volume_24h=eth_volume_24h,
         eth_market_cap=eth_market_cap,
-        eth_volume_24h=eth_volume,
-        eth_news=get_asset_news("ETH"),
-        fear_greed=get_fear_greed_live()
-    )  
 
+        eth_high_24h=eth_high_24h,
+        eth_low_24h=eth_low_24h,
 
+        eth_trend_label=eth_trend_label,
+        eth_volatility_label=eth_volatility_label,
 
+        eth_support_1=eth_support_1,
+        eth_support_2=eth_support_2,
+        eth_resistance_1=eth_resistance_1,
+        eth_resistance_2=eth_resistance_2,
+
+        fear_greed_value=fear_greed_value,
+        fear_greed_classification=fear_greed_classification,
+
+        eth_news=eth_news,
+
+        eth_signals=eth_signals,
+        eth_total_signals=eth_total_signals,
+        eth_open_signals=eth_open_signals,
+        eth_winrate=eth_winrate,
+        eth_estimated_pnl=eth_estimated_pnl
+    )
 @app.route("/signals/gold")
 def signals_gold():
     gold_signals = (

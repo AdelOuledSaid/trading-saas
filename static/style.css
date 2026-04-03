@@ -57,10 +57,10 @@ body.home-body {
     font-family: Inter, Arial, sans-serif;
     color: var(--text-soft);
     background:
-        radial-gradient(circle at 12% 14%, rgba(37, 99, 235, 0.10), transparent 20%),
-        radial-gradient(circle at 88% 12%, rgba(124, 58, 237, 0.08), transparent 20%),
-        radial-gradient(circle at 52% 82%, rgba(6, 182, 212, 0.06), transparent 24%),
-        linear-gradient(180deg, var(--bg-body) 0%, var(--bg-body-2) 100%);
+        radial-gradient(circle at 10% 12%, rgba(37, 99, 235, 0.08), transparent 22%),
+        radial-gradient(circle at 86% 10%, rgba(124, 58, 237, 0.07), transparent 22%),
+        radial-gradient(circle at 50% 86%, rgba(6, 182, 212, 0.05), transparent 24%),
+        linear-gradient(180deg, #f8fbff 0%, #eef3fb 100%);
     position: relative;
 }
 
@@ -84,16 +84,15 @@ body.home-body::after,
 body.dashboard-body::after {
     content: "";
     position: fixed;
-    top: -80px;
-    right: -180px;
-    width: 980px;
-    height: 980px;
+    top: 130px;
+    right: -120px;
+    width: 760px;
+    height: 760px;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.18;
-    background:
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1000' height='1000' viewBox='0 0 1000 1000'><g fill='none' stroke='%2394a3b8' stroke-width='1.2'><path d='M120 500C220 190 780 190 880 500C780 810 220 810 120 500Z'/><path d='M155 500C245 225 755 225 845 500C755 775 245 775 155 500Z'/><path d='M190 500C270 260 730 260 810 500C730 740 270 740 190 500Z'/><path d='M225 500C295 295 705 295 775 500C705 705 295 705 225 500Z'/><path d='M260 500C320 330 680 330 740 500C680 670 320 670 260 500Z'/><path d='M295 500C345 365 655 365 705 500C655 635 345 635 295 500Z'/></g></svg>")
-        no-repeat center / contain;
+    opacity: 0.055;
+    background: url("/static/wolf-bg.png") no-repeat center;
+    background-size: contain;
 }
 
 a {
@@ -239,8 +238,8 @@ select {
 ========================= */
 .nav-dropdown {
     position: relative;
-    padding-bottom: 18px;
-    margin-bottom: -18px;
+    padding-bottom: 22px;
+    margin-bottom: -22px;
 }
 
 .nav-drop-btn span {
@@ -266,6 +265,7 @@ select {
     pointer-events: none;
     transition: all 0.18s ease;
     z-index: 2000;
+    margin-top: 2px;
 }
 
 .nav-dropdown:hover .nav-dropdown-menu,
@@ -294,12 +294,32 @@ select {
     font-weight: 700;
     line-height: 1.35;
     transition: all 0.18s ease;
+    position: relative;
+    overflow: hidden;
 }
 
 .nav-dropdown-menu a:hover {
     background: linear-gradient(135deg, #f8fbff, #f4f7ff);
     color: var(--text-main);
     transform: translateX(3px);
+}
+
+.nav-dropdown-menu a::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(37,99,235,0.06), rgba(124,58,237,0.05));
+    opacity: 0;
+    transition: 0.2s ease;
+}
+
+.nav-dropdown-menu a:hover::before {
+    opacity: 1;
+}
+
+.nav-dropdown-menu a > * {
+    position: relative;
+    z-index: 1;
 }
 
 /* =========================
@@ -339,6 +359,8 @@ select {
     color: var(--text-main);
     font-size: 14px;
     padding: 8px 0;
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 .nav-search input::placeholder {
@@ -470,6 +492,8 @@ select {
     visibility: hidden;
     pointer-events: none;
     transition: all 0.25s ease;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
 }
 
 .mobile-menu.active {
@@ -506,6 +530,10 @@ select {
     text-align: center;
 }
 
+.mobile-menu .cta-btn {
+    width: 100%;
+}
+
 /* =========================
    HOME HERO
 ========================= */
@@ -514,6 +542,37 @@ select {
     overflow: hidden;
     padding: 86px 0 74px;
     z-index: 1;
+    isolation: isolate;
+}
+
+.home-hero::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -70px;
+    width: 620px;
+    height: 620px;
+    transform: translateY(-50%);
+    background: url("/static/wolf-bg.png") no-repeat center;
+    background-size: contain;
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: 0;
+    filter: grayscale(1) saturate(0.8);
+}
+
+.home-hero::after {
+    content: "";
+    position: absolute;
+    top: 40px;
+    right: 140px;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(59,130,246,0.10), transparent 72%);
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(4px);
 }
 
 .hero-bg-orb {
@@ -525,19 +584,19 @@ select {
 }
 
 .hero-bg-orb-1 {
-    width: 260px;
-    height: 260px;
-    top: 10%;
-    right: 18%;
-    background: radial-gradient(circle, rgba(37, 99, 235, 0.16), transparent 70%);
+    width: 240px;
+    height: 240px;
+    top: 8%;
+    right: 22%;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.11), transparent 70%);
 }
 
 .hero-bg-orb-2 {
-    width: 240px;
-    height: 240px;
-    bottom: 4%;
-    left: 44%;
-    background: radial-gradient(circle, rgba(124, 58, 237, 0.14), transparent 70%);
+    width: 220px;
+    height: 220px;
+    bottom: 6%;
+    left: 42%;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.10), transparent 70%);
 }
 
 .hero-container {
@@ -655,15 +714,15 @@ select {
     max-width: 560px;
     position: relative;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.80);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(148, 163, 184, 0.20);
     border-radius: 30px;
     padding: 26px;
     box-shadow:
-        0 20px 60px rgba(15, 23, 42, 0.08),
-        0 8px 24px rgba(15, 23, 42, 0.05);
+        0 24px 70px rgba(15, 23, 42, 0.08),
+        0 10px 28px rgba(15, 23, 42, 0.05);
 }
 
 .main-preview-card::before {
@@ -2230,6 +2289,7 @@ select {
     border: 1px solid var(--border);
     border-radius: 22px;
     box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(10px);
 }
 
 .btc-signals-table {
@@ -2257,6 +2317,14 @@ select {
 
 .btc-signals-table tbody tr:hover {
     background: rgba(248, 251, 255, 0.8);
+}
+
+.btc-signals-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.btc-signals-table tbody td:first-child {
+    white-space: nowrap;
 }
 
 .empty-table-cell {
@@ -2356,254 +2424,8 @@ select {
 }
 
 /* =========================
-   RESPONSIVE
-========================= */
-@media (max-width: 1280px) {
-    .nav-search {
-        min-width: 250px;
-    }
-}
-
-@media (max-width: 1150px) {
-    .nav-links {
-        gap: 18px;
-    }
-
-    .nav-search {
-        min-width: 210px;
-    }
-}
-
-@media (max-width: 1100px) {
-    .hero-container,
-    .auth-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .home-stats-grid,
-    .markets-grid,
-    .market-updates-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .hero-right {
-        margin-top: 10px;
-    }
-}
-
-@media (max-width: 1050px) {
-    .nav-links,
-    .nav-right {
-        display: none;
-    }
-
-    .burger {
-        display: flex;
-    }
-}
-
-@media (max-width: 1024px) {
-    .navbar {
-        padding: 14px 18px;
-    }
-
-    .logo-pro img {
-        height: 42px;
-        max-width: 170px;
-    }
-}
-
-@media (max-width: 900px) {
-    .pricing-grid,
-    .home-stats-grid,
-    .markets-grid,
-    .panel-grid,
-    .features-home-grid,
-    .responsive-three-cols,
-    .platform-split-grid,
-    .contact-grid,
-    .preview-links-grid,
-    .proof-box,
-    .market-updates-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .premium-banner {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .proof-box {
-        padding: 24px;
-    }
-
-    .proof-left h2,
-    .platform-split-left h2 {
-        font-size: 30px;
-    }
-
-    .featured-card {
-        transform: none;
-    }
-
-    .inner-page-title {
-        font-size: 38px;
-    }
-
-    .market-updates-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-}
-
-@media (max-width: 768px) {
-    .home-hero {
-        padding: 46px 0 30px;
-    }
-
-    .hero-left h1,
-    .auth-title,
-    .success-card h1 {
-        font-size: 40px;
-        line-height: 1.06;
-    }
-
-    .hero-text,
-    .auth-text,
-    .success-text,
-    .inner-page-text {
-        font-size: 16px;
-    }
-
-    .hero-actions,
-    .final-cta-actions,
-    .success-actions {
-        flex-direction: column;
-    }
-
-    .hero-btn-primary,
-    .hero-btn-secondary {
-        width: 100%;
-    }
-
-    .signal-infos {
-        grid-template-columns: 1fr;
-    }
-
-    .section-title h2,
-    .final-cta-box h2,
-    .pricing-header h1,
-    .market-updates-header h2 {
-        font-size: 30px;
-    }
-
-    .dashboard-wrapper {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .main-content {
-        padding: 16px;
-    }
-
-    .topbar {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .topbar h1 {
-        font-size: 30px;
-    }
-
-    .hero-trust-row {
-        flex-direction: column;
-    }
-
-    .trust-mini {
-        width: 100%;
-    }
-
-    .footer-inner {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .auth-section,
-    .success-section {
-        padding: 40px 0;
-    }
-
-    .auth-card,
-    .success-card {
-        padding: 24px 20px;
-        border-radius: 22px;
-    }
-}
-
-@media (max-width: 640px) {
-    .mobile-menu {
-        left: 12px;
-        right: 12px;
-        top: 74px;
-        padding: 16px;
-        border-radius: 20px;
-    }
-
-    .mobile-menu a {
-        font-size: 14px;
-    }
-
-    .main-preview-card {
-        padding: 18px;
-        border-radius: 24px;
-    }
-
-    .signal-mini-chart {
-        min-height: 220px;
-    }
-}
-
-@media (max-width: 480px) {
-    .hero-left h1,
-    .auth-title,
-    .success-card h1 {
-        font-size: 34px;
-    }
-
-    .section-title h2,
-    .final-cta-box h2,
-    .pricing-header h1,
-    .inner-page-title {
-        font-size: 26px;
-    }
-
-    .auth-form-header h2 {
-        font-size: 28px;
-    }
-
-    .preview-top h3 {
-        font-size: 22px;
-    }
-
-    .pricing-page {
-        padding-left: 16px;
-        padding-right: 16px;
-    }
-
-    .market-news-card h3 a {
-        font-size: 18px;
-    }
-}
-/* =========================
    NAVBAR EXTRA FIX
 ========================= */
-
-/* Pour le dernier menu à droite */
 .nav-dropdown-menu-right {
     left: auto;
     right: 0;
@@ -2615,62 +2437,9 @@ select {
     transform: translateY(0);
 }
 
-/* Meilleure zone de survol pour éviter que le menu disparaisse */
-.nav-dropdown {
-    position: relative;
-    padding-bottom: 22px;
-    margin-bottom: -22px;
-}
-
-.nav-dropdown-menu {
-    margin-top: 2px;
-}
-
-/* Effet plus premium sur liens du menu desktop */
-.nav-dropdown-menu a {
-    position: relative;
-    overflow: hidden;
-}
-
-.nav-dropdown-menu a::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, rgba(37,99,235,0.06), rgba(124,58,237,0.05));
-    opacity: 0;
-    transition: 0.2s ease;
-}
-
-.nav-dropdown-menu a:hover::before {
-    opacity: 1;
-}
-
-.nav-dropdown-menu a > * {
-    position: relative;
-    z-index: 1;
-}
-
-/* Mobile menu un peu plus premium */
-.mobile-menu {
-    max-height: calc(100vh - 100px);
-    overflow-y: auto;
-}
-
-.mobile-menu .cta-btn {
-    width: 100%;
-}
-
-/* Recherche plus propre sur petits écrans si un jour tu la gardes visible */
-.nav-search input {
-    appearance: none;
-    -webkit-appearance: none;
-}
-
-
 /* =========================
    DASHBOARD PREMIUM EXTRA
 ========================= */
-
 .premium-sidebar {
     position: relative;
     overflow: hidden;
@@ -3003,50 +2772,9 @@ select {
     flex-wrap: wrap;
 }
 
-@media (max-width: 1100px) {
-    .dashboard-strip-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .dashboard-bottom-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 900px) {
-    .signal-box-premium {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 768px) {
-    .premium-banner-actions,
-    .dashboard-final-actions {
-        flex-direction: column;
-    }
-
-    .premium-banner-actions a,
-    .dashboard-final-actions a {
-        width: 100%;
-    }
-
-    .dashboard-strip-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .premium-banner-text h3 {
-        font-size: 24px;
-    }
-
-    .dashboard-final-panel h2 {
-        font-size: 24px;
-    }
-}
-
 /* =========================
    HERO CHART FINAL UPGRADE
 ========================= */
-
 .trading-chart-pro {
     position: relative;
     min-height: 270px;
@@ -3128,7 +2856,6 @@ select {
 /* =========================
    BITCOIN PAGE PREMIUM
 ========================= */
-
 .btc-hero {
     padding-top: 74px;
     padding-bottom: 42px;
@@ -3197,7 +2924,6 @@ select {
 /* =========================
    BTC CHART LAYOUT
 ========================= */
-
 .btc-chart-layout {
     display: grid;
     grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.55fr);
@@ -3287,7 +3013,6 @@ select {
 /* =========================
    BTC TIMELINE
 ========================= */
-
 .timeline-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -3353,7 +3078,6 @@ select {
 /* =========================
    FAQ GRID BTC
 ========================= */
-
 .faq-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -3390,29 +3114,12 @@ select {
 }
 
 /* =========================
-   BTC TABLE EXTRA POLISH
+   BTC PAGE SMALL VISUAL UPGRADES
 ========================= */
-
-.btc-signals-table-wrap {
-    backdrop-filter: blur(10px);
-}
-
-.btc-signals-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.btc-signals-table tbody td:first-child {
-    white-space: nowrap;
-}
-
 .text-sell {
     color: var(--red) !important;
     font-weight: 900;
 }
-
-/* =========================
-   BTC PAGE SMALL VISUAL UPGRADES
-========================= */
 
 .btc-hero .inner-page-title {
     max-width: 980px;
@@ -3436,11 +3143,67 @@ select {
     border-radius: 18px;
 }
 
+.btc-badge {
+    gap: 10px;
+}
+
+.btc-badge-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    color: #fff;
+    font-weight: 900;
+    font-size: 16px;
+    box-shadow: 0 8px 18px rgba(245, 158, 11, 0.22);
+}
+
 /* =========================
-   RESPONSIVE BITCOIN PAGE
+   RESPONSIVE
 ========================= */
+@media (max-width: 1280px) {
+    .nav-search {
+        min-width: 250px;
+    }
+}
+
+@media (max-width: 1150px) {
+    .nav-links {
+        gap: 18px;
+    }
+
+    .nav-search {
+        min-width: 210px;
+    }
+}
 
 @media (max-width: 1100px) {
+    .hero-container,
+    .auth-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .home-stats-grid,
+    .markets-grid,
+    .market-updates-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hero-right {
+        margin-top: 10px;
+    }
+
+    .dashboard-strip-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dashboard-bottom-grid {
+        grid-template-columns: 1fr;
+    }
+
     .btc-hero-grid,
     .btc-chart-layout,
     .timeline-grid {
@@ -3450,11 +3213,91 @@ select {
     .btc-hero-right {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    body.home-body::after,
+    body.dashboard-body::after {
+        width: 520px;
+        height: 520px;
+        right: -120px;
+        top: 160px;
+        opacity: 0.04;
+    }
+
+    .home-hero::before {
+        width: 460px;
+        height: 460px;
+        right: -90px;
+        opacity: 0.04;
+    }
+}
+
+@media (max-width: 1050px) {
+    .nav-links,
+    .nav-right {
+        display: none;
+    }
+
+    .burger {
+        display: flex;
+    }
+}
+
+@media (max-width: 1024px) {
+    .navbar {
+        padding: 14px 18px;
+    }
+
+    .logo-pro img {
+        height: 42px;
+        max-width: 170px;
+    }
 }
 
 @media (max-width: 900px) {
+    .pricing-grid,
+    .home-stats-grid,
+    .markets-grid,
+    .panel-grid,
+    .features-home-grid,
+    .responsive-three-cols,
+    .platform-split-grid,
+    .contact-grid,
+    .preview-links-grid,
+    .proof-box,
+    .market-updates-grid,
     .faq-grid,
     .btc-hero-right {
+        grid-template-columns: 1fr;
+    }
+
+    .premium-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .proof-box {
+        padding: 24px;
+    }
+
+    .proof-left h2,
+    .platform-split-left h2 {
+        font-size: 30px;
+    }
+
+    .featured-card {
+        transform: none;
+    }
+
+    .inner-page-title {
+        font-size: 38px;
+    }
+
+    .market-updates-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .signal-box-premium {
         grid-template-columns: 1fr;
     }
 
@@ -3472,6 +3315,111 @@ select {
 }
 
 @media (max-width: 768px) {
+    .home-hero {
+        padding: 46px 0 30px;
+    }
+
+    .hero-left h1,
+    .auth-title,
+    .success-card h1 {
+        font-size: 40px;
+        line-height: 1.06;
+    }
+
+    .hero-text,
+    .auth-text,
+    .success-text,
+    .inner-page-text {
+        font-size: 16px;
+    }
+
+    .hero-actions,
+    .final-cta-actions,
+    .success-actions,
+    .premium-banner-actions,
+    .dashboard-final-actions {
+        flex-direction: column;
+    }
+
+    .hero-btn-primary,
+    .hero-btn-secondary,
+    .btc-hero .hero-btn-primary,
+    .btc-hero .hero-btn-secondary,
+    .premium-banner-actions a,
+    .dashboard-final-actions a {
+        width: 100%;
+    }
+
+    .signal-infos {
+        grid-template-columns: 1fr;
+    }
+
+    .section-title h2,
+    .final-cta-box h2,
+    .pricing-header h1,
+    .market-updates-header h2 {
+        font-size: 30px;
+    }
+
+    .dashboard-wrapper {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .main-content {
+        padding: 16px;
+    }
+
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .topbar h1 {
+        font-size: 30px;
+    }
+
+    .hero-trust-row {
+        flex-direction: column;
+    }
+
+    .trust-mini {
+        width: 100%;
+    }
+
+    .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .auth-section,
+    .success-section {
+        padding: 40px 0;
+    }
+
+    .auth-card,
+    .success-card {
+        padding: 24px 20px;
+        border-radius: 22px;
+    }
+
+    .dashboard-strip-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .premium-banner-text h3 {
+        font-size: 24px;
+    }
+
+    .dashboard-final-panel h2 {
+        font-size: 24px;
+    }
+
     .btc-hero {
         padding-top: 50px;
         padding-bottom: 20px;
@@ -3490,14 +3438,75 @@ select {
         font-size: 18px;
     }
 
-    .btc-hero .hero-btn-primary,
-    .btc-hero .hero-btn-secondary {
-        width: 100%;
-        min-width: 0;
+    body.home-body::after,
+    body.dashboard-body::after {
+        width: 340px;
+        height: 340px;
+        right: -90px;
+        top: 180px;
+        opacity: 0.03;
+    }
+
+    .home-hero::before,
+    .home-hero::after {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .mobile-menu {
+        left: 12px;
+        right: 12px;
+        top: 74px;
+        padding: 16px;
+        border-radius: 20px;
+    }
+
+    .mobile-menu a {
+        font-size: 14px;
+    }
+
+    .main-preview-card {
+        padding: 18px;
+        border-radius: 24px;
+    }
+
+    .signal-mini-chart {
+        min-height: 220px;
     }
 }
 
 @media (max-width: 480px) {
+    .hero-left h1,
+    .auth-title,
+    .success-card h1 {
+        font-size: 34px;
+    }
+
+    .section-title h2,
+    .final-cta-box h2,
+    .pricing-header h1,
+    .inner-page-title {
+        font-size: 26px;
+    }
+
+    .auth-form-header h2 {
+        font-size: 28px;
+    }
+
+    .preview-top h3 {
+        font-size: 22px;
+    }
+
+    .pricing-page {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .market-news-card h3 a {
+        font-size: 18px;
+    }
+
     .mini-market-card,
     .btc-info-card,
     .timeline-card,
@@ -3509,21 +3518,401 @@ select {
         padding: 10px;
     }
 }
-
-.btc-badge {
-    gap: 10px;
+/* =========================
+   HERO PHONE PREVIEW
+========================= */
+.hero-phone-scene {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    min-height: 640px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.btc-badge-icon {
-    width: 28px;
+.phone-shell {
+    position: relative;
+    width: 330px;
+    max-width: 100%;
+    border-radius: 42px;
+    padding: 12px;
+    background:
+        linear-gradient(145deg, #111827, #0f172a 55%, #1e293b);
+    box-shadow:
+        0 35px 80px rgba(15, 23, 42, 0.24),
+        0 18px 34px rgba(15, 23, 42, 0.18),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.10);
+    transform: rotate(5deg);
+    z-index: 2;
+}
+
+.phone-shell::before {
+    content: "";
+    position: absolute;
+    inset: -14px;
+    border-radius: 52px;
+    background: radial-gradient(circle at 30% 20%, rgba(59,130,246,0.12), transparent 40%);
+    filter: blur(20px);
+    z-index: -1;
+}
+
+.phone-notch {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 122px;
     height: 28px;
-    border-radius: 50%;
+    background: #0b1220;
+    border-radius: 0 0 18px 18px;
+    z-index: 4;
+    box-shadow: inset 0 -1px 0 rgba(255,255,255,0.05);
+}
+
+.phone-screen {
+    position: relative;
+    overflow: hidden;
+    min-height: 610px;
+    border-radius: 32px;
+    padding: 46px 16px 16px;
+    background:
+        radial-gradient(circle at top right, rgba(124,58,237,0.10), transparent 28%),
+        radial-gradient(circle at top left, rgba(37,99,235,0.12), transparent 24%),
+        linear-gradient(180deg, #f8fbff 0%, #eef3fb 100%);
+    border: 1px solid rgba(255,255,255,0.10);
+}
+
+.phone-screen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+    background-size: 26px 26px;
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.phone-screen-top,
+.mobile-price-card,
+.mobile-stats-grid,
+.mobile-watchlist-card,
+.mobile-bottom-nav {
+    position: relative;
+    z-index: 2;
+}
+
+.phone-screen-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.phone-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.phone-screen-top h3 {
+    color: var(--text-main);
+    font-size: 26px;
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+}
+
+.mobile-price-card {
+    padding: 16px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.78);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    box-shadow: 0 18px 36px rgba(15, 23, 42, 0.06);
+    backdrop-filter: blur(10px);
+    margin-bottom: 14px;
+}
+
+.mobile-price-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.mobile-price-head span {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.mobile-price-head strong {
+    color: var(--text-main);
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.mobile-price-main {
+    margin-bottom: 10px;
+}
+
+.mobile-price-main h4 {
+    color: var(--text-main);
+    font-size: 34px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 6px;
+}
+
+.mobile-price-main span {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.mobile-chart-mini {
+    min-height: 160px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(248,250,252,0.94), rgba(241,245,249,0.92));
+    border: 1px solid rgba(148,163,184,0.14);
+}
+
+.mobile-chart-mini svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.mobile-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.mobile-stat-box {
+    background: rgba(255,255,255,0.82);
+    border: 1px solid rgba(148,163,184,0.16);
+    border-radius: 18px;
+    padding: 14px;
+    box-shadow: 0 10px 22px rgba(15,23,42,0.04);
+}
+
+.mobile-stat-box span {
+    display: block;
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+.mobile-stat-box strong {
+    color: var(--text-main);
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.mobile-watchlist-card {
+    background: rgba(255,255,255,0.80);
+    border: 1px solid rgba(148,163,184,0.16);
+    border-radius: 20px;
+    padding: 14px;
+    box-shadow: 0 12px 24px rgba(15,23,42,0.04);
+    margin-bottom: 16px;
+}
+
+.mobile-card-title {
+    color: var(--text-main);
+    font-size: 14px;
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+
+.mobile-watch-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(226,232,240,0.9);
+}
+
+.mobile-watch-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.mobile-watch-item span {
+    color: var(--text-soft);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.mobile-watch-item strong {
+    color: var(--text-main);
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.mobile-bottom-nav {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.mobile-nav-pill {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #f59e0b, #f97316);
-    color: #fff;
+    padding: 9px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.86);
+    border: 1px solid rgba(148,163,184,0.18);
+    color: var(--text-soft);
+    font-size: 12px;
+    font-weight: 800;
+    transition: var(--transition);
+}
+
+.mobile-nav-pill.active,
+.mobile-nav-pill:hover {
+    background: linear-gradient(135deg, #eff6ff, #f3e8ff);
+    color: var(--text-main);
+    transform: translateY(-1px);
+}
+
+.floating-badge,
+.floating-profit-card {
+    position: absolute;
+    z-index: 3;
+    background: rgba(255,255,255,0.84);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    box-shadow: 0 18px 38px rgba(15, 23, 42, 0.08);
+}
+
+.floating-badge {
+    top: 56px;
+    left: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 999px;
+    color: var(--text-main);
+    font-size: 13px;
     font-weight: 900;
-    font-size: 16px;
-    box-shadow: 0 8px 18px rgba(245, 158, 11, 0.22);
+}
+
+.floating-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 12px rgba(34,197,94,0.7);
+    flex-shrink: 0;
+}
+
+.floating-profit-card {
+    right: 6px;
+    bottom: 58px;
+    min-width: 180px;
+    padding: 16px;
+    border-radius: 22px;
+}
+
+.floating-profit-card small {
+    display: block;
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.floating-profit-card strong {
+    display: block;
+    color: var(--green);
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.floating-profit-card span {
+    display: block;
+    color: var(--text-soft);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* =========================
+   PHONE RESPONSIVE
+========================= */
+@media (max-width: 1100px) {
+    .hero-phone-scene {
+        min-height: 560px;
+    }
+
+    .floating-badge {
+        left: 0;
+        top: 28px;
+    }
+
+    .floating-profit-card {
+        right: 0;
+        bottom: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-phone-scene {
+        min-height: auto;
+        padding-top: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .phone-shell {
+        width: 300px;
+        transform: rotate(0deg);
+    }
+
+    .floating-badge,
+    .floating-profit-card {
+        position: static;
+    }
+
+    .floating-profit-card {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .phone-shell {
+        width: 280px;
+    }
+
+    .phone-screen {
+        min-height: 560px;
+        padding: 42px 14px 14px;
+    }
+
+    .phone-screen-top h3 {
+        font-size: 22px;
+    }
+
+    .mobile-price-main h4 {
+        font-size: 30px;
+    }
+
+    .mobile-stats-grid {
+        grid-template-columns: 1fr;
+    }
 }

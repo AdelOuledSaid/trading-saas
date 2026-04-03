@@ -54,117 +54,123 @@
         </div>
 
         <div class="hero-right">
-            <div class="main-preview-card">
-                <div class="preview-glow preview-glow-1"></div>
-                <div class="preview-glow preview-glow-2"></div>
+            <div class="hero-phone-scene">
 
-                <div class="preview-top">
-                    <div>
-                        <p class="preview-label">Signal en vedette</p>
-                        <h3>BTCUSD • BUY</h3>
-                    </div>
-                    <span class="signal-status buy">Actif</span>
+                <div class="floating-badge floating-badge-top">
+                    <span class="floating-dot"></span>
+                    Signal actif
                 </div>
 
-                <div class="signal-mini-chart premium-chart trading-chart-pro">
-    <div class="chart-topbar">
-        <span class="chart-market">BTCUSD</span>
-        <span class="chart-timeframe">1H • Momentum haussier</span>
-    </div>
+                <div class="floating-profit-card">
+                    <small>Performance semaine</small>
+                    <strong>+2.4%</strong>
+                    <span>Biais haussier maintenu</span>
+                </div>
 
-    <svg viewBox="0 0 560 260" width="100%" height="250" aria-label="Graphique BTCUSD premium">
-        <defs>
-            <linearGradient id="areaFill" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#4f7cff" stop-opacity="0.28"/>
-                <stop offset="100%" stop-color="#4f7cff" stop-opacity="0.02"/>
-            </linearGradient>
+                <div class="phone-shell">
+                    <div class="phone-notch"></div>
 
-            <linearGradient id="mainLine" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#22c55e"/>
-                <stop offset="50%" stop-color="#3b82f6"/>
-                <stop offset="100%" stop-color="#7c3aed"/>
-            </linearGradient>
+                    <div class="phone-screen">
+                        <div class="phone-screen-top">
+                            <div>
+                                <p class="phone-label">ApexSignals Mobile</p>
+                                <h3>BTCUSD • BUY</h3>
+                            </div>
+                            <span class="signal-status buy">Actif</span>
+                        </div>
 
-            <filter id="glowStrong" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="4" result="blur"></feGaussianBlur>
-                <feMerge>
-                    <feMergeNode in="blur"></feMergeNode>
-                    <feMergeNode in="SourceGraphic"></feMergeNode>
-                </feMerge>
-            </filter>
-        </defs>
+                        <div class="mobile-price-card">
+                            <div class="mobile-price-head">
+                                <span>Signal prioritaire</span>
+                                <strong>Bitcoin</strong>
+                            </div>
 
-        <!-- horizontal guide -->
-        <g opacity="0.16">
-            <line x1="26" y1="50" x2="534" y2="50" stroke="#94a3b8" stroke-width="1"/>
-            <line x1="26" y1="95" x2="534" y2="95" stroke="#94a3b8" stroke-width="1"/>
-            <line x1="26" y1="140" x2="534" y2="140" stroke="#94a3b8" stroke-width="1"/>
-            <line x1="26" y1="185" x2="534" y2="185" stroke="#94a3b8" stroke-width="1"/>
-            <line x1="26" y1="230" x2="534" y2="230" stroke="#94a3b8" stroke-width="1"/>
-        </g>
+                            <div class="mobile-price-main">
+                                <h4>61 240</h4>
+                                <span>Entrée optimale</span>
+                            </div>
 
-        <!-- area -->
-        <path
-            d="M40 190
-               C90 182, 110 170, 145 162
-               C185 154, 210 150, 245 138
-               C285 124, 315 114, 350 104
-               C390 94, 420 78, 455 68
-               C485 60, 510 56, 525 52
-               L525 236
-               L40 236 Z"
-            fill="url(#areaFill)">
-        </path>
+                            <div class="mobile-chart-mini">
+                                <svg viewBox="0 0 300 160" width="100%" height="160" aria-label="Aperçu mobile BTCUSD">
+                                    <defs>
+                                        <linearGradient id="mobileLine" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stop-color="#22c55e"/>
+                                            <stop offset="55%" stop-color="#3b82f6"/>
+                                            <stop offset="100%" stop-color="#7c3aed"/>
+                                        </linearGradient>
 
-        <!-- line -->
-        <path
-            d="M40 190
-               C90 182, 110 170, 145 162
-               C185 154, 210 150, 245 138
-               C285 124, 315 114, 350 104
-               C390 94, 420 78, 455 68
-               C485 60, 510 56, 525 52"
-            fill="none"
-            stroke="url(#mainLine)"
-            stroke-width="6"
-            stroke-linecap="round"
-            filter="url(#glowStrong)">
-        </path>
+                                        <linearGradient id="mobileArea" x1="0%" y1="0%" x2="0%" y2="100%">
+                                            <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.24"/>
+                                            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.02"/>
+                                        </linearGradient>
+                                    </defs>
 
-        <!-- current price line -->
-        <line x1="455" y1="24" x2="455" y2="236" stroke="#3b82f6" stroke-dasharray="5 6" stroke-width="2" opacity="0.35"/>
+                                    <path
+                                        d="M18 122
+                                           C45 120, 64 110, 86 104
+                                           C112 96, 130 92, 154 80
+                                           C180 68, 202 58, 226 48
+                                           C246 40, 265 34, 282 28
+                                           L282 146
+                                           L18 146 Z"
+                                        fill="url(#mobileArea)">
+                                    </path>
 
-        <!-- dots -->
-        <circle cx="145" cy="162" r="8" fill="#ffffff" stroke="#3b82f6" stroke-width="3"/>
-        <circle cx="350" cy="104" r="8" fill="#ffffff" stroke="#3b82f6" stroke-width="3"/>
-        <circle cx="455" cy="68" r="11" fill="#ffffff" stroke="#2563eb" stroke-width="4"/>
+                                    <path
+                                        d="M18 122
+                                           C45 120, 64 110, 86 104
+                                           C112 96, 130 92, 154 80
+                                           C180 68, 202 58, 226 48
+                                           C246 40, 265 34, 282 28"
+                                        fill="none"
+                                        stroke="url(#mobileLine)"
+                                        stroke-width="6"
+                                        stroke-linecap="round">
+                                    </path>
 
-        <!-- price tag -->
-        <rect x="430" y="34" rx="10" ry="10" width="86" height="26" fill="#0f172a" opacity="0.92"/>
-        <text x="473" y="52" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">62 180</text>
-    </svg>
-</div>
+                                    <circle cx="86" cy="104" r="6" fill="#fff" stroke="#3b82f6" stroke-width="3"/>
+                                    <circle cx="154" cy="80" r="6" fill="#fff" stroke="#3b82f6" stroke-width="3"/>
+                                    <circle cx="226" cy="48" r="7" fill="#fff" stroke="#2563eb" stroke-width="4"/>
+                                </svg>
+                            </div>
+                        </div>
 
-                <div class="signal-infos">
-                    <div class="signal-info-box">
-                        <span>Entrée</span>
-                        <strong>61 240</strong>
-                    </div>
-                    <div class="signal-info-box">
-                        <span>Take Profit</span>
-                        <strong>62 180</strong>
-                    </div>
-                    <div class="signal-info-box">
-                        <span>Stop Loss</span>
-                        <strong>60 780</strong>
+                        <div class="mobile-stats-grid">
+                            <div class="mobile-stat-box">
+                                <span>TP</span>
+                                <strong>62 180</strong>
+                            </div>
+                            <div class="mobile-stat-box">
+                                <span>SL</span>
+                                <strong>60 780</strong>
+                            </div>
+                        </div>
+
+                        <div class="mobile-watchlist-card">
+                            <div class="mobile-card-title">Watchlist</div>
+
+                            <div class="mobile-watch-item">
+                                <span>BTC</span>
+                                <strong class="text-buy">+1.82%</strong>
+                            </div>
+                            <div class="mobile-watch-item">
+                                <span>Gold</span>
+                                <strong>Stable</strong>
+                            </div>
+                            <div class="mobile-watch-item">
+                                <span>US100</span>
+                                <strong class="text-buy">+0.94%</strong>
+                            </div>
+                        </div>
+
+                        <div class="mobile-bottom-nav">
+                            <a href="{{ url_for('signals_btc') }}" class="mobile-nav-pill active">Bitcoin</a>
+                            <a href="{{ url_for('signals_gold') }}" class="mobile-nav-pill">Gold</a>
+                            <a href="{{ url_for('signals_us100') }}" class="mobile-nav-pill">US100</a>
+                        </div>
                     </div>
                 </div>
 
-                <div class="asset-row">
-                    <a href="{{ url_for('signals_btc') }}" class="asset-pill">Bitcoin</a>
-                    <a href="{{ url_for('signals_gold') }}" class="asset-pill">Gold</a>
-                    <a href="{{ url_for('signals_us100') }}" class="asset-pill">US100</a>
-                </div>
             </div>
         </div>
     </div>
