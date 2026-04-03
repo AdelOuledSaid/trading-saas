@@ -543,17 +543,37 @@ select {
 .home-hero::before {
     content: "";
     position: absolute;
-    top: 50%;
-    right: -20px;
-    width: 780px;
-    height: 780px;
-    transform: translateY(-50%);
-    background: url("/static/wolf-bg.png") no-repeat center;
-    background-size: contain;
-    opacity: 0.09;
+    right: -60px;
+    top: 40px;
+    width: 720px;
+    height: 500px;
     pointer-events: none;
     z-index: 0;
-    filter: grayscale(0.2) saturate(1);
+    opacity: 0.10;
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 600'>\
+<defs>\
+<linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='0%'>\
+<stop offset='0%' stop-color='%2322c55e'/>\
+<stop offset='100%' stop-color='%233b82f6'/>\
+</linearGradient>\
+</defs>\
+
+<path d='M50 500 L200 400 L350 450 L520 320 L700 260 L900 120'
+stroke='url(%23g)' stroke-width='8' fill='none' stroke-linecap='round'/> \
+
+<circle cx='200' cy='400' r='6' fill='%2322c55e'/>\
+<circle cx='520' cy='320' r='6' fill='%233b82f6'/>\
+<circle cx='900' cy='120' r='8' fill='%2322c55e'/>\
+
+<text x='180' y='370' font-size='20' fill='%2322c55e'>BUY</text>\
+<text x='500' y='290' font-size='20' fill='%23ef4444'>SELL</text>\
+</svg>");
 }
 
 .home-hero::after {
@@ -2905,16 +2925,21 @@ fill='url(%23arrowGrad)' opacity='0.88' filter='url(%23softGlow)'/> \
         max-width: 300px;
     }
 
-    body.home-body::after,
-    body.dashboard-body::after,
-    body.auth-page::after,
-    body.success-page::after {
-        width: 360px;
-        height: 360px;
-        right: -90px;
-        top: 180px;
-        opacity: 0.04;
-    }
+   body.home-body::after,
+body.dashboard-body::after,
+body.auth-page::after,
+body.success-page::after {
+    content: "";
+    position: fixed;
+    bottom: -120px;
+    right: -180px;
+    width: 720px;
+    height: 720px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.04;
+    background: radial-gradient(circle, rgba(59,130,246,0.18), transparent 68%);
+}
 
     .home-hero::before,
     .home-hero::after {
