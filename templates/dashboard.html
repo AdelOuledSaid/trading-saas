@@ -32,12 +32,12 @@
         </div>
 
         <div class="sidebar-nav">
-            <a href="{{ url_for('dashboard') }}" class="nav-link active">📊 Dashboard</a>
-            <a href="{{ url_for('pricing') }}" class="nav-link">💎 Offres</a>
-            <a href="{{ url_for('home') }}" class="nav-link">🏠 Accueil</a>
-            <a href="{{ url_for('results') }}" class="nav-link">📈 Résultats</a>
-            <a href="{{ url_for('signals_page') }}" class="nav-link">⚡ Signaux</a>
-            <a href="{{ url_for('logout') }}" class="nav-link logout-link">🚪 Déconnexion</a>
+            <a href="{{ url_for('dashboard.dashboard') }}" class="nav-link active">📊 Dashboard</a>
+            <a href="{{ url_for('billing.pricing') }}" class="nav-link">💎 Offres</a>
+            <a href="{{ url_for('main.home') }}" class="nav-link">🏠 Accueil</a>
+            <a href="{{ url_for('signals.results') }}" class="nav-link">📈 Résultats</a>
+            <a href="{{ url_for('signals.signals_page') }}" class="nav-link">⚡ Signaux</a>
+            <a href="{{ url_for('auth.logout') }}" class="nav-link logout-link">🚪 Déconnexion</a>
         </div>
 
         <div class="sidebar-mini-box">
@@ -68,8 +68,8 @@
             </div>
 
             <div class="premium-banner-actions">
-                <a href="{{ url_for('pricing') }}" class="upgrade-btn">Améliorer mon plan</a>
-                <a href="{{ url_for('signals_page') }}" class="account-btn dashboard-secondary-btn">Voir les signaux</a>
+                <a href="{{ url_for('billing.pricing') }}" class="upgrade-btn">Améliorer mon plan</a>
+                <a href="{{ url_for('signals.signals_page') }}" class="account-btn dashboard-secondary-btn">Voir les signaux</a>
             </div>
         </div>
 
@@ -244,7 +244,7 @@
                 <div class="dashboard-mini-cta">
                     <h3>Besoin de plus de profondeur ?</h3>
                     <p>Débloque plus de signaux et une expérience encore plus premium.</p>
-                    <a href="{{ url_for('pricing') }}" class="primary-link-btn">Voir les offres</a>
+                    <a href="{{ url_for('billing.pricing') }}" class="primary-link-btn">Voir les offres</a>
                 </div>
             </div>
 
@@ -315,10 +315,10 @@
             </p>
 
             <div class="dashboard-final-actions">
-                <a href="{{ url_for('pricing') }}" class="primary-link-btn">
+                <a href="{{ url_for('billing.pricing') }}" class="primary-link-btn">
                     Voir les offres premium
                 </a>
-                <a href="{{ url_for('signals_page') }}" class="hero-btn-secondary">
+                <a href="{{ url_for('signals.signals_page') }}" class="hero-btn-secondary">
                     Explorer les signaux
                 </a>
             </div>

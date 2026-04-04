@@ -3,32 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <title>Mentions légales</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
-<body style="font-family:sans-serif; max-width:900px; margin:40px auto; line-height:1.7;">
 
-<h1>Mentions légales</h1>
+<body class="home-body">
 
-<p><strong>Éditeur du site :</strong><br>
-Société :Tradingsignals<br>
+{% include "partials/navbar.html" %}
 
-Email : supportTradingsignals@gmail.com<br>
-</p>
+<section class="inner-hero">
+    <div class="section-container">
+        <span class="hero-badge">Mentions légales</span>
+        <h1 class="inner-page-title">Informations légales de la plateforme</h1>
+    </div>
+</section>
 
-<p><strong>Hébergement :</strong><br>
-Render.com<br>
-Cloud Platform
-</p>
+<section class="section-standard">
+    <div class="section-container">
 
-<h2>Activité</h2>
-<p>
-Le site propose un service de signaux de trading et d’analyses de marché.
-</p>
+        <h2>Éditeur du site</h2>
+        <p>
+            Société : Tradingsignals<br>
+            Email : supportTradingsignals@gmail.com
+        </p>
 
-<h2>Responsabilité</h2>
-<p>
-Les informations fournies sont données à titre indicatif uniquement.
-L’éditeur ne peut être tenu responsable des pertes financières liées à l’utilisation des informations présentes sur le site.
-</p>
+        <h2>Hébergement</h2>
+        <p>
+            Render.com<br>
+            Cloud Platform
+        </p>
+
+        <h2>Activité</h2>
+        <p>
+            Le site propose un service de signaux de trading et d’analyses de marché.
+        </p>
+
+        <h2>Responsabilité</h2>
+        <p>
+            Les informations fournies sont données à titre indicatif uniquement.
+            L’éditeur ne peut être tenu responsable des pertes financières.
+        </p>
+
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="section-container footer-inner">
+        <div class="footer-links">
+            <a href="{{ url_for('main.home') }}">Accueil</a>
+            <a href="{{ url_for('billing.pricing') }}">Offres</a>
+            <a href="{{ url_for('main.contact') }}">Contact</a>
+        </div>
+    </div>
+</footer>
 
 </body>
 </html>

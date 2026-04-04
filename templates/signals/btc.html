@@ -471,8 +471,8 @@
                     et permet de relier les performances à une lecture disciplinée.
                 </p>
                 <div class="hero-actions">
-                    <a href="{{ url_for('trading_lab') }}" class="hero-btn-primary">Accéder au Trading Lab</a>
-                    <a href="{{ url_for('pricing') }}" class="hero-btn-secondary">Comparer les offres</a>
+                    <a href="{{ url_for('pages.trading_lab') }}" class="hero-btn-primary">Accéder au Trading Lab</a>
+                    <a href="{{ url_for('billing.pricing') }}" class="hero-btn-secondary">Comparer les offres</a>
                 </div>
             </div>
 
@@ -508,22 +508,22 @@
         </div>
 
         <div class="preview-links-grid">
-            <a href="{{ url_for('signals_page') }}" class="preview-link-card">
+            <a href="{{ url_for('signals.signals_page') }}" class="preview-link-card">
                 <strong>Vue globale des signaux</strong>
                 <span>Retrouvez l’ensemble des catégories suivies sur la plateforme.</span>
             </a>
 
-            <a href="{{ url_for('results') }}" class="preview-link-card">
+            <a href="{{ url_for('signals.results') }}" class="preview-link-card">
                 <strong>Résultats</strong>
                 <span>Consultez les performances, le winrate et l’historique récent.</span>
             </a>
 
-            <a href="{{ url_for('trading_lab') }}" class="preview-link-card">
+            <a href="{{ url_for('pages.trading_lab') }}" class="preview-link-card">
                 <strong>Trading Lab</strong>
                 <span>Approfondissez la structure des signaux et la lecture du marché.</span>
             </a>
 
-            <a href="{{ url_for('pricing') }}" class="preview-link-card">
+            <a href="{{ url_for('billing.pricing') }}" class="preview-link-card">
                 <strong>Offres</strong>
                 <span>Choisissez le niveau d’accès le plus adapté à votre profil.</span>
             </a>
@@ -587,11 +587,11 @@
                 cette page Bitcoin est pensée pour devenir un vrai point fort de la plateforme.
             </p>
             <div class="final-cta-actions">
-                <a href="{{ url_for('pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>
+                <a href="{{ url_for('billing.pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>
                 {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('dashboard') }}" class="hero-btn-secondary white-outline-btn">Accéder au dashboard</a>
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="hero-btn-secondary white-outline-btn">Accéder au dashboard</a>
                 {% else %}
-                    <a href="{{ url_for('register') }}" class="hero-btn-secondary white-outline-btn">Créer mon compte</a>
+                    <a href="{{ url_for('auth.register') }}" class="hero-btn-secondary white-outline-btn">Créer mon compte</a>
                 {% endif %}
             </div>
         </div>
@@ -606,11 +606,11 @@
         </div>
 
         <div class="footer-links">
-            <a href="{{ url_for('home') }}">Accueil</a>
-            <a href="{{ url_for('signals_page') }}">Signaux</a>
-            <a href="{{ url_for('results') }}">Résultats</a>
-            <a href="{{ url_for('pricing') }}">Offres</a>
-            <a href="{{ url_for('trading_lab') }}">Trading Lab</a>
+            <a href="{{ url_for('main.home') }}">Accueil</a>
+            <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
+            <a href="{{ url_for('signals.results') }}">Résultats</a>
+            <a href="{{ url_for('billing.pricing') }}">Offres</a>
+            <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
         </div>
     </div>
 </footer>

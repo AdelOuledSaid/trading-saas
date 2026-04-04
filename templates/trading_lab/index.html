@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApexSignals - Trading Lab</title>
-    <meta name="description" content="Le Trading Lab d’ApexSignals regroupe la structure des signaux, la gestion du risque et la psychologie du trader dans un environnement premium.">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 <body class="home-body">
@@ -15,169 +17,152 @@
 <section class="inner-hero">
     <div class="section-container">
         <span class="hero-badge">Trading Lab</span>
-        <h1 class="inner-page-title">Le centre premium pour comprendre la logique derrière les signaux</h1>
+        <h1 class="inner-page-title">Un espace conçu pour comprendre la structure des signaux</h1>
         <p class="inner-page-text">
-            Le Trading Lab a été conçu pour aller au-delà de l’affichage des signaux. Il apporte une lecture plus experte
-            de la structure d’un trade, de la gestion du risque et de la discipline nécessaire pour évoluer dans un cadre
-            plus propre, plus cohérent et plus professionnel.
+            Le Trading Lab donne de la profondeur au site en proposant des repères simples,
+            utiles et cohérents avec l’univers ApexSignals.
         </p>
     </div>
 </section>
 
-<section class="home-stats-section">
+<section class="section-standard" id="structure">
     <div class="section-container">
         <div class="section-title">
-            <span>Vue d’ensemble</span>
-            <h2>Une approche pensée pour renforcer la crédibilité de la plateforme</h2>
+            <span>Structure</span>
+            <h2>Comprendre la composition d’un signal</h2>
             <p>
-                Le Trading Lab ne se contente pas d’ajouter du contenu. Il donne à ApexSignals une vraie profondeur,
-                une logique plus premium et une structure plus sérieuse pour accompagner les visiteurs et les membres.
+                Un signal clair repose sur quelques éléments essentiels : direction, niveau d’entrée,
+                take profit, stop loss et contexte de marché.
             </p>
         </div>
 
-        <div class="home-stats-grid">
-            <div class="home-stat-card">
-                <h3>3</h3>
-                <p>Piliers principaux du Trading Lab</p>
+        <div class="features-home-grid">
+            <div class="feature-home-card">
+                <h3>Direction</h3>
+                <p>Le sens du scénario : achat ou vente selon la lecture proposée.</p>
             </div>
-            <div class="home-stat-card">
-                <h3>Structure</h3>
-                <p>Comprendre un signal au-delà des chiffres</p>
+            <div class="feature-home-card">
+                <h3>Entrée</h3>
+                <p>Le niveau central autour duquel la logique du trade est construite.</p>
             </div>
-            <div class="home-stat-card">
-                <h3>Risque</h3>
-                <p>Lire le marché avec plus de discipline</p>
+            <div class="feature-home-card">
+                <h3>Take Profit</h3>
+                <p>La cible affichée pour matérialiser le potentiel du scénario.</p>
             </div>
-            <div class="home-stat-card">
-                <h3>Psychologie</h3>
-                <p>Renforcer la stabilité dans la prise de décision</p>
+            <div class="feature-home-card">
+                <h3>Stop Loss</h3>
+                <p>Le niveau d’invalidation qui protège la lecture et limite l’exposition.</p>
             </div>
         </div>
     </div>
 </section>
 
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>Les 3 fondations</span>
-            <h2>Un environnement structuré comme un vrai espace premium</h2>
-            <p>
-                Le Trading Lab repose sur trois axes majeurs qui permettent de mieux comprendre la logique des signaux
-                et d’ancrer ApexSignals dans une image plus professionnelle.
-            </p>
-        </div>
-
-        <div class="preview-links-grid">
-            <a href="{{ url_for('lab_structure') }}" class="preview-link-card">
-                <strong>Structure d’un signal</strong>
-                <span>Comprendre l’entrée, l’invalidation, l’objectif et la logique du setup.</span>
-            </a>
-
-            <a href="{{ url_for('lab_risk') }}" class="preview-link-card">
-                <strong>Gestion du risque</strong>
-                <span>Apprendre à lire un signal avec une logique plus disciplinée et plus saine.</span>
-            </a>
-
-            <a href="{{ url_for('lab_psychology') }}" class="preview-link-card">
-                <strong>Psychologie</strong>
-                <span>Construire une lecture plus stable, plus patiente et plus cohérente du marché.</span>
-            </a>
-
-            <a href="{{ url_for('signals_page') }}" class="preview-link-card">
-                <strong>Retour aux signaux</strong>
-                <span>Relier les notions du Trading Lab aux actifs et marchés suivis sur la plateforme.</span>
-            </a>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
+<section class="section-standard" id="lecture">
     <div class="section-container">
         <div class="proof-box">
             <div class="proof-left">
-                <span class="proof-badge">Positionnement premium</span>
-                <h2>Un vrai plus pour transformer le site en plateforme crédible</h2>
+                <span class="proof-badge">Lecture du marché</span>
+                <h2>Lire une structure sans surcharger l’information</h2>
                 <p>
-                    Une plateforme qui ne montre que des signaux paraît souvent incomplète. Le Trading Lab apporte une
-                    dimension plus mature, plus sérieuse et plus haut de gamme. Il montre que l’expérience proposée repose
-                    aussi sur une logique de compréhension, de structure et de progression.
+                    Un bon site premium n’accumule pas seulement des données. Il hiérarchise l’information
+                    pour rendre le marché plus lisible et aider à mieux comprendre le contexte.
                 </p>
             </div>
 
             <div class="proof-right">
                 <div class="proof-card">
-                    <strong>Clarté</strong>
-                    <span>Les visiteurs comprennent mieux la logique générale derrière les signaux affichés.</span>
+                    <strong>Tendance</strong>
+                    <span>Direction dominante du marché ou phase de réaction.</span>
                 </div>
                 <div class="proof-card">
-                    <strong>Profondeur</strong>
-                    <span>Le site gagne en richesse visuelle et en valeur perçue.</span>
+                    <strong>Zone technique</strong>
+                    <span>Repère important pour observer la structure du prix.</span>
                 </div>
                 <div class="proof-card">
-                    <strong>Différenciation</strong>
-                    <span>ApexSignals se positionne davantage comme une plateforme que comme une simple vitrine.</span>
+                    <strong>Timing</strong>
+                    <span>Moment où la lecture devient plus propre ou plus fragile.</span>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="section-standard">
+<section class="section-standard" id="risk">
     <div class="section-container">
         <div class="section-title">
-            <span>Ce que le Trading Lab apporte</span>
-            <h2>Une meilleure lecture, une meilleure structure, une meilleure perception</h2>
+            <span>Gestion du risque</span>
+            <h2>Une base essentielle pour donner du sens aux signaux</h2>
+            <p>
+                La gestion du risque renforce la crédibilité de la plateforme et permet d’éviter
+                une lecture trop simpliste des performances.
+            </p>
+        </div>
+
+        <div class="preview-links-grid">
+            <a href="{{ url_for('pages.lab_structure') }}" class="preview-link-card">
+                <strong>Structure d’un signal</strong>
+                <span>Comprendre les éléments clés d’un setup propre et cohérent.</span>
+            </a>
+
+            <a href="{{ url_for('pages.lab_risk') }}" class="preview-link-card">
+                <strong>Gestion du risque</strong>
+                <span>Protéger le capital et encadrer chaque scénario avec discipline.</span>
+            </a>
+
+            <a href="{{ url_for('pages.lab_psychology') }}" class="preview-link-card">
+                <strong>Psychologie</strong>
+                <span>Développer une lecture plus stable, plus calme et plus professionnelle.</span>
+            </a>
+
+            <a href="{{ url_for('billing.pricing') }}" class="preview-link-card">
+                <strong>Offres Premium</strong>
+                <span>Accéder à une expérience plus complète et à davantage de contenu.</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard" id="strategies">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Stratégies Apex</span>
+            <h2>Des angles de lecture cohérents avec la plateforme</h2>
+            <p>
+                Le but n’est pas d’afficher une infinité de méthodes, mais de présenter quelques logiques
+                simples et professionnelles.
+            </p>
         </div>
 
         <div class="features-home-grid">
             <div class="feature-home-card">
-                <h3>Lecture plus propre</h3>
-                <p>
-                    Les signaux prennent davantage de sens lorsqu’ils sont reliés à une logique claire de structure,
-                    de timing et de contexte.
-                </p>
+                <h3>Momentum</h3>
+                <p>Identifier les impulsions fortes sur les actifs les plus suivis.</p>
             </div>
-
             <div class="feature-home-card">
-                <h3>Expérience premium</h3>
-                <p>
-                    Le Trading Lab améliore l’image générale du site et lui donne la profondeur attendue
-                    d’un environnement payant plus abouti.
-                </p>
+                <h3>Continuation</h3>
+                <p>Suivre une structure déjà engagée lorsque le contexte reste lisible.</p>
             </div>
-
             <div class="feature-home-card">
-                <h3>Navigation cohérente</h3>
-                <p>
-                    Chaque sous-page du Trading Lab a une fonction précise et vient compléter les pages Signaux,
-                    Résultats et Dashboard.
-                </p>
+                <h3>Réaction technique</h3>
+                <p>Observer le comportement du prix sur des zones sous surveillance.</p>
             </div>
-
             <div class="feature-home-card">
-                <h3>Base évolutive</h3>
-                <p>
-                    Cette section peut ensuite accueillir des analyses avancées, des cas pratiques,
-                    des routines de marché et des playbooks.
-                </p>
+                <h3>Filtrage</h3>
+                <p>Écarter les scénarios brouillés pour garder une lecture plus propre.</p>
             </div>
         </div>
     </div>
 </section>
 
-<section class="final-cta-section">
+<section class="section-standard" id="psychologie">
     <div class="section-container">
         <div class="final-cta-box">
-            <span class="final-cta-badge">Trading Lab • ApexSignals</span>
-            <h2>Un espace conçu pour donner plus de valeur à toute la plateforme</h2>
+            <span class="final-cta-badge">Psychologie & discipline</span>
+            <h2>Un bon signal a plus de valeur avec une bonne lecture personnelle</h2>
             <p>
-                Structure, risque, psychologie : le Trading Lab transforme l’expérience ApexSignals en environnement
-                plus cohérent, plus crédible et plus premium.
+                Discipline, patience et stabilité renforcent l’utilité d’une plateforme.
+                Le Trading Lab apporte cette dimension plus experte et plus crédible.
             </p>
-            <div class="final-cta-actions">
-                <a href="{{ url_for('lab_structure') }}" class="hero-btn-primary light-btn">Commencer par la structure</a>
-                <a href="{{ url_for('pricing') }}" class="hero-btn-secondary white-outline-btn">Voir les offres</a>
-            </div>
         </div>
     </div>
 </section>
@@ -186,15 +171,14 @@
     <div class="section-container footer-inner">
         <div class="footer-brand">
             <h3>ApexSignals</h3>
-            <p>Trading Lab, signaux premium, résultats et espace membre dans un environnement plus structuré.</p>
+            <p>Trading Lab, signaux premium et lecture structurée du marché.</p>
         </div>
 
         <div class="footer-links">
-            <a href="{{ url_for('home') }}">Accueil</a>
-            <a href="{{ url_for('signals_page') }}">Signaux</a>
-            <a href="{{ url_for('lab_structure') }}">Structure</a>
-            <a href="{{ url_for('lab_risk') }}">Risque</a>
-            <a href="{{ url_for('lab_psychology') }}">Psychologie</a>
+            <a href="{{ url_for('main.home') }}">Accueil</a>
+            <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
+            <a href="{{ url_for('signals.results') }}">Résultats</a>
+            <a href="{{ url_for('billing.pricing') }}">Offres</a>
         </div>
     </div>
 </footer>

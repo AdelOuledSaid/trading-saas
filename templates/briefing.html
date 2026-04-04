@@ -25,10 +25,10 @@
         </div>
 
         <nav class="sidebar-nav">
-            <a href="{{ url_for('dashboard') }}" class="nav-link">📊 Dashboard</a>
-            <a href="{{ url_for('briefing_page') }}" class="nav-link active">🧠 Briefing IA</a>
-            <a href="{{ url_for('pricing') }}" class="nav-link">💎 Premium</a>
-            <a href="{{ url_for('logout') }}" class="nav-link logout-link">🚪 Déconnexion</a>
+           <a href="{{ url_for('dashboard.dashboard') }}" class="nav-link">📊 Dashboard</a>
+           <a href="{{ url_for('pages.briefing_page') }}" class="nav-link active">🧠 Briefing IA</a>
+           <a href="{{ url_for('billing.pricing') }}" class="nav-link">💎 Premium</a>
+           <a href="{{ url_for('auth.logout') }}" class="nav-link logout-link">🚪 Déconnexion</a>
         </nav>
     </aside>
 
@@ -61,10 +61,10 @@
             </div>
 
             <div class="banner-actions">
-                <a href="{{ url_for('dashboard') }}" class="upgrade-btn">
+                <a href="{{ url_for('dashboard.dashboard') }}" class="upgrade-btn">
                     ← Retour dashboard
                 </a>
-                <a href="{{ url_for('briefing_page') }}" class="secondary-link-btn">
+                <a href="{{ url_for('pages.briefing_page') }}" class="secondary-link-btn">
                     🔄 Actualiser
                 </a>
             </div>

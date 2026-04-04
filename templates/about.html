@@ -191,9 +191,9 @@
                 chaque page aide à construire une image plus forte, plus cohérente et plus professionnelle.
             </p>
             <div class="final-cta-actions">
-                <a href="{{ url_for('pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>
-                <a href="{{ url_for('contact') }}" class="hero-btn-secondary white-outline-btn">Nous contacter</a>
-            </div>
+               <a href="{{ url_for('billing.pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>
+               <a href="{{ url_for('main.contact') }}" class="hero-btn-secondary white-outline-btn">Nous contacter</a>
+          </div>
         </div>
     </div>
 </section>
@@ -206,13 +206,13 @@
         </div>
 
         <div class="footer-links">
-            <a href="{{ url_for('home') }}">Accueil</a>
-            <a href="{{ url_for('signals_page') }}">Signaux</a>
-            <a href="{{ url_for('trading_lab') }}">Trading Lab</a>
-            <a href="{{ url_for('results') }}">Résultats</a>
-            <a href="{{ url_for('pricing') }}">Offres</a>
-            <a href="{{ url_for('contact') }}">Contact</a>
-        </div>
+            <a href="{{ url_for('main.home') }}">Accueil</a>
+            <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
+            <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
+            <a href="{{ url_for('signals.results') }}">Résultats</a>
+            <a href="{{ url_for('billing.pricing') }}">Offres</a>
+            <a href="{{ url_for('main.contact') }}">Contact</a>
+       </div>
     </div>
 </footer>
 

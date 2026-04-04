@@ -1,58 +1,60 @@
-<h1>Conditions générales d'utilisation et de vente</h1>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Conditions générales</title>
 
-<h2>Objet</h2>
-<p>
-Le site propose un service d’accès à des signaux de trading via abonnement.
-</p>
+<link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+</head>
 
-<h2>Accès au service</h2>
-<p>
-L’accès Premium est activé après paiement validé.
-</p>
+<body class="home-body">
 
-<h2>Abonnement</h2>
-<p>
-L’abonnement est mensuel avec renouvellement automatique.
-</p>
+{% include "partials/navbar.html" %}
 
-<p>
-Le paiement est effectué via Stripe.
-</p>
+<section class="inner-hero">
+    <div class="section-container">
+        <span class="hero-badge">CGU</span>
+        <h1 class="inner-page-title">Conditions générales d'utilisation</h1>
+    </div>
+</section>
 
-<h2>Annulation</h2>
-<p>
-L’utilisateur peut annuler à tout moment via le portail client Stripe.
-L’accès reste actif jusqu’à la fin de la période en cours.
-</p>
+<section class="section-standard">
+    <div class="section-container">
 
-<h2>Aucun remboursement</h2>
-<p>
-Sauf obligation légale, aucun remboursement n’est effectué.
-</p>
+        <h2>Objet</h2>
+        <p>Service d’accès à des signaux de trading via abonnement.</p>
 
-<h2>Responsabilité</h2>
+        <h2>Accès</h2>
+        <p>Accès activé après paiement validé.</p>
 
-<p><strong>⚠️ Important :</strong></p>
+        <h2>Abonnement</h2>
+        <p>Mensuel avec renouvellement automatique via Stripe.</p>
 
-<p>
-Le trading comporte des risques élevés.
-Les performances passées ne garantissent pas les résultats futurs.
-</p>
+        <h2>Annulation</h2>
+        <p>Annulation possible à tout moment.</p>
 
-<p>
-Les signaux fournis ne constituent en aucun cas un conseil en investissement.
-</p>
+        <h2>Aucun remboursement</h2>
+        <p>Sauf obligation légale.</p>
 
-<p>
-L’utilisateur reste entièrement responsable de ses décisions financières.
-</p>
+        <h2>Responsabilité</h2>
+        <p><strong>⚠️ Le trading comporte des risques.</strong></p>
 
-<h2>Interruption du service</h2>
-<p>
-Le service peut être interrompu temporairement pour maintenance ou mise à jour.
-</p>
+        <h2>Modification</h2>
+        <p>Les conditions peuvent évoluer.</p>
 
-<h2>Modification</h2>
-<p>
-Les conditions peuvent être modifiées à tout moment.
-</p>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="section-container footer-inner">
+        <div class="footer-links">
+            <a href="{{ url_for('main.home') }}">Accueil</a>
+            <a href="{{ url_for('billing.pricing') }}">Offres</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

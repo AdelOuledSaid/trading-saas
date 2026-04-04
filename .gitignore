@@ -3,4 +3,9 @@ venv/
 __pycache__/
 *.db
 instance/
-stripe.exe
+stripe.exevenv/ 
+__pycache__/ 
+*.pyc 
+.env 
+users.db 
+.DS_Store 
