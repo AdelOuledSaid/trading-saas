@@ -4,40 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApexSignals - Gold Signals</title>
-    <meta name="description" content="Suivez les signaux Gold sur ApexSignals avec statistiques, historique récent, lecture du marché et environnement premium.">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="description" content="Analyse Gold sur ApexSignals : signaux XAUUSD, graphique TradingView, contexte de marché, niveaux techniques, historique récent et lecture premium du Gold.">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
+
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
-<body class="home-body">
+<body class="home-body gold-page">
 
 {% include "partials/navbar.html" %}
 
-<section class="inner-hero">
+<section class="inner-hero btc-hero">
     <div class="section-container">
-        <span class="hero-badge">Gold Signals</span>
-        <h1 class="inner-page-title">Une page dédiée au Gold pour suivre un actif refuge majeur</h1>
-        <p class="inner-page-text">
-            Le Gold occupe une place particulière dans l’univers ApexSignals. Cet actif apporte une lecture différente
-            de la crypto et des indices, avec une dimension plus macroéconomique, plus défensive et souvent très recherchée
-            dans les périodes d’incertitude.
-        </p>
+        <div class="btc-hero-grid">
+            <div class="btc-hero-left">
+                <span class="hero-badge gold-badge">
+                    <span class="gold-badge-icon">Au</span>
+                    Gold Signals
+                </span>
+
+                <h1 class="inner-page-title">
+                    Le Gold dans ApexSignals : signaux, contexte macro et lecture technique
+                </h1>
+
+                <p class="inner-page-text">
+                    Le Gold occupe une place particulière dans l’univers ApexSignals. Cet actif refuge apporte une lecture
+                    différente de la crypto et des indices, avec une dimension plus macroéconomique, plus défensive
+                    et souvent très recherchée dans les périodes d’incertitude. Cette page réunit les éléments les plus
+                    utiles pour suivre le Gold dans un cadre plus professionnel.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="#gold-live-chart" class="hero-btn-primary">Voir le chart live</a>
+                    <a href="#gold-signals-history" class="hero-btn-secondary">Voir les derniers signaux</a>
+                </div>
+
+                <div class="hero-trust-row">
+                    <div class="trust-mini">
+                        <strong>Actif refuge</strong>
+                        <span>Le Gold reste un repère majeur dans les phases d’incertitude.</span>
+                    </div>
+                    <div class="trust-mini">
+                        <strong>Lecture structurée</strong>
+                        <span>Prix, niveaux, news et historique réunis sur une seule page.</span>
+                    </div>
+                    <div class="trust-mini">
+                        <strong>Approche premium</strong>
+                        <span>Une présentation plus crédible pour suivre le marché de l’or.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btc-hero-right">
+                <div class="mini-market-card">
+                    <span class="mini-market-label">XAUUSD</span>
+                    <h3>{{ gold_price if gold_price else "Mise à jour..." }}</h3>
+                    <p>Prix spot actuel</p>
+                </div>
+
+                <div class="mini-market-card">
+                    <span class="mini-market-label">Variation 24h</span>
+                    <h3>
+                        {% if gold_change_24h not in [None, "", "..."] %}
+                            {{ gold_change_24h }}%
+                        {% else %}
+                            Mise à jour...
+                        {% endif %}
+                    </h3>
+                    <p>Évolution récente du marché</p>
+                </div>
+
+                <div class="mini-market-card">
+                    <span class="mini-market-label">Tendance</span>
+                    <h3>{{ gold_trend_label or "Neutre" }}</h3>
+                    <p>Lecture synthétique actuelle</p>
+                </div>
+
+                <div class="mini-market-card">
+                    <span class="mini-market-label">Volatilité</span>
+                    <h3>{{ gold_volatility_label or "Modérée" }}</h3>
+                    <p>Rythme du marché observé</p>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
+{% if gold_total_signals and gold_total_signals > 0 %}
 <section class="home-stats-section">
     <div class="section-container">
         <div class="section-title">
             <span>Vue d’ensemble</span>
-            <h2>Les indicateurs essentiels du suivi Gold</h2>
+            <h2>Les chiffres clés du suivi Gold</h2>
             <p>
-                Ces statistiques permettent de visualiser rapidement l’activité des signaux liés au Gold,
-                leur fréquence, leur qualité et leur place dans l’ensemble de la plateforme.
+                Retrouvez ici une lecture rapide de l’activité XAUUSD sur la plateforme, avec les statistiques les plus utiles
+                pour apprécier le rythme, la qualité et la dynamique des signaux publiés.
             </p>
         </div>
 
         <div class="home-stats-grid">
             <div class="home-stat-card">
-                <h3>{{ gold_total_signals or 0 }}</h3>
+                <h3>{{ gold_total_signals }}</h3>
                 <p>Signaux Gold enregistrés</p>
             </div>
 
@@ -58,6 +128,154 @@
         </div>
     </div>
 </section>
+{% endif %}
+
+<section class="section-standard" id="gold-live-chart">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Chart en direct</span>
+            <h2>Le graphique Gold en temps réel</h2>
+            <p>
+                Suivez le comportement du XAUUSD depuis un graphique interactif. Cette zone permet de visualiser la tendance,
+                les réactions sur niveaux techniques et la structure du marché dans un environnement plus professionnel.
+            </p>
+        </div>
+
+        <div class="btc-chart-layout">
+            <div class="btc-chart-box">
+                <div class="tradingview-widget-container">
+                    <div id="tradingview_gold_chart"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                    <script type="text/javascript">
+                        new TradingView.widget({
+                            "width": "100%",
+                            "height": 560,
+                            "symbol": "OANDA:XAUUSD",
+                            "interval": "240",
+                            "timezone": "Europe/Paris",
+                            "theme": "light",
+                            "style": "1",
+                            "locale": "fr",
+                            "toolbar_bg": "#f8f9fd",
+                            "enable_publishing": false,
+                            "hide_top_toolbar": false,
+                            "hide_legend": false,
+                            "save_image": false,
+                            "container_id": "tradingview_gold_chart"
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="btc-side-panel">
+                <div class="btc-info-card">
+                    <span class="panel-badge">Marché</span>
+                    <h3>Aperçu rapide</h3>
+                    <ul class="btc-info-list">
+                        <li><strong>Prix actuel :</strong> {{ gold_price if gold_price else "Mise à jour..." }}</li>
+
+                        {% if gold_change_24h not in [None, "", "..."] %}
+                        <li><strong>Variation 24h :</strong> {{ gold_change_24h }}%</li>
+                        {% endif %}
+
+                        {% if gold_high_24h not in [None, "", "..."] %}
+                        <li><strong>Plus haut 24h :</strong> {{ gold_high_24h }}</li>
+                        {% endif %}
+
+                        {% if gold_low_24h not in [None, "", "..."] %}
+                        <li><strong>Plus bas 24h :</strong> {{ gold_low_24h }}</li>
+                        {% endif %}
+
+                        {% if gold_volume_24h not in [None, "", "..."] %}
+                        <li><strong>Volume 24h :</strong> {{ gold_volume_24h }}</li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <div class="btc-info-card">
+                    <span class="panel-badge">Structure</span>
+                    <h3>Niveaux importants</h3>
+                    <ul class="btc-info-list">
+                        {% if gold_support_1 not in [None, "", "..."] %}
+                        <li><strong>Support 1 :</strong> {{ gold_support_1 }}</li>
+                        {% endif %}
+
+                        {% if gold_support_2 not in [None, "", "..."] %}
+                        <li><strong>Support 2 :</strong> {{ gold_support_2 }}</li>
+                        {% endif %}
+
+                        {% if gold_resistance_1 not in [None, "", "..."] %}
+                        <li><strong>Résistance 1 :</strong> {{ gold_resistance_1 }}</li>
+                        {% endif %}
+
+                        {% if gold_resistance_2 not in [None, "", "..."] %}
+                        <li><strong>Résistance 2 :</strong> {{ gold_resistance_2 }}</li>
+                        {% endif %}
+
+                        <li><strong>Biais :</strong> {{ gold_trend_label or "Neutre" }}</li>
+                    </ul>
+                </div>
+
+                <div class="btc-info-card">
+                    <span class="panel-badge">Contexte</span>
+                    <h3>Lecture du marché</h3>
+                    <ul class="btc-info-list">
+                        {% if fear_greed_value not in [None, "", "..."] %}
+                        <li><strong>Sentiment global :</strong> {{ fear_greed_value }} / {{ fear_greed_classification or "Neutre" }}</li>
+                        {% endif %}
+
+                        <li><strong>Tendance :</strong> {{ gold_trend_label or "Neutre" }}</li>
+                        <li><strong>Volatilité :</strong> {{ gold_volatility_label or "Modérée" }}</li>
+                        <li><strong>Profil :</strong> Actif refuge suivi en environnement macro</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if gold_news %}
+<section class="market-updates-section">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Actualités Gold</span>
+            <h2>Ce qui influence actuellement le marché de l’or</h2>
+            <p>
+                Une sélection d’articles récents pour suivre l’actualité du Gold, les tensions macroéconomiques
+                et les facteurs susceptibles d’influencer le sentiment de marché.
+            </p>
+        </div>
+
+        <div class="market-updates-grid">
+            {% for article in gold_news %}
+            <article class="market-news-card">
+                <div class="market-news-image">
+                    {% if article.image %}
+                        <img src="{{ article.image }}" alt="{{ article.title }}">
+                    {% else %}
+                        <div class="market-news-image-fallback">Gold News</div>
+                    {% endif %}
+                </div>
+
+                <div class="market-news-meta">
+                    <span>{{ article.source or "Source marché" }}</span>
+                </div>
+
+                <h3>
+                    <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer">
+                        {{ article.title }}
+                    </a>
+                </h3>
+
+                <p>
+                    {{ article.description or "Actualité récente autour du marché de l’or." }}
+                </p>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
 
 <section class="section-standard">
     <div class="section-container">
@@ -95,11 +313,96 @@
 <section class="section-standard">
     <div class="section-container">
         <div class="section-title">
+            <span>Structure du marché</span>
+            <h2>Comment lire le Gold dans une logique de trading</h2>
+            <p>
+                Cette zone aide le visiteur à comprendre comment le Gold peut être interprété à travers quatre piliers :
+                tendance, zones clés, momentum et validation du scénario.
+            </p>
+        </div>
+
+        <div class="features-home-grid">
+            <div class="feature-home-card">
+                <h3>Tendance dominante</h3>
+                <p>
+                    Identifier la tendance principale permet d’éviter de trader contre la structure globale. Le Gold
+                    réagit souvent aux flux de sécurité, aux taux réels et aux attentes macro.
+                </p>
+            </div>
+
+            <div class="feature-home-card">
+                <h3>Supports et résistances</h3>
+                <p>
+                    Les zones techniques importantes restent décisives. Elles concentrent les réactions du prix et servent
+                    souvent de points de validation pour les scénarios d’achat ou de vente.
+                </p>
+            </div>
+
+            <div class="feature-home-card">
+                <h3>Volatilité et momentum</h3>
+                <p>
+                    Le Gold peut alterner entre phases lentes et accélérations brutales, notamment lors de publications
+                    macroéconomiques ou de tensions géopolitiques.
+                </p>
+            </div>
+
+            <div class="feature-home-card">
+                <h3>Confirmation du scénario</h3>
+                <p>
+                    Un signal Gold pertinent ne repose pas uniquement sur un prix d’entrée. Il doit aussi s’appuyer sur
+                    un contexte technique, une invalidation claire et un objectif cohérent.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Repères historiques</span>
+            <h2>Le Gold à travers ses grandes fonctions de marché</h2>
+            <p>
+                Cette frise rappelle pourquoi l’or reste un actif central dans la lecture macro-financière mondiale.
+            </p>
+        </div>
+
+        <div class="timeline-grid">
+            <div class="timeline-card">
+                <span class="timeline-year">Historique</span>
+                <h3>Réserve de valeur</h3>
+                <p>Le Gold a longtemps servi de référence monétaire et continue d’être perçu comme une réserve de valeur mondiale.</p>
+            </div>
+
+            <div class="timeline-card">
+                <span class="timeline-year">Crises</span>
+                <h3>Actif refuge</h3>
+                <p>En période d’incertitude économique ou géopolitique, l’or attire souvent les flux cherchant davantage de sécurité.</p>
+            </div>
+
+            <div class="timeline-card">
+                <span class="timeline-year">Macro</span>
+                <h3>Sensibilité aux taux</h3>
+                <p>Le Gold réagit fortement aux politiques monétaires, aux taux réels, au dollar et aux anticipations d’inflation.</p>
+            </div>
+
+            <div class="timeline-card">
+                <span class="timeline-year">Aujourd’hui</span>
+                <h3>Actif stratégique</h3>
+                <p>L’or reste suivi autant par les traders techniques que par les investisseurs macro dans une logique de diversification.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard" id="gold-signals-history">
+    <div class="section-container">
+        <div class="section-title">
             <span>Historique récent</span>
             <h2>Les derniers signaux Gold publiés</h2>
             <p>
-                Cette section présente les signaux récents liés au Gold avec leur direction, leurs niveaux techniques
-                et leur statut. L’objectif est d’offrir une lecture claire, fluide et cohérente avec l’univers premium d’ApexSignals.
+                Cet historique présente les derniers signaux XAUUSD avec leur direction, leurs niveaux techniques
+                et leur statut final, dans un format clair et exploitable.
             </p>
         </div>
 
@@ -123,7 +426,7 @@
                                 <td>{{ signal.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
                                 <td>{{ signal.asset }}</td>
                                 <td>
-                                    <span class="{% if signal.action == 'BUY' %}text-buy{% endif %}">
+                                    <span class="{% if signal.action == 'BUY' %}text-buy{% else %}text-sell{% endif %}">
                                         {{ signal.action }}
                                     </span>
                                 </td>
@@ -160,61 +463,14 @@
 
 <section class="section-standard">
     <div class="section-container">
-        <div class="section-title">
-            <span>Lecture du marché</span>
-            <h2>Le Gold apporte une lecture complémentaire aux autres actifs</h2>
-            <p>
-                Là où Bitcoin et les indices donnent une lecture plus orientée momentum ou croissance, le Gold
-                apporte souvent une perspective plus prudente, plus macro et plus utile dans certaines phases de marché.
-            </p>
-        </div>
-
-        <div class="features-home-grid">
-            <div class="feature-home-card">
-                <h3>Lecture défensive</h3>
-                <p>
-                    Le Gold est particulièrement intéressant lorsque les marchés cherchent de la stabilité
-                    ou montrent une hausse de l’aversion au risque.
-                </p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Complément stratégique</h3>
-                <p>
-                    Sa présence donne plus d’équilibre à la plateforme et évite de limiter le site
-                    à une lecture purement crypto ou purement indices.
-                </p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Approche premium</h3>
-                <p>
-                    Une page Gold dédiée montre que la plateforme travaille réellement sa structure
-                    et son positionnement sur plusieurs marchés majeurs.
-                </p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Vision plus large</h3>
-                <p>
-                    Le Gold aide à construire une image plus mature du site en le reliant aussi
-                    aux logiques macroéconomiques et aux flux refuges.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
         <div class="proof-box">
             <div class="proof-left">
                 <span class="proof-badge">Structure d’un signal Gold</span>
-                <h2>Des niveaux simples pour une lecture propre et disciplinée</h2>
+                <h2>Des repères simples pour mieux comprendre les setups</h2>
                 <p>
-                    Les signaux Gold gagnent en clarté lorsqu’ils sont présentés autour d’une structure simple :
-                    une entrée, une invalidation, un objectif et un contexte. Cette logique renforce la lisibilité
-                    de la page et donne plus de valeur à l’historique affiché.
+                    Chaque signal Gold s’articule autour d’une structure claire : une entrée, une zone d’invalidation,
+                    un objectif et un contexte de marché. Cette logique donne plus de sens à l’affichage des résultats
+                    et permet de relier les performances à une lecture disciplinée.
                 </p>
                 <div class="hero-actions">
                     <a href="{{ url_for('trading_lab') }}" class="hero-btn-primary">Accéder au Trading Lab</a>
@@ -225,17 +481,17 @@
             <div class="proof-right">
                 <div class="proof-card">
                     <strong>Entrée</strong>
-                    <span>Le niveau à partir duquel le scénario Gold devient pertinent.</span>
+                    <span>Le niveau central autour duquel le scénario prend forme.</span>
                 </div>
 
                 <div class="proof-card">
                     <strong>Invalidation</strong>
-                    <span>Le stop loss permet de protéger la lecture et de mieux encadrer le risque.</span>
+                    <span>Le stop loss sert à protéger la structure du trade et à clarifier le risque.</span>
                 </div>
 
                 <div class="proof-card">
                     <strong>Objectif</strong>
-                    <span>Le take profit matérialise le potentiel du scénario si la structure se confirme.</span>
+                    <span>Le take profit matérialise la cible attendue si le scénario se déroule correctement.</span>
                 </div>
             </div>
         </div>
@@ -245,35 +501,80 @@
 <section class="section-standard">
     <div class="section-container">
         <div class="section-title">
-            <span>Pourquoi une page dédiée</span>
-            <h2>Le Gold mérite un espace spécifique dans une plateforme premium</h2>
+            <span>Analyse & contexte</span>
+            <h2>Pourquoi le Gold mérite un espace dédié dans ApexSignals</h2>
             <p>
-                Une plateforme sérieuse ne regroupe pas tous les actifs dans une seule page générique.
-                Elle donne aux marchés majeurs leur propre espace afin d’améliorer la navigation,
-                la crédibilité et la perception globale de valeur.
+                Dans une plateforme premium, les actifs majeurs ne doivent pas être noyés dans une seule page générique.
+                Le Gold mérite un espace dédié pour renforcer la lisibilité, la valeur perçue et la profondeur éditoriale.
             </p>
         </div>
 
         <div class="preview-links-grid">
             <a href="{{ url_for('signals_page') }}" class="preview-link-card">
                 <strong>Vue globale des signaux</strong>
-                <span>Retrouvez l’ensemble des actifs et catégories suivis sur ApexSignals.</span>
+                <span>Retrouvez l’ensemble des catégories suivies sur la plateforme.</span>
             </a>
 
             <a href="{{ url_for('results') }}" class="preview-link-card">
                 <strong>Résultats</strong>
-                <span>Consultez les performances globales, le winrate et l’historique récent.</span>
+                <span>Consultez les performances, le winrate et l’historique récent.</span>
             </a>
 
             <a href="{{ url_for('trading_lab') }}" class="preview-link-card">
                 <strong>Trading Lab</strong>
-                <span>Approfondissez la structure des setups et la logique des signaux.</span>
+                <span>Approfondissez la structure des signaux et la lecture du marché.</span>
             </a>
 
             <a href="{{ url_for('pricing') }}" class="preview-link-card">
                 <strong>Offres</strong>
-                <span>Choisissez le niveau d’accès le plus adapté à votre progression.</span>
+                <span>Choisissez le niveau d’accès le plus adapté à votre profil.</span>
             </a>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>FAQ Gold</span>
+            <h2>Les questions fréquentes sur le suivi du Gold</h2>
+            <p>
+                Cette FAQ aide le visiteur à mieux comprendre la logique de la page et la place du Gold dans l’écosystème ApexSignals.
+            </p>
+        </div>
+
+        <div class="faq-grid">
+            <div class="faq-card">
+                <h3>Pourquoi suivre le Gold ?</h3>
+                <p>
+                    Parce qu’il reste un actif refuge majeur, particulièrement utile pour lire l’aversion au risque
+                    et les grandes dynamiques macroéconomiques.
+                </p>
+            </div>
+
+            <div class="faq-card">
+                <h3>Que signifie un signal XAUUSD ?</h3>
+                <p>
+                    Il s’agit d’un scénario de trading structuré autour d’un point d’entrée, d’un stop loss,
+                    d’un take profit et d’un contexte de marché donné.
+                </p>
+            </div>
+
+            <div class="faq-card">
+                <h3>Le chart live remplace-t-il les signaux ?</h3>
+                <p>
+                    Non. Il complète la lecture. Les signaux donnent le scénario, le graphique permet de visualiser
+                    la structure du marché en temps réel.
+                </p>
+            </div>
+
+            <div class="faq-card">
+                <h3>Cette page va-t-elle encore évoluer ?</h3>
+                <p>
+                    Oui. Elle pourra intégrer à terme davantage d’indicateurs, d’actualités filtrées, de repères macro
+                    et d’outils premium autour du Gold.
+                </p>
+            </div>
         </div>
     </div>
 </section>
@@ -281,11 +582,11 @@
 <section class="final-cta-section">
     <div class="section-container">
         <div class="final-cta-box">
-            <span class="final-cta-badge">Gold • ApexSignals</span>
+            <span class="final-cta-badge">XAUUSD • ApexSignals</span>
             <h2>Suivre le Gold dans un environnement plus structuré</h2>
             <p>
-                Une page dédiée, un historique lisible, des statistiques visibles et une logique de plateforme cohérente :
-                le Gold prend ici sa place dans un univers plus clair, plus crédible et plus premium.
+                Prix live, structure de marché, contexte macro, actualités récentes et historique lisible :
+                cette page Gold est pensée pour devenir un vrai point fort de la plateforme.
             </p>
             <div class="final-cta-actions">
                 <a href="{{ url_for('pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>
@@ -303,7 +604,7 @@
     <div class="section-container footer-inner">
         <div class="footer-brand">
             <h3>ApexSignals</h3>
-            <p>Une plateforme structurée pour présenter le Gold et les autres actifs de façon plus claire et plus premium.</p>
+            <p>Une plateforme structurée pour présenter le Gold, Bitcoin, Ethereum et les autres actifs de façon plus claire, plus experte et plus premium.</p>
         </div>
 
         <div class="footer-links">

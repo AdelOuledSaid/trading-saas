@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApexSignals - Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
+
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 
@@ -14,7 +19,6 @@
 
 <div class="dashboard-wrapper">
 
-    <!-- SIDEBAR -->
     <aside class="sidebar premium-sidebar">
         <div class="logo-box">
             <h2>ApexSignals</h2>
@@ -42,10 +46,8 @@
         </div>
     </aside>
 
-    <!-- MAIN -->
     <main class="main-content dashboard-main-premium">
 
-        <!-- HEADER -->
         <div class="topbar dashboard-topbar">
             <div>
                 <div class="dashboard-kicker">ApexSignals Member Area</div>
@@ -55,7 +57,6 @@
             <div class="live-badge">● Accès actif</div>
         </div>
 
-        <!-- HERO BANNER -->
         <div class="premium-banner premium-banner-pro">
             <div class="premium-banner-text">
                 <span class="banner-mini-badge">Plateforme active</span>
@@ -72,7 +73,6 @@
             </div>
         </div>
 
-        <!-- QUICK STRIP -->
         <div class="dashboard-strip-grid">
             <div class="dashboard-strip-card">
                 <span>Plan</span>
@@ -92,7 +92,6 @@
             </div>
         </div>
 
-        <!-- STATS -->
         <div class="stats-grid dashboard-stats-grid">
 
             <div class="stat-card premium-stat-card">
@@ -121,10 +120,8 @@
 
         </div>
 
-        <!-- MAIN GRID -->
         <div class="panel-grid dashboard-panel-grid">
 
-            <!-- SIGNAL LIVE -->
             <div class="panel dashboard-panel-large">
                 <div class="panel-header panel-header-flex">
                     <div>
@@ -216,7 +213,6 @@
                 </div>
             </div>
 
-            <!-- RESUME -->
             <div class="panel dashboard-panel-side">
                 <div class="panel-header">
                     <span class="panel-kicker">Compte membre</span>
@@ -254,9 +250,7 @@
 
         </div>
 
-        <!-- SECOND GRID -->
         <div class="dashboard-bottom-grid">
-            <!-- ACTIVITE -->
             <div class="panel">
                 <div class="panel-header">
                     <span class="panel-kicker">Historique court</span>
@@ -286,7 +280,6 @@
                 </div>
             </div>
 
-            <!-- WATCHLIST -->
             <div class="panel">
                 <div class="panel-header">
                     <span class="panel-kicker">Watchlist</span>
@@ -314,7 +307,6 @@
             </div>
         </div>
 
-        <!-- CTA -->
         <div class="panel dashboard-final-panel">
             <h2>Passe au niveau supérieur</h2>
             <p>
