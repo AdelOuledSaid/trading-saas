@@ -6,126 +6,152 @@
     <title>ApexSignals - Résultats</title>
     <meta name="description" content="Suivez les résultats, le winrate, le PnL estimé et l’historique des signaux sur ApexSignals dans une interface premium.">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='results.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 <body class="home-body">
 
 {% include "partials/navbar.html" %}
 
-<section class="results-page-hero">
+<section class="rs-hero">
     <div class="section-container">
-        <div class="results-page-hero-inner">
+        <div class="rs-hero-inner">
+            <span class="rs-kicker">Performance</span>
 
-            <span class="results-kicker">Résultats</span>
+            <h1 class="rs-title">Résultats et performance des signaux</h1>
 
-            <h1 class="results-page-title">
-                Résultats et performance des signaux
-            </h1>
-
-            <p class="results-page-subtitle">
+            <p class="rs-subtitle">
                 Une lecture claire des statistiques principales, du winrate et de l’historique récent
-                pour renforcer la crédibilité de la plateforme dans un environnement plus premium.
+                pour renforcer la crédibilité de la plateforme dans un environnement premium.
             </p>
 
-            <div class="results-top-stats">
-                <div class="results-top-stat dark">
-                    <span class="results-top-stat-label">Signaux</span>
-                    <strong>{{ total_signals or 0 }}</strong>
-                    <small>Total analysé</small>
+            <div class="rs-filters">
+                <div class="rs-filter-group">
+                    {% for asset in available_assets %}
+                        <a
+                            href="{{ url_for('signals.results', asset=asset, time=selected_time) }}"
+                            class="rs-pill {% if selected_asset == asset %}active{% endif %}"
+                        >
+                            {{ asset }}
+                        </a>
+                    {% endfor %}
                 </div>
 
-                <div class="results-top-stat green">
-                    <span class="results-top-stat-label">Wins</span>
-                    <strong>{{ win_signals or 0 }}</strong>
-                    <small>Trades gagnants</small>
-                </div>
-
-                <div class="results-top-stat red">
-                    <span class="results-top-stat-label">Losses</span>
-                    <strong>{{ loss_signals or 0 }}</strong>
-                    <small>Trades perdants</small>
-                </div>
-
-                <div class="results-top-stat blue">
-                    <span class="results-top-stat-label">Winrate</span>
-                    <strong>{{ winrate or 0 }}%</strong>
-                    <small>Performance moyenne</small>
+                <div class="rs-filter-group">
+                    {% for value, label in available_times %}
+                        <a
+                            href="{{ url_for('signals.results', asset=selected_asset, time=value) }}"
+                            class="rs-pill rs-pill-secondary {% if selected_time == value %}active{% endif %}"
+                        >
+                            {{ label }}
+                        </a>
+                    {% endfor %}
                 </div>
             </div>
 
+            <div class="rs-stats-grid">
+                <article class="rs-stat rs-stat-dark">
+                    <span class="rs-stat-tag">Signaux</span>
+                    <strong>{{ total_signals or 0 }}</strong>
+                    <small>Total analysé</small>
+                </article>
+
+                <article class="rs-stat rs-stat-green">
+                    <span class="rs-stat-tag">Wins</span>
+                    <strong>{{ win_signals or 0 }}</strong>
+                    <small>Trades gagnants</small>
+                </article>
+
+                <article class="rs-stat rs-stat-red">
+                    <span class="rs-stat-tag">Losses</span>
+                    <strong>{{ loss_signals or 0 }}</strong>
+                    <small>Trades perdants</small>
+                </article>
+
+                <article class="rs-stat rs-stat-blue">
+                    <span class="rs-stat-tag">Winrate</span>
+                    <strong>{{ winrate or 0 }}%</strong>
+                    <small>Performance moyenne</small>
+                </article>
+            </div>
         </div>
     </div>
 </section>
 
-<section class="results-dashboard-section">
+<section class="rs-main">
     <div class="section-container">
-        <div class="results-dashboard-layout">
+        <div class="rs-layout">
 
-            <div class="results-main-content">
+            <main class="rs-content">
 
-                <div class="results-panel-pro">
-                    <div class="results-panel-head-pro">
+                <section class="rs-panel">
+                    <div class="rs-panel-head">
                         <div>
-                            <span class="results-mini-kicker">Performance tracking</span>
+                            <span class="rs-panel-kicker">Performance tracking</span>
                             <h2>Vue synthétique</h2>
                         </div>
                     </div>
 
-                    <div class="results-performance-strip">
-                        <div class="results-performance-item">
+                    <div class="rs-strip">
+                        <div class="rs-strip-card">
                             <span>Trades ouverts</span>
                             <strong>{{ open_signals or 0 }}</strong>
                         </div>
 
-                        <div class="results-performance-item">
+                        <div class="rs-strip-card">
                             <span>Trades clôturés</span>
                             <strong>{{ closed_signals or 0 }}</strong>
                         </div>
 
-                        <div class="results-performance-item">
+                        <div class="rs-strip-card">
                             <span>PnL estimé</span>
                             <strong>{{ estimated_pnl or 0 }}</strong>
                         </div>
 
-                        <div class="results-performance-item">
+                        <div class="rs-strip-card">
                             <span>Winrate</span>
                             <strong>{{ winrate or 0 }}%</strong>
                         </div>
                     </div>
 
-                    <div class="results-progress-card">
-                        <div class="results-progress-head">
+                    <div class="rs-quality-card">
+                        <div class="rs-quality-head">
                             <span>Qualité globale</span>
                             <strong>{{ winrate or 0 }}%</strong>
                         </div>
 
-                        <div class="results-progress-track">
-                            <div class="results-progress-fill" style="width: {{ winrate or 0 }}%;"></div>
+                        <div class="rs-quality-track">
+                            <div class="rs-quality-fill" style="width: {{ winrate or 0 }}%;"></div>
                         </div>
 
                         <p>
                             Une lecture rapide du taux de réussite observé sur les signaux clôturés.
                         </p>
                     </div>
-                </div>
+                </section>
 
-                <div class="results-panel-pro">
-                    <div class="results-panel-head-pro">
+                <section class="rs-panel">
+                    <div class="rs-panel-head">
                         <div>
-                            <span class="results-mini-kicker">Historique récent</span>
-                            <h2>Derniers signaux affichés</h2>
+                            <span class="rs-panel-kicker">Historique récent</span>
+                            <h2>
+                                Derniers signaux affichés
+                                {% if selected_asset != "ALL" %}
+                                    · {{ selected_asset }}
+                                {% endif %}
+                            </h2>
                         </div>
                     </div>
 
                     {% if signals %}
-                    <div class="results-signals-list">
+                    <div class="rs-signal-list">
                         {% for signal in signals %}
-                        <article class="result-signal-card">
-                            <div class="result-signal-header">
-                                <div class="result-signal-left">
-                                    <span class="result-asset">{{ signal.asset or "Asset" }}</span>
+                        <article class="rs-card">
+                            <div class="rs-card-head">
+                                <div class="rs-card-left">
+                                    <span class="rs-badge rs-badge-asset">{{ signal.asset or "Asset" }}</span>
 
-                                    <span class="result-action {% if signal.action %}{{ signal.action|lower }}{% endif %}">
+                                    <span class="rs-action {% if signal.action %}{{ signal.action|lower }}{% endif %}">
                                         {{ signal.action or "—" }}
                                     </span>
 
@@ -142,78 +168,91 @@
                                     </span>
                                 </div>
 
-                                <div class="result-date">
+                                <div class="rs-card-date">
                                     {{ signal.created_at.strftime('%d/%m/%Y %H:%M') if signal.created_at else "—" }}
                                 </div>
                             </div>
 
-                            <div class="result-signal-grid">
-                                <div class="result-signal-box">
+                            <div class="rs-grid">
+                                <div class="rs-metric">
                                     <span>Entrée</span>
                                     <strong>{{ signal.entry_price or "—" }}</strong>
                                 </div>
 
-                                <div class="result-signal-box">
+                                <div class="rs-metric">
                                     <span>SL</span>
                                     <strong>{{ signal.stop_loss or "—" }}</strong>
                                 </div>
 
-                                <div class="result-signal-box">
+                                <div class="rs-metric">
                                     <span>TP</span>
                                     <strong>{{ signal.take_profit or "—" }}</strong>
                                 </div>
 
-                                <div class="result-signal-box">
+                                <div class="rs-metric
+                                    {% if signal.confidence is not none and signal.confidence >= 80 %}
+                                        rs-metric-win
+                                    {% elif signal.confidence is not none and signal.confidence < 50 %}
+                                        rs-metric-loss
+                                    {% else %}
+                                        rs-metric-neutral
+                                    {% endif %}
+                                ">
                                     <span>Confiance</span>
                                     <strong>{{ signal.confidence or 50 }}%</strong>
                                 </div>
 
-                                <div class="result-signal-box">
+                                <div class="rs-metric">
                                     <span>Tendance</span>
                                     <strong>{{ signal.market_trend or "Neutre" }}</strong>
                                 </div>
 
-                                <div class="result-signal-box">
+                                <div class="rs-metric">
                                     <span>R/R</span>
                                     <strong>{{ signal.risk_reward or signal.compute_rr() or "—" }}</strong>
                                 </div>
 
-                                <div class="result-signal-box">
+                                <div class="rs-metric">
                                     <span>Timeframe</span>
                                     <strong>{{ signal.timeframe or "—" }}</strong>
                                 </div>
 
-                                <div class="result-signal-box">
+                                <div class="rs-metric
+                                    {% if signal.status == 'WIN' or (signal.result_percent is not none and signal.result_percent >= 0) %}
+                                        rs-metric-win
+                                    {% elif signal.status == 'LOSS' or (signal.result_percent is not none and signal.result_percent < 0) %}
+                                        rs-metric-loss
+                                    {% else %}
+                                        rs-metric-neutral
+                                    {% endif %}
+                                ">
                                     <span>Résultat</span>
                                     {% if signal.result_percent is not none %}
-                                        <strong class="{% if signal.result_percent >= 0 %}text-buy{% else %}text-loss{% endif %}">
-                                            {{ signal.result_percent }}%
-                                        </strong>
+                                        <strong>{{ signal.result_percent }}%</strong>
                                     {% else %}
-                                        <strong>—</strong>
+                                        <strong>{{ signal.status or "—" }}</strong>
                                     {% endif %}
                                 </div>
                             </div>
 
-                            <div class="result-signal-reason">
+                            <div class="rs-reason">
                                 💡 {{ signal.reason or "Analyse technique neutre" }}
                             </div>
                         </article>
                         {% endfor %}
                     </div>
                     {% else %}
-                    <div class="market-updates-empty">
-                        <p>Aucun signal n’est disponible pour le moment.</p>
+                    <div class="rs-empty">
+                        <p>Aucun signal n’est disponible pour ce filtre pour le moment.</p>
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                </section>
+            </main>
 
-            <aside class="results-sidebar">
-
-                <div class="results-side-card-pro dark-card-pro">
+            <aside class="rs-sidebar">
+                <section class="rs-side-card rs-side-dark">
                     <h3>Résumé rapide</h3>
-                    <ul class="results-side-list-pro">
+                    <ul class="rs-side-list">
                         <li><strong>Total signaux :</strong> {{ total_signals or 0 }}</li>
                         <li><strong>Trades ouverts :</strong> {{ open_signals or 0 }}</li>
                         <li><strong>Trades clôturés :</strong> {{ closed_signals or 0 }}</li>
@@ -221,39 +260,38 @@
                         <li><strong>Losses :</strong> {{ loss_signals or 0 }}</li>
                         <li><strong>PnL estimé :</strong> {{ estimated_pnl or 0 }}</li>
                     </ul>
-                </div>
+                </section>
 
-                <div class="results-side-card-pro">
-                    <span class="results-mini-kicker">Lecture</span>
-                    <h3>Pourquoi cette page compte</h3>
+                <section class="rs-side-card">
+                    <span class="rs-panel-kicker">Lecture</span>
+                    <h3>Une preuve visuelle plus crédible</h3>
                     <p>
-                        Une page résultats bien structurée améliore la perception de sérieux,
-                        de transparence et de valeur perçue de la plateforme.
+                        En structurant les statistiques, l’historique et les indicateurs clés, cette page donne une image plus sérieuse,
+                         plus transparente et plus professionnelle de la plateforme.
                     </p>
-                </div>
+                </section>
 
-                <div class="results-side-card-pro">
-                    <span class="results-mini-kicker">Explorer</span>
+                <section class="rs-side-card">
+                    <span class="rs-panel-kicker">Explorer</span>
                     <h3>Navigation</h3>
 
-                    <div class="results-side-links">
-                        <a href="{{ url_for('signals.signals_page') }}" class="preview-link-card">
+                    <div class="rs-nav-links">
+                        <a href="{{ url_for('signals.signals_page') }}" class="rs-nav-link">
                             <strong>Signaux</strong>
                             <span>Voir l’ensemble des signaux publiés.</span>
                         </a>
 
-                        <a href="{{ url_for('pages.trading_lab') }}" class="preview-link-card">
+                        <a href="{{ url_for('pages.trading_lab') }}" class="rs-nav-link">
                             <strong>Trading Lab</strong>
                             <span>Approfondir la logique des setups.</span>
                         </a>
 
-                        <a href="{{ url_for('billing.pricing') }}" class="preview-link-card">
+                        <a href="{{ url_for('billing.pricing') }}" class="rs-nav-link">
                             <strong>Offres</strong>
                             <span>Choisir le niveau d’accès adapté.</span>
                         </a>
                     </div>
-                </div>
-
+                </section>
             </aside>
 
         </div>

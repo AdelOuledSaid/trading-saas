@@ -1,4 +1,5 @@
 import requests
+from datetime import datetime, timedelta
 from flask import Blueprint, render_template, request
 
 from app.models import Signal
@@ -21,23 +22,135 @@ def signals_page():
 
 @signals_bp.route("/results")
 def results():
-    all_signals = Signal.query.order_by(Signal.created_at.desc()).limit(50).all()
+    asset_filter = request.args.get("asset", "ALL").upper().strip()
+    time_filter = request.args.get("time", "all").lower().strip()
 
-    total = len(all_signals)
-    wins = len([s for s in all_signals if s.status == "WIN"])
-    losses = len([s for s in all_signals if s.status == "LOSS"])
+    allowed_assets = {"ALL", "BTCUSD", "ETHUSD", "GOLD", "US100"}
+    allowed_times = {"all", "15m", "1h", "1d", "1w", "1m"}
 
-    winrate = round((wins / (wins + losses)) * 100, 2) if (wins + losses) > 0 else 0
-    pnl = round(sum(calculate_trade_pnl(s) for s in all_signals), 2)
+    if asset_filter not in allowed_assets:
+        asset_filter = "ALL"
+
+    if time_filter not in allowed_times:
+        time_filter = "all"
+
+    query = Signal.query
+
+    if asset_filter != "ALL":
+        query = query.filter(Signal.asset == asset_filter)
+
+    now = datetime.utcnow()
+    time_threshold = None
+
+    if time_filter == "15m":
+        time_threshold = now - timedelta(minutes=15)
+    elif time_filter == "1h":
+        time_threshold = now - timedelta(hours=1)
+    elif time_filter == "1d":
+        time_threshold = now - timedelta(days=1)
+    elif time_filter == "1w":
+        time_threshold = now - timedelta(weeks=1)
+    elif time_filter == "1m":
+        time_threshold = now - timedelta(days=30)
+
+    if time_threshold is not None:
+        query = query.filter(Signal.created_at >= time_threshold)
+
+    all_signals = query.order_by(Signal.created_at.asc()).all()
+    recent_signals = list(reversed(all_signals[-12:]))
+
+    total_signals = len(all_signals)
+    win_signals = sum(1 for s in all_signals if s.status == "WIN")
+    loss_signals = sum(1 for s in all_signals if s.status == "LOSS")
+    open_signals = sum(1 for s in all_signals if s.status == "OPEN")
+    closed_signals = win_signals + loss_signals
+
+    winrate = round((win_signals / closed_signals) * 100, 2) if closed_signals > 0 else 0
+
+    closed_trade_pnls = [
+        calculate_trade_pnl(signal)
+        for signal in all_signals
+        if signal.status in {"WIN", "LOSS"}
+    ]
+    estimated_pnl = round(sum(closed_trade_pnls), 2)
+
+    avg_win = round(
+        sum(p for p in closed_trade_pnls if p > 0) / len([p for p in closed_trade_pnls if p > 0]),
+        2
+    ) if any(p > 0 for p in closed_trade_pnls) else 0
+
+    avg_loss = round(
+        sum(p for p in closed_trade_pnls if p < 0) / len([p for p in closed_trade_pnls if p < 0]),
+        2
+    ) if any(p < 0 for p in closed_trade_pnls) else 0
+
+    rr_values = []
+    for signal in all_signals:
+        rr = None
+        try:
+            rr = signal.risk_reward or signal.compute_rr()
+        except Exception:
+            rr = signal.risk_reward
+
+        if rr not in [None, "", "—"]:
+            try:
+                rr_values.append(float(rr))
+            except Exception:
+                pass
+
+    avg_rr = round(sum(rr_values) / len(rr_values), 2) if rr_values else 0
+
+    asset_stats = {}
+    for signal in all_signals:
+        asset = signal.asset or "UNKNOWN"
+        asset_stats.setdefault(asset, {"count": 0, "pnl": 0.0})
+        asset_stats[asset]["count"] += 1
+        if signal.status in {"WIN", "LOSS"}:
+            asset_stats[asset]["pnl"] += calculate_trade_pnl(signal)
+
+    best_asset = "—"
+    best_asset_pnl = 0
+    if asset_stats:
+        best_asset, best_data = max(asset_stats.items(), key=lambda item: item[1]["pnl"])
+        best_asset_pnl = round(best_data["pnl"], 2)
+
+    equity_curve = []
+    running_pnl = 0.0
+    for signal in all_signals:
+        if signal.status in {"WIN", "LOSS"}:
+            running_pnl += calculate_trade_pnl(signal)
+            equity_curve.append(round(running_pnl, 2))
+
+    if not equity_curve:
+        equity_curve = [0]
 
     return render_template(
         "results.html",
-        total_signals=total,
-        total_win=wins,
-        total_loss=losses,
+        signals=recent_signals,
+        total_signals=total_signals,
+        win_signals=win_signals,
+        loss_signals=loss_signals,
+        open_signals=open_signals,
+        closed_signals=closed_signals,
         winrate=winrate,
-        estimated_pnl=pnl,
-        signals=all_signals[:10]
+        estimated_pnl=estimated_pnl,
+        avg_rr=avg_rr,
+        avg_win=avg_win,
+        avg_loss=avg_loss,
+        best_asset=best_asset,
+        best_asset_pnl=best_asset_pnl,
+        selected_asset=asset_filter,
+        selected_time=time_filter,
+        available_assets=["ALL", "BTCUSD", "ETHUSD", "GOLD", "US100"],
+        available_times=[
+            ("all", "Tout"),
+            ("15m", "15 min"),
+            ("1h", "1 heure"),
+            ("1d", "1 jour"),
+            ("1w", "1 semaine"),
+            ("1m", "1 mois"),
+        ],
+        equity_curve=equity_curve,
     )
 
 

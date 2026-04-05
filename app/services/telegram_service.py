@@ -47,6 +47,20 @@ def format_confidence(signal) -> str:
         return str(confidence)
 
 
+def confidence_icon(signal) -> str:
+    confidence = getattr(signal, "confidence", 0) or 0
+    try:
+        confidence = float(confidence)
+    except Exception:
+        confidence = 0
+
+    if confidence >= 80:
+        return "🟢"
+    if confidence >= 65:
+        return "🟡"
+    return "🔴"
+
+
 def format_reason(signal) -> str:
     reason = getattr(signal, "reason", None)
     if not reason:
@@ -86,31 +100,34 @@ def build_signal_telegram_message(signal) -> str:
     action = (signal.action or "").upper()
     asset_icon = asset_emoji(asset)
     dir_icon = action_emoji(action)
+    conf_icon = confidence_icon(signal)
 
     return f"""
-🐺 <b>Velwolef Signal</b>
+🚨 <b>VELWOLEF SIGNAL</b>
 
-{asset_icon} <b>Actif :</b> {asset}
-{dir_icon} <b>Direction :</b> {action}
+{asset_icon} <b>{asset}</b> • {dir_icon} <b>{action}</b>
 
-🆔 <b>Trade ID :</b> {signal.trade_id or "-"}
-⏱ <b>Timeframe :</b> {format_timeframe(signal)}
-🧭 <b>Tendance :</b> {format_market_trend(signal)}
-📦 <b>Type :</b> {format_signal_type(signal)}
+━━━━━━━━━━━━━━━━━━
+💰 <b>Entrée</b> : {format_price(signal.entry_price)}
+🛑 <b>SL</b> : {format_price(signal.stop_loss)}
+🎯 <b>TP</b> : {format_price(signal.take_profit)}
+⚖️ <b>RR</b> : {format_rr(signal)}
 
-💰 <b>Entrée :</b> {format_price(signal.entry_price)}
-🛑 <b>Stop Loss :</b> {format_price(signal.stop_loss)}
-🎯 <b>Take Profit :</b> {format_price(signal.take_profit)}
-⚖️ <b>RR :</b> {format_rr(signal)}
+━━━━━━━━━━━━━━━━━━
+🔥 <b>Confidence</b> : {conf_icon} {format_confidence(signal)}
+🧠 <b>Setup</b> : {format_reason(signal)}
 
-🔥 <b>Confidence :</b> {format_confidence(signal)}
-💡 <b>Reason :</b> {format_reason(signal)}
+━━━━━━━━━━━━━━━━━━
+⏱ <b>Timeframe</b> : {format_timeframe(signal)}
+🧭 <b>Tendance</b> : {format_market_trend(signal)}
+📦 <b>Type</b> : {format_signal_type(signal)}
+🆔 <b>Trade ID</b> : {signal.trade_id or "-"}
 
-📌 <b>Statut :</b> 🟡 OPEN
-🕒 <b>Heure :</b> {signal.created_at.strftime('%Y-%m-%d %H:%M:%S')} UTC
+━━━━━━━━━━━━━━━━━━
+📌 <b>Statut</b> : 🟡 OPEN
+🕒 <b>Heure</b> : {signal.created_at.strftime('%Y-%m-%d %H:%M:%S')} UTC
 
-━━━━━━━━━━━━━━━
-💎 <b>Velwolef AI</b>
+💎 <i>Velwolef AI Trading System</i>
 """.strip()
 
 
@@ -119,28 +136,27 @@ def build_tp_telegram_message(signal) -> str:
     action = (signal.action or "").upper()
     asset_icon = asset_emoji(asset)
     dir_icon = action_emoji(action)
+    conf_icon = confidence_icon(signal)
     pnl = calculate_trade_pnl(signal)
 
     return f"""
 ✅ <b>TAKE PROFIT TOUCHÉ</b>
 
-🐺 <b>Velwolef Signal</b>
+{asset_icon} <b>{asset}</b> • {dir_icon} <b>{action}</b>
 
-{asset_icon} <b>Actif :</b> {asset}
-{dir_icon} <b>Direction :</b> {action}
+━━━━━━━━━━━━━━━━━━
+💰 <b>Entrée</b> : {format_price(signal.entry_price)}
+🎯 <b>TP atteint</b> : {format_price(signal.take_profit)}
+💵 <b>PnL</b> : +{format_price(abs(pnl))}
 
-🆔 <b>Trade ID :</b> {signal.trade_id or "-"}
-💰 <b>Entrée :</b> {format_price(signal.entry_price)}
-🎯 <b>TP atteint :</b> {format_price(signal.take_profit)}
-💵 <b>PnL :</b> +{format_price(abs(pnl))}
+━━━━━━━━━━━━━━━━━━
+🔥 <b>Confidence initiale</b> : {conf_icon} {format_confidence(signal)}
+🧠 <b>Setup</b> : {format_reason(signal)}
 
-🔥 <b>Confidence initiale :</b> {format_confidence(signal)}
-💡 <b>Reason :</b> {format_reason(signal)}
-
-📌 <b>Statut :</b> 🟢 WIN
+━━━━━━━━━━━━━━━━━━
+📌 <b>Statut</b> : 🟢 WIN
 🏆 <i>Trade gagnant clôturé</i>
 
-━━━━━━━━━━━━━━━
 💎 <b>Velwolef AI</b>
 """.strip()
 
@@ -150,28 +166,27 @@ def build_sl_telegram_message(signal) -> str:
     action = (signal.action or "").upper()
     asset_icon = asset_emoji(asset)
     dir_icon = action_emoji(action)
+    conf_icon = confidence_icon(signal)
     pnl = calculate_trade_pnl(signal)
 
     return f"""
 ❌ <b>STOP LOSS TOUCHÉ</b>
 
-🐺 <b>Velwolef Signal</b>
+{asset_icon} <b>{asset}</b> • {dir_icon} <b>{action}</b>
 
-{asset_icon} <b>Actif :</b> {asset}
-{dir_icon} <b>Direction :</b> {action}
+━━━━━━━━━━━━━━━━━━
+💰 <b>Entrée</b> : {format_price(signal.entry_price)}
+🛑 <b>SL atteint</b> : {format_price(signal.stop_loss)}
+💵 <b>PnL</b> : -{format_price(abs(pnl))}
 
-🆔 <b>Trade ID :</b> {signal.trade_id or "-"}
-💰 <b>Entrée :</b> {format_price(signal.entry_price)}
-🛑 <b>SL atteint :</b> {format_price(signal.stop_loss)}
-💵 <b>PnL :</b> -{format_price(abs(pnl))}
+━━━━━━━━━━━━━━━━━━
+🔥 <b>Confidence initiale</b> : {conf_icon} {format_confidence(signal)}
+🧠 <b>Setup</b> : {format_reason(signal)}
 
-🔥 <b>Confidence initiale :</b> {format_confidence(signal)}
-💡 <b>Reason :</b> {format_reason(signal)}
-
-📌 <b>Statut :</b> 🔴 LOSS
+━━━━━━━━━━━━━━━━━━
+📌 <b>Statut</b> : 🔴 LOSS
 ⚠️ <i>Trade clôturé en perte</i>
 
-━━━━━━━━━━━━━━━
 💎 <b>Velwolef AI</b>
 """.strip()
 
