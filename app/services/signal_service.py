@@ -1,7 +1,7 @@
 from datetime import datetime
 from app.extensions import db
 from app.models import Signal
-
+from app.services.ai_signal_service import compute_confidence, generate_reason
 
 def calculate_trade_pnl(signal) -> float:
     trade_pnl = 0.0
@@ -67,5 +67,38 @@ def find_open_signal_for_closure(trade_id: str, asset: str):
             .order_by(Signal.created_at.desc())
             .first()
         )
+
+    return signal
+
+def create_signal(data: dict) -> Signal:
+    from app.services.ai_signal_service import compute_confidence, generate_reason
+
+    signal = Signal(
+        trade_id=data.get("trade_id"),
+        asset=data.get("asset"),
+        action=data.get("action"),
+        entry_price=data.get("entry_price"),
+        stop_loss=data.get("stop_loss"),
+        take_profit=data.get("take_profit"),
+        timeframe=data.get("timeframe"),
+        signal_type=data.get("signal_type", "intraday"),
+        market_trend=data.get("trend")
+    )
+
+    # 🔥 IA Velwolef
+    ai_data = {
+        "rsi": data.get("rsi"),
+        "trend": data.get("trend"),
+        "breakout": data.get("breakout"),
+        "volume": data.get("volume"),
+        "news_sentiment": data.get("news_sentiment")
+    }
+
+    signal.confidence = compute_confidence(ai_data)
+    signal.reason = generate_reason(ai_data)
+
+    # save
+    db.session.add(signal)
+    db.session.commit()
 
     return signal

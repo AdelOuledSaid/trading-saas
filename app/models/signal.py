@@ -18,3 +18,40 @@ class Signal(db.Model):
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     closed_at = db.Column(db.DateTime, nullable=True)
+
+    # Premium fields
+    confidence = db.Column(db.Float, default=0.0, nullable=False)
+    reason = db.Column(db.Text, nullable=True)
+
+    timeframe = db.Column(db.String(20), nullable=True)   # M5, M15, H1, H4...
+    signal_type = db.Column(db.String(20), default="intraday", nullable=False)
+
+    market_trend = db.Column(db.String(20), nullable=True)  # bullish / bearish / neutral
+
+    risk_reward = db.Column(db.Float, nullable=True)
+    result_percent = db.Column(db.Float, nullable=True)
+
+    is_public = db.Column(db.Boolean, default=True, nullable=False)
+    source = db.Column(db.String(50), default="system", nullable=False)
+
+    def __repr__(self):
+        return f"<Signal {self.asset} {self.action} {self.status}>"
+
+    def compute_rr(self):
+        if not self.stop_loss or not self.take_profit:
+            return None
+
+        risk = abs(self.entry_price - self.stop_loss)
+        reward = abs(self.take_profit - self.entry_price)
+
+        if risk == 0:
+            return None
+
+        return round(reward / risk, 2)
+
+    def confidence_label(self):
+        if self.confidence >= 80:
+            return "High Probability"
+        if self.confidence >= 60:
+            return "Strong Setup"
+        return "Standard"

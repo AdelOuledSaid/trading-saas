@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApexSignals - US100 Signals</title>
-    <meta name="description" content="Suivez les signaux US100 sur ApexSignals avec statistiques, historique récent, lecture du marché et environnement premium.">
+    <meta name="description" content="Suivez les signaux US100 sur VelWolf avec statistiques, historique récent, lecture du marché et environnement premium.">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
@@ -17,7 +17,7 @@
         <span class="hero-badge">US100 Signals</span>
         <h1 class="inner-page-title">Une page dédiée au US100 pour suivre les mouvements de l’indice technologique</h1>
         <p class="inner-page-text">
-            Le US100 occupe une place importante dans ApexSignals pour les traders qui recherchent
+            Le US100 occupe une place importante dans VelWolf pour les traders qui recherchent
             des mouvements rapides, directionnels et lisibles. Cette page rassemble les signaux récents,
             les statistiques principales et une lecture plus structurée d’un indice parmi les plus suivis.
         </p>
@@ -68,7 +68,7 @@
                 <h2>Un indice dynamique pour lire les impulsions du marché américain</h2>
                 <p>
                     Le US100 est particulièrement apprécié pour ses mouvements rapides et sa capacité
-                    à produire des scénarios directionnels nets. Sa présence dans ApexSignals apporte
+                    à produire des scénarios directionnels nets. Sa présence dans VelWolf apporte
                     une vraie dimension marchés indices à la plateforme et renforce son positionnement
                     multi-actifs dans un cadre plus professionnel.
                 </p>
@@ -102,7 +102,7 @@
             <p>
                 Cette section présente les signaux récents liés au US100 avec leur direction,
                 leurs niveaux techniques et leur statut. La mise en page a été conçue pour offrir
-                une lecture rapide, fluide et cohérente avec l’univers premium d’ApexSignals.
+                une lecture rapide, fluide et cohérente avec l’univers premium de VelWolf.
             </p>
         </div>
 
@@ -123,16 +123,16 @@
                     {% if us100_signals %}
                         {% for signal in us100_signals %}
                             <tr>
-                                <td>{{ signal.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
-                                <td>{{ signal.asset }}</td>
+                                <td>{{ signal.created_at.strftime('%d/%m/%Y %H:%M') if signal.created_at else "—" }}</td>
+                                <td>{{ signal.asset or "US100" }}</td>
                                 <td>
-                                    <span class="{% if signal.action == 'BUY' %}text-buy{% endif %}">
-                                        {{ signal.action }}
+                                    <span class="{% if signal.action == 'BUY' %}text-buy{% else %}text-sell{% endif %}">
+                                        {{ signal.action or "—" }}
                                     </span>
                                 </td>
-                                <td>{{ signal.entry_price }}</td>
-                                <td>{{ signal.stop_loss }}</td>
-                                <td>{{ signal.take_profit }}</td>
+                                <td>{{ signal.entry_price or "—" }}</td>
+                                <td>{{ signal.stop_loss or "—" }}</td>
+                                <td>{{ signal.take_profit or "—" }}</td>
                                 <td>
                                     <span class="
                                         {% if signal.status == 'WIN' %}
@@ -143,7 +143,7 @@
                                             status-pill status-open
                                         {% endif %}
                                     ">
-                                        {{ signal.status }}
+                                        {{ signal.status or "OPEN" }}
                                     </span>
                                 </td>
                             </tr>
@@ -185,7 +185,7 @@
             <div class="feature-home-card">
                 <h3>Complément stratégique</h3>
                 <p>
-                    Il enrichit naturellement ApexSignals en ajoutant une grande catégorie d’actifs
+                    Il enrichit naturellement VelWolf en ajoutant une grande catégorie d’actifs
                     très populaire auprès des traders actifs.
                 </p>
             </div>
@@ -221,8 +221,8 @@
                     de la lecture et donne davantage de sens à l’historique affiché.
                 </p>
                 <div class="hero-actions">
-                    <a href="{{ url_for('trading_lab') }}" class="hero-btn-primary">Accéder au Trading Lab</a>
-                    <a href="{{ url_for('pricing') }}" class="hero-btn-secondary">Comparer les offres</a>
+                    <a href="{{ url_for('pages.trading_lab') }}" class="hero-btn-primary">Accéder au Trading Lab</a>
+                    <a href="{{ url_for('billing.pricing') }}" class="hero-btn-secondary">Comparer les offres</a>
                 </div>
             </div>
 
@@ -259,22 +259,22 @@
         </div>
 
         <div class="preview-links-grid">
-            <a href="{{ url_for('signals_page') }}" class="preview-link-card">
+            <a href="{{ url_for('signals.signals_page') }}" class="preview-link-card">
                 <strong>Vue globale des signaux</strong>
                 <span>Retrouvez l’ensemble des actifs et catégories suivis sur ApexSignals.</span>
             </a>
 
-            <a href="{{ url_for('results') }}" class="preview-link-card">
+            <a href="{{ url_for('signals.results') }}" class="preview-link-card">
                 <strong>Résultats</strong>
                 <span>Consultez les performances globales, le winrate et l’historique récent.</span>
             </a>
 
-            <a href="{{ url_for('trading_lab') }}" class="preview-link-card">
+            <a href="{{ url_for('pages.trading_lab') }}" class="preview-link-card">
                 <strong>Trading Lab</strong>
                 <span>Approfondissez la structure des setups et la logique des signaux.</span>
             </a>
 
-            <a href="{{ url_for('pricing') }}" class="preview-link-card">
+            <a href="{{ url_for('billing.pricing') }}" class="preview-link-card">
                 <strong>Offres</strong>
                 <span>Choisissez le niveau d’accès le plus adapté à votre progression.</span>
             </a>
@@ -292,11 +292,11 @@
                 le US100 prend ici sa place dans un univers plus clair, plus crédible et plus premium.
             </p>
             <div class="final-cta-actions">
-                <a href="{{ url_for('pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>
+                <a href="{{ url_for('billing.pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>
                 {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('dashboard') }}" class="hero-btn-secondary white-outline-btn">Accéder au dashboard</a>
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="hero-btn-secondary white-outline-btn">Accéder au dashboard</a>
                 {% else %}
-                    <a href="{{ url_for('register') }}" class="hero-btn-secondary white-outline-btn">Créer mon compte</a>
+                    <a href="{{ url_for('auth.register') }}" class="hero-btn-secondary white-outline-btn">Créer mon compte</a>
                 {% endif %}
             </div>
         </div>
@@ -311,11 +311,11 @@
         </div>
 
         <div class="footer-links">
-            <a href="{{ url_for('home') }}">Accueil</a>
-            <a href="{{ url_for('signals_page') }}">Signaux</a>
-            <a href="{{ url_for('results') }}">Résultats</a>
-            <a href="{{ url_for('pricing') }}">Offres</a>
-            <a href="{{ url_for('trading_lab') }}">Trading Lab</a>
+            <a href="{{ url_for('main.home') }}">Accueil</a>
+            <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
+            <a href="{{ url_for('signals.results') }}">Résultats</a>
+            <a href="{{ url_for('billing.pricing') }}">Offres</a>
+            <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
         </div>
     </div>
 </footer>

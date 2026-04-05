@@ -1,8 +1,50 @@
 {% include "partials/navbar.html" %}
 
-<section class="inner-hero">
+<section class="inner-hero construction-hero">
     <div class="section-container">
-        <h1>Page en construction</h1>
-        <p>Cette page sera bientôt remplie avec du contenu premium.</p>
+
+        <div class="construction-box">
+
+            <span class="hero-badge">ApexSignals</span>
+
+            <h1 class="inner-page-title">
+                Page en cours de construction
+            </h1>
+
+            <p class="inner-page-text">
+                Cette section est actuellement en développement. Elle fera bientôt partie
+                de l’écosystème ApexSignals avec du contenu structuré, des outils et
+                des fonctionnalités premium.
+            </p>
+
+            <div class="construction-features">
+                <div class="construction-feature">
+                    <strong>Contenu structuré</strong>
+                    <span>Une lecture claire et organisée des informations.</span>
+                </div>
+
+                <div class="construction-feature">
+                    <strong>Approche premium</strong>
+                    <span>Une expérience pensée comme une vraie plateforme.</span>
+                </div>
+
+                <div class="construction-feature">
+                    <strong>Ajout progressif</strong>
+                    <span>De nouvelles sections seront ajoutées régulièrement.</span>
+                </div>
+            </div>
+
+            <div class="hero-actions">
+                <a href="{{ url_for('main.home') }}" class="hero-btn-primary">
+                    Retour à l’accueil
+                </a>
+
+                <a href="{{ url_for('billing.pricing') }}" class="hero-btn-secondary">
+                    Voir les offres
+                </a>
+            </div>
+
+        </div>
+
     </div>
 </section>
