@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApexSignals - Résultats</title>
+    <title>Velwolef - Résultats</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
@@ -17,7 +17,7 @@
 <section class="inner-hero">
     <div class="section-container">
         <span class="hero-badge">Résultats</span>
-        <h1 class="inner-page-title">Une vue claire des performances et de l’historique</h1>
+        <h1 class="inner-page-title">Une vue claire des performances et de l’historique Velwolef</h1>
         <p class="inner-page-text">
             Cette page met en avant les statistiques principales, la progression globale
             et un aperçu des performances récentes pour renforcer la crédibilité du site.
@@ -80,7 +80,7 @@
                 </div>
                 <div class="proof-card">
                     <strong>Lecture</strong>
-                    <span>Une présentation plus claire donne plus de crédibilité au site.</span>
+                    <span>Une présentation plus claire donne plus de crédibilité à Velwolef.</span>
                 </div>
             </div>
         </div>
@@ -96,11 +96,37 @@
 
         <div class="results-list">
             {% for signal in signals %}
-                <div class="result-row">
-                    <span>{{ signal.asset }} • {{ signal.action }} • {{ signal.status }}</span>
-                    <strong class="{% if signal.status == 'WIN' %}text-buy{% endif %}">
-                        {{ signal.created_at.strftime('%d/%m/%Y %H:%M') }}
-                    </strong>
+                <div class="result-row result-row-rich">
+                    <div class="result-main">
+                        <div class="result-line-top">
+                            <span class="result-asset">{{ signal.asset }}</span>
+                            <span class="result-separator">•</span>
+                            <span class="result-action">{{ signal.action }}</span>
+                            <span class="result-separator">•</span>
+                            <span class="result-status">{{ signal.status }}</span>
+                            {% if signal.timeframe %}
+                                <span class="result-separator">•</span>
+                                <span class="result-timeframe">{{ signal.timeframe }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="result-ai-box">
+                            <div class="result-ai-top">
+                                <span class="result-confidence">🔥 {{ signal.confidence }}%</span>
+                                <span class="result-confidence-label">{{ signal.confidence_label() }}</span>
+                            </div>
+
+                            <div class="result-reason">
+                                💡 {{ signal.reason if signal.reason else "Analyse technique neutre" }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-meta">
+                        <strong class="{% if signal.status == 'WIN' %}text-buy{% elif signal.status == 'LOSS' %}text-sell{% endif %}">
+                            {{ signal.created_at.strftime('%d/%m/%Y %H:%M') }}
+                        </strong>
+                    </div>
                 </div>
             {% else %}
                 <div class="result-row">
@@ -115,13 +141,13 @@
 <footer class="site-footer">
     <div class="section-container footer-inner">
         <div class="footer-brand">
-            <h3>ApexSignals</h3>
+            <h3>Velwolef</h3>
             <p>Résultats, historique et lecture premium des performances.</p>
         </div>
 
         <div class="footer-links">
             <a href="{{ url_for('main.home') }}">Accueil</a>
-            <a href="{{ url_for('pages.signals_page') }}">Signaux</a>
+            <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
             <a href="{{ url_for('billing.pricing') }}">Offres</a>
             <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
         </div>
