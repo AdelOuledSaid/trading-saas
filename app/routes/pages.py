@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request
-
+from app.models import Signal
 pages_bp = Blueprint("pages", __name__)
 
 
@@ -57,3 +57,9 @@ def lab_risk():
 @pages_bp.route("/trading-lab/psychology")
 def lab_psychology():
     return render_template("trading_lab/psychology.html")
+from app.models import Signal
+
+@pages_bp.route("/learn/signal/<int:signal_id>")
+def learn_signal(signal_id):
+    signal = Signal.query.get_or_404(signal_id)
+    return render_template("learn_signal.html", signal=signal)

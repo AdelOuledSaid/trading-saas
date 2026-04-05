@@ -95,12 +95,32 @@ def format_rr(signal) -> str:
         return str(rr)
 
 
+def get_site_url() -> str:
+    site_url = getattr(config, "SITE_URL", None)
+    if site_url:
+        return site_url.rstrip("/")
+    return "https://trading-saas-1.onrender.com"
+
+
+def build_learn_link(signal) -> str | None:
+    signal_id = getattr(signal, "id", None)
+    if not signal_id:
+        return None
+    return f"{get_site_url()}/learn/signal/{signal_id}"
+
+
 def build_signal_telegram_message(signal) -> str:
     asset = (signal.asset or "").upper()
     action = (signal.action or "").upper()
     asset_icon = asset_emoji(asset)
     dir_icon = action_emoji(action)
     conf_icon = confidence_icon(signal)
+
+    learn_link = build_learn_link(signal)
+    learn_block = (
+        f'\n🎓 <a href="{learn_link}">Mini cours : comprendre ce signal</a>\n'
+        if learn_link else ""
+    )
 
     return f"""
 🚨 <b>VELWOLEF SIGNAL</b>
@@ -123,7 +143,7 @@ def build_signal_telegram_message(signal) -> str:
 📦 <b>Type</b> : {format_signal_type(signal)}
 🆔 <b>Trade ID</b> : {signal.trade_id or "-"}
 
-━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━{learn_block}
 📌 <b>Statut</b> : 🟡 OPEN
 🕒 <b>Heure</b> : {signal.created_at.strftime('%Y-%m-%d %H:%M:%S')} UTC
 
@@ -139,6 +159,12 @@ def build_tp_telegram_message(signal) -> str:
     conf_icon = confidence_icon(signal)
     pnl = calculate_trade_pnl(signal)
 
+    learn_link = build_learn_link(signal)
+    learn_block = (
+        f'\n🎓 <a href="{learn_link}">Revoir l’analyse de ce signal</a>\n'
+        if learn_link else ""
+    )
+
     return f"""
 ✅ <b>TAKE PROFIT TOUCHÉ</b>
 
@@ -153,7 +179,7 @@ def build_tp_telegram_message(signal) -> str:
 🔥 <b>Confidence initiale</b> : {conf_icon} {format_confidence(signal)}
 🧠 <b>Setup</b> : {format_reason(signal)}
 
-━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━{learn_block}
 📌 <b>Statut</b> : 🟢 WIN
 🏆 <i>Trade gagnant clôturé</i>
 
@@ -169,6 +195,12 @@ def build_sl_telegram_message(signal) -> str:
     conf_icon = confidence_icon(signal)
     pnl = calculate_trade_pnl(signal)
 
+    learn_link = build_learn_link(signal)
+    learn_block = (
+        f'\n🎓 <a href="{learn_link}">Comprendre pourquoi ce signal a échoué</a>\n'
+        if learn_link else ""
+    )
+
     return f"""
 ❌ <b>STOP LOSS TOUCHÉ</b>
 
@@ -183,7 +215,7 @@ def build_sl_telegram_message(signal) -> str:
 🔥 <b>Confidence initiale</b> : {conf_icon} {format_confidence(signal)}
 🧠 <b>Setup</b> : {format_reason(signal)}
 
-━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━{learn_block}
 📌 <b>Statut</b> : 🔴 LOSS
 ⚠️ <i>Trade clôturé en perte</i>
 

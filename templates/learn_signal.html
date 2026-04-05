@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Comprendre le signal</title>
+</head>
+<body>
+
+<h1>📚 Comprendre ce signal</h1>
+
+<p><strong>Actif :</strong> {{ signal.asset }}</p>
+<p><strong>Direction :</strong> {{ signal.action }}</p>
+
+<hr>
+
+<h2>🧠 Analyse IA</h2>
+<p>{{ signal.reason }}</p>
+
+<hr>
+
+<h2>📖 Explication du setup</h2>
+
+{% if "RSI" in signal.reason %}
+<p>Le RSI indique une zone extrême du marché (surachat ou survente).</p>
+{% endif %}
+
+{% if "breakout" in signal.reason %}
+<p>Un breakout signifie une cassure d’un niveau clé, souvent suivi d’un mouvement fort.</p>
+{% endif %}
+
+{% if "trend bullish" in signal.reason %}
+<p>Le marché est en tendance haussière → les achats sont favorisés.</p>
+{% endif %}
+
+{% if "ADX" in signal.reason %}
+<p>L’ADX confirme que la tendance est forte.</p>
+{% endif %}
+
+{% if "volume" in signal.reason %}
+<p>Un volume élevé renforce la validité du mouvement.</p>
+{% endif %}
+
+</body>
+</html>

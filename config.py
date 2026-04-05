@@ -28,3 +28,4 @@ COINGECKO_API_KEY = os.getenv("COINGECKO_API_KEY", "")
 ALLOWED_ASSETS = ["BTCUSD", "ETHUSD", "SOLUSD", "XRPUSD", "GOLD", "US100", "US500", "FRA40"]
 ALLOWED_ACTIONS = ["BUY", "SELL"]
 ALLOWED_EVENTS = ["OPEN", "TP", "SL"]
+SITE_URL = "https://trading-saas-1.onrender.com"
