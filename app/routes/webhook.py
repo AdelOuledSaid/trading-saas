@@ -8,6 +8,7 @@ from app.services.signal_service import (
     close_signal_as_result,
     find_open_signal_for_closure,
 )
+from app.services.ai_signal_service import compute_confidence, generate_reason
 from app.services.telegram_service import (
     send_telegram_message,
     build_signal_telegram_message,
@@ -87,17 +88,39 @@ def webhook():
             entry_price=entry_price,
             stop_loss=stop_loss,
             take_profit=take_profit,
-            status="OPEN"
+            status="OPEN",
+            timeframe=str(data.get("timeframe", "")).strip() or None,
+            signal_type=str(data.get("signal_type", "intraday")).strip() or "intraday",
+            market_trend=str(data.get("trend", "")).strip() or None,
+            source=str(data.get("source", "tradingview")).strip() or "tradingview",
+            news_sentiment=_safe_float(data.get("news_sentiment")),
         )
+
+        ai_data = {
+            "rsi": _safe_float(data.get("rsi")),
+            "trend": str(data.get("trend", "")).strip().lower() or None,
+            "breakout": _safe_bool(data.get("breakout")),
+            "volume": _safe_bool(data.get("volume")),
+            "news_sentiment": _safe_float(data.get("news_sentiment")),
+        }
+
+        signal.confidence = compute_confidence(ai_data)
+        signal.reason = generate_reason(ai_data)
+
+        if hasattr(signal, "update_risk_reward"):
+            signal.update_risk_reward()
 
         db.session.add(signal)
         db.session.commit()
 
-        send_telegram_message(build_signal_telegram_message(signal))
+        try:
+            send_telegram_message(build_signal_telegram_message(signal))
+        except Exception as e:
+            current_app.logger.warning("Erreur Telegram OPEN: %s", e)
 
         current_app.logger.info(
-            "Signal OPEN enregistré | trade_id=%s asset=%s action=%s entry=%s",
-            trade_id, asset, action, entry_price
+            "Signal OPEN enregistré | trade_id=%s asset=%s action=%s entry=%s confidence=%s",
+            trade_id, asset, action, entry_price, signal.confidence
         )
 
         return {
@@ -108,7 +131,9 @@ def webhook():
             "action": action,
             "entry_price": entry_price,
             "stop_loss": stop_loss,
-            "take_profit": take_profit
+            "take_profit": take_profit,
+            "confidence": signal.confidence,
+            "reason": signal.reason,
         }, 200
 
     if event_type in ["TP", "SL"]:
@@ -126,10 +151,13 @@ def webhook():
 
         close_signal_as_result(signal, event_type)
 
-        if event_type == "TP":
-            send_telegram_message(build_tp_telegram_message(signal))
-        else:
-            send_telegram_message(build_sl_telegram_message(signal))
+        try:
+            if event_type == "TP":
+                send_telegram_message(build_tp_telegram_message(signal))
+            else:
+                send_telegram_message(build_sl_telegram_message(signal))
+        except Exception as e:
+            current_app.logger.warning("Erreur Telegram %s: %s", event_type, e)
 
         current_app.logger.info(
             "Signal fermé | trade_id=%s asset=%s result=%s",
@@ -145,3 +173,28 @@ def webhook():
         }, 200
 
     return {"error": "Event inconnu"}, 400
+
+
+def _safe_float(value, default=None):
+    try:
+        if value is None or value == "":
+            return default
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _safe_bool(value):
+    if isinstance(value, bool):
+        return value
+
+    if value is None:
+        return False
+
+    if isinstance(value, (int, float)):
+        return bool(value)
+
+    if isinstance(value, str):
+        return value.strip().lower() in {"true", "1", "yes", "y", "on"}
+
+    return False

@@ -2,6 +2,8 @@ import requests
 from flask import current_app
 import config
 
+from app.services.signal_service import calculate_trade_pnl
+
 
 def format_price(value: float) -> str:
     try:
@@ -27,42 +29,94 @@ def asset_emoji(asset: str) -> str:
         "US500": "📊",
         "FRA40": "🇫🇷",
     }
-    return mapping.get(asset.upper(), "📊")
+    return mapping.get((asset or "").upper(), "📊")
 
 
 def action_emoji(action: str) -> str:
-    return "📈" if action.upper() == "BUY" else "📉"
+    return "📈" if (action or "").upper() == "BUY" else "📉"
+
+
+def format_confidence(signal) -> str:
+    confidence = getattr(signal, "confidence", None)
+    if confidence is None:
+        return "N/A"
+
+    try:
+        return f"{float(confidence):.0f}%"
+    except Exception:
+        return str(confidence)
+
+
+def format_reason(signal) -> str:
+    reason = getattr(signal, "reason", None)
+    if not reason:
+        return "Analyse technique automatique"
+    return str(reason)
+
+
+def format_timeframe(signal) -> str:
+    timeframe = getattr(signal, "timeframe", None)
+    return timeframe if timeframe else "-"
+
+
+def format_signal_type(signal) -> str:
+    signal_type = getattr(signal, "signal_type", None)
+    return signal_type if signal_type else "-"
+
+
+def format_market_trend(signal) -> str:
+    trend = getattr(signal, "market_trend", None)
+    if not trend:
+        return "-"
+    return str(trend).capitalize()
+
+
+def format_rr(signal) -> str:
+    rr = getattr(signal, "risk_reward", None)
+    if rr is None:
+        return "-"
+    try:
+        return f"{float(rr):.2f}"
+    except Exception:
+        return str(rr)
 
 
 def build_signal_telegram_message(signal) -> str:
-    asset = signal.asset.upper()
-    action = signal.action.upper()
+    asset = (signal.asset or "").upper()
+    action = (signal.action or "").upper()
     asset_icon = asset_emoji(asset)
     dir_icon = action_emoji(action)
 
     return f"""
-🚨 <b>NOUVEAU SIGNAL PREMIUM</b>
-
-💎 <b>TradingSignals Premium</b>
+🐺 <b>Velwolef Signal</b>
 
 {asset_icon} <b>Actif :</b> {asset}
 {dir_icon} <b>Direction :</b> {action}
 
 🆔 <b>Trade ID :</b> {signal.trade_id or "-"}
+⏱ <b>Timeframe :</b> {format_timeframe(signal)}
+🧭 <b>Tendance :</b> {format_market_trend(signal)}
+📦 <b>Type :</b> {format_signal_type(signal)}
+
 💰 <b>Entrée :</b> {format_price(signal.entry_price)}
 🛑 <b>Stop Loss :</b> {format_price(signal.stop_loss)}
 🎯 <b>Take Profit :</b> {format_price(signal.take_profit)}
+⚖️ <b>RR :</b> {format_rr(signal)}
+
+🔥 <b>Confidence :</b> {format_confidence(signal)}
+💡 <b>Reason :</b> {format_reason(signal)}
 
 📌 <b>Statut :</b> 🟡 OPEN
 🕒 <b>Heure :</b> {signal.created_at.strftime('%Y-%m-%d %H:%M:%S')} UTC
 
-⚡ <i>Signal envoyé automatiquement par TradingBot</i>
+━━━━━━━━━━━━━━━
+💎 <b>Velwolef AI</b>
 """.strip()
 
 
 def build_tp_telegram_message(signal) -> str:
-    asset = signal.asset.upper()
-    action = signal.action.upper()
+    asset = (signal.asset or "").upper()
+    action = (signal.action or "").upper()
     asset_icon = asset_emoji(asset)
     dir_icon = action_emoji(action)
     pnl = calculate_trade_pnl(signal)
@@ -70,7 +124,7 @@ def build_tp_telegram_message(signal) -> str:
     return f"""
 ✅ <b>TAKE PROFIT TOUCHÉ</b>
 
-💎 <b>TradingSignals Premium</b>
+🐺 <b>Velwolef Signal</b>
 
 {asset_icon} <b>Actif :</b> {asset}
 {dir_icon} <b>Direction :</b> {action}
@@ -80,14 +134,20 @@ def build_tp_telegram_message(signal) -> str:
 🎯 <b>TP atteint :</b> {format_price(signal.take_profit)}
 💵 <b>PnL :</b> +{format_price(abs(pnl))}
 
+🔥 <b>Confidence initiale :</b> {format_confidence(signal)}
+💡 <b>Reason :</b> {format_reason(signal)}
+
 📌 <b>Statut :</b> 🟢 WIN
 🏆 <i>Trade gagnant clôturé</i>
+
+━━━━━━━━━━━━━━━
+💎 <b>Velwolef AI</b>
 """.strip()
 
 
 def build_sl_telegram_message(signal) -> str:
-    asset = signal.asset.upper()
-    action = signal.action.upper()
+    asset = (signal.asset or "").upper()
+    action = (signal.action or "").upper()
     asset_icon = asset_emoji(asset)
     dir_icon = action_emoji(action)
     pnl = calculate_trade_pnl(signal)
@@ -95,7 +155,7 @@ def build_sl_telegram_message(signal) -> str:
     return f"""
 ❌ <b>STOP LOSS TOUCHÉ</b>
 
-💎 <b>TradingSignals Premium</b>
+🐺 <b>Velwolef Signal</b>
 
 {asset_icon} <b>Actif :</b> {asset}
 {dir_icon} <b>Direction :</b> {action}
@@ -105,8 +165,14 @@ def build_sl_telegram_message(signal) -> str:
 🛑 <b>SL atteint :</b> {format_price(signal.stop_loss)}
 💵 <b>PnL :</b> -{format_price(abs(pnl))}
 
+🔥 <b>Confidence initiale :</b> {format_confidence(signal)}
+💡 <b>Reason :</b> {format_reason(signal)}
+
 📌 <b>Statut :</b> 🔴 LOSS
 ⚠️ <i>Trade clôturé en perte</i>
+
+━━━━━━━━━━━━━━━
+💎 <b>Velwolef AI</b>
 """.strip()
 
 
@@ -129,6 +195,3 @@ def send_telegram_message(message: str) -> None:
         current_app.logger.info("TELEGRAM RESPONSE: %s", response.text)
     except Exception as e:
         current_app.logger.error("Erreur Telegram : %s", repr(e))
-
-
-from app.services.signal_service import calculate_trade_pnl
