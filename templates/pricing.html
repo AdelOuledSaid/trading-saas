@@ -68,9 +68,9 @@
             </ul>
 
             {% if user_plan == "premium" %}
-                <a href="{{ url_for('dashboard') }}" class="pricing-btn premium-btn">Plan actuel</a>
+                <a href="{{ url_for('dashboard.dashboard') }}" class="pricing-btn premium-btn">Plan actuel</a>
             {% else %}
-                <form action="{{ url_for('create_checkout_session') }}" method="POST">
+                <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
                     <input type="hidden" name="plan" value="premium">
                     <button type="submit" class="pricing-btn premium-btn">Choisir Premium</button>
                 </form>
@@ -94,9 +94,9 @@
             </ul>
 
             {% if user_plan == "vip" %}
-                <a href="{{ url_for('dashboard') }}" class="pricing-btn vip-btn">Plan actuel</a>
+                <a href="{{ url_for('dashbord.dashboard') }}" class="pricing-btn vip-btn">Plan actuel</a>
             {% else %}
-                <form action="{{ url_for('create_checkout_session') }}" method="POST">
+                <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
                     <input type="hidden" name="plan" value="vip">
                     <button type="submit" class="pricing-btn vip-btn">Choisir VIP</button>
                 </form>
@@ -118,7 +118,7 @@
             <a href="{{ url_for('main.home') }}">Accueil</a>
             <a href="{{ url_for('signals.results') }}">Résultats</a>
             <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
-            <a href="{{ url_for('main.contact') }}">Contact</a>
+            <a href="{{ url_for('pages.contact') }}">Contact</a>
         </div>
     </div>
 </footer>
