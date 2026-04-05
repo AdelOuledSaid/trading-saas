@@ -101,6 +101,8 @@ def webhook():
             "trend": str(data.get("trend", "")).strip().lower() or None,
             "breakout": _safe_bool(data.get("breakout")),
             "volume": _safe_bool(data.get("volume")),
+            "adx": _safe_float(data.get("adx")),
+            "atr": _safe_float(data.get("atr")),
             "news_sentiment": _safe_float(data.get("news_sentiment")),
         }
 

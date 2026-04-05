@@ -33,12 +33,13 @@ class Signal(db.Model):
 
     is_public = db.Column(db.Boolean, default=True, nullable=False)
     source = db.Column(db.String(50), default="system", nullable=False)
+    news_sentiment = db.Column(db.Float, nullable=True)
 
     def __repr__(self):
         return f"<Signal {self.asset} {self.action} {self.status}>"
 
     def compute_rr(self):
-        if not self.stop_loss or not self.take_profit:
+        if self.stop_loss is None or self.take_profit is None or self.entry_price is None:
             return None
 
         risk = abs(self.entry_price - self.stop_loss)
@@ -48,6 +49,9 @@ class Signal(db.Model):
             return None
 
         return round(reward / risk, 2)
+
+    def update_risk_reward(self):
+        self.risk_reward = self.compute_rr()
 
     def confidence_label(self):
         if self.confidence >= 80:
