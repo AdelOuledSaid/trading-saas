@@ -3,85 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Velwolef - Résultats</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
+    <title>ApexSignals - Résultats</title>
+    <meta name="description" content="Suivez les résultats, le winrate, le PnL estimé et l’historique des signaux sur ApexSignals dans une interface premium.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 <body class="home-body">
 
 {% include "partials/navbar.html" %}
 
-<section class="inner-hero">
+<section class="inner-hero results-hero">
     <div class="section-container">
-        <span class="hero-badge">Résultats</span>
-        <h1 class="inner-page-title">Une vue claire des performances et de l’historique Velwolef</h1>
-        <p class="inner-page-text">
-            Cette page met en avant les statistiques principales, la progression globale
-            et un aperçu des performances récentes pour renforcer la crédibilité du site.
-        </p>
-    </div>
-</section>
-
-<section class="home-stats-section">
-    <div class="section-container">
-        <div class="home-stats-grid">
-            <div class="home-stat-card">
-                <h3>{{ total_signals }}</h3>
-                <p>Signaux analysés</p>
-            </div>
-            <div class="home-stat-card">
-                <h3>{{ total_win }}</h3>
-                <p>Trades gagnants</p>
-            </div>
-            <div class="home-stat-card">
-                <h3>{{ total_loss }}</h3>
-                <p>Trades perdants</p>
-            </div>
-            <div class="home-stat-card">
-                <h3>{{ winrate }}%</h3>
-                <p>Winrate moyen</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>Performance</span>
-            <h2>Lecture synthétique des résultats</h2>
-            <p>
-                L’objectif n’est pas seulement d’afficher des chiffres, mais de rendre les performances
-                visibles, lisibles et cohérentes avec l’image premium du site.
+        <div class="results-hero-top">
+            <span class="hero-badge">Performance Tracking</span>
+            <h1 class="inner-page-title">Résultats & suivi de performance</h1>
+            <p class="inner-page-text">
+                Cette page centralise les indicateurs principaux de la plateforme : historique récent,
+                winrate, signaux clôturés, signaux ouverts et lecture synthétique des performances
+                dans un environnement plus professionnel.
             </p>
         </div>
 
-        <div class="proof-box">
-            <div class="proof-left">
-                <span class="proof-badge">Résumé</span>
-                <h2>PnL estimé : {{ estimated_pnl }}</h2>
-                <p>
-                    Cette section permet d’afficher une synthèse rapide des données les plus importantes
-                    sans transformer la page en tableau complexe.
-                </p>
+        <div class="results-top-grid">
+            <div class="results-summary-card featured-card">
+                <span class="results-card-kicker">Performance globale</span>
+                <h2>{{ total_signals or 0 }}</h2>
+                <p>Total de signaux enregistrés sur la plateforme.</p>
             </div>
 
-            <div class="proof-right">
-                <div class="proof-card">
-                    <strong>Winrate</strong>
-                    <span>{{ winrate }}% sur les trades clôturés.</span>
-                </div>
-                <div class="proof-card">
-                    <strong>Volume</strong>
-                    <span>{{ total_signals }} signaux pris en compte dans l’aperçu.</span>
-                </div>
-                <div class="proof-card">
-                    <strong>Lecture</strong>
-                    <span>Une présentation plus claire donne plus de crédibilité à Velwolef.</span>
-                </div>
+            <div class="results-summary-card">
+                <span class="results-card-kicker">Winrate</span>
+                <h2>{{ winrate or 0 }}%</h2>
+                <p>Taux de réussite sur les trades clôturés.</p>
+            </div>
+
+            <div class="results-summary-card">
+                <span class="results-card-kicker">Trades ouverts</span>
+                <h2>{{ open_signals or 0 }}</h2>
+                <p>Signaux actuellement encore actifs.</p>
+            </div>
+
+            <div class="results-summary-card">
+                <span class="results-card-kicker">PnL estimé</span>
+                <h2>{{ estimated_pnl or 0 }}</h2>
+                <p>Projection agrégée basée sur les signaux clôturés.</p>
             </div>
         </div>
     </div>
@@ -89,51 +54,237 @@
 
 <section class="section-standard">
     <div class="section-container">
-        <div class="section-title">
-            <span>Historique récent</span>
-            <h2>Derniers signaux affichés</h2>
+
+        <div class="results-dashboard-grid">
+
+            <!-- LEFT -->
+            <div class="results-main-column">
+
+                <div class="results-panel">
+                    <div class="results-panel-head">
+                        <div>
+                            <span class="panel-badge">Aperçu stratégie</span>
+                            <h2>Suivi synthétique de la performance</h2>
+                        </div>
+                    </div>
+
+                    <div class="performance-grid">
+                        <div class="performance-card dark-card">
+                            <div class="performance-card-head">
+                                <span>Winrate actuel</span>
+                                <strong>{{ winrate or 0 }}%</strong>
+                            </div>
+
+                            <div class="progress-wrap">
+                                <div class="progress-track">
+                                    <div class="progress-fill" style="width: {{ winrate or 0 }}%;"></div>
+                                </div>
+                            </div>
+
+                            <p>
+                                Un aperçu rapide de la proportion de trades clôturés gagnants par rapport
+                                au total des trades clôturés.
+                            </p>
+                        </div>
+
+                        <div class="performance-card">
+                            <span class="performance-label">Trades gagnants</span>
+                            <strong class="stat-green">{{ win_signals or 0 }}</strong>
+                            <small>Positions clôturées en gain</small>
+                        </div>
+
+                        <div class="performance-card">
+                            <span class="performance-label">Trades perdants</span>
+                            <strong class="text-loss">{{ loss_signals or 0 }}</strong>
+                            <small>Positions clôturées en perte</small>
+                        </div>
+
+                        <div class="performance-card">
+                            <span class="performance-label">Trades clôturés</span>
+                            <strong>{{ closed_signals or 0 }}</strong>
+                            <small>Total utilisé pour calculer le winrate</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-panel">
+                    <div class="results-panel-head">
+                        <div>
+                            <span class="panel-badge">Historique récent</span>
+                            <h2>Derniers signaux affichés</h2>
+                        </div>
+                    </div>
+
+                    {% if signals %}
+                    <div class="signals-grid-pro">
+                        {% for signal in signals %}
+                        <article class="signal-pro-card {{ signal.status|lower }}">
+
+                            <div class="signal-pro-header">
+                                <div class="signal-left">
+                                    <span class="signal-asset">{{ signal.asset or "Asset" }}</span>
+
+                                    <span class="signal-action {% if signal.action %}{{ signal.action|lower }}{% endif %}">
+                                        {{ signal.action or "—" }}
+                                    </span>
+
+                                    <span class="signal-status status-{{ signal.status|lower if signal.status else 'open' }}">
+                                        {{ signal.status or "OPEN" }}
+                                    </span>
+                                </div>
+
+                                <div class="signal-date">
+                                    {{ signal.created_at.strftime('%d/%m/%Y %H:%M') if signal.created_at else "—" }}
+                                </div>
+                            </div>
+
+                            <div class="signal-pro-body">
+                                <div class="signal-metric">
+                                    <span>🔥 Confiance</span>
+                                    <strong>{{ signal.confidence or 50 }}%</strong>
+                                </div>
+
+                                <div class="signal-metric">
+                                    <span>📊 Trend</span>
+                                    <strong>{{ signal.market_trend or "Neutre" }}</strong>
+                                </div>
+
+                                <div class="signal-metric">
+                                    <span>⚖️ R/R</span>
+                                    <strong>{{ signal.risk_reward or signal.compute_rr() or "—" }}</strong>
+                                </div>
+
+                                <div class="signal-metric">
+                                    <span>⏱ Timeframe</span>
+                                    <strong>{{ signal.timeframe or "—" }}</strong>
+                                </div>
+                            </div>
+
+                            <div class="signal-levels-row">
+                                <div class="signal-level-box">
+                                    <span>Entrée</span>
+                                    <strong>{{ signal.entry_price or "—" }}</strong>
+                                </div>
+                                <div class="signal-level-box">
+                                    <span>SL</span>
+                                    <strong>{{ signal.stop_loss or "—" }}</strong>
+                                </div>
+                                <div class="signal-level-box">
+                                    <span>TP</span>
+                                    <strong>{{ signal.take_profit or "—" }}</strong>
+                                </div>
+                                <div class="signal-level-box">
+                                    <span>Résultat</span>
+                                    {% if signal.result_percent is not none %}
+                                        <strong class="{% if signal.result_percent >= 0 %}text-buy{% else %}text-loss{% endif %}">
+                                            {{ signal.result_percent }}%
+                                        </strong>
+                                    {% else %}
+                                        <strong>—</strong>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="signal-pro-reason">
+                                💡 {{ signal.reason or "Analyse technique neutre" }}
+                            </div>
+
+                        </article>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="market-updates-empty">
+                        <p>Aucun signal n’est disponible pour le moment.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- RIGHT -->
+            <aside class="results-side-column">
+
+                <div class="results-side-card">
+                    <span class="panel-badge">Vue rapide</span>
+                    <h3>Résumé opérationnel</h3>
+
+                    <ul class="results-side-list">
+                        <li><strong>Total signaux :</strong> {{ total_signals or 0 }}</li>
+                        <li><strong>Trades ouverts :</strong> {{ open_signals or 0 }}</li>
+                        <li><strong>Trades clôturés :</strong> {{ closed_signals or 0 }}</li>
+                        <li><strong>Winrate :</strong> {{ winrate or 0 }}%</li>
+                        <li><strong>PnL estimé :</strong> {{ estimated_pnl or 0 }}</li>
+                    </ul>
+                </div>
+
+                <div class="results-side-card">
+                    <span class="panel-badge">Lecture</span>
+                    <h3>Interprétation</h3>
+                    <p class="results-side-text">
+                        Cette page aide à visualiser la performance sans se limiter à une simple liste de signaux.
+                        Elle apporte une lecture plus structurée de la qualité globale des setups publiés.
+                    </p>
+
+                    <div class="results-mini-grid">
+                        <div class="results-mini-box">
+                            <strong>Clarté</strong>
+                            <span>Lecture synthétique immédiate.</span>
+                        </div>
+                        <div class="results-mini-box">
+                            <strong>Suivi</strong>
+                            <span>Historique récent mieux valorisé.</span>
+                        </div>
+                        <div class="results-mini-box">
+                            <strong>Confiance</strong>
+                            <span>Des chiffres visibles renforcent la crédibilité.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-side-card">
+                    <span class="panel-badge">Navigation</span>
+                    <h3>Explorer ApexSignals</h3>
+
+                    <div class="preview-links-stack">
+                        <a href="{{ url_for('signals.signals_page') }}" class="preview-link-card">
+                            <strong>Signaux</strong>
+                            <span>Consultez l’ensemble des signaux publiés.</span>
+                        </a>
+
+                        <a href="{{ url_for('pages.trading_lab') }}" class="preview-link-card">
+                            <strong>Trading Lab</strong>
+                            <span>Approfondissez la lecture des setups.</span>
+                        </a>
+
+                        <a href="{{ url_for('billing.pricing') }}" class="preview-link-card">
+                            <strong>Offres</strong>
+                            <span>Choisissez votre niveau d’accès.</span>
+                        </a>
+                    </div>
+                </div>
+
+            </aside>
+
         </div>
+    </div>
+</section>
 
-        <div class="results-list">
-            {% for signal in signals %}
-                <div class="result-row result-row-rich">
-                    <div class="result-main">
-                        <div class="result-line-top">
-                            <span class="result-asset">{{ signal.asset }}</span>
-                            <span class="result-separator">•</span>
-                            <span class="result-action">{{ signal.action }}</span>
-                            <span class="result-separator">•</span>
-                            <span class="result-status">{{ signal.status }}</span>
-                            {% if signal.timeframe %}
-                                <span class="result-separator">•</span>
-                                <span class="result-timeframe">{{ signal.timeframe }}</span>
-                            {% endif %}
-                        </div>
-
-                        <div class="result-ai-box">
-                            <div class="result-ai-top">
-                                <span class="result-confidence">🔥 {{ signal.confidence }}%</span>
-                                <span class="result-confidence-label">{{ signal.confidence_label() }}</span>
-                            </div>
-
-                            <div class="result-reason">
-                                💡 {{ signal.reason if signal.reason else "Analyse technique neutre" }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="result-meta">
-                        <strong class="{% if signal.status == 'WIN' %}text-buy{% elif signal.status == 'LOSS' %}text-sell{% endif %}">
-                            {{ signal.created_at.strftime('%d/%m/%Y %H:%M') }}
-                        </strong>
-                    </div>
-                </div>
-            {% else %}
-                <div class="result-row">
-                    <span>Aucun signal disponible pour le moment.</span>
-                    <strong>-</strong>
-                </div>
-            {% endfor %}
+<section class="final-cta-section">
+    <div class="section-container">
+        <div class="final-cta-box">
+            <span class="final-cta-badge">Résultats • ApexSignals</span>
+            <h2>Une lecture plus premium de la performance</h2>
+            <p>
+                Winrate, trades ouverts, signaux clôturés, historique récent et logique de dashboard :
+                cette page transforme les résultats en véritable levier de crédibilité.
+            </p>
+            <div class="final-cta-actions">
+                <a href="{{ url_for('billing.pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="hero-btn-secondary white-outline-btn">Accéder au dashboard</a>
+                {% else %}
+                    <a href="{{ url_for('auth.register') }}" class="hero-btn-secondary white-outline-btn">Créer mon compte</a>
+                {% endif %}
+            </div>
         </div>
     </div>
 </section>
@@ -141,15 +292,17 @@
 <footer class="site-footer">
     <div class="section-container footer-inner">
         <div class="footer-brand">
-            <h3>Velwolef</h3>
-            <p>Résultats, historique et lecture premium des performances.</p>
+            <h3>ApexSignals</h3>
+            <p>Une plateforme plus claire pour suivre les performances, les résultats et l’évolution des signaux.</p>
         </div>
 
         <div class="footer-links">
             <a href="{{ url_for('main.home') }}">Accueil</a>
             <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
+            <a href="{{ url_for('signals.results') }}">Résultats</a>
             <a href="{{ url_for('billing.pricing') }}">Offres</a>
             <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
+            <a href="{{ url_for('pages.contact') }}">Contact</a>
         </div>
     </div>
 </footer>

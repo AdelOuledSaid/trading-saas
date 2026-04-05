@@ -2966,3 +2966,433 @@ body.success-page::after {
         gap: 20px;
     }
 }
+/* =========================================================
+   RESULTS PAGE — ULTRA PREMIUM
+========================================================= */
+
+.results-hero {
+    padding: 76px 0 34px;
+}
+
+.results-hero-top {
+    max-width: 860px;
+    margin: 0 auto 34px;
+    text-align: center;
+}
+
+.results-top-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.results-summary-card {
+    padding: 24px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.88);
+    border: 1px solid rgba(226,232,240,0.95);
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(10px);
+    transition: var(--transition);
+}
+
+.results-summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+.results-summary-card h2 {
+    color: var(--text-main);
+    font-size: 2.2rem;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin: 0 0 10px;
+}
+
+.results-summary-card p {
+    color: var(--text-muted);
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+.results-card-kicker {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: var(--blue);
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.results-summary-card.featured-card {
+    background: linear-gradient(135deg, #0f172a, #1d4ed8);
+    border: none;
+    box-shadow: 0 20px 44px rgba(15, 23, 42, 0.16);
+}
+
+.results-summary-card.featured-card h2,
+.results-summary-card.featured-card p,
+.results-summary-card.featured-card .results-card-kicker {
+    color: white;
+}
+
+.results-summary-card.featured-card p {
+    opacity: 0.9;
+}
+
+.results-dashboard-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.42fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.results-main-column,
+.results-side-column {
+    display: grid;
+    gap: 20px;
+}
+
+.results-panel,
+.results-side-card {
+    padding: 24px;
+    border-radius: 26px;
+    background: rgba(255,255,255,0.90);
+    border: 1px solid rgba(226,232,240,0.95);
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(10px);
+}
+
+.results-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.results-panel-head h2 {
+    margin: 8px 0 0;
+    color: var(--text-main);
+    font-size: 2rem;
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: -0.04em;
+}
+
+.performance-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 16px;
+}
+
+.performance-card {
+    padding: 20px;
+    border-radius: 20px;
+    background: linear-gradient(180deg, #ffffff, #f8fbff);
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 24px rgba(15,23,42,0.04);
+}
+
+.performance-card strong {
+    display: block;
+    margin: 10px 0 6px;
+    color: var(--text-main);
+    font-size: 1.8rem;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.04em;
+}
+
+.performance-card small {
+    color: var(--text-muted);
+    line-height: 1.6;
+    font-size: 0.88rem;
+}
+
+.performance-label {
+    display: inline-block;
+    color: var(--blue);
+    font-weight: 800;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.dark-card {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    border: none;
+    box-shadow: 0 18px 36px rgba(15, 23, 42, 0.16);
+}
+
+.dark-card .performance-card-head span,
+.dark-card p {
+    color: rgba(255,255,255,0.82);
+}
+
+.dark-card .performance-card-head strong {
+    color: white;
+}
+
+.performance-card-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+}
+
+.performance-card-head strong {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.progress-wrap {
+    margin: 16px 0 14px;
+}
+
+.progress-track {
+    width: 100%;
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.16);
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #22c55e, #3b82f6);
+}
+
+.results-side-card h3 {
+    margin: 8px 0 14px;
+    color: var(--text-main);
+    font-size: 1.25rem;
+    font-weight: 900;
+}
+
+.results-side-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+}
+
+.results-side-list li {
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #f8fbff;
+    border: 1px solid var(--border);
+    color: var(--text-soft);
+    line-height: 1.6;
+    font-size: 0.94rem;
+}
+
+.results-side-text {
+    margin: 0 0 16px;
+    color: var(--text-muted);
+    line-height: 1.75;
+}
+
+.results-mini-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.results-mini-box {
+    padding: 14px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #ffffff, #f8fbff);
+    border: 1px solid var(--border);
+}
+
+.results-mini-box strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--text-main);
+}
+
+.results-mini-box span {
+    color: var(--text-muted);
+    line-height: 1.6;
+    font-size: 0.92rem;
+}
+
+.preview-links-stack {
+    display: grid;
+    gap: 12px;
+}
+
+/* =========================
+   SIGNALS PRO UI
+========================= */
+
+.signals-grid-pro {
+    display: grid;
+    gap: 18px;
+}
+
+.signal-pro-card {
+    padding: 22px;
+    border-radius: 24px;
+    background: linear-gradient(180deg, #ffffff, #f8fbff);
+    border: 1px solid rgba(226,232,240,0.95);
+    box-shadow: 0 14px 30px rgba(15,23,42,0.04);
+    transition: var(--transition);
+}
+
+.signal-pro-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+.signal-pro-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.signal-left {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.signal-asset {
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: #eff6ff;
+    color: var(--blue);
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.signal-action.buy {
+    color: var(--green);
+    font-weight: 900;
+}
+
+.signal-action.sell {
+    color: var(--red);
+    font-weight: 900;
+}
+
+.signal-date {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.signal-pro-body {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.signal-metric {
+    padding: 14px;
+    border-radius: 16px;
+    background: #f8fbff;
+    border: 1px solid var(--border);
+}
+
+.signal-metric span {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--text-muted);
+    font-size: 0.76rem;
+}
+
+.signal-metric strong {
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+.signal-levels-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.signal-level-box {
+    padding: 14px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+}
+
+.signal-level-box span {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--text-muted);
+    font-size: 0.76rem;
+}
+
+.signal-level-box strong {
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+.signal-pro-reason {
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+/* =========================
+   RESULTS RESPONSIVE
+========================= */
+
+@media (max-width: 1200px) {
+    .results-top-grid,
+    .performance-grid,
+    .signal-pro-body,
+    .signal-levels-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .results-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .results-top-grid,
+    .performance-grid,
+    .signal-pro-body,
+    .signal-levels-row {
+        grid-template-columns: 1fr;
+    }
+
+    .results-panel-head,
+    .signal-pro-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .results-panel,
+    .results-side-card,
+    .signal-pro-card,
+    .results-summary-card {
+        padding: 20px;
+    }
+
+    .results-hero {
+        padding: 54px 0 22px;
+    }
+}
