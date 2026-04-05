@@ -238,6 +238,14 @@
                             <div class="rs-reason">
                                 💡 {{ signal.reason or "Analyse technique neutre" }}
                             </div>
+
+                            <button class="learn-btn" onclick="toggleLearn(this)">
+                                📚 Comprendre ce signal
+                            </button>
+
+                            <div class="learn-box">
+                                {{ (signal.reason or "") | explain_reason }}
+                            </div>
                         </article>
                         {% endfor %}
                     </div>
@@ -267,7 +275,7 @@
                     <h3>Une preuve visuelle plus crédible</h3>
                     <p>
                         En structurant les statistiques, l’historique et les indicateurs clés, cette page donne une image plus sérieuse,
-                         plus transparente et plus professionnelle de la plateforme.
+                        plus transparente et plus professionnelle de la plateforme.
                     </p>
                 </section>
 
@@ -336,6 +344,13 @@
         </div>
     </div>
 </footer>
+
+<script>
+function toggleLearn(btn) {
+    const box = btn.nextElementSibling;
+    box.style.display = box.style.display === "block" ? "none" : "block";
+}
+</script>
 
 </body>
 </html>

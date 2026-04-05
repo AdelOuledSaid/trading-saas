@@ -4,7 +4,7 @@ import config
 
 from app.extensions import db, login_manager, cache
 from app.core.auth import load_user
-
+from app.utils.explainer import explain_reason
 
 def create_app():
     app = Flask(
@@ -23,7 +23,7 @@ def create_app():
     app.config["REMEMBER_COOKIE_HTTPONLY"] = True
     app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
     app.config["PREFERRED_URL_SCHEME"] = "https"
-
+    app.jinja_env.filters['explain_reason'] = explain_reason
     db.init_app(app)
     login_manager.init_app(app)
     cache.init_app(app)
