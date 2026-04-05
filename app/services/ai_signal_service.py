@@ -1,3 +1,9 @@
+import random
+
+
+# =========================
+# SAFE HELPERS
+# =========================
 def _safe_float(value, default=None):
     try:
         if value is None or value == "":
@@ -23,6 +29,9 @@ def _safe_bool(value):
     return False
 
 
+# =========================
+# CONFIDENCE SCORE
+# =========================
 def compute_confidence(data):
     score = 50
 
@@ -36,48 +45,59 @@ def compute_confidence(data):
 
     # RSI
     if rsi is not None:
-        if rsi < 30 or rsi > 70:
-            score += 12
-        elif 30 <= rsi < 40 or 60 < rsi <= 70:
-            score += 6
+        if rsi < 30:
+            score += 20
+        elif rsi > 70:
+            score += 20
+        elif 30 <= rsi < 40:
+            score += 10
+        elif 60 < rsi <= 70:
+            score += 10
         elif 45 <= rsi <= 55:
-            score -= 4
+            score -= 5
 
     # Trend
-    if trend in {"bullish", "bearish"}:
-        score += 12
+    if trend == "bullish":
+        score += 15
+    elif trend == "bearish":
+        score += 15
     elif trend == "neutral":
         score -= 3
 
     # Breakout
     if breakout:
-        score += 10
+        score += 15
 
     # Volume
     if volume:
         score += 5
 
-    # ADX = force de tendance
+    # ADX
     if adx is not None:
         if adx >= 30:
-            score += 10
+            score += 12
         elif adx >= 22:
-            score += 6
+            score += 8
         elif adx < 18:
             score -= 5
 
-    # ATR : présence de volatilité exploitable
-    if atr is not None:
-        if atr > 0:
-            score += 3
+    # ATR (volatilité)
+    if atr is not None and atr > 0:
+        score += 4
 
-    # News sentiment optionnel
+    # News sentiment
     if news:
         score += max(-5, min(5, int(news * 10)))
+
+    # Petit random réaliste
+    score += random.randint(-2, 2)
 
     return max(50, min(score, 95))
 
 
+# =========================
+# GENERATE REASON
+# =========================
 def generate_reason(data):
     reasons = []
 
@@ -95,17 +115,15 @@ def generate_reason(data):
         elif rsi > 70:
             reasons.append("RSI overbought")
         elif 30 <= rsi < 40:
-            reasons.append("RSI en zone d'accumulation")
+            reasons.append("RSI accumulation")
         elif 60 < rsi <= 70:
-            reasons.append("RSI en zone de momentum")
+            reasons.append("RSI momentum")
 
     # Trend
     if trend == "bullish":
         reasons.append("trend bullish")
     elif trend == "bearish":
         reasons.append("trend bearish")
-    elif trend == "neutral":
-        reasons.append("trend neutral")
 
     # Breakout
     if breakout:
