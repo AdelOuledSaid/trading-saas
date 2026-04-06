@@ -17,13 +17,14 @@
 
 {% include "partials/navbar.html" %}
 
-<section class="home-hero">
+<section class="home-hero premium-hero hero-with-wave-bg">
     <div class="hero-bg-orb hero-bg-orb-1"></div>
     <div class="hero-bg-orb hero-bg-orb-2"></div>
+    <div class="hero-grid-lines"></div>
 
-    <div class="hero-container">
+    <div class="hero-container hero-container-premium">
         <div class="hero-left">
-            <div class="hero-badge">
+            <div class="hero-badge premium-badge">
                 Velwolef • Signaux • Trading Lab • Résultats
             </div>
 
@@ -59,9 +60,11 @@
         </div>
 
         <div class="hero-right">
-            <div class="hero-phone-scene">
+            <div class="hero-phone-wrap">
 
-                <div class="floating-badge floating-badge-top">
+                <div class="hero-phone-glow"></div>
+
+                <div class="floating-badge">
                     <span class="floating-dot"></span>
                     Signal actif
                 </div>
@@ -72,19 +75,24 @@
                     <span>Biais haussier maintenu sur les actifs majeurs</span>
                 </div>
 
-                <div class="phone-shell">
-                    <div class="phone-notch"></div>
+                <div class="iphone included-phone">
+                    <div class="iphone-notch"></div>
 
-                    <div class="phone-screen">
+                    <div class="iphone-screen">
+                        <div class="phone-header">
+                            <img src="{{ url_for('static', filename='logo.png') }}" alt="Velwolef">
+                            <span>Velwolef Mobile</span>
+                        </div>
+
                         <div class="phone-screen-top">
                             <div>
-                                <p class="phone-label">Velwolef Mobile</p>
+                                <p class="phone-label">Signal principal</p>
                                 <h3>BTCUSD • BUY</h3>
                             </div>
                             <span class="signal-status buy">Actif</span>
                         </div>
 
-                        <div class="mobile-price-card">
+                        <div class="signal-card">
                             <div class="mobile-price-head">
                                 <span>Signal prioritaire</span>
                                 <strong>Bitcoin</strong>
@@ -140,7 +148,7 @@
                             </div>
                         </div>
 
-                        <div class="mobile-stats-grid">
+                        <div class="phone-mini-boxes">
                             <div class="mobile-stat-box">
                                 <span>TP</span>
                                 <strong>62 180</strong>
@@ -189,11 +197,11 @@
                 <p>Surveillance des marchés les plus actifs et suivi continu des opportunités.</p>
             </div>
             <div class="home-stat-card">
-                <h3>+1200</h3>
+                <h3 class="stat-green">+1200</h3>
                 <p>Trades affichés dans l’historique pour offrir une lecture plus large.</p>
             </div>
             <div class="home-stat-card">
-                <h3>73%</h3>
+                <h3 class="stat-blue">73%</h3>
                 <p>Winrate moyen mis en avant sur les résultats récents visibles.</p>
             </div>
             <div class="home-stat-card">
@@ -577,11 +585,11 @@
 
         <div class="home-stats-grid">
             <div class="home-stat-card">
-                <h3>73%</h3>
+                <h3 class="stat-blue">73%</h3>
                 <p>Winrate moyen mis en avant sur les derniers résultats affichés.</p>
             </div>
             <div class="home-stat-card">
-                <h3>+1200</h3>
+                <h3 class="stat-green">+1200</h3>
                 <p>Trades affichés dans l’historique pour donner une vision plus large.</p>
             </div>
             <div class="home-stat-card">
