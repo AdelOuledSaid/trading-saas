@@ -1,50 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velwolf Signals - Vue globale marché</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="home-body signals-page bitcoin-page">
+
 {% include "partials/navbar.html" %}
 
-<section class="inner-hero construction-hero">
+<section class="inner-hero btc-hero">
+    <div class="section-container">
+        <div class="btc-hero-grid">
+
+            <!-- LEFT -->
+            <div class="btc-hero-left">
+                <span class="hero-badge">Velwolf Signals • Global Market View</span>
+
+                <h1 class="inner-page-title">
+                    Vue globale du marché et lecture premium des actifs
+                </h1>
+
+                <p class="inner-page-text">
+                    Cette page permet de comprendre rapidement le contexte global du marché : 
+                    rotation des capitaux, comportement du Bitcoin, rôle du Gold et influence macro.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="#macro" class="hero-btn-primary">Voir le contexte</a>
+                    <a href="#assets" class="hero-btn-secondary">Explorer les actifs</a>
+                </div>
+
+                <div class="hero-trust-row">
+                    <div class="trust-mini">
+                        <strong>Lecture annuelle</strong>
+                        <span>Comprendre pourquoi certains actifs montent pendant que d'autres chutent.</span>
+                    </div>
+
+                    <div class="trust-mini">
+                        <strong>Vision multi-actifs</strong>
+                        <span>BTC, ETH, GOLD et US100 dans une seule lecture.</span>
+                    </div>
+
+                    <div class="trust-mini">
+                        <strong>Utilité réelle</strong>
+                        <span>Lire le marché avant de suivre un signal.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="btc-hero-right">
+
+                <div class="mini-market-card">
+                    <span class="mini-market-label">Couverture</span>
+                    <h3>4 actifs</h3>
+                    <p>Les principaux marchés réunis.</p>
+                    <ul class="mini-market-list">
+                        <li>Bitcoin</li>
+                        <li>Ethereum</li>
+                        <li>Gold</li>
+                        <li>US100</li>
+                    </ul>
+                </div>
+
+                <div class="mini-market-card">
+                    <span class="mini-market-label">Macro</span>
+                    <h3>Facteurs clés</h3>
+                    <p>Les moteurs du marché.</p>
+                    <ul class="mini-market-list">
+                        <li>Taux d'intérêt</li>
+                        <li>Inflation</li>
+                        <li>Dollar</li>
+                    </ul>
+                </div>
+
+                <div class="mini-market-card">
+                    <span class="mini-market-label">Régime</span>
+                    <h3>Rotation</h3>
+                    <p>Le marché change de direction.</p>
+                    <ul class="mini-market-list">
+                        <li>Risk-on</li>
+                        <li>Risk-off</li>
+                        <li>Volatilité</li>
+                    </ul>
+                </div>
+
+                <div class="mini-market-card">
+                    <span class="mini-market-label">Objectif</span>
+                    <h3>Clarté</h3>
+                    <p>Comprendre avant d’agir.</p>
+                    <ul class="mini-market-list">
+                        <li>Contexte</li>
+                        <li>Lecture</li>
+                        <li>Décision</li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- MACRO -->
+<section class="section-standard" id="macro">
     <div class="section-container">
 
-        <div class="construction-box">
-
-            <span class="hero-badge">ApexSignals</span>
-
-            <h1 class="inner-page-title">
-                Page en cours de construction
-            </h1>
-
-            <p class="inner-page-text">
-                Cette section est actuellement en développement. Elle fera bientôt partie
-                de l’écosystème ApexSignals avec du contenu structuré, des outils et
-                des fonctionnalités premium.
+        <div class="section-title">
+            <span>Macro</span>
+            <h2>Comprendre le marché global</h2>
+            <p>
+                Le marché évolue selon la liquidité, les taux et le sentiment.
             </p>
+        </div>
 
-            <div class="construction-features">
-                <div class="construction-feature">
-                    <strong>Contenu structuré</strong>
-                    <span>Une lecture claire et organisée des informations.</span>
-                </div>
-
-                <div class="construction-feature">
-                    <strong>Approche premium</strong>
-                    <span>Une expérience pensée comme une vraie plateforme.</span>
-                </div>
-
-                <div class="construction-feature">
-                    <strong>Ajout progressif</strong>
-                    <span>De nouvelles sections seront ajoutées régulièrement.</span>
-                </div>
+        <div class="home-stats-grid">
+            <div class="home-stat-card">
+                <h3>Risk-on</h3>
+                <p>Le marché prend du risque → crypto monte.</p>
             </div>
 
-            <div class="hero-actions">
-                <a href="{{ url_for('main.home') }}" class="hero-btn-primary">
-                    Retour à l’accueil
-                </a>
-
-                <a href="{{ url_for('billing.pricing') }}" class="hero-btn-secondary">
-                    Voir les offres
-                </a>
+            <div class="home-stat-card">
+                <h3>Risk-off</h3>
+                <p>Le marché se protège → gold monte.</p>
             </div>
+
+            <div class="home-stat-card">
+                <h3>Inflation</h3>
+                <p>Impact direct sur les actifs.</p>
+            </div>
+
+            <div class="home-stat-card">
+                <h3>Taux</h3>
+                <p>Influencent toute la structure du marché.</p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ASSETS -->
+<section class="section-standard" id="assets">
+    <div class="section-container">
+
+        <div class="section-title">
+            <span>Actifs</span>
+            <h2>Accès rapide</h2>
+        </div>
+
+        <div class="preview-links-grid">
+
+            <a href="{{ url_for('signals.signals_btc') }}" class="preview-link-card">
+                <strong>Bitcoin</strong>
+                <span>Analyse BTC</span>
+            </a>
+
+            <a href="{{ url_for('signals.eth_signals_page') }}" class="preview-link-card">
+                <strong>Ethereum</strong>
+                <span>Analyse ETH</span>
+            </a>
+
+            <a href="{{ url_for('signals.signals_gold') }}" class="preview-link-card">
+                <strong>Gold</strong>
+                <span>Analyse Gold</span>
+            </a>
+
+            <a href="{{ url_for('signals.signals_us100') }}" class="preview-link-card">
+                <strong>US100</strong>
+                <span>Analyse US100</span>
+            </a>
 
         </div>
 
     </div>
 </section>
+
+</body>
+</html>
