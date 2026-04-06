@@ -2015,19 +2015,62 @@
     font-size: 13px;
     line-height: 1.5;
 }
+
+
+
+
+
 body.home-body::after {
     content: "";
+    display: block !important;
     position: fixed;
     top: 50%;
     left: 50%;
-    width: 720px;
-    height: 720px;
+    width: 760px;
+    height: 760px;
     transform: translate(-50%, -50%);
     pointer-events: none;
     z-index: 0;
-    background-image: url("static/logo.png");
-    background-repeat: no-repeat;
-    background-position: center;
+
+    background: url("/static/logo.png") no-repeat center;
     background-size: contain;
-    opacity: 0.035;
+
+    opacity: 0.02;
+    filter: blur(0.4px);
+    animation: logoFloat 9s ease-in-out infinite,
+               logoPulse 6s ease-in-out infinite;
+}
+
+
+@keyframes logoFloat {
+    0% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+    25% {
+        transform: translate(-50%, -51%) scale(1.015) rotate(0.4deg);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.03) rotate(0deg);
+    }
+    75% {
+        transform: translate(-50%, -49%) scale(1.015) rotate(-0.4deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+}
+
+@keyframes logoPulse {
+    0% {
+        opacity: 0.05;
+        filter: blur(0.5px);
+    }
+    50% {
+        opacity: 0.09;
+        filter: blur(0.2px);
+    }
+    100% {
+        opacity: 0.05;
+        filter: blur(0.5px);
+    }
 }

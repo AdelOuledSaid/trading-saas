@@ -2877,3 +2877,20 @@ body.success-page::after {
 .result-card {
     padding: 20px;
 }
+
+body.home-body::after {
+    content: "";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 720px;
+    height: 720px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+    background-image: url("static/logo.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    opacity: 0.035;
+}
