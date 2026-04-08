@@ -3,623 +3,663 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApexSignals - Ethereum Signals</title>
-    <meta name="description" content="Analyse Ethereum sur ApexSignals : signaux ETHUSD, graphique TradingView, contexte de marché, actualités récentes et historique des setups.">
+    <title>Velwolf Signals | Ethereum Signals & Analyse ETHUSD</title>
+    <meta name="description" content="Suivez Ethereum sur Velwolf Signals avec une page dédiée : prix ETH en direct, graphique TradingView, niveaux techniques, contexte de marché, actualités récentes et historique premium des signaux ETHUSD.">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='eth.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 <body class="home-body ethereum-page">
 
 {% include "partials/navbar.html" %}
 
-<section class="inner-hero btc-hero">
-    <div class="section-container">
-        <div class="btc-hero-grid">
-            <div class="btc-hero-left">
-                <span class="hero-badge eth-badge">
-                    <span class="eth-badge-icon">Ξ</span>
-                    Ethereum Signals
-                </span>
+<main class="eth-page-shell">
 
-                <h1 class="inner-page-title">
-                    Ethereum dans ApexSignals : signaux, structure du marché et lecture technique
-                </h1>
+    <!-- HERO -->
+    <section class="eth-hero-section">
+        <div class="section-container">
+            <div class="eth-hero-grid">
 
-                <p class="inner-page-text">
-                    Ethereum occupe une place stratégique dans l’écosystème crypto. Cette page rassemble les éléments
-                    les plus utiles pour le suivre avec une lecture plus professionnelle : prix live, structure de marché,
-                    niveaux clés, sentiment global, actualités récentes et historique des signaux ETHUSD publiés sur la plateforme.
-                </p>
-
-                <div class="hero-actions">
-                    <a href="#eth-live-chart" class="hero-btn-primary">Voir le chart live</a>
-                    <a href="#eth-signals-history" class="hero-btn-secondary">Voir les derniers signaux</a>
-                </div>
-
-                <div class="hero-trust-row">
-                    <div class="trust-mini">
-                        <strong>Actif majeur</strong>
-                        <span>Le deuxième pilier du marché crypto.</span>
+                <div class="eth-hero-content">
+                    <div class="eth-hero-badge">
+                        <span class="eth-badge-icon">Ξ</span>
+                        <span>Ethereum Market Intelligence</span>
                     </div>
-                    <div class="trust-mini">
-                        <strong>Lecture structurée</strong>
-                        <span>Prix, niveaux, news et historique réunis.</span>
+
+                    <h1 class="eth-main-title">
+                        Une page premium pour suivre Ethereum avec une lecture plus claire, plus riche et plus stratégique
+                    </h1>
+
+                    <p class="eth-main-text">
+                        Ethereum occupe une place centrale dans l’écosystème crypto. Cette page rassemble l’essentiel
+                        pour le suivre dans un cadre plus professionnel : prix live, structure de marché, niveaux techniques,
+                        contexte, sentiment global, actualités récentes et historique des signaux ETHUSD publiés sur Velwolf Signals.
+                    </p>
+
+                    <div class="eth-hero-actions">
+                        <a href="#eth-dashboard" class="eth-btn eth-btn-primary">Voir le dashboard</a>
+                        <a href="#eth-signals-history" class="eth-btn eth-btn-secondary">Historique des signaux</a>
                     </div>
-                    <div class="trust-mini">
-                        <strong>Approche premium</strong>
-                        <span>Une page plus claire et plus crédible pour suivre ETH.</span>
+
+                    <div class="eth-hero-points">
+                        <div class="eth-point-card">
+                            <strong>Actif majeur</strong>
+                            <span>Ethereum reste le pilier principal de l’écosystème smart contracts.</span>
+                        </div>
+                        <div class="eth-point-card">
+                            <strong>Lecture structurée</strong>
+                            <span>Prix, niveaux, sentiment et news réunis au même endroit.</span>
+                        </div>
+                        <div class="eth-point-card">
+                            <strong>Format premium</strong>
+                            <span>Une page plus crédible et plus forte visuellement pour valoriser la plateforme.</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="btc-hero-right">
-                <div class="mini-market-card">
-                    <span class="mini-market-label">ETHUSD</span>
-                    <h3>{{ eth_price if eth_price else "Mise à jour..." }}</h3>
-                    <p>Prix spot actuel</p>
+                <div class="eth-hero-side">
+                    <div class="eth-stat-card eth-stat-highlight">
+                        <span class="eth-stat-label">ETHUSD</span>
+                        <h2>{{ eth_price if eth_price else "Mise à jour..." }}</h2>
+                        <p>Prix spot actuel</p>
+                    </div>
+
+                    <div class="eth-stat-card">
+                        <span class="eth-stat-label">Variation 24h</span>
+                        <h2>
+                            {% if eth_change_24h not in [None, "", "..."] %}
+                                {{ eth_change_24h }}%
+                            {% else %}
+                                Mise à jour...
+                            {% endif %}
+                        </h2>
+                        <p>Évolution récente</p>
+                    </div>
+
+                    <div class="eth-stat-card">
+                        <span class="eth-stat-label">Tendance</span>
+                        <h2>{{ eth_trend_label or "Neutre" }}</h2>
+                        <p>Lecture synthétique</p>
+                    </div>
+
+                    <div class="eth-stat-card">
+                        <span class="eth-stat-label">Volatilité</span>
+                        <h2>{{ eth_volatility_label or "Modérée" }}</h2>
+                        <p>Rythme du marché</p>
+                    </div>
                 </div>
 
-                <div class="mini-market-card">
-                    <span class="mini-market-label">Variation 24h</span>
-                    <h3>
-                        {% if eth_change_24h not in [None, "", "..."] %}
-                            {{ eth_change_24h }}%
-                        {% else %}
-                            Mise à jour...
-                        {% endif %}
-                    </h3>
-                    <p>Évolution récente du marché</p>
-                </div>
-
-                <div class="mini-market-card">
-                    <span class="mini-market-label">Tendance</span>
-                    <h3>{{ eth_trend_label or "Neutre" }}</h3>
-                    <p>Lecture synthétique actuelle</p>
-                </div>
-
-                <div class="mini-market-card">
-                    <span class="mini-market-label">Volatilité</span>
-                    <h3>{{ eth_volatility_label or "Modérée" }}</h3>
-                    <p>Rythme du marché observé</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-{% if eth_total_signals and eth_total_signals > 0 %}
-<section class="home-stats-section">
-    <div class="section-container">
-        <div class="section-title">
-            <span>Vue d’ensemble</span>
-            <h2>Les chiffres clés du suivi Ethereum</h2>
-            <p>
-                Retrouvez ici une lecture rapide de l’activité ETHUSD sur la plateforme, avec les statistiques les plus utiles
-                pour apprécier le rythme, la qualité et la dynamique des signaux publiés.
-            </p>
-        </div>
-
-        <div class="home-stats-grid">
-            <div class="home-stat-card">
-                <h3>{{ eth_total_signals }}</h3>
-                <p>Signaux Ethereum enregistrés</p>
-            </div>
-
-            <div class="home-stat-card">
-                <h3>{{ eth_winrate or 0 }}%</h3>
-                <p>Winrate observé sur les trades clôturés</p>
-            </div>
-
-            <div class="home-stat-card">
-                <h3>{{ eth_open_signals or 0 }}</h3>
-                <p>Signaux actuellement ouverts</p>
-            </div>
-
-            <div class="home-stat-card">
-                <h3>{{ eth_estimated_pnl or 0 }}</h3>
-                <p>PnL cumulé estimé sur ETHUSD</p>
             </div>
         </div>
-    </div>
-</section>
-{% endif %}
+    </section>
 
-<section class="section-standard" id="eth-live-chart">
-    <div class="section-container">
-        <div class="section-title">
-            <span>Chart en direct</span>
-            <h2>Le graphique Ethereum en temps réel</h2>
-            <p>
-                Suivez le comportement de l’ETHUSD depuis un graphique interactif. Cette zone permet de visualiser la tendance,
-                les réactions sur niveaux techniques et la structure du marché dans un environnement plus professionnel.
-            </p>
-        </div>
-
-        <div class="btc-chart-layout">
-            <div class="btc-chart-box">
-                <div class="tradingview-widget-container">
-                    <div id="tradingview_eth_chart"></div>
-                    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-                    <script type="text/javascript">
-                        new TradingView.widget({
-                            "width": "100%",
-                            "height": 560,
-                            "symbol": "BINANCE:ETHUSDT",
-                            "interval": "240",
-                            "timezone": "Europe/Paris",
-                            "theme": "light",
-                            "style": "1",
-                            "locale": "fr",
-                            "toolbar_bg": "#f8f9fd",
-                            "enable_publishing": false,
-                            "hide_top_toolbar": false,
-                            "hide_legend": false,
-                            "save_image": false,
-                            "container_id": "tradingview_eth_chart"
-                        });
-                    </script>
-                </div>
-            </div>
-
-            <div class="btc-side-panel">
-                <div class="btc-info-card">
-                    <span class="panel-badge">Marché</span>
-                    <h3>Aperçu rapide</h3>
-                    <ul class="btc-info-list">
-                        <li><strong>Prix actuel :</strong> {{ eth_price if eth_price else "Mise à jour..." }}</li>
-
-                        {% if eth_change_24h not in [None, "", "..."] %}
-                        <li><strong>Variation 24h :</strong> {{ eth_change_24h }}%</li>
-                        {% endif %}
-
-                        {% if eth_high_24h not in [None, "", "..."] %}
-                        <li><strong>Plus haut 24h :</strong> {{ eth_high_24h }}</li>
-                        {% endif %}
-
-                        {% if eth_low_24h not in [None, "", "..."] %}
-                        <li><strong>Plus bas 24h :</strong> {{ eth_low_24h }}</li>
-                        {% endif %}
-
-                        {% if eth_volume_24h not in [None, "", "..."] %}
-                        <li><strong>Volume 24h :</strong> {{ eth_volume_24h }}</li>
-                        {% endif %}
-
-                        {% if eth_market_cap not in [None, "", "..."] %}
-                        <li><strong>Capitalisation :</strong> {{ eth_market_cap }}</li>
-                        {% endif %}
-                    </ul>
-                </div>
-
-                <div class="btc-info-card">
-                    <span class="panel-badge">Structure</span>
-                    <h3>Niveaux importants</h3>
-                    <ul class="btc-info-list">
-                        {% if eth_support_1 not in [None, "", "..."] %}
-                        <li><strong>Support 1 :</strong> {{ eth_support_1 }}</li>
-                        {% endif %}
-
-                        {% if eth_support_2 not in [None, "", "..."] %}
-                        <li><strong>Support 2 :</strong> {{ eth_support_2 }}</li>
-                        {% endif %}
-
-                        {% if eth_resistance_1 not in [None, "", "..."] %}
-                        <li><strong>Résistance 1 :</strong> {{ eth_resistance_1 }}</li>
-                        {% endif %}
-
-                        {% if eth_resistance_2 not in [None, "", "..."] %}
-                        <li><strong>Résistance 2 :</strong> {{ eth_resistance_2 }}</li>
-                        {% endif %}
-
-                        <li><strong>Biais :</strong> {{ eth_trend_label or "Neutre" }}</li>
-                    </ul>
-                </div>
-
-                <div class="btc-info-card">
-                    <span class="panel-badge">Sentiment</span>
-                    <h3>Contexte du marché</h3>
-                    <ul class="btc-info-list">
+    <!-- STRIP -->
+    <section class="eth-market-strip">
+        <div class="section-container">
+            <div class="eth-market-strip-inner">
+                <div class="eth-strip-item">
+                    <span>Fear & Greed</span>
+                    <strong>
                         {% if fear_greed_value not in [None, "", "..."] %}
-                        <li><strong>Fear & Greed :</strong> {{ fear_greed_value }} / {{ fear_greed_classification or "Neutre" }}</li>
+                            {{ fear_greed_value }}
+                        {% else %}
+                            —
                         {% endif %}
+                        / {{ fear_greed_classification or "Neutre" }}
+                    </strong>
+                </div>
 
-                        <li><strong>Tendance :</strong> {{ eth_trend_label or "Neutre" }}</li>
-                        <li><strong>Volatilité :</strong> {{ eth_volatility_label or "Modérée" }}</li>
+                <div class="eth-strip-item">
+                    <span>Plus haut 24h</span>
+                    <strong>{{ eth_high_24h or "—" }}</strong>
+                </div>
 
-                        {% if eth_market_cap not in [None, "", "..."] %}
-                        <li><strong>Poids marché :</strong> {{ eth_market_cap }}</li>
+                <div class="eth-strip-item">
+                    <span>Plus bas 24h</span>
+                    <strong>{{ eth_low_24h or "—" }}</strong>
+                </div>
+
+                <div class="eth-strip-item">
+                    <span>Volume 24h</span>
+                    <strong>{{ eth_volume_24h or "—" }}</strong>
+                </div>
+
+                <div class="eth-strip-item">
+                    <span>Capitalisation</span>
+                    <strong>{{ eth_market_cap or "—" }}</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section class="eth-section" id="eth-dashboard">
+        <div class="section-container">
+            <div class="eth-section-heading center">
+                <span class="eth-section-kicker">Market dashboard</span>
+                <h2>Vue d’ensemble du marché Ethereum</h2>
+                <p>
+                    Une synthèse claire des métriques les plus utiles pour lire rapidement la dynamique actuelle de l’ETHUSD.
+                </p>
+            </div>
+
+            <div class="eth-kpi-grid">
+                <div class="eth-kpi-card eth-kpi-featured">
+                    <span>Total signaux</span>
+                    <strong>{{ eth_total_signals or 0 }}</strong>
+                    <p>Signaux Ethereum enregistrés sur la plateforme</p>
+                </div>
+
+                <div class="eth-kpi-card">
+                    <span>Winrate</span>
+                    <strong>{{ eth_winrate or 0 }}%</strong>
+                    <p>Performance observée sur les trades clôturés</p>
+                </div>
+
+                <div class="eth-kpi-card">
+                    <span>Signaux ouverts</span>
+                    <strong>{{ eth_open_signals or 0 }}</strong>
+                    <p>Setups actuellement actifs</p>
+                </div>
+
+                <div class="eth-kpi-card">
+                    <span>PnL estimé</span>
+                    <strong>{{ eth_estimated_pnl or 0 }}</strong>
+                    <p>Lecture synthétique de performance cumulée</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CHART + SIDE -->
+    <section class="eth-section" id="eth-live-chart">
+        <div class="section-container">
+            <div class="eth-section-heading">
+                <span class="eth-section-kicker">Live chart & market structure</span>
+                <h2>Graphique Ethereum, niveaux techniques et contexte</h2>
+                <p>
+                    Un bloc central plus dense et plus premium pour suivre le marché en temps réel, lire les zones clés
+                    et visualiser rapidement la structure de l’ETHUSD.
+                </p>
+            </div>
+
+            <div class="eth-main-grid">
+
+                <div class="eth-main-left">
+                    <div class="eth-panel eth-chart-panel">
+                        <div class="eth-panel-head">
+                            <div>
+                                <span class="eth-panel-badge">Graphique live</span>
+                                <h3>ETHUSD · Vue TradingView</h3>
+                            </div>
+                            <div class="eth-panel-meta">
+                                <span>Intervalle : 4H</span>
+                                <span>Marché : Binance</span>
+                            </div>
+                        </div>
+
+                        <div class="eth-chart-wrap">
+                            <div id="tradingview_eth_chart"></div>
+                        </div>
+                    </div>
+
+                    <div class="eth-mini-grid">
+                        <div class="eth-panel">
+                            <span class="eth-panel-badge">Résumé marché</span>
+                            <h3>Lecture rapide</h3>
+                            <ul class="eth-list-clean">
+                                <li><strong>Prix actuel :</strong> {{ eth_price if eth_price else "Mise à jour..." }}</li>
+                                <li><strong>Variation 24h :</strong>
+                                    {% if eth_change_24h not in [None, "", "..."] %}
+                                        {{ eth_change_24h }}%
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </li>
+                                <li><strong>Tendance :</strong> {{ eth_trend_label or "Neutre" }}</li>
+                                <li><strong>Volatilité :</strong> {{ eth_volatility_label or "Modérée" }}</li>
+                                <li><strong>Capitalisation :</strong> {{ eth_market_cap or "—" }}</li>
+                            </ul>
+                        </div>
+
+                        <div class="eth-panel">
+                            <span class="eth-panel-badge">Repères de lecture</span>
+                            <h3>Comment lire Ethereum</h3>
+                            <p class="eth-reading-text">
+                                Ethereum offre souvent une lecture complémentaire à Bitcoin. Sa structure de marché
+                                dépend non seulement de la tendance générale, mais aussi du momentum des altcoins,
+                                des zones techniques majeures et du contexte lié à son écosystème.
+                            </p>
+
+                            <div class="eth-mini-points">
+                                <div class="eth-mini-point">
+                                    <strong>Tendance</strong>
+                                    <span>{{ eth_trend_label or "Neutre" }}</span>
+                                </div>
+                                <div class="eth-mini-point">
+                                    <strong>Momentum</strong>
+                                    <span>Important autour des cassures et réintégrations</span>
+                                </div>
+                                <div class="eth-mini-point">
+                                    <strong>Volatilité</strong>
+                                    <span>{{ eth_volatility_label or "Modérée" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="eth-main-right">
+                    <div class="eth-panel">
+                        <span class="eth-panel-badge">Structure</span>
+                        <h3>Niveaux importants</h3>
+                        <ul class="eth-list-clean">
+                            <li><strong>Support 1 :</strong> {{ eth_support_1 or "—" }}</li>
+                            <li><strong>Support 2 :</strong> {{ eth_support_2 or "—" }}</li>
+                            <li><strong>Résistance 1 :</strong> {{ eth_resistance_1 or "—" }}</li>
+                            <li><strong>Résistance 2 :</strong> {{ eth_resistance_2 or "—" }}</li>
+                            <li><strong>Biais :</strong> {{ eth_trend_label or "Neutre" }}</li>
+                        </ul>
+                    </div>
+
+                    <div class="eth-panel">
+                        <span class="eth-panel-badge">Sentiment</span>
+                        <h3>Contexte du marché</h3>
+                        <ul class="eth-list-clean">
+                            <li>
+                                <strong>Fear & Greed :</strong>
+                                {% if fear_greed_value not in [None, "", "..."] %}
+                                    {{ fear_greed_value }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                                / {{ fear_greed_classification or "Neutre" }}
+                            </li>
+                            <li><strong>Tendance :</strong> {{ eth_trend_label or "Neutre" }}</li>
+                            <li><strong>Volatilité :</strong> {{ eth_volatility_label or "Modérée" }}</li>
+                            <li><strong>Capitalisation :</strong> {{ eth_market_cap or "—" }}</li>
+                        </ul>
+                    </div>
+
+                    <div class="eth-panel">
+                        <span class="eth-panel-badge">Lecture setup</span>
+                        <h3>Comment lire un scénario ETH</h3>
+                        <p class="eth-reading-text">
+                            Un bon setup Ethereum repose sur une structure logique, une invalidation claire,
+                            un objectif cohérent et un contexte technique qui soutient vraiment le scénario.
+                        </p>
+
+                        <div class="eth-mini-points column">
+                            <div class="eth-mini-point">
+                                <strong>Entrée</strong>
+                                <span>Zone centrale du scénario</span>
+                            </div>
+                            <div class="eth-mini-point">
+                                <strong>Stop loss</strong>
+                                <span>Invalidation claire</span>
+                            </div>
+                            <div class="eth-mini-point">
+                                <strong>Take profit</strong>
+                                <span>Objectif cohérent avec la structure</span>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- WHY ETH -->
+    <section class="eth-section">
+        <div class="section-container">
+            <div class="eth-why-box">
+                <div class="eth-why-left">
+                    <span class="eth-section-kicker">Pourquoi Ethereum</span>
+                    <h2>L’actif central de l’écosystème smart contracts</h2>
+                    <p>
+                        Ethereum occupe une place unique dans l’univers crypto. Son rôle dépasse la simple variation de prix :
+                        il reflète aussi l’activité on-chain, la dynamique des applications décentralisées, la liquidité DeFi,
+                        une partie du sentiment sur les altcoins et l’évolution d’un des réseaux les plus observés du marché.
+                    </p>
+                </div>
+
+                <div class="eth-why-right">
+                    <div class="eth-why-card">
+                        <strong>Actif structurant</strong>
+                        <span>Ethereum reste une référence pour lire l’appétit global sur les altcoins.</span>
+                    </div>
+                    <div class="eth-why-card">
+                        <strong>Écosystème vivant</strong>
+                        <span>Son réseau influence de nombreux usages crypto au-delà du simple trading.</span>
+                    </div>
+                    <div class="eth-why-card">
+                        <strong>Profondeur stratégique</strong>
+                        <span>Une page ETH dédiée renforce la crédibilité et la richesse éditoriale de la plateforme.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MARKET STRUCTURE -->
+    <section class="eth-section">
+        <div class="section-container">
+            <div class="eth-section-heading">
+                <span class="eth-section-kicker">Structure du marché</span>
+                <h2>Comment lire Ethereum dans une logique de trading</h2>
+                <p>
+                    Cette zone aide à comprendre comment Ethereum peut être interprété à travers quatre piliers :
+                    tendance, zones clés, momentum et validation du scénario.
+                </p>
+            </div>
+
+            <div class="eth-feature-grid">
+                <div class="eth-feature-card">
+                    <h3>Tendance dominante</h3>
+                    <p>
+                        Identifier la tendance principale permet d’éviter de trader contre la structure globale.
+                        Ethereum alterne souvent entre phases directionnelles et consolidations, parfois avec plus de nervosité que Bitcoin.
+                    </p>
+                </div>
+
+                <div class="eth-feature-card">
+                    <h3>Supports et résistances</h3>
+                    <p>
+                        Les zones techniques importantes restent décisives. Elles concentrent les réactions du prix
+                        et servent souvent de points de validation pour les scénarios d’achat ou de vente.
+                    </p>
+                </div>
+
+                <div class="eth-feature-card">
+                    <h3>Volatilité et momentum</h3>
+                    <p>
+                        Ethereum peut accélérer rapidement, surtout lors des phases d’expansion du marché crypto.
+                        Comprendre cette vitesse de mouvement aide à mieux calibrer le risque et la qualité d’un setup.
+                    </p>
+                </div>
+
+                <div class="eth-feature-card">
+                    <h3>Confirmation du scénario</h3>
+                    <p>
+                        Un signal ETH pertinent ne repose pas uniquement sur un prix d’entrée. Il doit aussi s’appuyer
+                        sur un contexte technique, une invalidation claire et un objectif cohérent.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section class="eth-section">
+        <div class="section-container">
+            <div class="eth-section-heading">
+                <span class="eth-section-kicker">Repères historiques</span>
+                <h2>Ethereum à travers ses grandes étapes</h2>
+                <p>
+                    Cette frise rappelle pourquoi Ethereum est devenu l’un des actifs les plus importants de l’écosystème crypto.
+                </p>
+            </div>
+
+            <div class="eth-timeline-grid">
+                <div class="eth-timeline-card">
+                    <span class="eth-timeline-year">2015</span>
+                    <h3>Lancement du réseau</h3>
+                    <p>Ethereum démarre avec une ambition différente : créer une infrastructure programmable pour les applications décentralisées.</p>
+                </div>
+
+                <div class="eth-timeline-card">
+                    <span class="eth-timeline-year">2017–2021</span>
+                    <h3>Explosion de l’écosystème</h3>
+                    <p>Le développement des tokens, de la DeFi et des NFT propulse Ethereum au centre de l’innovation crypto.</p>
+                </div>
+
+                <div class="eth-timeline-card">
+                    <span class="eth-timeline-year">2022</span>
+                    <h3>Transition technique</h3>
+                    <p>Le passage au Proof of Stake marque une étape majeure dans l’évolution du réseau et de son modèle économique.</p>
+                </div>
+
+                <div class="eth-timeline-card">
+                    <span class="eth-timeline-year">Aujourd’hui</span>
+                    <h3>Infrastructure majeure</h3>
+                    <p>Ethereum reste un pilier de l’économie crypto, observé autant pour son prix que pour l’activité de son écosystème.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEWS -->
+    {% if eth_news %}
+    <section class="eth-section eth-news-section">
+        <div class="section-container">
+            <div class="eth-section-heading">
+                <span class="eth-section-kicker">Actualités Ethereum</span>
+                <h2>Les sujets qui influencent actuellement le marché</h2>
+                <p>
+                    Une sélection d’articles récents pour suivre Ethereum, les évolutions du réseau
+                    et les sujets susceptibles d’influencer le sentiment de marché.
+                </p>
+            </div>
+
+            <div class="eth-news-grid">
+                {% for article in eth_news %}
+                <article class="eth-news-card">
+                    <div class="eth-news-image">
+                        {% if article.image %}
+                            <img src="{{ article.image }}" alt="{{ article.title }}" loading="lazy">
+                        {% else %}
+                            <div class="eth-news-image-fallback">ETH News</div>
                         {% endif %}
-                    </ul>
-                </div>
+                    </div>
+
+                    <div class="eth-news-body">
+                        <div class="eth-news-source">
+                            <span>{{ article.source or "Source crypto" }}</span>
+                        </div>
+
+                        <h3>
+                            <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer">
+                                {{ article.title }}
+                            </a>
+                        </h3>
+
+                        <p>{{ article.description or "Actualité récente autour du marché Ethereum." }}</p>
+                    </div>
+                </article>
+                {% endfor %}
             </div>
         </div>
-    </div>
-</section>
+    </section>
+    {% endif %}
 
-{% if eth_news %}
-<section class="market-updates-section">
-    <div class="section-container">
-        <div class="section-title">
-            <span>Actualités Ethereum</span>
-            <h2>Ce qui influence actuellement le marché ETH</h2>
-            <p>
-                Une sélection d’articles récents pour suivre l’actualité Ethereum, les évolutions du réseau
-                et les sujets susceptibles d’influencer le sentiment de marché.
-            </p>
-        </div>
+    <!-- SIGNALS -->
+    <section class="eth-section" id="eth-signals-history">
+        <div class="section-container">
+            <div class="eth-section-heading">
+                <span class="eth-section-kicker">Historique récent</span>
+                <h2>Les derniers signaux Ethereum publiés</h2>
+                <p>
+                    Les derniers setups ETHUSD affichés dans un format premium, lisible et mieux structuré.
+                </p>
+            </div>
 
-        <div class="market-updates-grid">
-            {% for article in eth_news %}
-            <article class="market-news-card">
-                <div class="market-news-image">
-                    {% if article.image %}
-                        <img src="{{ article.image }}" alt="{{ article.title }}">
-                    {% else %}
-                        <div class="market-news-image-fallback">ETH News</div>
+            {% if eth_signals %}
+            <div class="eth-signals-grid">
+                {% for signal in eth_signals %}
+                <article class="eth-signal-card {{ signal.action|lower }} {{ signal.status|lower }}">
+
+                    <div class="eth-signal-top">
+                        <div class="eth-signal-head">
+                            <span class="eth-signal-asset">{{ signal.asset }}</span>
+                            <h3>{{ signal.action }}</h3>
+                        </div>
+
+                        <div class="eth-signal-badges">
+                            <span class="eth-status-badge status-{{ signal.status|lower }}">
+                                {{ signal.status }}
+                            </span>
+
+                            <span class="eth-confidence-badge
+                                {% if signal.confidence >= 80 %}
+                                    badge-elite
+                                {% elif signal.confidence >= 60 %}
+                                    badge-strong
+                                {% else %}
+                                    badge-standard
+                                {% endif %}
+                            ">
+                                {% if signal.confidence_label is defined %}
+                                    {{ signal.confidence_label() }}
+                                {% else %}
+                                    High Probability
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="eth-signal-prices">
+                        <div class="eth-price-box">
+                            <span>Entrée</span>
+                            <strong>{{ signal.entry_price or "—" }}</strong>
+                        </div>
+                        <div class="eth-price-box">
+                            <span>SL</span>
+                            <strong>{{ signal.stop_loss or "—" }}</strong>
+                        </div>
+                        <div class="eth-price-box">
+                            <span>TP</span>
+                            <strong>{{ signal.take_profit or "—" }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="eth-signal-meta">
+                        <div class="eth-meta-box">
+                            <span>Confiance</span>
+                            <strong>{{ signal.confidence or 0 }}/100</strong>
+                        </div>
+
+                        <div class="eth-meta-box">
+                            <span>Tendance</span>
+                            <strong>{{ signal.market_trend or "—" }}</strong>
+                        </div>
+
+                        <div class="eth-meta-box">
+                            <span>Type</span>
+                            <strong>{{ signal.signal_type or "—" }}</strong>
+                        </div>
+
+                        <div class="eth-meta-box">
+                            <span>R/R</span>
+                            <strong>
+                                {% if signal.risk_reward %}
+                                    {{ signal.risk_reward }}
+                                {% elif signal.compute_rr is defined %}
+                                    {{ signal.compute_rr() }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                        <div class="eth-meta-box">
+                            <span>Timeframe</span>
+                            <strong>{{ signal.timeframe or "—" }}</strong>
+                        </div>
+
+                        <div class="eth-meta-box">
+                            <span>Source</span>
+                            <strong>{{ signal.source or "system" }}</strong>
+                        </div>
+                    </div>
+
+                    {% if signal.reason %}
+                    <div class="eth-signal-reason">
+                        <h4>Pourquoi ce signal ?</h4>
+                        <p>{{ signal.reason }}</p>
+                    </div>
                     {% endif %}
+
+                    <div class="eth-signal-footer">
+                        <div class="eth-footer-block">
+                            <span>Publié</span>
+                            <strong>{{ signal.created_at.strftime('%d/%m/%Y %H:%M') if signal.created_at else "—" }}</strong>
+                        </div>
+
+                        <div class="eth-footer-block">
+                            <span>Résultat</span>
+                            {% if signal.result_percent is not none %}
+                                <strong class="{% if signal.result_percent >= 0 %}text-profit{% else %}text-loss{% endif %}">
+                                    {{ signal.result_percent }}%
+                                </strong>
+                            {% else %}
+                                <strong>—</strong>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="eth-empty-box">
+                <p>Aucun signal Ethereum n’est disponible pour le moment.</p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- EDUCATION / STRUCTURE -->
+    <section class="eth-section">
+        <div class="section-container">
+            <div class="eth-why-box">
+                <div class="eth-why-left">
+                    <span class="eth-section-kicker">Structure d’un signal ETH</span>
+                    <h2>Des repères simples pour mieux comprendre les setups</h2>
+                    <p>
+                        Chaque signal Ethereum s’articule autour d’une structure claire : une entrée, une zone d’invalidation,
+                        un objectif et un contexte de marché. Cette logique donne plus de sens à l’affichage des résultats
+                        et permet de relier les performances à une lecture disciplinée.
+                    </p>
+
+                    <div class="eth-hero-actions">
+                        <a href="{{ url_for('billing.pricing') }}" class="eth-btn eth-btn-primary">Voir les offres</a>
+
+                        {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('dashboard.dashboard') }}" class="eth-btn eth-btn-secondary">Accéder au dashboard</a>
+                        {% else %}
+                            <a href="{{ url_for('auth.register') }}" class="eth-btn eth-btn-secondary">Créer mon compte</a>
+                        {% endif %}
+                    </div>
                 </div>
 
-                <div class="market-news-meta">
-                    <span>{{ article.source or "Source crypto" }}</span>
-                </div>
-
-                <h3>
-                    <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer">
-                        {{ article.title }}
-                    </a>
-                </h3>
-
-                <p>
-                    {{ article.description or "Actualité récente autour du marché Ethereum." }}
-                </p>
-            </article>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="proof-box">
-            <div class="proof-left">
-                <span class="proof-badge">Pourquoi Ethereum</span>
-                <h2>L’actif central de l’écosystème smart contracts</h2>
-                <p>
-                    Ethereum occupe une place unique dans l’univers crypto. Son rôle dépasse la simple variation de prix :
-                    il représente aussi l’activité on-chain, l’innovation applicative, la liquidité DeFi et une partie du
-                    sentiment global sur les altcoins. Le suivre avec méthode permet d’ajouter de la profondeur à la lecture du marché.
-                </p>
-            </div>
-
-            <div class="proof-right">
-                <div class="proof-card">
-                    <strong>Actif structurant</strong>
-                    <span>Ethereum reste une référence pour lire l’appétit global sur les altcoins.</span>
-                </div>
-
-                <div class="proof-card">
-                    <strong>Écosystème vivant</strong>
-                    <span>Son réseau influence de nombreux usages crypto au-delà du simple trading.</span>
-                </div>
-
-                <div class="proof-card">
-                    <strong>Profondeur stratégique</strong>
-                    <span>Une page ETH dédiée renforce la crédibilité et la richesse éditoriale de la plateforme.</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>Structure du marché</span>
-            <h2>Comment lire Ethereum dans une logique de trading</h2>
-            <p>
-                Cette zone aide le visiteur à comprendre comment Ethereum peut être interprété à travers quatre piliers :
-                tendance, zones clés, momentum et validation du scénario.
-            </p>
-        </div>
-
-        <div class="features-home-grid">
-            <div class="feature-home-card">
-                <h3>Tendance dominante</h3>
-                <p>
-                    Identifier la tendance principale permet d’éviter de trader contre la structure globale. Ethereum alterne
-                    souvent entre phases directionnelles et consolidations, avec des réactions parfois plus nerveuses que Bitcoin.
-                </p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Supports et résistances</h3>
-                <p>
-                    Les zones techniques importantes restent décisives. Elles concentrent les réactions du prix et servent souvent
-                    de points de validation pour les scénarios d’achat ou de vente.
-                </p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Volatilité et momentum</h3>
-                <p>
-                    Ethereum peut accélérer rapidement, surtout lors des phases d’expansion du marché crypto. Comprendre cette
-                    vitesse de mouvement aide à mieux calibrer le risque et la qualité d’un setup.
-                </p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Confirmation du scénario</h3>
-                <p>
-                    Un signal ETH pertinent ne repose pas uniquement sur un prix d’entrée. Il doit aussi s’appuyer sur un contexte technique,
-                    une invalidation claire et un objectif cohérent avec la structure observée.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>Repères historiques</span>
-            <h2>Ethereum à travers ses grandes étapes</h2>
-            <p>
-                Cette frise rappelle pourquoi Ethereum est devenu l’un des actifs les plus importants de l’écosystème crypto.
-            </p>
-        </div>
-
-        <div class="timeline-grid">
-            <div class="timeline-card">
-                <span class="timeline-year">2015</span>
-                <h3>Lancement du réseau</h3>
-                <p>Ethereum démarre avec une ambition différente : créer une infrastructure programmable pour les applications décentralisées.</p>
-            </div>
-
-            <div class="timeline-card">
-                <span class="timeline-year">2017–2021</span>
-                <h3>Explosion de l’écosystème</h3>
-                <p>Le développement des tokens, de la DeFi et des NFT propulse Ethereum au centre de l’innovation crypto.</p>
-            </div>
-
-            <div class="timeline-card">
-                <span class="timeline-year">2022</span>
-                <h3>Transition technique</h3>
-                <p>Le passage au Proof of Stake marque une étape majeure dans l’évolution du réseau et de son modèle économique.</p>
-            </div>
-
-            <div class="timeline-card">
-                <span class="timeline-year">Aujourd’hui</span>
-                <h3>Infrastructure majeure</h3>
-                <p>Ethereum reste un pilier de l’économie crypto, observé autant pour son prix que pour l’activité de son écosystème.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard" id="eth-signals-history">
-    <div class="section-container">
-        <div class="section-title">
-            <span>Historique récent</span>
-            <h2>Les derniers signaux Ethereum publiés</h2>
-            <p>
-                Cet historique présente les derniers signaux ETHUSD avec leur direction, leurs niveaux techniques
-                et leur statut final, dans un format clair et exploitable.
-            </p>
-        </div>
-
-        <div class="btc-signals-table-wrap">
-            <table class="btc-signals-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Actif</th>
-                        <th>Direction</th>
-                        <th>Entrée</th>
-                        <th>Stop Loss</th>
-                        <th>Take Profit</th>
-                        <th>Statut</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if eth_signals %}
-                        {% for signal in eth_signals %}
-                            <tr>
-                                <td>{{ signal.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
-                                <td>{{ signal.asset }}</td>
-                                <td>
-                                    <span class="{% if signal.action == 'BUY' %}text-buy{% else %}text-sell{% endif %}">
-                                        {{ signal.action }}
-                                    </span>
-                                </td>
-                                <td>{{ signal.entry_price }}</td>
-                                <td>{{ signal.stop_loss }}</td>
-                                <td>{{ signal.take_profit }}</td>
-                                <td>
-                                    <span class="
-                                        {% if signal.status == 'WIN' %}
-                                            status-pill status-win
-                                        {% elif signal.status == 'LOSS' %}
-                                            status-pill status-loss
-                                        {% else %}
-                                            status-pill status-open
-                                        {% endif %}
-                                    ">
-                                        {{ signal.status }}
-                                    </span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="7" class="empty-table-cell">
-                                Aucun signal Ethereum n’est disponible pour le moment.
-                            </td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="proof-box">
-            <div class="proof-left">
-                <span class="proof-badge">Structure d’un signal ETH</span>
-                <h2>Des repères simples pour mieux comprendre les setups</h2>
-                <p>
-                    Chaque signal Ethereum s’articule autour d’une structure claire : une entrée, une zone d’invalidation,
-                    un objectif et un contexte de marché. Cette logique donne plus de sens à l’affichage des résultats
-                    et permet de relier les performances à une lecture disciplinée.
-                </p>
-                <div class="hero-actions">
-                    <a href="{{ url_for('pages.trading_lab') }}" class="hero-btn-primary">Accéder au Trading Lab</a>
-                    <a href="{{ url_for('billing.pricing') }}" class="hero-btn-secondary">Comparer les offres</a>
-                </div>
-            </div>
-
-            <div class="proof-right">
-                <div class="proof-card">
-                    <strong>Entrée</strong>
-                    <span>Le niveau central autour duquel le scénario prend forme.</span>
-                </div>
-
-                <div class="proof-card">
-                    <strong>Invalidation</strong>
-                    <span>Le stop loss sert à protéger la structure du trade et à clarifier le risque.</span>
-                </div>
-
-                <div class="proof-card">
-                    <strong>Objectif</strong>
-                    <span>Le take profit matérialise la cible attendue si le scénario se déroule correctement.</span>
+                <div class="eth-why-right">
+                    <div class="eth-why-card">
+                        <strong>Entrée</strong>
+                        <span>Le niveau central autour duquel le scénario prend forme.</span>
+                    </div>
+                    <div class="eth-why-card">
+                        <strong>Invalidation</strong>
+                        <span>Le stop loss protège la structure du trade et clarifie le risque.</span>
+                    </div>
+                    <div class="eth-why-card">
+                        <strong>Objectif</strong>
+                        <span>Le take profit matérialise la cible attendue si le scénario se déroule correctement.</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>Analyse & contexte</span>
-            <h2>Pourquoi Ethereum mérite un espace dédié dans ApexSignals</h2>
-            <p>
-                Dans une plateforme premium, les actifs majeurs ne doivent pas être noyés dans une seule page générique.
-                Ethereum mérite un espace dédié pour renforcer la lisibilité, la valeur perçue et la profondeur éditoriale.
-            </p>
-        </div>
-
-        <div class="preview-links-grid">
-            <a href="{{ url_for('signals.signals_page') }}" class="preview-link-card">
-                <strong>Vue globale des signaux</strong>
-                <span>Retrouvez l’ensemble des catégories suivies sur la plateforme.</span>
-            </a>
-
-            <a href="{{ url_for('signals.results') }}" class="preview-link-card">
-                <strong>Résultats</strong>
-                <span>Consultez les performances, le winrate et l’historique récent.</span>
-            </a>
-
-            <a href="{{ url_for('pages.trading_lab') }}" class="preview-link-card">
-                <strong>Trading Lab</strong>
-                <span>Approfondissez la structure des signaux et la lecture du marché.</span>
-            </a>
-
-            <a href="{{ url_for('billing.pricing') }}" class="preview-link-card">
-                <strong>Offres</strong>
-                <span>Choisissez le niveau d’accès le plus adapté à votre profil.</span>
-            </a>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>FAQ Ethereum</span>
-            <h2>Les questions fréquentes sur le suivi ETH</h2>
-            <p>
-                Cette FAQ aide le visiteur à mieux comprendre la logique de la page et la place d’Ethereum dans l’écosystème ApexSignals.
-            </p>
-        </div>
-
-        <div class="faq-grid">
-            <div class="faq-card">
-                <h3>Pourquoi suivre Ethereum en plus de Bitcoin ?</h3>
+    <!-- FAQ -->
+    <section class="eth-section">
+        <div class="section-container">
+            <div class="eth-section-heading">
+                <span class="eth-section-kicker">FAQ Ethereum</span>
+                <h2>Les questions fréquentes sur le suivi ETH</h2>
                 <p>
-                    Parce qu’Ethereum donne une lecture complémentaire du marché crypto, notamment sur l’appétit pour les altcoins
-                    et sur l’activité de l’écosystème décentralisé.
-                </p>
-            </div>
-
-            <div class="faq-card">
-                <h3>Que signifie un signal ETHUSD ?</h3>
-                <p>
-                    Il s’agit d’un scénario de trading structuré autour d’un point d’entrée, d’un stop loss,
-                    d’un take profit et d’un contexte de marché donné.
-                </p>
-            </div>
-
-            <div class="faq-card">
-                <h3>Le chart live remplace-t-il les signaux ?</h3>
-                <p>
-                    Non. Il complète la lecture. Les signaux donnent le scénario, le graphique permet de visualiser
-                    la structure du marché en temps réel.
-                </p>
-            </div>
-
-            <div class="faq-card">
-                <h3>Cette page va-t-elle encore évoluer ?</h3>
-                <p>
-                    Oui. Elle pourra intégrer à terme davantage d’indicateurs, d’actualités filtrées, de repères de marché
-                    et d’outils premium autour d’Ethereum.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="final-cta-section">
-    <div class="section-container">
-        <div class="final-cta-box">
-            <span class="final-cta-badge">ETHUSD • ApexSignals</span>
-            <h2>Suivre Ethereum dans un environnement plus structuré</h2>
-            <p>
-                Prix live, structure de marché, sentiment global, actualités récentes et historique lisible :
-                cette page Ethereum est pensée pour devenir un vrai point fort de la plateforme.
-            </p>
-            <div class="final-cta-actions">
-                <a href="{{ url_for('billing.pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>
-                {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('dashboard.dashboard') }}" class="hero-btn-secondary white-outline-btn">Accéder au dashboard</a>
-                {% else %}
-                    <a href="{{ url_for('auth.register') }}" class="hero-btn-secondary white-outline-btn">Créer mon compte</a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</section>
-
-<footer class="site-footer">
-    <div class="section-container footer-inner">
-        <div class="footer-brand">
-            <h3>ApexSignals</h3>
-            <p>Une plateforme structurée pour présenter Ethereum, Bitcoin et les autres actifs de façon plus claire, plus experte et plus premium.</p>
-        </div>
-
-        <div class="footer-links">
-            <a href="{{ url_for('main.home') }}">Accueil</a>
-            <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
-            <a href="{{ url_for('signals.results') }}">Résultats</a>
-            <a href="{{ url_for('billing.pricing') }}">Offres</a>
-            <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
-        </div>
-    </div>
-</footer>
-
-</body>
-</html>
+                    Une section claire pour mieux comprendre la logique de la page et la place d’Ethereum dans Velwolf

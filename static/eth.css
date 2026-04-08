@@ -1,0 +1,1253 @@
+/* =========================
+   ETH PAGE ONLY
+========================= */
+.ethereum-page {
+    --eth-bg: #f5f7fc;
+    --eth-bg-soft: #ffffff;
+    --eth-bg-alt: #f7f9ff;
+    --eth-border: #e4eaf7;
+    --eth-border-strong: #d7def2;
+
+    --eth-text: #0f172a;
+    --eth-text-soft: #475569;
+    --eth-text-muted: #64748b;
+
+    --eth-indigo: #4f46e5;
+    --eth-violet: #7c3aed;
+    --eth-cyan: #06b6d4;
+    --eth-blue-soft: #eef2ff;
+    --eth-violet-soft: #f5f3ff;
+    --eth-green: #16a34a;
+    --eth-green-soft: #ecfdf3;
+    --eth-red: #dc2626;
+    --eth-red-soft: #fef2f2;
+
+    --eth-shadow-sm: 0 10px 30px rgba(15, 23, 42, 0.05);
+    --eth-shadow-md: 0 18px 50px rgba(15, 23, 42, 0.08);
+    --eth-shadow-lg: 0 30px 75px rgba(79, 70, 229, 0.14);
+
+    background:
+        radial-gradient(circle at top left, rgba(79, 70, 229, 0.08), transparent 28%),
+        radial-gradient(circle at top right, rgba(124, 58, 237, 0.08), transparent 28%),
+        linear-gradient(180deg, #f9fbff 0%, #f4f7fc 42%, #f7f9fc 100%);
+    color: var(--eth-text);
+}
+
+.ethereum-page .eth-page-shell {
+    position: relative;
+    overflow: hidden;
+}
+
+.ethereum-page .section-container {
+    position: relative;
+    z-index: 2;
+}
+
+/* =========================
+   HERO
+========================= */
+.ethereum-page .eth-hero-section {
+    position: relative;
+    padding: 54px 0 34px;
+}
+
+.ethereum-page .eth-hero-section::before {
+    content: "";
+    position: absolute;
+    top: -90px;
+    right: -90px;
+    width: 360px;
+    height: 360px;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.14), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.ethereum-page .eth-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.85fr);
+    gap: 30px;
+    align-items: stretch;
+}
+
+.ethereum-page .eth-hero-content,
+.ethereum-page .eth-hero-side {
+    min-width: 0;
+}
+
+.ethereum-page .eth-hero-content {
+    background: rgba(255, 255, 255, 0.74);
+    border: 1px solid rgba(228, 234, 247, 0.9);
+    box-shadow: var(--eth-shadow-md);
+    border-radius: 30px;
+    padding: 34px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.ethereum-page .eth-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.10), rgba(124, 58, 237, 0.10));
+    color: var(--eth-indigo);
+    border: 1px solid rgba(79, 70, 229, 0.12);
+    font-weight: 800;
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+}
+
+.ethereum-page .eth-badge-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--eth-indigo), var(--eth-violet));
+    color: #fff;
+    font-size: 1.05rem;
+    box-shadow: 0 10px 22px rgba(79, 70, 229, 0.26);
+}
+
+.ethereum-page .eth-main-title {
+    margin: 0 0 18px;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    color: var(--eth-text);
+    max-width: 920px;
+}
+
+.ethereum-page .eth-main-text {
+    margin: 0;
+    max-width: 850px;
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--eth-text-soft);
+}
+
+.ethereum-page .eth-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 28px;
+}
+
+.ethereum-page .eth-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 0 22px;
+    border-radius: 16px;
+    text-decoration: none;
+    font-weight: 800;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.ethereum-page .eth-btn:hover {
+    transform: translateY(-2px);
+}
+
+.ethereum-page .eth-btn-primary {
+    background: linear-gradient(135deg, var(--eth-indigo), var(--eth-violet));
+    color: #fff;
+    box-shadow: 0 18px 40px rgba(79, 70, 229, 0.24);
+}
+
+.ethereum-page .eth-btn-secondary {
+    background: rgba(255, 255, 255, 0.88);
+    color: var(--eth-text);
+    border: 1px solid var(--eth-border-strong);
+    box-shadow: var(--eth-shadow-sm);
+}
+
+.ethereum-page .eth-btn-secondary.cta-alt {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.26);
+    backdrop-filter: blur(10px);
+}
+
+.ethereum-page .eth-hero-points {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.ethereum-page .eth-point-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(248,250,255,0.98));
+    border: 1px solid var(--eth-border);
+    border-radius: 22px;
+    padding: 18px 18px 16px;
+    box-shadow: var(--eth-shadow-sm);
+}
+
+.ethereum-page .eth-point-card strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1rem;
+    color: var(--eth-text);
+}
+
+.ethereum-page .eth-point-card span {
+    display: block;
+    color: var(--eth-text-muted);
+    line-height: 1.7;
+    font-size: 0.96rem;
+}
+
+.ethereum-page .eth-hero-side {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.ethereum-page .eth-stat-card {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid var(--eth-border);
+    border-radius: 24px;
+    padding: 22px;
+    box-shadow: var(--eth-shadow-sm);
+    min-height: 170px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.ethereum-page .eth-stat-highlight {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.98), rgba(124, 58, 237, 0.95));
+    color: #fff;
+    border: none;
+    box-shadow: var(--eth-shadow-lg);
+}
+
+.ethereum-page .eth-stat-label {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: rgba(79, 70, 229, 0.08);
+    color: var(--eth-indigo);
+}
+
+.ethereum-page .eth-stat-highlight .eth-stat-label {
+    background: rgba(255,255,255,0.16);
+    color: #fff;
+}
+
+.ethereum-page .eth-stat-card h2 {
+    margin: 16px 0 8px;
+    font-size: clamp(1.4rem, 2.1vw, 2rem);
+    line-height: 1.15;
+    color: inherit;
+    word-break: break-word;
+}
+
+.ethereum-page .eth-stat-card p {
+    margin: 0;
+    color: inherit;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+/* =========================
+   STRIP
+========================= */
+.ethereum-page .eth-market-strip {
+    padding: 8px 0 22px;
+}
+
+.ethereum-page .eth-market-strip-inner {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.ethereum-page .eth-strip-item {
+    background: rgba(255,255,255,0.84);
+    border: 1px solid var(--eth-border);
+    border-radius: 18px;
+    padding: 18px 18px 16px;
+    box-shadow: var(--eth-shadow-sm);
+    backdrop-filter: blur(10px);
+}
+
+.ethereum-page .eth-strip-item span {
+    display: block;
+    font-size: 0.84rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--eth-text-muted);
+    margin-bottom: 8px;
+}
+
+.ethereum-page .eth-strip-item strong {
+    font-size: 1.02rem;
+    line-height: 1.4;
+    color: var(--eth-text);
+    word-break: break-word;
+}
+
+/* =========================
+   GENERAL SECTION
+========================= */
+.ethereum-page .eth-section {
+    padding: 42px 0;
+}
+
+.ethereum-page .eth-section-heading {
+    margin-bottom: 24px;
+}
+
+.ethereum-page .eth-section-heading.center {
+    text-align: center;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 28px;
+}
+
+.ethereum-page .eth-section-kicker {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: var(--eth-blue-soft);
+    color: var(--eth-indigo);
+    border: 1px solid rgba(79, 70, 229, 0.10);
+    font-weight: 800;
+    font-size: 0.84rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.ethereum-page .eth-section-heading h2 {
+    margin: 0 0 12px;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    line-height: 1.14;
+    letter-spacing: -0.02em;
+    color: var(--eth-text);
+}
+
+.ethereum-page .eth-section-heading p {
+    margin: 0;
+    max-width: 780px;
+    color: var(--eth-text-soft);
+    line-height: 1.85;
+    font-size: 1rem;
+}
+
+.ethereum-page .eth-section-heading.center p {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* =========================
+   KPI
+========================= */
+.ethereum-page .eth-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.ethereum-page .eth-kpi-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--eth-border);
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: var(--eth-shadow-sm);
+}
+
+.ethereum-page .eth-kpi-featured {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.98), rgba(99, 102, 241, 0.94));
+    border: none;
+    color: #fff;
+    box-shadow: var(--eth-shadow-lg);
+}
+
+.ethereum-page .eth-kpi-card span {
+    display: block;
+    color: inherit;
+    opacity: 0.9;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+
+.ethereum-page .eth-kpi-card strong {
+    display: block;
+    font-size: clamp(1.8rem, 2.8vw, 2.7rem);
+    line-height: 1.05;
+    margin-bottom: 12px;
+    color: inherit;
+}
+
+.ethereum-page .eth-kpi-card p {
+    margin: 0;
+    color: inherit;
+    opacity: 0.86;
+    line-height: 1.7;
+}
+
+/* =========================
+   MAIN GRID
+========================= */
+.ethereum-page .eth-main-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.78fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.ethereum-page .eth-main-left,
+.ethereum-page .eth-main-right {
+    min-width: 0;
+}
+
+.ethereum-page .eth-main-right {
+    display: grid;
+    gap: 18px;
+}
+
+.ethereum-page .eth-panel {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid var(--eth-border);
+    border-radius: 26px;
+    padding: 24px;
+    box-shadow: var(--eth-shadow-sm);
+    min-width: 0;
+}
+
+.ethereum-page .eth-chart-panel {
+    padding: 0;
+    overflow: hidden;
+}
+
+.ethereum-page .eth-panel-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 24px 24px 0;
+}
+
+.ethereum-page .eth-panel-badge {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(79, 70, 229, 0.08);
+    color: var(--eth-indigo);
+    font-weight: 800;
+    font-size: 0.82rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.ethereum-page .eth-panel h3,
+.ethereum-page .eth-panel-head h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    line-height: 1.35;
+    color: var(--eth-text);
+}
+
+.ethereum-page .eth-panel-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.ethereum-page .eth-panel-meta span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: #f8fafc;
+    border: 1px solid var(--eth-border);
+    color: var(--eth-text-muted);
+    font-size: 0.84rem;
+    font-weight: 700;
+}
+
+.ethereum-page .eth-chart-wrap {
+    padding: 20px 24px 24px;
+}
+
+.ethereum-page #tradingview_eth_chart {
+    min-height: 560px;
+    border-radius: 22px;
+    overflow: hidden;
+    border: 1px solid var(--eth-border);
+    background: #fff;
+}
+
+.ethereum-page .eth-mini-grid {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.ethereum-page .eth-list-clean {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
+    display: grid;
+    gap: 12px;
+}
+
+.ethereum-page .eth-list-clean li {
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: #f8faff;
+    border: 1px solid #edf1fb;
+    color: var(--eth-text-soft);
+    line-height: 1.65;
+    word-break: break-word;
+}
+
+.ethereum-page .eth-list-clean strong {
+    color: var(--eth-text);
+}
+
+.ethereum-page .eth-reading-text {
+    margin: 14px 0 0;
+    color: var(--eth-text-soft);
+    line-height: 1.85;
+}
+
+.ethereum-page .eth-mini-points {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.ethereum-page .eth-mini-points.column {
+    grid-template-columns: 1fr;
+}
+
+.ethereum-page .eth-mini-point {
+    padding: 14px;
+    border-radius: 18px;
+    background: linear-gradient(180deg, #fbfcff, #f7f8ff);
+    border: 1px solid var(--eth-border);
+}
+
+.ethereum-page .eth-mini-point strong {
+    display: block;
+    font-size: 0.94rem;
+    color: var(--eth-text);
+    margin-bottom: 6px;
+}
+
+.ethereum-page .eth-mini-point span {
+    display: block;
+    color: var(--eth-text-muted);
+    line-height: 1.6;
+    font-size: 0.93rem;
+}
+
+/* =========================
+   WHY BOX
+========================= */
+.ethereum-page .eth-why-box {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.9fr);
+    gap: 22px;
+    padding: 28px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.94), rgba(245,244,255,0.98));
+    border: 1px solid var(--eth-border);
+    box-shadow: var(--eth-shadow-md);
+}
+
+.ethereum-page .eth-why-left h2 {
+    margin: 0 0 16px;
+    font-size: clamp(1.7rem, 2.7vw, 2.4rem);
+    line-height: 1.18;
+    color: var(--eth-text);
+}
+
+.ethereum-page .eth-why-left p {
+    margin: 0;
+    color: var(--eth-text-soft);
+    line-height: 1.9;
+}
+
+.ethereum-page .eth-why-right {
+    display: grid;
+    gap: 14px;
+}
+
+.ethereum-page .eth-why-card {
+    background: rgba(255,255,255,0.95);
+    border: 1px solid var(--eth-border);
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: var(--eth-shadow-sm);
+}
+
+.ethereum-page .eth-why-card strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--eth-text);
+}
+
+.ethereum-page .eth-why-card span {
+    color: var(--eth-text-muted);
+    line-height: 1.7;
+    display: block;
+}
+
+/* =========================
+   FEATURE GRID
+========================= */
+.ethereum-page .eth-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.ethereum-page .eth-feature-card {
+    background: rgba(255,255,255,0.92);
+    border: 1px solid var(--eth-border);
+    border-radius: 24px;
+    padding: 22px;
+    box-shadow: var(--eth-shadow-sm);
+}
+
+.ethereum-page .eth-feature-card h3 {
+    margin: 0 0 10px;
+    color: var(--eth-text);
+    font-size: 1.08rem;
+    line-height: 1.45;
+}
+
+.ethereum-page .eth-feature-card p {
+    margin: 0;
+    color: var(--eth-text-soft);
+    line-height: 1.8;
+}
+
+/* =========================
+   TIMELINE
+========================= */
+.ethereum-page .eth-timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.ethereum-page .eth-timeline-card {
+    background: rgba(255,255,255,0.92);
+    border: 1px solid var(--eth-border);
+    border-radius: 24px;
+    padding: 22px;
+    box-shadow: var(--eth-shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.ethereum-page .eth-timeline-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--eth-indigo), var(--eth-violet), var(--eth-cyan));
+    opacity: 0.9;
+}
+
+.ethereum-page .eth-timeline-year {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: var(--eth-violet-soft);
+    color: var(--eth-violet);
+    font-weight: 800;
+    font-size: 0.82rem;
+    margin-bottom: 12px;
+}
+
+.ethereum-page .eth-timeline-card h3 {
+    margin: 0 0 10px;
+    color: var(--eth-text);
+    font-size: 1.08rem;
+}
+
+.ethereum-page .eth-timeline-card p {
+    margin: 0;
+    color: var(--eth-text-soft);
+    line-height: 1.75;
+}
+
+/* =========================
+   NEWS
+========================= */
+.ethereum-page .eth-news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.ethereum-page .eth-news-card {
+    overflow: hidden;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.94);
+    border: 1px solid var(--eth-border);
+    box-shadow: var(--eth-shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ethereum-page .eth-news-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--eth-shadow-md);
+}
+
+.ethereum-page .eth-news-image {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(135deg, #eef2ff, #f6f4ff);
+    overflow: hidden;
+}
+
+.ethereum-page .eth-news-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.ethereum-page .eth-news-image-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: var(--eth-indigo);
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.10), rgba(124, 58, 237, 0.10));
+}
+
+.ethereum-page .eth-news-body {
+    padding: 20px;
+}
+
+.ethereum-page .eth-news-source {
+    margin-bottom: 10px;
+}
+
+.ethereum-page .eth-news-source span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: var(--eth-blue-soft);
+    color: var(--eth-indigo);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.ethereum-page .eth-news-card h3 {
+    margin: 0 0 12px;
+    font-size: 1.08rem;
+    line-height: 1.45;
+}
+
+.ethereum-page .eth-news-card h3 a {
+    color: var(--eth-text);
+    text-decoration: none;
+}
+
+.ethereum-page .eth-news-card h3 a:hover {
+    color: var(--eth-indigo);
+}
+
+.ethereum-page .eth-news-card p {
+    margin: 0;
+    color: var(--eth-text-soft);
+    line-height: 1.75;
+}
+
+/* =========================
+   SIGNALS
+========================= */
+.ethereum-page .eth-signals-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.ethereum-page .eth-signal-card {
+    position: relative;
+    background: rgba(255,255,255,0.95);
+    border: 1px solid var(--eth-border);
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: var(--eth-shadow-sm);
+    overflow: hidden;
+}
+
+.ethereum-page .eth-signal-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 5px;
+    background: linear-gradient(180deg, var(--eth-indigo), var(--eth-cyan));
+    opacity: 0.9;
+}
+
+.ethereum-page .eth-signal-card.buy::before {
+    background: linear-gradient(180deg, #16a34a, #22c55e);
+}
+
+.ethereum-page .eth-signal-card.sell::before {
+    background: linear-gradient(180deg, #dc2626, #f97316);
+}
+
+.ethereum-page .eth-signal-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.ethereum-page .eth-signal-head {
+    min-width: 0;
+}
+
+.ethereum-page .eth-signal-asset {
+    display: inline-block;
+    margin-bottom: 6px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--eth-text-muted);
+}
+
+.ethereum-page .eth-signal-head h3 {
+    margin: 0;
+    font-size: 1.7rem;
+    line-height: 1.15;
+    color: var(--eth-text);
+}
+
+.ethereum-page .eth-signal-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.ethereum-page .eth-status-badge,
+.ethereum-page .eth-confidence-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 12px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 0.82rem;
+    white-space: nowrap;
+}
+
+.ethereum-page .eth-status-badge.status-open {
+    background: #eef2ff;
+    color: #4f46e5;
+    border: 1px solid #c7d2fe;
+}
+
+.ethereum-page .eth-status-badge.status-win {
+    background: #ecfdf3;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.ethereum-page .eth-status-badge.status-loss {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.ethereum-page .badge-elite {
+    background: linear-gradient(135deg, rgba(79,70,229,0.12), rgba(124,58,237,0.12));
+    color: var(--eth-indigo);
+    border: 1px solid rgba(79,70,229,0.10);
+}
+
+.ethereum-page .badge-strong {
+    background: rgba(16, 185, 129, 0.10);
+    color: #047857;
+    border: 1px solid rgba(16, 185, 129, 0.14);
+}
+
+.ethereum-page .badge-standard {
+    background: #f8fafc;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+.ethereum-page .eth-signal-prices {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.ethereum-page .eth-price-box {
+    background: linear-gradient(180deg, #fbfcff, #f7f8ff);
+    border: 1px solid var(--eth-border);
+    border-radius: 18px;
+    padding: 16px;
+}
+
+.ethereum-page .eth-price-box span {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--eth-text-muted);
+    margin-bottom: 8px;
+}
+
+.ethereum-page .eth-price-box strong {
+    display: block;
+    color: var(--eth-text);
+    font-size: 1.05rem;
+    line-height: 1.35;
+    word-break: break-word;
+}
+
+.ethereum-page .eth-signal-meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.ethereum-page .eth-meta-box {
+    background: #ffffff;
+    border: 1px solid #edf1fb;
+    border-radius: 16px;
+    padding: 14px;
+}
+
+.ethereum-page .eth-meta-box span {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--eth-text-muted);
+    margin-bottom: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.ethereum-page .eth-meta-box strong {
+    display: block;
+    color: var(--eth-text);
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.ethereum-page .eth-signal-reason {
+    margin-bottom: 16px;
+    padding: 18px;
+    border-radius: 18px;
+    background: linear-gradient(180deg, #fafbff, #f6f7ff);
+    border: 1px solid var(--eth-border);
+}
+
+.ethereum-page .eth-signal-reason h4 {
+    margin: 0 0 10px;
+    color: var(--eth-text);
+    font-size: 1rem;
+}
+
+.ethereum-page .eth-signal-reason p {
+    margin: 0;
+    color: var(--eth-text-soft);
+    line-height: 1.8;
+}
+
+.ethereum-page .eth-signal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-top: 16px;
+    border-top: 1px solid #edf1fb;
+}
+
+.ethereum-page .eth-footer-block span {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.8rem;
+    color: var(--eth-text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.ethereum-page .eth-footer-block strong {
+    color: var(--eth-text);
+    line-height: 1.5;
+}
+
+.ethereum-page .text-profit {
+    color: var(--eth-green);
+}
+
+.ethereum-page .text-loss {
+    color: var(--eth-red);
+}
+
+.ethereum-page .eth-empty-box {
+    padding: 28px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.92);
+    border: 1px solid var(--eth-border);
+    color: var(--eth-text-soft);
+    box-shadow: var(--eth-shadow-sm);
+}
+
+/* =========================
+   FAQ
+========================= */
+.ethereum-page .eth-faq-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.ethereum-page .eth-faq-card {
+    background: rgba(255,255,255,0.94);
+    border: 1px solid var(--eth-border);
+    border-radius: 24px;
+    padding: 22px;
+    box-shadow: var(--eth-shadow-sm);
+}
+
+.ethereum-page .eth-faq-card h3 {
+    margin: 0 0 10px;
+    color: var(--eth-text);
+    font-size: 1.08rem;
+    line-height: 1.45;
+}
+
+.ethereum-page .eth-faq-card p {
+    margin: 0;
+    color: var(--eth-text-soft);
+    line-height: 1.8;
+}
+
+/* =========================
+   CTA
+========================= */
+.ethereum-page .eth-final-cta {
+    padding: 20px 0 56px;
+}
+
+.ethereum-page .eth-final-cta-box {
+    position: relative;
+    overflow: hidden;
+    border-radius: 34px;
+    padding: 34px;
+    background: linear-gradient(135deg, #111827 0%, #4f46e5 55%, #7c3aed 100%);
+    box-shadow: 0 30px 80px rgba(79, 70, 229, 0.24);
+    color: #fff;
+}
+
+.ethereum-page .eth-final-cta-box::before {
+    content: "";
+    position: absolute;
+    top: -100px;
+    right: -80px;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.14), transparent 70%);
+    pointer-events: none;
+}
+
+.ethereum-page .eth-final-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.18);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+.ethereum-page .eth-final-cta-box h2 {
+    margin: 0 0 12px;
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    line-height: 1.15;
+    color: #fff;
+    max-width: 760px;
+}
+
+.ethereum-page .eth-final-cta-box p {
+    margin: 0;
+    max-width: 760px;
+    color: rgba(255,255,255,0.9);
+    line-height: 1.85;
+    font-size: 1rem;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 1200px) {
+    .ethereum-page .eth-hero-grid,
+    .ethereum-page .eth-main-grid,
+    .ethereum-page .eth-why-box {
+        grid-template-columns: 1fr;
+    }
+
+    .ethereum-page .eth-market-strip-inner,
+    .ethereum-page .eth-kpi-grid,
+    .ethereum-page .eth-timeline-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ethereum-page .eth-news-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 992px) {
+    .ethereum-page .eth-hero-points,
+    .ethereum-page .eth-mini-grid,
+    .ethereum-page .eth-signals-grid,
+    .ethereum-page .eth-faq-grid,
+    .ethereum-page .eth-feature-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ethereum-page .eth-hero-side {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ethereum-page .eth-mini-points {
+        grid-template-columns: 1fr;
+    }
+
+    .ethereum-page .eth-signal-prices,
+    .ethereum-page .eth-signal-meta {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .ethereum-page .eth-hero-section {
+        padding: 34px 0 18px;
+    }
+
+    .ethereum-page .eth-hero-content,
+    .ethereum-page .eth-panel,
+    .ethereum-page .eth-why-box,
+    .ethereum-page .eth-final-cta-box,
+    .ethereum-page .eth-kpi-card,
+    .ethereum-page .eth-signal-card,
+    .ethereum-page .eth-faq-card,
+    .ethereum-page .eth-news-body,
+    .ethereum-page .eth-feature-card,
+    .ethereum-page .eth-timeline-card {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .ethereum-page .eth-hero-content {
+        padding-top: 24px;
+        padding-bottom: 24px;
+    }
+
+    .ethereum-page .eth-panel-head {
+        padding: 18px 18px 0;
+        flex-direction: column;
+    }
+
+    .ethereum-page .eth-chart-wrap {
+        padding: 16px 18px 18px;
+    }
+
+    .ethereum-page #tradingview_eth_chart {
+        min-height: 420px;
+    }
+
+    .ethereum-page .eth-hero-side,
+    .ethereum-page .eth-market-strip-inner,
+    .ethereum-page .eth-kpi-grid,
+    .ethereum-page .eth-news-grid,
+    .ethereum-page .eth-signal-prices,
+    .ethereum-page .eth-signal-meta,
+    .ethereum-page .eth-timeline-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ethereum-page .eth-main-title {
+        font-size: 2rem;
+    }
+
+    .ethereum-page .eth-main-text,
+    .ethereum-page .eth-section-heading p,
+    .ethereum-page .eth-final-cta-box p {
+        font-size: 0.98rem;
+    }
+
+    .ethereum-page .eth-signal-top,
+    .ethereum-page .eth-signal-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .ethereum-page .eth-signal-badges {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .ethereum-page .eth-btn {
+        width: 100%;
+    }
+
+    .ethereum-page .eth-hero-actions {
+        flex-direction: column;
+    }
+
+    .ethereum-page .eth-main-title {
+        font-size: 1.8rem;
+    }
+
+    .ethereum-page .eth-stat-card h2,
+    .ethereum-page .eth-kpi-card strong {
+        font-size: 1.7rem;
+    }
+}

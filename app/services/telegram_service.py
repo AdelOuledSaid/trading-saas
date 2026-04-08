@@ -1,3 +1,4 @@
+import html
 import requests
 from flask import current_app
 import config
@@ -135,13 +136,13 @@ def build_signal_telegram_message(signal) -> str:
 
 ━━━━━━━━━━━━━━━━━━
 🔥 <b>Confidence</b> : {conf_icon} {format_confidence(signal)}
-🧠 <b>Setup</b> : {format_reason(signal)}
+🧠 <b>Setup</b> : {html.escape(format_reason(signal))}
 
 ━━━━━━━━━━━━━━━━━━
-⏱ <b>Timeframe</b> : {format_timeframe(signal)}
-🧭 <b>Tendance</b> : {format_market_trend(signal)}
-📦 <b>Type</b> : {format_signal_type(signal)}
-🆔 <b>Trade ID</b> : {signal.trade_id or "-"}
+⏱ <b>Timeframe</b> : {html.escape(format_timeframe(signal))}
+🧭 <b>Tendance</b> : {html.escape(format_market_trend(signal))}
+📦 <b>Type</b> : {html.escape(format_signal_type(signal))}
+🆔 <b>Trade ID</b> : {html.escape(str(signal.trade_id or "-"))}
 
 ━━━━━━━━━━━━━━━━━━{learn_block}
 📌 <b>Statut</b> : 🟡 OPEN
@@ -177,7 +178,7 @@ def build_tp_telegram_message(signal) -> str:
 
 ━━━━━━━━━━━━━━━━━━
 🔥 <b>Confidence initiale</b> : {conf_icon} {format_confidence(signal)}
-🧠 <b>Setup</b> : {format_reason(signal)}
+🧠 <b>Setup</b> : {html.escape(format_reason(signal))}
 
 ━━━━━━━━━━━━━━━━━━{learn_block}
 📌 <b>Statut</b> : 🟢 WIN
@@ -213,7 +214,7 @@ def build_sl_telegram_message(signal) -> str:
 
 ━━━━━━━━━━━━━━━━━━
 🔥 <b>Confidence initiale</b> : {conf_icon} {format_confidence(signal)}
-🧠 <b>Setup</b> : {format_reason(signal)}
+🧠 <b>Setup</b> : {html.escape(format_reason(signal))}
 
 ━━━━━━━━━━━━━━━━━━{learn_block}
 📌 <b>Statut</b> : 🔴 LOSS
@@ -223,22 +224,198 @@ def build_sl_telegram_message(signal) -> str:
 """.strip()
 
 
-def send_telegram_message(message: str) -> None:
+def news_emoji(title: str, description: str = "") -> str:
+    text = f"{title} {description}".lower()
+
+    if any(word in text for word in ["etf", "institution", "blackrock", "fund", "inflow"]):
+        return "💰"
+    if any(word in text for word in ["hack", "scam", "fraud", "exploit", "stolen", "attack"]):
+        return "🚨"
+    if any(word in text for word in ["regulation", "sec", "law", "ban", "legal", "lawsuit"]):
+        return "⚖️"
+    if any(word in text for word in ["upgrade", "launch", "mainnet", "update", "integration"]):
+        return "⚡"
+    if any(word in text for word in ["bull", "surge", "rise", "rally", "jump", "gain"]):
+        return "🟢"
+    if any(word in text for word in ["drop", "fall", "crash", "down", "selloff", "decline"]):
+        return "🔻"
+    return "📌"
+
+
+def infer_market_bias(articles: list[dict]) -> str:
+    score = 0
+    positive_words = ["surge", "rise", "rally", "approval", "inflow", "bull", "growth", "launch", "upgrade"]
+    negative_words = ["crash", "drop", "selloff", "hack", "fraud", "ban", "lawsuit", "outflow"]
+
+    for article in articles:
+        title = str(article.get("title", ""))
+        description = str(article.get("description", ""))
+        text = f"{title} {description}".lower()
+
+        for word in positive_words:
+            if word in text:
+                score += 1
+
+        for word in negative_words:
+            if word in text:
+                score -= 1
+
+    if score >= 2:
+        return "🟢 <b>Bias marché</b> : plutôt haussier"
+    if score <= -2:
+        return "🔻 <b>Bias marché</b> : plutôt baissier"
+    return "⚖️ <b>Bias marché</b> : neutre à mixte"
+
+
+def truncate_text(text: str, max_len: int = 180) -> str:
+    if not text:
+        return ""
+    text = " ".join(str(text).split())
+    if len(text) <= max_len:
+        return text
+    return text[: max_len - 3].rstrip() + "..."
+
+
+def build_news_digest_message(
+    articles: list[dict],
+    title: str = "Velwolef News — Daily Market Update",
+    intro: str = "📊 Voici les actualités les plus importantes du moment :",
+) -> str:
+    if not articles:
+        return ""
+
+    lines = [
+        f"📰 <b>{html.escape(title)}</b>",
+        "",
+        html.escape(intro),
+        "",
+    ]
+
+    for idx, article in enumerate(articles[:6], start=1):
+        article_title = html.escape(str(article.get("title", "Sans titre")))
+        description = truncate_text(str(article.get("description", "")), 160)
+        source = html.escape(str(article.get("source", "Source inconnue")))
+        emoji = news_emoji(article.get("title", ""), article.get("description", ""))
+
+        if description:
+            lines.append(
+                f"{idx}. {emoji} <b>{article_title}</b>\n"
+                f"   {html.escape(description)}\n"
+                f"   <i>Source : {source}</i>"
+            )
+        else:
+            lines.append(
+                f"{idx}. {emoji} <b>{article_title}</b>\n"
+                f"   <i>Source : {source}</i>"
+            )
+        lines.append("")
+
+    lines.append(infer_market_bias(articles))
+    lines.append("")
+    lines.append("⏰ <b>Mise à jour</b> : quotidienne")
+    lines.append("⚠️ <i>Information de marché uniquement — DYOR</i>")
+    lines.append("")
+    lines.append("💎 <b>Velwolef Intelligence</b>")
+
+    message = "\n".join(lines).strip()
+
+    # marge sous la limite Telegram (4096)
+    if len(message) > 3900:
+        message = message[:3890].rstrip() + "..."
+
+    return message
+
+
+def build_breaking_news_message(article: dict) -> str:
+    title = html.escape(str(article.get("title", "Sans titre")))
+    description = html.escape(truncate_text(str(article.get("description", "")), 220))
+    source = html.escape(str(article.get("source", "Source inconnue")))
+    url = str(article.get("url", "")).strip()
+
+    emoji = news_emoji(article.get("title", ""), article.get("description", ""))
+
+    lines = [
+        "🚨 <b>BREAKING NEWS</b>",
+        "",
+        f"{emoji} <b>{title}</b>",
+        "",
+    ]
+
+    if description:
+        lines.append(description)
+        lines.append("")
+
+    lines.append(f"🗞 <b>Source</b> : {source}")
+
+    if url:
+        lines.append(f'🔗 <a href="{html.escape(url)}">Lire l’article</a>')
+
+    lines.append("")
+    lines.append("💎 <b>Velwolef Intelligence</b>")
+
+    return "\n".join(lines).strip()
+
+
+def send_telegram_message(
+    message: str,
+    parse_mode: str = "HTML",
+    disable_web_page_preview: bool = True
+) -> bool:
     if not config.TELEGRAM_BOT_TOKEN or not config.TELEGRAM_CHAT_ID:
         current_app.logger.warning("Telegram non configuré.")
-        return
+        return False
 
     url = f"https://api.telegram.org/bot{config.TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {
         "chat_id": config.TELEGRAM_CHAT_ID,
         "text": message,
-        "parse_mode": "HTML",
-        "disable_web_page_preview": True,
+        "parse_mode": parse_mode,
+        "disable_web_page_preview": disable_web_page_preview,
     }
 
     try:
         response = requests.post(url, json=payload, timeout=10)
         current_app.logger.info("TELEGRAM STATUS: %s", response.status_code)
         current_app.logger.info("TELEGRAM RESPONSE: %s", response.text)
+        return response.ok
     except Exception as e:
         current_app.logger.error("Erreur Telegram : %s", repr(e))
+        return False
+
+
+def send_telegram_photo(photo_url: str, caption: str = "", parse_mode: str = "HTML") -> bool:
+    if not config.TELEGRAM_BOT_TOKEN or not config.TELEGRAM_CHAT_ID:
+        current_app.logger.warning("Telegram non configuré.")
+        return False
+
+    url = f"https://api.telegram.org/bot{config.TELEGRAM_BOT_TOKEN}/sendPhoto"
+    payload = {
+        "chat_id": config.TELEGRAM_CHAT_ID,
+        "photo": photo_url,
+        "caption": caption[:1024] if caption else "",
+        "parse_mode": parse_mode,
+    }
+
+    try:
+        response = requests.post(url, json=payload, timeout=15)
+        current_app.logger.info("TELEGRAM PHOTO STATUS: %s", response.status_code)
+        current_app.logger.info("TELEGRAM PHOTO RESPONSE: %s", response.text)
+        return response.ok
+    except Exception as e:
+        current_app.logger.error("Erreur Telegram photo : %s", repr(e))
+        return False
+
+
+def send_daily_news_digest(articles: list[dict]) -> bool:
+    message = build_news_digest_message(articles)
+    if not message:
+        current_app.logger.info("Aucune news à envoyer.")
+        return False
+    return send_telegram_message(message)
+
+
+def send_breaking_news(article: dict, photo_url: str | None = None) -> bool:
+    message = build_breaking_news_message(article)
+    if photo_url:
+        return send_telegram_photo(photo_url=photo_url, caption=message)
+    return send_telegram_message(message)

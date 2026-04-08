@@ -3,72 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApexSignals | Bitcoin Signals & Analyse BTCUSD</title>
-    <meta name="description" content="Suivez Bitcoin sur ApexSignals avec une page dédiée : prix BTC en direct, graphique TradingView, niveaux techniques, sentiment de marché, actualités récentes et historique des signaux BTCUSD.">
+    <title>Velwolf Signals | Bitcoin Signals & Analyse BTCUSD</title>
+    <meta name="description" content="Suivez Bitcoin sur Velwolf Signals avec une page dédiée : prix BTC en direct, graphique TradingView, niveaux techniques, sentiment de marché, actualités récentes et historique des signaux BTCUSD.">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='btc.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 <body class="home-body bitcoin-page">
 
 {% include "partials/navbar.html" %}
 
-<main>
+<main class="btc-page-shell">
 
     <!-- HERO -->
-    <section class="inner-hero btc-hero">
+    <section class="btc-hero-section">
         <div class="section-container">
             <div class="btc-hero-grid">
 
-                <div class="btc-hero-left">
-                    <span class="hero-badge btc-badge">
+                <div class="btc-hero-content">
+                    <div class="btc-hero-badge">
                         <span class="btc-badge-icon">₿</span>
-                        Bitcoin Signals
-                    </span>
-
-                    <h1 class="inner-page-title">
-                        Une lecture premium de Bitcoin pour suivre le marché avec plus de clarté
-                    </h1>
-
-                    <p class="inner-page-text">
-                        Cette page regroupe l’essentiel pour suivre Bitcoin dans un environnement plus structuré :
-                        prix actuel, tendance, zones techniques, sentiment, actualités récentes et derniers signaux BTCUSD.
-                        L’objectif est d’offrir une expérience plus sérieuse, plus lisible et plus crédible.
-                    </p>
-
-                    <div class="hero-actions">
-                        <a href="#btc-dashboard" class="hero-btn-primary">Voir le market dashboard</a>
-                        <a href="#btc-signals-history" class="hero-btn-secondary">Voir les signaux</a>
+                        <span>Bitcoin Market Intelligence</span>
                     </div>
 
-                    <div class="hero-trust-row">
-                        <div class="trust-mini">
+                    <h1 class="btc-main-title">
+                        Une page premium pour suivre Bitcoin avec une lecture plus claire, plus sérieuse et plus stratégique
+                    </h1>
+
+                    <p class="btc-main-text">
+                        Velwolf Signals centralise ici l’essentiel du marché BTCUSD : prix en direct, zones techniques,
+                        momentum, sentiment global, actualités crypto et historique des signaux récents dans un environnement
+                        plus structuré et plus crédible.
+                    </p>
+
+                    <div class="btc-hero-actions">
+                        <a href="#btc-dashboard" class="btc-btn btc-btn-primary">Voir le dashboard</a>
+                        <a href="#btc-signals-history" class="btc-btn btc-btn-secondary">Historique des signaux</a>
+                    </div>
+
+                    <div class="btc-hero-points">
+                        <div class="btc-point-card">
                             <strong>Actif directeur</strong>
-                            <span>Bitcoin reste la référence centrale du marché crypto.</span>
+                            <span>Bitcoin reste le principal moteur de lecture du marché crypto.</span>
                         </div>
-                        <div class="trust-mini">
-                            <strong>Lecture structurée</strong>
-                            <span>Prix, niveaux, contexte et sentiment réunis au même endroit.</span>
+                        <div class="btc-point-card">
+                            <strong>Vision structurée</strong>
+                            <span>Prix, zones, contexte et signaux réunis au même endroit.</span>
                         </div>
-                        <div class="trust-mini">
-                            <strong>Format premium</strong>
-                            <span>Une présentation plus forte pour mieux valoriser la plateforme.</span>
+                        <div class="btc-point-card">
+                            <strong>Page premium</strong>
+                            <span>Un rendu plus fort pour valoriser Velwolf Signals.</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="btc-hero-right">
-                    <div class="mini-market-card">
-                        <span class="mini-market-label">BTCUSD</span>
+                <div class="btc-hero-side">
+                    <div class="btc-stat-card btc-stat-highlight">
+                        <span class="btc-stat-label">BTCUSD</span>
                         <h2>{{ btc_price if btc_price else "Mise à jour..." }}</h2>
                         <p>Prix spot actuel</p>
                     </div>
 
-                    <div class="mini-market-card">
-                        <span class="mini-market-label">Variation 24h</span>
+                    <div class="btc-stat-card">
+                        <span class="btc-stat-label">Variation 24h</span>
                         <h2>
                             {% if btc_change_24h not in [None, "", "..."] %}
                                 {{ btc_change_24h }}%
@@ -79,14 +80,14 @@
                         <p>Évolution récente</p>
                     </div>
 
-                    <div class="mini-market-card">
-                        <span class="mini-market-label">Tendance</span>
+                    <div class="btc-stat-card">
+                        <span class="btc-stat-label">Tendance</span>
                         <h2>{{ btc_trend_label or "Neutre" }}</h2>
                         <p>Lecture synthétique</p>
                     </div>
 
-                    <div class="mini-market-card">
-                        <span class="mini-market-label">Volatilité</span>
+                    <div class="btc-stat-card">
+                        <span class="btc-stat-label">Volatilité</span>
                         <h2>{{ btc_volatility_label or "Modérée" }}</h2>
                         <p>Rythme du marché</p>
                     </div>
@@ -96,135 +97,173 @@
         </div>
     </section>
 
-    <!-- QUICK OVERVIEW -->
-    <section class="home-stats-section" id="btc-dashboard">
+    <!-- STRIP -->
+    <section class="btc-market-strip">
         <div class="section-container">
-            <div class="section-title">
-                <span>Market dashboard</span>
-                <h2>Vue d’ensemble du marché Bitcoin</h2>
-                <p>
-                    Une lecture rapide des indicateurs les plus utiles pour comprendre le contexte actuel du BTCUSD
-                    sur la plateforme ApexSignals.
-                </p>
-            </div>
-
-            <div class="home-stats-grid">
-                <div class="home-stat-card featured-stat">
-                    <h3>{{ btc_total_signals or 0 }}</h3>
-                    <p>Signaux Bitcoin enregistrés</p>
+            <div class="btc-market-strip-inner">
+                <div class="btc-strip-item">
+                    <span>Dominance BTC</span>
+                    <strong>
+                        {{ btc_dominance or "—" }}
+                        {% if btc_dominance not in [None, "", "..."] %}%{% endif %}
+                    </strong>
                 </div>
 
-                <div class="home-stat-card">
-                    <h3>{{ btc_winrate or 0 }}%</h3>
-                    <p>Winrate des trades clôturés</p>
+                <div class="btc-strip-item">
+                    <span>Fear & Greed</span>
+                    <strong>
+                        {% if fear_greed_value not in [None, "", "..."] %}
+                            {{ fear_greed_value }}
+                        {% else %}
+                            —
+                        {% endif %}
+                        / {{ fear_greed_classification or "Neutre" }}
+                    </strong>
                 </div>
 
-                <div class="home-stat-card">
-                    <h3>{{ btc_open_signals or 0 }}</h3>
-                    <p>Signaux actuellement ouverts</p>
+                <div class="btc-strip-item">
+                    <span>Plus haut 24h</span>
+                    <strong>{{ btc_high_24h or "—" }}</strong>
                 </div>
 
-                <div class="home-stat-card">
-                    <h3>{{ btc_estimated_pnl or 0 }}</h3>
-                    <p>PnL cumulé estimé</p>
+                <div class="btc-strip-item">
+                    <span>Plus bas 24h</span>
+                    <strong>{{ btc_low_24h or "—" }}</strong>
+                </div>
+
+                <div class="btc-strip-item">
+                    <span>Volume 24h</span>
+                    <strong>{{ btc_volume_24h or "—" }}</strong>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CHART + SIDE + INSIGHTS -->
-    <section class="section-standard" id="btc-live-chart">
+    <!-- DASHBOARD -->
+    <section class="btc-section" id="btc-dashboard">
         <div class="section-container">
-            <div class="section-title">
-                <span>Live chart & structure</span>
-                <h2>Graphique, niveaux techniques et contexte Bitcoin</h2>
+            <div class="btc-section-heading center">
+                <span class="btc-section-kicker">Market dashboard</span>
+                <h2>Vue d’ensemble du marché Bitcoin</h2>
                 <p>
-                    Cette zone remplace la grande partie vide par une mise en page plus dense et plus professionnelle,
-                    avec le chart en direct, les niveaux importants et des repères de lecture utiles.
+                    Une synthèse claire des métriques les plus utiles pour lire rapidement la dynamique actuelle du BTCUSD.
                 </p>
             </div>
 
-            <div class="btc-chart-layout">
+            <div class="btc-kpi-grid">
+                <div class="btc-kpi-card btc-kpi-featured">
+                    <span>Total signaux</span>
+                    <strong>{{ btc_total_signals or 0 }}</strong>
+                    <p>Signaux Bitcoin enregistrés sur la plateforme</p>
+                </div>
 
-                <!-- LEFT -->
-                <div class="btc-chart-main">
+                <div class="btc-kpi-card">
+                    <span>Winrate</span>
+                    <strong>{{ btc_winrate or 0 }}%</strong>
+                    <p>Performance des trades clôturés</p>
+                </div>
 
-                    <div class="btc-chart-box">
-                        <div class="btc-chart-header">
+                <div class="btc-kpi-card">
+                    <span>Signaux ouverts</span>
+                    <strong>{{ btc_open_signals or 0 }}</strong>
+                    <p>Setups actuellement actifs</p>
+                </div>
+
+                <div class="btc-kpi-card">
+                    <span>PnL estimé</span>
+                    <strong>{{ btc_estimated_pnl or 0 }}</strong>
+                    <p>Lecture synthétique de performance cumulée</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CHART + SIDE -->
+    <section class="btc-section">
+        <div class="section-container">
+            <div class="btc-section-heading">
+                <span class="btc-section-kicker">Live chart & market structure</span>
+                <h2>Graphique Bitcoin, niveaux techniques et contexte</h2>
+                <p>
+                    Un bloc central plus dense et plus premium pour suivre le marché en temps réel et lire rapidement
+                    les zones les plus importantes.
+                </p>
+            </div>
+
+            <div class="btc-main-grid">
+
+                <div class="btc-main-left">
+                    <div class="btc-panel btc-chart-panel">
+                        <div class="btc-panel-head">
                             <div>
-                                <span class="panel-badge">Graphique live</span>
+                                <span class="btc-panel-badge">Graphique live</span>
                                 <h3>BTCUSD · Vue TradingView</h3>
                             </div>
-                            <div class="btc-chart-meta">
+                            <div class="btc-panel-meta">
                                 <span>Intervalle : 4H</span>
                                 <span>Marché : Binance</span>
                             </div>
                         </div>
 
-                        <div class="tradingview-widget-container">
+                        <div class="btc-chart-wrap">
                             <div id="tradingview_btc_chart"></div>
                         </div>
                     </div>
 
-                    <div class="btc-insights-grid">
-                        <div class="btc-info-card">
-                            <span class="panel-badge">Prix</span>
-                            <h3>Résumé marché</h3>
-                            <ul class="btc-info-list">
+                    <div class="btc-mini-grid">
+                        <div class="btc-panel">
+                            <span class="btc-panel-badge">Résumé marché</span>
+                            <h3>Lecture rapide</h3>
+                            <ul class="btc-list-clean">
                                 <li><strong>Prix actuel :</strong> {{ btc_price if btc_price else "Mise à jour..." }}</li>
-
-                                {% if btc_change_24h not in [None, "", "..."] %}
-                                <li><strong>Variation 24h :</strong> {{ btc_change_24h }}%</li>
-                                {% endif %}
-
-                                {% if btc_high_24h not in [None, "", "..."] %}
-                                <li><strong>Plus haut 24h :</strong> {{ btc_high_24h }}</li>
-                                {% endif %}
-
-                                {% if btc_low_24h not in [None, "", "..."] %}
-                                <li><strong>Plus bas 24h :</strong> {{ btc_low_24h }}</li>
-                                {% endif %}
-
-                                {% if btc_volume_24h not in [None, "", "..."] %}
-                                <li><strong>Volume 24h :</strong> {{ btc_volume_24h }}</li>
-                                {% endif %}
+                                <li><strong>Variation 24h :</strong>
+                                    {% if btc_change_24h not in [None, "", "..."] %}
+                                        {{ btc_change_24h }}%
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </li>
+                                <li><strong>Tendance :</strong> {{ btc_trend_label or "Neutre" }}</li>
+                                <li><strong>Volatilité :</strong> {{ btc_volatility_label or "Modérée" }}</li>
+                                <li><strong>Dominance BTC :</strong>
+                                    {{ btc_dominance or "—" }}
+                                    {% if btc_dominance not in [None, "", "..."] %}%{% endif %}
+                                </li>
                             </ul>
                         </div>
 
-                        <div class="btc-info-card">
-                            <span class="panel-badge">Lecture rapide</span>
-                            <h3>Repères clés</h3>
+                        <div class="btc-panel">
+                            <span class="btc-panel-badge">Repères de lecture</span>
+                            <h3>Comment lire Bitcoin</h3>
                             <p class="btc-reading-text">
-                                Bitcoin reste l’actif de référence du marché crypto. Une lecture saine repose d’abord
-                                sur la tendance dominante, puis sur les réactions du prix autour des niveaux techniques
-                                et sur la qualité du momentum.
+                                Bitcoin reste l’actif de référence du marché crypto. Une lecture saine du marché repose
+                                sur la tendance dominante, le comportement du prix sur les niveaux clés, et la qualité
+                                du momentum pendant les accélérations ou consolidations.
                             </p>
+
                             <div class="btc-mini-points">
                                 <div class="btc-mini-point">
                                     <strong>Tendance</strong>
                                     <span>{{ btc_trend_label or "Neutre" }}</span>
                                 </div>
                                 <div class="btc-mini-point">
-                                    <strong>Volatilité</strong>
-                                    <span>{{ btc_volatility_label or "Modérée" }}</span>
+                                    <strong>Momentum</strong>
+                                    <span>À surveiller autour des cassures</span>
                                 </div>
                                 <div class="btc-mini-point">
-                                    <strong>Dominance BTC</strong>
-                                    <span>{{ btc_dominance or "—" }}{% if btc_dominance not in [None, "", "..."] %}%{% endif %}</span>
+                                    <strong>Volatilité</strong>
+                                    <span>{{ btc_volatility_label or "Modérée" }}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
 
-                <!-- RIGHT -->
-                <aside class="btc-side-panel">
-
-                    <div class="btc-info-card">
-                        <span class="panel-badge">Structure</span>
+                <aside class="btc-main-right">
+                    <div class="btc-panel">
+                        <span class="btc-panel-badge">Structure</span>
                         <h3>Niveaux importants</h3>
-                        <ul class="btc-info-list">
+                        <ul class="btc-list-clean">
                             <li><strong>Support 1 :</strong> {{ btc_support_1 or "—" }}</li>
                             <li><strong>Support 2 :</strong> {{ btc_support_2 or "—" }}</li>
                             <li><strong>Résistance 1 :</strong> {{ btc_resistance_1 or "—" }}</li>
@@ -233,10 +272,10 @@
                         </ul>
                     </div>
 
-                    <div class="btc-info-card">
-                        <span class="panel-badge">Sentiment</span>
+                    <div class="btc-panel">
+                        <span class="btc-panel-badge">Sentiment</span>
                         <h3>Contexte du marché</h3>
-                        <ul class="btc-info-list">
+                        <ul class="btc-list-clean">
                             <li>
                                 <strong>Fear & Greed :</strong>
                                 {% if fear_greed_value not in [None, "", "..."] %}
@@ -244,38 +283,41 @@
                                 {% else %}
                                     —
                                 {% endif %}
-                                /
-                                {{ fear_greed_classification or "Neutre" }}
+                                / {{ fear_greed_classification or "Neutre" }}
                             </li>
-                            <li><strong>Dominance BTC :</strong> {{ btc_dominance or "—" }}{% if btc_dominance not in [None, "", "..."] %}%{% endif %}</li>
+                            <li>
+                                <strong>Dominance BTC :</strong>
+                                {{ btc_dominance or "—" }}
+                                {% if btc_dominance not in [None, "", "..."] %}%{% endif %}
+                            </li>
                             <li><strong>Tendance :</strong> {{ btc_trend_label or "Neutre" }}</li>
                             <li><strong>Volatilité :</strong> {{ btc_volatility_label or "Modérée" }}</li>
                         </ul>
                     </div>
 
-                    <div class="btc-info-card">
-                        <span class="panel-badge">Setup</span>
+                    <div class="btc-panel">
+                        <span class="btc-panel-badge">Lecture setup</span>
                         <h3>Comment lire un scénario BTC</h3>
                         <p class="btc-reading-text">
-                            Un bon setup ne dépend pas seulement d’une entrée. Il repose sur une structure logique,
-                            un niveau d’invalidation cohérent et un objectif compatible avec le contexte de marché.
+                            Un bon setup ne dépend pas seulement d’une entrée. Il repose aussi sur une structure logique,
+                            un niveau d’invalidation cohérent, un objectif clair et un contexte global qui soutient le scénario.
                         </p>
-                        <div class="btc-mini-points">
+
+                        <div class="btc-mini-points column">
                             <div class="btc-mini-point">
                                 <strong>Entrée</strong>
                                 <span>Zone centrale du scénario</span>
                             </div>
                             <div class="btc-mini-point">
-                                <strong>Invalidation</strong>
-                                <span>Stop loss clair</span>
+                                <strong>Stop loss</strong>
+                                <span>Invalidation claire</span>
                             </div>
                             <div class="btc-mini-point">
-                                <strong>Objectif</strong>
-                                <span>Take profit cohérent</span>
+                                <strong>Take profit</strong>
+                                <span>Objectif cohérent avec le contexte</span>
                             </div>
                         </div>
                     </div>
-
                 </aside>
 
             </div>
@@ -283,31 +325,31 @@
     </section>
 
     <!-- WHY BTC -->
-    <section class="section-standard">
+    <section class="btc-section">
         <div class="section-container">
-            <div class="proof-box">
-                <div class="proof-left">
-                    <span class="proof-badge">Pourquoi Bitcoin</span>
-                    <h2>Bitcoin reste l’actif principal pour lire la dynamique crypto</h2>
+            <div class="btc-why-box">
+                <div class="btc-why-left">
+                    <span class="btc-section-kicker">Pourquoi Bitcoin</span>
+                    <h2>Bitcoin reste l’actif principal pour lire la dynamique globale du marché crypto</h2>
                     <p>
-                        Lorsqu’il accélère, consolide ou casse un niveau majeur, une large partie du marché réagit dans son sillage.
-                        Le suivre sérieusement permet donc de mieux comprendre le sentiment général, la qualité du momentum et le contexte
-                        dans lequel les autres actifs évoluent.
+                        Lorsqu’il accélère, consolide ou casse une zone majeure, une grande partie du marché suit son rythme.
+                        Le suivre sérieusement permet de mieux comprendre le sentiment général, la qualité du momentum et le niveau
+                        de risque perçu sur les autres actifs.
                     </p>
                 </div>
 
-                <div class="proof-right">
-                    <div class="proof-card">
+                <div class="btc-why-right">
+                    <div class="btc-why-card">
                         <strong>Actif directeur</strong>
-                        <span>Bitcoin influence fortement la lecture globale du marché crypto.</span>
+                        <span>Bitcoin influence la lecture globale du marché crypto.</span>
                     </div>
-                    <div class="proof-card">
-                        <strong>Liquidité importante</strong>
-                        <span>Ses zones clés concentrent l’attention et les réactions des opérateurs.</span>
+                    <div class="btc-why-card">
+                        <strong>Liquidité élevée</strong>
+                        <span>Ses zones majeures attirent plus d’attention et de réaction.</span>
                     </div>
-                    <div class="proof-card">
-                        <strong>Valeur perçue plus forte</strong>
-                        <span>Une page BTC dédiée améliore la crédibilité de toute la plateforme.</span>
+                    <div class="btc-why-card">
+                        <strong>Crédibilité plus forte</strong>
+                        <span>Une page BTC dédiée renforce la valeur perçue de la plateforme.</span>
                     </div>
                 </div>
             </div>
@@ -316,41 +358,41 @@
 
     <!-- NEWS -->
     {% if btc_news %}
-    <section class="market-updates-section">
+    <section class="btc-section btc-news-section">
         <div class="section-container">
-            <div class="section-title">
-                <span>Actualités Bitcoin</span>
+            <div class="btc-section-heading">
+                <span class="btc-section-kicker">Actualités Bitcoin</span>
                 <h2>Les sujets qui influencent actuellement le marché</h2>
                 <p>
-                    Une sélection d’articles récents pour suivre Bitcoin, le sentiment de marché et les éléments
-                    susceptibles d’influencer la perception du risque.
+                    Une sélection d’articles récents pour suivre Bitcoin, le sentiment crypto et les éléments susceptibles
+                    de faire évoluer la perception du risque.
                 </p>
             </div>
 
-            <div class="market-updates-grid">
+            <div class="btc-news-grid">
                 {% for article in btc_news %}
-                <article class="market-news-card">
-                    <div class="market-news-image">
+                <article class="btc-news-card">
+                    <div class="btc-news-image">
                         {% if article.image %}
                             <img src="{{ article.image }}" alt="{{ article.title }}" loading="lazy">
                         {% else %}
-                            <div class="market-news-image-fallback">BTC News</div>
+                            <div class="btc-news-image-fallback">BTC News</div>
                         {% endif %}
                     </div>
 
-                    <div class="market-news-meta">
-                        <span>{{ article.source or "Source crypto" }}</span>
+                    <div class="btc-news-body">
+                        <div class="btc-news-source">
+                            <span>{{ article.source or "Source crypto" }}</span>
+                        </div>
+
+                        <h3>
+                            <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer">
+                                {{ article.title }}
+                            </a>
+                        </h3>
+
+                        <p>{{ article.description or "Actualité récente autour du marché Bitcoin." }}</p>
                     </div>
-
-                    <h3>
-                        <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer">
-                            {{ article.title }}
-                        </a>
-                    </h3>
-
-                    <p>
-                        {{ article.description or "Actualité récente autour du marché Bitcoin." }}
-                    </p>
                 </article>
                 {% endfor %}
             </div>
@@ -359,33 +401,33 @@
     {% endif %}
 
     <!-- SIGNALS -->
-    <section class="section-standard" id="btc-signals-history">
+    <section class="btc-section" id="btc-signals-history">
         <div class="section-container">
-            <div class="section-title">
-                <span>Historique récent</span>
+            <div class="btc-section-heading">
+                <span class="btc-section-kicker">Historique récent</span>
                 <h2>Les derniers signaux Bitcoin publiés</h2>
                 <p>
-                    Les derniers setups BTCUSD affichés dans un format plus premium, plus lisible et mieux structuré.
+                    Les derniers setups BTCUSD affichés dans un format premium, lisible et mieux structuré.
                 </p>
             </div>
 
             {% if btc_signals %}
-            <div class="signals-grid">
+            <div class="btc-signals-grid">
                 {% for signal in btc_signals %}
-                <article class="signal-card premium-signal-card {{ signal.action|lower }} {{ signal.status|lower }}">
+                <article class="btc-signal-card {{ signal.action|lower }} {{ signal.status|lower }}">
 
-                    <div class="signal-card-top">
-                        <div class="signal-main-head">
-                            <span class="signal-asset">{{ signal.asset }}</span>
+                    <div class="btc-signal-top">
+                        <div class="btc-signal-head">
+                            <span class="btc-signal-asset">{{ signal.asset }}</span>
                             <h3>{{ signal.action }}</h3>
                         </div>
 
-                        <div class="signal-top-right">
-                            <span class="signal-status-badge status-{{ signal.status|lower }}">
+                        <div class="btc-signal-badges">
+                            <span class="btc-status-badge status-{{ signal.status|lower }}">
                                 {{ signal.status }}
                             </span>
 
-                            <span class="signal-badge
+                            <span class="btc-confidence-badge
                                 {% if signal.confidence >= 80 %}
                                     badge-elite
                                 {% elif signal.confidence >= 60 %}
@@ -399,72 +441,70 @@
                         </div>
                     </div>
 
-                    <div class="signal-price-grid">
-                        <div class="signal-price-box">
+                    <div class="btc-signal-prices">
+                        <div class="btc-price-box">
                             <span>Entrée</span>
                             <strong>{{ signal.entry_price or "—" }}</strong>
                         </div>
-
-                        <div class="signal-price-box">
+                        <div class="btc-price-box">
                             <span>SL</span>
                             <strong>{{ signal.stop_loss or "—" }}</strong>
                         </div>
-
-                        <div class="signal-price-box">
+                        <div class="btc-price-box">
                             <span>TP</span>
                             <strong>{{ signal.take_profit or "—" }}</strong>
                         </div>
                     </div>
 
-                    <div class="signal-meta-grid">
-                        <div class="signal-meta-box">
+                    <div class="btc-signal-meta">
+                        <div class="btc-meta-box">
                             <span>Confiance</span>
                             <strong>{{ signal.confidence or 0 }}/100</strong>
                         </div>
 
-                        <div class="signal-meta-box">
+                        <div class="btc-meta-box">
                             <span>Tendance</span>
                             <strong>{{ signal.market_trend or "—" }}</strong>
                         </div>
 
-                        <div class="signal-meta-box">
+                        <div class="btc-meta-box">
                             <span>Type</span>
                             <strong>{{ signal.signal_type or "—" }}</strong>
                         </div>
 
-                        <div class="signal-meta-box">
+                        <div class="btc-meta-box">
                             <span>R/R</span>
                             <strong>{{ signal.risk_reward or signal.compute_rr() or "—" }}</strong>
                         </div>
 
-                        <div class="signal-meta-box">
+                        <div class="btc-meta-box">
                             <span>Timeframe</span>
                             <strong>{{ signal.timeframe or "—" }}</strong>
                         </div>
 
-                        <div class="signal-meta-box">
+                        <div class="btc-meta-box">
                             <span>Source</span>
                             <strong>{{ signal.source or "system" }}</strong>
                         </div>
                     </div>
 
                     {% if signal.reason %}
-                    <div class="signal-reason-box">
+                    <div class="btc-signal-reason">
                         <h4>Pourquoi ce signal ?</h4>
                         <p>{{ signal.reason }}</p>
                     </div>
                     {% endif %}
 
-                    <div class="signal-footer">
-                        <div class="signal-date">
+                    <div class="btc-signal-footer">
+                        <div class="btc-footer-block">
                             <span>Publié</span>
                             <strong>{{ signal.created_at.strftime('%d/%m/%Y %H:%M') if signal.created_at else "—" }}</strong>
                         </div>
 
-                        <div class="signal-result">
+                        <div class="btc-footer-block">
                             <span>Résultat</span>
                             {% if signal.result_percent is not none %}
-                                <strong class="{% if signal.result_percent >= 0 %}text-buy{% else %}text-loss{% endif %}">
+                                <strong class="{% if signal.result_percent >= 0 %}text-profit{% else %}text-loss{% endif %}">
                                     {{ signal.result_percent }}%
                                 </strong>
                             {% else %}
@@ -477,7 +517,7 @@
                 {% endfor %}
             </div>
             {% else %}
-            <div class="market-updates-empty">
+            <div class="btc-empty-box">
                 <p>Aucun signal Bitcoin n’est disponible pour le moment.</p>
             </div>
             {% endif %}
@@ -485,58 +525,58 @@
     </section>
 
     <!-- FAQ -->
-    <section class="section-standard">
+    <section class="btc-section">
         <div class="section-container">
-            <div class="section-title">
-                <span>FAQ Bitcoin</span>
+            <div class="btc-section-heading">
+                <span class="btc-section-kicker">FAQ Bitcoin</span>
                 <h2>Les questions fréquentes sur le suivi BTC</h2>
                 <p>
-                    Une section simple pour mieux comprendre la logique de cette page et la place de Bitcoin dans ApexSignals.
+                    Une section claire pour mieux comprendre l’intérêt de cette page et la logique générale d’utilisation.
                 </p>
             </div>
 
-            <div class="faq-grid">
-                <div class="faq-card">
+            <div class="btc-faq-grid">
+                <div class="btc-faq-card">
                     <h3>Pourquoi suivre Bitcoin en priorité ?</h3>
                     <p>Parce qu’il reste l’actif principal du marché crypto et influence souvent la dynamique générale.</p>
                 </div>
 
-                <div class="faq-card">
+                <div class="btc-faq-card">
                     <h3>Que signifie un signal BTCUSD ?</h3>
-                    <p>Un scénario de trading structuré autour d’un point d’entrée, d’un stop loss et d’un objectif.</p>
+                    <p>Un scénario structuré avec entrée, stop loss, objectif et lecture contextuelle du marché.</p>
                 </div>
 
-                <div class="faq-card">
-                    <h3>Le chart live remplace-t-il les signaux ?</h3>
-                    <p>Non. Il complète la lecture et permet de visualiser la structure du marché en temps réel.</p>
+                <div class="btc-faq-card">
+                    <h3>Le graphique live remplace-t-il les signaux ?</h3>
+                    <p>Non. Il complète la lecture et permet de visualiser le contexte en temps réel.</p>
                 </div>
 
-                <div class="faq-card">
-                    <h3>Pourquoi une page dédiée ?</h3>
-                    <p>Parce que Bitcoin mérite un espace premium à part entière pour renforcer la valeur perçue de la plateforme.</p>
+                <div class="btc-faq-card">
+                    <h3>Pourquoi une page dédiée Bitcoin ?</h3>
+                    <p>Parce que Bitcoin mérite un espace premium à part entière pour renforcer la crédibilité de la plateforme.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- CTA -->
-    <section class="final-cta-section">
+    <section class="btc-final-cta">
         <div class="section-container">
-            <div class="final-cta-box">
-                <span class="final-cta-badge">BTCUSD • ApexSignals</span>
+            <div class="btc-final-cta-box">
+                <span class="btc-final-badge">BTCUSD • Velwolf Signals</span>
                 <h2>Suivre Bitcoin dans un environnement plus structuré</h2>
                 <p>
                     Prix live, contexte de marché, niveaux techniques, sentiment et historique lisible :
-                    cette page est pensée pour devenir un vrai point fort de la plateforme.
+                    cette page est pensée pour devenir un vrai point fort de Velwolf Signals.
                 </p>
 
-                <div class="final-cta-actions">
-                    <a href="{{ url_for('billing.pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>
+                <div class="btc-hero-actions">
+                    <a href="{{ url_for('billing.pricing') }}" class="btc-btn btc-btn-primary">Voir les offres</a>
 
                     {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('dashboard.dashboard') }}" class="hero-btn-secondary white-outline-btn">Accéder au dashboard</a>
+                        <a href="{{ url_for('dashboard.dashboard') }}" class="btc-btn btc-btn-secondary cta-alt">Accéder au dashboard</a>
                     {% else %}
-                        <a href="{{ url_for('auth.register') }}" class="hero-btn-secondary white-outline-btn">Créer mon compte</a>
+                        <a href="{{ url_for('auth.register') }}" class="btc-btn btc-btn-secondary cta-alt">Créer mon compte</a>
                     {% endif %}
                 </div>
             </div>
@@ -548,7 +588,7 @@
 <footer class="site-footer">
     <div class="section-container footer-inner">
         <div class="footer-brand">
-            <h3>ApexSignals</h3>
+            <h3>Velwolf Signals</h3>
             <p>
                 Une plateforme plus claire, plus crédible et plus premium pour suivre Bitcoin
                 et les autres actifs de manière structurée.
@@ -560,33 +600,32 @@
             <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
             <a href="{{ url_for('signals.results') }}">Résultats</a>
             <a href="{{ url_for('billing.pricing') }}">Offres</a>
-            <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
         </div>
     </div>
 </footer>
 
 <script src="https://s3.tradingview.com/tv.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        if (typeof TradingView !== "undefined") {
-            new TradingView.widget({
-                width: "100%",
-                height: 520,
-                symbol: "BINANCE:BTCUSDT",
-                interval: "240",
-                timezone: "Europe/Paris",
-                theme: "light",
-                style: "1",
-                locale: "fr",
-                toolbar_bg: "#f8f9fd",
-                enable_publishing: false,
-                hide_top_toolbar: false,
-                hide_legend: false,
-                save_image: false,
-                container_id: "tradingview_btc_chart"
-            });
-        }
-    });
+document.addEventListener("DOMContentLoaded", function () {
+    if (typeof TradingView !== "undefined") {
+        new TradingView.widget({
+            width: "100%",
+            height: 560,
+            symbol: "BINANCE:BTCUSDT",
+            interval: "240",
+            timezone: "Europe/Paris",
+            theme: "light",
+            style: "1",
+            locale: "fr",
+            toolbar_bg: "#f8fafc",
+            enable_publishing: false,
+            hide_top_toolbar: false,
+            hide_legend: false,
+            save_image: false,
+            container_id: "tradingview_btc_chart"
+        });
+    }
+});
 </script>
 
 </body>
