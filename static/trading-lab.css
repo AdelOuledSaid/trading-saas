@@ -1,0 +1,429 @@
+/* =========================================================
+   TRADING LAB — VELWOLEF PREMIUM
+========================================================= */
+
+.tl-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 76px 0 68px;
+    background:
+        radial-gradient(circle at 10% 18%, rgba(37, 99, 235, 0.10), transparent 24%),
+        radial-gradient(circle at 88% 12%, rgba(124, 58, 237, 0.08), transparent 22%),
+        linear-gradient(180deg, #f8fbff 0%, #eef3fb 100%);
+}
+
+.tl-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.14;
+    background-image:
+        linear-gradient(rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
+    background-size: 42px 42px;
+}
+
+.tl-hero::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 720px;
+    height: 720px;
+    transform: translate(-50%, -50%);
+    background: url("/static/logo.png") no-repeat center;
+    background-size: contain;
+    opacity: 0.03;
+    pointer-events: none;
+}
+
+.tl-hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 1120px;
+}
+
+.tl-kicker {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid #dbeafe;
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 900;
+    margin-bottom: 16px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+}
+
+.tl-title {
+    max-width: 1040px;
+    color: #0f172a;
+    font-size: clamp(2.4rem, 5vw, 4.5rem);
+    line-height: 0.98;
+    font-weight: 900;
+    letter-spacing: -0.06em;
+    margin-bottom: 18px;
+}
+
+.tl-subtitle {
+    max-width: 860px;
+    color: #64748b;
+    font-size: 1.15rem;
+    line-height: 1.8;
+}
+
+.tl-badges {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 26px;
+}
+
+.tl-badges span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 0 16px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.88);
+    border: 1px solid #dbe5f1;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 800;
+    box-shadow: 0 10px 24px rgba(15,23,42,0.04);
+}
+
+.tl-section {
+    position: relative;
+    padding: 76px 0;
+}
+
+.tl-section-head {
+    max-width: 860px;
+    margin: 0 auto 34px;
+    text-align: center;
+}
+
+.tl-section-head span {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.tl-section-head h2 {
+    color: #0f172a;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.08;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    margin-bottom: 12px;
+}
+
+.tl-section-head p {
+    color: #64748b;
+    font-size: 1.02rem;
+    line-height: 1.8;
+}
+
+.tl-grid-two {
+    display: grid;
+    grid-template-columns: 1.08fr 0.92fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.tl-card,
+.tl-mini-card,
+.tl-pillar-card,
+.tl-feature-card {
+    background: rgba(255,255,255,0.92);
+    border: 1px solid rgba(226,232,240,0.95);
+    box-shadow: 0 16px 34px rgba(15,23,42,0.06);
+    backdrop-filter: blur(10px);
+}
+
+.tl-card {
+    padding: 30px;
+    border-radius: 28px;
+}
+
+.tl-card-large h2 {
+    color: #0f172a;
+    font-size: clamp(1.9rem, 3vw, 2.8rem);
+    line-height: 1.08;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    margin: 10px 0 14px;
+}
+
+.tl-card p {
+    color: #64748b;
+    font-size: 1rem;
+    line-height: 1.85;
+}
+
+.tl-card-kicker {
+    display: inline-block;
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.tl-stack {
+    display: grid;
+    gap: 16px;
+}
+
+.tl-mini-card {
+    padding: 22px;
+    border-radius: 22px;
+}
+
+.tl-mini-card strong {
+    display: block;
+    color: #0f172a;
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 8px;
+}
+
+.tl-mini-card span {
+    color: #64748b;
+    line-height: 1.75;
+    font-size: 15px;
+}
+
+.tl-pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.tl-pillar-card {
+    padding: 24px 22px;
+    border-radius: 24px;
+    transition: all 0.25s ease;
+}
+
+.tl-pillar-card:hover,
+.tl-feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 46px rgba(15,23,42,0.10);
+}
+
+.tl-pillar-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    color: white;
+    font-size: 22px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+}
+
+.tl-pillar-card h3 {
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+
+.tl-pillar-card p {
+    color: #64748b;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.tl-card-link {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 16px;
+    color: #2563eb;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.tl-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.tl-feature-card {
+    padding: 24px 22px;
+    border-radius: 22px;
+    transition: all 0.25s ease;
+}
+
+.tl-feature-card h3 {
+    color: #0f172a;
+    font-size: 22px;
+    line-height: 1.18;
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+
+.tl-feature-card p {
+    color: #64748b;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.tl-final-box {
+    position: relative;
+    overflow: hidden;
+    padding: 36px 30px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    box-shadow: 0 24px 54px rgba(15,23,42,0.18);
+    text-align: center;
+}
+
+.tl-final-box::before {
+    content: "";
+    position: absolute;
+    top: -90px;
+    right: -90px;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.10), transparent 70%);
+}
+
+.tl-final-badge {
+    display: inline-flex;
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: white;
+    font-size: 12px;
+    font-weight: 900;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+}
+
+.tl-final-box h2 {
+    color: white;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.08;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+}
+
+.tl-final-box p {
+    max-width: 860px;
+    margin: 0 auto;
+    color: rgba(255,255,255,0.84);
+    font-size: 1rem;
+    line-height: 1.85;
+    position: relative;
+    z-index: 1;
+}
+
+.tl-final-actions {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    position: relative;
+    z-index: 1;
+}
+
+.tl-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 54px;
+    padding: 0 22px;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 900;
+    text-decoration: none;
+    transition: all 0.22s ease;
+}
+
+.tl-btn:hover {
+    transform: translateY(-2px);
+}
+
+.tl-btn-light {
+    background: white;
+    color: #0f172a;
+}
+
+.tl-btn-outline {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.16);
+    color: white;
+}
+
+@media (max-width: 1100px) {
+    .tl-grid-two {
+        grid-template-columns: 1fr;
+    }
+
+    .tl-pillars-grid,
+    .tl-feature-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .tl-hero {
+        padding: 56px 0 48px;
+    }
+
+    .tl-title {
+        line-height: 1.04;
+    }
+
+    .tl-subtitle {
+        font-size: 1rem;
+    }
+
+    .tl-badges {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tl-pillars-grid,
+    .tl-feature-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tl-final-actions {
+        flex-direction: column;
+    }
+
+    .tl-btn {
+        width: 100%;
+    }
+
+    .tl-card,
+    .tl-mini-card,
+    .tl-pillar-card,
+    .tl-feature-card {
+        padding: 22px;
+    }
+}

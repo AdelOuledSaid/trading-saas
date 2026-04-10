@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma Performance - Velwolf</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='performance.css') }}">
+</head>
+<body class="performance-body">
+
+    <div class="performance-container">
+
+        <div class="performance-header">
+            <h1>📊 Ma Performance</h1>
+            <p class="subtitle">Suivi de tes décisions sur les replays Velwolf</p>
+            <div class="trader-level">
+                🧠 Niveau : <strong>{{ trader_level }}</strong>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span>Score moyen</span>
+                <strong>{{ avg_score }}/10</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>Décisions totales</span>
+                <strong>{{ total_decisions }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>Bonnes décisions</span>
+                <strong class="good">{{ good_count }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>Taux optimal</span>
+                <strong>{{ success_rate }}%</strong>
+            </div>
+        </div>
+
+        <div class="breakdown-grid">
+            <div class="mini-card good-card">
+                <span>✅ Bonnes</span>
+                <strong>{{ good_count }}</strong>
+            </div>
+            <div class="mini-card medium-card">
+                <span>⚠️ Moyennes</span>
+                <strong>{{ medium_count }}</strong>
+            </div>
+            <div class="mini-card bad-card">
+                <span>❌ Mauvaises</span>
+                <strong>{{ bad_count }}</strong>
+            </div>
+        </div>
+
+        <div class="history-card">
+            <h2>🕒 Historique des décisions</h2>
+
+            {% if decisions %}
+                <div class="history-table-wrap">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Replay</th>
+                                <th>Décision</th>
+                                <th>Score</th>
+                                <th>Statut</th>
+                                <th>Feedback</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for d in decisions %}
+                            <tr>
+                                <td>{{ d.created_at.strftime("%d/%m/%Y %H:%M") }}</td>
+                                <td>{{ d.trade_replay.symbol }} • {{ d.trade_replay.timeframe }}</td>
+                                <td>{{ d.decision }}</td>
+                                <td>{{ d.score }}</td>
+                                <td>
+                                    <span class="status-pill {{ d.status }}">
+                                        {{ d.status }}
+                                    </span>
+                                </td>
+                                <td>{{ d.feedback }}</td>
+                                <td>
+                                    <a href="{{ url_for('replay.replay_page', replay_id=d.trade_replay_id) }}" class="replay-btn">
+                                        ▶ Rejouer
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    Aucune décision enregistrée pour le moment.
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+</body>
+</html>

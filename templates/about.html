@@ -3,196 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApexSignals - À propos</title>
+    <title>VelWolef - À propos</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='about-contact.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 <body class="home-body">
 
 {% include "partials/navbar.html" %}
 
-<section class="inner-hero">
-    <div class="section-container">
-        <span class="hero-badge">À propos</span>
-        <h1 class="inner-page-title">Une plateforme pensée pour rendre les signaux plus lisibles</h1>
-        <p class="inner-page-text">
-            ApexSignals a été conçu comme un environnement plus clair, plus structuré et plus professionnel
-            pour mettre en avant les marchés les plus suivis, les résultats et une lecture simple des signaux.
+<section class="ac-hero">
+    <div class="section-container ac-hero-inner">
+        <span class="ac-kicker">À propos de VelWolef</span>
+        <h1 class="ac-title">Une plateforme conçue pour offrir une lecture plus claire, plus structurée et plus professionnelle des signaux de trading</h1>
+        <p class="ac-subtitle">
+            VelWolef est né d’une idée simple : proposer un environnement plus sérieux qu’un simple flux de signaux.
+            La plateforme réunit les signaux, les résultats, le Trading Lab et l’espace membre dans une structure cohérente,
+            pensée pour améliorer la lisibilité, la confiance et l’expérience globale.
         </p>
+
+        <div class="ac-hero-badges">
+            <span>Signaux multi-marchés</span>
+            <span>Résultats transparents</span>
+            <span>Trading Lab</span>
+            <span>Espace membre</span>
+        </div>
     </div>
 </section>
 
-<section class="section-standard">
+<section class="ac-section">
     <div class="section-container">
-        <div class="proof-box">
-            <div class="proof-left">
-                <span class="proof-badge">Notre vision</span>
-                <h2>Créer une expérience plus propre que le simple “site de signaux”</h2>
+        <div class="ac-grid-two">
+            <div class="ac-card ac-card-large">
+                <span class="ac-card-kicker">Notre mission</span>
+                <h2>Mettre les signaux dans un cadre plus lisible et plus crédible</h2>
                 <p>
-                    L’objectif d’ApexSignals n’est pas seulement d’afficher des signaux. La plateforme vise à
-                    organiser les informations dans un cadre plus crédible, avec plusieurs espaces complémentaires :
-                    Signaux, Résultats, Trading Lab, Offres et Espace membre.
+                    VelWolef ne se limite pas à afficher des opportunités de marché. La plateforme a été construite pour
+                    organiser l’information de façon claire, avec une hiérarchie visuelle forte, des pages spécialisées
+                    et une navigation simple. L’objectif est de permettre à l’utilisateur de comprendre rapidement
+                    ce qu’il consulte, pourquoi il le consulte, et quelle valeur cela apporte à son parcours.
                 </p>
             </div>
 
-            <div class="proof-right">
-                <div class="proof-card">
+            <div class="ac-stack">
+                <div class="ac-mini-card">
                     <strong>Clarté</strong>
-                    <span>Une lecture plus simple des actifs, niveaux et catégories principales.</span>
+                    <span>Les actifs, les signaux et les résultats sont présentés dans une interface pensée pour être immédiatement compréhensible.</span>
                 </div>
-                <div class="proof-card">
+                <div class="ac-mini-card">
                     <strong>Structure</strong>
-                    <span>Des pages séparées pour mieux répartir l’information et éviter l’effet “site vide”.</span>
+                    <span>Chaque page a une fonction précise : analyser, comparer, suivre, comprendre ou passer à l’action.</span>
                 </div>
-                <div class="proof-card">
-                    <strong>Crédibilité</strong>
-                    <span>Une image plus sérieuse grâce à une vraie logique de plateforme premium.</span>
+                <div class="ac-mini-card">
+                    <strong>Cohérence</strong>
+                    <span>Le design, la navigation et la logique des offres sont alignés pour donner une vraie sensation de plateforme premium.</span>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="section-standard">
+<section class="ac-section">
     <div class="section-container">
-        <div class="section-title">
-            <span>Ce que couvre ApexSignals</span>
-            <h2>Une sélection d’actifs pensée pour paraître large et professionnelle</h2>
+        <div class="ac-section-head">
+            <span>Couverture marchés</span>
+            <h2>Une vision multi-marchés pour une plateforme plus complète</h2>
             <p>
-                La plateforme met en avant les actifs les plus consultés pour offrir une perception
-                plus riche, plus premium et plus cohérente.
+                VelWolef s’appuie sur les univers les plus suivis afin d’offrir une présence forte sur plusieurs catégories de marché.
             </p>
         </div>
 
-        <div class="markets-grid">
-            <div class="market-card">
-                <div class="market-icon btc-bg">₿</div>
+        <div class="ac-market-grid">
+            <div class="ac-market-card">
+                <div class="ac-market-icon btc">₿</div>
                 <h3>Crypto</h3>
-                <p>Bitcoin, Ethereum et d’autres actifs majeurs pour une lecture plus complète du marché digital.</p>
-            </div>
-
-            <div class="market-card">
-                <div class="market-icon gold-bg">Au</div>
-                <h3>Gold</h3>
-                <p>Un actif refuge essentiel pour ajouter une dimension plus macro à la plateforme.</p>
-            </div>
-
-            <div class="market-card">
-                <div class="market-icon us100-bg">NQ</div>
-                <h3>Indices</h3>
-                <p>US100, US30 et autres indices pour compléter la structure du site et élargir son image.</p>
-            </div>
-
-            <div class="market-card">
-                <div class="market-icon eth-bg">FX</div>
-                <h3>Forex</h3>
-                <p>Une catégorie qui renforce la perception d’un environnement multi-marchés.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>Pourquoi cette plateforme existe</span>
-            <h2>Une logique simple : mieux présenter, mieux structurer, mieux convertir</h2>
-        </div>
-
-        <div class="features-home-grid">
-            <div class="feature-home-card">
-                <h3>Éviter le site trop vide</h3>
-                <p>Une seule page d’accueil et une seule page de prix ne suffisent pas à donner une image premium.</p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Créer une vraie navigation</h3>
-                <p>Les pages Signaux, Résultats, Trading Lab, FAQ et Contact donnent une sensation de profondeur.</p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Renforcer la confiance</h3>
-                <p>Un visiteur fait plus confiance à une plateforme claire qu’à un site trop court ou trop pauvre.</p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Préparer la croissance</h3>
-                <p>Cette structure facilite l’ajout futur de contenus, d’analyses, d’historiques et d’outils.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="platform-split-section">
-    <div class="section-container platform-split-grid">
-        <div class="platform-split-left">
-            <span class="proof-badge">Notre méthode</span>
-            <h2>Un site organisé comme un écosystème</h2>
-            <p>
-                ApexSignals a été structuré pour donner une vraie impression de plateforme :
-                chaque page a un rôle précis et vient renforcer l’ensemble.
-            </p>
-        </div>
-
-        <div class="platform-steps">
-            <div class="platform-step-card">
-                <strong>1. Attirer</strong>
-                <span>Une page d’accueil claire et une navigation plus riche donnent une meilleure première impression.</span>
-            </div>
-            <div class="platform-step-card">
-                <strong>2. Rassurer</strong>
-                <span>Résultats, FAQ, Contact et À propos créent un environnement plus crédible.</span>
-            </div>
-            <div class="platform-step-card">
-                <strong>3. Convertir</strong>
-                <span>Les visiteurs comprennent mieux la valeur des offres quand tout le site paraît cohérent.</span>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="proof-box">
-            <div class="proof-left">
-                <span class="proof-badge">L’esprit ApexSignals</span>
-                <h2>Une identité premium, lisible et orientée plateforme</h2>
                 <p>
-                    Le site ne cherche pas à ressembler à un simple blog ni à une page vitrine minimaliste.
-                    Il adopte une logique plus moderne, plus premium et plus crédible.
+                    Bitcoin, Ethereum et d’autres actifs majeurs occupent une place centrale dans l’écosystème VelWolef.
+                    Cette couverture permet de suivre les marchés numériques les plus observés avec une lecture plus structurée.
                 </p>
             </div>
 
-            <div class="proof-right">
-                <div class="proof-card">
-                    <strong>Navigation riche</strong>
-                    <span>Menus déroulants, recherche, pages métiers et hiérarchie claire.</span>
+            <div class="ac-market-card">
+                <div class="ac-market-icon gold">Au</div>
+                <h3>Gold</h3>
+                <p>
+                    L’or apporte une dimension plus macro et plus défensive à la plateforme. Il complète l’offre
+                    en donnant de la profondeur au suivi des grandes dynamiques de marché.
+                </p>
+            </div>
+
+            <div class="ac-market-card">
+                <div class="ac-market-icon nq">NQ</div>
+                <h3>Indices</h3>
+                <p>
+                    Les indices comme l’US100 renforcent la dimension professionnelle de la plateforme en ajoutant
+                    un univers très suivi par les traders actifs et les profils plus orientés momentum.
+                </p>
+            </div>
+
+            <div class="ac-market-card">
+                <div class="ac-market-icon fx">FX</div>
+                <h3>Forex</h3>
+                <p>
+                    La présence du Forex permet d’élargir la couverture et de positionner VelWolef comme une plateforme
+                    capable d’accompagner une lecture plus large des marchés internationaux.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ac-section">
+    <div class="section-container">
+        <div class="ac-section-head">
+            <span>La logique VelWolef</span>
+            <h2>Une plateforme pensée pour informer, rassurer et convertir</h2>
+            <p>
+                Chaque section de VelWolef a été conçue pour remplir une fonction précise dans l’expérience utilisateur.
+            </p>
+        </div>
+
+        <div class="ac-feature-grid">
+            <div class="ac-feature-card">
+                <h3>Informer clairement</h3>
+                <p>
+                    La plateforme présente les actifs, les signaux et les pages clés dans un cadre simple à comprendre,
+                    afin d’éviter la confusion et de rendre la navigation naturelle.
+                </p>
+            </div>
+
+            <div class="ac-feature-card">
+                <h3>Rassurer visuellement</h3>
+                <p>
+                    Les pages Résultats, FAQ, Contact et À propos apportent une vraie profondeur au site
+                    et renforcent immédiatement sa crédibilité.
+                </p>
+            </div>
+
+            <div class="ac-feature-card">
+                <h3>Valoriser les offres</h3>
+                <p>
+                    Les abonnements prennent tout leur sens quand ils s’inscrivent dans un écosystème cohérent,
+                    avec un dashboard, des contenus dédiés et une logique premium claire.
+                </p>
+            </div>
+
+            <div class="ac-feature-card">
+                <h3>Préparer l’évolution</h3>
+                <p>
+                    L’architecture VelWolef est pensée pour accueillir de nouvelles fonctions, de nouveaux contenus
+                    et une montée en gamme progressive sans casser l’expérience existante.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ac-section">
+    <div class="section-container">
+        <div class="ac-method-box">
+            <div class="ac-method-left">
+                <span class="ac-card-kicker">Notre méthode</span>
+                <h2>Construire une vraie expérience plateforme</h2>
+                <p>
+                    VelWolef a été organisé comme un ensemble cohérent dans lequel chaque page renforce la suivante.
+                    Le visiteur découvre les marchés, explore les résultats, comprend la logique de la plateforme,
+                    puis accède naturellement aux offres et à l’espace membre.
+                </p>
+            </div>
+
+            <div class="ac-method-steps">
+                <div class="ac-step-card">
+                    <strong>1. Attirer l’attention</strong>
+                    <span>Une interface claire et une navigation complète créent immédiatement une meilleure première impression.</span>
                 </div>
-                <div class="proof-card">
-                    <strong>Pages utiles</strong>
-                    <span>Chaque section apporte quelque chose à l’image générale du site.</span>
+                <div class="ac-step-card">
+                    <strong>2. Installer la confiance</strong>
+                    <span>Les pages de contenu et la structure globale donnent de la profondeur et renforcent la crédibilité du projet.</span>
                 </div>
-                <div class="proof-card">
-                    <strong>Image moderne</strong>
-                    <span>Une présentation plus proche d’une plateforme SaaS que d’un simple site statique.</span>
+                <div class="ac-step-card">
+                    <strong>3. Favoriser la conversion</strong>
+                    <span>Une offre premium devient plus convaincante quand elle s’appuie sur un environnement sérieux, lisible et cohérent.</span>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="final-cta-section">
+<section class="ac-section">
     <div class="section-container">
-        <div class="final-cta-box">
-            <span class="final-cta-badge">ApexSignals</span>
-            <h2>Une plateforme construite pour aller plus loin que l’apparence</h2>
+        <div class="ac-final-box">
+            <span class="ac-final-badge">VelWolef</span>
+            <h2>Une plateforme construite pour aller au-delà du simple affichage de signaux</h2>
             <p>
-                Signaux, résultats, Trading Lab, FAQ, contact et espace membre :
-                chaque page aide à construire une image plus forte, plus cohérente et plus professionnelle.
+                VelWolef réunit l’essentiel d’un environnement premium : signaux, résultats, Trading Lab,
+                espace membre et pages de confiance. L’ensemble forme une base solide pour une expérience plus moderne,
+                plus crédible et plus professionnelle.
             </p>
-            <div class="final-cta-actions">
-                <a href="{{ url_for('billing.pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>
-                <a href="{{ url_for('pages.contact') }}" class="hero-btn-secondary white-outline-btn">Nous contacter</a>
+            <div class="ac-final-actions">
+                <a href="{{ url_for('billing.pricing') }}" class="ac-btn ac-btn-light">Découvrir les offres</a>
+                <a href="{{ url_for('pages.contact') }}" class="ac-btn ac-btn-outline">Contacter VelWolef</a>
             </div>
         </div>
     </div>
@@ -201,8 +214,8 @@
 <footer class="site-footer">
     <div class="section-container footer-inner">
         <div class="footer-brand">
-            <h3>ApexSignals</h3>
-            <p>Une plateforme premium pensée pour mieux structurer les signaux et l’expérience utilisateur.</p>
+            <h3>VelWolef</h3>
+            <p>Une plateforme premium conçue pour mieux structurer les signaux et améliorer l’expérience utilisateur.</p>
         </div>
 
         <div class="footer-links">

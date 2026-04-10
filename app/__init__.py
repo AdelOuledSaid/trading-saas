@@ -1,10 +1,15 @@
 from flask import Flask
 import stripe
 import config
+from flask_migrate import Migrate
 
 from app.extensions import db, login_manager, cache
 from app.core.auth import load_user
 from app.utils.explainer import explain_reason
+
+# 🔥 Initialisation globale
+migrate = Migrate()
+
 
 def create_app():
     app = Flask(
@@ -13,43 +18,65 @@ def create_app():
         static_folder="../static"
     )
 
+    # =========================
+    # CONFIGURATION
+    # =========================
     app.config["SECRET_KEY"] = config.SECRET_KEY
     app.config["SQLALCHEMY_DATABASE_URI"] = config.DATABASE_URL
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+    # =========================
+    # SÉCURITÉ (PRODUCTION READY)
+    # =========================
     app.config["SESSION_COOKIE_SECURE"] = True
     app.config["REMEMBER_COOKIE_SECURE"] = True
     app.config["SESSION_COOKIE_HTTPONLY"] = True
     app.config["REMEMBER_COOKIE_HTTPONLY"] = True
     app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
     app.config["PREFERRED_URL_SCHEME"] = "https"
-    app.jinja_env.filters['explain_reason'] = explain_reason
+
+    # =========================
+    # INIT EXTENSIONS
+    # =========================
     db.init_app(app)
+    migrate.init_app(app, db)   # ✅ IMPORTANT (Flask-Migrate)
     login_manager.init_app(app)
     cache.init_app(app)
 
-    stripe.api_key = config.STRIPE_SECRET_KEY
     login_manager.user_loader(load_user)
 
+    # =========================
+    # STRIPE CONFIG
+    # =========================
+    stripe.api_key = config.STRIPE_SECRET_KEY
+
+    # =========================
+    # JINJA FILTERS
+    # =========================
+    app.jinja_env.filters['explain_reason'] = explain_reason
+
+    # =========================
+    # BLUEPRINTS
+    # =========================
     from app.routes.main import main_bp
     from app.routes.auth import auth_bp
     from app.routes.dashboard import dashboard_bp
     from app.routes.billing import billing_bp
     from app.routes.webhook import webhook_bp
+    from app.routes.stripe_webhook import stripe_webhook_bp
     from app.routes.pages import pages_bp
     from app.routes.signals import signals_bp
     from app.routes.admin import admin_bp
+    from app.routes.replay import replay_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(billing_bp)
     app.register_blueprint(webhook_bp)
+    app.register_blueprint(stripe_webhook_bp)
     app.register_blueprint(pages_bp)
     app.register_blueprint(signals_bp)
     app.register_blueprint(admin_bp)
-
-    with app.app_context():
-        db.create_all()
-
+    app.register_blueprint(replay_bp)
     return app

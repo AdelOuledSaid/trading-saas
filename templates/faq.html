@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApexSignals - FAQ</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
+
 <body class="home-body">
 
 {% include "partials/navbar.html" %}
@@ -26,69 +31,23 @@
     <div class="section-container">
         <div class="faq-container">
 
+            {% for question, answer in [
+                ("Que propose ApexSignals ?", "ApexSignals propose un univers premium avec signaux, Trading Lab, Résultats et dashboard."),
+                ("Quels actifs sont suivis ?", "Bitcoin, Ethereum, Gold, US100 et autres marchés clés."),
+                ("À quoi sert le Trading Lab ?", "Comprendre la structure des signaux et la gestion du risque."),
+                ("Les résultats sont-ils visibles ?", "Oui, avec statistiques, winrate et historique."),
+                ("Y a-t-il un espace membre ?", "Oui, un dashboard centralise toutes les données.")
+            ] %}
             <div class="faq-item">
                 <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>Que propose ApexSignals ?</span>
+                    <span>{{ question }}</span>
                     <div class="faq-icon">+</div>
                 </div>
                 <div class="faq-content">
-                    <p>
-                        ApexSignals propose un univers premium avec page Offres, page Signaux,
-                        Trading Lab, Résultats et espace membre.
-                    </p>
+                    <p>{{ answer }}</p>
                 </div>
             </div>
-
-            <div class="faq-item">
-                <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>Quels actifs sont suivis ?</span>
-                    <div class="faq-icon">+</div>
-                </div>
-                <div class="faq-content">
-                    <p>
-                        La plateforme met en avant les actifs les plus demandés comme Bitcoin,
-                        Ethereum, Gold, US100, US30 et d’autres marchés complémentaires.
-                    </p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>À quoi sert le Trading Lab ?</span>
-                    <div class="faq-icon">+</div>
-                </div>
-                <div class="faq-content">
-                    <p>
-                        Le Trading Lab donne une vraie profondeur au site avec des repères sur
-                        la structure d’un signal, la lecture du marché et la gestion du risque.
-                    </p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>Les résultats sont-ils visibles ?</span>
-                    <div class="faq-icon">+</div>
-                </div>
-                <div class="faq-content">
-                    <p>
-                        Oui, une page Résultats permet d’afficher les statistiques, le winrate
-                        et un historique récent afin de renforcer la crédibilité du site.
-                    </p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>Puis-je accéder à un espace membre ?</span>
-                    <div class="faq-icon">+</div>
-                </div>
-                <div class="faq-content">
-                    <p>
-                        Oui, le dashboard centralise les blocs importants et apporte une vraie dimension plateforme.
-                    </p>
-                </div>
-            </div>
+            {% endfor %}
 
         </div>
     </div>

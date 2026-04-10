@@ -3,20 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApexSignals - Gestion du risque</title>
-    <meta name="description" content="Comprendre la gestion du risque dans le Trading Lab d’ApexSignals pour lire les signaux avec plus de discipline.">
+    <title>VelWolef - Gestion du risque</title>
+    <meta name="description" content="Comprendre la gestion du risque dans le Trading Lab de VelWolef pour lire les signaux avec plus de discipline et de cohérence.">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='trading-lab.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 <body class="home-body">
 
 {% include "partials/navbar.html" %}
 
-<section class="inner-hero">
-    <div class="section-container">
-        <span class="hero-badge">Trading Lab • Gestion du risque</span>
-        <h1 class="inner-page-title">La gestion du risque donne sa cohérence à la lecture des signaux</h1>
-        <p class="inner-page-text">
+<section class="tl-hero tl-hero-risk">
+    <div class="section-container tl-hero-inner">
+        <span class="tl-kicker">Trading Lab • Gestion du risque</span>
+        <h1 class="tl-title">La gestion du risque donne sa cohérence à la lecture des signaux</h1>
+        <p class="tl-subtitle">
             Une plateforme sérieuse ne peut pas se limiter à afficher des points d’entrée et des objectifs.
             La gestion du risque fait partie intégrante de la lecture d’un signal et joue un rôle central
             dans la discipline, la stabilité et la compréhension globale du marché.
@@ -24,9 +28,9 @@
     </div>
 </section>
 
-<section class="section-standard">
+<section class="tl-section">
     <div class="section-container">
-        <div class="section-title">
+        <div class="tl-section-head">
             <span>Principes de base</span>
             <h2>Lire un signal sans oublier la logique d’encadrement</h2>
             <p>
@@ -35,16 +39,16 @@
             </p>
         </div>
 
-        <div class="features-home-grid">
-            <div class="feature-home-card">
+        <div class="tl-feature-grid">
+            <div class="tl-feature-card">
                 <h3>Invalidation</h3>
                 <p>
-                    Le stop loss n’est pas seulement une sortie. Il définit la zone où le scénario
+                    Le stop loss ne sert pas seulement de sortie. Il définit la zone où le scénario
                     cesse d’être valable et protège la logique du signal.
                 </p>
             </div>
 
-            <div class="feature-home-card">
+            <div class="tl-feature-card">
                 <h3>Exposition</h3>
                 <p>
                     Une lecture saine du marché suppose de ne pas surdimensionner un seul scénario
@@ -52,14 +56,14 @@
                 </p>
             </div>
 
-            <div class="feature-home-card">
-                <h3>Rapport structure / cible</h3>
+            <div class="tl-feature-card">
+                <h3>Rapport risque / potentiel</h3>
                 <p>
-                    Un signal doit garder une cohérence entre l’invalidation et l’objectif affiché.
+                    Un signal doit conserver une cohérence entre l’invalidation et l’objectif affiché.
                 </p>
             </div>
 
-            <div class="feature-home-card">
+            <div class="tl-feature-card">
                 <h3>Discipline</h3>
                 <p>
                     La gestion du risque renforce la stabilité de lecture et évite l’excès d’impulsivité.
@@ -69,11 +73,11 @@
     </div>
 </section>
 
-<section class="section-standard">
+<section class="tl-section">
     <div class="section-container">
-        <div class="proof-box">
-            <div class="proof-left">
-                <span class="proof-badge">Pourquoi c’est essentiel</span>
+        <div class="tl-grid-two">
+            <div class="tl-card tl-card-large">
+                <span class="tl-card-kicker">Pourquoi c’est essentiel</span>
                 <h2>Le risque structure la lecture autant que l’entrée elle-même</h2>
                 <p>
                     Une bonne gestion du risque améliore la qualité perçue des signaux et la crédibilité
@@ -82,18 +86,16 @@
                 </p>
             </div>
 
-            <div class="proof-right">
-                <div class="proof-card">
+            <div class="tl-stack">
+                <div class="tl-mini-card">
                     <strong>Encadrement</strong>
                     <span>Le risque donne des limites claires à chaque scénario.</span>
                 </div>
-
-                <div class="proof-card">
+                <div class="tl-mini-card">
                     <strong>Stabilité</strong>
                     <span>Une lecture disciplinée évite de transformer le marché en simple réaction émotionnelle.</span>
                 </div>
-
-                <div class="proof-card">
+                <div class="tl-mini-card">
                     <strong>Professionnalisme</strong>
                     <span>La plateforme gagne en sérieux quand cette logique est visible et assumée.</span>
                 </div>
@@ -102,49 +104,53 @@
     </div>
 </section>
 
-<section class="section-standard">
+<section class="tl-section">
     <div class="section-container">
-        <div class="section-title">
+        <div class="tl-section-head">
             <span>Repères utiles</span>
             <h2>Les réflexes à garder pour lire un signal avec plus de recul</h2>
         </div>
 
-        <div class="preview-links-grid">
-            <div class="preview-link-card">
-                <strong>Ne pas lire seulement l’objectif</strong>
-                <span>Un take profit n’a de valeur que s’il s’inscrit dans une structure cohérente.</span>
+        <div class="tl-pillars-grid">
+            <div class="tl-pillar-card">
+                <div class="tl-pillar-icon">1</div>
+                <h3>Ne pas lire seulement l’objectif</h3>
+                <p>Une cible n’a de valeur que si elle s’inscrit dans une structure cohérente.</p>
             </div>
 
-            <div class="preview-link-card">
-                <strong>Observer l’invalidation</strong>
-                <span>Le stop loss est une information clé dans la lecture du scénario.</span>
+            <div class="tl-pillar-card">
+                <div class="tl-pillar-icon">2</div>
+                <h3>Observer l’invalidation</h3>
+                <p>Le stop loss est une information clé dans la lecture du scénario.</p>
             </div>
 
-            <div class="preview-link-card">
-                <strong>Éviter la surcharge</strong>
-                <span>Une plateforme premium met en avant la clarté, pas l’excès d’informations inutiles.</span>
+            <div class="tl-pillar-card">
+                <div class="tl-pillar-icon">3</div>
+                <h3>Éviter la surcharge</h3>
+                <p>Une plateforme premium met en avant la clarté, pas l’excès d’informations inutiles.</p>
             </div>
 
-            <div class="preview-link-card">
-                <strong>Rester discipliné</strong>
-                <span>La cohérence à long terme vaut plus qu’une lecture impulsive du marché.</span>
+            <div class="tl-pillar-card">
+                <div class="tl-pillar-icon">4</div>
+                <h3>Rester discipliné</h3>
+                <p>La cohérence à long terme vaut plus qu’une lecture impulsive du marché.</p>
             </div>
         </div>
     </div>
 </section>
 
-<section class="final-cta-section">
+<section class="tl-section">
     <div class="section-container">
-        <div class="final-cta-box">
-            <span class="final-cta-badge">Gestion du risque</span>
+        <div class="tl-final-box">
+            <span class="tl-final-badge">Gestion du risque</span>
             <h2>La discipline renforce la valeur de chaque signal</h2>
             <p>
                 Lire un signal avec une logique de risque permet de mieux comprendre sa structure,
-                d’améliorer la cohérence de la lecture et de renforcer la crédibilité générale de la plateforme.
+                d’améliorer la cohérence de la lecture et de renforcer la crédibilité générale de VelWolef.
             </p>
-            <div class="final-cta-actions">
-                <a href="{{ url_for('pages.lab_psychology') }}" class="hero-btn-primary light-btn">Voir la psychologie</a>
-                <a href="{{ url_for('pages.lab_structure') }}" class="hero-btn-secondary white-outline-btn">Revoir la structure</a>
+            <div class="tl-final-actions">
+                <a href="{{ url_for('pages.lab_psychology') }}" class="tl-btn tl-btn-light">Voir la psychologie</a>
+                <a href="{{ url_for('pages.lab_structure') }}" class="tl-btn tl-btn-outline">Revoir la structure</a>
             </div>
         </div>
     </div>
@@ -153,7 +159,7 @@
 <footer class="site-footer">
     <div class="section-container footer-inner">
         <div class="footer-brand">
-            <h3>ApexSignals</h3>
+            <h3>VelWolef</h3>
             <p>Gestion du risque, structure et discipline dans un cadre plus premium.</p>
         </div>
 

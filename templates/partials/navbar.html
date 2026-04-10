@@ -6,6 +6,9 @@
     <div class="nav-links">
         <a href="{{ url_for('main.home') }}">Accueil</a>
 
+        <!-- =========================
+             SIGNAUX
+        ========================= -->
         <div class="nav-dropdown">
             <button class="nav-drop-btn" type="button">
                 Signaux <span>▾</span>
@@ -20,6 +23,9 @@
             </div>
         </div>
 
+        <!-- =========================
+             MARCHÉS
+        ========================= -->
         <div class="nav-dropdown">
             <button class="nav-drop-btn" type="button">
                 Marchés <span>▾</span>
@@ -32,6 +38,9 @@
             </div>
         </div>
 
+        <!-- =========================
+             TRADING LAB
+        ========================= -->
         <div class="nav-dropdown">
             <button class="nav-drop-btn" type="button">
                 Trading Lab <span>▾</span>
@@ -44,9 +53,37 @@
             </div>
         </div>
 
+        <!-- =========================
+             REPLAY CENTER (🔥 FIX ICI)
+        ========================= -->
+        <div class="nav-dropdown">
+            <button class="nav-drop-btn" type="button">
+                Replay Center <span>▾</span>
+            </button>
+
+            <div class="nav-dropdown-menu">
+                {% if latest_replay %}
+                    <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}">
+                        🎬 Replay Trading
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('replay.my_performance') }}">
+                        🎬 Replay Trading
+                    </a>
+                {% endif %}
+
+                <a href="{{ url_for('replay.my_performance') }}">
+                    🎯 Ma Performance
+                </a>
+            </div>
+        </div>
+
         <a href="{{ url_for('signals.results') }}">Résultats</a>
         <a href="{{ url_for('billing.pricing') }}">Offres</a>
 
+        <!-- =========================
+             INFOS
+        ========================= -->
         <div class="nav-dropdown">
             <button class="nav-drop-btn" type="button">
                 Infos <span>▾</span>
@@ -59,16 +96,26 @@
         </div>
     </div>
 
+    <!-- =========================
+         RIGHT SIDE
+    ========================= -->
     <div class="nav-right">
         <form class="nav-search" action="{{ url_for('pages.search_page') }}" method="GET">
             <input type="text" name="q" placeholder="Rechercher un actif, une page...">
-            <button type="submit" aria-label="Rechercher">⌕</button>
+            <button type="submit">⌕</button>
         </form>
 
         <div class="nav-account">
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('dashboard.dashboard') }}" class="account-btn">Dashboard</a>
-                <a href="{{ url_for('auth.logout') }}" class="logout-btn nav-inline-link">Déconnexion</a>
+
+                <a href="{{ url_for('replay.my_performance') }}" class="account-btn">
+                    Performance
+                </a>
+
+                <a href="{{ url_for('auth.logout') }}" class="logout-btn nav-inline-link">
+                    Déconnexion
+                </a>
             {% else %}
                 <a href="{{ url_for('auth.login') }}" class="nav-inline-link">Connexion</a>
                 <a href="{{ url_for('auth.register') }}" class="cta-btn">Créer un compte</a>
@@ -76,6 +123,9 @@
         </div>
     </div>
 
+    <!-- =========================
+         BURGER
+    ========================= -->
     <div class="burger" onclick="toggleMobileMenu(this)">
         <span></span>
         <span></span>
@@ -83,46 +133,36 @@
     </div>
 </nav>
 
+<!-- =========================
+     MOBILE MENU
+========================= -->
 <div id="mobileMenu" class="mobile-menu">
     <a href="{{ url_for('main.home') }}">Accueil</a>
 
-    <div class="mobile-section-title">Signaux</div>
-    <a href="{{ url_for('signals.signals_page') }}">Vue globale</a>
-    <a href="{{ url_for('signals.signals_btc') }}">Bitcoin</a>
-    <a href="{{ url_for('signals.eth_signals_page') }}">Ethereum</a>
-    <a href="{{ url_for('signals.signals_gold') }}">Gold</a>
-    <a href="{{ url_for('signals.signals_us100') }}">US100</a>
-    <a href="{{ url_for('signals.results') }}">Historique des signaux</a>
+    <div class="mobile-section-title">Replay Center</div>
 
-    <div class="mobile-section-title">Marchés</div>
-    <a href="{{ url_for('signals.signals_btc') }}">Crypto (BTC)</a>
-    <a href="{{ url_for('signals.eth_signals_page') }}">Altcoins (ETH)</a>
-    <a href="{{ url_for('signals.signals_us100') }}">Indices (US100)</a>
-    <a href="{{ url_for('signals.signals_gold') }}">Gold</a>
+    {% if latest_replay %}
+        <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}">
+            🎬 Replay Trading
+        </a>
+    {% else %}
+        <a href="{{ url_for('replay.my_performance') }}">
+            🎬 Replay Trading
+        </a>
+    {% endif %}
 
-    <div class="mobile-section-title">Trading Lab</div>
-    <a href="{{ url_for('pages.trading_lab') }}">Vue globale</a>
-    <a href="{{ url_for('pages.lab_structure') }}">Structure d’un signal</a>
-    <a href="{{ url_for('pages.lab_risk') }}">Gestion du risque</a>
-    <a href="{{ url_for('pages.lab_psychology') }}">Psychologie</a>
-
-    <div class="mobile-section-title">Plateforme</div>
-    <a href="{{ url_for('signals.results') }}">Résultats</a>
-    <a href="{{ url_for('billing.pricing') }}">Offres</a>
-
-    <div class="mobile-section-title">Infos</div>
-    <a href="{{ url_for('pages.faq_page') }}">FAQ</a>
-    <a href="{{ url_for('pages.contact') }}">Contact</a>
-    <a href="{{ url_for('pages.about') }}">À propos</a>
+    <a href="{{ url_for('replay.my_performance') }}">
+        🎯 Ma Performance
+    </a>
 
     {% if current_user.is_authenticated %}
         <div class="mobile-section-title">Compte</div>
         <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
-        <a href="{{ url_for('auth.logout') }}" class="logout-btn">Déconnexion</a>
+        <a href="{{ url_for('auth.logout') }}">Déconnexion</a>
     {% else %}
         <div class="mobile-section-title">Compte</div>
         <a href="{{ url_for('auth.login') }}">Connexion</a>
-        <a href="{{ url_for('auth.register') }}" class="cta-btn mobile-cta">Créer un compte</a>
+        <a href="{{ url_for('auth.register') }}" class="cta-btn">Créer un compte</a>
     {% endif %}
 </div>
 
@@ -131,19 +171,4 @@ function toggleMobileMenu(el) {
     el.classList.toggle("active");
     document.getElementById("mobileMenu").classList.toggle("active");
 }
-
-document.addEventListener("click", function (e) {
-    const burger = document.querySelector(".burger");
-    const mobileMenu = document.getElementById("mobileMenu");
-
-    if (!burger || !mobileMenu) return;
-
-    const clickedInsideMenu = mobileMenu.contains(e.target);
-    const clickedBurger = burger.contains(e.target);
-
-    if (!clickedInsideMenu && !clickedBurger) {
-        burger.classList.remove("active");
-        mobileMenu.classList.remove("active");
-    }
-});
 </script>

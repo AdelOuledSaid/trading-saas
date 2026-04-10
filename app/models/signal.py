@@ -35,6 +35,13 @@ class Signal(db.Model):
     source = db.Column(db.String(50), default="system", nullable=False)
     news_sentiment = db.Column(db.Float, nullable=True)
 
+    replay = db.relationship(
+        "TradeReplay",
+        backref="signal",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
+
     def __repr__(self):
         return f"<Signal {self.asset} {self.action} {self.status}>"
 

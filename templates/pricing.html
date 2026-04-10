@@ -14,6 +14,9 @@
 
 {% include "partials/navbar.html" %}
 
+{% set plan_order = {"free": 0, "basic": 1, "premium": 2, "vip": 3} %}
+{% set current_level = plan_order.get(user_plan, 0) %}
+
 <div class="pricing-page">
 
     <div class="pricing-header">
@@ -43,6 +46,8 @@
 
             {% if user_plan == "basic" %}
                 <a href="{{ url_for('dashboard.dashboard') }}" class="pricing-btn secondary-btn">Plan actuel</a>
+            {% elif current_level > 1 %}
+                <a href="{{ url_for('dashboard.dashboard') }}" class="pricing-btn secondary-btn">Inclus dans votre offre</a>
             {% else %}
                 <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
                     <input type="hidden" name="plan" value="basic">
@@ -69,6 +74,8 @@
 
             {% if user_plan == "premium" %}
                 <a href="{{ url_for('dashboard.dashboard') }}" class="pricing-btn premium-btn">Plan actuel</a>
+            {% elif current_level > 2 %}
+                <a href="{{ url_for('dashboard.dashboard') }}" class="pricing-btn premium-btn">Inclus dans votre offre</a>
             {% else %}
                 <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
                     <input type="hidden" name="plan" value="premium">
@@ -94,7 +101,7 @@
             </ul>
 
             {% if user_plan == "vip" %}
-                <a href="{{ url_for('dashbord.dashboard') }}" class="pricing-btn vip-btn">Plan actuel</a>
+                <a href="{{ url_for('dashboard.dashboard') }}" class="pricing-btn vip-btn">Plan actuel</a>
             {% else %}
                 <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
                     <input type="hidden" name="plan" value="vip">

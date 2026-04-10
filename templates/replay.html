@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replay {{ replay.symbol }} - Velwolf</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='replay.css') }}">
+</head>
+<body class="replay-body">
+
+    <div class="replay-container">
+
+        <div class="replay-header">
+            <h1>🎬 Replay Trading</h1>
+            <p class="subtitle">{{ replay.symbol }} • {{ replay.timeframe }}</p>
+        </div>
+
+        <div class="replay-grid">
+
+            <div class="chart-card">
+                <h3>📊 Marché en direct (Replay)</h3>
+
+                <div id="chart"></div>
+
+                <div class="controls">
+                    <button type="button" onclick="startReplay()">▶ Play</button>
+                    <button type="button" onclick="pauseReplay()">⏸ Pause</button>
+                    <button type="button" onclick="resetReplay()">🔄 Reset</button>
+                    <button type="button" onclick="setSpeed(1)">x1</button>
+                    <button type="button" onclick="setSpeed(2)">x2</button>
+                    <button type="button" onclick="setSpeed(4)">x4</button>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>📌 Détails du trade</h3>
+
+                <div class="info-item">
+                    <span>Direction</span>
+                    <strong class="{{ replay.direction }}">{{ replay.direction }}</strong>
+                </div>
+
+                <div class="info-item">
+                    <span>Entrée</span>
+                    <strong>{{ replay.entry_price }}</strong>
+                </div>
+
+                <div class="info-item">
+                    <span>Stop Loss</span>
+                    <strong>{{ replay.stop_loss or "-" }}</strong>
+                </div>
+
+                <div class="info-item">
+                    <span>Take Profit</span>
+                    <strong>{{ replay.take_profit or "-" }}</strong>
+                </div>
+
+                <div class="info-item">
+                    <span>Résultat</span>
+                    <strong class="result {{ replay.result }}">{{ replay.result or "N/A" }}</strong>
+                </div>
+
+                <div class="score-card">
+                    <div class="score-head">
+                        <span>🎯 Score replay</span>
+                        <strong id="trader-score">0</strong>
+                    </div>
+
+                    <div id="trader-status" class="score-status">
+                        En attente de décision
+                    </div>
+
+                    <div id="decision-feedback" class="score-message">
+                        Le score apparaîtra après ton choix.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="analysis-card">
+            <h3>🧠 Analyse</h3>
+            <p>{{ replay.market_context or "Aucune analyse de contexte disponible." }}</p>
+            <hr>
+            <p><strong>Post-trade :</strong> {{ replay.post_analysis or "Aucune analyse post-trade disponible." }}</p>
+        </div>
+
+        <div class="events-card">
+            <h3>📍 Timeline du trade</h3>
+            <div id="events"></div>
+        </div>
+
+    </div>
+
+    <div id="decision-box" class="decision-box hidden">
+        <h3>🤔 Tu fais quoi ?</h3>
+        <p>Le marché revient vers ton entrée…</p>
+
+        <div class="decision-buttons">
+            <button type="button" class="decision-close" onclick="makeDecision('close')">❌ Fermer</button>
+            <button type="button" class="decision-hold" onclick="makeDecision('hold')">✅ Tenir</button>
+            <button type="button" class="decision-partial" onclick="makeDecision('partial')">📉 Partiel</button>
+        </div>
+    </div>
+
+    <script>
+        const replayId = {{ replay.id }};
+    </script>
+
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <script src="{{ url_for('static', filename='replay.js') }}"></script>
+</body>
+</html>

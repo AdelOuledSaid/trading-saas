@@ -3,163 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApexSignals - Trading Lab</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <title>VelWolef - Trading Lab</title>
+    <meta name="description" content="Le Trading Lab de VelWolef : structure d’un signal, gestion du risque et psychologie du trader dans un environnement premium.">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='trading-lab.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 <body class="home-body">
 
 {% include "partials/navbar.html" %}
 
-<section class="inner-hero">
-    <div class="section-container">
-        <span class="hero-badge">Trading Lab</span>
-        <h1 class="inner-page-title">Un espace conçu pour comprendre la structure des signaux</h1>
-        <p class="inner-page-text">
-            Le Trading Lab donne de la profondeur au site en proposant des repères simples,
-            utiles et cohérents avec l’univers ApexSignals.
+<section class="tl-hero">
+    <div class="section-container tl-hero-inner">
+        <span class="tl-kicker">Trading Lab VelWolef</span>
+        <h1 class="tl-title">Un espace conçu pour comprendre les signaux avec plus de profondeur, de logique et de discipline</h1>
+        <p class="tl-subtitle">
+            Le Trading Lab de VelWolef rassemble les repères essentiels pour lire les signaux dans un cadre plus professionnel.
+            Cette section relie la structure d’un setup, la gestion du risque et la psychologie du trader afin d’apporter
+            une vision plus cohérente de la plateforme.
         </p>
+
+        <div class="tl-badges">
+            <span>Structure</span>
+            <span>Risque</span>
+            <span>Psychologie</span>
+            <span>Lecture marché</span>
+        </div>
     </div>
 </section>
 
-<section class="section-standard" id="structure">
+<section class="tl-section">
     <div class="section-container">
-        <div class="section-title">
-            <span>Structure</span>
-            <h2>Comprendre la composition d’un signal</h2>
+        <div class="tl-section-head">
+            <span>Les trois piliers</span>
+            <h2>Une lecture de marché plus solide repose sur un ensemble, pas sur un seul signal</h2>
             <p>
-                Un signal clair repose sur quelques éléments essentiels : direction, niveau d’entrée,
-                take profit, stop loss et contexte de marché.
+                Un environnement premium gagne en valeur quand il explique non seulement quoi regarder,
+                mais aussi comment le comprendre et dans quel cadre l’interpréter.
             </p>
         </div>
 
-        <div class="features-home-grid">
-            <div class="feature-home-card">
-                <h3>Direction</h3>
-                <p>Le sens du scénario : achat ou vente selon la lecture proposée.</p>
+        <div class="tl-pillars-grid">
+            <div class="tl-pillar-card">
+                <div class="tl-pillar-icon">S</div>
+                <h3>Structure</h3>
+                <p>
+                    Comprendre la direction, l’entrée, l’invalidation et l’objectif d’un signal
+                    pour lire le scénario avec une logique claire.
+                </p>
+                <a href="{{ url_for('pages.lab_structure') }}" class="tl-card-link">Explorer la structure</a>
             </div>
-            <div class="feature-home-card">
-                <h3>Entrée</h3>
-                <p>Le niveau central autour duquel la logique du trade est construite.</p>
+
+            <div class="tl-pillar-card">
+                <div class="tl-pillar-icon">R</div>
+                <h3>Gestion du risque</h3>
+                <p>
+                    Encadrer le scénario, protéger le capital et donner une vraie cohérence
+                    à la lecture des niveaux affichés.
+                </p>
+                <a href="{{ url_for('pages.lab_risk') }}" class="tl-card-link">Explorer le risque</a>
             </div>
-            <div class="feature-home-card">
-                <h3>Take Profit</h3>
-                <p>La cible affichée pour matérialiser le potentiel du scénario.</p>
-            </div>
-            <div class="feature-home-card">
-                <h3>Stop Loss</h3>
-                <p>Le niveau d’invalidation qui protège la lecture et limite l’exposition.</p>
+
+            <div class="tl-pillar-card">
+                <div class="tl-pillar-icon">P</div>
+                <h3>Psychologie</h3>
+                <p>
+                    Discipline, patience et stabilité mentale renforcent la capacité à lire
+                    le marché de façon plus propre et plus régulière.
+                </p>
+                <a href="{{ url_for('pages.lab_psychology') }}" class="tl-card-link">Explorer la psychologie</a>
             </div>
         </div>
     </div>
 </section>
 
-<section class="section-standard" id="lecture">
+<section class="tl-section">
     <div class="section-container">
-        <div class="proof-box">
-            <div class="proof-left">
-                <span class="proof-badge">Lecture du marché</span>
-                <h2>Lire une structure sans surcharger l’information</h2>
+        <div class="tl-grid-two">
+            <div class="tl-card tl-card-large">
+                <span class="tl-card-kicker">Pourquoi ce Trading Lab existe</span>
+                <h2>Donner plus de profondeur à la plateforme</h2>
                 <p>
-                    Un bon site premium n’accumule pas seulement des données. Il hiérarchise l’information
-                    pour rendre le marché plus lisible et aider à mieux comprendre le contexte.
+                    VelWolef ne cherche pas seulement à afficher des signaux. Le Trading Lab a été créé
+                    pour structurer l’information et offrir un cadre d’interprétation plus sérieux.
+                    Il permet de montrer que les signaux s’inscrivent dans une logique de lecture du marché,
+                    de discipline et de hiérarchisation de l’information.
                 </p>
             </div>
 
-            <div class="proof-right">
-                <div class="proof-card">
-                    <strong>Tendance</strong>
-                    <span>Direction dominante du marché ou phase de réaction.</span>
+            <div class="tl-stack">
+                <div class="tl-mini-card">
+                    <strong>Lisibilité</strong>
+                    <span>Les concepts sont séparés pour rendre l’apprentissage plus clair et plus progressif.</span>
                 </div>
-                <div class="proof-card">
-                    <strong>Zone technique</strong>
-                    <span>Repère important pour observer la structure du prix.</span>
+                <div class="tl-mini-card">
+                    <strong>Crédibilité</strong>
+                    <span>Une plateforme paraît plus solide lorsqu’elle explique la logique derrière ses signaux.</span>
                 </div>
-                <div class="proof-card">
-                    <strong>Timing</strong>
-                    <span>Moment où la lecture devient plus propre ou plus fragile.</span>
+                <div class="tl-mini-card">
+                    <strong>Valeur perçue</strong>
+                    <span>Le Trading Lab renforce la qualité globale de l’expérience premium.</span>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="section-standard" id="risk">
+<section class="tl-section">
     <div class="section-container">
-        <div class="section-title">
-            <span>Gestion du risque</span>
-            <h2>Une base essentielle pour donner du sens aux signaux</h2>
-            <p>
-                La gestion du risque renforce la crédibilité de la plateforme et permet d’éviter
-                une lecture trop simpliste des performances.
-            </p>
+        <div class="tl-section-head">
+            <span>Ce que l’on y trouve</span>
+            <h2>Des repères concrets pour lire un signal dans un cadre plus professionnel</h2>
         </div>
 
-        <div class="preview-links-grid">
-            <div class="preview-link-card">
-                <strong>Exposition</strong>
-                <span>Éviter de surcharger le capital sur un seul actif ou un seul scénario.</span>
+        <div class="tl-feature-grid">
+            <div class="tl-feature-card">
+                <h3>Comprendre un setup</h3>
+                <p>Identifier les éléments constitutifs d’un signal et leur rôle dans le scénario.</p>
             </div>
-            <div class="preview-link-card">
-                <strong>Invalidation</strong>
-                <span>Accepter qu’un scénario puisse être invalidé sans remettre en cause toute la logique.</span>
+
+            <div class="tl-feature-card">
+                <h3>Lire l’invalidation</h3>
+                <p>Voir le stop loss comme une limite logique, et non comme un détail secondaire.</p>
             </div>
-            <div class="preview-link-card">
-                <strong>Patience</strong>
-                <span>Attendre une structure propre est souvent plus important que vouloir entrer trop vite.</span>
+
+            <div class="tl-feature-card">
+                <h3>Structurer la lecture</h3>
+                <p>Hiérarchiser l’information pour ne pas transformer le signal en simple bloc de chiffres.</p>
             </div>
-            <div class="preview-link-card">
-                <strong>Régularité</strong>
-                <span>Une approche stable vaut plus qu’une suite de décisions impulsives.</span>
+
+            <div class="tl-feature-card">
+                <h3>Développer la discipline</h3>
+                <p>Renforcer la stabilité de lecture grâce à un cadre plus méthodique et plus cohérent.</p>
             </div>
         </div>
     </div>
 </section>
 
-<section class="section-standard" id="strategies">
+<section class="tl-section">
     <div class="section-container">
-        <div class="section-title">
-            <span>Stratégies Apex</span>
-            <h2>Des angles de lecture cohérents avec la plateforme</h2>
+        <div class="tl-final-box">
+            <span class="tl-final-badge">VelWolef Trading Lab</span>
+            <h2>Un bon signal prend plus de valeur quand il est replacé dans un cadre clair</h2>
             <p>
-                Le but n’est pas d’afficher une infinité de méthodes, mais de présenter quelques logiques
-                simples et professionnelles.
+                Le Trading Lab complète la plateforme en donnant du sens à l’information. Il relie les signaux,
+                les résultats et la logique premium de VelWolef dans un environnement plus lisible, plus crédible
+                et plus professionnel.
             </p>
-        </div>
-
-        <div class="features-home-grid">
-            <div class="feature-home-card">
-                <h3>Momentum</h3>
-                <p>Identifier les impulsions fortes sur les actifs les plus suivis.</p>
+            <div class="tl-final-actions">
+                <a href="{{ url_for('signals.signals_page') }}" class="tl-btn tl-btn-light">Voir les signaux</a>
+                <a href="{{ url_for('billing.pricing') }}" class="tl-btn tl-btn-outline">Découvrir les offres</a>
             </div>
-            <div class="feature-home-card">
-                <h3>Continuation</h3>
-                <p>Suivre une structure déjà engagée lorsque le contexte reste lisible.</p>
-            </div>
-            <div class="feature-home-card">
-                <h3>Réaction technique</h3>
-                <p>Observer le comportement du prix sur des zones sous surveillance.</p>
-            </div>
-            <div class="feature-home-card">
-                <h3>Filtrage</h3>
-                <p>Écarter les scénarios brouillés pour garder une lecture plus propre.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard" id="psychologie">
-    <div class="section-container">
-        <div class="final-cta-box">
-            <span class="final-cta-badge">Psychologie & discipline</span>
-            <h2>Un bon signal a plus de valeur avec une bonne lecture personnelle</h2>
-            <p>
-                Discipline, patience et stabilité renforcent l’utilité d’une plateforme.
-                Le Trading Lab apporte cette dimension plus experte et plus crédible.
-            </p>
         </div>
     </div>
 </section>
@@ -167,7 +164,7 @@
 <footer class="site-footer">
     <div class="section-container footer-inner">
         <div class="footer-brand">
-            <h3>ApexSignals</h3>
+            <h3>VelWolef</h3>
             <p>Trading Lab, signaux premium et lecture structurée du marché.</p>
         </div>
 

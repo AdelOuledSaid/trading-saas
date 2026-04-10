@@ -5,6 +5,7 @@ from flask_login import login_required, current_user
 import config
 from app.extensions import db
 from app.models import Signal
+from app.models.replay import TradeReplay
 from app.core.decorators import plan_required
 from app.services.signal_service import calculate_trade_pnl
 from app.services.stripe_service import sync_user_premium_status, user_has_plan
@@ -86,6 +87,15 @@ def dashboard():
     if user_has_plan(current_user, "premium"):
         latest_briefing = ensure_daily_briefing()
 
+    # =========================
+    # LATEST REPLAY
+    # =========================
+    replay_query = TradeReplay.query
+    if selected_asset:
+        replay_query = replay_query.filter_by(symbol=selected_asset)
+
+    latest_replay = replay_query.order_by(TradeReplay.created_at.desc()).first()
+
     return render_template(
         "dashboard.html",
         email=current_user.email,
@@ -114,7 +124,8 @@ def dashboard():
         user_plan=current_user.plan,
         selected_asset=selected_asset,
         available_assets=available_assets,
-        latest_briefing=latest_briefing
+        latest_briefing=latest_briefing,
+        latest_replay=latest_replay
     )
 
 
