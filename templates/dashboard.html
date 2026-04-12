@@ -3,125 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApexSignals - Dashboard Premium</title>
+    <title>VelWolf — Trading Intelligence Terminal</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
-
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
-
-<body class="dashboard-body premium-dashboard-body">
+<body class="dashboard-body premium-dashboard-body ultra-dashboard-body">
 
 {% include "partials/navbar.html" %}
 
-<div class="dashboard-shell">
+{% set is_basic = user_plan == 'basic' %}
+{% set is_premium_plus = user_plan in ['premium', 'vip'] %}
+{% set is_vip = user_plan == 'vip' %}
+{% set is_free = user_plan == 'free' %}
+{% set is_upgrade_target = user_plan in ['free', 'basic'] %}
+{% set protected_discovery = not can_view_stats %}
+{% set displayed_signals = signals|length %}
+{% set has_locked_signals = total_signals > displayed_signals %}
+{% set visible_win_signals = signals | selectattr('status', 'equalto', 'WIN') | list %}
+{% set total_closed_trades = total_win + total_loss %}
 
-    <aside class="dashboard-sidebar">
-        <div class="sidebar-brand-card">
+{% set safe_winrate = winrate if winrate is not none else 0 %}
+{% set safe_estimated_pnl = estimated_pnl if estimated_pnl is not none else 0 %}
+{% set safe_today_trades = today_trades if today_trades is not none else 0 %}
+{% set safe_today_wins = today_wins if today_wins is not none else 0 %}
+{% set safe_today_losses = today_losses if today_losses is not none else 0 %}
+{% set safe_today_pnl = today_pnl if today_pnl is not none else 0 %}
+{% set safe_initial_capital = initial_capital if initial_capital is not none else 1000 %}
+{% set safe_current_capital = current_capital if current_capital is not none else safe_initial_capital %}
+{% set safe_capital_return_pct = capital_return_pct if capital_return_pct is not none else 0 %}
+
+{% if can_view_stats and safe_winrate >= 75 and total_win >= 20 %}
+    {% set performance_badge_label = 'Elite Trader' %}
+    {% set performance_badge_tone = 'elite' %}
+{% elif can_view_stats and safe_winrate >= 62 and total_win >= 8 %}
+    {% set performance_badge_label = 'Pro Trader' %}
+    {% set performance_badge_tone = 'pro' %}
+{% elif total_closed_trades >= 5 %}
+    {% set performance_badge_label = 'Rising Trader' %}
+    {% set performance_badge_tone = 'rising' %}
+{% else %}
+    {% set performance_badge_label = 'Starter' %}
+    {% set performance_badge_tone = 'starter' %}
+{% endif %}
+
+{% set leaderboard_score = (total_win * 12) - (total_loss * 4) + (safe_winrate | int) %}
+{% set telegram_public_link = telegram_public_link|default('https://t.me/velwolfsignals') %}
+{% set telegram_vip_link = telegram_vip_link|default('https://t.me/velwolfvip') %}
+
+<div class="dashboard-shell ultra-dashboard-shell">
+
+    <aside class="dashboard-sidebar ultra-dashboard-sidebar">
+        <div class="sidebar-brand-card ultra-glow-card">
             <div class="sidebar-brand-top">
-                <span class="sidebar-brand-badge">Member Area</span>
-                <h2>ApexSignals</h2>
+                <span class="sidebar-brand-badge">VelWolf Intelligence</span>
+                <h2>Trader Space</h2>
                 <p>
-                    {% if is_premium %}
-                        Tableau de bord {{ user_plan | upper }}
+                    {% if is_vip %}
+                        Accès VIP actif • signaux complets, briefing enrichi et univers privé.
+                    {% elif is_premium_plus %}
+                        Accès Premium actif • performance, briefing journalier et analyse complète.
+                    {% elif is_basic %}
+                        Accès Basic actif • environnement intermédiaire avec signaux débloqués.
                     {% else %}
-                        Tableau de bord FREE
+                        Version découverte • aperçu limité pour montrer la qualité du système.
                     {% endif %}
                 </p>
             </div>
 
             <div class="sidebar-plan-box">
                 <span>Plan actif</span>
-                <strong>
-                    {% if is_premium %}
-                        {{ user_plan | upper }}
-                    {% else %}
-                        FREE
-                    {% endif %}
-                </strong>
+                <strong>{{ user_plan | upper }}</strong>
+            </div>
+
+            <div class="sidebar-mini-metrics">
+                <div>
+                    <span>Signaux</span>
+                    <strong>{{ total_signals }}</strong>
+                </div>
+                <div>
+                    <span>Ouverts</span>
+                    <strong>{{ total_open }}</strong>
+                </div>
             </div>
         </div>
 
-        <nav class="dashboard-sidebar-nav">
-            <a href="{{ url_for('dashboard.dashboard') }}" class="sidebar-link active">
-                <span>📊</span>
-                <span>Dashboard</span>
-            </a>
-
-            <a href="{{ url_for('billing.pricing') }}" class="sidebar-link">
-                <span>💎</span>
-                <span>Offres</span>
-            </a>
-
-            <a href="{{ url_for('main.home') }}" class="sidebar-link">
-                <span>🏠</span>
-                <span>Accueil</span>
-            </a>
-
-            {% if is_premium %}
-                <a href="{{ url_for('signals.results') }}" class="sidebar-link">
-                    <span>📈</span>
-                    <span>Résultats</span>
-                </a>
-
-                <a href="{{ url_for('signals.signals_page') }}" class="sidebar-link">
-                    <span>⚡</span>
-                    <span>Signaux</span>
-                </a>
-
-                <a href="{{ url_for('replay.my_performance') }}" class="sidebar-link">
-                    <span>🎯</span>
-                    <span>Ma performance</span>
-                </a>
-
-                {% if latest_replay %}
-                <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}" class="sidebar-link">
-                    <span>🎬</span>
-                    <span>Replay trading</span>
-                </a>
+        {% if is_upgrade_target %}
+        <div class="sidebar-upgrade-box ultra-glow-card">
+            <span class="mini-label">Upgrade conseillé</span>
+            <h3>
+                {% if is_free %}
+                    Débloquez l’Academy Pro et le terminal avancé
                 {% else %}
-                <a href="{{ url_for('replay.my_performance') }}" class="sidebar-link">
-                    <span>🎬</span>
-                    <span>Replay trading</span>
-                </a>
+                    Passez Premium pour débloquer stats, replay et briefing
                 {% endif %}
-            {% else %}
-                <a href="{{ url_for('billing.pricing') }}" class="sidebar-link locked-link">
-                    <span>🔒</span>
-                    <span>Résultats premium</span>
-                </a>
+            </h3>
+            <p>
+                {% if is_free %}
+                    Activez le plan Pro pour accéder aux cours complets, à la progression, aux quiz, à la certification et à une meilleure exploitation des signaux.
+                {% else %}
+                    Votre plan Basic ouvre la porte. Le niveau supérieur débloque les métriques sensibles, le replay et une lecture marché plus complète.
+                {% endif %}
+            </p>
+            <a href="{{ url_for('pages.academy_upgrade') }}" class="sidebar-upgrade-btn">Voir l’upgrade Pro</a>
+        </div>
+        {% endif %}
 
-                <a href="{{ url_for('billing.pricing') }}" class="sidebar-link locked-link">
-                    <span>🔒</span>
-                    <span>Signaux premium</span>
-                </a>
+        <nav class="dashboard-sidebar-nav">
+            <a href="{{ url_for('dashboard.dashboard') }}" class="sidebar-link active"><span>📊</span>Dashboard</a>
 
-                <a href="{{ url_for('billing.pricing') }}" class="sidebar-link locked-link">
-                    <span>🔒</span>
-                    <span>Performance trader</span>
-                </a>
-
-                <a href="{{ url_for('billing.pricing') }}" class="sidebar-link locked-link">
-                    <span>🔒</span>
-                    <span>Replay trading</span>
-                </a>
-            {% endif %}
-
-            {% if user_plan == "premium" %}
-                <a href="{{ url_for('dashboard.briefing_page') }}" class="sidebar-link">
-                    <span>📰</span>
-                    <span>Briefing</span>
-                </a>
-            {% endif %}
-
-            <a href="{{ url_for('auth.logout') }}" class="sidebar-link logout-link">
-                <span>🚪</span>
-                <span>Déconnexion</span>
+            <a href="{{ url_for('signals.signals_page') if signal_limit > 0 else url_for('billing.pricing') }}"
+               class="sidebar-link {% if signal_limit == 0 %}locked-link{% endif %}">
+                <span>⚡</span>{% if signal_limit > 0 %}Signaux{% else %}Signaux réservés{% endif %}
             </a>
+
+            <a href="{{ url_for('signals.results') if signal_limit > 0 else url_for('billing.pricing') }}"
+               class="sidebar-link {% if signal_limit == 0 %}locked-link{% endif %}">
+                <span>🏆</span>{% if signal_limit > 0 %}Résultats{% else %}Résultats premium{% endif %}
+            </a>
+
+            <a href="{{ url_for('pages.academy_index') if is_premium_plus else url_for('pages.academy_upgrade') }}"
+               class="sidebar-link {% if not is_premium_plus %}locked-link{% endif %}">
+                <span>🎓</span>{% if is_premium_plus %}Academy Pro{% else %}Academy verrouillée{% endif %}
+            </a>
+
+            <a href="{{ url_for('dashboard.briefing_page') if can_view_briefing else url_for('billing.pricing') }}"
+               class="sidebar-link {% if not can_view_briefing %}locked-link{% endif %}">
+                <span>🧠</span>{% if can_view_briefing %}Briefing daily{% else %}Briefing réservé{% endif %}
+            </a>
+
+            <a href="{{ url_for('replay.my_performance') if can_view_replay else url_for('billing.pricing') }}"
+               class="sidebar-link {% if not can_view_replay %}locked-link{% endif %}">
+                <span>🎯</span>{% if can_view_replay %}Replay / Perf{% else %}Replay premium{% endif %}
+            </a>
+
+            <a href="{{ url_for('billing.pricing') }}" class="sidebar-link"><span>💎</span>Offres</a>
+            <a href="{{ url_for('auth.logout') }}" class="sidebar-link logout-link"><span>🚪</span>Déconnexion</a>
         </nav>
 
         <div class="sidebar-market-box">
@@ -130,547 +148,753 @@
                 {% if available_assets %}
                     {{ available_assets | join(' • ') }}
                 {% else %}
-                    BTCUSD • GOLD
+                    BTCUSD • ETHUSD • GOLD • US100
                 {% endif %}
             </strong>
         </div>
-
-        {% if not is_premium %}
-        <div class="sidebar-upgrade-box">
-            <span class="mini-label">Upgrade</span>
-            <h3>Débloque l’expérience complète</h3>
-            <p>Signaux premium, historique enrichi et plus d’analyses.</p>
-            <a href="{{ url_for('billing.pricing') }}" class="sidebar-upgrade-btn">Passer premium</a>
-        </div>
-        {% endif %}
     </aside>
 
-    <main class="dashboard-content">
+    <main class="dashboard-content ultra-dashboard-content">
 
-        <section class="dashboard-hero">
+        <section class="dashboard-hero ultra-hero">
             <div class="dashboard-hero-content">
                 <div class="hero-badge-line">
                     <span class="hero-badge">
-                        {% if is_premium %}
-                            PREMIUM ACTIVE
-                        {% else %}
-                            FREE ACCESS
-                        {% endif %}
+                        {% if is_vip %}VIP{% elif is_premium_plus %}PREMIUM{% elif is_basic %}BASIC{% else %}FREE{% endif %}
                     </span>
-
-                    <span class="hero-live-dot">
-                        ●
-                        {% if is_premium %}
-                            Plan {{ user_plan | upper }}
-                        {% else %}
-                            Plan FREE
-                        {% endif %}
-                    </span>
+                    <span class="hero-live-dot">● {{ email }}</span>
                 </div>
 
-                <h1>
-                    {% if is_premium %}
-                        Bienvenue dans ton espace premium
-                    {% else %}
-                        Bienvenue sur ApexSignals
-                    {% endif %}
-                </h1>
+                <div class="hero-title-row">
+                    <h1 class="ultra-title">VelWolf Trading Intelligence Terminal</h1>
+                    <span class="ai-badge">AI POWERED</span>
+                </div>
 
                 <p class="hero-subtitle">
-                    {% if is_premium %}
-                        Accède à une vue claire de tes performances, de tes signaux récents, de ton activité et de tes analyses avancées.
-                    {% else %}
-                        Consulte un aperçu du dashboard et débloque les signaux avancés, l’historique complet et les analyses premium.
-                    {% endif %}
+                    Un cockpit inspiré des interfaces hedge fund pour piloter signaux, performance, exécution, apprentissage et progression membre.
                 </p>
 
                 <div class="hero-actions">
-                    {% if is_premium %}
-                        <a href="{{ url_for('signals.signals_page') }}" class="hero-primary-btn">Voir les signaux live</a>
-                        <a href="{{ url_for('signals.results') }}" class="hero-secondary-btn">Explorer les résultats</a>
-                    {% else %}
-                        <a href="{{ url_for('billing.pricing') }}" class="hero-primary-btn">Débloquer les signaux premium</a>
-                        <a href="{{ url_for('billing.pricing') }}" class="hero-secondary-btn">Comparer les offres</a>
-                    {% endif %}
+                    <a href="#signals-feed" class="hero-primary-btn">Voir les signaux</a>
+                    <a href="#winning-trades" class="hero-secondary-btn">Trades gagnants</a>
+                    <a href="{{ url_for('dashboard.briefing_page') if can_view_briefing else url_for('billing.pricing') }}" class="hero-secondary-btn">
+                        Débloquer briefing
+                    </a>
+                    <a href="{{ url_for('dashboard.briefing_page') if can_view_briefing else url_for('billing.pricing') }}#market-news" class="hero-utility-btn">News</a>
+                    <a href="{{ url_for('pages.academy_index') if is_premium_plus else url_for('pages.academy_upgrade') }}" class="hero-utility-btn">Academy</a>
+                    <a href="{{ telegram_vip_link if is_vip else url_for('billing.pricing') }}" {% if is_vip %}target="_blank" rel="noopener"{% endif %} class="hero-utility-btn hero-utility-btn-vip">Telegram VIP</a>
+                    <a href="#leaderboard" class="hero-utility-btn">Leaderboard</a>
+                    <a href="#performance-badge" class="hero-utility-btn">Badge performance</a>
                 </div>
             </div>
 
             <div class="dashboard-hero-side">
                 <div class="hero-side-card">
+                    <span>Signaux totaux</span>
+                    <strong>{{ total_signals }}</strong>
+                </div>
+                <div class="hero-side-card">
+                    <span>Trades aujourd’hui</span>
+                    <strong>{% if can_view_stats %}{{ safe_today_trades }}{% else %}🔒{% endif %}</strong>
+                </div>
+                <div class="hero-side-card">
+                    <span>Wins aujourd’hui</span>
+                    <strong>{% if can_view_stats %}{{ safe_today_wins }}{% else %}🔒{% endif %}</strong>
+                </div>
+                <div class="hero-side-card">
                     <span>Plan</span>
                     <strong>{{ user_plan | upper }}</strong>
-                </div>
-
-                <div class="hero-side-card">
-                    <span>Accès</span>
-                    <strong>{% if is_premium %}Complet{% else %}Limité{% endif %}</strong>
-                </div>
-
-                <div class="hero-side-card">
-                    <span>Signaux visibles</span>
-                    <strong>{% if is_premium %}Tous{% else %}5 derniers{% endif %}</strong>
-                </div>
-
-                <div class="hero-side-card">
-                    <span>Univers</span>
-                    <strong>
-                        {% if available_assets %}
-                            {{ available_assets | join(' • ') }}
-                        {% else %}
-                            BTCUSD • GOLD
-                        {% endif %}
-                    </strong>
                 </div>
             </div>
         </section>
 
-        <section class="stats-highlight-grid">
-
-            {% if is_premium %}
-                <div class="stat-card premium-neutral">
-                    <div class="stat-top">
-                        <span class="stat-kicker">Winrate global</span>
-                        <span class="stat-chip">Performance</span>
-                    </div>
-                    <h3>{{ winrate }}%</h3>
-                    <p>Calculé sur les trades clôturés.</p>
-                </div>
-
-                <div class="stat-card {% if estimated_pnl >= 0 %}premium-positive{% else %}premium-negative{% endif %}">
-                    <div class="stat-top">
-                        <span class="stat-kicker">P&amp;L estimé</span>
-                        <span class="stat-chip">Capital</span>
-                    </div>
-                    <h3>{% if estimated_pnl >= 0 %}+{% endif %}{{ estimated_pnl }}</h3>
-                    <p>Somme estimée des performances enregistrées.</p>
-                </div>
-
-                <div class="stat-card premium-neutral">
-                    <div class="stat-top">
-                        <span class="stat-kicker">Trades enregistrés</span>
-                        <span class="stat-chip">Activité</span>
-                    </div>
-                    <h3>{{ total_signals }}</h3>
-                    <p>Volume total de signaux stockés.</p>
-                </div>
-
-                <div class="stat-card {% if capital_return_pct >= 0 %}premium-positive{% else %}premium-negative{% endif %}">
-                    <div class="stat-top">
-                        <span class="stat-kicker">Retour capital</span>
-                        <span class="stat-chip">ROI</span>
-                    </div>
-                    <h3>{% if capital_return_pct >= 0 %}+{% endif %}{{ capital_return_pct }}%</h3>
-                    <p>Évolution depuis le capital initial.</p>
-                </div>
-            {% else %}
-                <div class="stat-card premium-neutral">
-                    <div class="stat-top">
-                        <span class="stat-kicker">Signaux visibles</span>
-                        <span class="stat-chip">Aperçu</span>
-                    </div>
-                    <h3>{{ total_signals }}</h3>
-                    <p>Nombre total de signaux enregistrés dans le système.</p>
-                </div>
-
-                <div class="stat-card premium-neutral premium-locked-stat">
-                    <div class="stat-top">
-                        <span class="stat-kicker">P&amp;L détaillé</span>
-                        <span class="stat-chip">Premium</span>
-                    </div>
-                    <h3>Verrouillé</h3>
-                    <p>Débloque les performances détaillées et le suivi avancé du capital.</p>
-                </div>
-
-                <div class="stat-card premium-neutral">
-                    <div class="stat-top">
-                        <span class="stat-kicker">Marchés suivis</span>
-                        <span class="stat-chip">Univers</span>
-                    </div>
-                    <h3>
-                        {% if available_assets %}
-                            {{ available_assets | length }}
+        {% if is_upgrade_target %}
+        <section class="premium-panel upgrade-banner-panel">
+            <div class="panel-heading">
+                <div>
+                    <span class="panel-mini-title">Upgrade member</span>
+                    <h2>
+                        {% if is_free %}
+                            Vous utilisez la version découverte
                         {% else %}
-                            2
+                            Votre plan Basic montre le potentiel
                         {% endif %}
-                    </h3>
-                    <p>Crypto et actifs suivis dans ton espace membre.</p>
+                    </h2>
+                </div>
+                <span class="stat-chip">Conversion zone</span>
+            </div>
+
+            <div class="bottom-cta-box premium-upgrade-box">
+                <div>
+                    <span class="bottom-cta-kicker">Academy Pro</span>
+                    <h2>
+                        {% if is_free %}
+                            Débloquez la formation complète, les vidéos premium et la vraie progression.
+                        {% else %}
+                            Passez au niveau supérieur pour accéder aux stats avancées, au briefing et au replay.
+                        {% endif %}
+                    </h2>
+                    <p>
+                        {% if is_free %}
+                            Le plan gratuit montre l’environnement. Le plan Pro débloque l’Academy complète, les quiz, la certification, le replay et la logique premium derrière les signaux.
+                        {% else %}
+                            Le plan Basic est une bonne entrée. Premium et VIP transforment l’expérience en vrai terminal de progression avec plus de profondeur, d’analyse et de rétention.
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="bottom-cta-actions">
+                    <a href="{{ url_for('pages.academy_upgrade') }}" class="hero-primary-btn">Voir l’upgrade Pro</a>
+                    <a href="{{ url_for('pages.academy_upgrade') }}" class="hero-secondary-btn">Débloquer Academy</a>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <section class="premium-panel quota-panel">
+            <div class="panel-heading">
+                <div>
+                    <span class="panel-mini-title">Quota signaux</span>
+                    <h2>Consommation de votre plan aujourd’hui</h2>
+                </div>
+                <span class="stat-chip">
+                    {% if user_plan == "vip" %}
+                        VIP UNLIMITED
+                    {% else %}
+                        {{ quota_status_label }}
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="quota-grid">
+                <div class="quota-card quota-main-card">
+                    <span class="quota-label">Plan actif</span>
+                    <strong>{{ user_plan | upper }}</strong>
+                    <p>
+                        {% if user_plan == "basic" %}
+                            Vous recevez jusqu’à 5 signaux par jour avec un briefing plus simple.
+                        {% elif user_plan == "premium" %}
+                            Vous recevez jusqu’à 10 signaux par jour avec plus de contexte et un second brief.
+                        {% elif user_plan == "vip" %}
+                            Vous recevez tous les signaux, briefs détaillés et updates prioritaires sans limite.
+                        {% else %}
+                            Passez Basic, Premium ou VIP pour débloquer les signaux Telegram.
+                        {% endif %}
+                    </p>
                 </div>
 
-                <div class="stat-card premium-neutral premium-locked-stat">
-                    <div class="stat-top">
-                        <span class="stat-kicker">Retour capital</span>
-                        <span class="stat-chip">Premium</span>
-                    </div>
-                    <h3>Exclusif</h3>
-                    <p>Accède aux statistiques avancées et à la lecture complète de la performance.</p>
+                <div class="quota-card">
+                    <span class="quota-label">Envoyés aujourd’hui</span>
+                    <strong>{{ sent_today_count }}</strong>
+                    <p>Nombre de signaux déjà distribués aujourd’hui sur votre niveau d’abonnement.</p>
                 </div>
-            {% endif %}
 
+                <div class="quota-card">
+                    <span class="quota-label">Restants aujourd’hui</span>
+                    <strong>
+                        {% if user_plan == "vip" %}
+                            ∞
+                        {% else %}
+                            {{ signals_remaining_today }}
+                        {% endif %}
+                    </strong>
+                    <p>
+                        {% if user_plan == "vip" %}
+                            Les membres VIP reçoivent un flux illimité.
+                        {% else %}
+                            Une fois ce quota atteint, les nouveaux signaux restent réservés au niveau supérieur.
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="quota-card">
+                    <span class="quota-label">Briefing du plan</span>
+                    <strong>{{ briefing_plan_label if briefing_plan_label else "Non actif" }}</strong>
+                    <p>
+                        {% if user_plan == "basic" %}
+                            Version courte et plus simple.
+                        {% elif user_plan == "premium" %}
+                            Version complète avec plus de contexte.
+                        {% elif user_plan == "vip" %}
+                            Version détaillée avec focus prioritaire et lecture desk.
+                        {% else %}
+                            Débloquez un plan payant pour activer les briefings.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="quota-progress-wrap">
+                <div class="quota-progress-top">
+                    <span>Utilisation du quota journalier</span>
+                    <strong>
+                        {% if user_plan == "vip" %}
+                            Illimité
+                        {% else %}
+                            {{ quota_status_label }}
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="quota-progress-bar">
+                    <div class="quota-progress-fill {% if user_plan == 'vip' %}quota-vip{% elif quota_progress_pct >= 80 %}quota-danger{% endif %}"
+                         style="width: {% if user_plan == 'vip' %}100{% else %}{{ quota_progress_pct }}{% endif %}%;"></div>
+                </div>
+
+                <div class="quota-progress-note">
+                    {% if user_plan == "basic" %}
+                        Basic : 5 signaux maximum par jour.
+                    {% elif user_plan == "premium" %}
+                        Premium : 10 signaux maximum par jour.
+                    {% elif user_plan == "vip" %}
+                        VIP : flux illimité + briefing détaillé + priorité desk.
+                    {% else %}
+                        Aucun quota actif.
+                    {% endif %}
+                </div>
+            </div>
         </section>
 
-        <section class="dashboard-main-grid">
+        <section class="premium-panel tradingview-panel ultra-market-panel">
+            <div class="panel-heading">
+                <div>
+                    <span class="panel-mini-title">Marché en direct</span>
+                    <h2>Vue marché & filtre actif</h2>
+                </div>
+                <span class="mini-status">LIVE</span>
+            </div>
 
+            <div class="market-topbar">
+                <form method="GET" action="{{ url_for('dashboard.dashboard') }}" class="asset-filter-form">
+                    <label for="asset">Actif</label>
+                    <select id="asset" name="asset" onchange="this.form.submit()">
+                        <option value="" {% if not selected_asset %}selected{% endif %}>Tous les actifs</option>
+                        {% for asset in available_assets %}
+                            <option value="{{ asset }}" {% if selected_asset == asset %}selected{% endif %}>{{ asset }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+
+                <div class="market-badges">
+                    <span class="market-chip">Actif sélectionné : {{ selected_asset if selected_asset else 'GLOBAL' }}</span>
+                    <span class="market-chip success">Suivi multi-actifs</span>
+                    <span class="market-chip info">Desk mode actif</span>
+                </div>
+            </div>
+
+            <div class="tv-chart-box">
+                <div class="tv-chart-header">
+                    <div>
+                        <strong>{{ selected_asset if selected_asset else 'BTCUSD' }}</strong>
+                        <span>Vue stratégique membre</span>
+                    </div>
+                    <div class="tv-price">
+                        <strong>
+                            {% if can_view_stats %}
+                                {{ safe_current_capital }}
+                            {% else %}
+                                {{ safe_initial_capital }}
+                            {% endif %}
+                        </strong>
+                        <span class="{% if can_view_stats and safe_capital_return_pct >= 0 %}text-buy{% else %}text-muted-strong{% endif %}">
+                            {% if can_view_stats %}
+                                {{ safe_capital_return_pct }}%
+                            {% else %}
+                                Mode protégé
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="tv-chart">
+                    <svg viewBox="0 0 900 320" preserveAspectRatio="none" aria-hidden="true">
+                        <g class="tv-grid">
+                            <line x1="0" y1="40" x2="900" y2="40" />
+                            <line x1="0" y1="90" x2="900" y2="90" />
+                            <line x1="0" y1="140" x2="900" y2="140" />
+                            <line x1="0" y1="190" x2="900" y2="190" />
+                            <line x1="0" y1="240" x2="900" y2="240" />
+                            <line x1="0" y1="290" x2="900" y2="290" />
+                        </g>
+
+                        <g class="tv-candles advanced-candles">
+                            <g transform="translate(68,226)"><line x1="7" x2="7" y1="-48" y2="26"/><rect x="0" y="-20" width="14" height="44" class="bull"/></g>
+                            <g transform="translate(132,208)"><line x1="7" x2="7" y1="-58" y2="32"/><rect x="0" y="-28" width="14" height="54" class="bull"/></g>
+                            <g transform="translate(196,188)"><line x1="7" x2="7" y1="-42" y2="20"/><rect x="0" y="-16" width="14" height="40" class="bear"/></g>
+                            <g transform="translate(260,176)"><line x1="7" x2="7" y1="-60" y2="30"/><rect x="0" y="-30" width="14" height="58" class="bull"/></g>
+                            <g transform="translate(324,160)"><line x1="7" x2="7" y1="-66" y2="26"/><rect x="0" y="-34" width="14" height="62" class="bull"/></g>
+                            <g transform="translate(388,172)"><line x1="7" x2="7" y1="-34" y2="22"/><rect x="0" y="-14" width="14" height="40" class="bear"/></g>
+                            <g transform="translate(452,150)"><line x1="7" x2="7" y1="-56" y2="28"/><rect x="0" y="-28" width="14" height="52" class="bull"/></g>
+                            <g transform="translate(516,134)"><line x1="7" x2="7" y1="-62" y2="26"/><rect x="0" y="-32" width="14" height="58" class="bull"/></g>
+                            <g transform="translate(580,146)"><line x1="7" x2="7" y1="-30" y2="22"/><rect x="0" y="-12" width="14" height="38" class="bear"/></g>
+                            <g transform="translate(644,126)"><line x1="7" x2="7" y1="-60" y2="24"/><rect x="0" y="-30" width="14" height="56" class="bull"/></g>
+                            <g transform="translate(708,118)"><line x1="7" x2="7" y1="-56" y2="22"/><rect x="0" y="-28" width="14" height="50" class="bull"/></g>
+                            <g transform="translate(772,110)"><line x1="7" x2="7" y1="-52" y2="24"/><rect x="0" y="-24" width="14" height="46" class="bull"/></g>
+                        </g>
+
+                        <path d="M0,252 C100,242 188,220 272,194 C356,168 450,148 546,132 C640,118 748,104 900,84" class="tv-line" />
+                        <path d="M0,286 C132,280 246,260 358,226 C470,194 604,170 900,152" class="tv-line secondary" />
+                    </svg>
+
+                    <div class="tv-marker buy" style="left:58%; top:36%;">BUY ZONE</div>
+                    <div class="tv-marker sell" style="left:28%; top:62%;">SELL TRAP</div>
+                    <div class="tv-marker neutral" style="left:78%; top:22%;">BREAKOUT</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats-highlight-grid ultra-stats-grid">
+            <div class="stat-card premium-neutral">
+                <div class="stat-top">
+                    <span class="stat-kicker">Total trades</span>
+                    <span class="stat-chip">Global</span>
+                </div>
+                <h3>{{ total_signals }}</h3>
+                <p>Volume total des signaux enregistrés sur l’historique affiché.</p>
+            </div>
+
+            <div class="stat-card premium-neutral">
+                <div class="stat-top">
+                    <span class="stat-kicker">BUY / SELL</span>
+                    <span class="stat-chip">Flux</span>
+                </div>
+                <h3>{{ total_buy }} / {{ total_sell }}</h3>
+                <p>Répartition directionnelle des opportunités détectées.</p>
+            </div>
+
+            <div class="stat-card {% if can_view_stats %}{% if safe_estimated_pnl >= 0 %}premium-positive{% else %}premium-negative{% endif %}{% else %}premium-locked-stat single-lock-card{% endif %}">
+                <div class="stat-top">
+                    <span class="stat-kicker">P&amp;L cumulé</span>
+                </div>
+                <h3>{% if can_view_stats %}{{ safe_estimated_pnl }}{% else %}🔒{% endif %}</h3>
+                <p>
+                    {% if can_view_stats %}
+                        Résultat cumulé de tous les trades clôturés.
+                    {% else %}
+                        Les performances détaillées sont masquées en mode découverte et Basic.
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="stat-card {% if can_view_stats %}premium-neutral{% else %}premium-locked-stat single-lock-card{% endif %}">
+                <div class="stat-top">
+                    <span class="stat-kicker">Winrate</span>
+                </div>
+                <h3>{% if can_view_stats %}{{ safe_winrate }}%{% else %}🔒{% endif %}</h3>
+                <p>
+                    {% if can_view_stats %}
+                        Taux de réussite calculé sur les trades clôturés.
+                    {% else %}
+                        Le taux de réussite détaillé est masqué en version découverte et Basic.
+                    {% endif %}
+                </p>
+            </div>
+        </section>
+
+        <section class="dashboard-main-grid dashboard-main-grid-dense">
             <div class="dashboard-main-left">
 
-                <div class="premium-panel signal-panel">
+                <section class="premium-panel">
                     <div class="panel-heading">
                         <div>
-                            <span class="panel-mini-title">
-                                {% if is_premium %}
-                                    Signal en direct
-                                {% else %}
-                                    Aperçu du dernier signal
-                                {% endif %}
-                            </span>
-                            <h2>
-                                {% if last_signal %}
-                                    Dernier signal disponible
-                                {% else %}
-                                    Aucun signal disponible
-                                {% endif %}
-                            </h2>
+                            <span class="panel-mini-title">Dernier setup</span>
+                            <h2>Dernier signal exécuté</h2>
                         </div>
-
                         {% if last_signal %}
-                            <span class="signal-badge {{ last_signal.action | lower }}">
-                                {{ last_signal.action }}
-                            </span>
-                        {% else %}
-                            <span class="signal-badge neutral">N/A</span>
+                            <span class="signal-badge {{ last_signal.action | lower }}">{{ last_signal.action }}</span>
                         {% endif %}
                     </div>
 
                     {% if last_signal %}
-                    <div class="signal-card-grid">
-                        <div class="signal-info-card">
-                            <span>Actif</span>
-                            <strong>{{ last_signal.asset }}</strong>
-                        </div>
-
-                        <div class="signal-info-card">
-                            <span>Direction</span>
-                            <strong class="{% if last_signal.action == 'BUY' %}text-buy{% elif last_signal.action == 'SELL' %}text-loss{% endif %}">
-                                {{ last_signal.action }}
-                            </strong>
-                        </div>
-
-                        <div class="signal-info-card">
-                            <span>Statut</span>
-                            <strong>{{ last_signal.status }}</strong>
-                        </div>
-
-                        <div class="signal-info-card">
-                            <span>Date</span>
-                            <strong>{{ last_signal.created_at.strftime('%d/%m/%Y %H:%M') }}</strong>
-                        </div>
-
-                        {% if last_signal.entry_price is defined %}
-                        <div class="signal-info-card">
-                            <span>Entrée</span>
-                            <strong>{{ last_signal.entry_price }}</strong>
-                        </div>
-                        {% endif %}
-
-                        {% if last_signal.tp is defined %}
-                        <div class="signal-info-card">
-                            <span>Take Profit</span>
-                            <strong>{{ last_signal.tp }}</strong>
-                        </div>
-                        {% endif %}
-
-                        {% if last_signal.sl is defined %}
-                        <div class="signal-info-card">
-                            <span>Stop Loss</span>
-                            <strong>{{ last_signal.sl }}</strong>
-                        </div>
-                        {% endif %}
-
-                        {% if not is_premium %}
-                        <div class="signal-info-card locked-preview-card">
-                            <span>Signal premium</span>
-                            <strong>Débloquer plus de détails</strong>
-                        </div>
-                        {% endif %}
+                    <div class="signal-card-grid last-signal-grid">
+                        <div class="signal-info-card"><span>Actif</span><strong>{{ last_signal.asset }}</strong></div>
+                        <div class="signal-info-card"><span>Direction</span><strong>{{ last_signal.action }}</strong></div>
+                        <div class="signal-info-card"><span>Entrée</span><strong>{{ last_signal.entry_price }}</strong></div>
+                        <div class="signal-info-card"><span>Stop loss</span><strong>{{ last_signal.stop_loss }}</strong></div>
+                        <div class="signal-info-card"><span>Take profit</span><strong>{{ last_signal.take_profit }}</strong></div>
+                        <div class="signal-info-card"><span>Statut</span><strong>{{ last_signal.status }}</strong></div>
                     </div>
 
-                    {% if is_premium %}
-                    <div class="hero-actions" style="margin-top: 20px;">
-                        {% if latest_replay %}
-                            <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}" class="hero-primary-btn">Voir le replay</a>
+                    <div class="signal-actions-row">
+                        {% if is_premium_plus and last_signal.id %}
+                            <a href="{{ url_for('pages.learn_signal', signal_id=last_signal.id) }}" class="panel-link-btn">Mini cours</a>
                         {% else %}
-                            <a href="{{ url_for('replay.my_performance') }}" class="hero-primary-btn">Voir ma performance</a>
+                            <a href="{{ url_for('billing.pricing') }}" class="panel-link-btn">Mini cours Premium</a>
                         {% endif %}
-                        <a href="{{ url_for('replay.my_performance') }}" class="hero-secondary-btn">Ma performance</a>
+
+                        {% if can_view_replay and latest_replay and latest_replay.signal_id == last_signal.id %}
+                            <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}" class="replay-btn">Replay</a>
+                        {% elif can_view_replay %}
+                            <a href="{{ url_for('replay.my_performance') }}" class="panel-link-btn">Zone replay</a>
+                        {% else %}
+                            <a href="{{ url_for('billing.pricing') }}" class="panel-link-btn">Replay premium</a>
+                        {% endif %}
                     </div>
-                    {% endif %}
                     {% else %}
                     <div class="empty-state-box">
-                        <h3>Aucun signal enregistré</h3>
-                        <p>Le tableau de bord affichera ici le dernier signal disponible dès qu’il sera publié.</p>
+                        <h3>Aucun signal disponible</h3>
+                        <p>Le dashboard affichera ici le dernier setup exécuté dès qu’un nouveau signal sera enregistré.</p>
                     </div>
                     {% endif %}
-                </div>
+                </section>
 
-                <div class="premium-panel activity-panel">
+                <section class="premium-panel" id="signals-feed">
                     <div class="panel-heading">
                         <div>
-                            <span class="panel-mini-title">
-                                {% if is_premium %}
-                                    Historique membre
-                                {% else %}
-                                    Historique limité
-                                {% endif %}
-                            </span>
-                            <h2>Activité récente</h2>
+                            <span class="panel-mini-title">Signal room</span>
+                            <h2>Feed signaux</h2>
                         </div>
-
-                        {% if is_premium %}
-                            <a href="{{ url_for('signals.results') }}" class="panel-link-btn">Voir tout</a>
-                        {% else %}
-                            <a href="{{ url_for('billing.pricing') }}" class="panel-link-btn">Débloquer</a>
-                        {% endif %}
+                        <span class="stat-chip">{{ displayed_signals }} affichés</span>
                     </div>
 
-                    <div class="activity-list">
-                        {% if signals %}
-                            {% for s in signals[:4] %}
-                            <div class="activity-item">
-                                <div class="activity-left">
+                    <div class="trade-feed-list">
+                        {% for s in signals %}
+                        <article class="trade-card signal-trade-card">
+                            <div class="trade-top">
+                                <div>
                                     <strong>{{ s.asset }}</strong>
-                                    <span>{{ s.action }} • {{ s.created_at.strftime('%d/%m %H:%M') }}</span>
+                                    <span>{{ s.action }} • {{ s.status }}</span>
                                 </div>
+                                <span class="status-pill {% if s.status == 'WIN' %}win{% elif s.status == 'LOSS' %}loss{% else %}open{% endif %}">{{ s.status }}</span>
+                            </div>
 
-                                <div class="activity-right">
-                                    <span class="status-pill {% if s.status == 'WIN' %}win{% elif s.status == 'LOSS' %}loss{% else %}open{% endif %}">
-                                        {{ s.status }}
-                                    </span>
+                            <div class="trade-grid">
+                                <div><span>Entrée</span><strong>{{ s.entry_price }}</strong></div>
+                                <div><span>SL</span><strong>{{ s.stop_loss }}</strong></div>
+                                <div><span>TP</span><strong>{{ s.take_profit }}</strong></div>
+                                <div><span>Timeframe</span><strong>{{ s.timeframe or '-' }}</strong></div>
+                                <div><span>Tendance</span><strong>{{ s.market_trend or '-' }}</strong></div>
+                                <div><span>Source</span><strong>{{ s.source or 'tradingview' }}</strong></div>
+                            </div>
+
+                            <div class="trade-analysis">
+                                {{ s.reason if s.reason else 'Signal publié avec une logique technique structurée, en attente de validation complète par le marché.' }}
+                            </div>
+
+                            <div class="signal-card-actions">
+                                {% if is_premium_plus and s.id %}
+                                    <a href="{{ url_for('pages.learn_signal', signal_id=s.id) }}" class="panel-link-btn">Mini cours</a>
+                                {% else %}
+                                    <a href="{{ url_for('billing.pricing') }}" class="panel-link-btn">Mini cours réservé</a>
+                                {% endif %}
+
+                                {% if can_view_replay and latest_replay and latest_replay.signal_id == s.id %}
+                                    <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}" class="replay-btn">Replay</a>
+                                {% elif can_view_replay %}
+                                    <a href="{{ url_for('replay.my_performance') }}" class="panel-link-btn">Replay training</a>
+                                {% else %}
+                                    <a href="{{ url_for('billing.pricing') }}" class="panel-link-btn">Replay réservé</a>
+                                {% endif %}
+                            </div>
+                        </article>
+                        {% endfor %}
+
+                        {% if has_locked_signals %}
+                        <article class="trade-card locked-trade-card">
+                            <div class="trade-top">
+                                <div>
+                                    <strong>Signaux supplémentaires</strong>
+                                    <span>Réservés aux abonnés supérieurs</span>
                                 </div>
+                                <span class="status-pill open">LOCKED</span>
                             </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="empty-line">
-                                <span>Aucune activité récente</span>
+                            <div class="trade-analysis">
+                                Vous voyez {{ displayed_signals }} signaux sur {{ total_signals }}. Débloquez l’historique complet, les statistiques premium, les briefs journaliers et l’expérience membre avancée.
                             </div>
+                            <div class="signal-card-actions locked-signal-actions">
+                                <a href="{{ url_for('billing.pricing') }}" class="hero-primary-btn compact-btn">Débloquer tous les signaux</a>
+                                <a href="{{ telegram_vip_link if is_vip else url_for('billing.pricing') }}" {% if is_vip %}target="_blank" rel="noopener"{% endif %} class="panel-link-btn vip-lock-btn">Telegram VIP</a>
+                            </div>
+                        </article>
                         {% endif %}
                     </div>
-                </div>
+                </section>
 
+                <section class="premium-panel" id="winning-trades">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="panel-mini-title">Showcase</span>
+                            <h2>Trades gagnants uniquement</h2>
+                        </div>
+                        <span class="stat-chip success">{{ visible_win_signals|length }} wins visibles</span>
+                    </div>
+
+                    {% if visible_win_signals %}
+                    <div class="winning-trades-grid">
+                        {% for s in visible_win_signals[:6] %}
+                        <article class="winning-trade-box">
+                            <div class="winning-top">
+                                <strong>{{ s.asset }}</strong>
+                                <span class="status-pill win">WIN</span>
+                            </div>
+                            <div class="winning-metrics">
+                                <div><span>Direction</span><strong>{{ s.action }}</strong></div>
+                                <div><span>Entrée</span><strong>{{ s.entry_price }}</strong></div>
+                                <div><span>TP</span><strong>{{ s.take_profit }}</strong></div>
+                                <div><span>Sortie</span><strong>Objectif touché</strong></div>
+                            </div>
+                            <div class="signal-card-actions compact-actions">
+                                {% if is_premium_plus and s.id %}
+                                    <a href="{{ url_for('pages.learn_signal', signal_id=s.id) }}" class="panel-link-btn">Mini cours</a>
+                                {% endif %}
+                                {% if can_view_replay and latest_replay and latest_replay.signal_id == s.id %}
+                                    <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}" class="replay-btn">Replay</a>
+                                {% elif not can_view_replay %}
+                                    <a href="{{ url_for('billing.pricing') }}" class="panel-link-btn">Replay réservé</a>
+                                {% endif %}
+                            </div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="empty-state-box">
+                        <h3>Pas encore de trade gagnant visible</h3>
+                        <p>Les trades gagnants apparaitront ici automatiquement dès qu’un TP sera validé.</p>
+                    </div>
+                    {% endif %}
+                </section>
+
+                <section class="premium-panel briefing-panel" id="market-news">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="panel-mini-title">Briefing daily</span>
+                            <h2>Lecture marché du jour</h2>
+                        </div>
+                    </div>
+
+                    {% if latest_briefing and can_view_briefing %}
+                    <div class="briefing-preview-box">
+                        <div class="briefing-content-preview">{{ latest_briefing.content[:420] }}{% if latest_briefing.content|length > 420 %}...{% endif %}</div>
+                        <a href="{{ url_for('dashboard.briefing_page') }}" class="hero-primary-btn compact-btn">Lire le briefing complet</a>
+                    </div>
+                    {% else %}
+                    <div class="locked-preview-card">
+                        <strong>Contenu réservé Premium / VIP</strong>
+                        <p>Le briefing journalier donne un angle marché, le contexte macro et la lecture des actifs à surveiller.</p>
+                        <a href="{{ url_for('billing.pricing') }}" class="hero-primary-btn compact-btn">Débloquer le briefing</a>
+                    </div>
+                    {% endif %}
+                </section>
+
+                <section class="premium-panel watchlist-panel watchlist-wide-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="panel-mini-title">Watchlist</span>
+                            <h2>Actifs sous surveillance</h2>
+                        </div>
+                        <span class="stat-chip">Desk coverage</span>
+                    </div>
+                    <div class="dashboard-watchlist watchlist-wide-grid">
+                        {% for asset in available_assets[:6] %}
+                        <div class="watch-item">
+                            <span>Actif</span>
+                            <strong>{{ asset }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% if not available_assets %}
+                        <div class="watch-item"><span>Actif</span><strong>BTCUSD</strong></div>
+                        <div class="watch-item"><span>Actif</span><strong>ETHUSD</strong></div>
+                        <div class="watch-item"><span>Actif</span><strong>GOLD</strong></div>
+                        <div class="watch-item"><span>Actif</span><strong>US100</strong></div>
+                        {% endif %}
+                    </div>
+                </section>
             </div>
 
             <div class="dashboard-main-right">
-
-                <div class="premium-panel account-panel">
+                <section class="premium-panel performance-badge-panel" id="performance-badge">
                     <div class="panel-heading">
                         <div>
-                            <span class="panel-mini-title">Compte membre</span>
-                            <h2>Résumé du compte</h2>
+                            <span class="panel-mini-title">Badge performance</span>
+                            <h2>Statut trader</h2>
                         </div>
                     </div>
-
-                    <div class="account-summary-list">
-                        <div class="account-line">
-                            <span>Email</span>
-                            <strong>{{ email }}</strong>
+                    <div class="performance-badge-card {{ performance_badge_tone }}">
+                        <div class="badge-orb"></div>
+                        <span class="performance-badge-kicker">VelWolf ranking</span>
+                        <h3>{{ performance_badge_label }}</h3>
+                        <p>Badge visible en haut du desk pour suivre le niveau de régularité, la qualité d’exécution et la progression de votre profil.</p>
+                        <div class="performance-badge-metrics">
+                            <div><span>Winrate</span><strong>{% if can_view_stats %}{{ safe_winrate }}%{% else %}🔒{% endif %}</strong></div>
+                            <div><span>Wins</span><strong>{{ total_win }}</strong></div>
+                            <div><span>Clôturés</span><strong>{{ total_closed_trades }}</strong></div>
                         </div>
-
-                        <div class="account-line">
-                            <span>Plan actuel</span>
-                            <strong>{{ user_plan | upper }}</strong>
-                        </div>
-
-                        <div class="account-line">
-                            <span>Statut</span>
-                            <strong>
-                                {% if is_premium %}
-                                    Premium actif
-                                {% else %}
-                                    Gratuit actif
-                                {% endif %}
-                            </strong>
-                        </div>
-
-                        <div class="account-line">
-                            <span>Capital actuel</span>
-                            <strong>{{ current_capital }}</strong>
-                        </div>
-
-                        <div class="account-line">
-                            <span>Trades aujourd’hui</span>
-                            <strong>{{ today_trades }}</strong>
-                        </div>
-
-                        {% if is_premium %}
-                        <div class="account-line">
-                            <span>P&amp;L aujourd’hui</span>
-                            <strong class="{% if today_pnl >= 0 %}text-buy{% else %}text-loss{% endif %}">
-                                {% if today_pnl >= 0 %}+{% endif %}{{ today_pnl }}
-                            </strong>
-                        </div>
-                        {% else %}
-                        <div class="account-line">
-                            <span>P&amp;L aujourd’hui</span>
-                            <strong>Premium</strong>
-                        </div>
-                        {% endif %}
                     </div>
-                </div>
+                </section>
 
-                <div class="premium-panel quickview-panel">
+                <section class="premium-panel leaderboard-panel" id="leaderboard">
                     <div class="panel-heading">
                         <div>
-                            <span class="panel-mini-title">Répartition</span>
-                            <h2>Vue rapide</h2>
+                            <span class="panel-mini-title">Leaderboard</span>
+                            <h2>Classement performance</h2>
                         </div>
                     </div>
-
-                    <div class="quick-stats-grid">
-                        <div class="quick-stat-box">
-                            <span>BUY</span>
-                            <strong>{{ total_buy }}</strong>
+                    <div class="leaderboard-list">
+                        <div class="leaderboard-row leaderboard-top">
+                            <div class="leaderboard-rank">#1</div>
+                            <div class="leaderboard-user">
+                                <strong>Desk Alpha</strong>
+                                <span>Institutional flow</span>
+                            </div>
+                            <div class="leaderboard-score">{{ leaderboard_score + 38 }}</div>
                         </div>
-
-                        <div class="quick-stat-box">
-                            <span>SELL</span>
-                            <strong>{{ total_sell }}</strong>
+                        <div class="leaderboard-row leaderboard-top">
+                            <div class="leaderboard-rank">#2</div>
+                            <div class="leaderboard-user">
+                                <strong>Macro Hunter</strong>
+                                <span>Trend execution</span>
+                            </div>
+                            <div class="leaderboard-score">{{ leaderboard_score + 19 }}</div>
                         </div>
-
-                        <div class="quick-stat-box">
-                            <span>WIN</span>
-                            <strong>{{ total_win }}</strong>
+                        <div class="leaderboard-row leaderboard-current">
+                            <div class="leaderboard-rank">#3</div>
+                            <div class="leaderboard-user">
+                                <strong>Vous</strong>
+                                <span>{{ performance_badge_label }}</span>
+                            </div>
+                            <div class="leaderboard-score">{{ leaderboard_score }}</div>
                         </div>
-
-                        <div class="quick-stat-box">
-                            <span>LOSS</span>
-                            <strong>{{ total_loss }}</strong>
-                        </div>
-
-                        <div class="quick-stat-box">
-                            <span>OPEN</span>
-                            <strong>{{ total_open }}</strong>
-                        </div>
-
-                        <div class="quick-stat-box">
-                            <span>Aujourd’hui</span>
-                            <strong>{{ today_trades }}</strong>
+                        <div class="leaderboard-row">
+                            <div class="leaderboard-rank">#4</div>
+                            <div class="leaderboard-user">
+                                <strong>Momentum Desk</strong>
+                                <span>Scalp engine</span>
+                            </div>
+                            <div class="leaderboard-score">{{ leaderboard_score - 16 }}</div>
                         </div>
                     </div>
-                </div>
+                </section>
 
-                <div class="premium-panel quickview-panel">
+                <section class="premium-panel telegram-panel">
                     <div class="panel-heading">
                         <div>
-                            <span class="panel-mini-title">Replay Center</span>
-                            <h2>Progression trader</h2>
+                            <span class="panel-mini-title">Distribution</span>
+                            <h2>Hub Telegram & communauté</h2>
                         </div>
                     </div>
 
-                    <div class="account-summary-list">
-                        <div class="account-line">
-                            <span>Replay interactif</span>
-                            <strong>{% if is_premium %}Disponible{% else %}Premium{% endif %}</strong>
+                    <div class="telegram-access-card {% if is_vip %}telegram-live{% else %}telegram-locked{% endif %}">
+                        <div class="telegram-badge-row">
+                            <span class="signal-badge neutral">{% if is_vip %}VIP LIVE{% else %}LOCKED{% endif %}</span>
+                            <span class="telegram-hint">{% if is_vip %}Alertes prioritaires{% else %}Montée en gamme{% endif %}</span>
                         </div>
-
-                        <div class="account-line">
-                            <span>Scoring</span>
-                            <strong>{% if is_premium %}Actif{% else %}Verrouillé{% endif %}</strong>
-                        </div>
-
-                        <div class="account-line">
-                            <span>Historique</span>
-                            <strong>{% if is_premium %}Disponible{% else %}Premium{% endif %}</strong>
-                        </div>
-
-                        <div class="account-line">
-                            <span>Dernier replay</span>
-                            <strong>
-                                {% if latest_replay %}
-                                    {{ latest_replay.symbol }} • {{ latest_replay.timeframe }}
-                                {% else %}
-                                    Aucun replay
-                                {% endif %}
-                            </strong>
-                        </div>
-                    </div>
-
-                    <div class="hero-actions" style="margin-top: 18px;">
-                        {% if is_premium %}
-                            {% if latest_replay %}
-                                <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}" class="hero-primary-btn">Lancer un replay</a>
+                        <h3>{% if is_vip %}Votre desk Telegram VIP est ouvert{% else %}Le vrai flux Telegram reste réservé aux VIP{% endif %}</h3>
+                        <p>
+                            {% if is_vip %}
+                                Accède à ton canal privé pour recevoir les signaux, les updates rapides et les annonces stratégiques.
+                            {% elif is_premium_plus %}
+                                Le plan Premium débloque la plateforme avancée. Le canal Telegram privé reste la couche exclusive VIP.
+                            {% elif is_basic %}
+                                Tu as accès au dashboard et aux signaux, mais le flux Telegram prioritaire reste fermé jusqu’au VIP.
                             {% else %}
-                                <a href="{{ url_for('replay.my_performance') }}" class="hero-primary-btn">Voir ma performance</a>
+                                Commence par le canal public, puis débloque Premium et VIP pour accéder à la distribution complète.
                             {% endif %}
-                            <a href="{{ url_for('replay.my_performance') }}" class="hero-secondary-btn">Voir ma performance</a>
-                        {% else %}
-                            <a href="{{ url_for('billing.pricing') }}" class="hero-primary-btn">Débloquer Replay Center</a>
-                        {% endif %}
+                        </p>
+                        <div class="telegram-panel-actions">
+                            <a href="{% if is_vip %}{{ telegram_vip_link }}{% else %}{{ telegram_public_link }}{% endif %}" target="_blank" rel="noopener" class="telegram-btn">
+                                {% if is_vip %}Rejoindre le canal VIP{% else %}Ouvrir le canal public{% endif %}
+                            </a>
+                            {% if not is_vip %}
+                            <a href="{{ url_for('billing.pricing') }}" class="telegram-outline-btn">
+                                {% if is_premium_plus %}Passer VIP{% else %}Voir les offres{% endif %}
+                            </a>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
+                </section>
 
-                {% if not is_premium %}
-                <div class="premium-panel conversion-panel">
-                    <span class="conversion-badge">PREMIUM</span>
-                    <h3>Débloque la vraie puissance d’ApexSignals</h3>
-                    <p>
-                        Accède à plus de signaux, plus d’historique, plus de détails d’exécution
-                        et une expérience membre beaucoup plus complète.
-                    </p>
-                    <a href="{{ url_for('billing.pricing') }}" class="conversion-btn">Voir les offres premium</a>
-                </div>
-                {% elif latest_briefing %}
-                <div class="premium-panel conversion-panel">
-                    <span class="conversion-badge">BRIEFING</span>
-                    <h3>Le briefing du jour est prêt</h3>
-                    <p>
-                        {% if latest_briefing.title is defined %}
-                            {{ latest_briefing.title }}
-                        {% else %}
-                            Ton briefing premium est disponible.
-                        {% endif %}
-                    </p>
-                    <a href="{{ url_for('dashboard.briefing_page') }}" class="conversion-btn">Lire le briefing</a>
-                </div>
-                {% endif %}
+                <section class="premium-panel summary-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="panel-mini-title">Compte</span>
+                            <h2>Résumé membre</h2>
+                        </div>
+                    </div>
 
+                    <div class="account-summary-list">
+                        <div class="account-line"><span>Email</span><strong>{{ email }}</strong></div>
+                        <div class="account-line"><span>Plan</span><strong>{{ user_plan | upper }}</strong></div>
+                        <div class="account-line"><span>Capital initial</span><strong>{{ safe_initial_capital }}</strong></div>
+                        <div class="account-line"><span>Capital actuel</span><strong>{% if can_view_stats %}{{ safe_current_capital }}{% else %}🔒 Premium+{% endif %}</strong></div>
+                        <div class="account-line"><span>ROI capital</span><strong>{% if can_view_stats %}{{ safe_capital_return_pct }}%{% else %}🔒 Premium+{% endif %}</strong></div>
+                        <div class="account-line"><span>PnL du jour</span><strong>{% if can_view_stats %}{{ safe_today_pnl }}{% else %}🔒 Premium+{% endif %}</strong></div>
+                    </div>
+                </section>
+
+                <section class="premium-panel quick-stats-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="panel-mini-title">Exécution</span>
+                            <h2>Lecture rapide</h2>
+                        </div>
+                    </div>
+                    <div class="quick-stats-grid">
+                        <div class="quick-stat-box"><span>Wins</span><strong>{{ total_win }}</strong></div>
+                        <div class="quick-stat-box"><span>Losses</span><strong>{{ total_loss }}</strong></div>
+                        <div class="quick-stat-box"><span>Open</span><strong>{{ total_open }}</strong></div>
+                        <div class="quick-stat-box"><span>Trades jour</span><strong>{% if can_view_stats %}{{ safe_today_trades }}{% else %}🔒{% endif %}</strong></div>
+                    </div>
+                </section>
+
+                <section class="premium-panel replay-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="panel-mini-title">Replay</span>
+                            <h2>Session de relecture</h2>
+                        </div>
+                    </div>
+
+                    {% if latest_replay and can_view_replay %}
+                    <div class="replay-highlight-card">
+                        <span>Dernier replay</span>
+                        <strong>{{ latest_replay.symbol }} • {{ latest_replay.direction }}</strong>
+                        <p>Travaille la décision, la gestion et l’exécution avec un replay de trade structuré.</p>
+                        <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}" class="replay-btn">Lancer le replay</a>
+                    </div>
+                    {% elif not can_view_replay %}
+                    <div class="locked-preview-card">
+                        <strong>Replay réservé Premium / VIP</strong>
+                        <p>Accède aux relectures de trades pour comprendre l’entrée, la gestion et la sortie.</p>
+                        <a href="{{ url_for('billing.pricing') }}" class="hero-primary-btn compact-btn">Débloquer le replay</a>
+                    </div>
+                    {% else %}
+                    <div class="empty-state-box compact-empty">
+                        <h3>Aucun replay publié</h3>
+                        <p>Ajoutez un replay à un trade pour enrichir la zone d’apprentissage.</p>
+                    </div>
+                    {% endif %}
+                </section>
             </div>
-
         </section>
 
         <section class="dashboard-bottom-cta">
-            {% if is_premium %}
-                <div class="bottom-cta-box premium-active-box">
-                    <div>
-                        <span class="bottom-cta-kicker">Replay & performance</span>
-                        <h2>Travaille ta discipline de trader</h2>
-                        <p>Revivez les trades, prends des décisions, améliore ton score et suis ta progression depuis ton espace membre.</p>
-                    </div>
-
-                    <div class="bottom-cta-actions">
-                        {% if latest_replay %}
-                            <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}" class="hero-primary-btn">Lancer un replay</a>
+            <div class="bottom-cta-box {% if is_premium_plus %}premium-active-box{% else %}premium-upgrade-box{% endif %}">
+                <div>
+                    <span class="bottom-cta-kicker">Membership</span>
+                    <h2>
+                        {% if is_vip %}
+                            Votre desk VIP tourne à plein régime.
+                        {% elif is_premium_plus %}
+                            Votre desk premium tourne à plein régime.
+                        {% elif is_basic %}
+                            Passez au niveau supérieur pour débloquer stats, briefing et replay.
                         {% else %}
-                            <a href="{{ url_for('replay.my_performance') }}" class="hero-primary-btn">Voir ma performance</a>
+                            Débloquez le terminal complet, le briefing daily et la couche business Premium.
                         {% endif %}
-                        <a href="{{ url_for('replay.my_performance') }}" class="hero-secondary-btn">Voir ma performance</a>
-                    </div>
+                    </h2>
+                    <p>
+                        La version découverte reste une vitrine de conversion. Premium débloque les métriques sensibles, le briefing et l’analyse. VIP ajoute Telegram privé, priorité d’alerte et effet club fermé pour booster la valeur perçue.
+                    </p>
                 </div>
-            {% else %}
-                <div class="bottom-cta-box premium-upgrade-box">
-                    <div>
-                        <span class="bottom-cta-kicker">Upgrade premium</span>
-                        <h2>Débloque le Replay Center</h2>
-                        <p>Accède aux replays interactifs, au scoring et à l’analyse de ta performance trader.</p>
-                    </div>
-
-                    <div class="bottom-cta-actions">
-                        <a href="{{ url_for('billing.pricing') }}" class="hero-primary-btn">Passer premium</a>
-                        <a href="{{ url_for('main.home') }}" class="hero-secondary-btn">Retour accueil</a>
-                    </div>
+                <div class="bottom-cta-actions">
+                    <a href="{{ url_for('billing.pricing') }}" class="hero-primary-btn">Voir les offres</a>
+                    <a href="{{ url_for('pages.academy_upgrade') if is_upgrade_target else url_for('pages.academy_index') }}" class="hero-secondary-btn">
+                        {% if is_upgrade_target %}Débloquer Academy{% else %}Ouvrir Academy{% endif %}
+                    </a>
                 </div>
-            {% endif %}
+            </div>
         </section>
 
     </main>
-
 </div>
 
 </body>

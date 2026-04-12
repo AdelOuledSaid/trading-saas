@@ -1,6 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 from flask import Blueprint, render_template, request
+from flask_login import current_user
 
 from app.models import Signal
 from app.services.signal_service import calculate_trade_pnl
@@ -11,6 +12,7 @@ from app.services.market_service import (
     get_fear_greed_live,
     get_btc_dominance_live,
 )
+from app.access import signal_limit_for_plan, has_access
 
 signals_bp = Blueprint("signals", __name__)
 
@@ -57,7 +59,11 @@ def results():
         query = query.filter(Signal.created_at >= time_threshold)
 
     all_signals = query.order_by(Signal.created_at.asc()).all()
-    recent_signals = list(reversed(all_signals[-12:]))
+
+    user_plan = getattr(current_user, "plan", "free") if getattr(current_user, "is_authenticated", False) else "free"
+    signal_limit = signal_limit_for_plan(user_plan)
+
+    recent_signals = list(reversed(all_signals[-signal_limit:])) if signal_limit > 0 else []
 
     total_signals = len(all_signals)
     win_signals = sum(1 for s in all_signals if s.status == "WIN")
@@ -65,64 +71,76 @@ def results():
     open_signals = sum(1 for s in all_signals if s.status == "OPEN")
     closed_signals = win_signals + loss_signals
 
-    winrate = round((win_signals / closed_signals) * 100, 2) if closed_signals > 0 else 0
+    can_view_stats = has_access(user_plan, "advanced_stats")
 
-    closed_trade_pnls = [
-        calculate_trade_pnl(signal)
-        for signal in all_signals
-        if signal.status in {"WIN", "LOSS"}
-    ]
-    estimated_pnl = round(sum(closed_trade_pnls), 2)
+    if can_view_stats:
+        winrate = round((win_signals / closed_signals) * 100, 2) if closed_signals > 0 else 0
 
-    avg_win = round(
-        sum(p for p in closed_trade_pnls if p > 0) / len([p for p in closed_trade_pnls if p > 0]),
-        2
-    ) if any(p > 0 for p in closed_trade_pnls) else 0
+        closed_trade_pnls = [
+            calculate_trade_pnl(signal)
+            for signal in all_signals
+            if signal.status in {"WIN", "LOSS"}
+        ]
+        estimated_pnl = round(sum(closed_trade_pnls), 2)
 
-    avg_loss = round(
-        sum(p for p in closed_trade_pnls if p < 0) / len([p for p in closed_trade_pnls if p < 0]),
-        2
-    ) if any(p < 0 for p in closed_trade_pnls) else 0
+        avg_win = round(
+            sum(p for p in closed_trade_pnls if p > 0) / len([p for p in closed_trade_pnls if p > 0]),
+            2
+        ) if any(p > 0 for p in closed_trade_pnls) else 0
 
-    rr_values = []
-    for signal in all_signals:
-        rr = None
-        try:
-            rr = signal.risk_reward or signal.compute_rr()
-        except Exception:
-            rr = signal.risk_reward
+        avg_loss = round(
+            sum(p for p in closed_trade_pnls if p < 0) / len([p for p in closed_trade_pnls if p < 0]),
+            2
+        ) if any(p < 0 for p in closed_trade_pnls) else 0
 
-        if rr not in [None, "", "—"]:
+        rr_values = []
+        for signal in all_signals:
+            rr = None
             try:
-                rr_values.append(float(rr))
+                rr = signal.risk_reward or signal.compute_rr()
             except Exception:
-                pass
+                rr = signal.risk_reward
 
-    avg_rr = round(sum(rr_values) / len(rr_values), 2) if rr_values else 0
+            if rr not in [None, "", "—"]:
+                try:
+                    rr_values.append(float(rr))
+                except Exception:
+                    pass
 
-    asset_stats = {}
-    for signal in all_signals:
-        asset = signal.asset or "UNKNOWN"
-        asset_stats.setdefault(asset, {"count": 0, "pnl": 0.0})
-        asset_stats[asset]["count"] += 1
-        if signal.status in {"WIN", "LOSS"}:
-            asset_stats[asset]["pnl"] += calculate_trade_pnl(signal)
+        avg_rr = round(sum(rr_values) / len(rr_values), 2) if rr_values else 0
 
-    best_asset = "—"
-    best_asset_pnl = 0
-    if asset_stats:
-        best_asset, best_data = max(asset_stats.items(), key=lambda item: item[1]["pnl"])
-        best_asset_pnl = round(best_data["pnl"], 2)
+        asset_stats = {}
+        for signal in all_signals:
+            asset = signal.asset or "UNKNOWN"
+            asset_stats.setdefault(asset, {"count": 0, "pnl": 0.0})
+            asset_stats[asset]["count"] += 1
+            if signal.status in {"WIN", "LOSS"}:
+                asset_stats[asset]["pnl"] += calculate_trade_pnl(signal)
 
-    equity_curve = []
-    running_pnl = 0.0
-    for signal in all_signals:
-        if signal.status in {"WIN", "LOSS"}:
-            running_pnl += calculate_trade_pnl(signal)
-            equity_curve.append(round(running_pnl, 2))
+        best_asset = "—"
+        best_asset_pnl = 0
+        if asset_stats:
+            best_asset, best_data = max(asset_stats.items(), key=lambda item: item[1]["pnl"])
+            best_asset_pnl = round(best_data["pnl"], 2)
 
-    if not equity_curve:
-        equity_curve = [0]
+        equity_curve = []
+        running_pnl = 0.0
+        for signal in all_signals:
+            if signal.status in {"WIN", "LOSS"}:
+                running_pnl += calculate_trade_pnl(signal)
+                equity_curve.append(round(running_pnl, 2))
+
+        if not equity_curve:
+            equity_curve = [0]
+    else:
+        winrate = None
+        estimated_pnl = None
+        avg_rr = None
+        avg_win = None
+        avg_loss = None
+        best_asset = None
+        best_asset_pnl = None
+        equity_curve = []
 
     return render_template(
         "results.html",
@@ -151,16 +169,22 @@ def results():
             ("1m", "1 mois"),
         ],
         equity_curve=equity_curve,
+        user_plan=user_plan,
+        signal_limit=signal_limit,
+        can_view_stats=can_view_stats,
     )
 
 
 @signals_bp.route("/signals/btc")
 def signals_btc():
+    user_plan = getattr(current_user, "plan", "free") if getattr(current_user, "is_authenticated", False) else "free"
+    signal_limit = signal_limit_for_plan(user_plan)
+
     btc_signals = (
         Signal.query
         .filter_by(asset="BTCUSD")
         .order_by(Signal.created_at.desc())
-        .limit(20)
+        .limit(signal_limit if signal_limit > 0 else 0)
         .all()
     )
 
@@ -183,12 +207,17 @@ def signals_btc():
         btc_volume_24h=btc_volume,
         btc_news=get_asset_news("BTC"),
         btc_dominance=get_btc_dominance_live(),
-        fear_greed=get_fear_greed_live()
+        fear_greed=get_fear_greed_live(),
+        user_plan=user_plan,
+        signal_limit=signal_limit,
     )
 
 
 @signals_bp.route("/signals/eth")
 def eth_signals_page():
+    user_plan = getattr(current_user, "plan", "free") if getattr(current_user, "is_authenticated", False) else "free"
+    signal_limit = signal_limit_for_plan(user_plan)
+
     try:
         url = "https://api.coingecko.com/api/v3/simple/price"
         params = {
@@ -263,14 +292,19 @@ def eth_signals_page():
 
     eth_news = get_asset_news("ETH")
 
-    eth_signals = Signal.query.filter_by(asset="ETHUSD").order_by(Signal.created_at.desc()).limit(10).all()
+    eth_signals = (
+        Signal.query
+        .filter_by(asset="ETHUSD")
+        .order_by(Signal.created_at.desc())
+        .limit(signal_limit if signal_limit > 0 else 0)
+        .all()
+    )
 
     total = len(eth_signals)
     wins = len([s for s in eth_signals if s.status == "WIN"])
 
     eth_total_signals = total
     eth_open_signals = len([s for s in eth_signals if s.status == "OPEN"])
-
     eth_winrate = round((wins / total) * 100, 2) if total > 0 else 0
     eth_estimated_pnl = wins * 2 - (total - wins)
 
@@ -295,17 +329,22 @@ def eth_signals_page():
         eth_total_signals=eth_total_signals,
         eth_open_signals=eth_open_signals,
         eth_winrate=eth_winrate,
-        eth_estimated_pnl=eth_estimated_pnl
+        eth_estimated_pnl=eth_estimated_pnl,
+        user_plan=user_plan,
+        signal_limit=signal_limit,
     )
 
 
 @signals_bp.route("/signals/gold")
 def signals_gold():
+    user_plan = getattr(current_user, "plan", "free") if getattr(current_user, "is_authenticated", False) else "free"
+    signal_limit = signal_limit_for_plan(user_plan)
+
     gold_signals = (
         Signal.query
         .filter_by(asset="GOLD")
         .order_by(Signal.created_at.desc())
-        .limit(20)
+        .limit(signal_limit if signal_limit > 0 else 0)
         .all()
     )
 
@@ -326,17 +365,22 @@ def signals_gold():
         gold_total_signals=gold_total_signals,
         gold_open_signals=gold_open_signals,
         gold_winrate=gold_winrate,
-        gold_estimated_pnl=gold_estimated_pnl
+        gold_estimated_pnl=gold_estimated_pnl,
+        user_plan=user_plan,
+        signal_limit=signal_limit,
     )
 
 
 @signals_bp.route("/signals/us100")
 def signals_us100():
+    user_plan = getattr(current_user, "plan", "free") if getattr(current_user, "is_authenticated", False) else "free"
+    signal_limit = signal_limit_for_plan(user_plan)
+
     us100_signals = (
         Signal.query
         .filter_by(asset="US100")
         .order_by(Signal.created_at.desc())
-        .limit(20)
+        .limit(signal_limit if signal_limit > 0 else 0)
         .all()
     )
 
@@ -357,5 +401,7 @@ def signals_us100():
         us100_total_signals=us100_total_signals,
         us100_open_signals=us100_open_signals,
         us100_winrate=us100_winrate,
-        us100_estimated_pnl=us100_estimated_pnl
+        us100_estimated_pnl=us100_estimated_pnl,
+        user_plan=user_plan,
+        signal_limit=signal_limit,
     )

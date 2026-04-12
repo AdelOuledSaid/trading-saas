@@ -110,6 +110,99 @@ def build_learn_link(signal) -> str | None:
     return f"{get_site_url()}/learn/signal/{signal_id}"
 
 
+def get_telegram_channels() -> dict:
+    return {
+        "public": getattr(config, "TELEGRAM_PUBLIC_CHAT_ID", ""),
+        "basic": getattr(config, "TELEGRAM_BASIC_CHAT_ID", ""),
+        "premium": getattr(config, "TELEGRAM_PREMIUM_CHAT_ID", ""),
+        "vip": getattr(config, "TELEGRAM_VIP_CHAT_ID", ""),
+    }
+
+
+def send_telegram_message_to_chat(
+    chat_id: str,
+    message: str,
+    parse_mode: str = "HTML",
+    disable_web_page_preview: bool = True,
+) -> bool:
+    if not getattr(config, "TELEGRAM_BOT_TOKEN", None):
+        current_app.logger.warning("Telegram bot token manquant.")
+        return False
+
+    if not chat_id:
+        current_app.logger.warning("Telegram chat_id manquant.")
+        return False
+
+    url = f"https://api.telegram.org/bot{config.TELEGRAM_BOT_TOKEN}/sendMessage"
+    payload = {
+        "chat_id": chat_id,
+        "text": message,
+        "parse_mode": parse_mode,
+        "disable_web_page_preview": disable_web_page_preview,
+    }
+
+    try:
+        response = requests.post(url, json=payload, timeout=10)
+        current_app.logger.info("TELEGRAM [%s] STATUS: %s", chat_id, response.status_code)
+        current_app.logger.info("TELEGRAM [%s] RESPONSE: %s", chat_id, response.text)
+        return response.ok
+    except Exception as e:
+        current_app.logger.error("Erreur Telegram [%s] : %s", chat_id, repr(e))
+        return False
+
+
+def send_message_to_tier(
+    tier: str,
+    message: str,
+    parse_mode: str = "HTML",
+    disable_web_page_preview: bool = True,
+) -> bool:
+    channels = get_telegram_channels()
+    chat_id = channels.get(tier)
+    return send_telegram_message_to_chat(
+        chat_id=chat_id,
+        message=message,
+        parse_mode=parse_mode,
+        disable_web_page_preview=disable_web_page_preview,
+    )
+
+
+def send_message_to_many_tiers(
+    tiers: list[str],
+    message: str,
+    parse_mode: str = "HTML",
+    disable_web_page_preview: bool = True,
+) -> dict:
+    results = {}
+    for tier in tiers:
+        results[tier] = send_message_to_tier(
+            tier=tier,
+            message=message,
+            parse_mode=parse_mode,
+            disable_web_page_preview=disable_web_page_preview,
+        )
+    return results
+
+
+def send_telegram_message(
+    message: str,
+    parse_mode: str = "HTML",
+    disable_web_page_preview: bool = True
+) -> bool:
+    """
+    Compatibilité avec ancien code.
+    Envoie sur le canal public si défini, sinon sur Basic.
+    """
+    channels = get_telegram_channels()
+    fallback_chat = channels.get("public") or channels.get("basic")
+    return send_telegram_message_to_chat(
+        chat_id=fallback_chat,
+        message=message,
+        parse_mode=parse_mode,
+        disable_web_page_preview=disable_web_page_preview,
+    )
+
+
 def build_signal_telegram_message(signal) -> str:
     asset = (signal.asset or "").upper()
     action = (signal.action or "").upper()
@@ -319,7 +412,6 @@ def build_news_digest_message(
 
     message = "\n".join(lines).strip()
 
-    # marge sous la limite Telegram (4096)
     if len(message) > 3900:
         message = message[:3890].rstrip() + "..."
 
@@ -356,66 +448,14 @@ def build_breaking_news_message(article: dict) -> str:
     return "\n".join(lines).strip()
 
 
-def send_telegram_message(
-    message: str,
-    parse_mode: str = "HTML",
-    disable_web_page_preview: bool = True
-) -> bool:
-    if not config.TELEGRAM_BOT_TOKEN or not config.TELEGRAM_CHAT_ID:
-        current_app.logger.warning("Telegram non configuré.")
-        return False
-
-    url = f"https://api.telegram.org/bot{config.TELEGRAM_BOT_TOKEN}/sendMessage"
-    payload = {
-        "chat_id": config.TELEGRAM_CHAT_ID,
-        "text": message,
-        "parse_mode": parse_mode,
-        "disable_web_page_preview": disable_web_page_preview,
-    }
-
-    try:
-        response = requests.post(url, json=payload, timeout=10)
-        current_app.logger.info("TELEGRAM STATUS: %s", response.status_code)
-        current_app.logger.info("TELEGRAM RESPONSE: %s", response.text)
-        return response.ok
-    except Exception as e:
-        current_app.logger.error("Erreur Telegram : %s", repr(e))
-        return False
-
-
-def send_telegram_photo(photo_url: str, caption: str = "", parse_mode: str = "HTML") -> bool:
-    if not config.TELEGRAM_BOT_TOKEN or not config.TELEGRAM_CHAT_ID:
-        current_app.logger.warning("Telegram non configuré.")
-        return False
-
-    url = f"https://api.telegram.org/bot{config.TELEGRAM_BOT_TOKEN}/sendPhoto"
-    payload = {
-        "chat_id": config.TELEGRAM_CHAT_ID,
-        "photo": photo_url,
-        "caption": caption[:1024] if caption else "",
-        "parse_mode": parse_mode,
-    }
-
-    try:
-        response = requests.post(url, json=payload, timeout=15)
-        current_app.logger.info("TELEGRAM PHOTO STATUS: %s", response.status_code)
-        current_app.logger.info("TELEGRAM PHOTO RESPONSE: %s", response.text)
-        return response.ok
-    except Exception as e:
-        current_app.logger.error("Erreur Telegram photo : %s", repr(e))
-        return False
-
-
-def send_daily_news_digest(articles: list[dict]) -> bool:
+def send_daily_news_digest_to_tier(tier: str, articles: list[dict]) -> bool:
     message = build_news_digest_message(articles)
     if not message:
-        current_app.logger.info("Aucune news à envoyer.")
+        current_app.logger.info("Aucune news à envoyer pour %s.", tier)
         return False
-    return send_telegram_message(message)
+    return send_message_to_tier(tier=tier, message=message)
 
 
-def send_breaking_news(article: dict, photo_url: str | None = None) -> bool:
+def send_breaking_news_to_tier(tier: str, article: dict) -> bool:
     message = build_breaking_news_message(article)
-    if photo_url:
-        return send_telegram_photo(photo_url=photo_url, caption=message)
-    return send_telegram_message(message)
+    return send_message_to_tier(tier=tier, message=message)

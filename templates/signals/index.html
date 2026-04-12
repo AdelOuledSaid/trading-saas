@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Velwolf Signals - Vue globale marché</title>
+    <title>VelWolf Signals - Vue globale marché</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='global-market.css') }}">
 </head>
 
 <body class="home-body signals-page bitcoin-page">
@@ -20,87 +21,112 @@
     <div class="section-container">
         <div class="btc-hero-grid">
 
-            <!-- LEFT -->
             <div class="btc-hero-left">
-                <span class="hero-badge">Velwolf Signals • Global Market View</span>
+                <span class="hero-badge">VelWolf Signals • Global Market View</span>
 
                 <h1 class="inner-page-title">
-                    Vue globale du marché et lecture premium des actifs
+                    Vue globale du marché, lecture multi-actifs
+                    et intelligence premium de l’environnement global
                 </h1>
 
                 <p class="inner-page-text">
-                    Cette page permet de comprendre rapidement le contexte global du marché : 
-                    rotation des capitaux, comportement du Bitcoin, rôle du Gold et influence macro.
+                    Cette page sert de centre de lecture du marché. Elle permet de comprendre les régimes
+                    dominants, la rotation du capital, la pression macro, le comportement des actifs leaders
+                    et la manière dont les flux se déplacent entre crypto, indices, forex, matières premières
+                    et secteurs à fort momentum.
                 </p>
 
                 <div class="hero-actions">
-                    <a href="#macro" class="hero-btn-primary">Voir le contexte</a>
-                    <a href="#assets" class="hero-btn-secondary">Explorer les actifs</a>
+                    <a href="#macro" class="hero-btn-primary">Voir le contexte global</a>
+                    <a href="#coverage" class="hero-btn-secondary">Explorer la couverture marchés</a>
+                </div>
+
+                <div class="hero-proof-bar">
+                    <div>
+                        <strong>100+</strong>
+                        <span>Actifs surveillés</span>
+                    </div>
+                    <div>
+                        <strong>Multi-marchés</strong>
+                        <span>Crypto, indices, forex, commodities</span>
+                    </div>
+                    <div>
+                        <strong>Desk View</strong>
+                        <span>Lecture pensée pour l’exécution</span>
+                    </div>
                 </div>
 
                 <div class="hero-trust-row">
                     <div class="trust-mini">
-                        <strong>Lecture annuelle</strong>
-                        <span>Comprendre pourquoi certains actifs montent pendant que d'autres chutent.</span>
+                        <strong>Lecture macro réelle</strong>
+                        <span>
+                            Comprendre le régime du marché avant de suivre un signal ou d’ouvrir une position.
+                        </span>
                     </div>
 
                     <div class="trust-mini">
                         <strong>Vision multi-actifs</strong>
-                        <span>BTC, ETH, GOLD et US100 dans une seule lecture.</span>
+                        <span>
+                            Bitcoin, altcoins, indices US, devises, or, dollar et actifs en rotation.
+                        </span>
                     </div>
 
                     <div class="trust-mini">
-                        <strong>Utilité réelle</strong>
-                        <span>Lire le marché avant de suivre un signal.</span>
+                        <strong>Utilité opérationnelle</strong>
+                        <span>
+                            Réduire le bruit, hiérarchiser les opportunités et améliorer le timing.
+                        </span>
                     </div>
                 </div>
             </div>
 
-            <!-- RIGHT -->
             <div class="btc-hero-right">
 
                 <div class="mini-market-card">
-                    <span class="mini-market-label">Couverture</span>
-                    <h3>4 actifs</h3>
-                    <p>Les principaux marchés réunis.</p>
+                    <span class="mini-market-label">Coverage</span>
+                    <h3>100+ actifs</h3>
+                    <p>Une plateforme conçue pour suivre largement le marché et non seulement quelques symboles.</p>
                     <ul class="mini-market-list">
-                        <li>Bitcoin</li>
-                        <li>Ethereum</li>
-                        <li>Gold</li>
-                        <li>US100</li>
+                        <li>Crypto majors et altcoins</li>
+                        <li>Indices US et zones macro</li>
+                        <li>Forex & dollar index</li>
+                        <li>Gold, commodities et actifs refuge</li>
                     </ul>
                 </div>
 
                 <div class="mini-market-card">
-                    <span class="mini-market-label">Macro</span>
-                    <h3>Facteurs clés</h3>
-                    <p>Les moteurs du marché.</p>
+                    <span class="mini-market-label">Marchés suivis</span>
+                    <h3>Desk multi-univers</h3>
+                    <p>Le marché est lu comme un système interconnecté.</p>
                     <ul class="mini-market-list">
-                        <li>Taux d'intérêt</li>
-                        <li>Inflation</li>
-                        <li>Dollar</li>
+                        <li>Crypto spot & rotation</li>
+                        <li>Nasdaq, US100, indices risk-on</li>
+                        <li>Dollar, EURUSD, USDJPY</li>
+                        <li>Gold et flux défensifs</li>
                     </ul>
                 </div>
 
                 <div class="mini-market-card">
-                    <span class="mini-market-label">Régime</span>
-                    <h3>Rotation</h3>
-                    <p>Le marché change de direction.</p>
+                    <span class="mini-market-label">Régime de marché</span>
+                    <h3>Risk-on / Risk-off</h3>
+                    <p>Identifier le bon régime avant d’exécuter.</p>
                     <ul class="mini-market-list">
-                        <li>Risk-on</li>
-                        <li>Risk-off</li>
-                        <li>Volatilité</li>
+                        <li>Expansion</li>
+                        <li>Compression</li>
+                        <li>Distribution</li>
+                        <li>Reprise</li>
                     </ul>
                 </div>
 
                 <div class="mini-market-card">
                     <span class="mini-market-label">Objectif</span>
-                    <h3>Clarté</h3>
-                    <p>Comprendre avant d’agir.</p>
+                    <h3>Clarté avant action</h3>
+                    <p>La plateforme sert à comprendre, filtrer et prioriser.</p>
                     <ul class="mini-market-list">
-                        <li>Contexte</li>
-                        <li>Lecture</li>
-                        <li>Décision</li>
+                        <li>Contexte global</li>
+                        <li>Momentum relatif</li>
+                        <li>Rotation du capital</li>
+                        <li>Décision structurée</li>
                     </ul>
                 </div>
 
@@ -110,76 +136,364 @@
     </div>
 </section>
 
-<!-- MACRO -->
+<section class="power-strip-section">
+    <div class="section-container">
+        <div class="power-strip">
+            <div class="power-strip-item">
+                <span>Lecture globale</span>
+                <strong>Le marché est analysé comme un ensemble cohérent, pas actif par actif isolé.</strong>
+            </div>
+            <div class="power-strip-item">
+                <span>Multi-actifs</span>
+                <strong>Crypto, indices, devises, métaux et zones de rotation sont suivis ensemble.</strong>
+            </div>
+            <div class="power-strip-item">
+                <span>Hiérarchisation</span>
+                <strong>Les flux, le momentum et le régime servent à trier les signaux les plus propres.</strong>
+            </div>
+            <div class="power-strip-item">
+                <span>Utilité réelle</span>
+                <strong>Moins de bruit, plus de contexte, meilleur timing d’exécution.</strong>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="section-standard" id="macro">
     <div class="section-container">
 
         <div class="section-title">
-            <span>Macro</span>
-            <h2>Comprendre le marché global</h2>
+            <span>Macro & structure</span>
+            <h2>Comprendre le moteur du marché avant de lire les signaux</h2>
             <p>
-                Le marché évolue selon la liquidité, les taux et le sentiment.
+                Les mouvements les plus propres naissent rarement du hasard. Ils viennent d’un contexte macro,
+                d’un régime de liquidité, d’un changement de sentiment ou d’une rotation du capital.
             </p>
         </div>
 
         <div class="home-stats-grid">
             <div class="home-stat-card">
                 <h3>Risk-on</h3>
-                <p>Le marché prend du risque → crypto monte.</p>
+                <p>
+                    Quand le marché accepte davantage de risque, les indices de croissance, la crypto
+                    et les actifs spéculatifs retrouvent souvent leur leadership.
+                </p>
             </div>
 
             <div class="home-stat-card">
                 <h3>Risk-off</h3>
-                <p>Le marché se protège → gold monte.</p>
+                <p>
+                    Quand la prudence revient, le dollar, l’or ou les zones défensives peuvent reprendre
+                    de la force pendant que les actifs plus agressifs ralentissent.
+                </p>
             </div>
 
             <div class="home-stat-card">
-                <h3>Inflation</h3>
-                <p>Impact direct sur les actifs.</p>
+                <h3>Inflation & politique monétaire</h3>
+                <p>
+                    Les attentes sur les taux, l’inflation et les banques centrales influencent directement
+                    les flux entre actions, devises, crypto et actifs refuge.
+                </p>
             </div>
 
             <div class="home-stat-card">
-                <h3>Taux</h3>
-                <p>Influencent toute la structure du marché.</p>
+                <h3>Liquidité globale</h3>
+                <p>
+                    La qualité des signaux dépend souvent du niveau de liquidité disponible.
+                    Comprendre ce facteur aide à mieux lire les cassures et les reprises.
+                </p>
             </div>
         </div>
 
     </div>
 </section>
 
-<!-- ASSETS -->
+<section class="platform-showcase-section" id="coverage">
+    <div class="section-container">
+        <div class="section-title left-title">
+            <span>Coverage univers</span>
+            <h2>Une couverture large du marché pour ne pas rester bloqué sur quatre actifs</h2>
+            <p>
+                VelWolf suit un univers bien plus large qu’une simple shortlist. L’idée est de lire la hiérarchie
+                du marché, les zones de force, les actifs leaders, les transitions de capital et les régimes dominants.
+            </p>
+        </div>
+
+        <div class="platform-v2-grid">
+            <article class="platform-v2-hero-card">
+                <div class="platform-v2-badge">Market Universe</div>
+
+                <h3>Plus de 100 actifs surveillés pour construire une vraie lecture globale</h3>
+
+                <p>
+                    La plateforme ne se limite pas à Bitcoin, Ethereum, Gold et US100.
+                    Elle est pensée pour observer un univers élargi, repérer les leaders,
+                    les poches de rotation et les zones où le marché concentre son énergie.
+                </p>
+
+                <div class="platform-v2-metrics">
+                    <div class="platform-v2-metric">
+                        <span>Crypto</span>
+                        <strong>Majors + Altcoins</strong>
+                    </div>
+                    <div class="platform-v2-metric">
+                        <span>Indices</span>
+                        <strong>US growth & risk</strong>
+                    </div>
+                    <div class="platform-v2-metric">
+                        <span>Macro</span>
+                        <strong>Dollar, gold, rates</strong>
+                    </div>
+                </div>
+
+                <div class="platform-v2-visual">
+                    <div class="platform-v2-visual-top">
+                        <span class="mini-dot green"></span>
+                        <span class="mini-pill">Global Market Engine</span>
+                        <span class="mini-status">Desk Coverage Active</span>
+                    </div>
+
+                    <div class="platform-v2-chart">
+                        <div class="chart-line chart-line-1"></div>
+                        <div class="chart-line chart-line-2"></div>
+                        <div class="chart-candle candle-1"></div>
+                        <div class="chart-candle candle-2"></div>
+                        <div class="chart-candle candle-3"></div>
+                        <div class="chart-candle candle-4"></div>
+                        <div class="chart-buy-tag">FLOW</div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="platform-v2-side-card">
+                <div class="platform-v2-badge">Crypto</div>
+                <h3>Majors, altcoins, rotation et dominance</h3>
+                <p>
+                    Bitcoin, Ethereum, leaders de momentum, altcoins en rotation, dominance BTC
+                    et structure générale du marché crypto.
+                </p>
+            </article>
+
+            <article class="platform-v2-side-card">
+                <div class="platform-v2-badge">Indices</div>
+                <h3>US100, Nasdaq et environnement risk-on</h3>
+                <p>
+                    Les indices servent à lire le risque global et à comprendre si les flux soutiennent
+                    les actifs de croissance ou reviennent vers des zones plus défensives.
+                </p>
+            </article>
+
+            <article class="platform-v2-bottom-card">
+                <div class="platform-v2-badge">Macro cross-asset</div>
+                <h3>Dollar, or, devises majeures et dynamique défensive</h3>
+                <p>
+                    Le marché est lu à travers plusieurs couches : dollar index, grandes paires forex,
+                    gold, sentiment global et comportements de protection ou de prise de risque.
+                </p>
+            </article>
+
+            <article class="platform-v2-mini-card">
+                <span>Couverture</span>
+                <strong>100+ actifs</strong>
+            </article>
+
+            <article class="platform-v2-mini-card">
+                <span>Suivi</span>
+                <strong>Plusieurs marchés</strong>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+
+        <div class="section-title">
+            <span>Régimes de marché</span>
+            <h2>Lire les transitions pour mieux filtrer les opportunités</h2>
+            <p>
+                Un bon desk ne regarde pas seulement les prix. Il observe le régime du marché
+                pour savoir quand accélérer, quand ralentir et quand rester sélectif.
+            </p>
+        </div>
+
+        <div class="why-grid">
+            <div class="why-card">
+                <strong>Expansion</strong>
+                <p>
+                    Les actifs leaders accélèrent, les cassures sont plus propres et la prise de risque
+                    est mieux récompensée.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Compression</strong>
+                <p>
+                    Les marchés se contractent, la volatilité baisse et les faux départs se multiplient
+                    avant les prochains mouvements structurants.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Rotation</strong>
+                <p>
+                    Le capital quitte certaines zones pour se déplacer vers d’autres. C’est souvent là
+                    que naissent les meilleures opportunités relatives.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Distribution</strong>
+                <p>
+                    Les actifs semblent tenir, mais la structure interne se fragilise.
+                    Comprendre cela permet d’éviter de poursuivre un mouvement déjà fatigué.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Reprise</strong>
+                <p>
+                    Après une phase de stress ou de nettoyage, le marché recommence à sélectionner
+                    les leaders et à reconstruire la tendance.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Sélectivité</strong>
+                <p>
+                    Tous les contextes ne justifient pas la même agressivité.
+                    La page globale aide à ajuster ce niveau d’exposition.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="results-proof-section">
+    <div class="section-container">
+        <div class="results-proof-box">
+
+            <div class="results-proof-left">
+                <span class="proof-badge">Plateforme</span>
+
+                <h2>Une vue globale pensée pour guider l’exécution et pas seulement informer</h2>
+
+                <p>
+                    Cette page n’est pas une simple présentation. Elle sert à poser le décor avant les signaux,
+                    à montrer quels univers sont actifs, quels flux dominent, et comment plusieurs marchés peuvent
+                    se confirmer ou se contredire dans une même journée.
+                </p>
+
+                <div class="results-mini-grid">
+                    <div class="results-mini-card">
+                        <strong>100+</strong>
+                        <span>Actifs monitorés</span>
+                    </div>
+
+                    <div class="results-mini-card">
+                        <strong>Multi-market</strong>
+                        <span>Crypto, indices, forex, métaux</span>
+                    </div>
+
+                    <div class="results-mini-card">
+                        <strong>Desk Logic</strong>
+                        <span>Contexte avant décision</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-proof-right">
+
+                <div class="proof-card">
+                    <strong>Lecture des flux</strong>
+                    <span>
+                        Identifier où se concentre réellement l’énergie du marché et quels actifs mènent le mouvement.
+                    </span>
+                </div>
+
+                <div class="proof-card">
+                    <strong>Confluence inter-marchés</strong>
+                    <span>
+                        Observer les confirmations ou divergences entre crypto, indices, devises et actifs refuge.
+                    </span>
+                </div>
+
+                <div class="proof-card">
+                    <strong>Approche plus professionnelle</strong>
+                    <span>
+                        Donner à l’utilisateur une sensation de cockpit global et une meilleure compréhension avant exécution.
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
 <section class="section-standard" id="assets">
     <div class="section-container">
 
         <div class="section-title">
-            <span>Actifs</span>
-            <h2>Accès rapide</h2>
+            <span>Accès rapide</span>
+            <h2>Entrer dans les univers clés suivis par la plateforme</h2>
+            <p>
+                La vue globale sert d’interface de navigation vers les zones les plus importantes du desk.
+            </p>
         </div>
 
         <div class="preview-links-grid">
 
             <a href="{{ url_for('signals.signals_btc') }}" class="preview-link-card">
                 <strong>Bitcoin</strong>
-                <span>Analyse BTC</span>
+                <span>Leadership crypto, structure et momentum principal</span>
             </a>
 
             <a href="{{ url_for('signals.eth_signals_page') }}" class="preview-link-card">
                 <strong>Ethereum</strong>
-                <span>Analyse ETH</span>
+                <span>Rotation altcoins, flux secondaires et lecture du risque</span>
             </a>
 
             <a href="{{ url_for('signals.signals_gold') }}" class="preview-link-card">
                 <strong>Gold</strong>
-                <span>Analyse Gold</span>
+                <span>Actif refuge, lecture défensive et environnement macro</span>
             </a>
 
             <a href="{{ url_for('signals.signals_us100') }}" class="preview-link-card">
                 <strong>US100</strong>
-                <span>Analyse US100</span>
+                <span>Baromètre risk-on, croissance et pression sur les actifs</span>
+            </a>
+
+            <a href="{{ url_for('pages.market_forex') }}" class="preview-link-card">
+                <strong>Forex</strong>
+                <span>Dollar, devises majeures et lecture cross-asset</span>
+            </a>
+
+            <a href="{{ url_for('pages.market_sentiment') }}" class="preview-link-card">
+                <strong>Sentiment</strong>
+                <span>Température du marché, psychologie collective et timing</span>
             </a>
 
         </div>
 
+    </div>
+</section>
+
+<section class="final-cta-section">
+    <div class="section-container">
+        <div class="final-cta-box">
+            <span class="final-cta-badge">VelWolf Global View</span>
+            <h2>Une page conçue pour comprendre le marché avant d’agir</h2>
+            <p>
+                La vue globale devient le point d’entrée naturel du desk : elle donne du contexte,
+                montre la profondeur de couverture de la plateforme et renforce la perception premium du produit.
+            </p>
+            <div class="final-cta-actions">
+                <a href="{{ url_for('signals.signals_page') }}" class="hero-btn-primary">Ouvrir les signaux</a>
+                <a href="{{ url_for('billing.pricing') }}" class="hero-btn-secondary">Voir les offres</a>
+            </div>
+        </div>
     </div>
 </section>
 

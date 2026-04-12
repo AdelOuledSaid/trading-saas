@@ -86,7 +86,10 @@ def stripe_webhook():
 
             plan = get_plan_from_price_id(price_id)
             status = subscription.get("status")
-            active_statuses = ["trialing", "active", "past_due"]
+
+            # IMPORTANT:
+            # On ne garde premium que si l'abonnement est réellement actif.
+            active_statuses = ["trialing", "active"]
 
             user.stripe_customer_id = subscription.get("customer")
             user.stripe_subscription_id = subscription.get("id")
@@ -100,7 +103,11 @@ def stripe_webhook():
 
             db.session.commit()
 
-    elif event_type in ["customer.subscription.deleted", "customer.subscription.paused"]:
+    elif event_type in [
+        "customer.subscription.deleted",
+        "customer.subscription.paused",
+        "customer.subscription.unpaid",
+    ]:
         subscription = obj
         user = _get_user_from_customer_or_metadata(subscription)
 

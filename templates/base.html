@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}VelWolf{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    {% include "partials/navbar.html" %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-wrapper">
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <div id="upgradePopup" class="upgrade-popup" aria-hidden="true">
+        <div class="upgrade-popup-box">
+            <div class="upgrade-popup-badge">Accès Pro requis</div>
+            <h3>🔒 Contenu réservé aux membres Pro</h3>
+            <p>
+                Débloquez l’Academy complète, les vidéos premium, les quiz, la certification
+                et l’expérience de progression avancée.
+            </p>
+
+            <div class="upgrade-popup-actions">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('billing.create_checkout_pro') }}" class="academy-btn academy-btn-gold">
+                        Débloquer maintenant
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="academy-btn academy-btn-gold">
+                        Se connecter pour upgrader
+                    </a>
+                {% endif %}
+
+                <button type="button" class="upgrade-popup-close" onclick="closeUpgradePopup()">
+                    Fermer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {% if current_user.is_authenticated %}
+    <div class="upgrade-sticky">
+        <a href="{{ url_for('billing.create_checkout_pro') }}">
+            🚀 Passer Pro
+        </a>
+    </div>
+    {% else %}
+    <div class="upgrade-sticky">
+        <a href="{{ url_for('auth.login') }}">
+            🔐 Connexion pour débloquer Pro
+        </a>
+    </div>
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

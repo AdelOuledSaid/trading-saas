@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}Upgrade to Pro | VelWolf{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="academy-upgrade-hero academy-section">
+    <div class="academy-shell">
+        <div class="academy-upgrade-box academy-upgrade-box-xl">
+
+            <div class="academy-upgrade-topline">
+                <span class="academy-kicker">VelWolf Pro Access</span>
+                <span class="academy-upgrade-live">🔥 Accès Premium</span>
+            </div>
+
+            <h1>Vous voyez les signaux… mais vous ne les comprenez pas encore</h1>
+
+            <p class="academy-lead academy-upgrade-lead">
+                Le plan gratuit montre l’environnement.
+                Le plan Pro vous donne la compréhension, la structure et le contrôle.
+            </p>
+
+            <div class="academy-proof-inline">
+                +1000 utilisateurs • Accès premium actif • Expérience validée
+            </div>
+
+            <div class="academy-upgrade-cta">
+                <a href="{{ url_for('billing.create_checkout_pro') }}" class="academy-btn academy-btn-gold academy-btn-large">
+                    🚀 Débloquer maintenant
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="academy-section">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Le problème</span>
+            <h2>Pourquoi la majorité échoue</h2>
+        </div>
+
+        <div class="academy-grid-3">
+            <div class="academy-info-card">
+                <h3>❌ Suivre sans comprendre</h3>
+                <p>Entrer sur des trades sans savoir pourquoi entraîne une perte de contrôle.</p>
+            </div>
+
+            <div class="academy-info-card">
+                <h3>❌ Mauvaise gestion du risque</h3>
+                <p>Sans structure, le drawdown devient inutilement lourd.</p>
+            </div>
+
+            <div class="academy-info-card">
+                <h3>❌ Aucune progression</h3>
+                <p>Sans cadre clair, un trader peut rester bloqué au même niveau pendant des mois.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section academy-dark-band">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">La solution</span>
+            <h2>VelWolf Academy Pro</h2>
+        </div>
+
+        <div class="academy-grid-3">
+            <div class="academy-info-card academy-upgrade-feature-card">
+                <div class="academy-feature-icon">🎥</div>
+                <h3>Vidéos complètes</h3>
+                <p>Accès total aux cours avec logique réelle de trading.</p>
+            </div>
+
+            <div class="academy-info-card academy-upgrade-feature-card">
+                <div class="academy-feature-icon">📊</div>
+                <h3>Progression</h3>
+                <p>Suivi structuré pour évoluer étape par étape.</p>
+            </div>
+
+            <div class="academy-info-card academy-upgrade-feature-card">
+                <div class="academy-feature-icon">🧠</div>
+                <h3>Compréhension marché</h3>
+                <p>Vous comprenez enfin les setups, le contexte et l’exécution.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section">
+    <div class="academy-shell">
+        <div class="academy-upgrade-price-card">
+
+            <span class="academy-card-label">Tout inclus</span>
+
+            <div class="academy-upgrade-value-list">
+                <div class="academy-upgrade-value-item">🎥 Formation complète</div>
+                <div class="academy-upgrade-value-item">📘 Niveau 1 + Niveau 2</div>
+                <div class="academy-upgrade-value-item">🧠 Quiz + validation</div>
+                <div class="academy-upgrade-value-item">🏆 Certification</div>
+                <div class="academy-upgrade-value-item">📡 Exploitation des signaux</div>
+            </div>
+
+            <div class="academy-upgrade-cta-stack">
+                <a href="{{ url_for('billing.create_checkout_pro') }}" class="academy-btn academy-btn-gold academy-btn-large academy-btn-full">
+                    🔓 Accéder maintenant
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="academy-section academy-dark-band">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Comparaison</span>
+            <h2>Gratuit vs Pro</h2>
+        </div>
+
+        <div class="academy-comparison-table academy-comparison-table-pro">
+            <div class="academy-comparison-row academy-comparison-head">
+                <div>Fonctionnalité</div>
+                <div>Gratuit</div>
+                <div>Pro</div>
+            </div>
+
+            <div class="academy-comparison-row">
+                <div>Accès vidéo</div>
+                <div>❌</div>
+                <div>✅</div>
+            </div>
+
+            <div class="academy-comparison-row">
+                <div>Compréhension trading</div>
+                <div>❌</div>
+                <div>✅</div>
+            </div>
+
+            <div class="academy-comparison-row">
+                <div>Progression réelle</div>
+                <div>❌</div>
+                <div>✅</div>
+            </div>
+
+            <div class="academy-comparison-row">
+                <div>Expérience complète</div>
+                <div>🔒</div>
+                <div>🔥</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section">
+    <div class="academy-shell">
+        <div class="academy-upgrade-final academy-upgrade-final-business">
+
+            <span class="academy-kicker">Dernière étape</span>
+
+            <h2>Tu peux continuer comme maintenant… ou évoluer</h2>
+
+            <p>
+                L’Academy Pro n’est pas un bonus.
+                C’est ce qui transforme ton utilisation des signaux.
+            </p>
+
+            <div class="academy-upgrade-cta">
+                <a href="{{ url_for('billing.create_checkout_pro') }}" class="academy-btn academy-btn-gold academy-btn-large">
+                    🚀 Passer Pro maintenant
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

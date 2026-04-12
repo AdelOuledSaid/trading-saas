@@ -9,11 +9,10 @@ from app.services.signal_service import (
     find_open_signal_for_closure,
 )
 from app.services.ai_signal_service import compute_confidence, generate_reason
-from app.services.telegram_service import (
-    send_telegram_message,
-    build_signal_telegram_message,
-    build_tp_telegram_message,
-    build_sl_telegram_message,
+from app.services.telegram_dispatcher import (
+    send_signal_open,
+    send_signal_tp,
+    send_signal_sl,
 )
 
 webhook_bp = Blueprint("webhook", __name__)
@@ -139,8 +138,12 @@ def webhook():
         )
 
         try:
-            send_telegram_message(build_signal_telegram_message(signal))
-            current_app.logger.info("Telegram OPEN envoyé | trade_id=%s", signal.trade_id)
+            dispatch_results = send_signal_open(signal)
+            current_app.logger.info(
+                "Telegram OPEN dispatch | trade_id=%s | results=%s",
+                signal.trade_id,
+                dispatch_results,
+            )
         except Exception as e:
             current_app.logger.warning("Erreur Telegram OPEN: %s", e)
 
@@ -197,11 +200,19 @@ def webhook():
 
         try:
             if event_type == "TP":
-                send_telegram_message(build_tp_telegram_message(signal))
-                current_app.logger.info("Telegram TP envoyé | trade_id=%s", signal.trade_id)
+                dispatch_results = send_signal_tp(signal)
+                current_app.logger.info(
+                    "Telegram TP dispatch | trade_id=%s | results=%s",
+                    signal.trade_id,
+                    dispatch_results,
+                )
             else:
-                send_telegram_message(build_sl_telegram_message(signal))
-                current_app.logger.info("Telegram SL envoyé | trade_id=%s", signal.trade_id)
+                dispatch_results = send_signal_sl(signal)
+                current_app.logger.info(
+                    "Telegram SL dispatch | trade_id=%s | results=%s",
+                    signal.trade_id,
+                    dispatch_results,
+                )
         except Exception as e:
             current_app.logger.warning("Erreur Telegram %s: %s", event_type, e)
 

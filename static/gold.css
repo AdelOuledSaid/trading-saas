@@ -1,7 +1,8 @@
-/* =========================
-   GOLD / OZAK STYLE
-========================= */
-.gold-page.ozak-gold-page {
+/* =========================================================
+   VELWOLF SIGNALS — GOLD ULTRA PREMIUM MACRO DESK
+========================================================= */
+
+.gold-page.gold-dark-page {
     --gold-bg: #050608;
     --gold-panel: rgba(15, 17, 22, 0.92);
     --gold-panel-2: rgba(20, 23, 30, 0.96);
@@ -10,7 +11,7 @@
 
     --gold-text: #f6f7fb;
     --gold-text-soft: #a4adba;
-    --gold-text-soft-2: #cfd6df;
+    --gold-text-soft-2: #d7dee8;
 
     --gold-main: #d4a63d;
     --gold-main-2: #f0c15b;
@@ -51,27 +52,25 @@ body.home-body::after {
     transform-origin: center;
 }
 
-.gold-ozak-shell {
+.gold-shell {
     position: relative;
     z-index: 1;
 }
 
-/* =========================
-   HERO
-========================= */
-.gold-ozak-hero {
+/* HERO */
+.gold-hero {
     padding: 26px 0 42px;
     min-height: calc(100vh - 40px);
 }
 
-.gold-ozak-grid {
+.gold-hero-grid {
     display: grid;
     grid-template-columns: 1.06fr 0.94fr;
     gap: 26px;
     align-items: start;
 }
 
-.gold-ozak-left {
+.gold-hero-left {
     padding: 34px 0 24px 8px;
 }
 
@@ -128,7 +127,7 @@ body.home-body::after {
     font-size: 14px;
 }
 
-.gold-ozak-title {
+.gold-hero-title {
     font-size: clamp(54px, 6vw, 88px);
     line-height: 0.96;
     letter-spacing: -0.05em;
@@ -138,7 +137,7 @@ body.home-body::after {
     color: #f8fafc;
 }
 
-.gold-ozak-subtitle {
+.gold-hero-subtitle {
     max-width: 860px;
     font-size: 1.14rem;
     line-height: 1.7;
@@ -146,14 +145,14 @@ body.home-body::after {
     margin: 0 0 24px;
 }
 
-.gold-ozak-actions {
+.gold-hero-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 14px;
     margin-bottom: 28px;
 }
 
-.gold-main-btn {
+.gold-btn {
     min-height: 54px;
     padding: 0 24px;
     border-radius: 16px;
@@ -165,17 +164,17 @@ body.home-body::after {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.gold-main-btn:hover {
+.gold-btn:hover {
     transform: translateY(-2px);
 }
 
-.gold-main-btn-primary {
+.gold-btn-primary {
     background: linear-gradient(135deg, var(--gold-main), var(--gold-main-2));
     color: #111827;
     box-shadow: 0 18px 40px rgba(212, 166, 61, 0.18);
 }
 
-.gold-main-btn-secondary {
+.gold-btn-secondary {
     background: rgba(255,255,255,0.04);
     color: #fff;
     border: 1px solid var(--gold-border);
@@ -241,10 +240,8 @@ body.home-body::after {
     font-size: 11px;
 }
 
-/* =========================
-   RIGHT APP CARD
-========================= */
-.gold-ozak-right {
+/* RIGHT TERMINAL */
+.gold-hero-right {
     position: relative;
     display: flex;
     justify-content: flex-end;
@@ -253,7 +250,7 @@ body.home-body::after {
     padding-top: 6px;
 }
 
-.gold-app-card {
+.gold-terminal-card {
     width: min(100%, 390px);
     border-radius: 26px;
     background: rgba(10, 11, 15, 0.92);
@@ -263,7 +260,7 @@ body.home-body::after {
     backdrop-filter: blur(14px);
 }
 
-.gold-app-topbar {
+.gold-terminal-topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -272,14 +269,14 @@ body.home-body::after {
     background: rgba(255,255,255,0.02);
 }
 
-.gold-app-brand {
+.gold-terminal-brand {
     display: inline-flex;
     align-items: center;
     gap: 10px;
     font-weight: 600;
 }
 
-.gold-app-logo {
+.gold-terminal-logo {
     width: 24px;
     height: 24px;
     border-radius: 50%;
@@ -291,7 +288,7 @@ body.home-body::after {
     font-size: 11px;
 }
 
-.gold-app-actions {
+.gold-terminal-actions {
     display: flex;
     align-items: center;
     gap: 14px;
@@ -299,7 +296,7 @@ body.home-body::after {
     font-size: 15px;
 }
 
-.gold-app-avatar {
+.gold-terminal-avatar {
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -310,7 +307,7 @@ body.home-body::after {
     font-weight: 700;
 }
 
-.gold-app-body {
+.gold-terminal-body {
     padding: 18px;
 }
 
@@ -335,6 +332,10 @@ body.home-body::after {
 
 .gold-stat-box {
     padding: 14px 12px;
+}
+
+.gold-stat-box-main {
+    box-shadow: 0 0 0 1px rgba(212, 166, 61, 0.10), 0 16px 34px rgba(212, 166, 61, 0.08);
 }
 
 .gold-stat-label,
@@ -482,6 +483,10 @@ body.home-body::after {
 .gold-dot-2 { background: var(--gold-blue); }
 .gold-dot-3 { background: #2c313b; }
 
+.gold-soft {
+    color: #8a93a2;
+}
+
 .gold-watchlist-card {
     margin-top: 12px;
     overflow: hidden;
@@ -516,9 +521,7 @@ body.home-body::after {
     font-weight: 600;
 }
 
-/* =========================
-   FLOATING CARD
-========================= */
+/* FLOATING CARD */
 .gold-floating-card {
     position: absolute;
     left: 18px;
@@ -565,13 +568,8 @@ body.home-body::after {
     border-radius: 999px;
 }
 
-.gold-fill-64 {
-    width: 64%;
-}
-
-.gold-fill-29 {
-    width: 29%;
-}
+.gold-fill-64 { width: 64%; }
+.gold-fill-29 { width: 29%; }
 
 .gold-yesno {
     display: flex;
@@ -632,9 +630,7 @@ body.home-body::after {
     font-weight: 400;
 }
 
-/* =========================
-   CONTENT SECTIONS
-========================= */
+/* CONTENT */
 .gold-content-section {
     padding: 34px 0;
 }
@@ -682,6 +678,7 @@ body.home-body::after {
     line-height: 1.8;
 }
 
+/* CHART */
 .gold-chart-card {
     background: rgba(10, 11, 15, 0.92);
     border: 1px solid var(--gold-border);
@@ -733,9 +730,41 @@ body.home-body::after {
     background: #0d1015;
 }
 
-/* =========================
-   NEWS
-========================= */
+/* INSIGHTS */
+.gold-insight-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.gold-insight-card,
+.gold-why-card {
+    background: var(--gold-panel);
+    border: 1px solid var(--gold-border);
+    border-radius: 24px;
+    padding: 22px;
+    box-shadow: var(--gold-shadow);
+}
+
+.gold-insight-card h3,
+.gold-why-card strong {
+    color: #f8fafc;
+}
+
+.gold-insight-card h3 {
+    margin: 0 0 10px;
+    font-size: 1.06rem;
+    line-height: 1.4;
+}
+
+.gold-insight-card p,
+.gold-why-card span {
+    margin: 0;
+    color: #d7dee8;
+    line-height: 1.8;
+}
+
+/* NEWS */
 .gold-news-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -816,9 +845,7 @@ body.home-body::after {
     line-height: 1.75;
 }
 
-/* =========================
-   SIGNALS
-========================= */
+/* SIGNALS */
 .gold-signals-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1020,9 +1047,37 @@ body.home-body::after {
     box-shadow: var(--gold-shadow);
 }
 
-/* =========================
-   CTA
-========================= */
+/* WHY GOLD */
+.gold-why-box {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.9fr);
+    gap: 22px;
+    padding: 28px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, rgba(10,11,15,0.94), rgba(18,20,26,0.98));
+    border: 1px solid var(--gold-border);
+    box-shadow: var(--gold-shadow-lg);
+}
+
+.gold-why-left h2 {
+    margin: 14px 0 16px;
+    font-size: clamp(1.7rem, 2.7vw, 2.4rem);
+    line-height: 1.18;
+    color: var(--gold-text);
+}
+
+.gold-why-left p {
+    margin: 0;
+    color: #d7dee8;
+    line-height: 1.9;
+}
+
+.gold-why-right {
+    display: grid;
+    gap: 14px;
+}
+
+/* CTA */
 .gold-cta-section {
     padding-bottom: 56px;
 }
@@ -1067,21 +1122,19 @@ body.home-body::after {
     line-height: 1.85;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* RESPONSIVE */
 @media (max-width: 1180px) {
-    .gold-ozak-grid {
+    .gold-hero-grid {
         grid-template-columns: 1fr;
     }
 
-    .gold-ozak-right {
+    .gold-hero-right {
         justify-content: center;
         min-height: auto;
         padding-top: 0;
     }
 
-    .gold-ozak-left {
+    .gold-hero-left {
         padding-top: 10px;
     }
 
@@ -1092,13 +1145,14 @@ body.home-body::after {
         margin-top: -80px;
     }
 
-    .gold-app-card {
+    .gold-terminal-card {
         width: min(100%, 560px);
     }
 
     .gold-news-grid,
     .gold-signals-grid,
-    .gold-hero-pills {
+    .gold-hero-pills,
+    .gold-insight-grid {
         grid-template-columns: 1fr;
     }
 
@@ -1108,10 +1162,14 @@ body.home-body::after {
     .gold-signal-meta {
         grid-template-columns: 1fr;
     }
+
+    .gold-why-box {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 780px) {
-    .gold-ozak-title {
+    .gold-hero-title {
         font-size: 52px;
     }
 
@@ -1163,15 +1221,15 @@ body.home-body::after {
 }
 
 @media (max-width: 480px) {
-    .gold-main-btn {
+    .gold-btn {
         width: 100%;
     }
 
-    .gold-ozak-actions {
+    .gold-hero-actions {
         flex-direction: column;
     }
 
-    .gold-ozak-title {
+    .gold-hero-title {
         font-size: 42px;
     }
 
@@ -1188,8 +1246,7 @@ body.home-body::after {
     .gold-news-content,
     .gold-panel-card,
     .gold-watchlist-card,
-    .gold-hero-pill,
-    .gold-hero-content {
+    .gold-hero-pill {
         padding-left: 16px;
         padding-right: 16px;
     }

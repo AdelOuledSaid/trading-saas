@@ -3,132 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApexSignals - Offres Premium</title>
+    <title>VelWolef - Offres Premium</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pricing.css') }}">
 </head>
-<body class="home-body">
+<body class="pricing-body">
 
 {% include "partials/navbar.html" %}
 
 {% set plan_order = {"free": 0, "basic": 1, "premium": 2, "vip": 3} %}
 {% set current_level = plan_order.get(user_plan, 0) %}
 
-<div class="pricing-page">
+<section class="pricing-page">
+    <div class="pricing-container">
 
-    <div class="pricing-header">
-        <span class="pricing-kicker">Nos abonnements</span>
-        <h1>Choisis le plan adapté à ton niveau</h1>
-        <p>
-            Trois offres claires pour démarrer, progresser ou passer à une expérience complète.
-        </p>
-    </div>
+        <div class="pricing-hero">
+            <span class="pricing-kicker">VelWolef Access</span>
+            <h1>Choisis le niveau adapté à ton ambition</h1>
+            <p>
+                Trois offres conçues pour t’aider à découvrir les signaux, progresser avec plus
+                d’analyse, puis accéder à une expérience trading plus complète et plus réactive.
+            </p>
 
-    <div class="pricing-grid">
+            {% if subscription_status %}
+            <div style="margin-top:18px;">
+                <span class="plan-label">Abonnement actuel : {{ subscription_status }}</span>
+            </div>
+            {% endif %}
 
-        <div class="pricing-card pricing-basic">
-            <h2>Basic</h2>
-            <div class="price">9€ <span>/ mois</span></div>
-            <p class="pricing-subtext">Pour démarrer avec l’essentiel.</p>
-
-            <ul>
-                <li><span class="feature-yes">✔</span> Signaux en temps réel</li>
-                <li><span class="feature-yes">✔</span> Dashboard basique</li>
-                <li><span class="feature-yes">✔</span> Historique limité</li>
-                <li><span class="feature-yes">✔</span> Accès simple à la plateforme</li>
-                <li><span class="feature-no">✖</span> Statistiques avancées</li>
-                <li><span class="feature-no">✖</span> Briefing IA quotidien</li>
-                <li><span class="feature-no">✖</span> Telegram VIP</li>
-            </ul>
-
-            {% if user_plan == "basic" %}
-                <a href="{{ url_for('dashboard.dashboard') }}" class="pricing-btn secondary-btn">Plan actuel</a>
-            {% elif current_level > 1 %}
-                <a href="{{ url_for('dashboard.dashboard') }}" class="pricing-btn secondary-btn">Inclus dans votre offre</a>
-            {% else %}
-                <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
-                    <input type="hidden" name="plan" value="basic">
-                    <button type="submit" class="pricing-btn secondary-btn">Choisir Basic</button>
+            {% if user_plan in ["basic", "premium", "vip"] %}
+            <div style="margin-top:18px;">
+                <form action="{{ url_for('billing.create_customer_portal_session') }}" method="POST">
+                    <button type="submit" class="pricing-btn premium-btn">
+                        Gérer / Annuler mon abonnement
+                    </button>
                 </form>
+            </div>
             {% endif %}
         </div>
 
-        <div class="pricing-card pricing-premium featured-card">
-            <div class="badge-top premium-badge">Le plus populaire</div>
-            <h2>Premium</h2>
-            <div class="price">19€ <span>/ mois</span></div>
-            <p class="pricing-subtext">L’offre la plus équilibrée pour progresser.</p>
+        <div class="pricing-grid">
 
-            <ul>
-                <li><span class="feature-yes">✔</span> Tous les signaux</li>
-                <li><span class="feature-yes">✔</span> Historique complet</li>
-                <li><span class="feature-yes">✔</span> Statistiques avancées</li>
-                <li><span class="feature-yes">✔</span> PnL cumulatif</li>
-                <li><span class="feature-yes">✔</span> Capital simulé</li>
-                <li><span class="feature-yes">✔</span> Briefing IA quotidien</li>
-                <li><span class="feature-no">✖</span> Telegram VIP privé</li>
-            </ul>
+            <div class="pricing-card pricing-basic">
+                <div class="plan-label">Starter</div>
+                <h2>Basic</h2>
+                <div class="price">9€ <span>/ mois</span></div>
+                <p class="pricing-subtext">
+                    L’essentiel pour découvrir le service, suivre les opportunités principales
+                    et commencer à prendre le rythme du marché.
+                </p>
 
-            {% if user_plan == "premium" %}
-                <a href="{{ url_for('dashboard.dashboard') }}" class="pricing-btn premium-btn">Plan actuel</a>
-            {% elif current_level > 2 %}
-                <a href="{{ url_for('dashboard.dashboard') }}" class="pricing-btn premium-btn">Inclus dans votre offre</a>
-            {% else %}
-                <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
-                    <input type="hidden" name="plan" value="premium">
-                    <button type="submit" class="pricing-btn premium-btn">Choisir Premium</button>
-                </form>
-            {% endif %}
+                <ul class="pricing-features">
+                    <li class="included"><span class="feature-icon">✔</span> 1 Morning Brief / jour</li>
+                    <li class="included"><span class="feature-icon">✔</span> 1 News / jour</li>
+                    <li class="included"><span class="feature-icon">✔</span> 5 signaux / jour</li>
+                    <li class="included"><span class="feature-icon">✔</span> Dashboard basique</li>
+                    <li class="included"><span class="feature-icon">✔</span> Accès aux signaux en temps réel</li>
+                    <li class="not-included"><span class="feature-icon">✖</span> Briefing détaillé avancé</li>
+                    <li class="not-included"><span class="feature-icon">✖</span> Mini cours trading</li>
+                    <li class="not-included"><span class="feature-icon">✖</span> Replay des trades</li>
+                    <li class="not-included"><span class="feature-icon">✖</span> Telegram VIP privé</li>
+                </ul>
+
+                {% if user_plan == "basic" %}
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="pricing-btn basic-btn">Plan actuel</a>
+                {% elif current_level > 1 %}
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="pricing-btn basic-btn">Inclus dans votre offre</a>
+                {% else %}
+                    <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
+                        <input type="hidden" name="plan" value="basic">
+                        <button type="submit" class="pricing-btn basic-btn">Choisir Basic</button>
+                    </form>
+                {% endif %}
+            </div>
+
+            <div class="pricing-card pricing-premium featured-card">
+                <div class="top-badge">Le plus populaire</div>
+                <div class="plan-label">Trader</div>
+                <h2>Premium</h2>
+                <div class="price">19€ <span>/ mois</span></div>
+                <p class="pricing-subtext">
+                    Une offre pensée pour les traders plus sérieux qui veulent plus de contexte,
+                    plus d’explications et davantage d’opportunités filtrées.
+                </p>
+
+                <ul class="pricing-features">
+                    <li class="included"><span class="feature-icon">✔</span> 1 Morning Brief / jour</li>
+                    <li class="included"><span class="feature-icon">✔</span> 1 Midday / Evening Brief / jour</li>
+                    <li class="included"><span class="feature-icon">✔</span> 1 à 2 News Premium / jour</li>
+                    <li class="included"><span class="feature-icon">✔</span> 10 signaux / jour</li>
+                    <li class="included"><span class="feature-icon">✔</span> Explication des trades</li>
+                    <li class="included"><span class="feature-icon">✔</span> Replay des trades gagnants</li>
+                    <li class="included"><span class="feature-icon">✔</span> Statistiques avancées + PnL</li>
+                    <li class="included"><span class="feature-icon">✔</span> Mini cours trading</li>
+                    <li class="not-included"><span class="feature-icon">✖</span> News instantanées VIP</li>
+                    <li class="not-included"><span class="feature-icon">✖</span> Telegram VIP privé</li>
+                </ul>
+
+                {% if user_plan == "premium" %}
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="pricing-btn premium-btn">Plan actuel</a>
+                {% elif current_level > 2 %}
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="pricing-btn premium-btn">Inclus dans votre offre</a>
+                {% else %}
+                    <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
+                        <input type="hidden" name="plan" value="premium">
+                        <button type="submit" class="pricing-btn premium-btn">Choisir Premium</button>
+                    </form>
+                {% endif %}
+            </div>
+
+            <div class="pricing-card pricing-vip">
+                <div class="top-badge vip-badge">Elite Access</div>
+                <div class="plan-label">Institutional</div>
+                <h2>VIP</h2>
+                <div class="price">39€ <span>/ mois</span></div>
+                <p class="pricing-subtext">
+                    L’expérience la plus complète pour les membres qui veulent de la réactivité,
+                    plus de profondeur et une vraie lecture multi-marchés.
+                </p>
+
+                <ul class="pricing-features">
+                    <li class="included"><span class="feature-icon">✔</span> Tout le contenu Premium</li>
+                    <li class="included"><span class="feature-icon">✔</span> Briefings sur tous les marchés</li>
+                    <li class="included"><span class="feature-icon">✔</span> Opportunités marché en temps réel</li>
+                    <li class="included"><span class="feature-icon">✔</span> News instantanées</li>
+                    <li class="included"><span class="feature-icon">✔</span> Signaux illimités</li>
+                    <li class="included"><span class="feature-icon">✔</span> TP / SL plus détaillés</li>
+                    <li class="included"><span class="feature-icon">✔</span> Cours détaillés avancés</li>
+                    <li class="included"><span class="feature-icon">✔</span> Replay complet</li>
+                    <li class="included"><span class="feature-icon">✔</span> Telegram VIP privé</li>
+                    <li class="included"><span class="feature-icon">✔</span> Priorité sur nouveautés et alertes</li>
+                </ul>
+
+                {% if user_plan == "vip" %}
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="pricing-btn vip-btn">Plan actuel</a>
+                {% else %}
+                    <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
+                        <input type="hidden" name="plan" value="vip">
+                        <button type="submit" class="pricing-btn vip-btn">Choisir VIP</button>
+                    </form>
+                {% endif %}
+            </div>
+
         </div>
 
-        <div class="pricing-card pricing-vip">
-            <div class="badge-top vip-badge">VIP</div>
-            <h2>VIP</h2>
-            <div class="price">39€ <span>/ mois</span></div>
-            <p class="pricing-subtext">Pour un accès plus complet et prioritaire.</p>
-
-            <ul>
-                <li><span class="feature-yes">✔</span> Tout le Premium</li>
-                <li><span class="feature-yes">✔</span> Telegram VIP privé</li>
-                <li><span class="feature-yes">✔</span> Alertes prioritaires</li>
-                <li><span class="feature-yes">✔</span> Accès anticipé aux nouveautés</li>
-                <li><span class="feature-yes">✔</span> Briefings enrichis</li>
-                <li><span class="feature-yes">✔</span> Support prioritaire</li>
-                <li><span class="feature-yes">✔</span> Accès complet ApexSignals</li>
-            </ul>
-
-            {% if user_plan == "vip" %}
-                <a href="{{ url_for('dashboard.dashboard') }}" class="pricing-btn vip-btn">Plan actuel</a>
-            {% else %}
-                <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
-                    <input type="hidden" name="plan" value="vip">
-                    <button type="submit" class="pricing-btn vip-btn">Choisir VIP</button>
-                </form>
-            {% endif %}
+        <div class="pricing-footer-note">
+            <div class="note-box">
+                <h3>Une montée en puissance logique</h3>
+                <p>
+                    Basic pour démarrer, Premium pour progresser avec plus d’analyse,
+                    VIP pour une expérience plus complète, plus rapide et plus stratégique.
+                </p>
+            </div>
         </div>
-
     </div>
-
-</div>
-
-<footer class="site-footer">
-    <div class="section-container footer-inner">
-        <div class="footer-brand">
-            <h3>ApexSignals</h3>
-            <p>Signaux premium, résultats, Trading Lab et espace membre.</p>
-        </div>
-
-        <div class="footer-links">
-            <a href="{{ url_for('main.home') }}">Accueil</a>
-            <a href="{{ url_for('signals.results') }}">Résultats</a>
-            <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
-            <a href="{{ url_for('pages.contact') }}">Contact</a>
-        </div>
-    </div>
-</footer>
+</section>
 
 </body>
 </html>

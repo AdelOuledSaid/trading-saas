@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paiement réussi - ApexSignals</title>
-    <meta name="description" content="Votre paiement ApexSignals a été validé avec succès.">
+    <title>Paiement réussi - VelWolef</title>
+    <meta name="description" content="Votre paiement VelWolef a été validé avec succès.">
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
@@ -29,7 +29,7 @@
                 <h1>Paiement réussi</h1>
 
                 <p class="success-text">
-                    Bienvenue sur ApexSignals 🚀  
+                    Bienvenue sur VelWolef 🚀
                     Votre accès a bien été activé. Vous pouvez maintenant rejoindre votre espace membre
                     et profiter de l’expérience premium.
                 </p>
@@ -44,15 +44,18 @@
                     </a>
                 </div>
 
+                {% if vip_link %}
                 <div class="success-vip-box">
-                    <p class="success-vip-title">🔥 Accès VIP Telegram</p>
+                    <p class="success-vip-title">🔥 Accès Telegram VIP</p>
 
-                    <a href="https://t.me/TON_LIEN_ICI"
+                    <a href="{{ vip_link }}"
                        target="_blank"
+                       rel="noopener"
                        class="telegram-vip-btn">
-                       Rejoindre le groupe VIP
+                       Rejoindre le canal VIP
                     </a>
                 </div>
+                {% endif %}
             </div>
         </div>
     </section>

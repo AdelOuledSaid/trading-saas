@@ -1,0 +1,543 @@
+{% extends "base.html" %}
+
+{% block title %}Academy Niveau 1 | VelWolf{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}">
+{% endblock %}
+
+{% block content %}
+{% if not is_pro %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.body.dataset.autoUpgradePopup = "true";
+    });
+</script>
+{% endif %}
+
+<section class="academy-page-hero academy-section">
+    <div class="academy-shell">
+        <div class="academy-breadcrumb">
+            <a href="{{ url_for('pages.academy_index') }}">Academy</a>
+            <span>/</span>
+            <span>Niveau 1</span>
+        </div>
+
+        <div class="academy-page-grid">
+            <div>
+                <span class="academy-kicker">Niveau 1 — Fondations universitaires</span>
+                <h1>Comprendre le trading avant de chercher la performance</h1>
+                <p class="academy-lead">
+                    Ce premier niveau a été conçu comme un socle académique solide. L’objectif n’est pas
+                    de pousser l’utilisateur à prendre des positions trop vite, mais de construire une
+                    compréhension méthodique du marché, du risque, de la logique d’exécution et des erreurs
+                    structurelles qui détruisent la majorité des comptes débutants.
+                </p>
+            </div>
+
+            <div class="academy-side-progress">
+                <div class="academy-progress-head">
+                    <span>Progression actuelle</span>
+                    <strong>{{ academy_progress.level1 }}%</strong>
+                </div>
+                <div class="academy-progress-bar">
+                    <div class="academy-progress-fill" style="width: {{ academy_progress.level1 }}%;"></div>
+                </div>
+                <div class="academy-progress-head academy-progress-head-second">
+                    <span>Statut</span>
+                    <strong>{% if is_pro %}Accès complet{% else %}Aperçu limité{% endif %}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section">
+    <div class="academy-shell">
+        <div class="academy-video-layout">
+            <div class="academy-video-main {% if not is_pro %}academy-locked-wrap{% endif %}">
+                <div class="academy-player">
+                    <div class="academy-player-screen academy-player-screen-embed">
+                        {% if is_pro %}
+                        <iframe
+                            src="https://www.youtube.com/embed/VIDEO_ID_1"
+                            title="Formation trading niveau 1"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen>
+                        </iframe>
+                        {% else %}
+                        <div class="academy-player-overlay-text">
+                            <span class="academy-kicker">Vidéo premium</span>
+                            <h3>Niveau 1 — Fondations du trading</h3>
+                            <p>Aperçu verrouillé. Passez Pro pour voir la vidéo complète et tout le cours.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="academy-player-controls">
+                        {% if is_pro %}
+                            <button class="academy-control-btn" type="button">▶ Lecture</button>
+                            <button class="academy-control-btn" type="button">⏸ Pause</button>
+                            <button class="academy-control-btn" type="button">⏭ Module suivant</button>
+                        {% else %}
+                            <button class="academy-control-btn" type="button" data-upgrade-trigger="true">🔒 Lecture Pro</button>
+                            <button class="academy-control-btn" type="button" data-upgrade-trigger="true">🔒 Modules complets</button>
+                            <button class="academy-control-btn" type="button" data-upgrade-trigger="true">🚀 Débloquer</button>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if not is_pro %}
+                <div class="academy-lock-overlay">
+                    <div class="academy-lock-card">
+                        <div class="academy-lock-icon">🔒</div>
+                        <h3>Contenu réservé aux membres Pro</h3>
+                        <p>Débloquez le cours complet, les vidéos détaillées, le quiz, la progression et la certification.</p>
+                        <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
+                            Passer Pro maintenant
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <aside class="academy-sidebar">
+                <div class="academy-module-list">
+                    <h3>Programme Niveau 1</h3>
+                    <ul>
+                        <li class="active">1. Qu’est-ce que le trading ?</li>
+                        <li>2. Les grands marchés financiers</li>
+                        <li>3. Buy, Sell et logique de position</li>
+                        <li>4. Pip, lot, spread et levier</li>
+                        <li>5. Stop Loss et Take Profit</li>
+                        <li>6. Gestion du risque</li>
+                        <li>7. Lire un graphique</li>
+                        <li>8. Supports et résistances</li>
+                        <li>9. Discipline et erreurs débutantes</li>
+                        <li>10. Synthèse opérationnelle</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section academy-dark-band">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Objectifs pédagogiques</span>
+            <h2>Ce que ce niveau doit réellement vous apprendre</h2>
+            <p class="academy-lead academy-section-lead">
+                À la fin de ce niveau, l’utilisateur doit être capable de comprendre le vocabulaire du trading,
+                lire une structure graphique simple, évaluer le risque d’un trade et éviter les erreurs les plus destructrices.
+            </p>
+        </div>
+
+        <div class="academy-grid-3">
+            <div class="academy-info-card">
+                <h3>Compréhension</h3>
+                <p>Maîtriser les notions fondamentales plutôt que copier sans logique.</p>
+            </div>
+            <div class="academy-info-card">
+                <h3>Protection du capital</h3>
+                <p>Comprendre pourquoi le risque est plus important que l’ego ou l’excitation.</p>
+            </div>
+            <div class="academy-info-card">
+                <h3>Lecture du marché</h3>
+                <p>Savoir identifier un contexte simple avant toute décision d’exécution.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Cours complet</span>
+            <h2>Module 1 — Qu’est-ce que le trading ?</h2>
+        </div>
+
+        <div class="academy-info-card">
+            <p>
+                Le trading consiste à acheter ou vendre un actif financier dans le but de profiter d’une variation de prix.
+                Cette définition paraît simple, mais elle cache une réalité plus complexe : le trading ne repose pas
+                uniquement sur la capacité à “deviner” si le prix va monter ou baisser. Il repose d’abord sur la gestion
+                de l’incertitude. Un trader ne contrôle pas le marché. Il contrôle son entrée, sa sortie, sa taille de position
+                et sa discipline.
+            </p>
+            <p>
+                Il est donc plus juste de définir le trading comme un processus de prise de décision sous contrainte de risque.
+                Cette idée est fondamentale. La majorité des débutants perçoivent le trading comme une activité de prédiction.
+                Les opérateurs plus avancés le considèrent plutôt comme une activité de gestion probabiliste : ils cherchent
+                des contextes dans lesquels le rapport entre risque accepté et rendement potentiel devient intéressant.
+            </p>
+            <p>
+                Il faut également distinguer le trading de l’investissement. L’investisseur cherche généralement à accompagner
+                une thèse de long terme, alors que le trader travaille souvent sur des horizons plus courts, avec une logique
+                d’exécution plus technique. Ces deux approches peuvent coexister, mais elles n’utilisent pas les mêmes outils,
+                ni les mêmes unités de temps, ni la même psychologie.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section academy-dark-band">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Module 2</span>
+            <h2>Les grands marchés financiers</h2>
+        </div>
+
+        <div class="academy-cards">
+            <div class="academy-info-card">
+                <h3>Forex</h3>
+                <p>
+                    Le Forex correspond au marché des devises. On y échange une monnaie contre une autre, par exemple EUR/USD
+                    ou GBP/JPY. Ce marché est très liquide et souvent privilégié pour les stratégies à court terme.
+                </p>
+            </div>
+            <div class="academy-info-card">
+                <h3>Crypto</h3>
+                <p>
+                    Le marché crypto est plus volatil et plus sensible au sentiment, à la liquidité et à la spéculation.
+                    Bitcoin et Ethereum dominent l’attention, mais l’environnement reste plus instable que les marchés traditionnels.
+                </p>
+            </div>
+            <div class="academy-info-card">
+                <h3>Indices et matières premières</h3>
+                <p>
+                    Les indices comme le US100 et les matières premières comme l’or offrent d’autres logiques de mouvement.
+                    Ils réagissent à la macroéconomie, aux taux, au risque global et au positionnement institutionnel.
+                </p>
+            </div>
+        </div>
+
+        <div class="academy-info-card" style="margin-top: 24px;">
+            <p>
+                Comprendre les différences entre marchés est essentiel. Un trader qui applique la même logique psychologique,
+                le même levier et le même tempo sur tous les actifs finit souvent par rencontrer des incohérences. La volatilité,
+                la profondeur de marché, les horaires et la structure des mouvements varient. Le même setup n’a pas le même sens
+                sur l’or, sur Bitcoin et sur une paire Forex majeure.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Module 3</span>
+            <h2>Buy, Sell et logique d’une position</h2>
+        </div>
+
+        <div class="academy-info-card">
+            <p>
+                Une position d’achat, ou <strong>Buy</strong>, suppose que l’on anticipe une hausse du prix. Une position de vente,
+                ou <strong>Sell</strong>, suppose au contraire une baisse. Cette mécanique paraît élémentaire, mais la vraie difficulté
+                ne se trouve pas dans le mot “acheter” ou “vendre”. Elle se trouve dans le contexte de marché dans lequel cette action est prise.
+            </p>
+            <p>
+                Un bon trader ne cherche pas simplement une direction. Il cherche une direction cohérente avec :
+                la tendance dominante, la structure du prix, la zone d’entrée, le niveau d’invalidation et la qualité du timing.
+                Acheter trop tard sur une hausse déjà épuisée est aussi dangereux que vendre trop tôt dans une tendance forte.
+            </p>
+            <p>
+                Une position ne doit donc jamais être pensée isolément. Elle doit être pensée comme une hypothèse structurée :
+                “si le marché conserve ce comportement, alors mon scénario reste valide ; s’il casse ce niveau, mon scénario est faux.”
+                Cette logique prépare naturellement à la notion de Stop Loss.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section academy-dark-band">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Module 4</span>
+            <h2>Pip, lot, spread et levier</h2>
+        </div>
+
+        <div class="academy-cards">
+            <div class="academy-info-card">
+                <h3>Le pip</h3>
+                <p>
+                    Le pip mesure une variation de prix sur le Forex. C’est une unité technique de mouvement. Savoir compter
+                    en pips aide à standardiser le risque et à comparer les setups.
+                </p>
+            </div>
+            <div class="academy-info-card">
+                <h3>Le lot</h3>
+                <p>
+                    Le lot représente la taille de position. Plus le lot est élevé, plus la variation financière de chaque mouvement
+                    de prix devient importante.
+                </p>
+            </div>
+            <div class="academy-info-card">
+                <h3>Le spread et le levier</h3>
+                <p>
+                    Le spread est le coût implicite entre achat et vente. Le levier amplifie l’exposition. Mal utilisé, il accélère
+                    la destruction du capital plus qu’il n’améliore la performance.
+                </p>
+            </div>
+        </div>
+
+        <div class="academy-info-card" style="margin-top: 24px;">
+            <p>
+                Le levier est souvent mal compris. Beaucoup de débutants le perçoivent comme un raccourci vers des gains rapides.
+                En réalité, il agit comme un amplificateur symétrique : il augmente les gains potentiels, mais il augmente aussi
+                la vitesse des pertes. Sans cadre de risque strict, le levier devient un facteur de fragilité systémique.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Module 5</span>
+            <h2>Stop Loss et Take Profit</h2>
+        </div>
+
+        <div class="academy-info-card">
+            <p>
+                Le <strong>Stop Loss</strong> est le niveau à partir duquel un scénario est reconnu comme invalide. Le <strong>Take Profit</strong>
+                est le niveau auquel l’on décide de sécuriser un gain. Ces deux éléments encadrent le trade et le transforment
+                en plan rationnel.
+            </p>
+            <p>
+                Sans Stop Loss, le trader reste exposé à l’illusion que “le marché va revenir”. Sans Take Profit, il risque de voir
+                un gain théorique se dissoudre par absence de discipline. Le trading professionnel consiste précisément à cadrer
+                la liberté du marché avec des règles de sortie.
+            </p>
+            <p>
+                Le Stop Loss ne doit pas être perçu comme un ennemi. Il est une preuve de professionnalisme. Il matérialise
+                l’acceptation qu’aucune hypothèse n’est certaine. Un trader mature préfère une petite perte contrôlée à une
+                grosse perte émotionnelle.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section academy-dark-band">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Module 6</span>
+            <h2>La gestion du risque : la vraie colonne vertébrale du trading</h2>
+        </div>
+
+        <div class="academy-info-card">
+            <p>
+                La gestion du risque est souvent la partie la moins “spectaculaire” du trading, donc la moins séduisante pour le débutant.
+                Pourtant, c’est elle qui sépare les profils durables des profils qui disparaissent vite. Gérer son risque signifie
+                limiter l’impact financier d’une erreur, protéger le capital et rester capable de continuer à opérer demain.
+            </p>
+            <p>
+                Un compte de trading n’est pas détruit par une mauvaise idée isolée, mais par la répétition d’expositions mal calibrées.
+                Risquer trop sur un seul trade, augmenter la taille après une perte, refuser de sortir d’une position invalide :
+                ce sont ces comportements qui provoquent les dégâts structurels.
+            </p>
+            <p>
+                Une règle simple pour débuter consiste à ne risquer qu’une petite portion du capital par position. L’objectif n’est
+                pas de maximiser le gain sur un trade, mais de préserver la possibilité de survivre à une série de mauvais trades.
+                La survie précède toujours la performance.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Module 7</span>
+            <h2>Lire un graphique</h2>
+        </div>
+
+        <div class="academy-info-card">
+            <p>
+                Un graphique est la représentation visuelle de l’évolution du prix dans le temps. Lire un graphique, ce n’est pas
+                regarder des bougies au hasard. C’est apprendre à observer le rythme du marché, la dynamique d’impulsion,
+                les ralentissements, les rejets et les zones de réaction.
+            </p>
+            <p>
+                Une bougie montre généralement quatre informations : l’ouverture, le plus haut, le plus bas et la clôture.
+                L’enchaînement de ces bougies révèle des comportements. Une série de bougies impulsives indique souvent
+                une pression directionnelle. Des bougies hésitantes ou à longues mèches montrent au contraire de l’incertitude,
+                des rejets ou une lutte d’équilibre.
+            </p>
+            <p>
+                Le trader débutant doit apprendre à ne pas “sur-analyser”. La première lecture doit rester simple :
+                le prix monte-t-il ? baisse-t-il ? consolide-t-il ? réagit-il sur une zone évidente ? Cette lecture simple
+                vaut souvent mieux qu’un excès d’indicateurs mal compris.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section academy-dark-band">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Module 8</span>
+            <h2>Supports et résistances</h2>
+        </div>
+
+        <div class="academy-info-card">
+            <p>
+                Un support est une zone où le prix a historiquement montré une capacité à réagir à la hausse.
+                Une résistance est une zone où le prix a eu tendance à freiner ou rejeter. Ces niveaux ne sont pas
+                des lignes magiques. Ce sont des zones d’intérêt où la mémoire du marché peut produire une réaction.
+            </p>
+            <p>
+                L’erreur fréquente consiste à croire qu’un support ou une résistance fonctionne toujours. En réalité,
+                ces zones sont des endroits où une décision peut émerger, pas une garantie. Le prix peut rebondir,
+                stagner, casser ou piéger.
+            </p>
+            <p>
+                Le bon usage des supports et résistances consiste à les intégrer à une lecture plus large :
+                tendance, contexte, impulsion, réaction du prix, volume éventuel et gestion du risque.
+                Une zone seule ne suffit pas. Elle doit s’inscrire dans un scénario.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Module 9</span>
+            <h2>Les erreurs des débutants</h2>
+        </div>
+
+        <div class="academy-cards">
+            <div class="academy-info-card">
+                <h3>Surtrading</h3>
+                <p>
+                    Multiplier les positions sans véritable avantage statistique détruit la discipline et augmente l’exposition émotionnelle.
+                </p>
+            </div>
+            <div class="academy-info-card">
+                <h3>Levier excessif</h3>
+                <p>
+                    Vouloir aller trop vite pousse souvent à utiliser une taille de position disproportionnée.
+                </p>
+            </div>
+            <div class="academy-info-card">
+                <h3>Refus de la perte</h3>
+                <p>
+                    Beaucoup de traders débutants acceptent mal d’avoir tort. Ils déplacent le Stop Loss ou espèrent un retour.
+                </p>
+            </div>
+        </div>
+
+        <div class="academy-info-card" style="margin-top: 24px;">
+            <p>
+                On peut ajouter à ces erreurs la recherche constante de la “stratégie parfaite”, la dépendance excessive aux réseaux,
+                la confusion entre activité et performance, ainsi que l’absence de journal de trading. La maturité vient lorsque
+                le trader comprend qu’il ne gagnera pas grâce à une recette secrète, mais grâce à la répétition disciplinée
+                d’un processus cohérent.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section academy-dark-band">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Module 10</span>
+            <h2>Synthèse opérationnelle</h2>
+        </div>
+
+        <div class="academy-info-card">
+            <p>
+                Le trading débutant doit être abordé comme une discipline d’apprentissage, non comme une promesse d’enrichissement rapide.
+                Ce niveau 1 a pour but de corriger cette illusion. Avant de chercher à gagner beaucoup, il faut apprendre à perdre peu,
+                à penser clairement et à exécuter proprement.
+            </p>
+            <p>
+                Un bon débutant n’est pas celui qui multiplie les trades. C’est celui qui comprend progressivement ce qu’il fait,
+                accepte l’incertitude, protège son capital et construit une logique de travail stable. Cette base prépare le passage
+                au niveau 2, dans lequel la lecture de structure, la confluence et l’exécution deviendront plus avancées.
+            </p>
+        </div>
+
+        <div class="academy-grid-3" style="margin-top: 24px;">
+            <div class="academy-info-card">
+                <h3>Idée clé 1</h3>
+                <p>Le marché ne vous doit rien. Vous devez donc travailler avec méthode, pas avec ego.</p>
+            </div>
+            <div class="academy-info-card">
+                <h3>Idée clé 2</h3>
+                <p>Le risque est plus important que l’excitation du gain.</p>
+            </div>
+            <div class="academy-info-card">
+                <h3>Idée clé 3</h3>
+                <p>Comprendre le contexte avant d’exécuter est la base d’un vrai trader.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Quiz de validation</span>
+            <h2>Évaluation du niveau 1</h2>
+        </div>
+
+        <div class="academy-quiz-card">
+            {% if is_pro %}
+            <form class="academy-quiz-form" id="academyQuiz1">
+                <div class="academy-question">
+                    <h3>1. Le rôle principal du Stop Loss est de :</h3>
+                    <label><input type="radio" name="q1" value="a"> garantir un gain minimum</label>
+                    <label><input type="radio" name="q1" value="b"> limiter la perte et invalider un scénario</label>
+                    <label><input type="radio" name="q1" value="c"> augmenter automatiquement la taille du trade</label>
+                </div>
+
+                <div class="academy-question">
+                    <h3>2. La gestion du risque sert principalement à :</h3>
+                    <label><input type="radio" name="q2" value="a"> survivre aux erreurs et protéger le capital</label>
+                    <label><input type="radio" name="q2" value="b"> transformer tous les trades en gains</label>
+                    <label><input type="radio" name="q2" value="c"> éviter complètement l’incertitude</label>
+                </div>
+
+                <div class="academy-question">
+                    <h3>3. Un support ou une résistance doit être compris comme :</h3>
+                    <label><input type="radio" name="q3" value="a"> une garantie absolue de retournement</label>
+                    <label><input type="radio" name="q3" value="b"> une zone d’intérêt à interpréter dans un contexte plus large</label>
+                    <label><input type="radio" name="q3" value="c"> un simple indicateur sans utilité</label>
+                </div>
+
+                <button
+                    type="button"
+                    class="academy-btn academy-btn-primary"
+                    onclick="submitQuiz('academyQuiz1', ['b','a','b'], 'quiz1Result')">
+                    Valider le quiz
+                </button>
+
+                <div id="quiz1Result" class="academy-quiz-result"></div>
+            </form>
+
+            <form method="POST" action="{{ url_for('pages.academy_complete_level', level='level1') }}" class="academy-complete-form">
+                <button class="academy-btn academy-btn-secondary" type="submit">
+                    Marquer le niveau 1 comme terminé
+                </button>
+            </form>
+            {% else %}
+            <div class="academy-locked-box">
+                <div class="academy-lock-icon">🔒</div>
+                <h3>Quiz réservé au plan Pro</h3>
+                <p>Le quiz complet, la progression et la validation du niveau sont débloqués avec l’abonnement Pro.</p>
+                <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
+                    Débloquer le quiz
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='academy.js') }}"></script>
+{% endblock %}

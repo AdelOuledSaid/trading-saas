@@ -6,8 +6,8 @@ from flask_migrate import Migrate
 from app.extensions import db, login_manager, cache
 from app.core.auth import load_user
 from app.utils.explainer import explain_reason
+from app.access import has_access, get_plan_level, signal_limit_for_plan
 
-# 🔥 Initialisation globale
 migrate = Migrate()
 
 
@@ -26,7 +26,7 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # =========================
-    # SÉCURITÉ (PRODUCTION READY)
+    # SÉCURITÉ
     # =========================
     app.config["SESSION_COOKIE_SECURE"] = True
     app.config["REMEMBER_COOKIE_SECURE"] = True
@@ -39,7 +39,7 @@ def create_app():
     # INIT EXTENSIONS
     # =========================
     db.init_app(app)
-    migrate.init_app(app, db)   # ✅ IMPORTANT (Flask-Migrate)
+    migrate.init_app(app, db)
     login_manager.init_app(app)
     cache.init_app(app)
 
@@ -53,7 +53,21 @@ def create_app():
     # =========================
     # JINJA FILTERS
     # =========================
-    app.jinja_env.filters['explain_reason'] = explain_reason
+    app.jinja_env.filters["explain_reason"] = explain_reason
+
+    # =========================
+    # ACCESS HELPERS (JINJA)
+    # =========================
+    @app.context_processor
+    def inject_access_helpers():
+        from flask_login import current_user
+
+        return {
+            "has_access": has_access,
+            "get_plan_level": get_plan_level,
+            "signal_limit_for_plan": signal_limit_for_plan,
+            "user_plan": getattr(current_user, "plan", "free")
+        }
 
     # =========================
     # BLUEPRINTS
@@ -79,4 +93,5 @@ def create_app():
     app.register_blueprint(signals_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(replay_bp)
+
     return app

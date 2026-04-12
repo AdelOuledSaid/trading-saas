@@ -1,747 +1,495 @@
-/* =========================
-   BTC PAGE ONLY
-========================= */
-.bitcoin-page {
-    --btc-bg: #f5f7fb;
-    --btc-bg-soft: #ffffff;
-    --btc-bg-alt: #f8fbff;
-    --btc-border: #e5edf7;
-    --btc-border-strong: #d6e2f0;
+/* =========================================================
+   VELWOLF SIGNALS — BTC ULTRA PREMIUM EDITORIAL PAGE
+========================================================= */
 
-    --btc-text: #0f172a;
-    --btc-text-soft: #475569;
-    --btc-text-muted: #64748b;
-
-    --btc-blue: #2563eb;
-    --btc-blue-2: #3b82f6;
-    --btc-blue-soft: #eff6ff;
-    --btc-cyan: #06b6d4;
-    --btc-purple: #7c3aed;
+.bitcoin-page.btc-dark-page {
+    --btc-bg: #050814;
+    --btc-panel: rgba(11, 16, 28, 0.92);
+    --btc-border: rgba(255, 255, 255, 0.08);
+    --btc-text: #f8fbff;
+    --btc-text-soft: #9aa8c0;
+    --btc-text-soft-2: #d7e1ef;
+    --btc-main: #4f8cff;
+    --btc-main-2: #7c5cff;
+    --btc-cyan: #22d3ee;
     --btc-gold: #f59e0b;
-    --btc-green: #16a34a;
-    --btc-green-soft: #ecfdf3;
-    --btc-red: #dc2626;
-    --btc-red-soft: #fef2f2;
-
-    --btc-shadow-sm: 0 10px 30px rgba(15, 23, 42, 0.05);
-    --btc-shadow-md: 0 18px 50px rgba(15, 23, 42, 0.08);
-    --btc-shadow-lg: 0 30px 70px rgba(37, 99, 235, 0.10);
+    --btc-green: #22c55e;
+    --btc-red: #ef4444;
+    --btc-shadow: 0 20px 50px rgba(0, 0, 0, 0.42);
+    --btc-shadow-lg: 0 30px 70px rgba(0, 0, 0, 0.55);
 
     background:
-        radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 30%),
-        radial-gradient(circle at top right, rgba(124, 58, 237, 0.08), transparent 28%),
-        linear-gradient(180deg, #f8fbff 0%, #f4f7fb 42%, #f7f9fc 100%);
+        radial-gradient(circle at 14% 18%, rgba(79, 140, 255, 0.12), transparent 22%),
+        radial-gradient(circle at 84% 10%, rgba(124, 92, 255, 0.10), transparent 22%),
+        radial-gradient(circle at 50% 0%, rgba(34, 211, 238, 0.06), transparent 26%),
+        #050814;
     color: var(--btc-text);
 }
 
-.bitcoin-page .btc-page-shell {
-    position: relative;
-    overflow: hidden;
+body.home-body::after {
+    display: none !important;
 }
 
-.bitcoin-page .section-container {
-    position: relative;
-    z-index: 2;
-}
-
-/* =========================
-   HERO
-========================= */
-.bitcoin-page .btc-hero-section {
-    position: relative;
-    padding: 54px 0 34px;
-}
-
-.bitcoin-page .btc-hero-section::before {
-    content: "";
-    position: absolute;
-    top: -80px;
-    right: -80px;
-    width: 360px;
-    height: 360px;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.15), transparent 70%);
-    border-radius: 50%;
+.btc-bg-grid {
+    position: fixed;
+    inset: 0;
     pointer-events: none;
+    opacity: 0.16;
+    z-index: 0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 42px 42px;
 }
 
-.bitcoin-page .btc-hero-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.85fr);
-    gap: 30px;
-    align-items: stretch;
+.btc-shell {
+    position: relative;
+    z-index: 1;
 }
 
-.bitcoin-page .btc-hero-content,
-.bitcoin-page .btc-hero-side {
-    min-width: 0;
+/* HERO */
+.btc-hero {
+    padding: 42px 0 56px;
+    min-height: auto;
 }
 
-.bitcoin-page .btc-hero-content {
-    background: rgba(255, 255, 255, 0.72);
-    border: 1px solid rgba(229, 237, 247, 0.85);
-    box-shadow: var(--btc-shadow-md);
-    border-radius: 30px;
-    padding: 34px;
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+.btc-hero-single {
+    max-width: 1100px;
 }
 
-.bitcoin-page .btc-hero-badge {
+.btc-brand-row {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 16px;
-    border-radius: 999px;
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.10), rgba(124, 58, 237, 0.10));
-    color: var(--btc-blue);
-    border: 1px solid rgba(37, 99, 235, 0.12);
-    font-weight: 700;
-    font-size: 0.95rem;
-    margin-bottom: 18px;
+    gap: 14px;
+    margin-bottom: 36px;
 }
 
-.bitcoin-page .btc-badge-icon {
-    width: 34px;
-    height: 34px;
+.btc-brand-mark {
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--btc-gold), #fbbf24);
+    color: #111827;
+    font-weight: 900;
+    box-shadow: 0 10px 24px rgba(245, 158, 11, 0.24);
+}
+
+.btc-brand-text {
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--btc-text);
+}
+
+.btc-launch-badge {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, var(--btc-gold), #fbbf24);
-    color: #fff;
-    font-size: 1.1rem;
-    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.25);
+    gap: 14px;
+    padding: 18px 24px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid var(--btc-border);
+    font-size: 20px;
+    color: #eef4ff;
+    box-shadow: var(--btc-shadow);
+    margin-bottom: 26px;
+    backdrop-filter: blur(12px);
 }
 
-.bitcoin-page .btc-main-title {
+.btc-launch-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(255,255,255,0.95);
+    color: #0b0d11;
+    font-weight: 800;
+    font-size: 14px;
+}
+
+.btc-hero-title {
+    font-size: clamp(48px, 6vw, 88px);
+    line-height: 0.94;
+    letter-spacing: -0.06em;
+    font-weight: 800;
     margin: 0 0 18px;
-    font-size: clamp(2rem, 4vw, 3.25rem);
-    line-height: 1.08;
-    letter-spacing: -0.03em;
-    color: var(--btc-text);
-    max-width: 900px;
-}
-
-.bitcoin-page .btc-main-text {
-    margin: 0;
     max-width: 860px;
-    font-size: 1.05rem;
-    line-height: 1.85;
-    color: var(--btc-text-soft);
+    color: #f8fbff;
 }
 
-.bitcoin-page .btc-hero-actions {
+.btc-hero-subtitle {
+    max-width: 860px;
+    font-size: 1.08rem;
+    line-height: 1.85;
+    color: var(--btc-text-soft-2);
+    margin: 0 0 24px;
+}
+
+.btc-hero-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 14px;
-    margin-top: 28px;
-}
-
-.bitcoin-page .btc-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 52px;
-    padding: 0 22px;
-    border-radius: 16px;
-    text-decoration: none;
-    font-weight: 800;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-}
-
-.bitcoin-page .btc-btn:hover {
-    transform: translateY(-2px);
-}
-
-.bitcoin-page .btc-btn-primary {
-    background: linear-gradient(135deg, var(--btc-blue), var(--btc-purple));
-    color: #fff;
-    box-shadow: 0 18px 40px rgba(59, 130, 246, 0.24);
-}
-
-.bitcoin-page .btc-btn-secondary {
-    background: rgba(255, 255, 255, 0.85);
-    color: var(--btc-text);
-    border: 1px solid var(--btc-border-strong);
-    box-shadow: var(--btc-shadow-sm);
-}
-
-.bitcoin-page .btc-btn-secondary.cta-alt {
-    background: rgba(255, 255, 255, 0.12);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    backdrop-filter: blur(10px);
-}
-
-.bitcoin-page .btc-hero-points {
-    margin-top: 28px;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
-}
-
-.bitcoin-page .btc-point-card {
-    background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(248,250,252,0.96));
-    border: 1px solid var(--btc-border);
-    border-radius: 22px;
-    padding: 18px 18px 16px;
-    box-shadow: var(--btc-shadow-sm);
-}
-
-.bitcoin-page .btc-point-card strong {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 1rem;
-    color: var(--btc-text);
-}
-
-.bitcoin-page .btc-point-card span {
-    display: block;
-    color: var(--btc-text-muted);
-    line-height: 1.7;
-    font-size: 0.96rem;
-}
-
-.bitcoin-page .btc-hero-side {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-}
-
-.bitcoin-page .btc-stat-card {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid var(--btc-border);
-    border-radius: 24px;
-    padding: 22px;
-    box-shadow: var(--btc-shadow-sm);
-    min-height: 170px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.bitcoin-page .btc-stat-highlight {
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.98), rgba(124, 58, 237, 0.95));
-    color: #fff;
-    border: none;
-    box-shadow: var(--btc-shadow-lg);
-}
-
-.bitcoin-page .btc-stat-label {
-    display: inline-flex;
-    align-items: center;
-    width: fit-content;
-    padding: 7px 12px;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    background: rgba(37, 99, 235, 0.08);
-    color: var(--btc-blue);
-}
-
-.bitcoin-page .btc-stat-highlight .btc-stat-label {
-    background: rgba(255,255,255,0.16);
-    color: #fff;
-}
-
-.bitcoin-page .btc-stat-card h2 {
-    margin: 16px 0 8px;
-    font-size: clamp(1.4rem, 2.1vw, 2rem);
-    line-height: 1.15;
-    color: inherit;
-    word-break: break-word;
-}
-
-.bitcoin-page .btc-stat-card p {
-    margin: 0;
-    color: inherit;
-    opacity: 0.88;
-    line-height: 1.6;
-}
-
-/* =========================
-   STRIP
-========================= */
-.bitcoin-page .btc-market-strip {
-    padding: 8px 0 22px;
-}
-
-.bitcoin-page .btc-market-strip-inner {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 16px;
-}
-
-.bitcoin-page .btc-strip-item {
-    background: rgba(255,255,255,0.82);
-    border: 1px solid var(--btc-border);
-    border-radius: 18px;
-    padding: 18px 18px 16px;
-    box-shadow: var(--btc-shadow-sm);
-    backdrop-filter: blur(10px);
-}
-
-.bitcoin-page .btc-strip-item span {
-    display: block;
-    font-size: 0.84rem;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-    color: var(--btc-text-muted);
-    margin-bottom: 8px;
-}
-
-.bitcoin-page .btc-strip-item strong {
-    font-size: 1.02rem;
-    line-height: 1.4;
-    color: var(--btc-text);
-    word-break: break-word;
-}
-
-/* =========================
-   GENERAL SECTION
-========================= */
-.bitcoin-page .btc-section {
-    padding: 42px 0;
-}
-
-.bitcoin-page .btc-section-heading {
-    margin-bottom: 24px;
-}
-
-.bitcoin-page .btc-section-heading.center {
-    text-align: center;
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
     margin-bottom: 28px;
 }
 
-.bitcoin-page .btc-section-kicker {
-    display: inline-block;
-    margin-bottom: 10px;
-    padding: 7px 12px;
-    border-radius: 999px;
-    background: var(--btc-blue-soft);
-    color: var(--btc-blue);
-    border: 1px solid rgba(37, 99, 235, 0.10);
+.btc-btn {
+    min-height: 54px;
+    padding: 0 24px;
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
     font-weight: 800;
-    font-size: 0.84rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btc-btn:hover {
+    transform: translateY(-2px);
+}
+
+.btc-btn-primary {
+    background: linear-gradient(135deg, var(--btc-main), var(--btc-main-2));
+    color: #ffffff;
+    box-shadow: 0 18px 40px rgba(79, 140, 255, 0.20);
+}
+
+.btc-btn-secondary {
+    background: rgba(255,255,255,0.04);
+    color: #fff;
+    border: 1px solid var(--btc-border);
+}
+
+.btc-hero-pills {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.btc-hero-pill {
+    padding: 18px;
+    border-radius: 22px;
+    background: rgba(15, 20, 33, 0.90);
+    border: 1px solid var(--btc-border);
+    box-shadow: var(--btc-shadow);
+}
+
+.btc-hero-pill strong {
+    display: block;
+    color: #fff;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.btc-hero-pill span {
+    display: block;
+    color: var(--btc-text-soft);
+    line-height: 1.65;
+}
+
+.btc-kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.btc-kpi-item {
+    padding: 18px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--btc-border);
+    box-shadow: var(--btc-shadow);
+}
+
+.btc-kpi-item span {
+    display: block;
+    color: #94a3b8;
+    font-size: 12px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.btc-kpi-item strong {
+    color: #ffffff;
+    font-size: 1.15rem;
+}
+
+/* CONTENT */
+.btc-content-section {
+    padding: 36px 0;
+}
+
+.btc-section-header {
+    margin-bottom: 24px;
+}
+
+.btc-section-chip,
+.btc-small-badge,
+.btc-cta-chip {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(79, 140, 255, 0.12);
+    color: #a9c4ff;
+    border: 1px solid rgba(79, 140, 255, 0.20);
+    font-weight: 800;
+    font-size: 0.82rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
 
-.bitcoin-page .btc-section-heading h2 {
-    margin: 0 0 12px;
-    font-size: clamp(1.8rem, 3vw, 2.6rem);
-    line-height: 1.14;
-    letter-spacing: -0.02em;
-    color: var(--btc-text);
+.btc-section-header h2,
+.btc-cta-box h2,
+.btc-chart-card-head h3,
+.btc-story-left h2 {
+    color: #f8fafc;
 }
 
-.bitcoin-page .btc-section-heading p {
+.btc-section-header h2 {
+    margin: 14px 0 10px;
+    font-size: clamp(2rem, 3vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+}
+
+.btc-section-header p,
+.btc-story-left p {
     margin: 0;
-    max-width: 780px;
-    color: var(--btc-text-soft);
+    max-width: 820px;
+    color: #d7dee8;
     line-height: 1.85;
-    font-size: 1rem;
 }
 
-.bitcoin-page .btc-section-heading.center p {
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* =========================
-   KPI
-========================= */
-.bitcoin-page .btc-kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 18px;
-}
-
-.bitcoin-page .btc-kpi-card {
-    background: rgba(255, 255, 255, 0.88);
+/* CHART */
+.btc-chart-card {
+    background: rgba(10, 13, 22, 0.94);
     border: 1px solid var(--btc-border);
-    border-radius: 24px;
-    padding: 24px;
-    box-shadow: var(--btc-shadow-sm);
-}
-
-.bitcoin-page .btc-kpi-featured {
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.98), rgba(59, 130, 246, 0.94));
-    border: none;
-    color: #fff;
+    border-radius: 28px;
+    overflow: hidden;
     box-shadow: var(--btc-shadow-lg);
 }
 
-.bitcoin-page .btc-kpi-card span {
-    display: block;
-    color: inherit;
-    opacity: 0.9;
-    font-weight: 700;
-    margin-bottom: 14px;
-}
-
-.bitcoin-page .btc-kpi-card strong {
-    display: block;
-    font-size: clamp(1.8rem, 2.8vw, 2.7rem);
-    line-height: 1.05;
-    margin-bottom: 12px;
-    color: inherit;
-}
-
-.bitcoin-page .btc-kpi-card p {
-    margin: 0;
-    color: inherit;
-    opacity: 0.86;
-    line-height: 1.7;
-}
-
-/* =========================
-   MAIN GRID
-========================= */
-.bitcoin-page .btc-main-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.78fr);
-    gap: 24px;
-    align-items: start;
-}
-
-.bitcoin-page .btc-main-left,
-.bitcoin-page .btc-main-right {
-    min-width: 0;
-}
-
-.bitcoin-page .btc-main-right {
-    display: grid;
-    gap: 18px;
-}
-
-.bitcoin-page .btc-panel {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid var(--btc-border);
-    border-radius: 26px;
-    padding: 24px;
-    box-shadow: var(--btc-shadow-sm);
-    min-width: 0;
-}
-
-.bitcoin-page .btc-chart-panel {
-    padding: 0;
-    overflow: hidden;
-}
-
-.bitcoin-page .btc-panel-head {
+.btc-chart-card-head {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
-    padding: 24px 24px 0;
+    padding: 22px 22px 0;
 }
 
-.bitcoin-page .btc-panel-badge {
-    display: inline-flex;
-    align-items: center;
-    width: fit-content;
-    padding: 7px 12px;
-    border-radius: 999px;
-    background: rgba(37, 99, 235, 0.08);
-    color: var(--btc-blue);
-    font-weight: 800;
-    font-size: 0.82rem;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
+.btc-chart-card-head h3 {
+    margin: 12px 0 0;
+    font-size: 1.34rem;
 }
 
-.bitcoin-page .btc-panel h3,
-.bitcoin-page .btc-panel-head h3 {
-    margin: 0;
-    font-size: 1.25rem;
-    line-height: 1.35;
-    color: var(--btc-text);
-}
-
-.bitcoin-page .btc-panel-meta {
+.btc-head-pills {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
 }
 
-.bitcoin-page .btc-panel-meta span {
-    display: inline-flex;
-    align-items: center;
+.btc-head-pills span {
     min-height: 36px;
     padding: 0 12px;
     border-radius: 999px;
-    background: #f8fafc;
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255,255,255,0.04);
     border: 1px solid var(--btc-border);
-    color: var(--btc-text-muted);
+    color: #cdd6e2;
     font-size: 0.84rem;
-    font-weight: 700;
 }
 
-.bitcoin-page .btc-chart-wrap {
-    padding: 20px 24px 24px;
+.btc-chart-holder {
+    padding: 18px 22px 22px;
 }
 
-.bitcoin-page #tradingview_btc_chart {
+#tradingview_btc_chart {
     min-height: 560px;
-    border-radius: 22px;
+    border-radius: 20px;
     overflow: hidden;
     border: 1px solid var(--btc-border);
-    background: #fff;
+    background: #0d1220;
 }
 
-.bitcoin-page .btc-mini-grid {
-    margin-top: 18px;
+/* CARDS */
+.btc-insight-grid,
+.btc-info-grid,
+.btc-timeline-grid,
+.btc-faq-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
+    gap: 20px;
 }
 
-.bitcoin-page .btc-list-clean {
-    list-style: none;
-    padding: 0;
-    margin: 16px 0 0;
-    display: grid;
-    gap: 12px;
+.btc-insight-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
-.bitcoin-page .btc-list-clean li {
-    padding: 12px 14px;
-    border-radius: 16px;
-    background: #f8fbff;
-    border: 1px solid #edf2f8;
-    color: var(--btc-text-soft);
-    line-height: 1.65;
-    word-break: break-word;
-}
-
-.bitcoin-page .btc-list-clean strong {
-    color: var(--btc-text);
-}
-
-.bitcoin-page .btc-reading-text {
-    margin: 14px 0 0;
-    color: var(--btc-text-soft);
-    line-height: 1.85;
-}
-
-.bitcoin-page .btc-mini-points {
-    display: grid;
+.btc-info-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    margin-top: 18px;
 }
 
-.bitcoin-page .btc-mini-points.column {
-    grid-template-columns: 1fr;
+.btc-timeline-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
-.bitcoin-page .btc-mini-point {
-    padding: 14px;
-    border-radius: 18px;
-    background: linear-gradient(180deg, #fbfdff, #f7faff);
+.btc-faq-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.btc-insight-card,
+.btc-info-card,
+.btc-timeline-card,
+.btc-faq-card,
+.btc-why-card,
+.btc-story-card {
+    background: var(--btc-panel);
     border: 1px solid var(--btc-border);
+    border-radius: 24px;
+    padding: 22px;
+    box-shadow: var(--btc-shadow);
 }
 
-.bitcoin-page .btc-mini-point strong {
+.btc-insight-card h3,
+.btc-faq-card h3,
+.btc-timeline-card h3,
+.btc-why-card strong,
+.btc-story-card strong {
+    color: #f8fafc;
+}
+
+.btc-insight-card h3,
+.btc-faq-card h3,
+.btc-timeline-card h3 {
+    margin: 0 0 10px;
+    font-size: 1.06rem;
+    line-height: 1.4;
+}
+
+.btc-insight-card p,
+.btc-faq-card p,
+.btc-timeline-card p,
+.btc-why-card span,
+.btc-story-card span {
+    margin: 0;
+    color: #d7dee8;
+    line-height: 1.8;
+}
+
+.btc-info-card span {
     display: block;
-    font-size: 0.94rem;
-    color: var(--btc-text);
-    margin-bottom: 6px;
+    color: #94a3b8;
+    font-size: 12px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
 }
 
-.bitcoin-page .btc-mini-point span {
-    display: block;
-    color: var(--btc-text-muted);
-    line-height: 1.6;
-    font-size: 0.93rem;
+.btc-info-card strong {
+    color: #ffffff;
+    font-size: 1.2rem;
+    line-height: 1.4;
 }
 
-/* =========================
-   WHY BTC
-========================= */
-.bitcoin-page .btc-why-box {
+.btc-timeline-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.btc-timeline-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #4f8cff, #7c5cff, #22d3ee);
+}
+
+.btc-timeline-year {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: rgba(79,140,255,0.10);
+    border: 1px solid rgba(79,140,255,0.18);
+    color: #a9c4ff;
+    font-size: 0.82rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+/* STORY BOX */
+.btc-story-box,
+.btc-why-box {
     display: grid;
     grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.9fr);
     gap: 22px;
     padding: 28px;
     border-radius: 30px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(243,248,255,0.95));
+    background: linear-gradient(135deg, rgba(10,14,24,0.94), rgba(14,20,34,0.98));
     border: 1px solid var(--btc-border);
-    box-shadow: var(--btc-shadow-md);
+    box-shadow: var(--btc-shadow-lg);
 }
 
-.bitcoin-page .btc-why-left h2 {
-    margin: 0 0 16px;
+.btc-story-left h2 {
+    margin: 14px 0 16px;
     font-size: clamp(1.7rem, 2.7vw, 2.4rem);
     line-height: 1.18;
-    color: var(--btc-text);
 }
 
-.bitcoin-page .btc-why-left p {
-    margin: 0;
-    color: var(--btc-text-soft);
-    line-height: 1.9;
+.btc-story-left p + p {
+    margin-top: 14px;
 }
 
-.bitcoin-page .btc-why-right {
+.btc-story-right,
+.btc-why-right {
     display: grid;
     gap: 14px;
 }
 
-.bitcoin-page .btc-why-card {
-    background: rgba(255,255,255,0.92);
-    border: 1px solid var(--btc-border);
-    border-radius: 22px;
-    padding: 18px;
-    box-shadow: var(--btc-shadow-sm);
-}
-
-.bitcoin-page .btc-why-card strong {
-    display: block;
-    margin-bottom: 8px;
-    color: var(--btc-text);
-}
-
-.bitcoin-page .btc-why-card span {
-    color: var(--btc-text-muted);
-    line-height: 1.7;
-    display: block;
-}
-
-/* =========================
-   NEWS
-========================= */
-.bitcoin-page .btc-news-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 20px;
-}
-
-.bitcoin-page .btc-news-card {
-    overflow: hidden;
-    border-radius: 24px;
-    background: rgba(255,255,255,0.92);
-    border: 1px solid var(--btc-border);
-    box-shadow: var(--btc-shadow-sm);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.bitcoin-page .btc-news-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--btc-shadow-md);
-}
-
-.bitcoin-page .btc-news-image {
-    position: relative;
-    aspect-ratio: 16 / 9;
-    background: linear-gradient(135deg, #eaf2ff, #f5f8ff);
-    overflow: hidden;
-}
-
-.bitcoin-page .btc-news-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.bitcoin-page .btc-news-image-fallback {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    color: var(--btc-blue);
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.10), rgba(124, 58, 237, 0.10));
-}
-
-.bitcoin-page .btc-news-body {
-    padding: 20px;
-}
-
-.bitcoin-page .btc-news-source {
-    margin-bottom: 10px;
-}
-
-.bitcoin-page .btc-news-source span {
-    display: inline-flex;
-    align-items: center;
-    min-height: 32px;
-    padding: 0 10px;
-    border-radius: 999px;
-    background: var(--btc-blue-soft);
-    color: var(--btc-blue);
-    font-size: 0.78rem;
-    font-weight: 800;
-}
-
-.bitcoin-page .btc-news-card h3 {
-    margin: 0 0 12px;
-    font-size: 1.08rem;
-    line-height: 1.45;
-}
-
-.bitcoin-page .btc-news-card h3 a {
-    color: var(--btc-text);
-    text-decoration: none;
-}
-
-.bitcoin-page .btc-news-card h3 a:hover {
-    color: var(--btc-blue);
-}
-
-.bitcoin-page .btc-news-card p {
-    margin: 0;
-    color: var(--btc-text-soft);
-    line-height: 1.75;
-}
-
-/* =========================
-   SIGNALS
-========================= */
-.bitcoin-page .btc-signals-grid {
+/* SIGNALS */
+.btc-signals-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 22px;
 }
 
-.bitcoin-page .btc-signal-card {
+.btc-signal-card {
     position: relative;
-    background: rgba(255,255,255,0.94);
+    background: rgba(14, 20, 32, 0.96);
     border: 1px solid var(--btc-border);
     border-radius: 28px;
     padding: 24px;
-    box-shadow: var(--btc-shadow-sm);
+    box-shadow: var(--btc-shadow);
     overflow: hidden;
 }
 
-.bitcoin-page .btc-signal-card::before {
+.btc-signal-card::before {
     content: "";
     position: absolute;
     inset: 0 auto 0 0;
     width: 5px;
-    background: linear-gradient(180deg, var(--btc-blue), var(--btc-cyan));
+    background: linear-gradient(180deg, var(--btc-main), var(--btc-cyan));
     opacity: 0.9;
 }
 
-.bitcoin-page .btc-signal-card.buy::before {
-    background: linear-gradient(180deg, #16a34a, #22c55e);
+.btc-signal-card.buy::before {
+    background: linear-gradient(180deg, #15803d, #22c55e);
 }
 
-.bitcoin-page .btc-signal-card.sell::before {
+.btc-signal-card.sell::before {
     background: linear-gradient(180deg, #dc2626, #f97316);
 }
 
-.bitcoin-page .btc-signal-top {
+.btc-signal-top {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -749,36 +497,32 @@
     margin-bottom: 20px;
 }
 
-.bitcoin-page .btc-signal-head {
-    min-width: 0;
-}
-
-.bitcoin-page .btc-signal-asset {
+.btc-signal-asset {
     display: inline-block;
     margin-bottom: 6px;
     font-size: 0.82rem;
     font-weight: 800;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--btc-text-muted);
+    color: #93a4b8;
 }
 
-.bitcoin-page .btc-signal-head h3 {
+.btc-signal-head h3 {
     margin: 0;
     font-size: 1.7rem;
     line-height: 1.15;
-    color: var(--btc-text);
+    color: #f8fafc;
 }
 
-.bitcoin-page .btc-signal-badges {
+.btc-signal-badges {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
     gap: 10px;
 }
 
-.bitcoin-page .btc-status-badge,
-.bitcoin-page .btc-confidence-badge {
+.btc-status-badge,
+.btc-confidence-badge {
     display: inline-flex;
     align-items: center;
     min-height: 36px;
@@ -789,213 +533,148 @@
     white-space: nowrap;
 }
 
-.bitcoin-page .btc-status-badge.status-open {
-    background: #eff6ff;
-    color: #2563eb;
-    border: 1px solid #dbeafe;
+.btc-status-badge.status-win {
+    background: rgba(34, 197, 94, 0.12);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.18);
 }
 
-.bitcoin-page .btc-status-badge.status-win {
-    background: #ecfdf3;
-    color: #15803d;
-    border: 1px solid #bbf7d0;
+.btc-status-badge.status-open {
+    background: rgba(79, 140, 255, 0.12);
+    color: #93c5fd;
+    border: 1px solid rgba(79, 140, 255, 0.18);
 }
 
-.bitcoin-page .btc-status-badge.status-loss {
-    background: #fef2f2;
-    color: #dc2626;
-    border: 1px solid #fecaca;
+.btc-status-badge.status-loss {
+    background: rgba(239, 68, 68, 0.12);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.18);
 }
 
-.bitcoin-page .badge-elite {
-    background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(124,58,237,0.12));
-    color: #2563eb;
-    border: 1px solid rgba(37,99,235,0.10);
+.badge-elite {
+    background: linear-gradient(135deg, rgba(79,140,255,0.14), rgba(124,92,255,0.12));
+    color: #a9c4ff;
+    border: 1px solid rgba(79,140,255,0.14);
 }
 
-.bitcoin-page .badge-strong {
-    background: rgba(16, 185, 129, 0.10);
-    color: #047857;
-    border: 1px solid rgba(16, 185, 129, 0.14);
+.badge-strong {
+    background: rgba(34, 197, 94, 0.10);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.14);
 }
 
-.bitcoin-page .badge-standard {
-    background: #f8fafc;
-    color: #475569;
-    border: 1px solid #e2e8f0;
+.badge-standard {
+    background: rgba(255,255,255,0.05);
+    color: #cbd5e1;
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
-.bitcoin-page .btc-signal-prices {
+.btc-signal-prices,
+.btc-signal-meta {
     display: grid;
+    gap: 12px;
+}
+
+.btc-signal-prices {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
     margin-bottom: 16px;
 }
 
-.bitcoin-page .btc-price-box {
-    background: linear-gradient(180deg, #fbfdff, #f7faff);
+.btc-signal-meta {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: 16px;
+}
+
+.btc-price-box,
+.btc-meta-box {
+    background: linear-gradient(180deg, rgba(18,25,36,0.96), rgba(21,30,43,0.98));
     border: 1px solid var(--btc-border);
     border-radius: 18px;
     padding: 16px;
 }
 
-.bitcoin-page .btc-price-box span {
+.btc-price-box span,
+.btc-meta-box span,
+.btc-footer-block span {
     display: block;
     font-size: 0.82rem;
     font-weight: 700;
-    color: var(--btc-text-muted);
+    color: #93a4b8;
     margin-bottom: 8px;
 }
 
-.bitcoin-page .btc-price-box strong {
+.btc-price-box strong,
+.btc-meta-box strong,
+.btc-footer-block strong {
     display: block;
-    color: var(--btc-text);
-    font-size: 1.05rem;
-    line-height: 1.35;
-    word-break: break-word;
-}
-
-.bitcoin-page .btc-signal-meta {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.bitcoin-page .btc-meta-box {
-    background: #ffffff;
-    border: 1px solid #edf2f7;
-    border-radius: 16px;
-    padding: 14px;
-}
-
-.bitcoin-page .btc-meta-box span {
-    display: block;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--btc-text-muted);
-    margin-bottom: 7px;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-}
-
-.bitcoin-page .btc-meta-box strong {
-    display: block;
-    color: var(--btc-text);
+    color: #f8fafc;
     line-height: 1.5;
     word-break: break-word;
 }
 
-.bitcoin-page .btc-signal-reason {
+.btc-signal-reason {
     margin-bottom: 16px;
     padding: 18px;
     border-radius: 18px;
-    background: linear-gradient(180deg, #f9fbff, #f5f8fd);
-    border: 1px solid var(--btc-border);
+    background: linear-gradient(180deg, rgba(79,140,255,0.06), rgba(79,140,255,0.03));
+    border: 1px solid rgba(169, 196, 255, 0.08);
 }
 
-.bitcoin-page .btc-signal-reason h4 {
+.btc-signal-reason h4 {
     margin: 0 0 10px;
-    color: var(--btc-text);
+    color: #f8fafc;
     font-size: 1rem;
 }
 
-.bitcoin-page .btc-signal-reason p {
+.btc-signal-reason p {
     margin: 0;
-    color: var(--btc-text-soft);
+    color: #d7dee8;
     line-height: 1.8;
 }
 
-.bitcoin-page .btc-signal-footer {
+.btc-signal-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
     flex-wrap: wrap;
     padding-top: 16px;
-    border-top: 1px solid #edf2f7;
+    border-top: 1px solid rgba(169, 196, 255, 0.08);
 }
 
-.bitcoin-page .btc-footer-block span {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 0.8rem;
-    color: var(--btc-text-muted);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-}
-
-.bitcoin-page .btc-footer-block strong {
-    color: var(--btc-text);
-    line-height: 1.5;
-}
-
-.bitcoin-page .text-profit {
+.btc-green-text {
     color: var(--btc-green);
 }
 
-.bitcoin-page .text-loss {
+.btc-red-text {
     color: var(--btc-red);
 }
 
-.bitcoin-page .btc-empty-box {
+.btc-empty-box {
     padding: 28px;
     border-radius: 24px;
-    background: rgba(255,255,255,0.9);
+    background: rgba(17,24,35,0.92);
     border: 1px solid var(--btc-border);
-    color: var(--btc-text-soft);
-    box-shadow: var(--btc-shadow-sm);
+    color: #d7dee8;
+    box-shadow: var(--btc-shadow);
 }
 
-/* =========================
-   FAQ
-========================= */
-.bitcoin-page .btc-faq-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
+/* CTA */
+.btc-cta-section {
+    padding-bottom: 56px;
 }
 
-.bitcoin-page .btc-faq-card {
-    background: rgba(255,255,255,0.92);
-    border: 1px solid var(--btc-border);
-    border-radius: 24px;
-    padding: 22px;
-    box-shadow: var(--btc-shadow-sm);
-}
-
-.bitcoin-page .btc-faq-card h3 {
-    margin: 0 0 10px;
-    color: var(--btc-text);
-    font-size: 1.08rem;
-    line-height: 1.45;
-}
-
-.bitcoin-page .btc-faq-card p {
-    margin: 0;
-    color: var(--btc-text-soft);
-    line-height: 1.8;
-}
-
-/* =========================
-   CTA
-========================= */
-.bitcoin-page .btc-final-cta {
-    padding: 20px 0 56px;
-}
-
-.bitcoin-page .btc-final-cta-box {
+.btc-cta-box {
     position: relative;
     overflow: hidden;
     border-radius: 34px;
     padding: 34px;
-    background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 55%, #7c3aed 100%);
-    box-shadow: 0 30px 80px rgba(29, 78, 216, 0.24);
+    background: linear-gradient(135deg, #111827 0%, #1d4ed8 55%, #7c3aed 100%);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.30);
     color: #fff;
 }
 
-.bitcoin-page .btc-final-cta-box::before {
+.btc-cta-box::before {
     content: "";
     position: absolute;
     top: -100px;
@@ -1007,159 +686,119 @@
     pointer-events: none;
 }
 
-.bitcoin-page .btc-final-badge {
-    display: inline-flex;
-    align-items: center;
-    min-height: 36px;
-    padding: 0 14px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.18);
-    font-size: 0.82rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+.btc-cta-chip {
     margin-bottom: 14px;
 }
 
-.bitcoin-page .btc-final-cta-box h2 {
+.btc-cta-box h2 {
     margin: 0 0 12px;
-    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-size: clamp(1.9rem, 3vw, 2.8rem);
     line-height: 1.15;
-    color: #fff;
     max-width: 760px;
 }
 
-.bitcoin-page .btc-final-cta-box p {
-    margin: 0;
+.btc-cta-box p {
+    margin: 0 0 22px;
     max-width: 760px;
     color: rgba(255,255,255,0.9);
     line-height: 1.85;
-    font-size: 1rem;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
-@media (max-width: 1200px) {
-    .bitcoin-page .btc-hero-grid,
-    .bitcoin-page .btc-main-grid,
-    .bitcoin-page .btc-why-box {
+/* RESPONSIVE */
+@media (max-width: 1180px) {
+    .btc-hero-pills,
+    .btc-insight-grid,
+    .btc-timeline-grid,
+    .btc-signals-grid {
         grid-template-columns: 1fr;
     }
 
-    .bitcoin-page .btc-market-strip-inner,
-    .bitcoin-page .btc-kpi-grid {
+    .btc-info-grid,
+    .btc-faq-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .bitcoin-page .btc-news-grid {
+    .btc-kpi-strip {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-}
 
-@media (max-width: 992px) {
-    .bitcoin-page .btc-hero-points,
-    .bitcoin-page .btc-mini-grid,
-    .bitcoin-page .btc-signals-grid,
-    .bitcoin-page .btc-faq-grid {
+    .btc-story-box,
+    .btc-why-box {
         grid-template-columns: 1fr;
-    }
-
-    .bitcoin-page .btc-hero-side {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .bitcoin-page .btc-mini-points {
-        grid-template-columns: 1fr;
-    }
-
-    .bitcoin-page .btc-signal-prices,
-    .bitcoin-page .btc-signal-meta {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
-@media (max-width: 768px) {
-    .bitcoin-page .btc-hero-section {
-        padding: 34px 0 18px;
+@media (max-width: 780px) {
+    .btc-hero-title {
+        font-size: 52px;
     }
 
-    .bitcoin-page .btc-hero-content,
-    .bitcoin-page .btc-panel,
-    .bitcoin-page .btc-why-box,
-    .bitcoin-page .btc-final-cta-box,
-    .bitcoin-page .btc-kpi-card,
-    .bitcoin-page .btc-signal-card,
-    .bitcoin-page .btc-faq-card,
-    .bitcoin-page .btc-news-body {
-        padding-left: 18px;
-        padding-right: 18px;
+    .btc-brand-text {
+        font-size: 22px;
     }
 
-    .bitcoin-page .btc-hero-content {
-        padding-top: 24px;
-        padding-bottom: 24px;
+    .btc-launch-badge {
+        font-size: 16px;
+        padding: 14px 18px;
     }
 
-    .bitcoin-page .btc-panel-head {
-        padding: 18px 18px 0;
-        flex-direction: column;
-    }
-
-    .bitcoin-page .btc-chart-wrap {
-        padding: 16px 18px 18px;
-    }
-
-    .bitcoin-page #tradingview_btc_chart {
-        min-height: 420px;
-    }
-
-    .bitcoin-page .btc-hero-side,
-    .bitcoin-page .btc-market-strip-inner,
-    .bitcoin-page .btc-kpi-grid,
-    .bitcoin-page .btc-news-grid,
-    .bitcoin-page .btc-signal-prices,
-    .bitcoin-page .btc-signal-meta {
-        grid-template-columns: 1fr;
-    }
-
-    .bitcoin-page .btc-main-title {
-        font-size: 2rem;
-    }
-
-    .bitcoin-page .btc-main-text,
-    .bitcoin-page .btc-section-heading p,
-    .bitcoin-page .btc-final-cta-box p {
-        font-size: 0.98rem;
-    }
-
-    .bitcoin-page .btc-signal-top,
-    .bitcoin-page .btc-signal-footer {
+    .btc-chart-card-head,
+    .btc-signal-top,
+    .btc-signal-footer {
         flex-direction: column;
         align-items: flex-start;
     }
 
-    .bitcoin-page .btc-signal-badges {
+    .btc-signal-badges {
         justify-content: flex-start;
+    }
+
+    #tradingview_btc_chart {
+        min-height: 420px;
+    }
+}
+
+@media (max-width: 640px) {
+    .btc-info-grid,
+    .btc-signal-prices,
+    .btc-signal-meta,
+    .btc-faq-grid,
+    .btc-kpi-strip {
+        grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 480px) {
-    .bitcoin-page .btc-btn {
+    .btc-btn {
         width: 100%;
     }
 
-    .bitcoin-page .btc-hero-actions {
+    .btc-hero-actions {
         flex-direction: column;
     }
 
-    .bitcoin-page .btc-main-title {
-        font-size: 1.8rem;
+    .btc-hero-title {
+        font-size: 42px;
     }
 
-    .bitcoin-page .btc-stat-card h2,
-    .bitcoin-page .btc-kpi-card strong {
-        font-size: 1.7rem;
+    .btc-chart-holder {
+        padding: 14px;
+    }
+
+    .btc-chart-card-head {
+        padding: 16px 16px 0;
+    }
+
+    .btc-cta-box,
+    .btc-signal-card,
+    .btc-insight-card,
+    .btc-info-card,
+    .btc-timeline-card,
+    .btc-faq-card,
+    .btc-hero-pill,
+    .btc-why-card,
+    .btc-story-card {
+        padding-left: 16px;
+        padding-right: 16px;
     }
 }

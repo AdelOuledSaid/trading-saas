@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApexSignals - Résultats</title>
-    <meta name="description" content="Suivez les résultats, le winrate, le PnL estimé et l’historique des signaux sur ApexSignals dans une interface premium.">
+    <title>VelWolf - Résultats</title>
+    <meta name="description" content="Suivez les résultats, le winrate, le PnL estimé et l’historique des signaux sur VelWolf dans une interface premium.">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='results.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
@@ -13,6 +13,16 @@
 <body class="home-body">
 
 {% include "partials/navbar.html" %}
+
+{% set is_basic = user_plan == 'basic' %}
+{% set is_premium_plus = user_plan in ['premium', 'vip'] %}
+{% set safe_winrate = winrate if winrate is not none else 0 %}
+{% set safe_estimated_pnl = estimated_pnl if estimated_pnl is not none else 0 %}
+{% set safe_avg_rr = avg_rr if avg_rr is not none else 0 %}
+{% set safe_avg_win = avg_win if avg_win is not none else 0 %}
+{% set safe_avg_loss = avg_loss if avg_loss is not none else 0 %}
+{% set safe_best_asset = best_asset if best_asset is not none else '🔒' %}
+{% set safe_best_asset_pnl = best_asset_pnl if best_asset_pnl is not none else '🔒' %}
 
 <section class="rs-hero">
     <div class="section-container">
@@ -29,10 +39,8 @@
             <div class="rs-filters">
                 <div class="rs-filter-group">
                     {% for asset in available_assets %}
-                        <a
-                            href="{{ url_for('signals.results', asset=asset, time=selected_time) }}"
-                            class="rs-pill {% if selected_asset == asset %}active{% endif %}"
-                        >
+                        <a href="{{ url_for('signals.results', asset=asset, time=selected_time) }}"
+                           class="rs-pill {% if selected_asset == asset %}active{% endif %}">
                             {{ asset }}
                         </a>
                     {% endfor %}
@@ -40,10 +48,8 @@
 
                 <div class="rs-filter-group">
                     {% for value, label in available_times %}
-                        <a
-                            href="{{ url_for('signals.results', asset=selected_asset, time=value) }}"
-                            class="rs-pill rs-pill-secondary {% if selected_time == value %}active{% endif %}"
-                        >
+                        <a href="{{ url_for('signals.results', asset=selected_asset, time=value) }}"
+                           class="rs-pill rs-pill-secondary {% if selected_time == value %}active{% endif %}">
                             {{ label }}
                         </a>
                     {% endfor %}
@@ -71,8 +77,8 @@
 
                 <article class="rs-stat rs-stat-blue">
                     <span class="rs-stat-tag">Winrate</span>
-                    <strong>{{ winrate or 0 }}%</strong>
-                    <small>Performance moyenne</small>
+                    <strong>{% if can_view_stats %}{{ safe_winrate }}%{% else %}🔒{% endif %}</strong>
+                    <small>{% if can_view_stats %}Performance moyenne{% else %}Réservé Premium / VIP{% endif %}</small>
                 </article>
             </div>
         </div>
@@ -106,27 +112,31 @@
 
                         <div class="rs-strip-card">
                             <span>PnL estimé</span>
-                            <strong>{{ estimated_pnl or 0 }}</strong>
+                            <strong>{% if can_view_stats %}{{ safe_estimated_pnl }}{% else %}🔒{% endif %}</strong>
                         </div>
 
                         <div class="rs-strip-card">
                             <span>Winrate</span>
-                            <strong>{{ winrate or 0 }}%</strong>
+                            <strong>{% if can_view_stats %}{{ safe_winrate }}%{% else %}🔒{% endif %}</strong>
                         </div>
                     </div>
 
                     <div class="rs-quality-card">
                         <div class="rs-quality-head">
                             <span>Qualité globale</span>
-                            <strong>{{ winrate or 0 }}%</strong>
+                            <strong>{% if can_view_stats %}{{ safe_winrate }}%{% else %}🔒{% endif %}</strong>
                         </div>
 
                         <div class="rs-quality-track">
-                            <div class="rs-quality-fill" style="width: {{ winrate or 0 }}%;"></div>
+                            <div class="rs-quality-fill" style="width: {% if can_view_stats %}{{ safe_winrate }}{% else %}14{% endif %}%;"></div>
                         </div>
 
                         <p>
-                            Une lecture rapide du taux de réussite observé sur les signaux clôturés.
+                            {% if can_view_stats %}
+                                Une lecture rapide du taux de réussite observé sur les signaux clôturés.
+                            {% else %}
+                                Les statistiques avancées sont réservées aux abonnés Premium et VIP.
+                            {% endif %}
                         </p>
                     </div>
                 </section>
@@ -141,6 +151,9 @@
                                     · {{ selected_asset }}
                                 {% endif %}
                             </h2>
+                        </div>
+                        <div>
+                            <span class="rs-panel-kicker">{{ signals|length }} / {{ total_signals }}</span>
                         </div>
                     </div>
 
@@ -190,15 +203,7 @@
                                     <strong>{{ signal.take_profit or "—" }}</strong>
                                 </div>
 
-                                <div class="rs-metric
-                                    {% if signal.confidence is not none and signal.confidence >= 80 %}
-                                        rs-metric-win
-                                    {% elif signal.confidence is not none and signal.confidence < 50 %}
-                                        rs-metric-loss
-                                    {% else %}
-                                        rs-metric-neutral
-                                    {% endif %}
-                                ">
+                                <div class="rs-metric {% if signal.confidence is not none and signal.confidence >= 80 %}rs-metric-win{% elif signal.confidence is not none and signal.confidence < 50 %}rs-metric-loss{% else %}rs-metric-neutral{% endif %}">
                                     <span>Confiance</span>
                                     <strong>{{ signal.confidence or 50 }}%</strong>
                                 </div>
@@ -218,15 +223,7 @@
                                     <strong>{{ signal.timeframe or "—" }}</strong>
                                 </div>
 
-                                <div class="rs-metric
-                                    {% if signal.status == 'WIN' or (signal.result_percent is not none and signal.result_percent >= 0) %}
-                                        rs-metric-win
-                                    {% elif signal.status == 'LOSS' or (signal.result_percent is not none and signal.result_percent < 0) %}
-                                        rs-metric-loss
-                                    {% else %}
-                                        rs-metric-neutral
-                                    {% endif %}
-                                ">
+                                <div class="rs-metric {% if signal.status == 'WIN' or (signal.result_percent is not none and signal.result_percent >= 0) %}rs-metric-win{% elif signal.status == 'LOSS' or (signal.result_percent is not none and signal.result_percent < 0) %}rs-metric-loss{% else %}rs-metric-neutral{% endif %}">
                                     <span>Résultat</span>
                                     {% if signal.result_percent is not none %}
                                         <strong>{{ signal.result_percent }}%</strong>
@@ -240,15 +237,36 @@
                                 💡 {{ signal.reason or "Analyse technique neutre" }}
                             </div>
 
-                            <button class="learn-btn" onclick="toggleLearn(this)">
-                                📚 Comprendre ce signal
-                            </button>
-
-                            <div class="learn-box">
-                                {{ (signal.reason or "") | explain_reason }}
-                            </div>
+                            {% if is_premium_plus %}
+                                <button class="learn-btn" onclick="toggleLearn(this)">
+                                    📚 Comprendre ce signal
+                                </button>
+                                <div class="learn-box">
+                                    {{ (signal.reason or "") | explain_reason }}
+                                </div>
+                            {% else %}
+                                <a href="{{ url_for('billing.pricing') }}" class="learn-btn locked-learn-btn">
+                                    🔒 Comprendre ce signal
+                                </a>
+                            {% endif %}
                         </article>
                         {% endfor %}
+
+                        {% if total_signals > signals|length %}
+                        <article class="rs-card rs-locked-card">
+                            <div class="rs-card-head">
+                                <div class="rs-card-left">
+                                    <span class="rs-badge rs-badge-asset">LOCKED</span>
+                                </div>
+                            </div>
+                            <div class="rs-reason">
+                                Vous voyez {{ signals|length }} signaux sur {{ total_signals }}. Passez à l’offre supérieure pour débloquer plus d’historique, plus d’analyse et les métriques avancées.
+                            </div>
+                            <a href="{{ url_for('billing.pricing') }}" class="learn-btn locked-learn-btn">
+                                Débloquer plus de signaux
+                            </a>
+                        </article>
+                        {% endif %}
                     </div>
                     {% else %}
                     <div class="rs-empty">
@@ -267,7 +285,9 @@
                         <li><strong>Trades clôturés :</strong> {{ closed_signals or 0 }}</li>
                         <li><strong>Wins :</strong> {{ win_signals or 0 }}</li>
                         <li><strong>Losses :</strong> {{ loss_signals or 0 }}</li>
-                        <li><strong>PnL estimé :</strong> {{ estimated_pnl or 0 }}</li>
+                        <li><strong>PnL estimé :</strong> {% if can_view_stats %}{{ safe_estimated_pnl }}{% else %}🔒{% endif %}</li>
+                        <li><strong>R/R moyen :</strong> {% if can_view_stats %}{{ safe_avg_rr }}{% else %}🔒{% endif %}</li>
+                        <li><strong>Meilleur actif :</strong> {% if can_view_stats %}{{ safe_best_asset }}{% else %}🔒{% endif %}</li>
                     </ul>
                 </section>
 
@@ -277,6 +297,20 @@
                     <p>
                         En structurant les statistiques, l’historique et les indicateurs clés, cette page donne une image plus sérieuse,
                         plus transparente et plus professionnelle de la plateforme.
+                    </p>
+                </section>
+
+                <section class="rs-side-card">
+                    <span class="rs-panel-kicker">Accès actuel</span>
+                    <h3>{{ user_plan | upper }}</h3>
+                    <p>
+                        {% if is_premium_plus %}
+                            Vous avez accès aux statistiques avancées et à une lecture plus détaillée.
+                        {% elif is_basic %}
+                            Vous avez accès à un historique limité. Les stats avancées restent réservées au Premium et au VIP.
+                        {% else %}
+                            Le mode découverte montre un aperçu limité pour encourager la montée en gamme.
+                        {% endif %}
                     </p>
                 </section>
 
@@ -310,7 +344,7 @@
 <section class="final-cta-section">
     <div class="section-container">
         <div class="final-cta-box">
-            <span class="final-cta-badge">Résultats • ApexSignals</span>
+            <span class="final-cta-badge">Résultats • VelWolf</span>
             <h2>Une lecture plus premium de la performance</h2>
             <p>
                 Winrate, historique, signaux ouverts et résultats récents :
@@ -331,7 +365,7 @@
 <footer class="site-footer">
     <div class="section-container footer-inner">
         <div class="footer-brand">
-            <h3>ApexSignals</h3>
+            <h3>VelWolf</h3>
             <p>Une plateforme plus claire pour suivre les performances, les résultats et l’évolution des signaux.</p>
         </div>
 
@@ -349,6 +383,7 @@
 <script>
 function toggleLearn(btn) {
     const box = btn.nextElementSibling;
+    if (!box) return;
     box.style.display = box.style.display === "block" ? "none" : "block";
 }
 </script>

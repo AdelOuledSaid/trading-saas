@@ -1,53 +1,10 @@
 from app import create_app
 from app.services.news_digest_service import prepare_digest_articles
-from app.services.telegram_service import send_telegram_message
-
-
-def build_custom_news_message(articles: list[dict]) -> str:
-    if not articles:
-        return ""
-
-    lines = [
-        "📰 <b>Velwolf News — Daily Market Update</b>",
-        "",
-        "📊 <b>Top actualités du jour :</b>",
-        "",
-    ]
-
-    for i, article in enumerate(articles[:6], start=1):
-        title = article.get("title", "Sans titre")
-        description = article.get("description", "")
-        source = article.get("source", "Source inconnue")
-
-        if description:
-            lines.append(
-                f"{i}. <b>{title}</b>\n"
-                f"   {description[:140]}...\n"
-                f"   <i>Source : {source}</i>"
-            )
-        else:
-            lines.append(
-                f"{i}. <b>{title}</b>\n"
-                f"   <i>Source : {source}</i>"
-            )
-
-        lines.append("")
-
-    lines += [
-        "📌 <b>Lecture marché</b> : sentiment global à surveiller sur BTC, ETH et actifs risk-on.",
-        "",
-        "⏰ <b>Mise à jour</b> : quotidienne",
-        "⚠️ <i>Information de marché uniquement — DYOR</i>",
-        "",
-        "💎 <b>Velwolf Intelligence</b>",
-    ]
-
-    message = "\n".join(lines).strip()
-
-    if len(message) > 3900:
-        message = message[:3890] + "..."
-
-    return message
+from app.services.telegram_service import (
+    send_daily_news_digest_to_tier,
+    build_news_digest_message,
+    send_message_to_tier,
+)
 
 
 def main():
@@ -60,13 +17,22 @@ def main():
             print("⚠️ Aucune news trouvée")
             return
 
-        message = build_custom_news_message(articles)
-        ok = send_telegram_message(message)
+        basic_articles = articles[:3]
+        premium_articles = articles[:6]
 
-        if ok:
-            print("✅ Message news envoyé sur Telegram")
-        else:
-            print("❌ Échec envoi Telegram")
+        basic_ok = send_daily_news_digest_to_tier("basic", basic_articles)
+
+        premium_message = build_news_digest_message(
+            premium_articles,
+            title="VelWolf Premium News — Daily Market Update",
+            intro="📊 Voici les actualités premium du jour avec plus de profondeur :",
+        )
+        premium_ok = send_message_to_tier("premium", premium_message)
+        vip_ok = send_message_to_tier("vip", premium_message)
+
+        print(f"Basic: {'OK' if basic_ok else 'FAIL'}")
+        print(f"Premium: {'OK' if premium_ok else 'FAIL'}")
+        print(f"VIP: {'OK' if vip_ok else 'FAIL'}")
 
 
 if __name__ == "__main__":

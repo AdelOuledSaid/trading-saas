@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}Academy Pro | VelWolf{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="academy-hero academy-section">
+    <div class="academy-shell">
+        <div class="academy-hero-grid">
+            <div class="academy-hero-content">
+                <span class="academy-kicker">VelWolf Academy</span>
+                <h1>Formation Trading Pro intégrée à votre plateforme</h1>
+                <p class="academy-lead">
+                    Une expérience premium pour apprendre, progresser et mieux exploiter les signaux.
+                    Niveau 1 pour les fondations, niveau 2 pour l’exécution, quiz de validation
+                    et certification finale pour renforcer la valeur de votre offre Pro.
+                </p>
+
+                <div class="academy-actions">
+                    <a href="{{ url_for('pages.academy_level_1') }}" class="academy-btn academy-btn-primary">
+                        Ouvrir Niveau 1
+                    </a>
+                    <a href="{{ url_for('pages.academy_level_2') }}" class="academy-btn academy-btn-secondary">
+                        Ouvrir Niveau 2
+                    </a>
+                    {% if not is_pro %}
+                    <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
+                        Upgrade to Pro
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="academy-hero-card">
+                <div class="academy-status-card">
+                    <span class="academy-card-label">Statut accès</span>
+                    {% if is_pro %}
+                        <strong class="academy-status-pro">Membre Pro actif</strong>
+                        <p>Accès complet aux cours, quiz, certification et vidéos.</p>
+                    {% else %}
+                        <strong class="academy-status-locked">Accès limité</strong>
+                        <p>Visualisation partielle seulement. Débloquez la version complète avec le plan Pro.</p>
+                    {% endif %}
+                </div>
+
+                <div class="academy-progress-box">
+                    <div class="academy-progress-head">
+                        <span>Progression Niveau 1</span>
+                        <strong>{{ academy_progress.level1 }}%</strong>
+                    </div>
+                    <div class="academy-progress-bar">
+                        <div class="academy-progress-fill" style="width: {{ academy_progress.level1 }}%;"></div>
+                    </div>
+
+                    <div class="academy-progress-head academy-progress-head-second">
+                        <span>Progression Niveau 2</span>
+                        <strong>{{ academy_progress.level2 }}%</strong>
+                    </div>
+                    <div class="academy-progress-bar">
+                        <div class="academy-progress-fill academy-progress-fill-purple" style="width: {{ academy_progress.level2 }}%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Parcours</span>
+            <h2>Deux niveaux, un vrai chemin de progression</h2>
+        </div>
+
+        <div class="academy-cards">
+            <article class="academy-course-card">
+                <div class="academy-course-top">
+                    <span class="academy-level-pill">Niveau 1</span>
+                    <span class="academy-mini-badge">Fondations</span>
+                </div>
+                <h3>Comprendre les bases du trading</h3>
+                <p>
+                    Marchés, gestion du risque, lecture graphique, TP, SL, structure simple et discipline.
+                </p>
+                <div class="academy-progress-head">
+                    <span>Progression</span>
+                    <strong>{{ academy_progress.level1 }}%</strong>
+                </div>
+                <div class="academy-progress-bar">
+                    <div class="academy-progress-fill" style="width: {{ academy_progress.level1 }}%;"></div>
+                </div>
+                <a href="{{ url_for('pages.academy_level_1') }}" class="academy-link-btn">Continuer</a>
+            </article>
+
+            <article class="academy-course-card academy-course-card-featured">
+                <div class="academy-course-top">
+                    <span class="academy-level-pill">Niveau 2</span>
+                    <span class="academy-mini-badge">Exécution Pro</span>
+                </div>
+                <h3>Passer à l’exécution premium</h3>
+                <p>
+                    Structure de marché, confluence, zones, timing, gestion active, psychologie et journal.
+                </p>
+                <div class="academy-progress-head">
+                    <span>Progression</span>
+                    <strong>{{ academy_progress.level2 }}%</strong>
+                </div>
+                <div class="academy-progress-bar">
+                    <div class="academy-progress-fill academy-progress-fill-purple" style="width: {{ academy_progress.level2 }}%;"></div>
+                </div>
+                <a href="{{ url_for('pages.academy_level_2') }}" class="academy-link-btn">Accéder</a>
+            </article>
+
+            <article class="academy-course-card">
+                <div class="academy-course-top">
+                    <span class="academy-level-pill">Certification</span>
+                    <span class="academy-mini-badge">Validation</span>
+                </div>
+                <h3>Quiz final & certificat</h3>
+                <p>
+                    Validez vos acquis avec un quiz, débloquez un certificat visuel et renforcez l’expérience premium.
+                </p>
+
+                {% if academy_progress.certificate_ready %}
+                    <div class="academy-certificate-ready">Certificat disponible</div>
+                {% else %}
+                    <div class="academy-certificate-locked">Débloqué après le niveau 2</div>
+                {% endif %}
+
+                <a href="{{ url_for('pages.academy_level_2') }}#quiz-final" class="academy-link-btn">
+                    Voir le quiz final
+                </a>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section academy-dark-band">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Valeur Premium</span>
+            <h2>Une academy qui transforme ton site en vraie plateforme</h2>
+        </div>
+
+        <div class="academy-grid-3">
+            <div class="academy-info-card">
+                <h3>Formation intégrée</h3>
+                <p>Tu ne vends plus seulement des signaux. Tu proposes un parcours structuré.</p>
+            </div>
+            <div class="academy-info-card">
+                <h3>Rétention plus forte</h3>
+                <p>Les membres restent davantage lorsqu’ils progressent réellement.</p>
+            </div>
+            <div class="academy-info-card">
+                <h3>Upgrade naturel</h3>
+                <p>Les utilisateurs gratuits ont une vraie raison de passer à l’offre Pro.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='academy.js') }}"></script>
+{% endblock %}

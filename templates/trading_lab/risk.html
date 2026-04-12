@@ -3,70 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VelWolef - Gestion du risque</title>
-    <meta name="description" content="Comprendre la gestion du risque dans le Trading Lab de VelWolef pour lire les signaux avec plus de discipline et de cohérence.">
+    <title>ApexSignals - Gestion du risque</title>
+    <meta name="description" content="Comprendre la gestion du risque avec ApexSignals : protection du capital, discipline d'exécution, ratio risque/rendement et lecture professionnelle des signaux.">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='trading-lab.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
-<body class="home-body">
+<body class="home-body tl-page-body">
 
 {% include "partials/navbar.html" %}
 
-<section class="tl-hero tl-hero-risk">
+<section class="tl-hero tl-hero-risk-premium">
     <div class="section-container tl-hero-inner">
         <span class="tl-kicker">Trading Lab • Gestion du risque</span>
-        <h1 class="tl-title">La gestion du risque donne sa cohérence à la lecture des signaux</h1>
+        <h1 class="tl-title">
+            La gestion du risque protège le capital,
+            structure le signal et renforce la crédibilité de l’exécution
+        </h1>
         <p class="tl-subtitle">
-            Une plateforme sérieuse ne peut pas se limiter à afficher des points d’entrée et des objectifs.
-            La gestion du risque fait partie intégrante de la lecture d’un signal et joue un rôle central
-            dans la discipline, la stabilité et la compréhension globale du marché.
+            Un signal premium ne vaut pas uniquement par son point d’entrée ou son objectif.
+            Il prend toute sa valeur lorsque le risque est encadré avec rigueur, que l’invalidation
+            est claire et que chaque scénario s’inscrit dans une logique disciplinée.
         </p>
+
+        <div class="tl-badges">
+            <span>Protection du capital</span>
+            <span>Invalidation claire</span>
+            <span>Ratio cohérent</span>
+            <span>Discipline premium</span>
+        </div>
     </div>
 </section>
 
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Principes de base</span>
-            <h2>Lire un signal sans oublier la logique d’encadrement</h2>
+            <span>Base du risk management</span>
+            <h2>Le risque n’est pas un détail technique, c’est la fondation d’un trading durable</h2>
             <p>
-                Le risque n’est pas un détail secondaire. Il détermine la cohérence du scénario
-                et la manière dont un signal doit être interprété dans un cadre discipliné.
+                La vraie solidité d’une plateforme de signaux se voit dans sa capacité à montrer
+                comment un scénario est protégé, encadré et exécuté avec discipline.
             </p>
         </div>
 
         <div class="tl-feature-grid">
             <div class="tl-feature-card">
-                <h3>Invalidation</h3>
+                <h3>Capital préservé</h3>
                 <p>
-                    Le stop loss ne sert pas seulement de sortie. Il définit la zone où le scénario
-                    cesse d’être valable et protège la logique du signal.
+                    L’objectif premier n’est pas seulement de rechercher un gain, mais de protéger
+                    le capital pour rester capable d’exécuter les prochaines opportunités.
                 </p>
             </div>
 
             <div class="tl-feature-card">
-                <h3>Exposition</h3>
+                <h3>Stop loss structuré</h3>
                 <p>
-                    Une lecture saine du marché suppose de ne pas surdimensionner un seul scénario
-                    ni un seul actif.
+                    L’invalidation doit avoir un sens technique. Elle protège le scénario et empêche
+                    l’émotion de prendre le contrôle.
                 </p>
             </div>
 
             <div class="tl-feature-card">
-                <h3>Rapport risque / potentiel</h3>
+                <h3>Exposition maîtrisée</h3>
                 <p>
-                    Un signal doit conserver une cohérence entre l’invalidation et l’objectif affiché.
+                    Aucun trade ne doit avoir un poids excessif. Une exposition trop forte détruit
+                    la stabilité mentale et la cohérence globale du plan.
                 </p>
             </div>
 
             <div class="tl-feature-card">
-                <h3>Discipline</h3>
+                <h3>Vision long terme</h3>
                 <p>
-                    La gestion du risque renforce la stabilité de lecture et évite l’excès d’impulsivité.
+                    Une bonne gestion du risque permet de survivre aux périodes difficiles et de construire
+                    une performance plus sérieuse sur la durée.
                 </p>
             </div>
         </div>
@@ -77,27 +90,32 @@
     <div class="section-container">
         <div class="tl-grid-two">
             <div class="tl-card tl-card-large">
-                <span class="tl-card-kicker">Pourquoi c’est essentiel</span>
-                <h2>Le risque structure la lecture autant que l’entrée elle-même</h2>
+                <span class="tl-card-kicker">Pourquoi le risque change tout</span>
+                <h2>Un bon setup sans contrôle du risque reste un scénario fragile</h2>
                 <p>
-                    Une bonne gestion du risque améliore la qualité perçue des signaux et la crédibilité
-                    de toute la plateforme. Elle montre que l’analyse ne s’arrête pas à une simple cible,
-                    mais qu’elle repose sur une logique encadrée et disciplinée.
+                    Beaucoup de traders regardent d’abord la cible. Pourtant, la solidité d’un trade
+                    commence souvent par la qualité de son invalidation. Sans limite claire, le scénario
+                    perd sa cohérence, l’exécution devient émotionnelle et la lecture du signal se dégrade.
+                </p>
+                <p>
+                    Une page risque bien construite renforce fortement l’image premium de ton site.
+                    Elle montre que tes signaux ne sont pas présentés comme de simples opportunités,
+                    mais comme des scénarios encadrés par une méthode sérieuse.
                 </p>
             </div>
 
             <div class="tl-stack">
                 <div class="tl-mini-card">
                     <strong>Encadrement</strong>
-                    <span>Le risque donne des limites claires à chaque scénario.</span>
+                    <span>Chaque signal gagne en sérieux lorsqu’il repose sur une limite claire et assumée.</span>
                 </div>
                 <div class="tl-mini-card">
                     <strong>Stabilité</strong>
-                    <span>Une lecture disciplinée évite de transformer le marché en simple réaction émotionnelle.</span>
+                    <span>Un risque contrôlé réduit la pression émotionnelle et améliore la qualité d’exécution.</span>
                 </div>
                 <div class="tl-mini-card">
                     <strong>Professionnalisme</strong>
-                    <span>La plateforme gagne en sérieux quand cette logique est visible et assumée.</span>
+                    <span>Le site paraît plus haut de gamme quand la gestion du risque est visible et intégrée.</span>
                 </div>
             </div>
         </div>
@@ -107,33 +125,124 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Repères utiles</span>
-            <h2>Les réflexes à garder pour lire un signal avec plus de recul</h2>
+            <span>Les réflexes premium</span>
+            <h2>Les principes essentiels pour lire un signal avec plus de recul</h2>
         </div>
 
         <div class="tl-pillars-grid">
             <div class="tl-pillar-card">
                 <div class="tl-pillar-icon">1</div>
-                <h3>Ne pas lire seulement l’objectif</h3>
-                <p>Une cible n’a de valeur que si elle s’inscrit dans une structure cohérente.</p>
+                <h3>Lire l’invalidation avant la cible</h3>
+                <p>
+                    Un objectif peut être séduisant, mais la vraie cohérence du scénario se mesure d’abord
+                    par la logique du stop loss.
+                </p>
             </div>
 
             <div class="tl-pillar-card">
                 <div class="tl-pillar-icon">2</div>
-                <h3>Observer l’invalidation</h3>
-                <p>Le stop loss est une information clé dans la lecture du scénario.</p>
+                <h3>Ne jamais surcharger un seul trade</h3>
+                <p>
+                    Une position trop lourde met en danger le capital et fragilise immédiatement
+                    la discipline mentale.
+                </p>
             </div>
 
             <div class="tl-pillar-card">
                 <div class="tl-pillar-icon">3</div>
-                <h3>Éviter la surcharge</h3>
-                <p>Une plateforme premium met en avant la clarté, pas l’excès d’informations inutiles.</p>
+                <h3>Respecter le plan initial</h3>
+                <p>
+                    Déplacer un stop sous pression ou improviser en cours de trade affaiblit toute
+                    la logique d’exécution.
+                </p>
             </div>
 
             <div class="tl-pillar-card">
                 <div class="tl-pillar-icon">4</div>
-                <h3>Rester discipliné</h3>
-                <p>La cohérence à long terme vaut plus qu’une lecture impulsive du marché.</p>
+                <h3>Penser série de trades</h3>
+                <p>
+                    Un trader solide raisonne en ensemble cohérent, pas en dépendance émotionnelle
+                    à un seul résultat.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="tl-section">
+    <div class="section-container">
+        <div class="tl-section-head">
+            <span>Architecture du risque</span>
+            <h2>Les composantes d’un risk management plus professionnel</h2>
+        </div>
+
+        <div class="tl-steps-grid">
+            <div class="tl-step-card">
+                <div class="tl-step-number">01</div>
+                <h3>Définir l’invalidation</h3>
+                <p>Le point où le scénario cesse d’être valide doit être clair avant même l’entrée.</p>
+            </div>
+
+            <div class="tl-step-card">
+                <div class="tl-step-number">02</div>
+                <h3>Mesurer l’exposition</h3>
+                <p>La taille de position doit rester alignée avec la tolérance au risque et le plan global.</p>
+            </div>
+
+            <div class="tl-step-card">
+                <div class="tl-step-number">03</div>
+                <h3>Évaluer le potentiel</h3>
+                <p>Le take profit doit conserver une logique réaliste face au risque engagé.</p>
+            </div>
+
+            <div class="tl-step-card">
+                <div class="tl-step-number">04</div>
+                <h3>Exécuter avec discipline</h3>
+                <p>Le respect du cadre reste plus important qu’une réaction impulsive aux fluctuations du prix.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="tl-section">
+    <div class="section-container">
+        <div class="tl-section-head">
+            <span>Erreurs fréquentes</span>
+            <h2>Ce qui détruit la cohérence du risque chez beaucoup de traders</h2>
+            <p>
+                Cette partie renforce le côté expert de la page et donne encore plus de valeur perçue
+                à ton Trading Lab.
+            </p>
+        </div>
+
+        <div class="tl-faq-grid">
+            <div class="tl-faq-card">
+                <h3>Absence de stop réel</h3>
+                <p>
+                    Ne pas accepter une invalidation claire transforme le trade en exposition floue
+                    et émotionnelle.
+                </p>
+            </div>
+
+            <div class="tl-faq-card">
+                <h3>Position trop grande</h3>
+                <p>
+                    Une taille excessive augmente le stress, réduit la lucidité et pousse aux mauvaises décisions.
+                </p>
+            </div>
+
+            <div class="tl-faq-card">
+                <h3>Stop déplacé sous pression</h3>
+                <p>
+                    Modifier le plan pour éviter une perte immédiate abîme la discipline et la logique du setup.
+                </p>
+            </div>
+
+            <div class="tl-faq-card">
+                <h3>Obsession du gain</h3>
+                <p>
+                    Regarder uniquement le profit potentiel sans lire le risque réel conduit à une vision faussée.
+                </p>
             </div>
         </div>
     </div>
@@ -143,14 +252,14 @@
     <div class="section-container">
         <div class="tl-final-box">
             <span class="tl-final-badge">Gestion du risque</span>
-            <h2>La discipline renforce la valeur de chaque signal</h2>
+            <h2>La qualité d’un signal se mesure aussi à la qualité du risque qui l’encadre</h2>
             <p>
-                Lire un signal avec une logique de risque permet de mieux comprendre sa structure,
-                d’améliorer la cohérence de la lecture et de renforcer la crédibilité générale de VelWolef.
+                Une lecture premium du marché exige de la structure, de la discipline et un vrai respect
+                du capital. C’est cette logique qui transforme un simple trade en exécution plus professionnelle.
             </p>
             <div class="tl-final-actions">
-                <a href="{{ url_for('pages.lab_psychology') }}" class="tl-btn tl-btn-light">Voir la psychologie</a>
-                <a href="{{ url_for('pages.lab_structure') }}" class="tl-btn tl-btn-outline">Revoir la structure</a>
+                <a href="{{ url_for('pages.lab_psychology') }}" class="cta-btn">Voir la psychologie</a>
+                <a href="{{ url_for('pages.lab_structure') }}" class="secondary-btn">Revoir la structure</a>
             </div>
         </div>
     </div>
@@ -159,14 +268,15 @@
 <footer class="site-footer">
     <div class="section-container footer-inner">
         <div class="footer-brand">
-            <h3>VelWolef</h3>
-            <p>Gestion du risque, structure et discipline dans un cadre plus premium.</p>
+            <h3>ApexSignals</h3>
+            <p>Gestion du risque, structure et discipline dans une expérience premium.</p>
         </div>
 
         <div class="footer-links">
             <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
             <a href="{{ url_for('pages.lab_structure') }}">Structure</a>
             <a href="{{ url_for('pages.lab_psychology') }}">Psychologie</a>
+            <a href="{{ url_for('billing.pricing') }}">Offres</a>
         </div>
     </div>
 </footer>

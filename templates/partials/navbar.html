@@ -1,174 +1,104 @@
 <nav class="navbar">
-    <a href="{{ url_for('main.home') }}" class="logo logo-pro">
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="VelWolef">
-    </a>
 
-    <div class="nav-links">
-        <a href="{{ url_for('main.home') }}">Accueil</a>
+    <div class="nav-left">
+        <a href="{{ url_for('main.home') }}" class="logo logo-pro">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="VelWolf">
+        </a>
+    </div>
 
-        <!-- =========================
-             SIGNAUX
-        ========================= -->
-        <div class="nav-dropdown">
-            <button class="nav-drop-btn" type="button">
-                Signaux <span>▾</span>
-            </button>
-            <div class="nav-dropdown-menu">
-                <a href="{{ url_for('signals.signals_page') }}">Vue globale</a>
-                <a href="{{ url_for('signals.signals_btc') }}">Bitcoin</a>
-                <a href="{{ url_for('signals.eth_signals_page') }}">Ethereum</a>
-                <a href="{{ url_for('signals.signals_gold') }}">Gold</a>
-                <a href="{{ url_for('signals.signals_us100') }}">US100</a>
-                <a href="{{ url_for('signals.results') }}">Historique des signaux</a>
+    <div class="nav-center">
+        <div class="nav-links">
+
+            <a href="{{ url_for('main.home') }}">Accueil</a>
+
+            <div class="nav-dropdown">
+                <button class="nav-drop-btn" type="button">
+                    Signaux <span>▾</span>
+                </button>
+                <div class="nav-dropdown-menu">
+                    <a href="{{ url_for('signals.signals_page') }}">Vue globale</a>
+                    <a href="{{ url_for('signals.signals_btc') }}">Bitcoin</a>
+                    <a href="{{ url_for('signals.eth_signals_page') }}">Ethereum</a>
+                    <a href="{{ url_for('signals.signals_gold') }}">Gold</a>
+                    <a href="{{ url_for('signals.signals_us100') }}">US100</a>
+                    <a href="{{ url_for('signals.results') }}">Historique</a>
+                </div>
             </div>
-        </div>
 
-        <!-- =========================
-             MARCHÉS
-        ========================= -->
-        <div class="nav-dropdown">
-            <button class="nav-drop-btn" type="button">
-                Marchés <span>▾</span>
-            </button>
-            <div class="nav-dropdown-menu">
-                <a href="{{ url_for('signals.signals_btc') }}">Crypto (BTC)</a>
-                <a href="{{ url_for('signals.eth_signals_page') }}">Altcoins (ETH)</a>
-                <a href="{{ url_for('signals.signals_us100') }}">Indices (US100)</a>
-                <a href="{{ url_for('signals.signals_gold') }}">Gold</a>
+            <div class="nav-dropdown">
+                <button class="nav-drop-btn" type="button">
+                    Marchés <span>▾</span>
+                </button>
+                <div class="nav-dropdown-menu">
+                    <a href="{{ url_for('pages.market_crypto') }}">Crypto</a>
+                    <a href="{{ url_for('pages.market_forex') }}">Forex</a>
+                    <a href="{{ url_for('pages.market_opportunities') }}">Opportunités</a>
+                    <a href="{{ url_for('pages.market_sentiment') }}">Sentiment</a>
+                </div>
             </div>
-        </div>
 
-        <!-- =========================
-             TRADING LAB
-        ========================= -->
-        <div class="nav-dropdown">
-            <button class="nav-drop-btn" type="button">
-                Trading Lab <span>▾</span>
-            </button>
-            <div class="nav-dropdown-menu">
-                <a href="{{ url_for('pages.trading_lab') }}">Vue globale</a>
-                <a href="{{ url_for('pages.lab_structure') }}">Structure d’un signal</a>
-                <a href="{{ url_for('pages.lab_risk') }}">Gestion du risque</a>
-                <a href="{{ url_for('pages.lab_psychology') }}">Psychologie</a>
+            <div class="nav-dropdown">
+                <button class="nav-drop-btn" type="button">
+                    Trading Lab <span>▾</span>
+                </button>
+                <div class="nav-dropdown-menu">
+                    <a href="{{ url_for('pages.trading_lab') }}">Vue globale</a>
+                    <a href="{{ url_for('pages.lab_structure') }}">Structure</a>
+                    <a href="{{ url_for('pages.lab_risk') }}">Risque</a>
+                    <a href="{{ url_for('pages.lab_psychology') }}">Psychologie</a>
+                </div>
             </div>
-        </div>
 
-        <!-- =========================
-             REPLAY CENTER (🔥 FIX ICI)
-        ========================= -->
-        <div class="nav-dropdown">
-            <button class="nav-drop-btn" type="button">
-                Replay Center <span>▾</span>
-            </button>
+            <div class="nav-dropdown nav-pro">
+                <button class="nav-drop-btn" type="button">
+                    Academy <span class="nav-pro-badge">PRO</span> <span>▾</span>
+                </button>
+                <div class="nav-dropdown-menu">
+                    <a href="{{ url_for('pages.academy_index') }}">🎓 Vue globale Academy</a>
+                    <a href="{{ url_for('pages.academy_level_1') }}">📘 Niveau 1 — Fondations</a>
+                    <a href="{{ url_for('pages.academy_level_2') }}">🚀 Niveau 2 — Exécution Pro</a>
+                    <a href="{{ url_for('pages.academy_upgrade') }}">💎 Upgrade Pro</a>
+                </div>
+            </div>
 
-            <div class="nav-dropdown-menu">
-                {% if latest_replay %}
-                    <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}">
-                        🎬 Replay Trading
-                    </a>
-                {% else %}
+            <div class="nav-dropdown">
+                <button class="nav-drop-btn" type="button">
+                    Performance <span>▾</span>
+                </button>
+                <div class="nav-dropdown-menu">
+                    <a href="{{ url_for('signals.results') }}">Résultats</a>
+
+                    {% if latest_replay %}
+                        <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}">
+                            🎬 Replay Trading
+                        </a>
+                    {% endif %}
+
                     <a href="{{ url_for('replay.my_performance') }}">
-                        🎬 Replay Trading
+                        🎯 Mon espace performance
                     </a>
-                {% endif %}
-
-                <a href="{{ url_for('replay.my_performance') }}">
-                    🎯 Ma Performance
-                </a>
+                </div>
             </div>
-        </div>
 
-        <a href="{{ url_for('signals.results') }}">Résultats</a>
-        <a href="{{ url_for('billing.pricing') }}">Offres</a>
+            <a href="{{ url_for('billing.pricing') }}">Offres</a>
 
-        <!-- =========================
-             INFOS
-        ========================= -->
-        <div class="nav-dropdown">
-            <button class="nav-drop-btn" type="button">
-                Infos <span>▾</span>
-            </button>
-            <div class="nav-dropdown-menu nav-dropdown-menu-right">
-                <a href="{{ url_for('pages.faq_page') }}">FAQ</a>
-                <a href="{{ url_for('pages.contact') }}">Contact</a>
-                <a href="{{ url_for('pages.about') }}">À propos</a>
-            </div>
         </div>
     </div>
 
-    <!-- =========================
-         RIGHT SIDE
-    ========================= -->
     <div class="nav-right">
-        <form class="nav-search" action="{{ url_for('pages.search_page') }}" method="GET">
-            <input type="text" name="q" placeholder="Rechercher un actif, une page...">
-            <button type="submit">⌕</button>
-        </form>
-
-        <div class="nav-account">
-            {% if current_user.is_authenticated %}
-                <a href="{{ url_for('dashboard.dashboard') }}" class="account-btn">Dashboard</a>
-
-                <a href="{{ url_for('replay.my_performance') }}" class="account-btn">
-                    Performance
-                </a>
-
-                <a href="{{ url_for('auth.logout') }}" class="logout-btn nav-inline-link">
-                    Déconnexion
-                </a>
-            {% else %}
-                <a href="{{ url_for('auth.login') }}" class="nav-inline-link">Connexion</a>
-                <a href="{{ url_for('auth.register') }}" class="cta-btn">Créer un compte</a>
-            {% endif %}
-        </div>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('dashboard.dashboard') }}" class="account-btn dashboard-highlight">Dashboard</a>
+            <a href="{{ url_for('auth.logout') }}" class="logout-btn">Déconnexion</a>
+        {% else %}
+            <a href="{{ url_for('auth.login') }}" class="nav-inline-link">Connexion</a>
+            <a href="{{ url_for('auth.register') }}" class="cta-btn">Créer un compte</a>
+        {% endif %}
     </div>
 
-    <!-- =========================
-         BURGER
-    ========================= -->
-    <div class="burger" onclick="toggleMobileMenu(this)">
+    <button class="burger" type="button" aria-label="Ouvrir le menu">
         <span></span>
         <span></span>
         <span></span>
-    </div>
+    </button>
+
 </nav>
-
-<!-- =========================
-     MOBILE MENU
-========================= -->
-<div id="mobileMenu" class="mobile-menu">
-    <a href="{{ url_for('main.home') }}">Accueil</a>
-
-    <div class="mobile-section-title">Replay Center</div>
-
-    {% if latest_replay %}
-        <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}">
-            🎬 Replay Trading
-        </a>
-    {% else %}
-        <a href="{{ url_for('replay.my_performance') }}">
-            🎬 Replay Trading
-        </a>
-    {% endif %}
-
-    <a href="{{ url_for('replay.my_performance') }}">
-        🎯 Ma Performance
-    </a>
-
-    {% if current_user.is_authenticated %}
-        <div class="mobile-section-title">Compte</div>
-        <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
-        <a href="{{ url_for('auth.logout') }}">Déconnexion</a>
-    {% else %}
-        <div class="mobile-section-title">Compte</div>
-        <a href="{{ url_for('auth.login') }}">Connexion</a>
-        <a href="{{ url_for('auth.register') }}" class="cta-btn">Créer un compte</a>
-    {% endif %}
-</div>
-
-<script>
-function toggleMobileMenu(el) {
-    el.classList.toggle("active");
-    document.getElementById("mobileMenu").classList.toggle("active");
-}
-</script>

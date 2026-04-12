@@ -4,72 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VelWolef - Structure d’un signal</title>
-    <meta name="description" content="Comprendre la structure d’un signal sur VelWolef : direction, entrée, stop loss, take profit et logique du setup.">
+    <meta name="description" content="Comprendre la structure d’un signal avec VelWolef : direction, zone d'entrée, invalidation, take profit et logique d'exécution premium.">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='trading-lab.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
-<body class="home-body">
+<body class="home-body tl-page-body">
 
 {% include "partials/navbar.html" %}
 
-<section class="tl-hero tl-hero-structure">
+<section class="tl-hero tl-hero-structure-premium">
     <div class="section-container tl-hero-inner">
-        <span class="tl-kicker">Trading Lab • Structure</span>
-        <h1 class="tl-title">Comprendre la structure d’un signal avec une lecture claire, hiérarchisée et professionnelle</h1>
+        <span class="tl-kicker">VelWolef Lab • Structure</span>
+        <h1 class="tl-title">
+            Un signal premium commence toujours
+            par une structure claire, hiérarchisée et exploitable
+        </h1>
         <p class="tl-subtitle">
-            Un signal ne se résume pas à une direction. Il repose sur une construction complète :
-            une entrée, une invalidation, un objectif et un contexte. Cette page permet de comprendre
-            comment ces éléments s’articulent pour former un scénario cohérent.
+            Un trade sérieux ne se résume pas à un simple point d’entrée. Il repose sur une lecture complète :
+            direction, niveau d’activation, invalidation, objectif et contexte. C’est cette structure qui donne
+            de la cohérence au signal et de la crédibilité à l’exécution.
         </p>
+
+        <div class="tl-badges">
+            <span>Direction claire</span>
+            <span>Entrée logique</span>
+            <span>Stop structuré</span>
+            <span>Objectif cohérent</span>
+        </div>
     </div>
 </section>
 
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Les éléments clés</span>
-            <h2>Une structure simple, lisible et exploitable</h2>
+            <span>Fondation du signal</span>
+            <h2>Une bonne structure transforme une idée de marché en scénario professionnel</h2>
             <p>
-                La qualité d’un signal dépend autant de sa logique que de sa présentation.
-                Une structure claire améliore immédiatement la compréhension.
+                La qualité perçue d’un site de signaux dépend fortement de la manière dont les setups sont présentés.
+                Une structure claire rend l’analyse plus lisible, plus premium et beaucoup plus rassurante.
             </p>
         </div>
 
-        <div class="tl-feature-grid">
-            <div class="tl-feature-card">
-                <h3>Direction</h3>
-                <p>
-                    Le premier repère est le sens du scénario : achat ou vente. C’est la base
-                    sur laquelle repose toute la lecture du signal.
-                </p>
+        <div class="tl-metrics-grid">
+            <div class="tl-metric-card">
+                <strong>BUY / SELL</strong>
+                <span>La direction donne le sens du scénario</span>
             </div>
-
-            <div class="tl-feature-card">
-                <h3>Entrée</h3>
-                <p>
-                    L’entrée représente le niveau central à partir duquel le scénario devient actif
-                    et où la logique du setup prend forme.
-                </p>
+            <div class="tl-metric-card">
+                <strong>Entrée</strong>
+                <span>Le niveau central où le setup devient actif</span>
             </div>
-
-            <div class="tl-feature-card">
-                <h3>Stop Loss</h3>
-                <p>
-                    L’invalidation protège la structure du trade. Elle pose une limite claire
-                    au scénario et encadre le risque.
-                </p>
+            <div class="tl-metric-card">
+                <strong>Stop Loss</strong>
+                <span>L’invalidation protège la logique du trade</span>
             </div>
-
-            <div class="tl-feature-card">
-                <h3>Take Profit</h3>
-                <p>
-                    L’objectif matérialise le potentiel du scénario si la structure se déroule
-                    dans le sens attendu.
-                </p>
+            <div class="tl-metric-card">
+                <strong>Take Profit</strong>
+                <span>L’objectif matérialise le potentiel du mouvement</span>
             </div>
         </div>
     </div>
@@ -79,28 +75,32 @@
     <div class="section-container">
         <div class="tl-grid-two">
             <div class="tl-card tl-card-large">
-                <span class="tl-card-kicker">Pourquoi cette structure compte</span>
-                <h2>Un signal sans cadre clair perd une grande partie de sa valeur</h2>
+                <span class="tl-card-kicker">Pourquoi la structure est essentielle</span>
+                <h2>Sans hiérarchie claire, un signal perd une grande partie de sa valeur</h2>
                 <p>
-                    Une plateforme premium ne peut pas se contenter d’aligner des chiffres.
-                    La structure donne un sens à l’information. Elle permet de comprendre pourquoi
-                    un niveau est affiché, comment il s’inscrit dans le scénario, et en quoi il participe
-                    à une lecture plus crédible du marché.
+                    Un signal mal structuré ressemble à une simple indication. Un signal bien structuré,
+                    lui, ressemble à une décision construite. Il permet au trader de comprendre non seulement
+                    quoi faire, mais aussi pourquoi le scénario existe et dans quelles conditions il reste valide.
+                </p>
+                <p>
+                    Une page structure forte renforce immédiatement l’image premium de VelWolef. Elle montre que
+                    chaque setup suit une logique réelle, avec un cadre précis, une lecture disciplinée et un
+                    positionnement beaucoup plus professionnel.
                 </p>
             </div>
 
             <div class="tl-stack">
                 <div class="tl-mini-card">
-                    <strong>Cadre</strong>
-                    <span>Le signal devient plus lisible lorsqu’il s’inscrit dans une structure cohérente.</span>
+                    <strong>Clarté</strong>
+                    <span>Le visiteur comprend rapidement la logique du trade sans surcharge inutile.</span>
                 </div>
                 <div class="tl-mini-card">
-                    <strong>Hiérarchie</strong>
-                    <span>Chaque niveau a une fonction précise et n’est pas présenté au hasard.</span>
+                    <strong>Cohérence</strong>
+                    <span>Chaque niveau a une fonction et n’est jamais affiché au hasard.</span>
                 </div>
                 <div class="tl-mini-card">
                     <strong>Crédibilité</strong>
-                    <span>Une présentation structurée renforce immédiatement l’image de sérieux.</span>
+                    <span>Une structure propre donne une vraie impression d’expertise et de sérieux.</span>
                 </div>
             </div>
         </div>
@@ -110,33 +110,220 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
+            <span>Les composants du signal</span>
+            <h2>Les 4 éléments qui donnent sa forme à un setup premium</h2>
+        </div>
+
+        <div class="tl-feature-grid">
+            <div class="tl-feature-card">
+                <h3>Direction</h3>
+                <p>
+                    C’est le point de départ du scénario. Un signal sérieux indique si l’idée repose sur
+                    une poursuite haussière ou sur une opportunité de vente.
+                </p>
+            </div>
+
+            <div class="tl-feature-card">
+                <h3>Zone d’entrée</h3>
+                <p>
+                    L’entrée n’est pas juste un chiffre. C’est le niveau à partir duquel la lecture du marché
+                    devient exploitable selon la logique définie.
+                </p>
+            </div>
+
+            <div class="tl-feature-card">
+                <h3>Stop Loss</h3>
+                <p>
+                    Il marque la zone où le scénario n’est plus valide. Il protège le capital et donne une
+                    limite claire à la lecture.
+                </p>
+            </div>
+
+            <div class="tl-feature-card">
+                <h3>Take Profit</h3>
+                <p>
+                    L’objectif représente la projection du mouvement attendu si la structure se développe
+                    dans le sens anticipé.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="tl-section">
+    <div class="section-container">
+        <div class="tl-section-head">
             <span>Lecture professionnelle</span>
-            <h2>Comment lire un signal de manière plus propre</h2>
+            <h2>Comment lire un signal comme un trader plus structuré</h2>
         </div>
 
         <div class="tl-pillars-grid">
             <div class="tl-pillar-card">
                 <div class="tl-pillar-icon">1</div>
-                <h3>Identifier la direction</h3>
-                <p>Comprendre si le scénario repose sur une poursuite haussière ou baissière.</p>
+                <h3>Identifier le sens du setup</h3>
+                <p>
+                    Avant tout, il faut comprendre si le marché est traité comme continuation,
+                    breakout ou réaction technique.
+                </p>
             </div>
 
             <div class="tl-pillar-card">
                 <div class="tl-pillar-icon">2</div>
-                <h3>Situer l’entrée</h3>
-                <p>Repérer le niveau qui active réellement le setup dans la lecture du marché.</p>
+                <h3>Repérer le niveau d’activation</h3>
+                <p>
+                    Le scénario ne devient réellement intéressant que lorsqu’il atteint une zone
+                    d’entrée cohérente avec la structure.
+                </p>
             </div>
 
             <div class="tl-pillar-card">
                 <div class="tl-pillar-icon">3</div>
-                <h3>Encadrer le risque</h3>
-                <p>Lire l’invalidation comme une limite nécessaire à la cohérence du scénario.</p>
+                <h3>Lire l’invalidation</h3>
+                <p>
+                    Un trader sérieux regarde toujours la limite du scénario avant de se focaliser
+                    sur le potentiel du gain.
+                </p>
             </div>
 
             <div class="tl-pillar-card">
                 <div class="tl-pillar-icon">4</div>
-                <h3>Visualiser l’objectif</h3>
-                <p>Mesurer la logique du mouvement visé plutôt que voir une cible isolée.</p>
+                <h3>Projeter l’objectif</h3>
+                <p>
+                    La cible doit prolonger la logique du trade et non donner une illusion
+                    de rendement déconnectée du contexte.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="tl-section">
+    <div class="section-container">
+        <div class="tl-section-head">
+            <span>Workflow VelWolef</span>
+            <h2>Le processus d’un signal bien construit</h2>
+            <p>
+                Cette partie donne une vraie sensation de méthode et fait monter très fort la valeur perçue.
+            </p>
+        </div>
+
+        <div class="tl-steps-grid">
+            <div class="tl-step-card">
+                <div class="tl-step-number">01</div>
+                <h3>Analyser le contexte</h3>
+                <p>
+                    Observer la tendance, la qualité de la structure de prix et l’environnement général avant
+                    de définir un scénario.
+                </p>
+            </div>
+
+            <div class="tl-step-card">
+                <div class="tl-step-number">02</div>
+                <h3>Définir le plan</h3>
+                <p>
+                    Construire direction, zone d’entrée, invalidation et objectif selon une logique claire.
+                </p>
+            </div>
+
+            <div class="tl-step-card">
+                <div class="tl-step-number">03</div>
+                <h3>Filtrer le setup</h3>
+                <p>
+                    Écarter les scénarios flous pour ne garder que les opportunités vraiment lisibles.
+                </p>
+            </div>
+
+            <div class="tl-step-card">
+                <div class="tl-step-number">04</div>
+                <h3>Exécuter avec discipline</h3>
+                <p>
+                    Suivre le scénario tel qu’il a été construit, sans improvisation émotionnelle.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="tl-section">
+    <div class="section-container">
+        <div class="tl-section-head">
+            <span>Erreurs fréquentes</span>
+            <h2>Ce qui casse la structure d’un bon signal</h2>
+        </div>
+
+        <div class="tl-faq-grid">
+            <div class="tl-faq-card">
+                <h3>Entrée prise trop tôt</h3>
+                <p>
+                    Vouloir anticiper avant la zone valide affaiblit immédiatement la qualité du scénario
+                    et augmente le risque d’erreur.
+                </p>
+            </div>
+
+            <div class="tl-faq-card">
+                <h3>Absence d’invalidation claire</h3>
+                <p>
+                    Sans stop loss cohérent, le trade n’a plus de vraie structure et devient émotionnel.
+                </p>
+            </div>
+
+            <div class="tl-faq-card">
+                <h3>Objectif irréaliste</h3>
+                <p>
+                    Une cible trop optimiste donne une illusion de qualité mais casse souvent la logique globale
+                    du setup.
+                </p>
+            </div>
+
+            <div class="tl-faq-card">
+                <h3>Lecture isolée</h3>
+                <p>
+                    Regarder uniquement l’entrée sans comprendre le contexte réduit fortement la qualité
+                    de décision.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="tl-section">
+    <div class="section-container">
+        <div class="tl-card tl-card-large tl-premium-locked">
+            <div class="tl-locked-top">
+                <span class="tl-card-kicker">Mini cours premium</span>
+                <span class="tl-locked-badge">Réservé aux membres</span>
+            </div>
+
+            <h2>Module avancé : construire et lire un signal comme un desk professionnel</h2>
+            <p>
+                Ce bloc peut te servir à vendre l’abonnement premium en montrant qu’il existe une méthodologie
+                plus poussée derrière les signaux VelWolef.
+            </p>
+
+            <div class="tl-locked-grid">
+                <div class="tl-locked-item">
+                    <strong>Lecture de contexte</strong>
+                    <span>Identifier le type exact de structure de marché</span>
+                </div>
+                <div class="tl-locked-item">
+                    <strong>Validation du setup</strong>
+                    <span>Savoir quand une idée devient un vrai scénario</span>
+                </div>
+                <div class="tl-locked-item">
+                    <strong>Hiérarchie des niveaux</strong>
+                    <span>Différencier entrée, invalidation et objectif</span>
+                </div>
+                <div class="tl-locked-item">
+                    <strong>Exécution disciplinée</strong>
+                    <span>Rester aligné avec le plan initial du signal</span>
+                </div>
+            </div>
+
+            <div class="tl-locked-overlay">
+                <div class="tl-lock-icon">🔒</div>
+                <h3>Contenu premium VelWolef</h3>
+                <p>Débloquez les modules avancés de structure, de risque et de psychologie pour une exécution plus professionnelle.</p>
+                <a href="{{ url_for('billing.pricing') }}" class="cta-btn">Débloquer l’accès premium</a>
             </div>
         </div>
     </div>
@@ -145,15 +332,15 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-final-box">
-            <span class="tl-final-badge">Structure d’un signal</span>
-            <h2>Une bonne lecture commence toujours par une bonne structure</h2>
+            <span class="tl-final-badge">Structure VelWolef</span>
+            <h2>Une bonne exécution commence toujours par une structure propre</h2>
             <p>
-                Comprendre comment un signal est construit permet de mieux lire les setups,
-                de mieux relier les niveaux entre eux et d’appréhender VelWolef dans une logique plus professionnelle.
+                Comprendre comment un signal est construit permet de mieux filtrer les opportunités,
+                de mieux gérer le risque et de donner à chaque trade un cadre beaucoup plus professionnel.
             </p>
             <div class="tl-final-actions">
-                <a href="{{ url_for('pages.lab_risk') }}" class="tl-btn tl-btn-light">Voir la gestion du risque</a>
-                <a href="{{ url_for('signals.signals_page') }}" class="tl-btn tl-btn-outline">Retour aux signaux</a>
+                <a href="{{ url_for('pages.lab_risk') }}" class="cta-btn">Voir le Risk</a>
+                <a href="{{ url_for('pages.lab_psychology') }}" class="secondary-btn">Voir la Psychologie</a>
             </div>
         </div>
     </div>
@@ -163,13 +350,14 @@
     <div class="section-container footer-inner">
         <div class="footer-brand">
             <h3>VelWolef</h3>
-            <p>Une structure claire pour des signaux plus lisibles et plus cohérents.</p>
+            <p>Trading Lab premium, signaux structurés et lecture plus professionnelle du marché.</p>
         </div>
 
         <div class="footer-links">
-            <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
-            <a href="{{ url_for('pages.lab_risk') }}">Risque</a>
+            <a href="{{ url_for('pages.trading_lab') }}">Lab</a>
+            <a href="{{ url_for('pages.lab_risk') }}">Risk</a>
             <a href="{{ url_for('pages.lab_psychology') }}">Psychologie</a>
+            <a href="{{ url_for('billing.pricing') }}">Premium</a>
         </div>
     </div>
 </footer>

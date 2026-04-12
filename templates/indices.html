@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Indices | VelWolf{% endblock %}
+
+{% block content %}
+<section class="market-hero market-indices">
+    <div class="container">
+        <div class="market-hero-content">
+            <span class="page-badge">Marchés</span>
+            <h1>Indices Macro Dashboard</h1>
+            <p>
+                Un espace pour lire les grands indices, la dynamique risk-on / risk-off,
+                la corrélation avec la tech et l’impact sur les actifs risqués.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="market-grid-section">
+    <div class="container market-grid">
+        <article class="market-card">
+            <h2>US100 / Nasdaq</h2>
+            <p>
+                Le Nasdaq reste une référence majeure pour les actifs de croissance
+                et influence fortement l’appétit pour le risque.
+            </p>
+        </article>
+
+        <article class="market-card">
+            <h2>S&P 500</h2>
+            <p>
+                Le S&P 500 donne une lecture plus large du marché actions
+                et du positionnement global des investisseurs.
+            </p>
+        </article>
+
+        <article class="market-card">
+            <h2>DXY & taux</h2>
+            <p>
+                Les indices doivent être lus avec le dollar et les taux,
+                car ces variables modifient la pression sur le risque.
+            </p>
+        </article>
+
+        <article class="market-card">
+            <h2>Contexte macro</h2>
+            <p>
+                Cette page peut accueillir plus tard le calendrier macro,
+                les événements FOMC, CPI, NFP et leur impact sur le marché.
+            </p>
+        </article>
+    </div>
+</section>
+
+<section class="market-info-section">
+    <div class="container market-info-box">
+        <h2>Pourquoi cette page est utile</h2>
+        <ul>
+            <li>Lire la structure du risk-on / risk-off</li>
+            <li>Comprendre l’impact du Nasdaq sur la crypto</li>
+            <li>Suivre les cassures de marché majeures</li>
+            <li>Ajouter une vraie couche macro à tes signaux</li>
+        </ul>
+    </div>
+</section>
+{% endblock %}

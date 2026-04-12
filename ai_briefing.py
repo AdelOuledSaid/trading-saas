@@ -2,70 +2,91 @@ import os
 from openai import OpenAI
 from dotenv import load_dotenv
 
-# Charger les variables d'environnement (.env)
 load_dotenv()
-
-# Initialisation du client OpenAI
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def generate_daily_briefing(btc_data: str, gold_data: str, eco_data: str) -> str:
     """
-    Génère un briefing trading complet (BTC + OR + macro)
+    Génère un briefing trading ULTRA PREMIUM (structure hedge fund)
     """
 
     try:
         prompt = f"""
-Tu es un analyste financier professionnel spécialisé en trading.
+Tu es un analyste macro & trader professionnel travaillant dans un hedge fund.
 
 Ta mission :
-Générer un briefing de marché clair, structuré et exploitable pour un trader.
+Produire un briefing trading PREMIUM, structuré, clair et directement exploitable.
 
-Structure OBLIGATOIRE :
+IMPORTANT :
+- Pas de blabla inutile
+- Style professionnel
+- Phrase courte
+- Orientation trading
+- Focus opportunités + risque
 
-## 1. Résumé exécutif
-- Vue globale du marché
-- Sentiment (risk-on / risk-off)
+========================
+STRUCTURE OBLIGATOIRE
+========================
 
-## 2. Analyse du Bitcoin
+## 🧠 1. Market Sentiment
+- Biais global (Risk-on / Risk-off)
+- Direction dominante
+- Contexte macro rapide
+
+## ₿ 2. Bitcoin (BTC)
+- Tendance actuelle
+- Zones clés (support / résistance)
+- Scénario haussier
+- Scénario baissier
+- Niveau critique
+
+## 🪙 3. Gold (XAUUSD)
 - Tendance
-- Niveaux clés
-- Scénarios possibles
+- Rôle (refuge ou pression)
+- Zones clés
+- Scénarios
 
-## 3. Analyse de l'Or
-- Tendance
-- Niveaux clés
-- Scénarios possibles
+## 🌍 4. Macro & News Impact
+- Événements économiques importants
+- Impact potentiel sur le marché
+- Niveau de volatilité attendu
 
-## 4. Événements économiques
-- Impact attendu
-- Importance des événements
+## 🎯 5. Opportunités du jour
+- Actifs à surveiller
+- Conditions d'entrée idéales
+- Type de setup (breakout / pullback / range)
 
-## 5. Risques à surveiller
-- Volatilité
-- Cassures de niveaux
-- Faux signaux
+## ⚠️ 6. Risk Management
+- Niveau de risque global (faible / modéré / élevé)
+- Pièges possibles (fake breakout, news, etc.)
 
-## 6. Conclusion opérationnelle
-- Lecture trading claire
-- Biais (achat / vente / prudence)
+## 📌 7. Conclusion Trading
+- Biais final : BUY / SELL / NEUTRAL
+- Stratégie recommandée (attente / agressif / conservateur)
 
-Données :
+========================
+DONNÉES
+========================
 
-Bitcoin :
+BTC:
 {btc_data}
 
-Or :
+GOLD:
 {gold_data}
 
-Macro :
+MACRO:
 {eco_data}
 
-Contraintes :
-- Style professionnel
-- Pas de phrases inutiles
-- Analyse concrète
-- Adapté au trading court terme
+========================
+CONTRAINTES
+========================
+
+- Maximum 500 mots
+- Lisible rapidement
+- Style pro
+- Pas de répétition
+- Pas de disclaimer inutile
 """
 
         response = client.responses.create(

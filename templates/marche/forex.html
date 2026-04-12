@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}Forex Market | VelWolf{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='marche.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="market-page">
+
+    <section class="market-hero">
+        <div class="market-shell">
+            <span class="market-badge">Marchés • Forex</span>
+            <h1>Forex & Macro Flow</h1>
+            <p>
+                Une page dédiée aux grandes devises et au dollar pour mieux comprendre
+                la pression macro qui influence crypto, indices et métaux.
+            </p>
+
+            <div class="market-kpi-row">
+                <div class="market-kpi">
+                    <span class="label">Indice Dollar</span>
+                    <span class="value">DXY</span>
+                    <span class="meta">Boussole macro</span>
+                </div>
+                <div class="market-kpi positive">
+                    <span class="label">Majors</span>
+                    <span class="value">EUR / GBP</span>
+                    <span class="meta">Flux devises</span>
+                </div>
+                <div class="market-kpi">
+                    <span class="label">Asie</span>
+                    <span class="value">USDJPY</span>
+                    <span class="meta">Risk sentiment</span>
+                </div>
+                <div class="market-kpi warning">
+                    <span class="label">Contexte</span>
+                    <span class="value">Macro</span>
+                    <span class="meta">Fed, CPI, NFP</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="market-section">
+        <div class="market-shell">
+
+            <div class="tv-card tv-card-tape">
+                <div class="tv-card-head">
+                    <h2>Majors en direct</h2>
+                    <p>Les devises les plus importantes pour lire la pression monétaire globale.</p>
+                </div>
+
+                <div class="tradingview-widget-container">
+                    <div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+                    {
+                        "symbols": [
+                            { "proName": "TVC:DXY", "title": "DXY" },
+                            { "proName": "FX:EURUSD", "title": "EURUSD" },
+                            { "proName": "FX:GBPUSD", "title": "GBPUSD" },
+                            { "proName": "FX:USDJPY", "title": "USDJPY" },
+                            { "proName": "FX:USDCHF", "title": "USDCHF" },
+                            { "proName": "FX:AUDUSD", "title": "AUDUSD" }
+                        ],
+                        "showSymbolLogo": true,
+                        "colorTheme": "dark",
+                        "isTransparent": true,
+                        "displayMode": "adaptive",
+                        "locale": "fr"
+                    }
+                    </script>
+                </div>
+            </div>
+
+            <div class="market-grid-2">
+
+                <article class="market-card-chart">
+                    <div class="tv-card-head">
+                        <h2>DXY — graphique principal</h2>
+                        <p>Le dollar reste l’un des meilleurs filtres du risque global.</p>
+                    </div>
+
+                    <div class="tradingview-widget-container chart-widget">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                        {
+                            "autosize": true,
+                            "symbol": "TVC:DXY",
+                            "interval": "D",
+                            "timezone": "Europe/Paris",
+                            "theme": "dark",
+                            "style": "1",
+                            "locale": "fr",
+                            "allow_symbol_change": true,
+                            "calendar": true,
+                            "withdateranges": true,
+                            "details": true,
+                            "support_host": "https://www.tradingview.com"
+                        }
+                        </script>
+                    </div>
+                </article>
+
+                <article class="market-card-chart">
+                    <div class="tv-card-head">
+                        <h2>Vue Forex</h2>
+                        <p>Les grandes paires pour une lecture rapide des flux monétaires internationaux.</p>
+                    </div>
+
+                    <div class="tradingview-widget-container market-overview-widget">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+                        {
+                            "colorTheme": "dark",
+                            "dateRange": "12M",
+                            "showChart": true,
+                            "locale": "fr",
+                            "isTransparent": true,
+                            "showSymbolLogo": true,
+                            "width": "100%",
+                            "height": "540",
+                            "tabs": [
+                                {
+                                    "title": "Forex",
+                                    "symbols": [
+                                        { "s": "FX:EURUSD", "d": "EUR/USD" },
+                                        { "s": "FX:GBPUSD", "d": "GBP/USD" },
+                                        { "s": "FX:USDJPY", "d": "USD/JPY" },
+                                        { "s": "FX:USDCHF", "d": "USD/CHF" },
+                                        { "s": "FX:AUDUSD", "d": "AUD/USD" },
+                                        { "s": "FX:USDCAD", "d": "USD/CAD" }
+                                    ]
+                                }
+                            ],
+                            "support_host": "https://www.tradingview.com"
+                        }
+                        </script>
+                    </div>
+                </article>
+
+            </div>
+
+            <div class="market-grid">
+                <article class="market-card">
+                    <span class="eyebrow">Dollar</span>
+                    <h2>Le vrai filtre macro</h2>
+                    <p>
+                        Une accélération du dollar peut mettre sous pression les actifs risqués,
+                        alors qu’un reflux du billet vert peut soutenir la prise de risque.
+                    </p>
+                    <div class="card-stat">
+                        <span class="name">Effet</span>
+                        <span class="num">Cross-Asset</span>
+                    </div>
+                </article>
+
+                <article class="market-card">
+                    <span class="eyebrow">Macro</span>
+                    <h2>Fed, inflation et données</h2>
+                    <p>
+                        Le Forex est souvent le premier à réagir aux annonces macro :
+                        CPI, NFP, FOMC, PMI ou décisions de banques centrales.
+                    </p>
+                    <div class="card-stat">
+                        <span class="name">Utilité</span>
+                        <span class="num">Confluence</span>
+                    </div>
+                </article>
+            </div>
+
+            <div class="market-table-card" style="margin-top: 24px;">
+                <div class="market-table-head">
+                    <span>Paire / Indice</span>
+                    <span>Rôle</span>
+                    <span>Lecture</span>
+                    <span>Priorité</span>
+                </div>
+
+                <div class="market-table-row">
+                    <span><strong>DXY</strong></span>
+                    <span>Pilote</span>
+                    <span>Force du dollar</span>
+                    <span class="market-up">Haute</span>
+                </div>
+
+                <div class="market-table-row">
+                    <span><strong>EUR/USD</strong></span>
+                    <span>Major</span>
+                    <span>Flux Europe / USD</span>
+                    <span>Haute</span>
+                </div>
+
+                <div class="market-table-row">
+                    <span><strong>GBP/USD</strong></span>
+                    <span>Major</span>
+                    <span>Volatilité utile</span>
+                    <span>Moyenne</span>
+                </div>
+
+                <div class="market-table-row">
+                    <span><strong>USD/JPY</strong></span>
+                    <span>Risk Gauge</span>
+                    <span>Sentiment global</span>
+                    <span class="market-up">Haute</span>
+                </div>
+            </div>
+
+            <div class="market-highlight">
+                <h3>Pourquoi cette page est puissante</h3>
+                <p>
+                    Un site premium ne regarde pas uniquement les actifs qu’il trade.
+                    Il suit aussi ce qui provoque les mouvements. Le Forex t’aide à anticiper
+                    la pression macro avant qu’elle ne se reflète totalement sur crypto ou indices.
+                </p>
+
+                <div class="market-mini-list">
+                    <div class="market-mini-item">
+                        <span class="label">Pilier</span>
+                        <span class="value">DXY</span>
+                    </div>
+                    <div class="market-mini-item">
+                        <span class="label">Majors</span>
+                        <span class="value">FX</span>
+                    </div>
+                    <div class="market-mini-item">
+                        <span class="label">Lecture</span>
+                        <span class="value">Macro</span>
+                    </div>
+                    <div class="market-mini-item">
+                        <span class="label">But</span>
+                        <span class="value">Confluence</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</div>
+{% endblock %}

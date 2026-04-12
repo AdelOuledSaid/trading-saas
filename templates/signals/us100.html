@@ -3,311 +3,486 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApexSignals - US100 Signals</title>
-    <meta name="description" content="Suivez les signaux US100 sur VelWolf avec statistiques, historique récent, lecture du marché et environnement premium.">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>VelWolef | US100 Strategic Desk</title>
+    <meta name="description" content="Suivez le US100 avec VelWolef : structure de marché, niveaux techniques, statistiques, signaux récents, lecture du Nasdaq et environnement premium multi-actifs.">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='us100.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
-<body class="home-body">
+<body class="home-body us100-page us100-dark-page">
 
 {% include "partials/navbar.html" %}
 
-<section class="inner-hero">
-    <div class="section-container">
-        <span class="hero-badge">US100 Signals</span>
-        <h1 class="inner-page-title">Une page dédiée au US100 pour suivre les mouvements de l’indice technologique</h1>
-        <p class="inner-page-text">
-            Le US100 occupe une place importante dans VelWolf pour les traders qui recherchent
-            des mouvements rapides, directionnels et lisibles. Cette page rassemble les signaux récents,
-            les statistiques principales et une lecture plus structurée d’un indice parmi les plus suivis.
-        </p>
-    </div>
-</section>
+<div class="us100-bg-grid"></div>
 
-<section class="home-stats-section">
-    <div class="section-container">
-        <div class="section-title">
-            <span>Vue d’ensemble</span>
-            <h2>Les indicateurs essentiels du suivi US100</h2>
-            <p>
-                Ces données donnent une lecture immédiate de l’activité liée au US100 sur la plateforme,
-                avec les statistiques les plus utiles pour apprécier la fréquence, la qualité et la dynamique
-                des signaux enregistrés.
-            </p>
+<main class="us100-shell">
+
+    <section class="us100-hero">
+        <div class="section-container">
+            <div class="us100-hero-grid">
+
+                <div class="us100-hero-left">
+                    <div class="us100-brand-row">
+                        <div class="us100-brand-mark">NQ</div>
+                        <div class="us100-brand-text">VelWolef</div>
+                    </div>
+
+                    <div class="us100-launch-badge">
+                        <span class="us100-launch-icon">◎</span>
+                        <span>US100 Strategic Desk • Nasdaq Premium View</span>
+                    </div>
+
+                    <h1 class="us100-hero-title">
+                        Suivre le US100 avec une lecture
+                        plus claire, plus structurée
+                        et plus professionnelle
+                    </h1>
+
+                    <p class="us100-hero-subtitle">
+                        Le US100 concentre une grande partie de la dynamique du marché technologique américain.
+                        Cette page réunit les données essentielles pour suivre l’indice dans un environnement premium :
+                        statistiques clés, structure active, logique de lecture, historique des signaux et cadre
+                        plus sérieux pour le suivi du Nasdaq.
+                    </p>
+
+                    <div class="us100-hero-actions">
+                        <a href="#us100-desk" class="us100-btn us100-btn-primary">Voir le desk US100</a>
+                        <a href="#us100-signals-history" class="us100-btn us100-btn-secondary">Voir les signaux US100</a>
+                    </div>
+
+                    <div class="us100-hero-pills">
+                        <div class="us100-hero-pill">
+                            <strong>Indice directionnel</strong>
+                            <span>Le US100 est suivi pour ses impulsions nettes, sa réactivité et sa sensibilité au sentiment risk-on / risk-off.</span>
+                        </div>
+                        <div class="us100-hero-pill">
+                            <strong>Lecture enrichie</strong>
+                            <span>Une seule page réunit statistiques, structure, historique et logique d’exécution.</span>
+                        </div>
+                        <div class="us100-hero-pill">
+                            <strong>Valeur stratégique</strong>
+                            <span>Le suivi du Nasdaq renforce la profondeur multi-actifs de VelWolef et la crédibilité de la plateforme.</span>
+                        </div>
+                    </div>
+
+                    <div class="us100-hero-links">
+                        <span class="us100-hero-link"><span class="us100-hero-link-dot">◔</span>us100</span>
+                        <span class="us100-hero-link"><span class="us100-hero-link-dot">◔</span>nasdaq flow</span>
+                        <span class="us100-hero-link"><span class="us100-hero-link-dot">✕</span>macro structure</span>
+                    </div>
+                </div>
+
+                <div class="us100-hero-right">
+                    <div class="us100-terminal-card" id="us100-desk">
+                        <div class="us100-terminal-topbar">
+                            <div class="us100-terminal-brand">
+                                <span class="us100-terminal-logo">NQ</span>
+                                <span>VelWolef US100 Desk</span>
+                            </div>
+
+                            <div class="us100-terminal-actions">
+                                <span>＋</span>
+                                <span>⟲</span>
+                                <span class="us100-terminal-avatar">100</span>
+                                <span>×</span>
+                            </div>
+                        </div>
+
+                        <div class="us100-terminal-body">
+                            <div class="us100-stat-grid">
+                                <div class="us100-stat-box us100-stat-box-main">
+                                    <div class="us100-stat-label">Signaux totaux</div>
+                                    <div class="us100-stat-value-row">
+                                        <div class="us100-stat-value">{{ us100_total_signals or 0 }}</div>
+                                        <div class="us100-delta up">desk</div>
+                                    </div>
+                                </div>
+
+                                <div class="us100-stat-box">
+                                    <div class="us100-stat-label">Winrate</div>
+                                    <div class="us100-stat-value-row">
+                                        <div class="us100-stat-value">{{ us100_winrate or 0 }}%</div>
+                                        <div class="us100-delta up">tracked</div>
+                                    </div>
+                                </div>
+
+                                <div class="us100-stat-box">
+                                    <div class="us100-stat-label">Signaux ouverts</div>
+                                    <div class="us100-stat-value-row">
+                                        <div class="us100-stat-value">{{ us100_open_signals or 0 }}</div>
+                                        <div class="us100-delta up">live</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="us100-mid-grid">
+                                <div class="us100-panel-card">
+                                    <div class="us100-panel-title">Lecture du Nasdaq</div>
+                                    <div class="us100-gauge-wrap">
+                                        <div class="us100-gauge-arc"></div>
+                                        <div class="us100-gauge-needle"></div>
+                                        <div class="us100-gauge-score">
+                                            <strong>76</strong>
+                                            Directionnel
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="us100-panel-card">
+                                    <div class="us100-panel-title">Vue rapide</div>
+                                    <div class="us100-legend-list">
+                                        <div class="us100-legend-item">
+                                            <span class="legend-dot us100-dot-1"></span>
+                                            <span>PnL estimé</span>
+                                            <span>{{ us100_estimated_pnl or 0 }}</span>
+                                            <span class="us100-soft">desk</span>
+                                        </div>
+                                        <div class="us100-legend-item">
+                                            <span class="legend-dot us100-dot-2"></span>
+                                            <span>Biais</span>
+                                            <span>Réactif</span>
+                                            <span class="us100-soft">intraday</span>
+                                        </div>
+                                        <div class="us100-legend-item">
+                                            <span class="legend-dot us100-dot-3"></span>
+                                            <span>Rythme</span>
+                                            <span>Soutenu</span>
+                                            <span class="us100-soft">session US</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="us100-watchlist-card">
+                                <div class="us100-watch-tabs">
+                                    <span>MARKET PROFILE</span>
+                                    <span>PRIORITY ZONES</span>
+                                </div>
+
+                                <table class="us100-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Zone</th>
+                                            <th>Lecture</th>
+                                            <th>Biais</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Support journalier</td>
+                                            <td>Zone de réaction</td>
+                                            <td class="us100-green-text">Buy zone</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Milieu de range</td>
+                                            <td>Zone d’équilibre</td>
+                                            <td class="us100-soft">Neutral</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Résistance active</td>
+                                            <td>Zone de pression</td>
+                                            <td class="us100-red-text">Sell zone</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Breakout level</td>
+                                            <td>Continuation</td>
+                                            <td class="us100-red-text">Impulse</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="us100-floating-card">
+                        <div class="us100-floating-title">Le US100 garde-t-il une structure haussière cette semaine ?</div>
+
+                        <div class="us100-option-row">
+                            <div class="us100-option-top">
+                                <span>Continuation au-dessus de la zone support</span>
+                                <strong>64%</strong>
+                            </div>
+                            <div class="us100-progress">
+                                <div class="us100-fill us100-fill-64"></div>
+                            </div>
+                            <div class="us100-yesno">
+                                <span class="us100-pill yes">Yes</span>
+                                <span class="us100-pill no">No</span>
+                            </div>
+                        </div>
+
+                        <div class="us100-option-row">
+                            <div class="us100-option-top">
+                                <span>Retour sous résistance</span>
+                                <strong>36%</strong>
+                            </div>
+                            <div class="us100-progress">
+                                <div class="us100-fill us100-fill-36"></div>
+                            </div>
+                            <div class="us100-yesno">
+                                <span class="us100-pill yes">Yes</span>
+                                <span class="us100-pill no">No</span>
+                            </div>
+                        </div>
+
+                        <div class="us100-floating-footer">
+                            <span class="us100-live-indicator">LIVE <span class="us100-live-soft">US100 focus</span></span>
+                            <span>Strategic desk</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
+    </section>
 
-        <div class="home-stats-grid">
-            <div class="home-stat-card">
-                <h3>{{ us100_total_signals or 0 }}</h3>
-                <p>Signaux US100 enregistrés</p>
-            </div>
-
-            <div class="home-stat-card">
-                <h3>{{ us100_winrate or 0 }}%</h3>
-                <p>Winrate observé sur les trades clôturés</p>
-            </div>
-
-            <div class="home-stat-card">
-                <h3>{{ us100_open_signals or 0 }}</h3>
-                <p>Signaux actuellement ouverts</p>
-            </div>
-
-            <div class="home-stat-card">
-                <h3>{{ us100_estimated_pnl or 0 }}</h3>
-                <p>PnL cumulé estimé sur le US100</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="proof-box">
-            <div class="proof-left">
-                <span class="proof-badge">Pourquoi le US100</span>
-                <h2>Un indice dynamique pour lire les impulsions du marché américain</h2>
+    <section class="us100-content-section">
+        <div class="section-container">
+            <div class="us100-section-header">
+                <span class="us100-section-chip">Vue d’ensemble</span>
+                <h2>Les chiffres essentiels du suivi US100</h2>
                 <p>
-                    Le US100 est particulièrement apprécié pour ses mouvements rapides et sa capacité
-                    à produire des scénarios directionnels nets. Sa présence dans VelWolf apporte
-                    une vraie dimension marchés indices à la plateforme et renforce son positionnement
-                    multi-actifs dans un cadre plus professionnel.
+                    Ces indicateurs donnent une lecture immédiate de l’activité liée au US100 sur la plateforme.
+                    Ils permettent de situer le volume de signaux, la qualité des scénarios clôturés
+                    et le niveau d’opportunités encore en cours.
                 </p>
             </div>
 
-            <div class="proof-right">
-                <div class="proof-card">
-                    <strong>Indice technologique</strong>
-                    <span>Le US100 concentre une forte attention grâce à son exposition aux grandes valeurs tech.</span>
+            <div class="us100-insight-grid">
+                <div class="us100-insight-card">
+                    <h3>{{ us100_total_signals or 0 }} signaux enregistrés</h3>
+                    <p>
+                        Le volume total de signaux donne une idée de la profondeur historique disponible
+                        pour analyser le comportement du Nasdaq sur la plateforme.
+                    </p>
                 </div>
 
-                <div class="proof-card">
-                    <strong>Dynamique rapide</strong>
-                    <span>Ses mouvements peuvent offrir des lectures claires et des scénarios à forte réactivité.</span>
+                <div class="us100-insight-card">
+                    <h3>{{ us100_winrate or 0 }}% de winrate</h3>
+                    <p>
+                        Le winrate permet de mesurer la qualité observée sur les setups clôturés,
+                        tout en restant secondaire par rapport au contexte et au risk management.
+                    </p>
                 </div>
 
-                <div class="proof-card">
-                    <strong>Valeur ajoutée</strong>
-                    <span>Une page dédiée US100 renforce la richesse perçue et la crédibilité de la plateforme.</span>
+                <div class="us100-insight-card">
+                    <h3>{{ us100_open_signals or 0 }} signaux ouverts</h3>
+                    <p>
+                        Les positions encore actives donnent une lecture de l’activité présente
+                        et du rythme des opportunités suivies sur l’indice.
+                    </p>
+                </div>
+
+                <div class="us100-insight-card">
+                    <h3>{{ us100_estimated_pnl or 0 }} de PnL estimé</h3>
+                    <p>
+                        Le PnL cumulé estimé offre un repère global sur l’historique US100,
+                        à lire avec prudence et toujours avec la logique de discipline.
+                    </p>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>Historique récent</span>
-            <h2>Les derniers signaux US100 publiés</h2>
-            <p>
-                Cette section présente les signaux récents liés au US100 avec leur direction,
-                leurs niveaux techniques et leur statut. La mise en page a été conçue pour offrir
-                une lecture rapide, fluide et cohérente avec l’univers premium de VelWolf.
-            </p>
+    <section class="us100-content-section">
+        <div class="section-container">
+            <div class="us100-section-header">
+                <span class="us100-section-chip">Lecture marché</span>
+                <h2>Pourquoi le US100 reste un actif majeur à suivre</h2>
+                <p>
+                    Le US100 concentre la dynamique de nombreuses grandes valeurs technologiques américaines.
+                    Il offre souvent des séquences directionnelles claires, une volatilité utile
+                    et une lecture directe du sentiment sur les marchés actions US.
+                </p>
+            </div>
+
+            <div class="us100-why-box">
+                <div class="us100-why-left">
+                    <span class="us100-section-chip">Indice technologique</span>
+                    <h2>Le Nasdaq complète naturellement la crypto, le gold et le forex</h2>
+                    <p>
+                        Là où la crypto reflète souvent l’appétit spéculatif et où le gold peut agir comme actif refuge,
+                        le US100 donne une lecture plus directe du marché actions américain, notamment sur le segment tech.
+                        Le suivre améliore la vision multi-actifs et renforce la profondeur stratégique de la plateforme.
+                    </p>
+                </div>
+
+                <div class="us100-why-right">
+                    <div class="us100-why-card">
+                        <strong>Mouvements directionnels</strong>
+                        <span>Le US100 est recherché pour ses accélérations nettes et ses structures souvent lisibles.</span>
+                    </div>
+                    <div class="us100-why-card">
+                        <strong>Complément stratégique</strong>
+                        <span>Il enrichit la plateforme en ajoutant une vraie exposition aux indices US.</span>
+                    </div>
+                    <div class="us100-why-card">
+                        <strong>Positionnement premium</strong>
+                        <span>Une page dédiée Nasdaq renforce immédiatement la crédibilité multi-actifs de VelWolef.</span>
+                    </div>
+                </div>
+            </div>
         </div>
+    </section>
 
-        <div class="btc-signals-table-wrap">
-            <table class="btc-signals-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Actif</th>
-                        <th>Direction</th>
-                        <th>Entrée</th>
-                        <th>Stop Loss</th>
-                        <th>Take Profit</th>
-                        <th>Statut</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if us100_signals %}
-                        {% for signal in us100_signals %}
-                            <tr>
-                                <td>{{ signal.created_at.strftime('%d/%m/%Y %H:%M') if signal.created_at else "—" }}</td>
-                                <td>{{ signal.asset or "US100" }}</td>
-                                <td>
-                                    <span class="{% if signal.action == 'BUY' %}text-buy{% else %}text-sell{% endif %}">
-                                        {{ signal.action or "—" }}
-                                    </span>
-                                </td>
-                                <td>{{ signal.entry_price or "—" }}</td>
-                                <td>{{ signal.stop_loss or "—" }}</td>
-                                <td>{{ signal.take_profit or "—" }}</td>
-                                <td>
-                                    <span class="
-                                        {% if signal.status == 'WIN' %}
-                                            status-pill status-win
-                                        {% elif signal.status == 'LOSS' %}
-                                            status-pill status-loss
-                                        {% else %}
-                                            status-pill status-open
-                                        {% endif %}
-                                    ">
-                                        {{ signal.status or "OPEN" }}
-                                    </span>
-                                </td>
-                            </tr>
-                        {% endfor %}
+    <section class="us100-content-section" id="us100-signals-history">
+        <div class="section-container">
+            <div class="us100-section-header">
+                <span class="us100-section-chip">Signal desk</span>
+                <h2>Les derniers signaux US100 publiés</h2>
+                <p>
+                    Les setups récents sont affichés dans un format plus premium afin de relier direction,
+                    niveaux techniques et statut du scénario dans une lecture plus propre.
+                </p>
+            </div>
+
+            {% if us100_signals %}
+            <div class="us100-signals-grid">
+                {% for signal in us100_signals[:6] %}
+                <article class="us100-signal-card {{ signal.action|lower }} {{ signal.status|lower }}">
+                    <div class="us100-signal-top">
+                        <div class="us100-signal-head">
+                            <span class="us100-signal-asset">{{ signal.asset or "US100" }}</span>
+                            <h3>{{ signal.action or "SIGNAL" }}</h3>
+                        </div>
+
+                        <div class="us100-signal-badges">
+                            <span class="us100-status-badge {% if signal.status == 'WIN' %}status-win{% elif signal.status == 'LOSS' %}status-loss{% else %}status-open{% endif %}">
+                                {{ signal.status or "OPEN" }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="us100-signal-prices">
+                        <div class="us100-price-box">
+                            <span>Entrée</span>
+                            <strong>{{ signal.entry_price or "—" }}</strong>
+                        </div>
+                        <div class="us100-price-box">
+                            <span>SL</span>
+                            <strong>{{ signal.stop_loss or "—" }}</strong>
+                        </div>
+                        <div class="us100-price-box">
+                            <span>TP</span>
+                            <strong>{{ signal.take_profit or "—" }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="us100-signal-meta">
+                        <div class="us100-meta-box">
+                            <span>Actif</span>
+                            <strong>{{ signal.asset or "US100" }}</strong>
+                        </div>
+                        <div class="us100-meta-box">
+                            <span>Direction</span>
+                            <strong class="{% if signal.action == 'BUY' %}us100-green-text{% else %}us100-red-text{% endif %}">
+                                {{ signal.action or "—" }}
+                            </strong>
+                        </div>
+                        <div class="us100-meta-box">
+                            <span>Date</span>
+                            <strong>{{ signal.created_at.strftime('%d/%m/%Y %H:%M') if signal.created_at else "—" }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="us100-signal-reason">
+                        <h4>Lecture du scénario</h4>
+                        <p>
+                            Le setup repose sur une structure directionnelle claire, avec une zone d’entrée,
+                            une invalidation et un objectif qui donnent un cadre cohérent à la lecture du Nasdaq.
+                        </p>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="us100-empty-box">
+                <p>Aucun signal US100 n’est disponible pour le moment.</p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="us100-content-section">
+        <div class="section-container">
+            <div class="us100-section-header">
+                <span class="us100-section-chip">Lecture professionnelle</span>
+                <h2>Comment lire un signal US100 dans un cadre plus sérieux</h2>
+                <p>
+                    Un signal propre sur indice ne se résume pas à un sens. Il doit être lu à travers
+                    la structure du marché, la qualité de la zone, le timing de session et la logique de risque.
+                </p>
+            </div>
+
+            <div class="us100-method-grid">
+                <div class="us100-method-card">
+                    <h3>Contexte de session</h3>
+                    <p>
+                        Le US100 réagit fortement aux ouvertures américaines, aux chiffres macro
+                        et aux impulsions liées aux grandes capitalisations tech.
+                    </p>
+                </div>
+
+                <div class="us100-method-card">
+                    <h3>Zone technique</h3>
+                    <p>
+                        Les supports, résistances et zones d’équilibre restent centraux pour filtrer
+                        les scénarios et éviter les entrées sans structure.
+                    </p>
+                </div>
+
+                <div class="us100-method-card">
+                    <h3>Gestion du risque</h3>
+                    <p>
+                        Un stop loss cohérent est indispensable, car l’indice peut accélérer rapidement
+                        lorsque la volatilité augmente.
+                    </p>
+                </div>
+
+                <div class="us100-method-card">
+                    <h3>Discipline d’exécution</h3>
+                    <p>
+                        Le vrai avantage vient d’une exécution propre : attendre la zone, respecter
+                        le plan et ne pas sur-réagir à chaque impulsion.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="us100-content-section">
+        <div class="section-container">
+            <div class="us100-cta-box">
+                <span class="us100-cta-chip">US100 • VelWolef</span>
+                <h2>Le Nasdaq mérite une lecture dédiée dans un environnement premium</h2>
+                <p>
+                    Statistiques, structure, historique de signaux, logique marché et approche multi-actifs :
+                    cette page US100 renforce la profondeur perçue de VelWolef et donne à l’indice une vraie place stratégique.
+                </p>
+
+                <div class="us100-hero-actions">
+                    <a href="{{ url_for('pages.trading_lab') }}" class="us100-btn us100-btn-primary">Accéder au Trading Lab</a>
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('dashboard.dashboard') }}" class="us100-btn us100-btn-secondary">Accéder au dashboard</a>
                     {% else %}
-                        <tr>
-                            <td colspan="7" class="empty-table-cell">
-                                Aucun signal US100 n’est disponible pour le moment.
-                            </td>
-                        </tr>
+                        <a href="{{ url_for('auth.register') }}" class="us100-btn us100-btn-secondary">Créer mon compte</a>
                     {% endif %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>Lecture du marché</span>
-            <h2>Le US100 apporte une lecture complémentaire à la crypto et au Gold</h2>
-            <p>
-                Le US100 donne une vision différente des flux de marché. Là où la crypto reflète
-                souvent le sentiment spéculatif et où le Gold apporte une lecture refuge, cet indice
-                technologique permet d’observer plus directement la dynamique du marché actions américain.
-            </p>
-        </div>
-
-        <div class="features-home-grid">
-            <div class="feature-home-card">
-                <h3>Mouvements directionnels</h3>
-                <p>
-                    Le US100 est souvent recherché pour ses séquences nettes, ses accélérations
-                    et sa capacité à offrir des structures plus lisibles.
-                </p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Complément stratégique</h3>
-                <p>
-                    Il enrichit naturellement VelWolf en ajoutant une grande catégorie d’actifs
-                    très populaire auprès des traders actifs.
-                </p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Positionnement premium</h3>
-                <p>
-                    Une page dédiée à un indice majeur montre que la plateforme est pensée au-delà
-                    d’une simple offre crypto ou mono-marché.
-                </p>
-            </div>
-
-            <div class="feature-home-card">
-                <h3>Vision plus complète</h3>
-                <p>
-                    Le US100 participe à une lecture plus large des grands marchés suivis sur la plateforme,
-                    dans une logique multi-actifs cohérente.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="proof-box">
-            <div class="proof-left">
-                <span class="proof-badge">Structure d’un signal US100</span>
-                <h2>Des niveaux simples pour une lecture plus propre de l’indice</h2>
-                <p>
-                    Les signaux US100 gagnent en lisibilité lorsqu’ils sont présentés autour d’une structure claire :
-                    un point d’entrée, une invalidation, un objectif et un contexte. Cette logique renforce la qualité
-                    de la lecture et donne davantage de sens à l’historique affiché.
-                </p>
-                <div class="hero-actions">
-                    <a href="{{ url_for('pages.trading_lab') }}" class="hero-btn-primary">Accéder au Trading Lab</a>
-                    <a href="{{ url_for('billing.pricing') }}" class="hero-btn-secondary">Comparer les offres</a>
-                </div>
-            </div>
-
-            <div class="proof-right">
-                <div class="proof-card">
-                    <strong>Entrée</strong>
-                    <span>Le niveau à partir duquel le scénario sur l’indice devient exploitable.</span>
-                </div>
-
-                <div class="proof-card">
-                    <strong>Invalidation</strong>
-                    <span>Le stop loss permet d’encadrer la structure du signal et de préserver la discipline.</span>
-                </div>
-
-                <div class="proof-card">
-                    <strong>Projection</strong>
-                    <span>Le take profit matérialise l’objectif attendu si la dynamique se confirme.</span>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>Pourquoi une page dédiée</span>
-            <h2>Le US100 mérite un espace spécifique dans une plateforme sérieuse</h2>
-            <p>
-                Une plateforme premium organise ses marchés majeurs dans des pages distinctes.
-                Cela améliore la navigation, la perception de valeur et la crédibilité globale
-                de l’expérience proposée.
-            </p>
-        </div>
-
-        <div class="preview-links-grid">
-            <a href="{{ url_for('signals.signals_page') }}" class="preview-link-card">
-                <strong>Vue globale des signaux</strong>
-                <span>Retrouvez l’ensemble des actifs et catégories suivis sur ApexSignals.</span>
-            </a>
-
-            <a href="{{ url_for('signals.results') }}" class="preview-link-card">
-                <strong>Résultats</strong>
-                <span>Consultez les performances globales, le winrate et l’historique récent.</span>
-            </a>
-
-            <a href="{{ url_for('pages.trading_lab') }}" class="preview-link-card">
-                <strong>Trading Lab</strong>
-                <span>Approfondissez la structure des setups et la logique des signaux.</span>
-            </a>
-
-            <a href="{{ url_for('billing.pricing') }}" class="preview-link-card">
-                <strong>Offres</strong>
-                <span>Choisissez le niveau d’accès le plus adapté à votre progression.</span>
-            </a>
-        </div>
-    </div>
-</section>
-
-<section class="final-cta-section">
-    <div class="section-container">
-        <div class="final-cta-box">
-            <span class="final-cta-badge">US100 • ApexSignals</span>
-            <h2>Suivre le US100 dans un environnement plus structuré</h2>
-            <p>
-                Une page dédiée, un historique lisible, des statistiques visibles et une logique de plateforme cohérente :
-                le US100 prend ici sa place dans un univers plus clair, plus crédible et plus premium.
-            </p>
-            <div class="final-cta-actions">
-                <a href="{{ url_for('billing.pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>
-                {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('dashboard.dashboard') }}" class="hero-btn-secondary white-outline-btn">Accéder au dashboard</a>
-                {% else %}
-                    <a href="{{ url_for('auth.register') }}" class="hero-btn-secondary white-outline-btn">Créer mon compte</a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</section>
+</main>
 
 <footer class="site-footer">
     <div class="section-container footer-inner">
         <div class="footer-brand">
-            <h3>ApexSignals</h3>
-            <p>Une plateforme structurée pour présenter le US100 et les autres actifs de façon plus claire et plus premium.</p>
+            <h3>VelWolef</h3>
+            <p>Une présentation premium des actifs majeurs : indices, crypto, gold et opportunités de marché.</p>
         </div>
 
         <div class="footer-links">

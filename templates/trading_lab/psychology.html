@@ -3,71 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VelWolef - Gestion du risque</title>
-    <meta name="description" content="Comprendre la gestion du risque dans le Trading Lab de VelWolef pour lire les signaux avec plus de discipline et de cohérence.">
+    <title>VelWolef - Psychologie du Trading</title>
+    <meta name="description" content="Psychologie du trading avec VelWolef : discipline, contrôle émotionnel, gestion des pertes, constance d'exécution et cadre mental professionnel.">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='trading-lab.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
-<body class="home-body">
+<body class="home-body tl-page-body">
 
 {% include "partials/navbar.html" %}
 
-<section class="tl-hero tl-hero-risk">
+<section class="tl-hero tl-hero-psychology">
     <div class="section-container tl-hero-inner">
-        <span class="tl-kicker">Trading Lab • Gestion du risque</span>
-        <h1 class="tl-title">La gestion du risque donne sa cohérence à la lecture des signaux</h1>
+        <span class="tl-kicker">VelWolef Lab • Psychologie</span>
+        <h1 class="tl-title">
+            Le marché ne juge pas seulement la qualité d’une analyse,
+            il révèle surtout la qualité de l’exécution
+        </h1>
         <p class="tl-subtitle">
-            Une plateforme sérieuse ne peut pas se limiter à afficher des points d’entrée et des objectifs.
-            La gestion du risque fait partie intégrante de la lecture d’un signal et joue un rôle central
-            dans la discipline, la stabilité et la compréhension globale du marché.
+            En trading, beaucoup d’erreurs ne viennent pas d’un manque d’information, mais d’un manque
+            de maîtrise émotionnelle. Une bonne psychologie permet de respecter un plan, d’accepter
+            l’invalidation, de protéger le capital et de rester cohérent même pendant les phases
+            de pression, d’attente ou de volatilité.
         </p>
+
+        <div class="tl-badges">
+            <span>Discipline</span>
+            <span>Contrôle émotionnel</span>
+            <span>Patience opérationnelle</span>
+            <span>Exécution professionnelle</span>
+        </div>
     </div>
 </section>
 
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Principes de base</span>
-            <h2>Lire un signal sans oublier la logique d’encadrement</h2>
+            <span>Fondation mentale</span>
+            <h2>Un bon signal perd sa valeur si le mental déforme son exécution</h2>
             <p>
-                Le risque n’est pas un détail secondaire. Il détermine la cohérence du scénario
-                et la manière dont un signal doit être interprété dans un cadre discipliné.
+                Un trader peut disposer d’un setup propre, d’un bon contexte technique et d’un bon niveau
+                d’entrée, puis perdre malgré tout parce qu’il anticipe trop tôt, coupe trop vite, refuse
+                une perte normale ou sur-réagit après une série de résultats. La psychologie ne remplace
+                pas la méthode, elle permet de l’appliquer correctement.
             </p>
         </div>
 
-        <div class="tl-feature-grid">
-            <div class="tl-feature-card">
-                <h3>Invalidation</h3>
-                <p>
-                    Le stop loss ne sert pas seulement de sortie. Il définit la zone où le scénario
-                    cesse d’être valable et protège la logique du signal.
-                </p>
+        <div class="tl-metrics-grid">
+            <div class="tl-metric-card">
+                <strong>FOMO</strong>
+                <span>Entrer trop tard ou trop loin du plan par peur de rater le mouvement</span>
             </div>
-
-            <div class="tl-feature-card">
-                <h3>Exposition</h3>
-                <p>
-                    Une lecture saine du marché suppose de ne pas surdimensionner un seul scénario
-                    ni un seul actif.
-                </p>
+            <div class="tl-metric-card">
+                <strong>Panique</strong>
+                <span>Sortir trop vite alors que le scénario reste techniquement valide</span>
             </div>
-
-            <div class="tl-feature-card">
-                <h3>Rapport risque / potentiel</h3>
-                <p>
-                    Un signal doit conserver une cohérence entre l’invalidation et l’objectif affiché.
-                </p>
+            <div class="tl-metric-card">
+                <strong>Ego</strong>
+                <span>Refuser l’invalidation et transformer une petite perte en erreur lourde</span>
             </div>
-
-            <div class="tl-feature-card">
-                <h3>Discipline</h3>
-                <p>
-                    La gestion du risque renforce la stabilité de lecture et évite l’excès d’impulsivité.
-                </p>
+            <div class="tl-metric-card">
+                <strong>Overtrade</strong>
+                <span>Multiplier les positions pour compenser l’ennui, la perte ou l’impatience</span>
             </div>
         </div>
     </div>
@@ -77,27 +78,34 @@
     <div class="section-container">
         <div class="tl-grid-two">
             <div class="tl-card tl-card-large">
-                <span class="tl-card-kicker">Pourquoi c’est essentiel</span>
-                <h2>Le risque structure la lecture autant que l’entrée elle-même</h2>
+                <span class="tl-card-kicker">Pourquoi la psychologie compte réellement</span>
+                <h2>Le marché récompense davantage la stabilité que l’intensité</h2>
                 <p>
-                    Une bonne gestion du risque améliore la qualité perçue des signaux et la crédibilité
-                    de toute la plateforme. Elle montre que l’analyse ne s’arrête pas à une simple cible,
-                    mais qu’elle repose sur une logique encadrée et disciplinée.
+                    L’erreur classique consiste à croire que la performance dépend uniquement de la précision
+                    d’entrée. En pratique, la différence se joue souvent dans la capacité à rester constant
+                    sur une série de décisions. Un trader discipliné ne cherche pas à gagner chaque mouvement ;
+                    il cherche à conserver une qualité d’exécution stable sur des dizaines de trades.
+                </p>
+                <p>
+                    La psychologie ne consiste pas à “être motivé”. Elle consiste à rester lucide quand
+                    le prix accélère, à accepter une perte normale sans la personnaliser, à ne pas
+                    transformer un gain en euphorie, et à suivre le plan même lorsque l’émotion pousse
+                    à improviser.
                 </p>
             </div>
 
             <div class="tl-stack">
                 <div class="tl-mini-card">
-                    <strong>Encadrement</strong>
-                    <span>Le risque donne des limites claires à chaque scénario.</span>
+                    <strong>Lucidité</strong>
+                    <span>Lire le signal tel qu’il est, sans le déformer par la peur, l’espoir ou l’impatience.</span>
                 </div>
                 <div class="tl-mini-card">
-                    <strong>Stabilité</strong>
-                    <span>Une lecture disciplinée évite de transformer le marché en simple réaction émotionnelle.</span>
+                    <strong>Régularité</strong>
+                    <span>La constance d’exécution produit plus de solidité qu’une succession de réactions émotionnelles.</span>
                 </div>
                 <div class="tl-mini-card">
                     <strong>Professionnalisme</strong>
-                    <span>La plateforme gagne en sérieux quand cette logique est visible et assumée.</span>
+                    <span>Un trader sérieux suit un cadre précis et ne renégocie pas son plan sous pression.</span>
                 </div>
             </div>
         </div>
@@ -107,33 +115,194 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Repères utiles</span>
-            <h2>Les réflexes à garder pour lire un signal avec plus de recul</h2>
+            <span>Les pièges psychologiques</span>
+            <h2>Les erreurs mentales les plus fréquentes pendant l’exécution</h2>
+            <p>
+                Certaines erreurs sont récurrentes chez presque tous les traders. Elles ne viennent pas d’un
+                manque de connaissances de base, mais d’une mauvaise gestion de l’émotion face au risque,
+                à l’attente ou au résultat immédiat.
+            </p>
         </div>
 
-        <div class="tl-pillars-grid">
-            <div class="tl-pillar-card">
-                <div class="tl-pillar-icon">1</div>
-                <h3>Ne pas lire seulement l’objectif</h3>
-                <p>Une cible n’a de valeur que si elle s’inscrit dans une structure cohérente.</p>
+        <div class="tl-faq-grid">
+            <div class="tl-faq-card">
+                <h3>FOMO</h3>
+                <p>
+                    Le prix part sans toi, tu poursuis le mouvement, tu entres loin de la zone prévue
+                    et tu fragilises immédiatement le ratio du trade. Le setup reste parfois bon,
+                    mais l’exécution devient mauvaise.
+                </p>
             </div>
 
-            <div class="tl-pillar-card">
-                <div class="tl-pillar-icon">2</div>
-                <h3>Observer l’invalidation</h3>
-                <p>Le stop loss est une information clé dans la lecture du scénario.</p>
+            <div class="tl-faq-card">
+                <h3>Revenge trading</h3>
+                <p>
+                    Après une perte, tu veux récupérer vite. Le problème est que ce besoin émotionnel
+                    remplace le filtre technique. La décision n’est plus prise parce que le signal est bon,
+                    mais parce que la frustration pousse à agir.
+                </p>
             </div>
 
-            <div class="tl-pillar-card">
-                <div class="tl-pillar-icon">3</div>
-                <h3>Éviter la surcharge</h3>
-                <p>Une plateforme premium met en avant la clarté, pas l’excès d’informations inutiles.</p>
+            <div class="tl-faq-card">
+                <h3>Sortie par peur</h3>
+                <p>
+                    Le trade respire normalement, mais tu sors dès la première pression adverse.
+                    Cette habitude détruit la logique du plan, coupe les gagnants trop tôt
+                    et rend les résultats incohérents.
+                </p>
             </div>
 
-            <div class="tl-pillar-card">
-                <div class="tl-pillar-icon">4</div>
-                <h3>Rester discipliné</h3>
-                <p>La cohérence à long terme vaut plus qu’une lecture impulsive du marché.</p>
+            <div class="tl-faq-card">
+                <h3>Excès de confiance</h3>
+                <p>
+                    Après plusieurs gains, certains traders relâchent leur discipline, augmentent
+                    trop vite l’exposition et cessent de respecter leurs critères. Le marché sanctionne
+                    souvent ce relâchement plus vite qu’il ne le récompense.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="tl-section">
+    <div class="section-container">
+        <div class="tl-section-head">
+            <span>Erreurs concrètes</span>
+            <h2>Comment un bon scénario peut être détruit par une mauvaise réaction</h2>
+            <p>
+                Ces exemples montrent que le problème n’est pas toujours le signal lui-même, mais la manière
+                dont il est exécuté, géré ou abandonné.
+            </p>
+        </div>
+
+        <div class="tl-steps-grid">
+            <div class="tl-step-card">
+                <div class="tl-step-number">01</div>
+                <h3>Entrer avant confirmation</h3>
+                <p>
+                    Le marché n’a pas encore validé la zone d’entrée, mais tu anticipes. Résultat :
+                    tu entres trop tôt, tu subis une phase de bruit inutile et tu perds rapidement
+                    en confiance sur un plan qui n’était pas encore activé.
+                </p>
+            </div>
+
+            <div class="tl-step-card">
+                <div class="tl-step-number">02</div>
+                <h3>Déplacer le stop loss</h3>
+                <p>
+                    Au lieu d’accepter que le scénario soit invalidé, tu repousses la limite.
+                    Une perte contrôlée devient alors une erreur d’exécution. Ce n’est plus le marché
+                    qui décide du dommage, c’est le refus de respecter le plan.
+                </p>
+            </div>
+
+            <div class="tl-step-card">
+                <div class="tl-step-number">03</div>
+                <h3>Couper un gagnant trop tôt</h3>
+                <p>
+                    Tu sors par peur de perdre un profit latent alors que la structure reste saine.
+                    À long terme, cette habitude casse le rendement global, car les pertes restent entières
+                    alors que les bons trades sont raccourcis.
+                </p>
+            </div>
+
+            <div class="tl-step-card">
+                <div class="tl-step-number">04</div>
+                <h3>Trader pour compenser</h3>
+                <p>
+                    Après une perte, tu cherches immédiatement une nouvelle position sans attendre
+                    un setup propre. Le but devient émotionnel : annuler la douleur, pas exécuter
+                    une opportunité de qualité.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="tl-section">
+    <div class="section-container">
+        <div class="tl-section-head">
+            <span>Cadre mental professionnel</span>
+            <h2>Les habitudes qui améliorent réellement la qualité d’exécution</h2>
+        </div>
+
+        <div class="tl-feature-grid">
+            <div class="tl-feature-card">
+                <h3>Observer avant d’agir</h3>
+                <p>
+                    La priorité n’est pas de participer à chaque mouvement, mais de comprendre si le contexte,
+                    le timing et la structure justifient réellement une prise de position.
+                </p>
+            </div>
+
+            <div class="tl-feature-card">
+                <h3>Accepter l’absence de trade</h3>
+                <p>
+                    Toutes les séances ne donnent pas une opportunité exploitable. Ne rien faire peut être
+                    une décision disciplinée, surtout lorsque le marché n’offre pas de scénario propre.
+                </p>
+            </div>
+
+            <div class="tl-feature-card">
+                <h3>Respecter le plan initial</h3>
+                <p>
+                    Une fois le scénario validé, l’exécution doit suivre la structure définie :
+                    entrée, invalidation, objectif et gestion. Modifier ce cadre sous émotion
+                    détruit la cohérence du trade.
+                </p>
+            </div>
+
+            <div class="tl-feature-card">
+                <h3>Revoir à froid</h3>
+                <p>
+                    L’amélioration vient d’une analyse calme après l’exécution. Il faut distinguer
+                    un mauvais trade d’une bonne exécution perdante, et un bon résultat d’une mauvaise
+                    exécution chanceuse.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="tl-section">
+    <div class="section-container">
+        <div class="tl-card tl-card-large tl-premium-locked">
+            <div class="tl-locked-top">
+                <span class="tl-card-kicker">Module avancé</span>
+                <span class="tl-locked-badge">Réservé aux membres</span>
+            </div>
+
+            <h2>Psychologie d’exécution avancée : garder la même qualité de décision sous pression</h2>
+            <p>
+                Le niveau avancé approfondit la préparation mentale avant entrée, la gestion du stress
+                en position, l’analyse post-trade et la stabilité émotionnelle pendant les séries
+                de gains ou de pertes.
+            </p>
+
+            <div class="tl-locked-grid">
+                <div class="tl-locked-item">
+                    <strong>Routine pré-trade</strong>
+                    <span>Valider objectivement le contexte, le setup et l’état mental avant chaque décision</span>
+                </div>
+                <div class="tl-locked-item">
+                    <strong>Gestion du stress</strong>
+                    <span>Rester discipliné pendant le trade sans déformer le plan sous pression</span>
+                </div>
+                <div class="tl-locked-item">
+                    <strong>Post-trade review</strong>
+                    <span>Évaluer la qualité d’exécution sans biais émotionnel ni auto-justification</span>
+                </div>
+                <div class="tl-locked-item">
+                    <strong>Psychologie des séries</strong>
+                    <span>Garder le même niveau de rigueur après plusieurs gains ou plusieurs pertes</span>
+                </div>
+            </div>
+
+            <div class="tl-locked-overlay">
+                <div class="tl-lock-icon">🔒</div>
+                <h3>Contenu premium VelWolef</h3>
+                <p>Débloquez les modules avancés de psychologie, de risque et d’exécution professionnelle.</p>
+                <a href="{{ url_for('billing.pricing') }}" class="cta-btn">Débloquer l’accès premium</a>
             </div>
         </div>
     </div>
@@ -142,15 +311,16 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-final-box">
-            <span class="tl-final-badge">Gestion du risque</span>
-            <h2>La discipline renforce la valeur de chaque signal</h2>
+            <span class="tl-final-badge">Psychologie VelWolef</span>
+            <h2>Le trading devient plus solide quand l’émotion cesse de prendre le contrôle du plan</h2>
             <p>
-                Lire un signal avec une logique de risque permet de mieux comprendre sa structure,
-                d’améliorer la cohérence de la lecture et de renforcer la crédibilité générale de VelWolef.
+                Une stratégie donne une direction. La psychologie permet de respecter cette direction
+                avec calme, rigueur et constance. C’est cette maîtrise qui transforme un signal
+                en exécution durable et professionnelle.
             </p>
             <div class="tl-final-actions">
-                <a href="{{ url_for('pages.lab_psychology') }}" class="tl-btn tl-btn-light">Voir la psychologie</a>
-                <a href="{{ url_for('pages.lab_structure') }}" class="tl-btn tl-btn-outline">Revoir la structure</a>
+                <a href="{{ url_for('pages.lab_risk') }}" class="cta-btn">Voir le Risk</a>
+                <a href="{{ url_for('pages.lab_structure') }}" class="secondary-btn">Voir la Structure</a>
             </div>
         </div>
     </div>
@@ -160,13 +330,14 @@
     <div class="section-container footer-inner">
         <div class="footer-brand">
             <h3>VelWolef</h3>
-            <p>Gestion du risque, structure et discipline dans un cadre plus premium.</p>
+            <p>Trading Lab premium, discipline d’exécution et lecture plus professionnelle du marché.</p>
         </div>
 
         <div class="footer-links">
-            <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
+            <a href="{{ url_for('pages.trading_lab') }}">Lab</a>
             <a href="{{ url_for('pages.lab_structure') }}">Structure</a>
-            <a href="{{ url_for('pages.lab_psychology') }}">Psychologie</a>
+            <a href="{{ url_for('pages.lab_risk') }}">Risk</a>
+            <a href="{{ url_for('billing.pricing') }}">Premium</a>
         </div>
     </div>
 </footer>

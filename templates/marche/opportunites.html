@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}Opportunités | VelWolf{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='marche.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="market-page">
+
+    <section class="market-hero">
+        <div class="market-shell">
+            <span class="market-badge">Marchés • Opportunités</span>
+            <h1>Opportunités Premium</h1>
+            <p>
+                Une watchlist premium orientée exécution pour filtrer les actifs chauds,
+                prioriser les setups et construire un radar de marché vraiment professionnel.
+            </p>
+
+            <div class="market-kpi-row">
+                <div class="market-kpi positive">
+                    <span class="label">Mode</span>
+                    <span class="value">Watchlist</span>
+                    <span class="meta">Radar premium</span>
+                </div>
+                <div class="market-kpi">
+                    <span class="label">Filtre</span>
+                    <span class="value">Momentum</span>
+                    <span class="meta">Actifs en force</span>
+                </div>
+                <div class="market-kpi">
+                    <span class="label">Timing</span>
+                    <span class="value">Breakout</span>
+                    <span class="meta">Entrées propres</span>
+                </div>
+                <div class="market-kpi warning">
+                    <span class="label">But</span>
+                    <span class="value">Prioriser</span>
+                    <span class="meta">Qualité avant quantité</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="market-section">
+        <div class="market-shell">
+
+            <div class="market-grid-2">
+
+                <article class="market-card-chart">
+                    <div class="tv-card-head">
+                        <h2>Actif focus</h2>
+                        <p>Un graphique central pour suivre rapidement l’actif le plus intéressant du moment.</p>
+                    </div>
+
+                    <div class="tradingview-widget-container chart-widget">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                        {
+                            "autosize": true,
+                            "symbol": "BINANCE:SOLUSDT",
+                            "interval": "240",
+                            "timezone": "Europe/Paris",
+                            "theme": "dark",
+                            "style": "1",
+                            "locale": "fr",
+                            "allow_symbol_change": true,
+                            "calendar": false,
+                            "withdateranges": true,
+                            "details": true,
+                            "support_host": "https://www.tradingview.com"
+                        }
+                        </script>
+                    </div>
+                </article>
+
+                <article class="market-card-chart">
+                    <div class="tv-card-head">
+                        <h2>Watchlist Momentum</h2>
+                        <p>Les actifs à surveiller de près pour les cassures, reprises ou accélérations.</p>
+                    </div>
+
+                    <div class="tradingview-widget-container market-overview-widget">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+                        {
+                            "colorTheme": "dark",
+                            "dateRange": "12M",
+                            "showChart": true,
+                            "locale": "fr",
+                            "isTransparent": true,
+                            "showSymbolLogo": true,
+                            "width": "100%",
+                            "height": "540",
+                            "tabs": [
+                                {
+                                    "title": "Watchlist",
+                                    "symbols": [
+                                        { "s": "BINANCE:SOLUSDT", "d": "Solana" },
+                                        { "s": "BINANCE:AVAXUSDT", "d": "Avalanche" },
+                                        { "s": "BINANCE:LINKUSDT", "d": "Chainlink" },
+                                        { "s": "BINANCE:SUIUSDT", "d": "SUI" },
+                                        { "s": "BINANCE:ARBUSDT", "d": "Arbitrum" },
+                                        { "s": "BINANCE:NEARUSDT", "d": "NEAR" }
+                                    ]
+                                }
+                            ],
+                            "support_host": "https://www.tradingview.com"
+                        }
+                        </script>
+                    </div>
+                </article>
+
+            </div>
+
+            <div class="market-grid">
+                <article class="market-card">
+                    <span class="eyebrow">Sélection</span>
+                    <h2>Filtrer avant d’exécuter</h2>
+                    <p>
+                        L’objectif n’est pas de suivre tout le marché, mais de ne garder
+                        que les actifs offrant une structure propre, un bon timing et un contexte favorable.
+                    </p>
+                    <div class="card-stat">
+                        <span class="name">Approche</span>
+                        <span class="num">Qualité</span>
+                    </div>
+                </article>
+
+                <article class="market-card">
+                    <span class="eyebrow">Momentum</span>
+                    <h2>Repérer les leaders</h2>
+                    <p>
+                        Les meilleures opportunités viennent souvent des actifs qui résistent mieux,
+                        accélèrent plus vite ou récupèrent plus proprement que le reste du marché.
+                    </p>
+                    <div class="card-stat">
+                        <span class="name">But</span>
+                        <span class="num">Surperformance</span>
+                    </div>
+                </article>
+            </div>
+
+            <div class="market-table-card" style="margin-top: 24px;">
+                <div class="market-table-head">
+                    <span>Actif</span>
+                    <span>Type</span>
+                    <span>Scénario</span>
+                    <span>Priorité</span>
+                </div>
+
+                <div class="market-table-row">
+                    <span><strong>Solana</strong></span>
+                    <span>Leader</span>
+                    <span>Continuation</span>
+                    <span class="market-up">Haute</span>
+                </div>
+
+                <div class="market-table-row">
+                    <span><strong>Chainlink</strong></span>
+                    <span>Breakout</span>
+                    <span>Compression</span>
+                    <span>Haute</span>
+                </div>
+
+                <div class="market-table-row">
+                    <span><strong>AVAX</strong></span>
+                    <span>Momentum</span>
+                    <span>Reprise</span>
+                    <span>Moyenne</span>
+                </div>
+
+                <div class="market-table-row">
+                    <span><strong>NEAR</strong></span>
+                    <span>Watch</span>
+                    <span>Confirmation</span>
+                    <span>Moyenne</span>
+                </div>
+            </div>
+
+            <div class="market-highlight">
+                <h3>Une page tournée vers l’action</h3>
+                <p>
+                    Cette rubrique transforme ton analyse en radar d’exécution. Elle montre que ton service
+                    ne se limite pas à publier des alertes : il construit une vraie hiérarchie d’opportunités.
+                </p>
+
+                <div class="market-mini-list">
+                    <div class="market-mini-item">
+                        <span class="label">Mode</span>
+                        <span class="value">Radar</span>
+                    </div>
+                    <div class="market-mini-item">
+                        <span class="label">But</span>
+                        <span class="value">Prioriser</span>
+                    </div>
+                    <div class="market-mini-item">
+                        <span class="label">Timing</span>
+                        <span class="value">Setups</span>
+                    </div>
+                    <div class="market-mini-item">
+                        <span class="label">Valeur</span>
+                        <span class="value">Premium</span>
+                    </div>
+                </div>
+
+                <div class="market-cta-row">
+                    <a href="{{ url_for('signals.signals_page') }}" class="market-btn">Voir la vue globale</a>
+                    <a href="{{ url_for('signals.results') }}" class="market-btn secondary">Historique</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</div>
+{% endblock %}

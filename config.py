@@ -11,8 +11,18 @@ SECRET_KEY = os.getenv("SECRET_KEY", "change-moi-plus-tard")
 DOMAIN = os.getenv("DOMAIN", "http://127.0.0.1:5000").rstrip("/")
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
+
+# Canal public optionnel
+TELEGRAM_PUBLIC_CHAT_ID = os.getenv("TELEGRAM_PUBLIC_CHAT_ID", "")
+
+# Option A : 3 canaux abonnements
+TELEGRAM_BASIC_CHAT_ID = os.getenv("TELEGRAM_BASIC_CHAT_ID", "")
+TELEGRAM_PREMIUM_CHAT_ID = os.getenv("TELEGRAM_PREMIUM_CHAT_ID", "")
+TELEGRAM_VIP_CHAT_ID = os.getenv("TELEGRAM_VIP_CHAT_ID", "")
+
 TELEGRAM_VIP_INVITE_LINK = os.getenv("TELEGRAM_VIP_INVITE_LINK", "")
+TELEGRAM_PREMIUM_INVITE_LINK = os.getenv("TELEGRAM_PREMIUM_INVITE_LINK", "")
+TELEGRAM_BASIC_INVITE_LINK = os.getenv("TELEGRAM_BASIC_INVITE_LINK", "")
 
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
 STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
@@ -28,4 +38,4 @@ COINGECKO_API_KEY = os.getenv("COINGECKO_API_KEY", "")
 ALLOWED_ASSETS = ["BTCUSD", "ETHUSD", "SOLUSD", "XRPUSD", "GOLD", "US100", "US500", "FRA40"]
 ALLOWED_ACTIONS = ["BUY", "SELL"]
 ALLOWED_EVENTS = ["OPEN", "TP", "SL"]
-SITE_URL = "https://trading-saas-1.onrender.com"
+SITE_URL = os.getenv("SITE_URL", "https://trading-saas-1.onrender.com")
