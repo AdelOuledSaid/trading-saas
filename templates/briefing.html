@@ -3,119 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Briefing IA du jour - ApexSignals</title>
-    <meta name="description" content="Analyse premium quotidienne du marché par IA pour les membres ApexSignals.">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <title>VelWolef — Market Briefing</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='briefing.css') }}">
 </head>
 
-<body class="dashboard-body">
+<body class="dashboard-body premium-dashboard-body ultra-dashboard-body">
 
 {% include "partials/navbar.html" %}
 
-<div class="dashboard-wrapper">
+<div class="dashboard-shell ultra-dashboard-shell">
 
-    <aside class="sidebar">
-        <div class="logo-box">
-            <h2>ApexSignals</h2>
-            <p>Signal Center</p>
-        </div>
+    <main class="dashboard-content ultra-dashboard-content">
 
-        <nav class="sidebar-nav">
-           <a href="{{ url_for('dashboard.dashboard') }}" class="nav-link">📊 Dashboard</a>
-           <a href="{{ url_for('pages.briefing_page') }}" class="nav-link active">🧠 Briefing IA</a>
-           <a href="{{ url_for('billing.pricing') }}" class="nav-link">💎 Premium</a>
-           <a href="{{ url_for('auth.logout') }}" class="nav-link logout-link">🚪 Déconnexion</a>
-        </nav>
-    </aside>
+        <!-- =========================
+            HERO
+        ========================== -->
+        <section class="ultra-hero briefing-hero">
+            <div class="dashboard-hero-content">
 
-    <main class="main-content">
+                <div class="hero-badge-line">
+                    <span class="hero-badge">
+                        {{ current_user.plan | upper }}
+                    </span>
+                    <span class="hero-live-dot">● Daily Market Briefing</span>
+                </div>
 
-        <header class="topbar">
-            <div>
-                <h1>🧠 Briefing IA du jour</h1>
-                <p class="subtitle">
-                    Analyse premium du marché : Bitcoin, Or et contexte macro-économique
+                <h1 class="ultra-title">
+                    Lecture du marché<br>
+                    <span style="opacity:.7">version {{ briefing_plan_label }}</span>
+                </h1>
+
+                <p class="hero-subtitle">
+                    Une lecture structurée du marché pour t’aider à comprendre le contexte,
+                    identifier les opportunités et éviter les erreurs d’exécution.
                 </p>
+
+                <div class="hero-actions">
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="hero-secondary-btn">
+                        Retour dashboard
+                    </a>
+
+                    <a href="{{ url_for('billing.pricing') }}" class="hero-utility-btn">
+                        Upgrade
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================
+            CONTENT
+        ========================== -->
+        <section class="premium-panel briefing-main">
+
+            {% if briefing %}
+
+            <div class="briefing-grid">
+
+                <!-- CONTENU PRINCIPAL -->
+                <div class="briefing-content-card">
+
+                    <div class="panel-heading">
+                        <div>
+                            <span class="panel-mini-title">Analyse</span>
+                            <h2>Briefing du jour</h2>
+                        </div>
+
+                        <span class="stat-chip">
+                            {{ briefing_plan_label }}
+                        </span>
+                    </div>
+
+                    <div class="briefing-text">
+                        {{ briefing.content }}
+                    </div>
+
+                </div>
+
+                <!-- SIDEBAR -->
+                <div class="briefing-side">
+
+                    <!-- PLAN INFO -->
+                    <div class="briefing-side-card">
+                        <span class="mini-label">Ton plan</span>
+                        <h3>{{ current_user.plan | upper }}</h3>
+
+                        <p>
+                            {% if current_user.plan == "basic" %}
+                                Lecture simple du marché avec focus principal.
+                            {% elif current_user.plan == "premium" %}
+                                Analyse enrichie avec contexte et zones clés.
+                            {% elif current_user.plan == "vip" %}
+                                Analyse avancée avec vision desk + opportunités.
+                            {% else %}
+                                Accès limité, upgrade recommandé.
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <!-- UPGRADE -->
+                    {% if current_user.plan != "vip" %}
+                    <div class="briefing-side-card upgrade-card">
+                        <h3>🔓 Débloquer plus</h3>
+
+                        <ul>
+                            <li>+ Analyse détaillée</li>
+                            <li>+ Opportunités live</li>
+                            <li>+ Telegram VIP</li>
+                        </ul>
+
+                        <a href="{{ url_for('billing.pricing') }}" class="hero-primary-btn">
+                            Passer Premium / VIP
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <!-- TELEGRAM -->
+                    <div class="briefing-side-card telegram-card">
+                        <h3>Telegram</h3>
+
+                        <p>
+                            Reçois les signaux et briefings directement sur Telegram.
+                        </p>
+
+                        <a href="https://t.me/VelWolfSignals" target="_blank" class="telegram-btn">
+                            Ouvrir Telegram
+                        </a>
+                    </div>
+
+                </div>
+
             </div>
 
-            <div>
-                <span class="briefing-tag green">👑 Premium</span>
+            {% else %}
 
-                {% if briefing %}
-                <span class="briefing-tag soft">📅 {{ briefing.date }}</span>
-                {% endif %}
-            </div>
-        </header>
-
-        <section class="premium-banner">
-            <div>
-                <h3>Analyse quotidienne intelligente</h3>
+            <!-- EMPTY STATE -->
+            <div class="empty-state-box">
+                <h3>Aucun briefing disponible</h3>
                 <p>
-                    Ce briefing est généré automatiquement à partir des données marché
-                    et rédigé par IA pour fournir une lecture claire, exploitable et orientée trading.
+                    Le briefing du jour sera généré automatiquement.
                 </p>
             </div>
 
-            <div class="banner-actions">
-                <a href="{{ url_for('dashboard.dashboard') }}" class="upgrade-btn">
-                    ← Retour dashboard
-                </a>
-                <a href="{{ url_for('pages.briefing_page') }}" class="secondary-link-btn">
-                    🔄 Actualiser
-                </a>
-            </div>
+            {% endif %}
+
         </section>
-
-        {% if briefing %}
-        <section class="panel">
-            <div class="panel-header">
-                <h2>📘 Rapport complet</h2>
-                <p class="table-subtitle">
-                    Résumé, Bitcoin, Or, macro, risques et stratégie.
-                </p>
-            </div>
-
-            <div class="briefing-preview-content">
-                {{ briefing.content }}
-            </div>
-        </section>
-
-        <section class="responsive-three-cols" style="margin-top:20px;">
-            <div class="panel">
-                <h3>⚡ Utilité</h3>
-                <p>Lecture rapide pour trading court terme.</p>
-            </div>
-
-            <div class="panel">
-                <h3>📊 Couverture</h3>
-                <p>Crypto, Gold, macro-économie.</p>
-            </div>
-
-            <div class="panel">
-                <h3>🔒 Accès</h3>
-                <p>Réservé aux utilisateurs Premium.</p>
-            </div>
-        </section>
-
-        {% else %}
-        <section class="panel">
-            <h2>Aucun briefing disponible</h2>
-            <p>Le briefing n’a pas encore été généré.</p>
-
-            <div class="banner-actions">
-                <a href="{{ url_for('briefing_page') }}" class="primary-link-btn">
-                    Réessayer
-                </a>
-                <a href="{{ url_for('dashboard') }}" class="secondary-link-btn">
-                    Retour dashboard
-                </a>
-            </div>
-        </section>
-        {% endif %}
 
     </main>
 
