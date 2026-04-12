@@ -1,20 +1,15 @@
-import sqlite3
+from sqlalchemy import text
 
-conn = sqlite3.connect("instance/users.db")
-cursor = conn.cursor()
+from app import create_app
+from app.extensions import db
 
-# Vérifie les colonnes existantes
-cursor.execute("PRAGMA table_info(user)")
-columns = [col[1] for col in cursor.fetchall()]
+app = create_app()
 
-# Ajoute la colonne si elle n'existe pas
-if "is_admin" not in columns:
-    cursor.execute("ALTER TABLE user ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT 0")
-    print("✅ Colonne is_admin ajoutée")
-else:
-    print("⚠️ Colonne is_admin déjà existante")
-
-conn.commit()
-conn.close()
-
-print("✅ Terminé")
+with app.app_context():
+    try:
+        db.session.execute(text('ALTER TABLE "user" ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT FALSE;'))
+        db.session.commit()
+        print("✅ Colonne is_admin ajoutée dans PostgreSQL")
+    except Exception as e:
+        db.session.rollback()
+        print(f"⚠️ Peut-être déjà existante ou autre erreur : {e}")
