@@ -2,7 +2,8 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Mentions légales</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VelWolf - Mentions légales</title>
 
 <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
@@ -14,49 +15,129 @@
 
 {% include "partials/navbar.html" %}
 
+<!-- HERO -->
 <section class="inner-hero">
     <div class="section-container">
         <span class="hero-badge">Mentions légales</span>
         <h1 class="inner-page-title">Informations légales de la plateforme</h1>
+        <p class="inner-page-text">
+            Retrouvez les informations officielles concernant l’éditeur du site,
+            l’hébergement et les responsabilités liées à l’utilisation de VelWolf.
+        </p>
     </div>
 </section>
 
+<!-- CONTENT -->
 <section class="section-standard">
     <div class="section-container">
 
-        <h2>Éditeur du site</h2>
-        <p>
-            Société : Tradingsignals<br>
-            Email : supportTradingsignals@gmail.com
-        </p>
+        <div class="legal-container">
 
-        <h2>Hébergement</h2>
-        <p>
-            Render.com<br>
-            Cloud Platform
-        </p>
+            <div class="legal-card">
+                <h2>1. Éditeur du site</h2>
+                <p>
+                    Nom de la plateforme : <strong>VelWolf</strong><br>
+                    Activité : Services de signaux de trading et d’analyse de marché<br>
+                    Contact : <a href="mailto:support@velwolf.com">support@velwolf.com</a>
+                </p>
+            </div>
 
-        <h2>Activité</h2>
-        <p>
-            Le site propose un service de signaux de trading et d’analyses de marché.
-        </p>
+            <div class="legal-card">
+                <h2>2. Hébergement</h2>
+                <p>
+                    Le site est hébergé par :<br>
+                    <strong>Render.com</strong><br>
+                    Plateforme cloud sécurisée pour applications web.
+                </p>
+            </div>
 
-        <h2>Responsabilité</h2>
-        <p>
-            Les informations fournies sont données à titre indicatif uniquement.
-            L’éditeur ne peut être tenu responsable des pertes financières.
-        </p>
+            <div class="legal-card">
+                <h2>3. Activité</h2>
+                <p>
+                    VelWolf propose une plateforme comprenant des signaux de trading,
+                    des analyses de marché, un dashboard utilisateur et du contenu éducatif.
+                </p>
+            </div>
+
+            <div class="legal-card warning">
+                <h2>4. Responsabilité</h2>
+                <p>
+                    ⚠️ Les informations fournies sur la plateforme sont données à titre informatif uniquement.  
+                    Elles ne constituent en aucun cas un conseil en investissement.  
+                    L’utilisateur est seul responsable de ses décisions financières.
+                </p>
+            </div>
+
+            <div class="legal-card">
+                <h2>5. Données personnelles</h2>
+                <p>
+                    Les données collectées sont utilisées uniquement dans le cadre du fonctionnement
+                    de la plateforme et ne sont jamais revendues à des tiers.
+                </p>
+            </div>
+
+            <div class="legal-card">
+                <h2>6. Contact</h2>
+                <p>
+                    Pour toute question, vous pouvez nous contacter à :<br>
+                    <strong>support@velwolf.com</strong>
+                </p>
+            </div>
+
+        </div>
 
     </div>
 </section>
 
-<footer class="site-footer">
-    <div class="section-container footer-inner">
-        <div class="footer-links">
-            <a href="{{ url_for('main.home') }}">Accueil</a>
-            <a href="{{ url_for('billing.pricing') }}">Offres</a>
-            <a href="{{ url_for('main.contact') }}">Contact</a>
+<!-- CTA -->
+<section class="final-cta-section">
+    <div class="section-container">
+        <div class="final-cta-box">
+            <span class="final-cta-badge">VelWolf Premium</span>
+            <h2>Rejoignez une plateforme structurée et professionnelle</h2>
+            <p>
+                Accédez à un environnement complet avec signaux, résultats,
+                academy et outils d’analyse avancés.
+            </p>
+            <div class="final-cta-actions">
+                <a href="{{ url_for('billing.pricing') }}" class="hero-btn-primary">Voir les offres</a>
+            </div>
         </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+    <div class="section-container footer-pro">
+
+        <div class="footer-brand">
+            <h3>VelWolf</h3>
+            <p>Plateforme premium de trading, signaux et formation.</p>
+        </div>
+
+        <div class="footer-columns">
+
+            <div class="footer-col">
+                <h4>Plateforme</h4>
+                <div class="footer-links">
+                    <a href="{{ url_for('main.home') }}">Accueil</a>
+                    <a href="{{ url_for('signals.results') }}">Résultats</a>
+                    <a href="{{ url_for('billing.pricing') }}">Offres</a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Informations</h4>
+                <div class="footer-links">
+                    <a href="{{ url_for('pages.faq_page') }}">FAQ</a>
+                    <a href="{{ url_for('pages.cgu') }}">CGU</a>
+                    <a href="{{ url_for('pages.mentions_legales') }}">Mentions légales</a>
+                    <a href="{{ url_for('pages.contact') }}">Contact</a>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 </footer>
 

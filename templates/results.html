@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VelWolf - Résultats</title>
-    <meta name="description" content="Suivez les résultats, le winrate, le PnL estimé et l’historique des signaux sur VelWolf dans une interface premium.">
+    <meta name="description" content="Suivez les résultats, le winrate, le PnL estimé et l’historique des signaux VelWolf dans une interface premium dark.">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='results.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='results.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
-<body class="home-body">
+<body class="results-body">
 
 {% include "partials/navbar.html" %}
 
@@ -25,58 +25,83 @@
 {% set safe_best_asset_pnl = best_asset_pnl if best_asset_pnl is not none else '🔒' %}
 
 <section class="rs-hero">
+    <div class="rs-hero-overlay"></div>
     <div class="section-container">
         <div class="rs-hero-inner">
-            <span class="rs-kicker">Performance</span>
+            <div class="rs-hero-topline">
+                <span class="rs-kicker">VelWolf Performance Desk</span>
+                <span class="rs-plan-badge">{{ user_plan | upper }}</span>
+            </div>
 
-            <h1 class="rs-title">Résultats et performance des signaux</h1>
+            <h1 class="rs-title">Résultats, performance et historique des signaux</h1>
 
             <p class="rs-subtitle">
-                Une lecture claire des statistiques principales, du winrate et de l’historique récent
-                pour renforcer la crédibilité de la plateforme dans un environnement premium.
+                Une lecture premium de la qualité d’exécution, du winrate observé, du PnL estimé et
+                des derniers signaux publiés. Pensé pour inspirer confiance, renforcer la crédibilité
+                et offrir une expérience haut de gamme.
             </p>
 
-            <div class="rs-filters">
-                <div class="rs-filter-group">
-                    {% for asset in available_assets %}
-                        <a href="{{ url_for('signals.results', asset=asset, time=selected_time) }}"
-                           class="rs-pill {% if selected_asset == asset %}active{% endif %}">
-                            {{ asset }}
-                        </a>
-                    {% endfor %}
-                </div>
+            <div class="rs-filters-card">
+                <div class="rs-filters">
+                    <div class="rs-filter-block">
+                        <span class="rs-filter-label">Actifs</span>
+                        <div class="rs-filter-group">
+                            {% for asset in available_assets %}
+                                <a href="{{ url_for('signals.results', asset=asset, time=selected_time) }}"
+                                   class="rs-pill {% if selected_asset == asset %}active{% endif %}">
+                                    {{ asset }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
 
-                <div class="rs-filter-group">
-                    {% for value, label in available_times %}
-                        <a href="{{ url_for('signals.results', asset=selected_asset, time=value) }}"
-                           class="rs-pill rs-pill-secondary {% if selected_time == value %}active{% endif %}">
-                            {{ label }}
-                        </a>
-                    {% endfor %}
+                    <div class="rs-filter-block">
+                        <span class="rs-filter-label">Périodes</span>
+                        <div class="rs-filter-group">
+                            {% for value, label in available_times %}
+                                <a href="{{ url_for('signals.results', asset=selected_asset, time=value) }}"
+                                   class="rs-pill rs-pill-secondary {% if selected_time == value %}active{% endif %}">
+                                    {{ label }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="rs-stats-grid">
                 <article class="rs-stat rs-stat-dark">
-                    <span class="rs-stat-tag">Signaux</span>
+                    <div class="rs-stat-top">
+                        <span class="rs-stat-tag">Signaux</span>
+                        <span class="rs-stat-icon">◎</span>
+                    </div>
                     <strong>{{ total_signals or 0 }}</strong>
                     <small>Total analysé</small>
                 </article>
 
                 <article class="rs-stat rs-stat-green">
-                    <span class="rs-stat-tag">Wins</span>
+                    <div class="rs-stat-top">
+                        <span class="rs-stat-tag">Wins</span>
+                        <span class="rs-stat-icon">↗</span>
+                    </div>
                     <strong>{{ win_signals or 0 }}</strong>
                     <small>Trades gagnants</small>
                 </article>
 
                 <article class="rs-stat rs-stat-red">
-                    <span class="rs-stat-tag">Losses</span>
+                    <div class="rs-stat-top">
+                        <span class="rs-stat-tag">Losses</span>
+                        <span class="rs-stat-icon">↘</span>
+                    </div>
                     <strong>{{ loss_signals or 0 }}</strong>
                     <small>Trades perdants</small>
                 </article>
 
-                <article class="rs-stat rs-stat-blue">
-                    <span class="rs-stat-tag">Winrate</span>
+                <article class="rs-stat rs-stat-blue {% if not can_view_stats %}rs-stat-locked{% endif %}">
+                    <div class="rs-stat-top">
+                        <span class="rs-stat-tag">Winrate</span>
+                        <span class="rs-stat-icon">◌</span>
+                    </div>
                     <strong>{% if can_view_stats %}{{ safe_winrate }}%{% else %}🔒{% endif %}</strong>
                     <small>{% if can_view_stats %}Performance moyenne{% else %}Réservé Premium / VIP{% endif %}</small>
                 </article>
@@ -91,11 +116,14 @@
 
             <main class="rs-content">
 
-                <section class="rs-panel">
+                <section class="rs-panel rs-panel-glow">
                     <div class="rs-panel-head">
                         <div>
                             <span class="rs-panel-kicker">Performance tracking</span>
                             <h2>Vue synthétique</h2>
+                            <p class="rs-panel-desc">
+                                Les indicateurs essentiels pour évaluer rapidement la qualité globale de la performance.
+                            </p>
                         </div>
                     </div>
 
@@ -110,39 +138,55 @@
                             <strong>{{ closed_signals or 0 }}</strong>
                         </div>
 
-                        <div class="rs-strip-card">
+                        <div class="rs-strip-card {% if not can_view_stats %}rs-strip-card-locked{% endif %}">
                             <span>PnL estimé</span>
                             <strong>{% if can_view_stats %}{{ safe_estimated_pnl }}{% else %}🔒{% endif %}</strong>
                         </div>
 
-                        <div class="rs-strip-card">
+                        <div class="rs-strip-card {% if not can_view_stats %}rs-strip-card-locked{% endif %}">
                             <span>Winrate</span>
                             <strong>{% if can_view_stats %}{{ safe_winrate }}%{% else %}🔒{% endif %}</strong>
                         </div>
                     </div>
 
-                    <div class="rs-quality-card">
-                        <div class="rs-quality-head">
-                            <span>Qualité globale</span>
-                            <strong>{% if can_view_stats %}{{ safe_winrate }}%{% else %}🔒{% endif %}</strong>
+                    <div class="rs-performance-grid">
+                        <div class="rs-quality-card {% if not can_view_stats %}rs-quality-locked{% endif %}">
+                            <div class="rs-quality-head">
+                                <span>Qualité globale</span>
+                                <strong>{% if can_view_stats %}{{ safe_winrate }}%{% else %}🔒{% endif %}</strong>
+                            </div>
+
+                            <div class="rs-quality-track">
+                                <div class="rs-quality-fill" style="width: {% if can_view_stats %}{{ safe_winrate }}{% else %}14{% endif %}%;"></div>
+                            </div>
+
+                            <p>
+                                {% if can_view_stats %}
+                                    Lecture rapide du taux de réussite observé sur les signaux clôturés, utile pour juger la robustesse globale de l’exécution.
+                                {% else %}
+                                    Les statistiques avancées sont réservées aux abonnés Premium et VIP.
+                                {% endif %}
+                            </p>
                         </div>
 
-                        <div class="rs-quality-track">
-                            <div class="rs-quality-fill" style="width: {% if can_view_stats %}{{ safe_winrate }}{% else %}14{% endif %}%;"></div>
-                        </div>
-
-                        <p>
-                            {% if can_view_stats %}
-                                Une lecture rapide du taux de réussite observé sur les signaux clôturés.
-                            {% else %}
-                                Les statistiques avancées sont réservées aux abonnés Premium et VIP.
+                        <div class="rs-mini-insight-card">
+                            <span class="rs-panel-kicker">Insight</span>
+                            <h3>Lecture institutionnelle</h3>
+                            <p>
+                                Une page résultats forte doit montrer la régularité, la discipline d’exécution et la
+                                transparence. Cette présentation met en avant les chiffres sans perdre l’aspect premium.
+                            </p>
+                            {% if not is_premium_plus %}
+                            <a href="{{ url_for('billing.pricing') }}" class="rs-upgrade-btn">
+                                Passer en Premium
+                            </a>
                             {% endif %}
-                        </p>
+                        </div>
                     </div>
                 </section>
 
                 <section class="rs-panel">
-                    <div class="rs-panel-head">
+                    <div class="rs-panel-head rs-panel-head-split">
                         <div>
                             <span class="rs-panel-kicker">Historique récent</span>
                             <h2>
@@ -151,9 +195,14 @@
                                     · {{ selected_asset }}
                                 {% endif %}
                             </h2>
+                            <p class="rs-panel-desc">
+                                Chaque setup est présenté avec ses niveaux clés, son contexte de marché et son résultat.
+                            </p>
                         </div>
-                        <div>
-                            <span class="rs-panel-kicker">{{ signals|length }} / {{ total_signals }}</span>
+
+                        <div class="rs-head-counter">
+                            <span>{{ signals|length }}</span>
+                            <small>affichés / {{ total_signals }}</small>
                         </div>
                     </div>
 
@@ -161,6 +210,8 @@
                     <div class="rs-signal-list">
                         {% for signal in signals %}
                         <article class="rs-card">
+                            <div class="rs-card-glow"></div>
+
                             <div class="rs-card-head">
                                 <div class="rs-card-left">
                                     <span class="rs-badge rs-badge-asset">{{ signal.asset or "Asset" }}</span>
@@ -234,21 +285,24 @@
                             </div>
 
                             <div class="rs-reason">
-                                💡 {{ signal.reason or "Analyse technique neutre" }}
+                                <span class="rs-reason-label">Analyse</span>
+                                <p>💡 {{ signal.reason or "Analyse technique neutre" }}</p>
                             </div>
 
-                            {% if is_premium_plus %}
-                                <button class="learn-btn" onclick="toggleLearn(this)">
-                                    📚 Comprendre ce signal
-                                </button>
-                                <div class="learn-box">
-                                    {{ (signal.reason or "") | explain_reason }}
-                                </div>
-                            {% else %}
-                                <a href="{{ url_for('billing.pricing') }}" class="learn-btn locked-learn-btn">
-                                    🔒 Comprendre ce signal
-                                </a>
-                            {% endif %}
+                            <div class="rs-card-actions">
+                                {% if is_premium_plus %}
+                                    <button class="learn-btn" onclick="toggleLearn(this)">
+                                        📚 Comprendre ce signal
+                                    </button>
+                                    <div class="learn-box">
+                                        {{ (signal.reason or "") | explain_reason }}
+                                    </div>
+                                {% else %}
+                                    <a href="{{ url_for('billing.pricing') }}" class="learn-btn locked-learn-btn">
+                                        🔒 Comprendre ce signal
+                                    </a>
+                                {% endif %}
+                            </div>
                         </article>
                         {% endfor %}
 
@@ -257,11 +311,18 @@
                             <div class="rs-card-head">
                                 <div class="rs-card-left">
                                     <span class="rs-badge rs-badge-asset">LOCKED</span>
+                                    <span class="rs-lock-badge">Historique étendu</span>
                                 </div>
                             </div>
+
                             <div class="rs-reason">
-                                Vous voyez {{ signals|length }} signaux sur {{ total_signals }}. Passez à l’offre supérieure pour débloquer plus d’historique, plus d’analyse et les métriques avancées.
+                                <span class="rs-reason-label">Accès limité</span>
+                                <p>
+                                    Vous voyez {{ signals|length }} signaux sur {{ total_signals }}.
+                                    Passez à l’offre supérieure pour débloquer davantage d’historique, plus de profondeur analytique et les métriques avancées.
+                                </p>
                             </div>
+
                             <a href="{{ url_for('billing.pricing') }}" class="learn-btn locked-learn-btn">
                                 Débloquer plus de signaux
                             </a>
@@ -270,6 +331,7 @@
                     </div>
                     {% else %}
                     <div class="rs-empty">
+                        <h3>Aucun signal disponible</h3>
                         <p>Aucun signal n’est disponible pour ce filtre pour le moment.</p>
                     </div>
                     {% endif %}
@@ -277,8 +339,11 @@
             </main>
 
             <aside class="rs-sidebar">
+
                 <section class="rs-side-card rs-side-dark">
+                    <span class="rs-panel-kicker">Desk summary</span>
                     <h3>Résumé rapide</h3>
+
                     <ul class="rs-side-list">
                         <li><strong>Total signaux :</strong> {{ total_signals or 0 }}</li>
                         <li><strong>Trades ouverts :</strong> {{ open_signals or 0 }}</li>
@@ -292,26 +357,33 @@
                 </section>
 
                 <section class="rs-side-card">
-                    <span class="rs-panel-kicker">Lecture</span>
-                    <h3>Une preuve visuelle plus crédible</h3>
+                    <span class="rs-panel-kicker">Qualité</span>
+                    <h3>Pourquoi cette page inspire confiance</h3>
                     <p>
-                        En structurant les statistiques, l’historique et les indicateurs clés, cette page donne une image plus sérieuse,
-                        plus transparente et plus professionnelle de la plateforme.
+                        Une bonne page résultats ne se limite pas à afficher des chiffres.
+                        Elle doit montrer une structure, une continuité, une lisibilité claire et une perception premium.
                     </p>
                 </section>
 
-                <section class="rs-side-card">
+                <section class="rs-side-card {% if not can_view_stats %}rs-side-locked{% endif %}">
                     <span class="rs-panel-kicker">Accès actuel</span>
                     <h3>{{ user_plan | upper }}</h3>
                     <p>
                         {% if is_premium_plus %}
-                            Vous avez accès aux statistiques avancées et à une lecture plus détaillée.
+                            Vous avez accès aux statistiques avancées et à une lecture détaillée des signaux.
                         {% elif is_basic %}
-                            Vous avez accès à un historique limité. Les stats avancées restent réservées au Premium et au VIP.
+                            Vous avez accès à un historique limité. Les statistiques avancées restent réservées au Premium et au VIP.
                         {% else %}
-                            Le mode découverte montre un aperçu limité pour encourager la montée en gamme.
+                            Le mode découverte montre un aperçu limité afin de présenter la plateforme sans révéler toute sa profondeur.
                         {% endif %}
                     </p>
+
+                    {% if not is_premium_plus %}
+                    <div class="rs-upgrade-note">
+                        <strong>Upgrade recommandé :</strong> débloquez le winrate complet, les métriques avancées
+                        et plus d’historique pour renforcer l’expérience utilisateur.
+                    </div>
+                    {% endif %}
                 </section>
 
                 <section class="rs-side-card">
@@ -326,36 +398,42 @@
 
                         <a href="{{ url_for('pages.trading_lab') }}" class="rs-nav-link">
                             <strong>Trading Lab</strong>
-                            <span>Approfondir la logique des setups.</span>
+                            <span>Approfondir la logique des setups et l’approche stratégique.</span>
                         </a>
 
                         <a href="{{ url_for('billing.pricing') }}" class="rs-nav-link">
                             <strong>Offres</strong>
-                            <span>Choisir le niveau d’accès adapté.</span>
+                            <span>Choisir le niveau d’accès le plus adapté.</span>
                         </a>
                     </div>
                 </section>
-            </aside>
 
+            </aside>
         </div>
     </div>
 </section>
 
-<section class="final-cta-section">
+<section class="final-cta-section rs-final-cta">
     <div class="section-container">
         <div class="final-cta-box">
             <span class="final-cta-badge">Résultats • VelWolf</span>
-            <h2>Une lecture plus premium de la performance</h2>
+            <h2>Transformez la performance en preuve de crédibilité</h2>
             <p>
-                Winrate, historique, signaux ouverts et résultats récents :
-                cette page transforme les statistiques en véritable levier de crédibilité.
+                Winrate, historique, signaux récents et lecture premium :
+                cette page permet de présenter vos résultats avec plus de valeur perçue et un vrai niveau professionnel.
             </p>
+
             <div class="final-cta-actions">
                 <a href="{{ url_for('billing.pricing') }}" class="hero-btn-primary light-btn">Voir les offres</a>
+
                 {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('dashboard.dashboard') }}" class="hero-btn-secondary white-outline-btn">Accéder au dashboard</a>
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="hero-btn-secondary white-outline-btn">
+                        Accéder au dashboard
+                    </a>
                 {% else %}
-                    <a href="{{ url_for('auth.register') }}" class="hero-btn-secondary white-outline-btn">Créer mon compte</a>
+                    <a href="{{ url_for('auth.register') }}" class="hero-btn-secondary white-outline-btn">
+                        Créer mon compte
+                    </a>
                 {% endif %}
             </div>
         </div>
@@ -366,7 +444,7 @@
     <div class="section-container footer-inner">
         <div class="footer-brand">
             <h3>VelWolf</h3>
-            <p>Une plateforme plus claire pour suivre les performances, les résultats et l’évolution des signaux.</p>
+            <p>Une plateforme premium pour suivre les performances, les résultats et l’évolution des signaux.</p>
         </div>
 
         <div class="footer-links">

@@ -1,4 +1,4 @@
-<nav class="navbar">
+<nav class="navbar" id="siteNavbar">
 
     <div class="nav-left">
         <a href="{{ url_for('main.home') }}" class="logo logo-pro">
@@ -6,7 +6,7 @@
         </a>
     </div>
 
-    <div class="nav-center">
+    <div class="nav-center" id="mobileNav">
         <div class="nav-links">
 
             <a href="{{ url_for('main.home') }}">Accueil</a>
@@ -95,10 +95,83 @@
         {% endif %}
     </div>
 
-    <button class="burger" type="button" aria-label="Ouvrir le menu">
+    <button
+        class="burger"
+        id="burgerBtn"
+        type="button"
+        aria-label="Ouvrir le menu"
+        aria-expanded="false"
+        aria-controls="mobileNav">
         <span></span>
         <span></span>
         <span></span>
     </button>
 
 </nav>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const navbar = document.getElementById("siteNavbar");
+    const burger = document.getElementById("burgerBtn");
+    const body = document.body;
+    const dropdowns = document.querySelectorAll(".nav-dropdown");
+
+    if (burger && navbar) {
+        burger.addEventListener("click", function () {
+            burger.classList.toggle("active");
+            navbar.classList.toggle("mobile-open");
+            body.classList.toggle("menu-open");
+
+            const expanded = burger.classList.contains("active");
+            burger.setAttribute("aria-expanded", expanded ? "true" : "false");
+        });
+    }
+
+    dropdowns.forEach((dropdown) => {
+        const btn = dropdown.querySelector(".nav-drop-btn");
+        if (!btn) return;
+
+        btn.addEventListener("click", function (e) {
+            if (window.innerWidth <= 980) {
+                e.preventDefault();
+
+                dropdowns.forEach((otherDropdown) => {
+                    if (otherDropdown !== dropdown) {
+                        otherDropdown.classList.remove("active");
+                    }
+                });
+
+                dropdown.classList.toggle("active");
+            }
+        });
+    });
+
+    document.addEventListener("click", function (e) {
+        const insideNavbar = e.target.closest(".navbar");
+
+        if (!insideNavbar) {
+            dropdowns.forEach((dropdown) => dropdown.classList.remove("active"));
+
+            if (window.innerWidth <= 980 && navbar && burger) {
+                navbar.classList.remove("mobile-open");
+                burger.classList.remove("active");
+                body.classList.remove("menu-open");
+                burger.setAttribute("aria-expanded", "false");
+            }
+        }
+    });
+
+    window.addEventListener("resize", function () {
+        if (window.innerWidth > 980) {
+            dropdowns.forEach((dropdown) => dropdown.classList.remove("active"));
+
+            if (navbar && burger) {
+                navbar.classList.remove("mobile-open");
+                burger.classList.remove("active");
+                body.classList.remove("menu-open");
+                burger.setAttribute("aria-expanded", "false");
+            }
+        }
+    });
+});
+</script>

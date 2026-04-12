@@ -32,6 +32,29 @@
         {% block content %}{% endblock %}
     </main>
 
+    <footer class="site-footer">
+        <div class="section-container footer-inner">
+
+            <div class="footer-brand">
+                <h3>VelWolf</h3>
+                <p>
+                    Plateforme premium de signaux, résultats, dashboard et academy
+                    pour une expérience trading plus claire et plus professionnelle.
+                </p>
+            </div>
+
+            <div class="footer-links">
+                <a href="{{ url_for('main.home') }}">Accueil</a>
+                <a href="{{ url_for('billing.pricing') }}">Offres</a>
+                <a href="{{ url_for('signals.results') }}">Résultats</a>
+                <a href="{{ url_for('pages.faq_page') }}">FAQ</a>
+                <a href="{{ url_for('pages.cgu') }}">CGU</a>
+                <a href="{{ url_for('pages.mentions_legales') }}">Mentions légales</a>
+            </div>
+
+        </div>
+    </footer>
+
     <div id="upgradePopup" class="upgrade-popup" aria-hidden="true">
         <div class="upgrade-popup-box">
             <div class="upgrade-popup-badge">Accès Pro requis</div>

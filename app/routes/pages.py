@@ -1,28 +1,28 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
-from flask_login import current_user
+from flask_login import current_user, login_required
 from app.models import Signal
 
 pages_bp = Blueprint("pages", __name__)
 
 
-def user_is_pro():
+def user_has_academy_access():
     try:
         if not current_user.is_authenticated:
             return False
 
-        possible_values = [
-            getattr(current_user, "plan", None),
-            getattr(current_user, "subscription_plan", None),
-            getattr(current_user, "role", None),
-        ]
-
-        for value in possible_values:
-            if value and str(value).lower() in ["pro", "premium", "vip"]:
-                return True
-
-        return False
+        user_plan = str(getattr(current_user, "plan", "free") or "free").lower()
+        return user_plan in ["premium", "vip"]
     except Exception:
         return False
+
+
+def get_user_plan():
+    try:
+        if not current_user.is_authenticated:
+            return "free"
+        return str(getattr(current_user, "plan", "free") or "free").lower()
+    except Exception:
+        return "free"
 
 
 def academy_progress():
@@ -119,14 +119,16 @@ def learn_signal(signal_id):
 
 
 # =========================
-# ACADEMY PRO
+# ACADEMY
+# Premium + VIP only
 # =========================
 
 @pages_bp.route("/academy")
 def academy_index():
     return render_template(
         "academy/index.html",
-        is_pro=user_is_pro(),
+        is_pro=user_has_academy_access(),
+        user_plan=get_user_plan(),
         academy_progress=academy_progress()
     )
 
@@ -135,7 +137,8 @@ def academy_index():
 def academy_level_1():
     return render_template(
         "academy/level1.html",
-        is_pro=user_is_pro(),
+        is_pro=user_has_academy_access(),
+        user_plan=get_user_plan(),
         academy_progress=academy_progress()
     )
 
@@ -144,18 +147,34 @@ def academy_level_1():
 def academy_level_2():
     return render_template(
         "academy/level2.html",
-        is_pro=user_is_pro(),
+        is_pro=user_has_academy_access(),
+        user_plan=get_user_plan(),
         academy_progress=academy_progress()
     )
 
 
 @pages_bp.route("/academy/upgrade")
 def academy_upgrade():
-    return render_template("academy/upgrade.html")
+    # Si déjà Premium/VIP, on peut soit afficher la page,
+    # soit rediriger vers l'academy. Ici on redirige.
+    if user_has_academy_access():
+        return redirect(url_for("pages.academy_index"))
+
+    return render_template(
+        "academy/upgrade.html",
+        is_pro=False,
+        user_plan=get_user_plan(),
+        academy_progress=academy_progress()
+    )
 
 
 @pages_bp.route("/academy/complete/<level>", methods=["POST"])
+@login_required
 def academy_complete_level(level):
+    if not user_has_academy_access():
+        flash("Le parcours Academy complet est réservé aux membres Premium et VIP.", "warning")
+        return redirect(url_for("pages.academy_upgrade"))
+
     progress = academy_progress()
 
     if level == "level1":

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Upgrade to Pro | VelWolf{% endblock %}
+{% block title %}Upgrade Academy | VelWolf{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}">
@@ -12,25 +12,29 @@
         <div class="academy-upgrade-box academy-upgrade-box-xl">
 
             <div class="academy-upgrade-topline">
-                <span class="academy-kicker">VelWolf Pro Access</span>
+                <span class="academy-kicker">VelWolf Academy Access</span>
                 <span class="academy-upgrade-live">🔥 Accès Premium</span>
             </div>
 
             <h1>Vous voyez les signaux… mais vous ne les comprenez pas encore</h1>
 
             <p class="academy-lead academy-upgrade-lead">
-                Le plan gratuit montre l’environnement.
-                Le plan Pro vous donne la compréhension, la structure et le contrôle.
+                Le plan gratuit et Basic montrent l’environnement.
+                Le plan Premium vous donne la compréhension, la structure et le contrôle.
+                Le plan VIP vous donne aussi l’accès complet à l’Academy avec tout le reste de l’écosystème avancé.
             </p>
 
             <div class="academy-proof-inline">
-                +1000 utilisateurs • Accès premium actif • Expérience validée
+                +1000 utilisateurs • Academy premium • Progression structurée • Accès complet Premium/VIP
             </div>
 
             <div class="academy-upgrade-cta">
-                <a href="{{ url_for('billing.create_checkout_pro') }}" class="academy-btn academy-btn-gold academy-btn-large">
-                    🚀 Débloquer maintenant
-                </a>
+                <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
+                    <input type="hidden" name="plan" value="premium">
+                    <button type="submit" class="academy-btn academy-btn-gold academy-btn-large">
+                        🚀 Débloquer l’Academy avec Premium
+                    </button>
+                </form>
             </div>
 
         </div>
@@ -67,20 +71,20 @@
     <div class="academy-shell">
         <div class="academy-section-title">
             <span class="academy-kicker">La solution</span>
-            <h2>VelWolf Academy Pro</h2>
+            <h2>VelWolf Academy Premium</h2>
         </div>
 
         <div class="academy-grid-3">
             <div class="academy-info-card academy-upgrade-feature-card">
                 <div class="academy-feature-icon">🎥</div>
                 <h3>Vidéos complètes</h3>
-                <p>Accès total aux cours avec logique réelle de trading.</p>
+                <p>Accès total aux cours avec logique réelle de trading et progression claire.</p>
             </div>
 
             <div class="academy-info-card academy-upgrade-feature-card">
                 <div class="academy-feature-icon">📊</div>
-                <h3>Progression</h3>
-                <p>Suivi structuré pour évoluer étape par étape.</p>
+                <h3>Progression suivie</h3>
+                <p>Suivi structuré pour évoluer étape par étape sur les deux niveaux.</p>
             </div>
 
             <div class="academy-info-card academy-upgrade-feature-card">
@@ -96,20 +100,24 @@
     <div class="academy-shell">
         <div class="academy-upgrade-price-card">
 
-            <span class="academy-card-label">Tout inclus</span>
+            <span class="academy-card-label">Tout inclus avec Premium et VIP</span>
 
             <div class="academy-upgrade-value-list">
                 <div class="academy-upgrade-value-item">🎥 Formation complète</div>
                 <div class="academy-upgrade-value-item">📘 Niveau 1 + Niveau 2</div>
                 <div class="academy-upgrade-value-item">🧠 Quiz + validation</div>
                 <div class="academy-upgrade-value-item">🏆 Certification</div>
-                <div class="academy-upgrade-value-item">📡 Exploitation des signaux</div>
+                <div class="academy-upgrade-value-item">📡 Meilleure exploitation des signaux</div>
+                <div class="academy-upgrade-value-item">📈 Accès débloqué dès le plan Premium</div>
             </div>
 
             <div class="academy-upgrade-cta-stack">
-                <a href="{{ url_for('billing.create_checkout_pro') }}" class="academy-btn academy-btn-gold academy-btn-large academy-btn-full">
-                    🔓 Accéder maintenant
-                </a>
+                <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
+                    <input type="hidden" name="plan" value="premium">
+                    <button type="submit" class="academy-btn academy-btn-gold academy-btn-large academy-btn-full">
+                        🔓 Accéder à l’Academy avec Premium
+                    </button>
+                </form>
             </div>
 
         </div>
@@ -120,14 +128,14 @@
     <div class="academy-shell">
         <div class="academy-section-title">
             <span class="academy-kicker">Comparaison</span>
-            <h2>Gratuit vs Pro</h2>
+            <h2>Free / Basic vs Premium / VIP</h2>
         </div>
 
         <div class="academy-comparison-table academy-comparison-table-pro">
             <div class="academy-comparison-row academy-comparison-head">
                 <div>Fonctionnalité</div>
-                <div>Gratuit</div>
-                <div>Pro</div>
+                <div>Free / Basic</div>
+                <div>Premium / VIP</div>
             </div>
 
             <div class="academy-comparison-row">
@@ -149,6 +157,18 @@
             </div>
 
             <div class="academy-comparison-row">
+                <div>Quiz et validation</div>
+                <div>🔒</div>
+                <div>✅</div>
+            </div>
+
+            <div class="academy-comparison-row">
+                <div>Certification</div>
+                <div>🔒</div>
+                <div>✅</div>
+            </div>
+
+            <div class="academy-comparison-row">
                 <div>Expérience complète</div>
                 <div>🔒</div>
                 <div>🔥</div>
@@ -159,21 +179,55 @@
 
 <section class="academy-section">
     <div class="academy-shell">
+        <div class="academy-grid-3">
+            <div class="academy-info-card">
+                <h3>Premium</h3>
+                <p>
+                    Débloque l’Academy complète, les statistiques avancées, les replays,
+                    les mini-cours et un environnement membre plus riche.
+                </p>
+            </div>
+
+            <div class="academy-info-card">
+                <h3>VIP</h3>
+                <p>
+                    Inclut déjà toute l’Academy Premium, avec en plus les signaux illimités,
+                    les news instantanées et le Telegram VIP privé.
+                </p>
+            </div>
+
+            <div class="academy-info-card">
+                <h3>Montée logique</h3>
+                <p>
+                    Basic pour découvrir, Premium pour apprendre sérieusement,
+                    VIP pour l’expérience complète et prioritaire.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section academy-dark-band">
+    <div class="academy-shell">
         <div class="academy-upgrade-final academy-upgrade-final-business">
 
             <span class="academy-kicker">Dernière étape</span>
 
-            <h2>Tu peux continuer comme maintenant… ou évoluer</h2>
+            <h2>Tu peux continuer à regarder… ou enfin comprendre</h2>
 
             <p>
-                L’Academy Pro n’est pas un bonus.
-                C’est ce qui transforme ton utilisation des signaux.
+                L’Academy n’est pas un bonus décoratif.
+                C’est ce qui transforme l’utilisation des signaux en progression réelle.
+                Premium débloque la formation complète. VIP l’inclut naturellement avec le reste de l’écosystème avancé.
             </p>
 
             <div class="academy-upgrade-cta">
-                <a href="{{ url_for('billing.create_checkout_pro') }}" class="academy-btn academy-btn-gold academy-btn-large">
-                    🚀 Passer Pro maintenant
-                </a>
+                <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
+                    <input type="hidden" name="plan" value="premium">
+                    <button type="submit" class="academy-btn academy-btn-gold academy-btn-large">
+                        🚀 Passer Premium maintenant
+                    </button>
+                </form>
             </div>
 
         </div>

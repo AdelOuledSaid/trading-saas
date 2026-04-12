@@ -2,7 +2,8 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Conditions générales</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VelWolf - Conditions générales</title>
 
 <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
@@ -13,46 +14,140 @@
 
 {% include "partials/navbar.html" %}
 
+<!-- HERO -->
 <section class="inner-hero">
     <div class="section-container">
-        <span class="hero-badge">CGU</span>
+        <span class="hero-badge">Conditions légales</span>
         <h1 class="inner-page-title">Conditions générales d'utilisation</h1>
+        <p class="inner-page-text">
+            Ces conditions définissent les règles d’utilisation de la plateforme VelWolf,
+            ainsi que les responsabilités liées à l’accès aux services.
+        </p>
     </div>
 </section>
 
+<!-- CONTENT -->
 <section class="section-standard">
     <div class="section-container">
 
-        <h2>Objet</h2>
-        <p>Service d’accès à des signaux de trading via abonnement.</p>
+        <div class="legal-container">
 
-        <h2>Accès</h2>
-        <p>Accès activé après paiement validé.</p>
+            <div class="legal-card">
+                <h2>1. Objet</h2>
+                <p>
+                    VelWolf propose un accès à une plateforme premium incluant des signaux de trading,
+                    des analyses de marché, un dashboard, ainsi que du contenu éducatif.
+                </p>
+            </div>
 
-        <h2>Abonnement</h2>
-        <p>Mensuel avec renouvellement automatique via Stripe.</p>
+            <div class="legal-card">
+                <h2>2. Accès au service</h2>
+                <p>
+                    L’accès aux services est activé après validation du paiement.
+                    Certaines fonctionnalités sont réservées aux membres Premium et VIP.
+                </p>
+            </div>
 
-        <h2>Annulation</h2>
-        <p>Annulation possible à tout moment.</p>
+            <div class="legal-card">
+                <h2>3. Abonnement</h2>
+                <p>
+                    Les abonnements sont mensuels et renouvelés automatiquement.
+                    Le paiement est sécurisé via Stripe.
+                </p>
+            </div>
 
-        <h2>Aucun remboursement</h2>
-        <p>Sauf obligation légale.</p>
+            <div class="legal-card">
+                <h2>4. Résiliation</h2>
+                <p>
+                    L’utilisateur peut annuler son abonnement à tout moment depuis son espace personnel.
+                    L’accès reste actif jusqu’à la fin de la période en cours.
+                </p>
+            </div>
 
-        <h2>Responsabilité</h2>
-        <p><strong>⚠️ Le trading comporte des risques.</strong></p>
+            <div class="legal-card warning">
+                <h2>5. Avertissement sur les risques</h2>
+                <p>
+                    ⚠️ Le trading comporte des risques importants.  
+                    VelWolf ne garantit aucun résultat.  
+                    L’utilisateur est seul responsable de ses décisions financières.
+                </p>
+            </div>
 
-        <h2>Modification</h2>
-        <p>Les conditions peuvent évoluer.</p>
+            <div class="legal-card">
+                <h2>6. Absence de conseil financier</h2>
+                <p>
+                    Les contenus fournis sont à titre informatif et éducatif uniquement.
+                    Ils ne constituent pas un conseil en investissement.
+                </p>
+            </div>
+
+            <div class="legal-card">
+                <h2>7. Remboursement</h2>
+                <p>
+                    Aucun remboursement n’est effectué sauf obligation légale.
+                </p>
+            </div>
+
+            <div class="legal-card">
+                <h2>8. Modification des conditions</h2>
+                <p>
+                    VelWolf se réserve le droit de modifier les présentes conditions à tout moment.
+                </p>
+            </div>
+
+        </div>
 
     </div>
 </section>
 
-<footer class="site-footer">
-    <div class="section-container footer-inner">
-        <div class="footer-links">
-            <a href="{{ url_for('main.home') }}">Accueil</a>
-            <a href="{{ url_for('billing.pricing') }}">Offres</a>
+<!-- CTA -->
+<section class="final-cta-section">
+    <div class="section-container">
+        <div class="final-cta-box">
+            <span class="final-cta-badge">VelWolf Premium</span>
+            <h2>Accédez à une plateforme conçue pour performer</h2>
+            <p>
+                Rejoignez une structure claire avec signaux, résultats, academy et environnement professionnel.
+            </p>
+            <div class="final-cta-actions">
+                <a href="{{ url_for('billing.pricing') }}" class="hero-btn-primary">Voir les offres</a>
+            </div>
         </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+    <div class="section-container footer-pro">
+
+        <div class="footer-brand">
+            <h3>VelWolf</h3>
+            <p>Plateforme premium de trading, signaux et formation.</p>
+        </div>
+
+        <div class="footer-columns">
+
+            <div class="footer-col">
+                <h4>Plateforme</h4>
+                <div class="footer-links">
+                    <a href="{{ url_for('main.home') }}">Accueil</a>
+                    <a href="{{ url_for('signals.results') }}">Résultats</a>
+                    <a href="{{ url_for('billing.pricing') }}">Offres</a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Informations</h4>
+                <div class="footer-links">
+                    <a href="{{ url_for('pages.faq_page') }}">FAQ</a>
+                    <a href="{{ url_for('pages.cgu') }}">CGU</a>
+                    <a href="{{ url_for('pages.mentions_legales') }}">Mentions légales</a>
+                    <a href="{{ url_for('pages.contact') }}">Contact</a>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 </footer>
 

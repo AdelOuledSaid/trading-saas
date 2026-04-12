@@ -25,14 +25,13 @@
 
         <div class="academy-page-grid">
             <div>
-                <span class="academy-kicker">Niveau 2 — Exécution avancée</span>
-                <h1>Lire la structure du marché et exécuter avec méthode</h1>
+                <span class="academy-kicker">Niveau 2 — Exécution et structure avancée</span>
+                <h1>Interpréter la structure du marché et renforcer la qualité de l’exécution</h1>
                 <p class="academy-lead">
-                    Ce second niveau fait passer l’utilisateur d’une compréhension théorique
-                    à une lecture plus fine de la structure du prix, de la qualité d’un setup,
-                    du timing d’entrée et de la gestion active d’une position. L’objectif n’est
-                    pas d’ajouter de la complexité inutile, mais de transformer une observation
-                    générale en décision structurée.
+                    Ce niveau fait entrer l’utilisateur dans une logique plus fine de lecture du marché.
+                    Il ne s’agit plus seulement de comprendre les mots du trading, mais d’articuler
+                    structure, contexte, confluence, timing et gestion active. L’objectif est de faire
+                    passer l’apprenant d’une lecture descriptive à une lecture décisionnelle.
                 </p>
             </div>
 
@@ -45,8 +44,8 @@
                     <div class="academy-progress-fill academy-progress-fill-purple" style="width: {{ academy_progress.level2 }}%;"></div>
                 </div>
                 <div class="academy-progress-head academy-progress-head-second">
-                    <span>Statut</span>
-                    <strong>{% if is_pro %}Accès complet{% else %}Aperçu limité{% endif %}</strong>
+                    <span>Accès</span>
+                    <strong>{% if is_pro %}Complet{% else %}Aperçu limité{% endif %}</strong>
                 </div>
             </div>
         </div>
@@ -70,8 +69,8 @@
                         {% else %}
                         <div class="academy-player-overlay-text">
                             <span class="academy-kicker">Vidéo premium</span>
-                            <h3>Niveau 2 — Structure, timing et exécution</h3>
-                            <p>Aperçu verrouillé. Passez Pro pour voir la formation complète et la certification.</p>
+                            <h3>Niveau 2 — Structure, confluence et exécution</h3>
+                            <p>Version complète réservée aux membres Pro avec validation finale et certificat.</p>
                         </div>
                         {% endif %}
                     </div>
@@ -83,7 +82,7 @@
                             <button class="academy-control-btn" type="button">⏭ Module suivant</button>
                         {% else %}
                             <button class="academy-control-btn" type="button" data-upgrade-trigger="true">🔒 Lecture Pro</button>
-                            <button class="academy-control-btn" type="button" data-upgrade-trigger="true">🔒 Certification</button>
+                            <button class="academy-control-btn" type="button" data-upgrade-trigger="true">🔒 Examen final</button>
                             <button class="academy-control-btn" type="button" data-upgrade-trigger="true">🚀 Débloquer</button>
                         {% endif %}
                     </div>
@@ -94,7 +93,7 @@
                     <div class="academy-lock-card">
                         <div class="academy-lock-icon">🔒</div>
                         <h3>Niveau 2 réservé aux membres Pro</h3>
-                        <p>Débloquez le cours avancé, le quiz final, la progression complète et la certification.</p>
+                        <p>Débloquez les études de cas, la validation finale, la certification et le contenu avancé.</p>
                         <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
                             Passer Pro maintenant
                         </a>
@@ -105,7 +104,7 @@
 
             <aside class="academy-sidebar">
                 <div class="academy-module-list">
-                    <h3>Programme Niveau 2</h3>
+                    <h3>Programme universitaire — Niveau 2</h3>
                     <ul>
                         <li class="active">1. Structure de marché</li>
                         <li>2. Tendance, range et transition</li>
@@ -116,7 +115,7 @@
                         <li>7. Gestion active de position</li>
                         <li>8. Journal de trading</li>
                         <li>9. Psychologie avancée</li>
-                        <li>10. Synthèse opérationnelle</li>
+                        <li>10. Synthèse et certification</li>
                     </ul>
                 </div>
             </aside>
@@ -127,27 +126,27 @@
 <section class="academy-section academy-dark-band">
     <div class="academy-shell">
         <div class="academy-section-title">
-            <span class="academy-kicker">Objectifs pédagogiques</span>
-            <h2>Ce que ce niveau doit réellement faire progresser</h2>
+            <span class="academy-kicker">Cadre d’apprentissage</span>
+            <h2>Compétences visées à l’issue du niveau 2</h2>
             <p class="academy-lead academy-section-lead">
-                À la fin de ce niveau, l’utilisateur doit être capable de reconnaître un contexte de marché,
-                différencier un mouvement propre d’un piège, sélectionner ses setups avec plus d’exigence
-                et gérer une position avec davantage de discipline.
+                À la fin de ce niveau, l’utilisateur doit savoir lire une structure, distinguer
+                un contexte d’expansion d’un contexte d’équilibre, filtrer un faux signal,
+                renforcer un scénario par confluence et gérer sa position avec davantage de stabilité.
             </p>
         </div>
 
         <div class="academy-grid-3">
             <div class="academy-info-card">
-                <h3>Lecture avancée</h3>
-                <p>Comprendre comment le prix se structure, ralentit, casse ou piège.</p>
+                <h3>Lecture structurelle</h3>
+                <p>Comprendre comment le prix s’organise, casse, accélère ou piège.</p>
             </div>
             <div class="academy-info-card">
-                <h3>Sélection</h3>
-                <p>Filtrer davantage les trades faibles et conserver les scénarios les plus cohérents.</p>
+                <h3>Sélectivité</h3>
+                <p>Réduire les trades médiocres en privilégiant les scénarios plus cohérents.</p>
             </div>
             <div class="academy-info-card">
-                <h3>Exécution</h3>
-                <p>Améliorer le timing, la gestion et la qualité de la décision sous pression.</p>
+                <h3>Maturité opérationnelle</h3>
+                <p>Mieux distinguer la réaction émotionnelle de l’ajustement rationnel.</p>
             </div>
         </div>
     </div>
@@ -156,29 +155,49 @@
 <section class="academy-section">
     <div class="academy-shell">
         <div class="academy-section-title">
-            <span class="academy-kicker">Cours complet</span>
-            <h2>Module 1 — La structure de marché</h2>
+            <span class="academy-kicker">Chapitre 1</span>
+            <h2>Structure de marché</h2>
         </div>
 
-        <div class="academy-info-card">
+        <div class="academy-academic-block">
+            <h3>Du mouvement visible à l’organisation du prix</h3>
             <p>
-                La structure de marché désigne l’organisation du prix dans le temps. Elle permet de comprendre
-                si le marché construit une progression, une dégradation, une consolidation ou une phase de transition.
-                Là où le niveau 1 apprenait à lire un graphique de manière simple, le niveau 2 demande de lire
-                la logique d’enchaînement entre les mouvements.
+                La structure de marché permet de comprendre si le prix construit une progression,
+                une dégradation, une consolidation ou une phase de transition. Elle repose sur
+                l’observation des sommets, des creux, des impulsions et des corrections.
             </p>
             <p>
-                Une structure haussière se caractérise généralement par une succession de sommets et de creux ascendants.
-                Une structure baissière montre au contraire une succession de sommets et de creux descendants.
-                Cette lecture paraît élémentaire, mais elle est fondamentale : beaucoup de traders prennent un achat
-                contre une structure baissière ou une vente contre une structure haussière simplement parce qu’ils se
-                focalisent sur une seule bougie ou une émotion immédiate.
+                Une structure haussière se caractérise généralement par une série de sommets et de creux ascendants.
+                Une structure baissière montre au contraire une série de sommets et de creux descendants.
+                Cette lecture n’est pas purement descriptive : elle influence directement la qualité d’une décision.
+                Acheter contre une structure baissière ou vendre contre une structure haussière revient souvent
+                à prendre un risque supplémentaire sans justification suffisante.
             </p>
-            <p>
-                Il faut aussi comprendre qu’une structure n’est jamais éternelle. Elle évolue. Une tendance forte peut ralentir,
-                une consolidation peut préparer une reprise, une cassure peut être valide ou trompeuse. Le travail du trader
-                n’est donc pas de coller une étiquette figée au marché, mais de mettre à jour sa lecture en continu.
-            </p>
+
+            <div class="academy-definition-box">
+                <span class="academy-box-label">Définition</span>
+                <p>
+                    La structure de marché désigne l’organisation relative des mouvements du prix dans le temps,
+                    et permet d’identifier une logique dominante ou sa détérioration.
+                </p>
+            </div>
+
+            <div class="academy-case-box">
+                <span class="academy-box-label">Étude de cas</span>
+                <p>
+                    Si le prix inscrit plusieurs creux de plus en plus hauts, puis casse le dernier sommet local,
+                    la structure renforce une lecture haussière. Une vente prise au simple motif d’un “prix trop haut”
+                    est alors contextuellement fragile.
+                </p>
+            </div>
+
+            <div class="academy-keytakeaway-box">
+                <span class="academy-box-label">À retenir</span>
+                <p>
+                    La structure ne dit pas que le marché est certain. Elle dit dans quel sens la cohérence
+                    est actuellement la plus forte.
+                </p>
+            </div>
         </div>
     </div>
 </section>
@@ -186,42 +205,37 @@
 <section class="academy-section academy-dark-band">
     <div class="academy-shell">
         <div class="academy-section-title">
-            <span class="academy-kicker">Module 2</span>
+            <span class="academy-kicker">Chapitre 2</span>
             <h2>Tendance, range et transition</h2>
         </div>
 
-        <div class="academy-cards">
-            <div class="academy-info-card">
-                <h3>Tendance</h3>
-                <p>
-                    Une tendance traduit une dominance directionnelle. Le prix avance avec cohérence dans un sens,
-                    même s’il corrige temporairement. Le trader cherche alors à s’aligner plutôt qu’à anticiper
-                    un retournement prématuré.
-                </p>
-            </div>
-            <div class="academy-info-card">
-                <h3>Range</h3>
-                <p>
-                    Un range correspond à une phase d’équilibre relatif. Le marché oscille entre des bornes,
-                    sans véritable expansion directionnelle. Les faux signaux y sont fréquents.
-                </p>
-            </div>
-            <div class="academy-info-card">
-                <h3>Transition</h3>
-                <p>
-                    La transition relie une phase à une autre. C’est souvent la zone la plus difficile à interpréter,
-                    car le marché peut ralentir, casser une structure, puis repartir ou au contraire piéger.
-                </p>
-            </div>
-        </div>
-
-        <div class="academy-info-card" style="margin-top: 24px;">
+        <div class="academy-academic-block">
+            <h3>Identifier le régime de marché avant de chercher l’entrée</h3>
             <p>
-                Beaucoup de pertes viennent d’une mauvaise lecture du régime de marché. Une stratégie de cassure
-                peut bien fonctionner en expansion, puis devenir inefficace en range. Inversement, une logique de
-                rebond sur borne peut être pertinente en range et catastrophique en tendance forte. La première question
-                d’un trader avancé n’est donc pas “où entrer ?”, mais “dans quel type d’environnement est-ce que j’opère ?”.
+                Une tendance traduit une expansion directionnelle. Un range traduit un équilibre relatif.
+                Une transition relie souvent l’un à l’autre. Comprendre dans quel régime on opère est décisif,
+                car une méthode efficace dans un environnement peut devenir médiocre dans un autre.
             </p>
+            <p>
+                En tendance, l’objectif est souvent de travailler dans le sens du flux dominant. En range,
+                les extrêmes peuvent produire des réactions intéressantes, mais les cassures y sont aussi
+                plus fréquemment piégeuses. La transition, enfin, est souvent la zone la plus délicate :
+                elle concentre incertitude, faux départs et lecture ambiguë.
+            </p>
+
+            <div class="academy-warning-box">
+                <span class="academy-box-label">Erreur fréquente</span>
+                <p>
+                    Utiliser la même agressivité d’entrée dans un range lent que dans une expansion nette.
+                </p>
+            </div>
+
+            <div class="academy-keytakeaway-box">
+                <span class="academy-box-label">À retenir</span>
+                <p>
+                    Avant de demander “où entrer ?”, il faut demander “dans quel environnement est-ce que j’opère ?”.
+                </p>
+            </div>
         </div>
     </div>
 </section>
@@ -229,28 +243,41 @@
 <section class="academy-section">
     <div class="academy-shell">
         <div class="academy-section-title">
-            <span class="academy-kicker">Module 3</span>
+            <span class="academy-kicker">Chapitre 3</span>
             <h2>Breakout et faux breakout</h2>
         </div>
 
-        <div class="academy-info-card">
+        <div class="academy-academic-block">
+            <h3>La cassure n’est pas une preuve suffisante</h3>
             <p>
-                Un <strong>breakout</strong> correspond à une cassure de niveau, de zone ou de structure.
-                Il peut signaler une accélération, une reprise directionnelle ou une sortie d’équilibre.
-                Cependant, toute cassure n’est pas forcément synonyme de qualité.
+                Un breakout correspond à la cassure d’un niveau, d’une borne ou d’une structure.
+                Il peut signaler une accélération légitime du prix. Mais un breakout n’a de valeur
+                que s’il est replacé dans son contexte : qualité de l’impulsion, régime de marché,
+                proximité d’une zone de liquidité, état de fatigue ou de compression préalable.
             </p>
             <p>
-                Le <strong>faux breakout</strong> est précisément ce qui piège les traders impatients.
-                Le prix dépasse un niveau visible, attire les entrées tardives, puis réintègre rapidement
-                la zone précédente. Ce phénomène est extrêmement fréquent autour des hauts évidents, des bas visibles
-                et des bornes de range.
+                Le faux breakout joue précisément sur l’impatience des opérateurs. Le prix dépasse
+                un niveau visible, déclenche les entrées tardives, puis réintègre rapidement la zone.
+                Le trader discipliné doit apprendre à distinguer cassure et validation.
             </p>
-            <p>
-                L’étude sérieuse d’une cassure exige donc plusieurs questions : la cassure est-elle impulsive ?
-                Le contexte général la soutient-il ? La liquidité proche a-t-elle déjà été prise ? Le marché est-il
-                en expansion ou en fatigue ? Un bon breakout ne se juge pas uniquement par le franchissement d’une ligne,
-                mais par la qualité du déplacement qui l’accompagne.
-            </p>
+
+            <div class="academy-case-box">
+                <span class="academy-box-label">Étude de cas</span>
+                <p>
+                    Un prix casse la résistance d’un range après plusieurs tentatives. Si la cassure
+                    s’accompagne d’un mouvement propre, d’une clôture convaincante et d’une poursuite,
+                    le scénario reste cohérent. Si la cassure dépasse brièvement la borne puis replonge
+                    immédiatement dans le range, la lecture de piège devient plus probable.
+                </p>
+            </div>
+
+            <div class="academy-keytakeaway-box">
+                <span class="academy-box-label">À retenir</span>
+                <p>
+                    Une ligne franchie n’est pas encore une validation. Le comportement post-cassure
+                    compte autant que la cassure elle-même.
+                </p>
+            </div>
         </div>
     </div>
 </section>
@@ -258,27 +285,40 @@
 <section class="academy-section academy-dark-band">
     <div class="academy-shell">
         <div class="academy-section-title">
-            <span class="academy-kicker">Module 4</span>
+            <span class="academy-kicker">Chapitre 4</span>
             <h2>Liquidité et zones de réaction</h2>
         </div>
 
-        <div class="academy-info-card">
+        <div class="academy-academic-block">
+            <h3>Comprendre où le marché va chercher de l’information</h3>
             <p>
-                La liquidité représente les zones où se concentrent des ordres, des stops, de l’intérêt de marché
-                ou simplement une visibilité collective. En pratique, le prix est souvent attiré par des zones où beaucoup
-                de participants ont placé leurs décisions.
+                La liquidité peut être comprise comme l’ensemble des zones où se concentrent des ordres,
+                des stops, de l’intérêt ou une forte visibilité collective. Les plus hauts récents,
+                les plus bas récents et certaines bornes de structure deviennent ainsi des espaces où
+                le marché vient souvent tester la solidité des positions en présence.
             </p>
             <p>
-                Les plus hauts récents, les plus bas récents, les bornes de range ou certaines zones techniques
-                sont souvent des espaces où le marché vient “chercher quelque chose”. Cette recherche de liquidité
-                peut produire soit une continuation propre, soit un excès suivi d’une réintégration.
+                Cette lecture aide à comprendre pourquoi certaines mèches sont si violentes, pourquoi
+                certains mouvements semblent “exagérés”, et pourquoi le marché dépasse parfois une zone
+                avant de revenir. Il ne s’agit pas seulement de direction ; il s’agit aussi de recherche
+                d’ordres et de confrontation.
             </p>
-            <p>
-                Comprendre la liquidité aide à éviter une vision naïve du marché. Le prix ne bouge pas seulement
-                parce qu’il “veut monter” ou “veut baisser”. Il se déplace aussi vers des zones d’ordres où la confrontation
-                entre acheteurs et vendeurs devient plus intense. Cela permet de mieux comprendre les pièges, les mèches
-                violentes et certaines cassures trompeuses.
-            </p>
+
+            <div class="academy-definition-box">
+                <span class="academy-box-label">Définition</span>
+                <p>
+                    Une zone de liquidité est un espace de marché où une concentration d’ordres probables
+                    rend une réaction plus significative ou plus volatile.
+                </p>
+            </div>
+
+            <div class="academy-keytakeaway-box">
+                <span class="academy-box-label">À retenir</span>
+                <p>
+                    Le marché ne se déplace pas uniquement “dans un sens”. Il se déplace aussi vers des zones
+                    où l’information et les ordres se concentrent.
+                </p>
+            </div>
         </div>
     </div>
 </section>
@@ -286,40 +326,43 @@
 <section class="academy-section">
     <div class="academy-shell">
         <div class="academy-section-title">
-            <span class="academy-kicker">Module 5</span>
-            <h2>La confluence : renforcer la qualité d’un scénario</h2>
+            <span class="academy-kicker">Chapitre 5</span>
+            <h2>Confluence</h2>
         </div>
 
-        <div class="academy-info-card">
+        <div class="academy-academic-block">
+            <h3>Renforcer la qualité d’un scénario sans tomber dans la sur-analyse</h3>
             <p>
-                La confluence désigne l’alignement de plusieurs éléments qui renforcent la crédibilité d’un scénario.
-                Un support seul peut être intéressant. Une tendance seule aussi. Mais si une zone de support coïncide
-                avec une structure haussière, une réaction claire du prix et un contexte cohérent, le scénario gagne en qualité.
+                La confluence désigne l’alignement de plusieurs arguments cohérents en faveur d’un scénario.
+                Une zone technique seule peut être intéressante. Une structure seule aussi. Mais lorsque structure,
+                zone, dynamique et timing convergent, la lecture gagne en densité logique.
             </p>
             <p>
-                La confluence ne garantit jamais le succès. Elle améliore simplement la pertinence relative d’une idée.
-                Le trader avancé n’essaie pas d’éliminer toute incertitude, il essaie d’augmenter la densité logique
-                de son scénario.
+                Il faut cependant éviter deux excès : le minimalisme naïf d’un signal isolé, et la sur-analyse
+                où l’on cherche tellement de confirmations que l’on ne décide jamais. La confluence utile
+                n’est pas l’accumulation désordonnée d’arguments, mais la cohérence entre quelques éléments majeurs.
             </p>
-            <p>
-                L’une des erreurs fréquentes est de chercher trop de confluence jusqu’à tomber dans la paralysie.
-                L’objectif n’est pas d’empiler dix validations artificielles. L’objectif est de vérifier que le scénario
-                repose sur plusieurs arguments cohérents et non sur un signal isolé.
-            </p>
-        </div>
 
-        <div class="academy-grid-3" style="margin-top: 24px;">
-            <div class="academy-info-card">
-                <h3>Confluence de structure</h3>
-                <p>Le sens du trade respecte l’organisation générale du marché.</p>
-            </div>
-            <div class="academy-info-card">
-                <h3>Confluence de zone</h3>
-                <p>L’entrée est proche d’un niveau ou d’un espace logique de réaction.</p>
-            </div>
-            <div class="academy-info-card">
-                <h3>Confluence de timing</h3>
-                <p>Le marché montre un comportement compatible avec le scénario au moment choisi.</p>
+            <div class="academy-summary-grid">
+                <div class="academy-info-card">
+                    <h3>Confluence utile</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Structure cohérente</li>
+                        <li>Zone logique</li>
+                        <li>Comportement du prix compatible</li>
+                        <li>Timing propre</li>
+                    </ul>
+                </div>
+
+                <div class="academy-info-card">
+                    <h3>Confluence illusoire</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Trop d’indicateurs redondants</li>
+                        <li>Recherche de certitude absolue</li>
+                        <li>Validation artificielle après coup</li>
+                        <li>Décision dictée par l’émotion</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -328,26 +371,36 @@
 <section class="academy-section academy-dark-band">
     <div class="academy-shell">
         <div class="academy-section-title">
-            <span class="academy-kicker">Module 6</span>
-            <h2>Le timing d’entrée</h2>
+            <span class="academy-kicker">Chapitre 6</span>
+            <h2>Timing d’entrée</h2>
         </div>
 
-        <div class="academy-info-card">
+        <div class="academy-academic-block">
+            <h3>Un bon scénario mal exécuté reste une mauvaise opération</h3>
             <p>
-                Un scénario peut être bon et malgré tout être mal exécuté. C’est ici qu’intervient le timing.
-                Le timing d’entrée consiste à choisir non seulement une direction, mais aussi un moment cohérent.
-                Entrer trop tôt expose inutilement au bruit. Entrer trop tard dégrade le ratio risque/rendement.
+                Le timing d’entrée est la dimension pratique du scénario. Il ne suffit pas d’avoir “la bonne idée” ;
+                il faut encore entrer à un moment où le rapport entre risque accepté et potentiel de rendement
+                reste cohérent.
             </p>
             <p>
-                Le trader avancé développe une patience active. Il observe la zone, attend le comportement du prix,
-                évalue l’impulsion, la réaction, le rejet ou la confirmation. Il ne cherche pas à être “le premier”,
-                il cherche à être propre.
+                Entrer trop tôt expose au bruit et à l’incertitude non nécessaire. Entrer trop tard dégrade le ratio
+                rendement/risque et augmente souvent la probabilité d’un essoufflement immédiat. Le timing exige donc
+                une patience active : observer, attendre, confirmer sans tomber dans la paralysie.
             </p>
-            <p>
-                Dans beaucoup de cas, le mauvais timing ne vient pas d’un manque de technique, mais d’une pression psychologique :
-                peur de rater, impatience, besoin d’action. Le marché récompense rarement ces impulsions. La qualité du timing
-                dépend donc autant de la lecture technique que de la stabilité émotionnelle.
-            </p>
+
+            <div class="academy-warning-box">
+                <span class="academy-box-label">Erreur fréquente</span>
+                <p>
+                    Confondre vitesse d’exécution et qualité d’exécution, sous l’effet de la peur de rater.
+                </p>
+            </div>
+
+            <div class="academy-keytakeaway-box">
+                <span class="academy-box-label">À retenir</span>
+                <p>
+                    Le bon timing ne cherche pas à être le plus rapide ; il cherche à être le plus cohérent.
+                </p>
+            </div>
         </div>
     </div>
 </section>
@@ -355,26 +408,32 @@
 <section class="academy-section">
     <div class="academy-shell">
         <div class="academy-section-title">
-            <span class="academy-kicker">Module 7</span>
-            <h2>Gérer activement une position</h2>
+            <span class="academy-kicker">Chapitre 7</span>
+            <h2>Gestion active de position</h2>
         </div>
 
-        <div class="academy-info-card">
+        <div class="academy-academic-block">
+            <h3>La décision ne s’arrête pas à l’entrée</h3>
             <p>
-                L’exécution ne s’arrête pas à l’ouverture du trade. Une fois en position, le trader doit observer
-                si le marché confirme ou détériore progressivement le scénario. La gestion active consiste à adapter
-                sa lecture sans tomber dans l’agitation.
+                Une fois la position ouverte, le marché commence à dialoguer avec le scénario. La gestion active
+                consiste à observer si le comportement du prix confirme, fragilise ou invalide progressivement
+                l’hypothèse initiale. Cela peut impliquer la sécurisation partielle d’un gain, le déplacement raisonné
+                d’un stop, ou une sortie anticipée si la structure se dégrade.
             </p>
             <p>
-                Cela peut inclure plusieurs décisions : déplacer le stop à break-even une fois qu’un mouvement
-                favorable est confirmé, sécuriser une partie de la position, laisser courir un trade fort, ou sortir
-                plus tôt si le marché montre une faiblesse claire.
+                La difficulté vient du fait que le trader doit ajuster sans réagir de manière impulsive.
+                Modifier un trade parce que la structure évolue peut être pertinent. Le modifier parce qu’on ne supporte
+                pas le stress du marché l’est beaucoup moins.
             </p>
-            <p>
-                La difficulté est de distinguer l’ajustement rationnel de la réaction émotionnelle. Déplacer un stop
-                parce que la structure évolue est cohérent. Le déplacer parce qu’on ne supporte pas l’idée d’avoir tort
-                est dangereux. La gestion active exige donc une grande lucidité sur soi-même.
-            </p>
+
+            <div class="academy-example-box">
+                <span class="academy-box-label">Exemple concret</span>
+                <p>
+                    Après une impulsion favorable nette, déplacer le stop à break-even peut protéger le capital.
+                    En revanche, déplacer un stop prématurément sous l’effet de la peur peut sortir le trader
+                    d’un scénario encore valide.
+                </p>
+            </div>
         </div>
     </div>
 </section>
@@ -382,26 +441,29 @@
 <section class="academy-section academy-dark-band">
     <div class="academy-shell">
         <div class="academy-section-title">
-            <span class="academy-kicker">Module 8</span>
-            <h2>Le journal de trading</h2>
+            <span class="academy-kicker">Chapitre 8</span>
+            <h2>Journal de trading</h2>
         </div>
 
-        <div class="academy-info-card">
+        <div class="academy-academic-block">
+            <h3>Transformer l’expérience en donnée exploitable</h3>
             <p>
-                Le journal de trading est un outil de progression, pas une formalité administrative. Il permet d’enregistrer
-                le contexte du trade, la logique de l’entrée, la taille de position, le résultat, mais surtout la qualité
-                de la décision.
+                Le journal de trading permet de séparer la perception du résultat. Sans journal, les erreurs se répètent
+                souvent dans le flou. Avec un journal, il devient possible d’identifier des motifs : surtrading,
+                entrée tardive, mauvais timing, levier excessif, impatience, sortie émotionnelle, lecture de structure fragile.
             </p>
             <p>
-                Deux trades perdants n’ont pas la même signification. L’un peut être une bonne décision battue par le marché.
-                L’autre peut être une mauvaise décision prise dans l’impulsivité. Sans journal, ces deux situations se mélangent.
-                Avec un journal, le trader peut identifier des motifs récurrents : surtrading, impatience, levier excessif,
-                entrée tardive, sortie émotionnelle, mauvaise lecture du contexte.
+                Le journal ne sert pas seulement à consigner les gains et les pertes. Il sert à documenter
+                la qualité de la décision. Deux trades perdants n’ont pas la même signification : l’un peut être
+                une bonne exécution battue par le marché, l’autre une erreur de comportement évitable.
             </p>
-            <p>
-                Le journal transforme l’expérience en information exploitable. C’est l’un des outils les plus puissants
-                pour sortir du cycle répétitif des erreurs invisibles.
-            </p>
+
+            <div class="academy-keytakeaway-box">
+                <span class="academy-box-label">À retenir</span>
+                <p>
+                    Sans mémoire structurée, l’expérience se dissipe. Avec un journal, elle devient capital d’apprentissage.
+                </p>
+            </div>
         </div>
     </div>
 </section>
@@ -409,42 +471,44 @@
 <section class="academy-section">
     <div class="academy-shell">
         <div class="academy-section-title">
-            <span class="academy-kicker">Module 9</span>
-            <h2>Psychologie avancée du trader</h2>
+            <span class="academy-kicker">Chapitre 9</span>
+            <h2>Psychologie avancée</h2>
         </div>
 
         <div class="academy-cards">
             <div class="academy-info-card">
-                <h3>La peur de rater</h3>
-                <p>
-                    La FOMO pousse à entrer trop vite, hors contexte, simplement pour ne pas rester spectateur.
-                </p>
+                <h3>FOMO</h3>
+                <p>La peur de rater pousse à entrer hors contexte et dégrade le timing.</p>
             </div>
             <div class="academy-info-card">
-                <h3>L’euphorie</h3>
-                <p>
-                    Après une série de gains, le trader peut confondre confiance et invulnérabilité.
-                </p>
+                <h3>Euphorie</h3>
+                <p>Après une série de gains, le trader peut surestimer sa maîtrise réelle.</p>
             </div>
             <div class="academy-info-card">
-                <h3>La frustration</h3>
-                <p>
-                    Après une perte ou un trade manqué, le besoin de “se refaire” détruit souvent la discipline.
-                </p>
+                <h3>Frustration</h3>
+                <p>Le besoin de “se refaire” après une perte détruit la discipline opérationnelle.</p>
             </div>
         </div>
 
-        <div class="academy-info-card" style="margin-top: 24px;">
+        <div class="academy-academic-block" style="margin-top: 24px;">
+            <h3>Discipline émotionnelle et stabilité décisionnelle</h3>
             <p>
-                La psychologie avancée ne consiste pas à “ne plus ressentir”. Elle consiste à reconnaître les émotions
-                sans leur laisser prendre le contrôle de la décision. Le trader professionnel n’est pas froid par nature ;
-                il est structuré. Il sait que l’émotion existe, mais il s’appuie sur un processus pour empêcher qu’elle
-                devienne la force directrice.
+                La psychologie du trader ne consiste pas à ne rien ressentir. Elle consiste à reconnaître
+                les affects sans leur laisser gouverner la décision. L’opérateur mature ne nie pas la pression ;
+                il construit une architecture pour qu’elle n’altère pas son jugement.
             </p>
             <p>
-                La discipline n’est donc pas seulement une qualité morale. C’est une architecture de protection. Elle protège
-                le trader contre ses impulsions les plus coûteuses.
+                La discipline n’est donc pas une vertu abstraite. Elle est une protection opérationnelle
+                contre les réactions les plus coûteuses : impatience, vengeance, euphorie, panique,
+                refus de l’invalidation, besoin compulsif d’activité.
             </p>
+
+            <div class="academy-keytakeaway-box">
+                <span class="academy-box-label">À retenir</span>
+                <p>
+                    Plus le niveau technique monte, plus la qualité psychologique devient déterminante.
+                </p>
+            </div>
         </div>
     </div>
 </section>
@@ -452,49 +516,54 @@
 <section class="academy-section academy-dark-band">
     <div class="academy-shell">
         <div class="academy-section-title">
-            <span class="academy-kicker">Module 10</span>
-            <h2>Synthèse opérationnelle du niveau 2</h2>
+            <span class="academy-kicker">Chapitre 10</span>
+            <h2>Synthèse et certification du niveau 2</h2>
         </div>
 
-        <div class="academy-info-card">
+        <div class="academy-academic-block">
+            <h3>Vers une lecture plus mature du marché</h3>
             <p>
-                Le niveau 2 marque une transition importante : on ne demande plus seulement au trader de connaître des notions,
-                mais de les articuler dans une lecture cohérente. Comprendre la structure, repérer un contexte, attendre une confluence,
-                choisir un timing et gérer activement une position sont les piliers d’une exécution plus professionnelle.
+                Le niveau 2 ne transforme pas l’utilisateur en expert absolu. Il transforme sa manière de sélectionner,
+                de lire et de gérer. Il remplace la réaction immédiate par une lecture plus nuancée :
+                structure, régime, confluence, timing, gestion active, stabilité.
             </p>
             <p>
-                Il faut retenir qu’un trader avancé ne cherche pas à être actif en permanence. Il cherche à être sélectif.
-                Plus la lecture devient fine, plus l’exigence augmente. L’objectif n’est pas de faire davantage de trades,
-                mais de faire moins de trades inutiles.
-            </p>
-            <p>
-                Ce niveau prépare donc une logique de maturité : accepter que tous les mouvements ne doivent pas être tradés,
-                comprendre qu’un bon setup vaut mieux que dix setups médiocres, et considérer le marché comme un environnement
-                à interpréter plutôt qu’un bouton sur lequel il faut réagir en permanence.
+                Le trader qui progresse n’est pas celui qui voit plus de trades partout. C’est celui qui
+                accepte progressivement de devenir plus sélectif, plus cohérent et moins émotionnel.
+                Cette sélectivité n’est pas une limitation ; elle est une montée en qualité.
             </p>
         </div>
 
-        <div class="academy-grid-3" style="margin-top: 24px;">
+        <div class="academy-summary-grid">
             <div class="academy-info-card">
-                <h3>Idée clé 1</h3>
-                <p>Une lecture propre du marché vaut mieux qu’une réaction rapide mais confuse.</p>
+                <h3>Compétences acquises</h3>
+                <ul class="academy-reflection-list">
+                    <li>Lire une structure de marché plus finement.</li>
+                    <li>Distinguer tendance, range et transition.</li>
+                    <li>Identifier un breakout valide ou un piège.</li>
+                    <li>Renforcer un scénario par confluence.</li>
+                    <li>Gérer activement une position avec plus de méthode.</li>
+                </ul>
             </div>
+
             <div class="academy-info-card">
-                <h3>Idée clé 2</h3>
-                <p>Le timing et la confluence améliorent la qualité, pas la certitude absolue.</p>
-            </div>
-            <div class="academy-info-card">
-                <h3>Idée clé 3</h3>
-                <p>La maturité du trader se mesure à sa sélection, pas à son agitation.</p>
+                <h3>Questions de réflexion</h3>
+                <ul class="academy-reflection-list">
+                    <li>Mon entrée était-elle cohérente avec le régime de marché ?</li>
+                    <li>Ai-je confondu cassure visuelle et validation réelle ?</li>
+                    <li>Ai-je ajusté ma position avec logique ou avec émotion ?</li>
+                    <li>Mon scénario reposait-il sur une vraie confluence ?</li>
+                    <li>Ai-je documenté objectivement ma décision ?</li>
+                </ul>
             </div>
         </div>
     </div>
 </section>
 
-<section class="academy-section">
+<section class="academy-section" id="quiz-final">
     <div class="academy-shell">
         <div class="academy-section-title">
-            <span class="academy-kicker">Quiz final</span>
+            <span class="academy-kicker">Évaluation finale</span>
             <h2>Validation du niveau 2</h2>
         </div>
 
@@ -502,24 +571,24 @@
             {% if is_pro %}
             <form class="academy-quiz-form" id="academyQuiz2">
                 <div class="academy-question">
-                    <h3>1. Une confluence solide correspond à :</h3>
-                    <label><input type="radio" name="q1" value="a"> plusieurs éléments cohérents qui renforcent un scénario</label>
-                    <label><input type="radio" name="q1" value="b"> un seul indicateur isolé</label>
-                    <label><input type="radio" name="q1" value="c"> une entrée prise très rapidement sans contexte</label>
+                    <h3>1. La confluence correspond à :</h3>
+                    <label><input type="radio" name="q1" value="a"> plusieurs éléments cohérents renforçant un scénario</label>
+                    <label><input type="radio" name="q1" value="b"> une multitude d’indicateurs sans hiérarchie</label>
+                    <label><input type="radio" name="q1" value="c"> une entrée impulsive confirmée par l’émotion</label>
                 </div>
 
                 <div class="academy-question">
                     <h3>2. Un faux breakout a souvent pour effet de :</h3>
-                    <label><input type="radio" name="q2" value="a"> confirmer proprement toutes les cassures</label>
-                    <label><input type="radio" name="q2" value="b"> piéger les traders trop pressés</label>
-                    <label><input type="radio" name="q2" value="c"> supprimer le risque du trade</label>
+                    <label><input type="radio" name="q2" value="a"> confirmer automatiquement la tendance</label>
+                    <label><input type="radio" name="q2" value="b"> piéger les opérateurs trop pressés</label>
+                    <label><input type="radio" name="q2" value="c"> supprimer la nécessité d’un Stop Loss</label>
                 </div>
 
                 <div class="academy-question">
                     <h3>3. Le journal de trading sert principalement à :</h3>
-                    <label><input type="radio" name="q3" value="a"> mémoriser uniquement les gains</label>
-                    <label><input type="radio" name="q3" value="b"> suivre et améliorer la qualité des décisions</label>
-                    <label><input type="radio" name="q3" value="c"> éviter toute perte à l’avenir</label>
+                    <label><input type="radio" name="q3" value="a"> mémoriser uniquement les trades gagnants</label>
+                    <label><input type="radio" name="q3" value="b"> transformer l’expérience en donnée d’amélioration</label>
+                    <label><input type="radio" name="q3" value="c"> éviter toute perte future</label>
                 </div>
 
                 <button
@@ -549,8 +618,8 @@
             {% else %}
             <div class="academy-locked-box">
                 <div class="academy-lock-icon">🔒</div>
-                <h3>Certification réservée aux membres Pro</h3>
-                <p>Débloquez le quiz final, la validation complète et le certificat premium.</p>
+                <h3>Évaluation finale réservée au plan Pro</h3>
+                <p>Débloquez la validation complète, la progression réelle et la certification premium.</p>
                 <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
                     Passer au plan Pro
                 </a>

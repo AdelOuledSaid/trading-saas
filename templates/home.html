@@ -608,40 +608,76 @@
             </div>
         </div>
     </section>
+   <footer class="site-footer">
+    <div class="section-container footer-pro footer-pro-advanced">
 
-    <footer class="site-footer">
-        <div class="section-container footer-pro">
-            <div class="footer-brand">
-                <h3>VelWolf</h3>
-                <p>
-                    Signaux premium, résultats, dashboard et Trading Lab
-                    dans une interface moderne, claire et professionnelle.
-                </p>
+        <!-- BRAND -->
+        <div class="footer-brand">
+            <h3>VelWolf</h3>
+            <p>
+                Signaux premium, résultats, dashboard et Trading Lab
+                dans une interface moderne, claire et professionnelle.
+            </p>
+
+            <!-- SOCIAL ICONS -->
+            <div class="footer-socials">
+
+                <a href="https://t.me/+8hgkkM9KJmBkMzg0" target="_blank" class="social-btn social-btn-telegram">
+                    <svg viewBox="0 0 24 24" fill="white">
+                        <path d="M9.999 15.17l-.396 3.78c.567 0 .812-.243 1.105-.534l2.652-2.53 5.49 4.01c1.007.556 1.72.263 1.972-.932l3.577-16.77c.311-1.45-.524-2.02-1.504-1.64L1.387 9.06c-1.4.545-1.378 1.33-.238 1.68l5.978 1.868L19.557 4.6c.575-.38 1.1-.17.67.21"/>
+                    </svg>
+                </a>
+
+                <a href="https://instagram.com/TON_COMPTE" target="_blank" class="social-btn social-btn-instagram">
+                    <svg viewBox="0 0 24 24" fill="white">
+                        <path d="M7.75 2C4.574 2 2 4.574 2 7.75v8.5C2 19.426 4.574 22 7.75 22h8.5c3.176 0 5.75-2.574 5.75-5.75v-8.5C22 4.574 19.426 2 16.25 2h-8.5zm0 2h8.5A3.75 3.75 0 0120 7.75v8.5A3.75 3.75 0 0116.25 20h-8.5A3.75 3.75 0 014 16.25v-8.5A3.75 3.75 0 017.75 4zm8.25 1.5a1 1 0 100 2 1 1 0 000-2zM12 7a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6z"/>
+                    </svg>
+                </a>
+
+                <a href="https://www.coingecko.com/" target="_blank" class="social-btn social-btn-coingecko">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" fill="#8DC647"/>
+                        <circle cx="9" cy="10" r="2" fill="white"/>
+                    </svg>
+                </a>
+
             </div>
 
-            <div class="footer-columns">
-                <div class="footer-col">
-                    <h4>Plateforme</h4>
-                    <div class="footer-links">
-                        <a href="{{ url_for('main.home') }}">Accueil</a>
-                        <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
-                        <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
-                        <a href="{{ url_for('signals.results') }}">Résultats</a>
-                        <a href="{{ url_for('billing.pricing') }}">Offres</a>
-                    </div>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Informations</h4>
-                    <div class="footer-links">
-                        <a href="{{ url_for('pages.faq_page') }}">FAQ</a>
-                        <a href="{{ url_for('pages.contact') }}">Contact</a>
-                        <a href="{{ url_for('pages.about') }}">À propos</a>
-                    </div>
-                </div>
-            </div>
+            <!-- TELEGRAM CTA -->
+            <a href="https://t.me/TON_CHANNEL" target="_blank" class="footer-telegram-cta">
+                🚀 Rejoindre le Telegram public
+            </a>
         </div>
-    </footer>
 
+        <!-- LINKS -->
+        <div class="footer-columns">
+
+            <div class="footer-col">
+                <h4>Plateforme</h4>
+                <div class="footer-links">
+                    <a href="{{ url_for('main.home') }}">Accueil</a>
+                    <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
+                    <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
+                    <a href="{{ url_for('signals.results') }}">Résultats</a>
+                    <a href="{{ url_for('billing.pricing') }}">Offres</a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Informations</h4>
+                <div class="footer-links">
+                    <a href="{{ url_for('pages.faq_page') }}">FAQ</a>
+                    <a href="{{ url_for('pages.cgu') }}">CGU</a>
+                    <a href="{{ url_for('pages.mentions_legales') }}">Mentions légales</a>
+                    <a href="{{ url_for('pages.contact') }}">Contact</a>
+                    <a href="{{ url_for('pages.about') }}">À propos</a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</footer>
+    
 </body>
 </html>

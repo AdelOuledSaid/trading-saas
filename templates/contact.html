@@ -1,103 +1,110 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VelWolef - Contact</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VelWolf - Contact</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='about-contact.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='about-contact.css') }}">
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
+
 <body class="home-body">
 
 {% include "partials/navbar.html" %}
 
+<!-- HERO -->
 <section class="ac-hero ac-hero-contact">
     <div class="section-container ac-hero-inner">
-        <span class="ac-kicker">Contact VelWolef</span>
-        <h1 class="ac-title">Une équipe disponible pour répondre clairement à vos questions</h1>
+        <span class="ac-kicker">Contact VelWolf</span>
+        <h1 class="ac-title">Une équipe disponible pour répondre avec précision</h1>
         <p class="ac-subtitle">
-            Que votre demande concerne l’accès à la plateforme, les offres, le dashboard membre ou le fonctionnement
-            général de VelWolef, cette page vous permet d’entrer en contact dans un cadre simple et professionnel.
+            Support plateforme, accès Premium, dashboard, academy ou questions générales :
+            chaque demande reçoit une réponse claire et structurée.
         </p>
     </div>
 </section>
 
+<!-- CONTACT -->
 <section class="ac-section">
     <div class="section-container">
         <div class="ac-contact-grid">
 
+            <!-- INFO -->
             <div class="ac-contact-info">
-                <span class="ac-card-kicker">Informations de contact</span>
+                <span class="ac-card-kicker">Informations</span>
                 <h2>Restons en contact</h2>
                 <p>
-                    VelWolef accorde une attention particulière à la clarté des échanges. Chaque demande reçoit
-                    une réponse structurée, utile et adaptée au sujet abordé.
+                    VelWolf privilégie une communication claire, rapide et utile.
+                    Chaque demande est analysée pour fournir une réponse adaptée.
                 </p>
 
                 <div class="ac-contact-list">
                     <div class="ac-contact-item">
                         <strong>Email support</strong>
-                        <span>support@velwolef.com</span>
+                        <span>support@velwolf.com</span>
                     </div>
 
                     <div class="ac-contact-item">
-                        <strong>Délai de réponse</strong>
-                        <span>Généralement sous 24 à 48 heures ouvrées</span>
+                        <strong>Délai</strong>
+                        <span>24 à 48h ouvrées</span>
                     </div>
 
                     <div class="ac-contact-item">
-                        <strong>Sujets traités</strong>
-                        <span>Offres, accès, dashboard, support plateforme, informations générales</span>
+                        <strong>Sujets</strong>
+                        <span>Offres, accès, dashboard, academy, support</span>
                     </div>
 
                     <div class="ac-contact-item">
                         <strong>Plateforme</strong>
-                        <span>VelWolef Premium</span>
+                        <span>VelWolf Premium</span>
                     </div>
                 </div>
 
                 <div class="ac-contact-note">
-                    <h3>Dans quels cas nous écrire ?</h3>
+                    <h3>Quand nous contacter ?</h3>
                     <p>
-                        Pour une question sur votre compte, vos accès, les plans Basic, Premium ou VIP,
-                        l’espace membre, les résultats, le Trading Lab ou le fonctionnement global de la plateforme.
+                        Pour toute question sur votre compte, vos accès, les plans Basic, Premium ou VIP,
+                        les signaux, les résultats ou l’utilisation globale de la plateforme.
                     </p>
                 </div>
             </div>
 
+            <!-- FORM -->
             <div class="ac-contact-form-card">
-                <span class="ac-card-kicker">Formulaire de contact</span>
+                <span class="ac-card-kicker">Formulaire</span>
                 <h2>Envoyer un message</h2>
                 <p class="ac-form-text">
-                    Utilisez ce formulaire pour nous transmettre votre demande. Le message sera traité avec attention.
+                    Votre message sera traité avec attention par notre équipe.
                 </p>
 
                 <form class="ac-contact-form" method="POST" action="{{ url_for('pages.contact') }}">
                     <div class="ac-form-group">
-                        <label for="name">Nom</label>
-                        <input type="text" id="name" name="name" placeholder="Votre nom" required>
+                        <label>Nom</label>
+                        <input type="text" name="name" placeholder="Votre nom" required>
                     </div>
 
                     <div class="ac-form-group">
-                        <label for="email">Adresse email</label>
-                        <input type="email" id="email" name="email" placeholder="votre@email.com" required>
+                        <label>Email</label>
+                        <input type="email" name="email" placeholder="votre@email.com" required>
                     </div>
 
                     <div class="ac-form-group">
-                        <label for="subject">Sujet</label>
-                        <input type="text" id="subject" name="subject" placeholder="Objet de votre message" required>
+                        <label>Sujet</label>
+                        <input type="text" name="subject" placeholder="Objet" required>
                     </div>
 
                     <div class="ac-form-group">
-                        <label for="message">Message</label>
-                        <textarea id="message" name="message" rows="6" placeholder="Décrivez votre demande de manière claire et précise." required></textarea>
+                        <label>Message</label>
+                        <textarea name="message" rows="6" placeholder="Votre message..." required></textarea>
                     </div>
 
-                    <button type="submit" class="ac-submit-btn">Envoyer le message</button>
+                    <button type="submit" class="ac-submit-btn">
+                        Envoyer le message
+                    </button>
                 </form>
             </div>
 
@@ -105,65 +112,55 @@
     </div>
 </section>
 
-<section class="ac-section">
+<!-- CTA -->
+<section class="final-cta-section">
     <div class="section-container">
-        <div class="ac-section-head">
-            <span>Avant de nous écrire</span>
-            <h2>Quelques repères utiles</h2>
+        <div class="final-cta-box">
+            <span class="final-cta-badge">VelWolf Premium</span>
+            <h2>Accédez à une plateforme claire et structurée</h2>
             <p>
-                Voici les sujets les plus fréquemment abordés par les utilisateurs de la plateforme.
+                Rejoignez VelWolf pour une expérience complète : signaux, résultats,
+                academy et environnement professionnel.
             </p>
-        </div>
-
-        <div class="ac-feature-grid">
-            <div class="ac-feature-card">
-                <h3>Accès aux plans</h3>
-                <p>
-                    Les abonnements Basic, Premium et VIP donnent accès à des niveaux de service différents,
-                    adaptés à des besoins progressifs.
-                </p>
-            </div>
-
-            <div class="ac-feature-card">
-                <h3>Dashboard membre</h3>
-                <p>
-                    L’espace membre centralise les signaux, les performances, l’historique et les éléments
-                    clés de l’expérience utilisateur.
-                </p>
-            </div>
-
-            <div class="ac-feature-card">
-                <h3>Support plateforme</h3>
-                <p>
-                    Vous pouvez nous contacter pour toute question liée au compte, aux paiements,
-                    aux accès ou à l’utilisation générale de VelWolef.
-                </p>
-            </div>
-
-            <div class="ac-feature-card">
-                <h3>Évolution du service</h3>
-                <p>
-                    VelWolef évolue progressivement avec de nouvelles pages, de nouveaux outils
-                    et des améliorations continues de l’expérience premium.
-                </p>
+            <div class="final-cta-actions">
+                <a href="{{ url_for('billing.pricing') }}" class="hero-btn-primary">Voir les offres</a>
             </div>
         </div>
     </div>
 </section>
 
+<!-- FOOTER -->
 <footer class="site-footer">
-    <div class="section-container footer-inner">
+    <div class="section-container footer-pro">
+
         <div class="footer-brand">
-            <h3>VelWolef</h3>
-            <p>Support, accès premium, dashboard membre et expérience plateforme professionnelle.</p>
+            <h3>VelWolf</h3>
+            <p>Plateforme premium de trading, signaux et formation.</p>
         </div>
 
-        <div class="footer-links">
-            <a href="{{ url_for('main.home') }}">Accueil</a>
-            <a href="{{ url_for('billing.pricing') }}">Offres</a>
-            <a href="{{ url_for('signals.results') }}">Résultats</a>
-            <a href="{{ url_for('pages.about') }}">À propos</a>
+        <div class="footer-columns">
+
+            <div class="footer-col">
+                <h4>Plateforme</h4>
+                <div class="footer-links">
+                    <a href="{{ url_for('main.home') }}">Accueil</a>
+                    <a href="{{ url_for('signals.results') }}">Résultats</a>
+                    <a href="{{ url_for('billing.pricing') }}">Offres</a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Informations</h4>
+                <div class="footer-links">
+                    <a href="{{ url_for('pages.faq_page') }}">FAQ</a>
+                    <a href="{{ url_for('pages.cgu') }}">CGU</a>
+                    <a href="{{ url_for('pages.mentions_legales') }}">Mentions légales</a>
+                    <a href="{{ url_for('pages.contact') }}">Contact</a>
+                </div>
+            </div>
+
         </div>
+
     </div>
 </footer>
 

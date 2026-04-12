@@ -1,95 +1,77 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VelWolef - Trading Lab</title>
-    <meta name="description" content="VelWolef Trading Lab : structure du signal, gestion du risque, psychologie d’exécution, lecture de contexte, workflow professionnel et modules premium pour trader avec plus de clarté et de discipline.">
+{% extends "base.html" %}
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='trading-lab.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-</head>
-<body class="home-body tl-page-body">
+{% block title %}Academy Pro | VelWolf{% endblock %}
 
-{% include "partials/navbar.html" %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}">
+{% endblock %}
 
-<section class="tl-home-hero tl-home-hero-lab">
-    <div class="section-container tl-home-hero-inner">
-        <div class="tl-home-hero-copy">
-            <span class="tl-home-kicker">VelWolef Lab • Professional Trading Framework</span>
-            <h1 class="tl-home-title">
-                Le Trading Lab conçu pour lire,
-                structurer et exécuter
-                chaque signal avec un niveau supérieur
-            </h1>
-            <p class="tl-home-subtitle">
-                Le VelWolef Trading Lab est le centre méthodologique de la plateforme. Il ne sert pas
-                à répéter des bases trop simples, mais à donner un cadre sérieux pour comprendre
-                la structure d’un signal, la logique de risque, la psychologie d’exécution, la lecture
-                de contexte et la discipline nécessaire pour transformer une information de marché
-                en décision plus propre et plus cohérente.
-            </p>
+{% block content %}
+<section class="academy-hero academy-section">
+    <div class="academy-shell">
+        <div class="academy-hero-grid">
+            <div class="academy-hero-content">
+                <span class="academy-kicker">VelWolf Academy</span>
+                <h1>Une vraie formation trading intégrée à votre plateforme</h1>
+                <p class="academy-lead">
+                    L’Academy VelWolf a été conçue pour transformer un simple utilisateur de signaux
+                    en membre capable de comprendre le marché, gérer le risque et améliorer la qualité
+                    de ses décisions. Le parcours est structuré en deux niveaux : fondations académiques
+                    puis exécution avancée.
+                </p>
 
-            <div class="tl-home-actions">
-                <a href="{{ url_for('signals.signals_page') }}" class="cta-btn">Voir les signaux</a>
-                <a href="{{ url_for('billing.pricing') }}" class="secondary-btn">Découvrir le premium</a>
+                <div class="academy-actions">
+                    <a href="{{ url_for('pages.academy_level_1') }}" class="academy-btn academy-btn-primary">
+                        Ouvrir Niveau 1
+                    </a>
+                    <a href="{{ url_for('pages.academy_level_2') }}" class="academy-btn academy-btn-secondary">
+                        Ouvrir Niveau 2
+                    </a>
+                    {% if not is_pro %}
+                    <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
+                        Upgrade to Pro
+                    </a>
+                    {% endif %}
+                </div>
+
+                <div class="academy-proof-inline">
+                    2 niveaux • contenu structuré • quiz • certification • logique premium
+                </div>
             </div>
 
-            <div class="tl-home-badges">
-                <span>Structure du signal</span>
-                <span>Risk management</span>
-                <span>Psychologie d’exécution</span>
-                <span>Lecture multi-facteur</span>
-            </div>
-        </div>
-
-        <div class="tl-home-hero-panel">
-            <div class="tl-glass-card tl-market-panel">
-                <div class="tl-panel-top">
-                    <span class="tl-panel-label">VelWolef Trading Framework</span>
-                    <span class="tl-panel-status">Desk Methodology</span>
+            <div class="academy-hero-card">
+                <div class="academy-status-card">
+                    <span class="academy-card-label">Statut accès</span>
+                    {% if is_pro %}
+                        <strong class="academy-status-pro">Membre Pro actif</strong>
+                        <p>
+                            Accès complet aux cours, aux vidéos, aux quiz, à la certification
+                            et au suivi de progression.
+                        </p>
+                    {% else %}
+                        <strong class="academy-status-locked">Accès découverte</strong>
+                        <p>
+                            Vous pouvez voir la structure générale du programme, mais les vidéos,
+                            les validations et la version complète des cours restent réservées au plan Pro.
+                        </p>
+                    {% endif %}
                 </div>
 
-                <div class="tl-panel-price">
-                    <strong>Signal → Structure → Exécution</strong>
-                    <p>
-                        Un signal premium n’est pas un simple prix d’entrée. C’est un scénario complet,
-                        avec une logique, un contexte, une invalidation claire et une discipline
-                        d’exécution stable.
-                    </p>
-                </div>
+                <div class="academy-progress-box">
+                    <div class="academy-progress-head">
+                        <span>Progression Niveau 1</span>
+                        <strong>{{ academy_progress.level1 }}%</strong>
+                    </div>
+                    <div class="academy-progress-bar">
+                        <div class="academy-progress-fill" style="width: {{ academy_progress.level1 }}%;"></div>
+                    </div>
 
-                <div class="tl-panel-stats">
-                    <div class="tl-mini-stat">
-                        <span>Structure</span>
-                        <strong>Claire</strong>
+                    <div class="academy-progress-head academy-progress-head-second">
+                        <span>Progression Niveau 2</span>
+                        <strong>{{ academy_progress.level2 }}%</strong>
                     </div>
-                    <div class="tl-mini-stat">
-                        <span>Risque</span>
-                        <strong>Mesuré</strong>
-                    </div>
-                    <div class="tl-mini-stat">
-                        <span>Discipline</span>
-                        <strong>Stable</strong>
-                    </div>
-                </div>
-
-                <div class="tl-signal-preview">
-                    <div class="tl-signal-line">
-                        <span>Direction</span>
-                        <strong>Bias validé par le contexte</strong>
-                    </div>
-                    <div class="tl-signal-line">
-                        <span>Invalidation</span>
-                        <strong>Stop loss = fin du scénario</strong>
-                    </div>
-                    <div class="tl-signal-line">
-                        <span>Projection</span>
-                        <strong>Take profit = objectif cohérent</strong>
+                    <div class="academy-progress-bar">
+                        <div class="academy-progress-fill academy-progress-fill-purple" style="width: {{ academy_progress.level2 }}%;"></div>
                     </div>
                 </div>
             </div>
@@ -97,423 +79,262 @@
     </div>
 </section>
 
-<section class="tl-home-metrics">
-    <div class="section-container">
-        <div class="tl-metrics-strip">
-            <div class="tl-metric-box">
-                <strong>01</strong>
-                <span>Comprendre un signal comme un scénario complet et non comme une simple alerte</span>
-            </div>
-            <div class="tl-metric-box">
-                <strong>02</strong>
-                <span>Encadrer le capital avec une logique de risque claire, mesurable et répétable</span>
-            </div>
-            <div class="tl-metric-box">
-                <strong>03</strong>
-                <span>Renforcer l’exécution grâce à la discipline mentale et à la patience opérationnelle</span>
-            </div>
-            <div class="tl-metric-box">
-                <strong>04</strong>
-                <span>Créer une vraie différence entre VelWolef et les services de signaux trop génériques</span>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="tl-section">
-    <div class="section-container">
-        <div class="tl-section-head">
-            <span>Fondation du Lab</span>
-            <h2>Trois piliers transforment un signal en décision plus professionnelle</h2>
-            <p>
-                La valeur d’un signal ne dépend pas uniquement du sens ou du point d’entrée.
-                Elle dépend de la qualité de sa structure, de la maîtrise du risque
-                et de la stabilité de l’exécution.
+<section class="academy-section">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Pourquoi cette academy existe</span>
+            <h2>Apprendre à trader ne doit pas se limiter à suivre des signaux</h2>
+            <p class="academy-lead academy-section-lead">
+                Beaucoup d’utilisateurs exécutent des signaux sans comprendre réellement la logique derrière
+                une entrée, un Stop Loss, une cassure ou un rejet. Cette academy a pour objectif de combler
+                cet écart entre utilisation et compréhension.
             </p>
         </div>
 
-        <div class="tl-pillars-grid">
-            <a href="{{ url_for('pages.lab_structure') }}" class="tl-pillar-card tl-card-link-wrap">
-                <div class="tl-pillar-icon">S</div>
-                <h3>Structure du signal</h3>
+        <div class="academy-grid-3">
+            <div class="academy-info-card">
+                <h3>Comprendre avant d’exécuter</h3>
                 <p>
-                    Lire la direction, la zone d’entrée, l’invalidation, le take profit
-                    et la hiérarchie réelle des niveaux.
-                </p>
-                <span class="tl-card-link">Explorer la structure</span>
-            </a>
-
-            <a href="{{ url_for('pages.lab_risk') }}" class="tl-pillar-card tl-card-link-wrap">
-                <div class="tl-pillar-icon">R</div>
-                <h3>Gestion du risque</h3>
-                <p>
-                    Définir l’exposition, protéger le capital, garder un risque cohérent
-                    et éviter les scénarios mal calibrés.
-                </p>
-                <span class="tl-card-link">Voir le risk management</span>
-            </a>
-
-            <a href="{{ url_for('pages.lab_psychology') }}" class="tl-pillar-card tl-card-link-wrap">
-                <div class="tl-pillar-icon">P</div>
-                <h3>Psychologie du trading</h3>
-                <p>
-                    Contrôler l’impulsivité, accepter l’invalidation, éviter le FOMO
-                    et rester aligné avec le plan initial.
-                </p>
-                <span class="tl-card-link">Accéder à la psychologie</span>
-            </a>
-
-            <a href="{{ url_for('billing.pricing') }}" class="tl-pillar-card tl-card-link-wrap">
-                <div class="tl-pillar-icon">+</div>
-                <h3>Modules Premium</h3>
-                <p>
-                    Débloquer les cadres avancés de lecture, d’exécution et de revue
-                    pour les utilisateurs qui veulent aller plus loin.
-                </p>
-                <span class="tl-card-link">Voir les modules</span>
-            </a>
-        </div>
-    </div>
-</section>
-
-<section class="tl-section">
-    <div class="section-container">
-        <div class="tl-grid-two">
-            <div class="tl-card tl-card-large">
-                <span class="tl-card-kicker">Mission du Trading Lab</span>
-                <h2>Le Lab sert à améliorer la qualité de lecture, pas à ajouter du contenu décoratif</h2>
-                <p>
-                    Beaucoup de plateformes de signaux affichent uniquement une direction, un prix d’entrée
-                    et un take profit. Cette présentation reste insuffisante pour un trader qui veut réellement
-                    comprendre ce qu’il exécute. Elle donne une information brute, mais pas une méthode.
-                </p>
-                <p>
-                    Le VelWolef Trading Lab comble ce vide. Il explique comment lire la structure d’un setup,
-                    comment évaluer son risque, comment filtrer les scénarios faibles, comment rester discipliné
-                    pendant l’exécution et comment distinguer un bon processus d’un simple bon résultat.
+                    Le membre apprend à lire le contexte, identifier une structure simple
+                    et comprendre pourquoi une position peut être cohérente ou non.
                 </p>
             </div>
 
-            <div class="tl-stack">
-                <div class="tl-mini-card">
-                    <strong>Lecture plus nette</strong>
-                    <span>Le trader comprend ce qu’il regarde, pourquoi le signal existe et ce qui invalide réellement le scénario.</span>
-                </div>
-                <div class="tl-mini-card">
-                    <strong>Décision plus propre</strong>
-                    <span>Une meilleure structure améliore la discipline d’entrée, de sortie et de gestion du capital.</span>
-                </div>
-                <div class="tl-mini-card">
-                    <strong>Crédibilité plus forte</strong>
-                    <span>Le site renvoie l’image d’un cadre sérieux, construit, premium et pensé pour durer.</span>
-                </div>
+            <div class="academy-info-card">
+                <h3>Protéger le capital</h3>
+                <p>
+                    Le programme insiste fortement sur la gestion du risque,
+                    l’invalidation d’un scénario et la discipline d’exécution.
+                </p>
+            </div>
+
+            <div class="academy-info-card">
+                <h3>Monter en compétence</h3>
+                <p>
+                    Le parcours accompagne une progression logique :
+                    fondations d’abord, exécution avancée ensuite.
+                </p>
             </div>
         </div>
     </div>
 </section>
 
-<section class="tl-section">
-    <div class="section-container">
-        <div class="tl-section-head">
-            <span>Anatomie d’un signal propre</span>
-            <h2>Les éléments qu’un trader doit savoir lire avant toute exécution</h2>
+<section class="academy-section academy-dark-band">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Parcours pédagogique</span>
+            <h2>Deux niveaux, un vrai chemin de progression</h2>
+        </div>
+
+        <div class="academy-cards">
+            <article class="academy-course-card">
+                <div class="academy-course-top">
+                    <span class="academy-level-pill">Niveau 1</span>
+                    <span class="academy-mini-badge">Fondations académiques</span>
+                </div>
+                <h3>Comprendre les bases du trading avec rigueur</h3>
+                <p>
+                    Ce niveau pose les fondations intellectuelles du parcours. Il explique ce qu’est le trading,
+                    comment fonctionnent les grands marchés, pourquoi le risque est central et comment lire
+                    un graphique de manière cohérente.
+                </p>
+
+                <ul class="academy-rich-list">
+                    <li>Définir le trading avec un vocabulaire rigoureux</li>
+                    <li>Comprendre Buy, Sell, Stop Loss, Take Profit</li>
+                    <li>Étudier pip, lot, spread et levier</li>
+                    <li>Lire une structure graphique simple</li>
+                    <li>Identifier les erreurs les plus fréquentes du débutant</li>
+                </ul>
+
+                <div class="academy-progress-head">
+                    <span>Progression</span>
+                    <strong>{{ academy_progress.level1 }}%</strong>
+                </div>
+                <div class="academy-progress-bar">
+                    <div class="academy-progress-fill" style="width: {{ academy_progress.level1 }}%;"></div>
+                </div>
+
+                <a href="{{ url_for('pages.academy_level_1') }}" class="academy-link-btn">Continuer le niveau 1</a>
+            </article>
+
+            <article class="academy-course-card academy-course-card-featured">
+                <div class="academy-course-top">
+                    <span class="academy-level-pill">Niveau 2</span>
+                    <span class="academy-mini-badge">Exécution avancée</span>
+                </div>
+                <h3>Lire la structure du marché et exécuter avec méthode</h3>
+                <p>
+                    Ce niveau développe une lecture plus mature du prix. Il permet de comprendre la structure,
+                    le régime de marché, les faux breakout, la confluence, le timing d’entrée
+                    et la gestion active d’une position.
+                </p>
+
+                <ul class="academy-rich-list">
+                    <li>Lire tendance, range et transition</li>
+                    <li>Différencier breakout valide et faux breakout</li>
+                    <li>Comprendre la logique de liquidité</li>
+                    <li>Renforcer un scénario par confluence</li>
+                    <li>Améliorer timing, gestion active et psychologie</li>
+                </ul>
+
+                <div class="academy-progress-head">
+                    <span>Progression</span>
+                    <strong>{{ academy_progress.level2 }}%</strong>
+                </div>
+                <div class="academy-progress-bar">
+                    <div class="academy-progress-fill academy-progress-fill-purple" style="width: {{ academy_progress.level2 }}%;"></div>
+                </div>
+
+                <a href="{{ url_for('pages.academy_level_2') }}" class="academy-link-btn">Accéder au niveau 2</a>
+            </article>
+
+            <article class="academy-course-card">
+                <div class="academy-course-top">
+                    <span class="academy-level-pill">Certification</span>
+                    <span class="academy-mini-badge">Validation finale</span>
+                </div>
+                <h3>Quiz final, validation et certificat</h3>
+                <p>
+                    À la fin du parcours, le membre peut passer une évaluation finale pour valider
+                    sa compréhension des notions essentielles et débloquer un certificat visuel premium.
+                </p>
+
+                <ul class="academy-rich-list">
+                    <li>Quiz de validation niveau 1</li>
+                    <li>Quiz final niveau 2</li>
+                    <li>Progression visible dans l’espace membre</li>
+                    <li>Validation structurée du parcours</li>
+                    <li>Certificat premium une fois le niveau 2 terminé</li>
+                </ul>
+
+                {% if academy_progress.certificate_ready %}
+                    <div class="academy-certificate-ready">Certificat disponible</div>
+                {% else %}
+                    <div class="academy-certificate-locked">Débloqué après le niveau 2</div>
+                {% endif %}
+
+                <a href="{{ url_for('pages.academy_level_2') }}#quiz-final" class="academy-link-btn">
+                    Voir la validation finale
+                </a>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Pour les membres non Pro</span>
+            <h2>Ce que vous pouvez déjà voir, et ce que vous débloquez ensuite</h2>
+        </div>
+
+        <div class="academy-summary-grid">
+            <div class="academy-info-card">
+                <h3>Accès découverte</h3>
+                <ul class="academy-reflection-list">
+                    <li>Voir la structure générale de l’Academy</li>
+                    <li>Découvrir les thèmes traités</li>
+                    <li>Comprendre le niveau du contenu proposé</li>
+                    <li>Explorer les pages de présentation des niveaux</li>
+                </ul>
+            </div>
+
+            <div class="academy-info-card">
+                <h3>Accès Pro</h3>
+                <ul class="academy-reflection-list">
+                    <li>Vidéos complètes et contenu total</li>
+                    <li>Quiz de validation</li>
+                    <li>Progression sauvegardée</li>
+                    <li>Certification finale</li>
+                    <li>Expérience Academy intégrale</li>
+                </ul>
+            </div>
+        </div>
+
+        {% if not is_pro %}
+        <div class="academy-academic-block">
+            <h3>Pourquoi passer Pro ?</h3>
             <p>
-                Un signal ne vaut pas seulement par son entrée. Il prend sa valeur
-                dans la cohérence de l’ensemble.
+                Le plan non Pro permet de découvrir la structure et l’ambition pédagogique du programme.
+                Le plan Pro débloque la vraie valeur : cours complets, logique détaillée, validation,
+                progression et expérience premium cohérente avec l’ensemble de la plateforme.
+            </p>
+            <div class="academy-upgrade-cta">
+                <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold academy-btn-large">
+                    Débloquer l’Academy Pro
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="academy-section academy-dark-band">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Valeur Premium</span>
+            <h2>Une academy qui transforme ton site en vraie plateforme</h2>
+            <p class="academy-lead academy-section-lead">
+                Une formation intégrée renforce la crédibilité de l’offre, améliore la rétention
+                et donne au membre une impression d’écosystème complet plutôt que de simple service de signaux.
             </p>
         </div>
 
-        <div class="tl-feature-grid">
-            <div class="tl-feature-card">
-                <h3>Direction</h3>
+        <div class="academy-grid-3">
+            <div class="academy-info-card">
+                <h3>Formation intégrée</h3>
                 <p>
-                    Le sens du trade doit rester cohérent avec la structure générale du marché,
-                    la tendance locale et la logique réelle du setup.
+                    Tu ne proposes plus seulement des signaux, mais un environnement structuré
+                    d’apprentissage et de progression.
                 </p>
             </div>
-
-            <div class="tl-feature-card">
-                <h3>Activation</h3>
+            <div class="academy-info-card">
+                <h3>Rétention plus forte</h3>
                 <p>
-                    Une bonne zone d’entrée n’est pas un chiffre décoratif : elle marque le point
-                    où le scénario devient réellement exploitable.
+                    Les membres restent davantage lorsqu’ils sentent qu’ils développent
+                    réellement une compétence.
                 </p>
             </div>
-
-            <div class="tl-feature-card">
-                <h3>Invalidation</h3>
+            <div class="academy-info-card">
+                <h3>Upgrade naturel</h3>
                 <p>
-                    Le stop loss n’est pas une contrainte extérieure. C’est la frontière
-                    qui déclare que le scénario n’est plus valide.
-                </p>
-            </div>
-
-            <div class="tl-feature-card">
-                <h3>Projection</h3>
-                <p>
-                    Le take profit doit prolonger la structure du trade et non chercher
-                    un rendement irréaliste déconnecté du contexte.
+                    Les utilisateurs gratuits ont une vraie raison de passer à l’offre Pro :
+                    accéder à une version complète, cohérente et premium.
                 </p>
             </div>
         </div>
     </div>
 </section>
 
-<section class="tl-section">
-    <div class="section-container">
-        <div class="tl-section-head">
-            <span>Workflow de desk</span>
-            <h2>Le cycle complet d’un trade bien construit</h2>
+<section class="academy-section">
+    <div class="academy-shell">
+        <div class="academy-upgrade-final academy-upgrade-final-business">
+            <span class="academy-kicker">Étape suivante</span>
+            <h2>Choisissez votre niveau d’engagement</h2>
             <p>
-                Un setup sérieux suit une séquence claire. Cette logique évite le trading impulsif
-                et améliore la répétabilité du processus.
-            </p>
-        </div>
-
-        <div class="tl-steps-grid">
-            <div class="tl-step-card">
-                <div class="tl-step-number">01</div>
-                <h3>Analyser le contexte</h3>
-                <p>
-                    Lire la tendance, le momentum, la zone de marché, la volatilité
-                    et la qualité de la structure avant de chercher une entrée.
-                </p>
-            </div>
-
-            <div class="tl-step-card">
-                <div class="tl-step-number">02</div>
-                <h3>Construire le scénario</h3>
-                <p>
-                    Définir le sens, l’activation, l’invalidation et la cible
-                    dans une structure compréhensible et défendable.
-                </p>
-            </div>
-
-            <div class="tl-step-card">
-                <div class="tl-step-number">03</div>
-                <h3>Filtrer l’exécution</h3>
-                <p>
-                    Éliminer les setups trop flous, trop tardifs ou trop émotionnels
-                    pour ne garder que les scénarios propres.
-                </p>
-            </div>
-
-            <div class="tl-step-card">
-                <div class="tl-step-number">04</div>
-                <h3>Exécuter avec discipline</h3>
-                <p>
-                    Respecter le plan initial, garder une exposition cohérente
-                    et ne pas renégocier le trade sous pression.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="tl-section">
-    <div class="section-container">
-        <div class="tl-section-head">
-            <span>Lecture du risque</span>
-            <h2>Ce qu’un trader expérimenté regarde avant d’accepter un setup</h2>
-            <p>
-                Le signal n’est valable que si le risque reste lisible, défendable et proportionné.
-            </p>
-        </div>
-
-        <div class="tl-feature-grid">
-            <div class="tl-feature-card">
-                <h3>Distance au stop</h3>
-                <p>
-                    Une invalidation trop large ou mal placée affaiblit immédiatement
-                    la qualité globale du scénario.
-                </p>
-            </div>
-
-            <div class="tl-feature-card">
-                <h3>Qualité du ratio</h3>
-                <p>
-                    Le potentiel ne suffit pas. Il faut comparer la qualité de la cible
-                    au risque réellement engagé.
-                </p>
-            </div>
-
-            <div class="tl-feature-card">
-                <h3>Exposition globale</h3>
-                <p>
-                    Un bon trade reste un mauvais choix s’il surcharge le capital
-                    ou s’il s’ajoute à trop d’expositions corrélées.
-                </p>
-            </div>
-
-            <div class="tl-feature-card">
-                <h3>Contexte de marché</h3>
-                <p>
-                    Un même setup n’a pas la même valeur selon la session, la volatilité,
-                    le momentum ou le régime du marché.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="tl-section">
-    <div class="section-container">
-        <div class="tl-grid-two">
-            <div class="tl-card tl-card-large">
-                <span class="tl-card-kicker">Psychologie d’exécution</span>
-                <h2>La différence entre un bon signal et un bon résultat passe souvent par le mental</h2>
-                <p>
-                    Une structure propre peut être ruinée par une mauvaise exécution. Entrer trop tôt,
-                    poursuivre le prix, déplacer le stop, sortir trop vite ou trader pour compenser
-                    une perte sont des erreurs psychologiques classiques. Elles ne viennent pas
-                    d’un manque d’information, mais d’un manque de discipline émotionnelle.
-                </p>
-                <p>
-                    Le Trading Lab intègre cette dimension parce qu’un trader sérieux ne doit pas seulement
-                    savoir quoi faire. Il doit aussi savoir comment rester stable quand le marché accélère,
-                    hésite ou contredit temporairement le scénario.
-                </p>
-            </div>
-
-            <div class="tl-stack">
-                <div class="tl-mini-card">
-                    <strong>FOMO</strong>
-                    <span>Entrer parce que le prix part sans toi, et non parce que la zone prévue est valide.</span>
-                </div>
-                <div class="tl-mini-card">
-                    <strong>Revenge trading</strong>
-                    <span>Compresser le filtre de qualité après une perte pour chercher une compensation immédiate.</span>
-                </div>
-                <div class="tl-mini-card">
-                    <strong>Sortie impulsive</strong>
-                    <span>Couper un scénario encore valide uniquement sous l’effet du stress ou du doute.</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="tl-section">
-    <div class="section-container">
-        <div class="tl-section-head">
-            <span>Erreurs à éviter</span>
-            <h2>Ce que le Trading Lab aide à corriger chez la majorité des traders particuliers</h2>
-        </div>
-
-        <div class="tl-faq-grid">
-            <div class="tl-faq-card">
-                <h3>Lire seulement l’entrée</h3>
-                <p>
-                    Regarder un signal uniquement par son prix d’entrée sans comprendre
-                    la logique d’invalidation et l’objectif affaiblit toute la lecture.
-                </p>
-            </div>
-
-            <div class="tl-faq-card">
-                <h3>Ignorer le contexte</h3>
-                <p>
-                    Un setup peut être correct techniquement mais faible dans un environnement
-                    de marché défavorable ou trop instable.
-                </p>
-            </div>
-
-            <div class="tl-faq-card">
-                <h3>Confondre fréquence et qualité</h3>
-                <p>
-                    Plus de signaux ne veut pas dire plus de valeur. La qualité de sélection
-                    reste plus importante que la quantité.
-                </p>
-            </div>
-
-            <div class="tl-faq-card">
-                <h3>Improviser la gestion</h3>
-                <p>
-                    Un trade sans plan clair de gestion devient vite émotionnel,
-                    même si le point d’entrée était initialement bon.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="tl-section">
-    <div class="section-container">
-        <div class="tl-card tl-card-large tl-premium-locked">
-            <div class="tl-locked-top">
-                <span class="tl-card-kicker">Modules avancés</span>
-                <span class="tl-locked-badge">Réservé aux membres</span>
-            </div>
-
-            <h2>Débloquer le niveau avancé du VelWolef Trading Lab</h2>
-            <p>
-                Les modules avancés approfondissent la lecture de structure, le risk framework,
-                la psychologie d’exécution et la routine de préparation avant trade.
-                Ils sont pensés pour les utilisateurs qui veulent un cadre plus exigeant,
-                plus professionnel et plus exploitable.
+                Vous pouvez continuer à découvrir la structure de l’Academy, ou débloquer
+                dès maintenant l’ensemble des cours, vidéos, validations et outils pédagogiques.
             </p>
 
-            <div class="tl-locked-grid">
-                <div class="tl-locked-item">
-                    <strong>Lecture multi-timeframe</strong>
-                    <span>Comprendre comment le contexte supérieur influence la qualité d’un setup local</span>
-                </div>
-                <div class="tl-locked-item">
-                    <strong>Risk framework</strong>
-                    <span>Définir exposition, invalidation, tolérance et discipline capital de façon stable</span>
-                </div>
-                <div class="tl-locked-item">
-                    <strong>Execution playbook</strong>
-                    <span>Créer une routine avant, pendant et après trade pour réduire les erreurs répétitives</span>
-                </div>
-                <div class="tl-locked-item">
-                    <strong>Journal de performance</strong>
-                    <span>Revoir chaque exécution pour distinguer le bon processus du simple résultat brut</span>
-                </div>
-            </div>
-
-            <div class="tl-locked-overlay">
-                <div class="tl-lock-icon">🔒</div>
-                <h3>Contenu premium VelWolef</h3>
-                <p>Accédez aux modules avancés de structure, risque, psychologie et workflow d’exécution.</p>
-                <a href="{{ url_for('billing.pricing') }}" class="cta-btn">Débloquer l’accès premium</a>
+            <div class="academy-upgrade-cta">
+                <a href="{{ url_for('pages.academy_level_1') }}" class="academy-btn academy-btn-secondary academy-btn-large">
+                    Voir le niveau 1
+                </a>
+                <a href="{{ url_for('pages.academy_level_2') }}" class="academy-btn academy-btn-secondary academy-btn-large">
+                    Voir le niveau 2
+                </a>
+                {% if not is_pro %}
+                <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold academy-btn-large">
+                    Passer Pro maintenant
+                </a>
+                {% endif %}
             </div>
         </div>
     </div>
 </section>
+{% endblock %}
 
-<section class="tl-section">
-    <div class="section-container">
-        <div class="tl-final-box">
-            <span class="tl-final-badge">VelWolef Trading Lab</span>
-            <h2>Un espace pensé pour donner plus de méthode, plus de sérieux et plus de valeur à toute l’expérience VelWolef</h2>
-            <p>
-                Structure, risque, psychologie, workflow et discipline : le Trading Lab donne à la plateforme
-                une base méthodologique claire. Il ne remplace pas le marché, mais il améliore profondément
-                la manière de le lire et de l’exécuter.
-            </p>
-            <div class="tl-final-actions">
-                <a href="{{ url_for('pages.lab_structure') }}" class="cta-btn">Commencer par la structure</a>
-                <a href="{{ url_for('pages.lab_risk') }}" class="secondary-btn">Voir le risk management</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<footer class="site-footer">
-    <div class="section-container footer-inner">
-        <div class="footer-brand">
-            <h3>VelWolef</h3>
-            <p>Trading Lab premium, signaux structurés et lecture plus professionnelle du marché.</p>
-        </div>
-
-        <div class="footer-links">
-            <a href="{{ url_for('main.home') }}">Accueil</a>
-            <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
-            <a href="{{ url_for('signals.results') }}">Résultats</a>
-            <a href="{{ url_for('billing.pricing') }}">Offres</a>
-        </div>
-    </div>
-</footer>
-
-</body>
-</html>
+{% block extra_js %}
+<script src="{{ url_for('static', filename='academy.js') }}"></script>
+{% endblock %}

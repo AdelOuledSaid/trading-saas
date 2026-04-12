@@ -1,0 +1,52 @@
+<footer class="site-footer">
+    <div class="section-container footer-inner">
+
+        <div class="footer-brand">
+            <h3>VelWolef</h3>
+            <p>
+                Plateforme premium de signaux, trading et formation.
+                Une expérience structurée pour comprendre et performer.
+            </p>
+        </div>
+
+        <div class="footer-links">
+
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <a href="{{ url_for('main.home') }}">Accueil</a>
+                <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
+                <a href="{{ url_for('signals.results') }}">Résultats</a>
+                <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
+                <a href="{{ url_for('billing.pricing') }}">Offres</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Academy</h4>
+                <a href="{{ url_for('pages.academy_index') }}">Academy</a>
+                <a href="{{ url_for('pages.academy_level_1') }}">Niveau 1</a>
+                <a href="{{ url_for('pages.academy_level_2') }}">Niveau 2</a>
+                <a href="{{ url_for('pages.academy_upgrade') }}">Upgrade</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Support</h4>
+                <a href="{{ url_for('pages.contact') }}">Contact</a>
+                <a href="{{ url_for('pages.faq_page') }}">FAQ</a>
+                <a href="{{ url_for('pages.about') }}">À propos</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Légal</h4>
+                <a href="{{ url_for('pages.cgu') }}">CGU</a>
+                <a href="{{ url_for('pages.mentions_legales') }}">Mentions légales</a>
+                <a href="{{ url_for('pages.privacy') }}">Confidentialité</a>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2026 VelWolef — Tous droits réservés</p>
+    </div>
+</footer>
