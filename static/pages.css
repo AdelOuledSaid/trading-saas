@@ -3408,3 +3408,124 @@ canvas {
         font-size: clamp(1.7rem, 8vw, 2.1rem);
     }
 }
+
+
+
+
+
+
+
+/* =========================================================
+   FIX NAVBAR MOBILE HOME
+========================================================= */
+
+@media (max-width: 980px) {
+    .home-body .navbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .home-body .nav-left {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .home-body .nav-toggle {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        flex-shrink: 0;
+    }
+
+    .home-body .nav-center,
+    .home-body .nav-right {
+        display: none !important;
+        width: 100%;
+    }
+
+    .home-body .navbar.mobile-open .nav-center,
+    .home-body .navbar.mobile-open .nav-right {
+        display: flex !important;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 8px;
+        padding: 10px;
+        border-radius: 16px;
+        background: rgba(7, 13, 24, 0.98);
+        border: 1px solid rgba(148, 163, 184, 0.10);
+    }
+
+    .home-body .nav-links {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .home-body .nav-links > li {
+        width: 100%;
+    }
+
+    .home-body .nav-links > li > a {
+        width: 100%;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 14px;
+        border-radius: 12px;
+    }
+
+    .home-body .nav-dropdown-menu {
+        display: none !important;
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        min-width: 100%;
+        margin-top: 6px;
+        padding: 6px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        box-shadow: none;
+    }
+
+    .home-body .nav-dropdown.active .nav-dropdown-menu {
+        display: block !important;
+    }
+
+    .home-body .nav-btn,
+    .home-body .nav-btn-dashboard,
+    .home-body .nav-logout {
+        width: 100%;
+        min-height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+
+
+
+@media (max-width: 980px) {
+    .home-body .nav-center,
+    .home-body .nav-right {
+        display: none !important;
+        width: 100%;
+    }
+
+    .home-body .navbar.mobile-open .nav-center,
+    .home-body .navbar.mobile-open .nav-right {
+        display: flex !important;
+        flex-direction: column;
+        width: 100%;
+    }
+}

@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const navbar = document.querySelector(".navbar");
-    const burger = document.querySelector(".burger");
+    const burger = document.querySelector(".burger, .nav-toggle");
     const dropdownButtons = document.querySelectorAll(".nav-drop-btn");
 
     if (!navbar || !burger) return;
@@ -32,8 +32,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 e.stopPropagation();
 
                 const parent = this.closest(".nav-dropdown");
-                const isActive = parent.classList.contains("active");
+                if (!parent) return;
 
+                const isActive = parent.classList.contains("active");
                 closeAllDropdowns();
 
                 if (!isActive) {
