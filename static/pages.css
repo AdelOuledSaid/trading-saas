@@ -3529,35 +3529,47 @@ canvas {
         width: 100%;
     }
 }
-
 /* =========================================================
-   BURGER AU DESSUS DU LOGO (MOBILE PRO)
+   NAVBAR MOBILE ALIGNEMENT PRO
+   Logo gauche / Burger droite
 ========================================================= */
 
 @media (max-width: 980px) {
 
     .home-body .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         position: relative;
-        justify-content: center;
-    }
-
-    /* LOGO centré */
-    .home-body .nav-logo {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    /* BURGER à gauche, au dessus */
-    .home-body .nav-toggle {
-        position: relative;
-        z-index: 20;
     }
 
     .home-body .nav-left {
-        width: 100%;
+        width: auto;
         display: flex;
         align-items: center;
         justify-content: flex-start;
+        gap: 10px;
+    }
+
+    .home-body .nav-logo {
+        position: relative;
+        transform: none;
+    }
+
+    .home-body .nav-logo img {
+        height: 36px;
+    }
+
+    .home-body .nav-toggle {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+
+        position: relative;
+        margin-left: auto;
+
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
     }
 }
