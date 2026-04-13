@@ -19,7 +19,14 @@ def ensure_daily_briefing():
         gold_data = get_gold_data()
         eco_data = get_economic_calendar()
 
+        # 🔥 DEBUG
+        print("BTC:", btc_data)
+        print("GOLD:", gold_data)
+        print("ECO:", eco_data)
+
         content = generate_daily_briefing(btc_data, gold_data, eco_data)
+
+        print("CONTENT:", content)
 
         briefing = DailyBriefing(
             date=today,
@@ -28,9 +35,10 @@ def ensure_daily_briefing():
 
         db.session.add(briefing)
         db.session.commit()
-        current_app.logger.info("Briefing du jour généré automatiquement.")
+
         return briefing
 
     except Exception as e:
+        print("ERROR BRIEFING:", e)
         current_app.logger.error("Erreur génération briefing: %s", repr(e))
         return None
