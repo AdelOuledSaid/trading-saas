@@ -1,8 +1,12 @@
 import hashlib
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
+
 from app.extensions import db
 from app.models.telegram_dispatch_log import TelegramDispatchLog
+
+
+MAX_KEY_LEN = 255
+MAX_REF_LEN = 255
 
 
 def normalize_text(text: str) -> str:
@@ -12,6 +16,31 @@ def normalize_text(text: str) -> str:
 def hash_text(text: str) -> str:
     normalized = normalize_text(text)
     return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
+
+def safe_ref(text: str | None, max_len: int = MAX_REF_LEN) -> str | None:
+    if not text:
+        return None
+
+    text = str(text).strip()
+    if len(text) <= max_len:
+        return text
+
+    return text[: max_len - 3] + "..."
+
+
+def safe_key(prefix: str, raw_value: str | None) -> str:
+    raw_value = str(raw_value or "").strip()
+
+    if not raw_value:
+        return prefix
+
+    candidate = f"{prefix}:{raw_value}"
+
+    if len(candidate) <= MAX_KEY_LEN:
+        return candidate
+
+    return f"{prefix}:sha256:{hash_text(raw_value)}"
 
 
 def build_article_fingerprint(article: dict) -> str:
@@ -53,12 +82,16 @@ def record_dispatch(
     content_hash: str | None = None,
     status: str = "sent",
 ) -> TelegramDispatchLog:
+    safe_dedup = dedup_key
+    if len(str(safe_dedup)) > MAX_KEY_LEN:
+        safe_dedup = safe_key(f"{content_type}:{tier}", dedup_key)
+
     log = TelegramDispatchLog(
         content_type=content_type,
         tier=tier,
-        dedup_key=dedup_key,
+        dedup_key=safe_dedup,
         content_hash=content_hash or (hash_text(content_text or "") if content_text else None),
-        content_ref=content_ref,
+        content_ref=safe_ref(content_ref),
         sent_at=datetime.utcnow(),
         status=status,
     )
@@ -70,29 +103,23 @@ def record_dispatch(
 def signal_event_key(event_type: str, tier: str, signal_id: int | None, trade_id: str | None) -> str:
     signal_part = str(signal_id or "none")
     trade_part = str(trade_id or "none")
-    return f"{event_type}:{tier}:signal={signal_part}:trade={trade_part}"
+    return safe_key(event_type, f"{tier}:signal={signal_part}:trade={trade_part}")
 
 
 def news_digest_key(tier: str, digest_date: str, slot: str, version: str = "v1") -> str:
-    return f"daily_news:{tier}:{digest_date}:{slot}:{version}"
+    return safe_key("daily_news", f"{tier}:{digest_date}:{slot}:{version}")
 
 
 def briefing_key(briefing_type: str, tier: str, briefing_date: str, slot: str, version: str = "v1") -> str:
-    return f"{briefing_type}:{tier}:{briefing_date}:{slot}:{version}"
+    return safe_key(briefing_type, f"{tier}:{briefing_date}:{slot}:{version}")
 
 
 def breaking_news_key(tier: str, article_id: str | None = None, article_url: str | None = None) -> str:
     ref = article_id or article_url or "unknown"
-    return f"breaking_news:{tier}:{ref}"
+    return safe_key("breaking_news", f"{tier}:{ref}")
 
 
 def purge_old_dispatch_logs(days: int = 30) -> int:
-    """
-    Supprime les logs anciens.
-    Retourne le nombre de lignes supprimées.
-    """
-    from datetime import timedelta
-
     cutoff = datetime.utcnow() - timedelta(days=days)
 
     old_logs = TelegramDispatchLog.query.filter(
@@ -108,12 +135,7 @@ def purge_old_dispatch_logs(days: int = 30) -> int:
     return count
 
 
-
 def count_sent_today(content_type: str, tier: str) -> int:
-    """
-    Compte combien de messages d’un type ont été envoyés aujourd’hui
-    pour un tier donné (ex: signal_open, basic)
-    """
     today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
     tomorrow_start = today_start + timedelta(days=1)
 
@@ -127,12 +149,8 @@ def count_sent_today(content_type: str, tier: str) -> int:
 
 
 def signal_quota_remaining(tier: str, daily_limit: int) -> int:
-    """
-    Calcule combien de signaux il reste à envoyer aujourd’hui
-    pour un tier (Basic/Premium/VIP)
-    """
     if daily_limit >= 999999:
-        return 999999  # VIP illimité
+        return 999999
 
     already_sent = count_sent_today("signal_open", tier)
     remaining = daily_limit - already_sent
