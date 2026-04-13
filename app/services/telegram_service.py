@@ -176,7 +176,7 @@ def send_telegram_photo_to_chat(
     payload = {
         "chat_id": chat_id,
         "photo": photo_url,
-        "caption": caption[:1024],  # Telegram caption limit
+        "caption": caption[:1024],
         "parse_mode": parse_mode,
     }
 
@@ -244,10 +244,6 @@ def send_telegram_message(
     parse_mode: str = "HTML",
     disable_web_page_preview: bool = True
 ) -> bool:
-    """
-    Compatibilité avec ancien code.
-    Envoie sur le canal public si défini, sinon sur Basic.
-    """
     channels = get_telegram_channels()
     fallback_chat = channels.get("public") or channels.get("basic")
     return send_telegram_message_to_chat(
@@ -272,12 +268,12 @@ def build_signal_telegram_message(signal) -> str:
     )
 
     return f"""
-🚨 <b>VELWOLEF SIGNAL</b>
+⚡ <b>Trade Setup</b>
 
 {asset_icon} <b>{asset}</b> • {dir_icon} <b>{action}</b>
 
 ━━━━━━━━━━━━━━━━━━
-💰 <b>Entrée</b> : {format_price(signal.entry_price)}
+💰 <b>Entry</b> : {format_price(signal.entry_price)}
 🛑 <b>SL</b> : {format_price(signal.stop_loss)}
 🎯 <b>TP</b> : {format_price(signal.take_profit)}
 ⚖️ <b>RR</b> : {format_rr(signal)}
@@ -288,15 +284,15 @@ def build_signal_telegram_message(signal) -> str:
 
 ━━━━━━━━━━━━━━━━━━
 ⏱ <b>Timeframe</b> : {html.escape(format_timeframe(signal))}
-🧭 <b>Tendance</b> : {html.escape(format_market_trend(signal))}
+🧭 <b>Trend</b> : {html.escape(format_market_trend(signal))}
 📦 <b>Type</b> : {html.escape(format_signal_type(signal))}
 🆔 <b>Trade ID</b> : {html.escape(str(signal.trade_id or "-"))}
 
 ━━━━━━━━━━━━━━━━━━{learn_block}
-📌 <b>Statut</b> : 🟡 OPEN
-🕒 <b>Heure</b> : {signal.created_at.strftime('%Y-%m-%d %H:%M:%S')} UTC
+📌 <b>Status</b> : OPEN
+🕒 <b>Time</b> : {signal.created_at.strftime('%Y-%m-%d %H:%M:%S')} UTC
 
-💎 <i>Velwolef AI Trading System</i>
+💎 <b>Velwolf Private Desk</b>
 """.strip()
 
 
@@ -315,24 +311,23 @@ def build_tp_telegram_message(signal) -> str:
     )
 
     return f"""
-✅ <b>TAKE PROFIT TOUCHÉ</b>
+✅ <b>Target Reached</b>
 
 {asset_icon} <b>{asset}</b> • {dir_icon} <b>{action}</b>
 
 ━━━━━━━━━━━━━━━━━━
-💰 <b>Entrée</b> : {format_price(signal.entry_price)}
-🎯 <b>TP atteint</b> : {format_price(signal.take_profit)}
+💰 <b>Entry</b> : {format_price(signal.entry_price)}
+🎯 <b>TP Hit</b> : {format_price(signal.take_profit)}
 💵 <b>PnL</b> : +{format_price(abs(pnl))}
 
 ━━━━━━━━━━━━━━━━━━
-🔥 <b>Confidence initiale</b> : {conf_icon} {format_confidence(signal)}
+🔥 <b>Initial Confidence</b> : {conf_icon} {format_confidence(signal)}
 🧠 <b>Setup</b> : {html.escape(format_reason(signal))}
 
 ━━━━━━━━━━━━━━━━━━{learn_block}
-📌 <b>Statut</b> : 🟢 WIN
-🏆 <i>Trade gagnant clôturé</i>
+🏆 <b>Status</b> : WIN
 
-💎 <b>Velwolef AI</b>
+💎 <b>Velwolf Intelligence</b>
 """.strip()
 
 
@@ -351,24 +346,23 @@ def build_sl_telegram_message(signal) -> str:
     )
 
     return f"""
-❌ <b>STOP LOSS TOUCHÉ</b>
+❌ <b>Risk Invalidated</b>
 
 {asset_icon} <b>{asset}</b> • {dir_icon} <b>{action}</b>
 
 ━━━━━━━━━━━━━━━━━━
-💰 <b>Entrée</b> : {format_price(signal.entry_price)}
-🛑 <b>SL atteint</b> : {format_price(signal.stop_loss)}
+💰 <b>Entry</b> : {format_price(signal.entry_price)}
+🛑 <b>SL Hit</b> : {format_price(signal.stop_loss)}
 💵 <b>PnL</b> : -{format_price(abs(pnl))}
 
 ━━━━━━━━━━━━━━━━━━
-🔥 <b>Confidence initiale</b> : {conf_icon} {format_confidence(signal)}
+🔥 <b>Initial Confidence</b> : {conf_icon} {format_confidence(signal)}
 🧠 <b>Setup</b> : {html.escape(format_reason(signal))}
 
 ━━━━━━━━━━━━━━━━━━{learn_block}
-📌 <b>Statut</b> : 🔴 LOSS
-⚠️ <i>Trade clôturé en perte</i>
+⚠️ <b>Status</b> : LOSS
 
-💎 <b>Velwolef AI</b>
+💎 <b>Velwolf Intelligence</b>
 """.strip()
 
 
@@ -426,7 +420,7 @@ def truncate_text(text: str, max_len: int = 180) -> str:
 
 def build_news_digest_message(
     articles: list[dict],
-    title: str = "Velwolef News — Daily Market Update",
+    title: str = "Velwolf News — Daily Market Update",
     intro: str = "📊 Voici les actualités les plus importantes du moment :",
 ) -> str:
     if not articles:
@@ -463,7 +457,7 @@ def build_news_digest_message(
     lines.append("⏰ <b>Mise à jour</b> : quotidienne")
     lines.append("⚠️ <i>Information de marché uniquement — DYOR</i>")
     lines.append("")
-    lines.append("💎 <b>Velwolef Intelligence</b>")
+    lines.append("💎 <b>Velwolf Intelligence</b>")
 
     message = "\n".join(lines).strip()
 
@@ -480,7 +474,7 @@ def build_breaking_news_message(article: dict) -> str:
     url = str(article.get("url", "")).strip()
 
     lines = [
-        "🚨 <b>JUST IN</b>",
+        "🚨 <b>Market Alert</b>",
         "",
         f"<b>{title}</b>",
     ]
@@ -496,7 +490,7 @@ def build_breaking_news_message(article: dict) -> str:
         lines.append(f'🔗 <a href="{html.escape(url)}">Lire plus</a>')
 
     lines.append("")
-    lines.append("💎 <b>Velwolef Intelligence</b>")
+    lines.append("💎 <b>Velwolf Intelligence</b>")
 
     message = "\n".join(lines).strip()
 
@@ -507,10 +501,6 @@ def build_breaking_news_message(article: dict) -> str:
 
 
 def build_watcher_style_caption(article: dict) -> str:
-    """
-    Style très court, inspiré des posts type Watcher Guru.
-    Idéal pour sendPhoto avec caption.
-    """
     title = truncate_text(str(article.get("title", "Sans titre")), 240)
     title = html.escape(title)
 
@@ -518,7 +508,7 @@ def build_watcher_style_caption(article: dict) -> str:
     description = html.escape(description)
 
     lines = [
-        "🚨 <b>JUST IN</b>",
+        "📰 <b>Market Flash</b>",
         "",
         title,
     ]
@@ -528,7 +518,7 @@ def build_watcher_style_caption(article: dict) -> str:
         lines.append(description)
 
     lines.append("")
-    lines.append("💎 <b>@Velwolef</b>")
+    lines.append("💎 <b>@Velwolf</b>")
 
     caption = "\n".join(lines).strip()
 

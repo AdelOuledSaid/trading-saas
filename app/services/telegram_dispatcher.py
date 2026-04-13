@@ -57,8 +57,8 @@ TIER_RULES = {
         daily_news_count=2,
         allow_breaking_news=False,
         include_learn_link=False,
-        news_title="VelWolef Public Market News",
-        news_intro="📢 Extraits marché et actualités publiques du jour :",
+        news_title="Velwolf Public Market News",
+        news_intro="📢 Les actualités marché publiques les plus importantes du moment :",
     ),
     "basic": TierRules(
         tier="basic",
@@ -70,8 +70,8 @@ TIER_RULES = {
         daily_news_count=3,
         allow_breaking_news=False,
         include_learn_link=False,
-        news_title="VelWolef Basic Daily News",
-        news_intro="📊 Les actualités essentielles du jour pour les membres Basic :",
+        news_title="Velwolf Basic Daily News",
+        news_intro="📊 Les news essentielles pour les membres Basic :",
     ),
     "premium": TierRules(
         tier="premium",
@@ -83,7 +83,7 @@ TIER_RULES = {
         daily_news_count=6,
         allow_breaking_news=True,
         include_learn_link=True,
-        news_title="VelWolef Premium Daily News",
+        news_title="Velwolf Premium Market News",
         news_intro="📊 Les actualités premium du jour avec davantage de profondeur :",
     ),
     "vip": TierRules(
@@ -96,7 +96,7 @@ TIER_RULES = {
         daily_news_count=10,
         allow_breaking_news=True,
         include_learn_link=True,
-        news_title="VelWolef VIP Market Intelligence",
+        news_title="Velwolf VIP Market Intelligence",
         news_intro="🚨 Flux VIP : news prioritaires, contexte marché et opportunités à surveiller :",
     ),
 }
@@ -229,10 +229,12 @@ def format_briefing_message(
     title: str,
     tier: str,
 ) -> str:
+    signature = "💎 <b>Velwolf Private Desk</b>" if tier.lower() == "vip" else "💎 <b>Velwolf Intelligence</b>"
+
     header = f"🧠 <b>{title}</b>\n\n"
     tier_line = f"🏷 <b>Niveau</b> : {tier.upper()}\n\n"
     body = briefing_content.strip()
-    footer = "\n\n💎 <b>VelWolef Intelligence</b>"
+    footer = f"\n\n{signature}"
 
     message = header + tier_line + body + footer
     if len(message) > 3900:
@@ -420,7 +422,12 @@ def send_daily_news(slot: str = "morning") -> dict:
         return {}
 
     today_str = datetime.utcnow().strftime("%Y-%m-%d")
-    slot_label = "matin" if slot == "morning" else "soir" if slot == "evening" else "midday"
+    slot_label = {
+        "morning": "matin",
+        "midday": "midi",
+        "evening": "soir",
+    }[slot]
+
     results = {}
 
     for tier in get_all_tiers():
