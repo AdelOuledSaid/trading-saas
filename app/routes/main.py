@@ -2,10 +2,12 @@ from flask import Blueprint, render_template, jsonify, request
 import os
 
 from app.services.market_service import get_market_updates
+from app.services.news_digest_service import prepare_digest_articles
 from app.services.telegram_dispatcher import (
     send_morning_briefings,
     send_second_briefings,
     send_daily_news,
+    send_breaking_news,
 )
 
 main_bp = Blueprint("main", __name__)
@@ -149,6 +151,35 @@ Checklist :
 
         return jsonify({
             "status": "success",
+            "result": result
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+
+@main_bp.route("/cron/breaking-news")
+def cron_breaking_news():
+    if not _cron_authorized():
+        return _unauthorized()
+
+    try:
+        articles = prepare_digest_articles(limit=1, max_age_hours=6)
+
+        if not articles:
+            return jsonify({
+                "status": "no_news",
+                "message": "Aucune breaking news disponible"
+            })
+
+        article = articles[0]
+        result = send_breaking_news(article)
+
+        return jsonify({
+            "status": "success",
+            "article_title": article.get("title"),
             "result": result
         })
     except Exception as e:

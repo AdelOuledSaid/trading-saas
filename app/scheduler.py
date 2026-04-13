@@ -7,8 +7,10 @@ from app import create_app
 from app.services.telegram_dispatcher import (
     send_morning_briefings,
     send_second_briefings,
+    send_breaking_news,
 )
 from app.services.news_dispatcher import send_daily_news
+from app.services.news_digest_service import prepare_digest_articles
 from app.services.telegram_dedup import purge_old_dispatch_logs
 
 app = create_app()
@@ -88,6 +90,21 @@ def job_daily_news_evening():
         print(send_daily_news(slot="evening"))
 
 
+def job_breaking_news():
+    with app.app_context():
+        print(f"[{datetime.now()}] Breaking news check...")
+
+        articles = prepare_digest_articles(limit=1, max_age_hours=6)
+
+        if not articles:
+            print("Aucune breaking news disponible.")
+            return
+
+        article = articles[0]
+        print(f"Breaking news candidate: {article.get('title')}")
+        print(send_breaking_news(article))
+
+
 def job_cleanup_dispatch_logs():
     with app.app_context():
         deleted = purge_old_dispatch_logs(days=30)
@@ -105,20 +122,6 @@ def run_scheduler():
     )
 
     scheduler.add_job(
-        job_midday_brief,
-        CronTrigger(hour=13, minute=0),
-        id="midday_brief",
-        replace_existing=True,
-    )
-
-    scheduler.add_job(
-        job_evening_brief,
-        CronTrigger(hour=18, minute=30),
-        id="evening_brief",
-        replace_existing=True,
-    )
-
-    scheduler.add_job(
         job_daily_news_morning,
         CronTrigger(hour=9, minute=0),
         id="daily_news_morning",
@@ -126,9 +129,30 @@ def run_scheduler():
     )
 
     scheduler.add_job(
+        job_breaking_news,
+        CronTrigger(minute="*/10"),
+        id="breaking_news",
+        replace_existing=True,
+    )
+
+    scheduler.add_job(
+        job_midday_brief,
+        CronTrigger(hour=13, minute=0),
+        id="midday_brief",
+        replace_existing=True,
+    )
+
+    scheduler.add_job(
         job_daily_news_evening,
         CronTrigger(hour=17, minute=30),
         id="daily_news_evening",
+        replace_existing=True,
+    )
+
+    scheduler.add_job(
+        job_evening_brief,
+        CronTrigger(hour=18, minute=30),
+        id="evening_brief",
         replace_existing=True,
     )
 
@@ -141,3 +165,7 @@ def run_scheduler():
 
     print("Scheduler lancé.")
     scheduler.start()
+
+
+if __name__ == "__main__":
+    run_scheduler()

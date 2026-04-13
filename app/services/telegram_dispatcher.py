@@ -22,11 +22,11 @@ from app.services.telegram_dedup import (
     signal_quota_remaining,
 )
 from app.services.telegram_service import (
-    build_breaking_news_message,
     build_news_digest_message,
     build_signal_telegram_message,
     build_sl_telegram_message,
     build_tp_telegram_message,
+    send_breaking_news_to_tier,
     send_message_to_tier,
 )
 
@@ -81,7 +81,7 @@ TIER_RULES = {
         allow_morning_brief=True,
         allow_second_brief=True,
         daily_news_count=6,
-        allow_breaking_news=False,
+        allow_breaking_news=True,
         include_learn_link=True,
         news_title="VelWolef Premium Daily News",
         news_intro="📊 Les actualités premium du jour avec davantage de profondeur :",
@@ -181,6 +181,45 @@ def _send_text(
         _log_info(f"[telegram_dispatcher] Envoyé | type={content_type} | tier={tier}")
     else:
         _log_warning(f"[telegram_dispatcher] Échec envoi | type={content_type} | tier={tier}")
+
+    return ok
+
+
+def _send_breaking_news(
+    *,
+    tier: str,
+    article: dict,
+    dedup_key: str,
+    content_ref: str | None = None,
+    content_hash: str | None = None,
+) -> bool:
+    if not article:
+        _log_warning(f"[telegram_dispatcher] Breaking news vide ignorée pour {tier}")
+        return False
+
+    if dispatch_exists(dedup_key):
+        _log_info(f"[telegram_dispatcher] Doublon ignoré par clé | tier={tier} | key={dedup_key}")
+        return False
+
+    if content_hash and dispatch_exists_by_hash("breaking_news", tier, content_hash):
+        _log_info(f"[telegram_dispatcher] Doublon ignoré par hash | type=breaking_news | tier={tier}")
+        return False
+
+    ok = send_breaking_news_to_tier(tier=tier, article=article)
+
+    if ok:
+        record_dispatch(
+            content_type="breaking_news",
+            tier=tier,
+            dedup_key=dedup_key,
+            content_text=str(article.get("title", "")),
+            content_ref=content_ref,
+            content_hash=content_hash,
+            status="sent",
+        )
+        _log_info(f"[telegram_dispatcher] Envoyé | type=breaking_news | tier={tier}")
+    else:
+        _log_warning(f"[telegram_dispatcher] Échec envoi | type=breaking_news | tier={tier}")
 
     return ok
 
@@ -418,25 +457,21 @@ def send_breaking_news(article: dict) -> dict:
     article_url = str(article.get("url", "")).strip() or None
     article_hash = build_article_fingerprint(article)
 
-    if get_rules("premium").daily_news_count > 0:
-        premium_msg = build_breaking_news_message(article)
+    if get_rules("premium").allow_breaking_news:
         key_premium = breaking_news_key("premium", article_id=article_id, article_url=article_url)
-        results["premium"] = _send_text(
+        results["premium"] = _send_breaking_news(
             tier="premium",
-            message=premium_msg,
-            content_type="breaking_news",
+            article=article,
             dedup_key=key_premium,
             content_ref=article_url or article_id,
             content_hash=article_hash,
         )
 
     if get_rules("vip").allow_breaking_news:
-        vip_msg = build_breaking_news_message(article)
         key_vip = breaking_news_key("vip", article_id=article_id, article_url=article_url)
-        results["vip"] = _send_text(
+        results["vip"] = _send_breaking_news(
             tier="vip",
-            message=vip_msg,
-            content_type="breaking_news",
+            article=article,
             dedup_key=key_vip,
             content_ref=article_url or article_id,
             content_hash=article_hash,
@@ -462,9 +497,7 @@ def send_signal_open(signal: Signal) -> dict:
         remaining = signal_quota_remaining(tier, rules.signal_limit)
 
         if remaining <= 0:
-            _log_info(
-                f"[telegram_dispatcher] Quota atteint pour {tier} | limit={rules.signal_limit}"
-            )
+            _log_info(f"[telegram_dispatcher] Quota atteint pour {tier} | limit={rules.signal_limit}")
             results[tier] = False
             continue
 

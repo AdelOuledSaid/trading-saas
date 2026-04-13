@@ -3137,3 +3137,274 @@ canvas {
         justify-content: center;
     }
 }
+
+
+/* =========================================================
+   VELWOLF — MOBILE PATCH ADDON
+   Ajout non destructif : conserve le design desktop existant
+========================================================= */
+
+@media (max-width: 980px) {
+    .home-body .navbar {
+        width: calc(100% - 12px);
+        margin: 8px auto 0;
+        padding: 8px 10px;
+        gap: 8px;
+        border-radius: 16px;
+    }
+
+    .home-body .nav-left {
+        width: 100%;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .home-body .nav-logo img {
+        height: 36px;
+        max-width: 105px;
+    }
+
+    .home-body .nav-toggle {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        flex-shrink: 0;
+    }
+
+    .home-body .navbar.mobile-open .nav-center,
+    .home-body .navbar.mobile-open .nav-right {
+        padding: 10px;
+        margin-top: 6px;
+        border-radius: 14px;
+    }
+
+    .home-body .nav-links {
+        gap: 8px;
+    }
+
+    .home-body .nav-links > li > a {
+        min-height: 46px;
+        padding: 0 14px;
+        border-radius: 12px;
+        font-size: 14px;
+    }
+
+    .home-body .nav-dropdown-menu {
+        margin-top: 6px;
+        padding: 6px;
+        border-radius: 12px;
+    }
+
+    .home-body .nav-dropdown-menu a {
+        min-height: 40px;
+        padding: 0 12px;
+        border-radius: 10px;
+        font-size: 13px;
+    }
+
+    .home-body .nav-btn,
+    .home-body .nav-btn-dashboard,
+    .home-body .nav-logout {
+        min-height: 46px;
+        border-radius: 12px;
+        font-size: 14px;
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .home-hero {
+        padding: 56px 0 36px;
+    }
+
+    .hero-container {
+        gap: 22px;
+    }
+
+    .hero-title-ultra {
+        font-size: clamp(2rem, 8vw, 2.7rem);
+        line-height: 1.05;
+        margin-bottom: 16px;
+    }
+
+    .hero-text-ultra,
+    .hero-text {
+        font-size: 0.96rem;
+        line-height: 1.78;
+        margin-bottom: 18px;
+    }
+
+    .hero-badge {
+        font-size: 11px;
+        padding: 8px 12px;
+        margin-bottom: 14px;
+    }
+
+    .hero-proof-bar {
+        width: 100%;
+        padding: 14px;
+        gap: 12px;
+        border-radius: 16px;
+    }
+
+    .hero-proof-bar strong {
+        font-size: 1.2rem;
+    }
+
+    .hero-trust-row {
+        gap: 10px;
+    }
+
+    .trust-mini {
+        padding: 16px 14px;
+        border-radius: 16px;
+    }
+
+    .section-title h2,
+    .results-proof-left h2,
+    .proof-left h2,
+    .why-v2-left h2,
+    .market-updates-header h2,
+    .pricing-header h1,
+    .inner-page-title {
+        line-height: 1.12;
+    }
+
+    .power-strip-item,
+    .showcase-card,
+    .platform-v2-hero-card,
+    .platform-v2-side-card,
+    .platform-v2-bottom-card,
+    .platform-v2-mini-card,
+    .why-card,
+    .why-v2-card,
+    .proof-box,
+    .results-proof-box,
+    .market-news-card,
+    .final-cta-box,
+    .auth-card,
+    .legal-card {
+        padding: 18px;
+        border-radius: 18px;
+    }
+
+    .platform-v2-hero-card {
+        min-height: auto;
+    }
+
+    .market-news-image-fallback {
+        min-height: 150px;
+    }
+}
+
+@media (max-width: 768px) {
+    .section-container {
+        width: calc(100% - 16px);
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .hero-actions,
+    .final-cta-actions {
+        gap: 10px;
+    }
+
+    .hero-btn-primary,
+    .hero-btn-secondary,
+    .market-updates-link,
+    .footer-telegram-cta {
+        min-height: 48px;
+    }
+
+    .results-mini-card strong {
+        font-size: 24px;
+    }
+
+    .platform-v2-hero-card h3,
+    .platform-v2-side-card h3,
+    .platform-v2-bottom-card h3,
+    .showcase-card h3 {
+        font-size: 24px;
+    }
+
+    .section-title p,
+    .results-proof-left p,
+    .proof-left p,
+    .why-v2-left p,
+    .pricing-header p,
+    .inner-page-text {
+        font-size: 0.98rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .section-container {
+        width: calc(100% - 12px);
+    }
+
+    .home-body .navbar {
+        width: calc(100% - 10px);
+        padding: 8px;
+        border-radius: 14px;
+    }
+
+    .home-body .nav-logo img {
+        height: 32px;
+        max-width: 92px;
+    }
+
+    .home-body .nav-toggle {
+        width: 38px;
+        height: 38px;
+    }
+
+    .hero-title-ultra {
+        font-size: clamp(1.9rem, 9vw, 2.3rem);
+    }
+
+    .hero-proof-bar {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .hero-btn-primary,
+    .hero-btn-secondary,
+    .market-updates-link,
+    .footer-telegram-cta {
+        width: 100%;
+    }
+
+    .power-strip-item,
+    .showcase-card,
+    .platform-v2-hero-card,
+    .platform-v2-side-card,
+    .platform-v2-bottom-card,
+    .platform-v2-mini-card,
+    .why-card,
+    .why-v2-card,
+    .proof-box,
+    .results-proof-box,
+    .market-news-card,
+    .final-cta-box,
+    .auth-card,
+    .legal-card {
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    .results-mini-card,
+    .trust-mini,
+    .proof-card {
+        padding: 14px;
+        border-radius: 14px;
+    }
+
+    .market-updates-header h2,
+    .section-title h2,
+    .results-proof-left h2,
+    .proof-left h2,
+    .why-v2-left h2,
+    .pricing-header h1,
+    .inner-page-title {
+        font-size: clamp(1.7rem, 8vw, 2.1rem);
+    }
+}

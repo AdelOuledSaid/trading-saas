@@ -26,8 +26,11 @@ def asset_emoji(asset: str) -> str:
         "SOLUSD": "🟣",
         "XRPUSD": "💧",
         "GOLD": "🥇",
+        "XAUUSD": "🥇",
         "US100": "🇺🇸",
+        "NAS100": "🇺🇸",
         "US500": "📊",
+        "SPX500": "📊",
         "FRA40": "🇫🇷",
     }
     return mapping.get((asset or "").upper(), "📊")
@@ -151,6 +154,42 @@ def send_telegram_message_to_chat(
         return False
 
 
+def send_telegram_photo_to_chat(
+    chat_id: str,
+    photo_url: str,
+    caption: str,
+    parse_mode: str = "HTML",
+) -> bool:
+    if not getattr(config, "TELEGRAM_BOT_TOKEN", None):
+        current_app.logger.warning("Telegram bot token manquant.")
+        return False
+
+    if not chat_id:
+        current_app.logger.warning("Telegram chat_id manquant.")
+        return False
+
+    if not photo_url:
+        current_app.logger.warning("Telegram photo_url manquant.")
+        return False
+
+    url = f"https://api.telegram.org/bot{config.TELEGRAM_BOT_TOKEN}/sendPhoto"
+    payload = {
+        "chat_id": chat_id,
+        "photo": photo_url,
+        "caption": caption[:1024],  # Telegram caption limit
+        "parse_mode": parse_mode,
+    }
+
+    try:
+        response = requests.post(url, json=payload, timeout=15)
+        current_app.logger.info("TELEGRAM PHOTO [%s] STATUS: %s", chat_id, response.status_code)
+        current_app.logger.info("TELEGRAM PHOTO [%s] RESPONSE: %s", chat_id, response.text)
+        return response.ok
+    except Exception as e:
+        current_app.logger.error("Erreur Telegram photo [%s] : %s", chat_id, repr(e))
+        return False
+
+
 def send_message_to_tier(
     tier: str,
     message: str,
@@ -164,6 +203,22 @@ def send_message_to_tier(
         message=message,
         parse_mode=parse_mode,
         disable_web_page_preview=disable_web_page_preview,
+    )
+
+
+def send_photo_to_tier(
+    tier: str,
+    photo_url: str,
+    caption: str,
+    parse_mode: str = "HTML",
+) -> bool:
+    channels = get_telegram_channels()
+    chat_id = channels.get(tier)
+    return send_telegram_photo_to_chat(
+        chat_id=chat_id,
+        photo_url=photo_url,
+        caption=caption,
+        parse_mode=parse_mode,
     )
 
 
@@ -324,7 +379,7 @@ def news_emoji(title: str, description: str = "") -> str:
         return "💰"
     if any(word in text for word in ["hack", "scam", "fraud", "exploit", "stolen", "attack"]):
         return "🚨"
-    if any(word in text for word in ["regulation", "sec", "law", "ban", "legal", "lawsuit"]):
+    if any(word in text for word in ["regulation", "sec", "law", "ban", "legal", "lawsuit", "clarity act"]):
         return "⚖️"
     if any(word in text for word in ["upgrade", "launch", "mainnet", "update", "integration"]):
         return "⚡"
@@ -419,33 +474,78 @@ def build_news_digest_message(
 
 
 def build_breaking_news_message(article: dict) -> str:
-    title = html.escape(str(article.get("title", "Sans titre")))
-    description = html.escape(truncate_text(str(article.get("description", "")), 220))
+    title = html.escape(truncate_text(str(article.get("title", "Sans titre")), 220))
+    description = html.escape(truncate_text(str(article.get("description", "")), 160))
     source = html.escape(str(article.get("source", "Source inconnue")))
     url = str(article.get("url", "")).strip()
 
-    emoji = news_emoji(article.get("title", ""), article.get("description", ""))
-
     lines = [
-        "🚨 <b>BREAKING NEWS</b>",
+        "🚨 <b>JUST IN</b>",
         "",
-        f"{emoji} <b>{title}</b>",
-        "",
+        f"<b>{title}</b>",
     ]
 
     if description:
-        lines.append(description)
         lines.append("")
+        lines.append(description)
 
-    lines.append(f"🗞 <b>Source</b> : {source}")
+    lines.append("")
+    lines.append(f"🗞 <i>Source : {source}</i>")
 
     if url:
-        lines.append(f'🔗 <a href="{html.escape(url)}">Lire l’article</a>')
+        lines.append(f'🔗 <a href="{html.escape(url)}">Lire plus</a>')
 
     lines.append("")
     lines.append("💎 <b>Velwolef Intelligence</b>")
 
-    return "\n".join(lines).strip()
+    message = "\n".join(lines).strip()
+
+    if len(message) > 1000:
+        message = message[:990].rstrip() + "..."
+
+    return message
+
+
+def build_watcher_style_caption(article: dict) -> str:
+    """
+    Style très court, inspiré des posts type Watcher Guru.
+    Idéal pour sendPhoto avec caption.
+    """
+    title = truncate_text(str(article.get("title", "Sans titre")), 240)
+    title = html.escape(title)
+
+    description = truncate_text(str(article.get("description", "")), 110)
+    description = html.escape(description)
+
+    lines = [
+        "🚨 <b>JUST IN</b>",
+        "",
+        title,
+    ]
+
+    if description:
+        lines.append("")
+        lines.append(description)
+
+    lines.append("")
+    lines.append("💎 <b>@Velwolef</b>")
+
+    caption = "\n".join(lines).strip()
+
+    if len(caption) > 1024:
+        caption = caption[:1014].rstrip() + "..."
+
+    return caption
+
+
+def send_breaking_news_to_tier(tier: str, article: dict) -> bool:
+    image_url = str(article.get("image", "")).strip()
+    if image_url:
+        caption = build_watcher_style_caption(article)
+        return send_photo_to_tier(tier=tier, photo_url=image_url, caption=caption)
+
+    message = build_breaking_news_message(article)
+    return send_message_to_tier(tier=tier, message=message)
 
 
 def send_daily_news_digest_to_tier(tier: str, articles: list[dict]) -> bool:
@@ -453,9 +553,4 @@ def send_daily_news_digest_to_tier(tier: str, articles: list[dict]) -> bool:
     if not message:
         current_app.logger.info("Aucune news à envoyer pour %s.", tier)
         return False
-    return send_message_to_tier(tier=tier, message=message)
-
-
-def send_breaking_news_to_tier(tier: str, article: dict) -> bool:
-    message = build_breaking_news_message(article)
     return send_message_to_tier(tier=tier, message=message)
