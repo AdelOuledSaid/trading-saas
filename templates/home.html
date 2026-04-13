@@ -14,7 +14,29 @@
 <body class="home-body">
 
     {% include "partials/navbar.html" %}
+     
+     <!-- =========================
+     LIVE MARKET TICKER
+========================= -->
+<div class="market-ticker-live">
+    <div class="section-container">
+        <div class="ticker-shell">
 
+            <div class="ticker-live-badge">
+                <span class="ticker-live-dot"></span>
+                LIVE MARKET
+            </div>
+
+            <div class="ticker-marquee">
+                <div class="ticker-track" id="tickerTrack">
+                    <div class="ticker-loading">Chargement des marchés...</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+     
     <section class="home-hero">
         <div class="hero-trading-bg" aria-hidden="true">
             <svg viewBox="0 0 1600 900" class="hero-trading-svg" preserveAspectRatio="none">
@@ -678,6 +700,78 @@
 
     </div>
 </footer>
-    
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    const track = document.getElementById("tickerTrack");
+    if (!track) return;
+
+    function formatPrice(value) {
+        return Number(value).toLocaleString("fr-FR");
+    }
+
+    function changeClass(change) {
+        return change > 0 ? "positive" : change < 0 ? "negative" : "neutral";
+    }
+
+    function render(symbol, price, change = null) {
+        return `
+            <div class="ticker-item">
+                <span class="ticker-symbol">${symbol}</span>
+                <span class="ticker-price">${price}</span>
+                ${change !== null ? `<span class="ticker-change ${changeClass(change)}">
+                    ${change > 0 ? "+" : ""}${change.toFixed(2)}%
+                </span>` : ""}
+            </div>
+        `;
+    }
+
+    async function loadMarket() {
+        let html = "";
+
+        try {
+            // ✅ CRYPTO (stable)
+            const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true");
+            const data = await res.json();
+
+            html += render("BTC", formatPrice(data.bitcoin.usd) + "$", data.bitcoin.usd_24h_change);
+            html += render("ETH", formatPrice(data.ethereum.usd) + "$", data.ethereum.usd_24h_change);
+            html += render("SOL", formatPrice(data.solana.usd) + "$", data.solana.usd_24h_change);
+
+        } catch (e) {
+            console.error("Crypto error", e);
+        }
+
+        try {
+            // ✅ FOREX
+            const fx = await fetch("https://api.exchangerate.host/convert?from=EUR&to=USD");
+            const fxData = await fx.json();
+
+            html += render("EUR/USD", fxData.result.toFixed(4));
+        } catch (e) {
+            console.error("Forex error", e);
+        }
+
+        try {
+            // ⚠️ GOLD (peut échouer)
+            const gold = await fetch("https://gold-api.com/price/XAU");
+            const g = await gold.json();
+
+            html += render("GOLD", formatPrice(g.price) + "$");
+        } catch (e) {
+            console.warn("Gold API bloquée");
+        }
+
+        // 🔥 IMPORTANT : afficher même si partiel
+        if (html === "") {
+            track.innerHTML = "Erreur chargement marché";
+        } else {
+            track.innerHTML = html + html;
+        }
+    }
+
+    loadMarket();
+    setInterval(loadMarket, 60000);
+});
+</script>
 </body>
 </html>
