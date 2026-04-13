@@ -3,13 +3,45 @@ from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
+def get_client():
+    api_key = os.getenv("OPENAI_API_KEY", "").strip()
+
+    if not api_key:
+        return None
+
+    return OpenAI(api_key=api_key)
 
 
 def generate_daily_briefing(btc_data: str, gold_data: str, eco_data: str) -> str:
     """
     Génère un briefing trading ULTRA PREMIUM (structure hedge fund)
     """
+
+    client = get_client()
+
+    # ✅ FALLBACK SI PAS DE CLÉ
+    fallback = f"""
+📊 Morning Brief
+
+BTC:
+{btc_data}
+
+Gold:
+{gold_data}
+
+Macro:
+{eco_data}
+
+Plan du jour :
+- attendre confirmation
+- surveiller volatilité
+- privilégier gestion du risque
+""".strip()
+
+    if client is None:
+        return fallback
 
     try:
         prompt = f"""
@@ -36,34 +68,28 @@ STRUCTURE OBLIGATOIRE
 
 ## ₿ 2. Bitcoin (BTC)
 - Tendance actuelle
-- Zones clés (support / résistance)
-- Scénario haussier
-- Scénario baissier
-- Niveau critique
-
-## 🪙 3. Gold (XAUUSD)
-- Tendance
-- Rôle (refuge ou pression)
 - Zones clés
 - Scénarios
 
+## 🪙 3. Gold (XAUUSD)
+- Tendance
+- Zones clés
+
 ## 🌍 4. Macro & News Impact
-- Événements économiques importants
-- Impact potentiel sur le marché
-- Niveau de volatilité attendu
+- Événements importants
+- Impact marché
 
 ## 🎯 5. Opportunités du jour
 - Actifs à surveiller
-- Conditions d'entrée idéales
-- Type de setup (breakout / pullback / range)
+- Conditions d'entrée
 
 ## ⚠️ 6. Risk Management
-- Niveau de risque global (faible / modéré / élevé)
-- Pièges possibles (fake breakout, news, etc.)
+- Niveau de risque
+- Pièges possibles
 
 ## 📌 7. Conclusion Trading
-- Biais final : BUY / SELL / NEUTRAL
-- Stratégie recommandée (attente / agressif / conservateur)
+- Biais final
+- Stratégie
 
 ========================
 DONNÉES
@@ -77,16 +103,6 @@ GOLD:
 
 MACRO:
 {eco_data}
-
-========================
-CONTRAINTES
-========================
-
-- Maximum 500 mots
-- Lisible rapidement
-- Style pro
-- Pas de répétition
-- Pas de disclaimer inutile
 """
 
         response = client.responses.create(
@@ -94,7 +110,12 @@ CONTRAINTES
             input=prompt
         )
 
-        return response.output[0].content[0].text
+        text = getattr(response, "output_text", "").strip()
 
-    except Exception as e:
-        return f"❌ Erreur génération briefing : {str(e)}"
+        if not text:
+            return fallback
+
+        return text
+
+    except Exception:
+        return fallback
