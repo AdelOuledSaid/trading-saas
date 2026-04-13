@@ -9,6 +9,24 @@ from app.services.market_service import get_market_updates
 from app.services.telegram_service import send_telegram_message
 
 
+TRADING_KEYWORDS = [
+    "bitcoin", "btc", "ethereum", "eth", "solana", "sol", "xrp", "crypto", "cryptocurrency",
+    "gold", "xauusd", "silver", "oil", "brent", "wti",
+    "forex", "fx", "usd", "eur", "gbp", "jpy", "dollar", "euro",
+    "nasdaq", "us100", "sp500", "s&p 500", "dow jones", "stocks", "equities",
+    "fed", "federal reserve", "ecb", "boj", "interest rate", "rates", "inflation", "cpi", "ppi",
+    "nfp", "payrolls", "fomc", "treasury", "bond yields", "yield",
+    "etf", "blackrock", "institutional", "inflow", "outflow", "sec", "regulation",
+    "market", "trading", "risk-on", "risk-off", "recession", "macro", "liquidity",
+]
+
+EXCLUDED_KEYWORDS = [
+    "wrestling", "cricket", "football", "soccer", "tennis", "basketball", "nba", "nfl",
+    "baseball", "olympics", "championship", "match", "tournament", "medals", "player",
+    "celebrity", "movie", "music", "festival", "fashion", "recipe", "travel", "weather",
+]
+
+
 def normalize_text(value: Any) -> str:
     if value is None:
         return ""
@@ -108,40 +126,77 @@ def filter_recent_articles(articles: list[dict], max_age_hours: int = 72) -> lis
     return recent_articles
 
 
+def is_relevant_trading_article(article: dict) -> bool:
+    text = f"{article.get('title', '')} {article.get('description', '')} {article.get('source', '')}".lower()
+
+    if any(word in text for word in EXCLUDED_KEYWORDS):
+        return False
+
+    return any(word in text for word in TRADING_KEYWORDS)
+
+
+def filter_relevant_trading_articles(articles: list[dict]) -> list[dict]:
+    filtered = [article for article in articles if is_relevant_trading_article(article)]
+
+    if filtered:
+        return filtered
+
+    # fallback : si aucun article ne passe, on garde la liste initiale
+    # pour éviter un canal totalement vide
+    return articles
+
+
 def score_article(article: dict) -> int:
     text = f"{article.get('title', '')} {article.get('description', '')}".lower()
     score = 0
 
     important_keywords = [
         "bitcoin", "btc", "ethereum", "eth", "solana", "sol", "xrp",
-        "gold", "nasdaq", "us100", "crypto", "etf", "sec", "regulation",
-        "hack", "fraud", "lawsuit", "upgrade", "launch", "mainnet",
-        "inflow", "outflow", "fed", "interest rates", "institutional",
-        "blackrock",
+        "gold", "nasdaq", "us100", "sp500", "s&p 500", "crypto",
+        "etf", "sec", "regulation", "hack", "fraud", "lawsuit",
+        "upgrade", "launch", "mainnet", "inflow", "outflow",
+        "fed", "interest rate", "rates", "inflation", "cpi", "fomc",
+        "institutional", "blackrock", "recession", "macro", "liquidity",
+        "oil", "forex", "usd", "eur",
     ]
+
+    high_impact_keywords = [
+        "breaking", "urgent", "sec", "fed", "fomc", "cpi", "inflation",
+        "rate cut", "rate hike", "bitcoin etf", "approval", "ban",
+        "lawsuit", "hack", "exploit", "outflow", "inflow",
+    ]
+
+    positive_words = ["surge", "rally", "jump", "gain", "rise", "approval", "bullish"]
+    negative_words = ["crash", "drop", "fall", "selloff", "decline", "bearish"]
 
     for keyword in important_keywords:
         if keyword in text:
             score += 2
 
-    if "breaking" in text:
-        score += 3
+    for keyword in high_impact_keywords:
+        if keyword in text:
+            score += 4
 
-    if any(word in text for word in ["surge", "rally", "jump", "gain", "rise"]):
+    if any(word in text for word in positive_words):
         score += 2
 
-    if any(word in text for word in ["crash", "drop", "fall", "selloff", "decline"]):
+    if any(word in text for word in negative_words):
         score += 2
 
     published_at = article.get("published_at")
     if isinstance(published_at, datetime):
         age_hours = (datetime.now(timezone.utc) - published_at).total_seconds() / 3600
-        if age_hours <= 6:
+        if age_hours <= 3:
+            score += 4
+        elif age_hours <= 6:
             score += 3
         elif age_hours <= 24:
             score += 2
         elif age_hours <= 72:
             score += 1
+
+    if is_relevant_trading_article(article):
+        score += 3
 
     return score
 
@@ -185,6 +240,7 @@ def prepare_digest_articles(limit: int = 6, max_age_hours: int = 72) -> list[dic
 
     normalized = deduplicate_articles(normalized)
     normalized = filter_recent_articles(normalized, max_age_hours=max_age_hours)
+    normalized = filter_relevant_trading_articles(normalized)
     normalized = sort_articles_for_digest(normalized)
 
     prepared: list[dict] = []
@@ -195,6 +251,7 @@ def prepare_digest_articles(limit: int = 6, max_age_hours: int = 72) -> list[dic
             "url": article["url"],
             "source": article["source"],
             "image": article["image"],
+            "published_at": article.get("published_at"),
         })
 
     return prepared
@@ -287,7 +344,7 @@ def build_digest_message(articles: list[dict]) -> str:
 
     lines.append(infer_market_bias(articles))
     lines.append("")
-    lines.append("📌 <b>Lecture marché</b> : surveiller le momentum BTC, les flux institutionnels et la réaction des altcoins.")
+    lines.append("📌 <b>Lecture marché</b> : surveiller le momentum BTC, les flux institutionnels, le dollar, l'or et les indices US.")
     lines.append("")
     lines.append("⏰ <b>Mise à jour</b> : quotidienne")
     lines.append("⚠️ <i>Information de marché uniquement — DYOR</i>")
