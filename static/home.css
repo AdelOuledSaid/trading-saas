@@ -1,5 +1,3 @@
-/* FIXED HOME.CSS (MOBILE CLEAN VERSION) */
-
 /* =========================================================
    HOME.CSS — VELWOLEF HOME V3
 ========================================================= */
@@ -1254,12 +1252,19 @@
         display: none;
     }
 
+    .market-ticker-live {
+        margin-top: 72px;
+        margin-bottom: 10px;
+    }
+
     .home-hero.v3-hero {
-        padding: 74px 0 38px;
+        min-height: auto;
+        padding: 20px 0 32px;
     }
 
     .hero-title-v3 {
-        font-size: clamp(2rem, 10vw, 2.5rem);
+        font-size: clamp(1.85rem, 8vw, 2.35rem);
+        line-height: 1.02;
     }
 
     .v3-proof-grid,
@@ -1273,27 +1278,26 @@
         left: auto;
         top: auto;
         transform: none;
-        width: 100%;
-        max-width: 320px;
+        width: min(100%, 286px);
+        max-width: 286px;
         margin: 0 auto;
-        border-radius: 32px;
+        border-radius: 36px;
     }
 
     .v3-phone-inner {
-        min-height: 500px;
-        padding: 16px;
+        min-height: 560px;
     }
 
     .v3-command-main,
     .v3-command-side,
     .v3-feed-wrap,
     .v3-magnetic-card {
-        border-radius: 22px;
+        border-radius: 20px;
     }
 
     .v3-command-top h2,
     .v3-feed-header h2 {
-        font-size: 1.7rem;
+        font-size: 1.45rem;
     }
 }
 
@@ -1444,7 +1448,7 @@
     }
 
     .home-hero.v3-hero {
-        padding: 70px 0 28px;
+        padding: 20px 0 32px;
     }
 
     .hero-kicker-row {
@@ -1453,21 +1457,21 @@
     }
 
     .v3-mini-pill {
-        min-height: 34px;
-        padding: 0 12px;
-        font-size: 11px;
+        min-height: 32px;
+        padding: 0 10px;
+        font-size: 10px;
     }
 
     .hero-title-v3 {
-        font-size: clamp(1.72rem, 8.2vw, 2.28rem);
-        line-height: 0.98;
-        letter-spacing: -0.06em;
-        margin-bottom: 16px;
+        font-size: clamp(1.85rem, 8vw, 2.35rem);
+        line-height: 1.02;
+        letter-spacing: -0.05em;
+        margin-bottom: 14px;
     }
 
     .hero-text-v3 {
-        font-size: 0.93rem;
-        line-height: 1.72;
+        font-size: 0.95rem;
+        line-height: 1.68;
         margin-bottom: 18px;
     }
 
@@ -1478,7 +1482,8 @@
 
     .hero-btn-glow,
     .hero-btn-ghost {
-        min-height: 50px;
+        width: 100%;
+        min-height: 52px;
         padding: 0 16px;
         border-radius: 14px;
         font-size: 14px;
@@ -1488,19 +1493,23 @@
         gap: 10px;
     }
 
+    .v3-proof-card {
+        padding: 16px 14px;
+        border-radius: 18px;
+    }
+
     .v3-scene {
-        min-height: 560px;
+        min-height: auto;
         display: flex;
         align-items: flex-start;
         justify-content: center;
     }
 
     .v3-phone-card {
-        width: 286px;
+        width: min(100%, 286px);
         max-width: 286px;
         min-height: 582px;
         padding: 10px;
-        border-radius: 36px;
         box-shadow: 0 20px 50px rgba(0,0,0,0.34);
     }
 
@@ -1542,6 +1551,7 @@
     }
 
     .v3-phone-metrics {
+        grid-template-columns: repeat(2, 1fr);
         gap: 7px;
         padding: 8px;
         margin-bottom: 10px;
@@ -1576,24 +1586,12 @@
         padding: 0 0 56px;
     }
 
-    .v3-command-main,
-    .v3-command-side,
-    .v3-feed-wrap,
-    .v3-magnetic-card {
-        border-radius: 20px;
-    }
-
     .v3-command-main {
         padding: 18px;
     }
 
     .v3-command-side {
         padding: 16px;
-    }
-
-    .v3-command-top h2,
-    .v3-feed-header h2 {
-        font-size: 1.45rem;
     }
 
     .v3-feed-header {
@@ -1640,4 +1638,11 @@
     .v3-phone-chart {
         height: 110px;
     }
+}
+
+
+/* MOBILE OVERLAP SAFETY FIX */
+@media (max-width: 640px) {
+    body { overflow-x: hidden; }
+    .hero-right-v3, .hero-left, .hero-v3-container { min-width: 0; }
 }
