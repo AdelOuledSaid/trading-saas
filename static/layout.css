@@ -617,16 +617,14 @@ canvas {
 
 @media (max-width: 980px) {
     .navbar {
-        top: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        height: 64px;
-        margin: 0;
-        padding: 10px 14px;
-        gap: 10px;
-        border-radius: 0;
+        top: 8px;
+        grid-template-columns: 1fr auto;
         justify-content: space-between;
+        width: calc(100% - 12px);
+        padding: 10px;
+        gap: 8px;
+        margin: 8px auto 0;
+        border-radius: 16px;
     }
 
     .nav-left {
@@ -637,7 +635,7 @@ canvas {
 
     .logo img,
     .logo-pro img {
-        height: 34px;
+        height: 36px;
         max-width: 110px;
     }
 
@@ -646,6 +644,8 @@ canvas {
         width: 40px;
         height: 40px;
         border-radius: 12px;
+        grid-column: 2;
+        grid-row: 1;
     }
 
     .burger span {
@@ -656,6 +656,7 @@ canvas {
     .nav-right {
         display: none;
         width: 100%;
+        grid-column: 1 / -1;
         min-width: 0;
     }
 
@@ -665,14 +666,11 @@ canvas {
         flex-direction: column;
         width: 100%;
         background: rgba(10, 14, 22, 0.98);
-        border-top: 1px solid rgba(255,255,255,0.06);
-        border-left: 0;
-        border-right: 0;
-        border-bottom: 1px solid rgba(255,255,255,0.06);
-        border-radius: 0 0 16px 16px;
-        padding: 10px 14px 14px;
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 14px;
+        padding: 10px;
         box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-        margin-top: 0;
+        margin-top: 6px;
     }
 
     .nav-links {
@@ -797,13 +795,14 @@ canvas {
 
 @media (max-width: 640px) {
     .navbar {
-        height: 60px;
-        padding: 8px 12px;
+        width: calc(100% - 10px);
+        padding: 8px;
+        border-radius: 14px;
     }
 
     .logo img,
     .logo-pro img {
-        height: 30px;
+        height: 32px;
         max-width: 96px;
     }
 
@@ -814,8 +813,8 @@ canvas {
 
     .navbar.mobile-open .nav-center,
     .navbar.mobile-open .nav-right {
-        padding: 8px 12px 12px;
-        border-radius: 0 0 14px 14px;
+        padding: 8px;
+        border-radius: 12px;
     }
 
     .nav-links > a,
@@ -837,5 +836,209 @@ canvas {
     .footer-links {
         flex-direction: column;
         gap: 10px;
+    }
+}
+
+
+/* =========================================================
+   REAL MOBILE FIX OVERRIDES
+   Added to force clean mobile navbar and prevent top overlap
+========================================================= */
+
+@media (max-width: 980px) {
+    html, body {
+        overflow-x: hidden !important;
+    }
+
+    body.menu-open {
+        overflow: hidden !important;
+    }
+
+    .navbar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 64px !important;
+        margin: 0 !important;
+        padding: 10px 14px !important;
+        gap: 10px !important;
+        border-radius: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        z-index: 1200 !important;
+    }
+
+    .nav-left {
+        width: 100% !important;
+        min-width: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 10px !important;
+    }
+
+    .logo img,
+    .logo-pro img {
+        height: 34px !important;
+        width: auto !important;
+        max-width: 120px !important;
+        object-fit: contain !important;
+    }
+
+    .burger {
+        display: inline-flex !important;
+        width: 40px !important;
+        height: 40px !important;
+        flex: 0 0 40px !important;
+    }
+
+    .nav-center,
+    .nav-right {
+        display: none !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .navbar.mobile-open .nav-center,
+    .navbar.mobile-open .nav-right {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        background: rgba(10, 14, 22, 0.98) !important;
+        border-top: 1px solid rgba(255,255,255,0.06) !important;
+        border-left: 0 !important;
+        border-right: 0 !important;
+        border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+        border-radius: 0 0 16px 16px !important;
+        padding: 10px 14px 14px !important;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.35) !important;
+        margin-top: 0 !important;
+    }
+
+    .nav-links {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+    }
+
+    .nav-links > a,
+    .nav-drop-btn,
+    .nav-inline-link,
+    .nav-right a,
+    .account-btn,
+    .navbar .cta-btn,
+    .nav-right .cta-btn,
+    .logout-btn {
+        width: 100% !important;
+    }
+
+    .nav-links > a,
+    .nav-drop-btn,
+    .nav-inline-link {
+        min-height: 46px !important;
+        padding: 12px 14px !important;
+        border-radius: 12px !important;
+        background: rgba(255,255,255,0.02) !important;
+        justify-content: space-between !important;
+    }
+
+    .nav-links > a::after,
+    .nav-drop-btn::after,
+    .nav-inline-link::after {
+        display: none !important;
+    }
+
+    .nav-dropdown {
+        width: 100% !important;
+        padding-bottom: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    .nav-dropdown::after {
+        display: none !important;
+    }
+
+    .nav-dropdown-menu {
+        display: none !important;
+        position: static !important;
+        left: auto !important;
+        top: auto !important;
+        transform: none !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 6px !important;
+        padding: 6px !important;
+        border-radius: 12px !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        box-shadow: none !important;
+        background: rgba(255,255,255,0.03) !important;
+    }
+
+    .nav-dropdown.active .nav-dropdown-menu {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+    .nav-right {
+        gap: 10px !important;
+    }
+
+    .account-btn,
+    .logout-btn,
+    .navbar .cta-btn,
+    .nav-right .cta-btn,
+    .nav-inline-link {
+        min-height: 46px !important;
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+        border-radius: 12px !important;
+        font-size: 14px !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .navbar {
+        height: 60px !important;
+        padding: 8px 12px !important;
+    }
+
+    .logo img,
+    .logo-pro img {
+        height: 30px !important;
+        max-width: 100px !important;
+    }
+
+    .burger {
+        width: 38px !important;
+        height: 38px !important;
+        flex-basis: 38px !important;
+    }
+
+    .navbar.mobile-open .nav-center,
+    .navbar.mobile-open .nav-right {
+        padding: 8px 12px 12px !important;
+        border-radius: 0 0 14px 14px !important;
+    }
+
+    .nav-links > a,
+    .nav-drop-btn,
+    .nav-inline-link,
+    .account-btn,
+    .navbar .cta-btn,
+    .nav-right .cta-btn,
+    .logout-btn {
+        min-height: 44px !important;
+        font-size: 13.5px !important;
     }
 }

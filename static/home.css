@@ -1252,19 +1252,12 @@
         display: none;
     }
 
-    .market-ticker-live {
-        margin-top: 72px;
-        margin-bottom: 10px;
-    }
-
     .home-hero.v3-hero {
-        min-height: auto;
-        padding: 20px 0 32px;
+        padding: 74px 0 38px;
     }
 
     .hero-title-v3 {
-        font-size: clamp(1.85rem, 8vw, 2.35rem);
-        line-height: 1.02;
+        font-size: clamp(2rem, 10vw, 2.5rem);
     }
 
     .v3-proof-grid,
@@ -1278,26 +1271,27 @@
         left: auto;
         top: auto;
         transform: none;
-        width: min(100%, 286px);
-        max-width: 286px;
+        width: 100%;
+        max-width: 320px;
         margin: 0 auto;
-        border-radius: 36px;
+        border-radius: 32px;
     }
 
     .v3-phone-inner {
-        min-height: 560px;
+        min-height: 500px;
+        padding: 16px;
     }
 
     .v3-command-main,
     .v3-command-side,
     .v3-feed-wrap,
     .v3-magnetic-card {
-        border-radius: 20px;
+        border-radius: 22px;
     }
 
     .v3-command-top h2,
     .v3-feed-header h2 {
-        font-size: 1.45rem;
+        font-size: 1.7rem;
     }
 }
 
@@ -1448,7 +1442,7 @@
     }
 
     .home-hero.v3-hero {
-        padding: 20px 0 32px;
+        padding: 70px 0 28px;
     }
 
     .hero-kicker-row {
@@ -1457,21 +1451,21 @@
     }
 
     .v3-mini-pill {
-        min-height: 32px;
-        padding: 0 10px;
-        font-size: 10px;
+        min-height: 34px;
+        padding: 0 12px;
+        font-size: 11px;
     }
 
     .hero-title-v3 {
-        font-size: clamp(1.85rem, 8vw, 2.35rem);
-        line-height: 1.02;
-        letter-spacing: -0.05em;
-        margin-bottom: 14px;
+        font-size: clamp(1.72rem, 8.2vw, 2.28rem);
+        line-height: 0.98;
+        letter-spacing: -0.06em;
+        margin-bottom: 16px;
     }
 
     .hero-text-v3 {
-        font-size: 0.95rem;
-        line-height: 1.68;
+        font-size: 0.93rem;
+        line-height: 1.72;
         margin-bottom: 18px;
     }
 
@@ -1482,8 +1476,7 @@
 
     .hero-btn-glow,
     .hero-btn-ghost {
-        width: 100%;
-        min-height: 52px;
+        min-height: 50px;
         padding: 0 16px;
         border-radius: 14px;
         font-size: 14px;
@@ -1493,23 +1486,19 @@
         gap: 10px;
     }
 
-    .v3-proof-card {
-        padding: 16px 14px;
-        border-radius: 18px;
-    }
-
     .v3-scene {
-        min-height: auto;
+        min-height: 560px;
         display: flex;
         align-items: flex-start;
         justify-content: center;
     }
 
     .v3-phone-card {
-        width: min(100%, 286px);
+        width: 286px;
         max-width: 286px;
         min-height: 582px;
         padding: 10px;
+        border-radius: 36px;
         box-shadow: 0 20px 50px rgba(0,0,0,0.34);
     }
 
@@ -1551,7 +1540,6 @@
     }
 
     .v3-phone-metrics {
-        grid-template-columns: repeat(2, 1fr);
         gap: 7px;
         padding: 8px;
         margin-bottom: 10px;
@@ -1586,12 +1574,24 @@
         padding: 0 0 56px;
     }
 
+    .v3-command-main,
+    .v3-command-side,
+    .v3-feed-wrap,
+    .v3-magnetic-card {
+        border-radius: 20px;
+    }
+
     .v3-command-main {
         padding: 18px;
     }
 
     .v3-command-side {
         padding: 16px;
+    }
+
+    .v3-command-top h2,
+    .v3-feed-header h2 {
+        font-size: 1.45rem;
     }
 
     .v3-feed-header {
@@ -1641,8 +1641,294 @@
 }
 
 
-/* MOBILE OVERLAP SAFETY FIX */
+/* =========================================================
+   REAL HOME MOBILE FIX OVERRIDES
+   Added to stop overlap and clean hero on phones
+========================================================= */
+
+@media (max-width: 980px) {
+    .home-v3-shell {
+        padding-top: 72px !important;
+        overflow-x: hidden !important;
+    }
+
+    .market-ticker-live {
+        margin-top: 0 !important;
+        margin-bottom: 8px !important;
+    }
+
+    .home-hero.v3-hero {
+        min-height: auto !important;
+        padding: 20px 0 36px !important;
+    }
+
+    .hero-v3-container {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+        align-items: start !important;
+    }
+
+    .hero-left,
+    .hero-right-v3 {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .v3-grid-overlay,
+    .v3-radar-ring,
+    .v3-energy-orb,
+    .v3-terminal-card,
+    .v3-side-card,
+    .v3-signal-pulse {
+        display: none !important;
+    }
+
+    .v3-scene {
+        min-height: auto !important;
+        max-width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: flex-start !important;
+        margin: 0 auto !important;
+    }
+
+    .v3-phone-card {
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        transform: none !important;
+        width: min(86vw, 320px) !important;
+        max-width: 320px !important;
+        min-height: auto !important;
+        margin: 0 auto !important;
+    }
+
+    .v3-phone-inner {
+        min-height: auto !important;
+    }
+
+    .v3-proof-grid,
+    .v3-command-metrics,
+    .v3-feed-board {
+        grid-template-columns: 1fr !important;
+    }
+}
+
 @media (max-width: 640px) {
-    body { overflow-x: hidden; }
-    .hero-right-v3, .hero-left, .hero-v3-container { min-width: 0; }
+    #heroParticles {
+        display: none !important;
+    }
+
+    .home-v3-shell .section-container {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+    }
+
+    .home-v3-shell {
+        padding-top: 66px !important;
+    }
+
+    .market-ticker-live {
+        margin-top: 0 !important;
+        margin-bottom: 10px !important;
+    }
+
+    .ticker-shell {
+        padding: 8px 10px !important;
+        border-radius: 12px !important;
+    }
+
+    .home-hero.v3-hero {
+        padding: 12px 0 28px !important;
+    }
+
+    .hero-kicker-row {
+        gap: 8px !important;
+        margin-bottom: 14px !important;
+    }
+
+    .v3-mini-pill {
+        min-height: 32px !important;
+        padding: 0 10px !important;
+        font-size: 10px !important;
+    }
+
+    .hero-title-v3 {
+        font-size: clamp(1.85rem, 8vw, 2.35rem) !important;
+        line-height: 1.02 !important;
+        letter-spacing: -0.05em !important;
+        margin-bottom: 14px !important;
+    }
+
+    .hero-text-v3 {
+        font-size: 0.95rem !important;
+        line-height: 1.68 !important;
+        margin-bottom: 18px !important;
+    }
+
+    .hero-actions-v3 {
+        gap: 10px !important;
+        margin-bottom: 18px !important;
+        flex-direction: column !important;
+    }
+
+    .hero-btn-glow,
+    .hero-btn-ghost {
+        width: 100% !important;
+        min-height: 52px !important;
+        padding: 0 16px !important;
+        border-radius: 14px !important;
+        font-size: 14px !important;
+    }
+
+    .v3-proof-grid {
+        gap: 10px !important;
+    }
+
+    .v3-proof-card {
+        padding: 16px 14px !important;
+        border-radius: 18px !important;
+    }
+
+    .v3-phone-card {
+        width: min(84vw, 286px) !important;
+        max-width: 286px !important;
+        padding: 10px !important;
+        border-radius: 36px !important;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.34) !important;
+    }
+
+    .v3-phone-inner {
+        padding: 14px !important;
+        border-radius: 28px !important;
+    }
+
+    .v3-phone-notch {
+        width: 104px !important;
+        height: 22px !important;
+    }
+
+    .v3-phone-brand img {
+        height: 18px !important;
+    }
+
+    .v3-phone-brand span {
+        font-size: 11px !important;
+    }
+
+    .v3-phone-badge {
+        font-size: 9px !important;
+        padding: 6px 8px !important;
+    }
+
+    .v3-phone-main-card {
+        padding: 13px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .v3-phone-main-top {
+        gap: 10px !important;
+    }
+
+    .v3-phone-main-top strong {
+        font-size: 16px !important;
+    }
+
+    .v3-phone-chart {
+        height: 118px !important;
+    }
+
+    .v3-phone-metrics {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 7px !important;
+        padding: 8px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .v3-phone-metric {
+        padding: 8px 6px !important;
+        border-radius: 12px !important;
+    }
+
+    .v3-phone-metric span,
+    .v3-phone-metric strong,
+    .v3-ai-head strong,
+    .v3-ai-head span,
+    .v3-ai-stream,
+    .v3-phone-watch-title,
+    .v3-watch-row span,
+    .v3-watch-row strong {
+        font-size: 11px !important;
+    }
+
+    .v3-phone-ai-box,
+    .v3-phone-watch {
+        padding: 12px !important;
+    }
+
+    .v3-command-section {
+        padding: 8px 0 52px !important;
+    }
+
+    .v3-live-feed-section {
+        padding: 0 0 56px !important;
+    }
+
+    .v3-command-main,
+    .v3-command-side,
+    .v3-feed-wrap,
+    .v3-magnetic-card {
+        border-radius: 20px !important;
+    }
+
+    .v3-command-main {
+        padding: 18px !important;
+    }
+
+    .v3-command-side {
+        padding: 16px !important;
+    }
+
+    .v3-command-top h2,
+    .v3-feed-header h2 {
+        font-size: 1.45rem !important;
+    }
+
+    .v3-feed-header {
+        padding: 18px 18px 0 !important;
+    }
+
+    .v3-feed-board {
+        padding: 16px 18px 18px !important;
+        gap: 12px !important;
+    }
+
+    .v3-feed-column {
+        padding: 14px !important;
+        border-radius: 18px !important;
+    }
+
+    .v3-magnetic-card {
+        min-height: 220px !important;
+        padding: 18px !important;
+    }
+
+    .v3-magnetic-card h3 {
+        font-size: 1.24rem !important;
+    }
+}
+
+@media (max-width: 390px) {
+    .home-v3-shell {
+        padding-top: 64px !important;
+    }
+
+    .hero-title-v3 {
+        font-size: clamp(1.65rem, 7.8vw, 2.05rem) !important;
+    }
+
+    .v3-phone-card {
+        width: min(84vw, 274px) !important;
+        max-width: 274px !important;
+    }
 }

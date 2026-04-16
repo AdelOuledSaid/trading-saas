@@ -32,17 +32,50 @@
     <div class="section-container">
         <div class="rs-hero-inner">
             <div class="rs-hero-topline">
-                <span class="rs-kicker">VelWolf Performance Desk</span>
+                <span class="rs-kicker">VelWolf Global Macro Desk</span>
                 <span class="rs-plan-badge">{{ user_plan | upper }}</span>
             </div>
 
-            <h1 class="rs-title">Résultats premium, meilleurs setups et replays de trading</h1>
+            <h1 class="rs-title">Le desk qui montre <span>ce que le marché a vraiment payé.</span></h1>
 
             <p class="rs-subtitle">
-                Une vitrine premium pensée pour mettre en avant les setups les plus propres, les exécutions les plus lisibles
-                et la qualité de lecture du marché. Ici, l’accent est mis sur les opportunités sélectionnées, le replay
-                pédagogique et la perception professionnelle de la performance.
+                Crypto, indices et forex réunis dans une lecture plus institutionnelle du marché : exécution, structure,
+                asymétrie et discipline. Pas de bruit visuel inutile. Seulement les décisions qui méritent d’être montrées.
             </p>
+
+            <div class="rs-command-board">
+                <div class="rs-command-head">
+                    <div>
+                        <span class="rs-panel-kicker">Cross-asset coverage</span>
+                        <h3>Couverture multi-marchés</h3>
+                    </div>
+                    <div class="rs-command-status">Live market map</div>
+                </div>
+
+                <div class="rs-market-grid">
+                    <article class="rs-market-desk crypto">
+                        <span class="rs-market-label">Crypto</span>
+                        <strong>BTCUSD · ETHUSD · SOLUSD · XRPUSD · BNBUSD · ADAUSD · DOGEUSD · AVAXUSD</strong>
+                        <p>Momentum, impulsions, liquidité, rotations et zones de réaction.</p>
+                    </article>
+
+                    <article class="rs-market-desk forex">
+                        <span class="rs-market-label">Forex</span>
+                        <strong>EURUSD · GBPUSD · USDJPY · USDCHF · AUDUSD · USDCAD · NZDUSD · EURJPY</strong>
+                        <p>Dollar, flux macro, cassures propres, retests et continuités intraday.</p>
+                    </article>
+
+                    <article class="rs-market-desk indices">
+                        <span class="rs-market-label">Indices</span>
+                        <strong>US100 · SPX500 · GER40 · UK100 · FRA40 · JPN225 · NASDAQ · DOWJONES</strong>
+                        <p>Risk-on, risk-off, accélérations cash session et structures directionnelles.</p>
+                    </article>
+                </div>
+
+                <div class="rs-market-tape" aria-label="Marchés suivis">
+                    <span>BTCUSD</span><span>ETHUSD</span><span>SOLUSD</span><span>XAUUSD</span><span>EURUSD</span><span>GBPUSD</span><span>USDJPY</span><span>US100</span><span>SPX500</span><span>GER40</span><span>UK100</span><span>JPN225</span>
+                </div>
+            </div>
 
             <div class="rs-filters-card">
                 <div class="rs-filters">
@@ -138,11 +171,10 @@
                 <section class="rs-panel rs-panel-glow">
                     <div class="rs-panel-head">
                         <div>
-                            <span class="rs-panel-kicker">Performance tracking</span>
-                            <h2>Vue synthétique</h2>
+                            <span class="rs-panel-kicker">Performance intelligence</span>
+                            <h2>Lecture de desk</h2>
                             <p class="rs-panel-desc">
-                                Une lecture plus business de la performance : qualité perçue, meilleurs actifs, setups en vitrine
-                                et profondeur analytique réservée aux membres avancés.
+                                Une vue desk plus crédible de la performance : exposition, robustesse, rendement asymétrique et lecture cross-asset des meilleures exécutions publiées.
                             </p>
                         </div>
                     </div>
@@ -172,7 +204,7 @@
                     <div class="rs-performance-grid">
                         <div class="rs-quality-card {% if not can_view_stats %}rs-quality-locked{% endif %}">
                             <div class="rs-quality-head">
-                                <span>Qualité globale</span>
+                                <span>Signal quality score</span>
                                 <strong>
                                     {% if can_view_stats and recent_rate is not none %}
                                         {{ recent_rate }}%
@@ -200,10 +232,9 @@
 
                         <div class="rs-mini-insight-card">
                             <span class="rs-panel-kicker">Insight</span>
-                            <h3>Positionnement premium</h3>
+                            <h3>Signature hedge fund</h3>
                             <p>
-                                Cette page ne cherche pas seulement à montrer des chiffres. Elle met en avant les meilleurs setups,
-                                le replay des exécutions et une sélection plus haut de gamme des signaux publiés.
+                                Cette interface est pensée comme une vitrine de desk : sélection sévère, exécutions lisibles, hiérarchie froide et présence marché immédiate.
                             </p>
                             {% if not is_premium_plus %}
                             <a href="{{ url_for('billing.pricing') }}" class="rs-upgrade-btn">
@@ -217,7 +248,7 @@
                 <section class="rs-panel">
                     <div class="rs-panel-head rs-panel-head-split">
                         <div>
-                            <span class="rs-panel-kicker">Highlights</span>
+                            <span class="rs-panel-kicker">Best executions</span>
                             <h2>
                                 Les 2 meilleurs trades
                                 {% if selected_asset != "ALL" %}
@@ -225,7 +256,7 @@
                                 {% endif %}
                             </h2>
                             <p class="rs-panel-desc">
-                                Une sélection premium des setups les plus propres, avec replay, lecture du contexte et exécution lisible.
+                                Les exécutions les plus propres du flux publié : contexte lisible, asymétrie claire et replay pédagogique pour comprendre la décision.
                             </p>
                         </div>
 
@@ -348,11 +379,10 @@
                 <section class="rs-panel">
                     <div class="rs-panel-head rs-panel-head-split">
                         <div>
-                            <span class="rs-panel-kicker">Historique limité</span>
+                            <span class="rs-panel-kicker">Recent flow</span>
                             <h2>Derniers signaux</h2>
                             <p class="rs-panel-desc">
-                                Un aperçu réduit de l’activité récente. L’historique détaillé et la lecture complète restent réservés
-                                aux membres ayant un accès avancé.
+                                Une fenêtre courte sur le flux récent du desk. L’historique étendu, les métriques profondes et les lectures complètes restent réservés aux accès avancés.
                             </p>
                         </div>
 
@@ -465,8 +495,8 @@
             <aside class="rs-sidebar">
 
                 <section class="rs-side-card rs-side-dark">
-                    <span class="rs-panel-kicker">Desk summary</span>
-                    <h3>Résumé rapide</h3>
+                    <span class="rs-panel-kicker">Desk metrics</span>
+                    <h3>Snapshot exécutif</h3>
 
                     <ul class="rs-side-list">
                         <li><strong>Total signaux :</strong> {{ total_signals or 0 }}</li>
@@ -481,16 +511,15 @@
                 </section>
 
                 <section class="rs-side-card">
-                    <span class="rs-panel-kicker">Positionnement</span>
-                    <h3>Pourquoi cette page convertit mieux</h3>
+                    <span class="rs-panel-kicker">Narrative</span>
+                    <h3>Pourquoi cette page impose plus</h3>
                     <p>
-                        Une page résultats orientée conversion doit montrer les meilleurs setups, donner envie de cliquer
-                        sur les replays et conserver les statistiques détaillées pour l’offre avancée.
+                        Une vraie page résultats ne vend pas seulement de la performance. Elle projette une autorité, une méthode et un cadre de décision visible en quelques secondes.
                     </p>
                 </section>
 
                 <section class="rs-side-card {% if not can_view_stats %}rs-side-locked{% endif %}">
-                    <span class="rs-panel-kicker">Accès actuel</span>
+                    <span class="rs-panel-kicker">Access layer</span>
                     <h3>{{ user_plan | upper }}</h3>
                     <p>
                         {% if is_premium_plus %}
@@ -511,8 +540,8 @@
                 </section>
 
                 <section class="rs-side-card">
-                    <span class="rs-panel-kicker">Explorer</span>
-                    <h3>Navigation</h3>
+                    <span class="rs-panel-kicker">Desk navigation</span>
+                    <h3>Continuer l’analyse</h3>
 
                     <div class="rs-nav-links">
                         <a href="{{ url_for('signals.signals_page') }}" class="rs-nav-link">
@@ -540,11 +569,10 @@
 <section class="final-cta-section rs-final-cta">
     <div class="section-container">
         <div class="final-cta-box">
-            <span class="final-cta-badge">Résultats • VelWolf</span>
-            <h2>Découvrez les setups les plus propres et leur replay</h2>
+            <span class="final-cta-badge">VelWolf • Global Results Desk</span>
+            <h2>Voir les actifs qui comptent. Lire les exécutions qui marquent.</h2>
             <p>
-                Une mise en avant premium des meilleurs trades, un aperçu structuré de la performance
-                et une expérience plus crédible pour renforcer la valeur perçue de la plateforme.
+                Une page pensée pour faire ressentir la qualité d’exécution, la profondeur d’analyse et la couverture multi-marchés avant même le premier clic.
             </p>
 
             <div class="final-cta-actions">
@@ -568,7 +596,7 @@
     <div class="section-container footer-inner">
         <div class="footer-brand">
             <h3>VelWolf</h3>
-            <p>Une plateforme premium pour suivre les meilleurs setups, les résultats et les replays des signaux.</p>
+            <p>Un environnement de trading premium pour suivre les meilleures exécutions, les résultats et la lecture multi-marchés du desk.</p>
         </div>
 
         <div class="footer-links">
