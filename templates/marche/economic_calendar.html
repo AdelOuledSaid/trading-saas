@@ -22,10 +22,10 @@
                 </p>
 
                 <div class="eco-hero-actions">
-                    <a href="{{ url_for('pages.economic_calendar', period='today') }}" class="eco-main-btn">
+                    <a href="{{ url_for('economic_calendar.economic_calendar', period='today') }}" class="eco-main-btn">
                         Today’s Events
                     </a>
-                    <a href="{{ url_for('pages.economic_calendar', period='this_week', impact_only='1') }}" class="eco-secondary-btn">
+                    <a href="{{ url_for('economic_calendar.economic_calendar', period='this_week', impact_only='1') }}" class="eco-secondary-btn">
                         High Impact This Week
                     </a>
                 </div>
@@ -122,37 +122,37 @@
     </form>
 
     <div class="eco-filter-row">
-        <a href="{{ url_for('pages.economic_calendar', period='yesterday', q=q, country=country, importance=importance, impact_only=impact_only) }}"
+        <a href="{{ url_for('economic_calendar.economic_calendar', period='yesterday', q=q, country=country, importance=importance, impact_only=impact_only) }}"
            class="eco-filter-btn {% if active_period == 'yesterday' %}active{% endif %}">
             Yesterday
         </a>
 
-        <a href="{{ url_for('pages.economic_calendar', period='today', q=q, country=country, importance=importance, impact_only=impact_only) }}"
+        <a href="{{ url_for('economic_calendar.economic_calendar', period='today', q=q, country=country, importance=importance, impact_only=impact_only) }}"
            class="eco-filter-btn {% if active_period == 'today' %}active{% endif %}">
             Today
         </a>
 
-        <a href="{{ url_for('pages.economic_calendar', period='tomorrow', q=q, country=country, importance=importance, impact_only=impact_only) }}"
+        <a href="{{ url_for('economic_calendar.economic_calendar', period='tomorrow', q=q, country=country, importance=importance, impact_only=impact_only) }}"
            class="eco-filter-btn {% if active_period == 'tomorrow' %}active{% endif %}">
             Tomorrow
         </a>
 
-        <a href="{{ url_for('pages.economic_calendar', period='this_week', q=q, country=country, importance=importance, impact_only=impact_only) }}"
+        <a href="{{ url_for('economic_calendar.economic_calendar', period='this_week', q=q, country=country, importance=importance, impact_only=impact_only) }}"
            class="eco-filter-btn {% if active_period == 'this_week' %}active{% endif %}">
             This Week
         </a>
 
-        <a href="{{ url_for('pages.economic_calendar', period='next_week', q=q, country=country, importance=importance, impact_only=impact_only) }}"
+        <a href="{{ url_for('economic_calendar.economic_calendar', period='next_week', q=q, country=country, importance=importance, impact_only=impact_only) }}"
            class="eco-filter-btn {% if active_period == 'next_week' %}active{% endif %}">
             Next Week
         </a>
 
-        <a href="{{ url_for('pages.economic_calendar', period=active_period or 'today', q=q, country=country, impact_only='1') }}"
+        <a href="{{ url_for('economic_calendar.economic_calendar', period=active_period or 'today', q=q, country=country, impact_only='1') }}"
            class="eco-filter-btn {% if impact_only == '1' %}active{% endif %}">
             High Impact Only
         </a>
 
-        <a href="{{ url_for('pages.economic_calendar', period=active_period or 'today') }}"
+        <a href="{{ url_for('economic_calendar.economic_calendar', period=active_period or 'today') }}"
            class="eco-filter-btn eco-filter-reset">
             Reset
         </a>

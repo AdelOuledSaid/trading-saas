@@ -16,6 +16,7 @@ from app.routes.token_unlocks import token_unlocks_bp
 from app.routes.liquidations import liquidations_bp
 from app.routes.open_interest import open_interest_bp
 from app.utils.pricing import get_pricing_data
+from app.routes.test import test_bp
 
 migrate = Migrate()
 
@@ -215,7 +216,7 @@ def create_app():
     app.register_blueprint(token_unlocks_bp)
     app.register_blueprint(liquidations_bp)
     app.register_blueprint(open_interest_bp)
-
+    app.register_blueprint(test_bp)
     if _should_autostart_liquidations(app):
         try:
             from app.services.liquidations_service import get_liquidations_service
