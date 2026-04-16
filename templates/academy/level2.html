@@ -33,19 +33,52 @@
                     structure, contexte, confluence, timing et gestion active. L’objectif est de faire
                     passer l’apprenant d’une lecture descriptive à une lecture décisionnelle.
                 </p>
+                <p class="academy-lead">
+                    Le niveau 2 ne cherche pas à multiplier les concepts pour impressionner.
+                    Il cherche à améliorer la qualité des décisions : mieux filtrer les setups,
+                    mieux lire les phases de marché, mieux distinguer une vraie opportunité
+                    d’un mouvement trompeur, et mieux gérer la position une fois ouverte.
+                </p>
+
+                <div class="academy-actions">
+                    <a href="#module-1" class="academy-btn academy-btn-primary">Commencer Niveau 2</a>
+                    <a href="#quiz-final" class="academy-btn academy-btn-secondary">Aller à l’examen final</a>
+                    {% if not is_pro %}
+                    <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
+                        Débloquer la version Pro
+                    </a>
+                    {% endif %}
+                </div>
             </div>
 
             <div class="academy-side-progress">
                 <div class="academy-progress-head">
                     <span>Progression actuelle</span>
-                    <strong>{{ academy_progress.level2 }}%</strong>
+                    <strong>{{ academy_progress.level2 if academy_progress else 0 }}%</strong>
                 </div>
                 <div class="academy-progress-bar">
-                    <div class="academy-progress-fill academy-progress-fill-purple" style="width: {{ academy_progress.level2 }}%;"></div>
+                    <div class="academy-progress-fill academy-progress-fill-purple" style="width: {{ academy_progress.level2 if academy_progress else 0 }}%;"></div>
                 </div>
+
                 <div class="academy-progress-head academy-progress-head-second">
                     <span>Accès</span>
                     <strong>{% if is_pro %}Complet{% else %}Aperçu limité{% endif %}</strong>
+                </div>
+
+                <div class="academy-info-card" style="margin-top: 18px;">
+                    <h3>Objectif du niveau</h3>
+                    <p>
+                        Rendre la lecture du marché plus mature, plus sélective,
+                        et transformer l’utilisateur en opérateur plus discipliné.
+                    </p>
+                </div>
+
+                <div class="academy-info-card" style="margin-top: 18px;">
+                    <h3>Résultat attendu</h3>
+                    <p>
+                        À la fin de ce niveau, l’élève doit savoir distinguer structure,
+                        régime, liquidité, faux signal, confluence réelle et gestion active rationnelle.
+                    </p>
                 </div>
             </div>
         </div>
@@ -70,7 +103,7 @@
                         <div class="academy-player-overlay-text">
                             <span class="academy-kicker">Vidéo premium</span>
                             <h3>Niveau 2 — Structure, confluence et exécution</h3>
-                            <p>Version complète réservée aux membres Pro avec validation finale et certificat.</p>
+                            <p>Version complète réservée aux membres Pro avec validation finale, graphes, cas réels et certificat.</p>
                         </div>
                         {% endif %}
                     </div>
@@ -88,12 +121,34 @@
                     </div>
                 </div>
 
+                {% if is_pro %}
+                <div class="academy-academic-block" style="margin-top: 24px;">
+                    <span class="academy-box-label">Visualisation marché</span>
+                    <h3>Graphique pédagogique — GOLD / XAUUSD</h3>
+                    <p>
+                        À ce niveau, le graphique ne sert plus seulement à illustrer.
+                        Il devient un support de lecture de structure, de zones de réaction,
+                        de faux breakout, de timing et de gestion active.
+                    </p>
+                    <div class="academy-chart-box">
+                        <iframe
+                            src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_gold_level2&symbol=OANDA:XAUUSD&interval=240&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=F1F3F6&studies=[]&theme=dark&style=1&timezone=Etc%2FUTC&withdateranges=1&hideideas=1"
+                            width="100%"
+                            height="420"
+                            frameborder="0"
+                            allowtransparency="true"
+                            scrolling="no">
+                        </iframe>
+                    </div>
+                </div>
+                {% endif %}
+
                 {% if not is_pro %}
                 <div class="academy-lock-overlay">
                     <div class="academy-lock-card">
                         <div class="academy-lock-icon">🔒</div>
                         <h3>Niveau 2 réservé aux membres Pro</h3>
-                        <p>Débloquez les études de cas, la validation finale, la certification et le contenu avancé.</p>
+                        <p>Débloquez les études de cas, les frameworks avancés, les graphes, la validation finale, la certification et le contenu enrichi.</p>
                         <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
                             Passer Pro maintenant
                         </a>
@@ -116,6 +171,25 @@
                         <li>8. Journal de trading</li>
                         <li>9. Psychologie avancée</li>
                         <li>10. Synthèse et certification</li>
+                    </ul>
+                </div>
+
+                <div class="academy-info-card" style="margin-top: 20px;">
+                    <h3>Ce que ce niveau doit changer</h3>
+                    <p>
+                        Vous rendre plus sélectif, plus cohérent, plus stable,
+                        et moins dépendant des réactions impulsives.
+                    </p>
+                </div>
+
+                <div class="academy-info-card" style="margin-top: 20px;">
+                    <h3>Ce que vous devez savoir faire</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Classifier le régime de marché.</li>
+                        <li>Différencier cassure et validation.</li>
+                        <li>Lire la liquidité et les pièges.</li>
+                        <li>Attendre une vraie confluence.</li>
+                        <li>Gérer un trade sans réaction émotionnelle.</li>
                     </ul>
                 </div>
             </aside>
@@ -149,10 +223,64 @@
                 <p>Mieux distinguer la réaction émotionnelle de l’ajustement rationnel.</p>
             </div>
         </div>
+
+        <div class="academy-chart-grid" style="margin-top: 28px;">
+            <div class="academy-chart-card">
+                <h3>Qualité de décision après montée en niveau</h3>
+                <p>
+                    Le niveau 2 doit augmenter la qualité des filtres, pas la fréquence des entrées.
+                </p>
+                <canvas id="decisionQualityChart" height="120"></canvas>
+            </div>
+
+            <div class="academy-chart-card">
+                <h3>Trades pris vs trades évités</h3>
+                <p>
+                    Un opérateur plus mature ne prend pas forcément plus de trades.
+                    Il évite surtout davantage de pièges.
+                </p>
+                <canvas id="selectivityChart" height="120"></canvas>
+            </div>
+        </div>
+
+        <div class="academy-academic-block" style="margin-top: 28px;">
+            <span class="academy-box-label">Framework avancé</span>
+            <h3>Le modèle décisionnel du niveau 2</h3>
+            <p>
+                À partir de ce niveau, une bonne lecture ne repose plus sur un seul argument.
+                Elle repose sur un ensemble cohérent : structure, régime, zone, liquidité,
+                comportement du prix, timing d’entrée et cadre de gestion.
+            </p>
+
+            <div class="academy-summary-grid">
+                <div class="academy-info-card">
+                    <h3>Les piliers d’analyse</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Structure du marché.</li>
+                        <li>Régime : tendance, range ou transition.</li>
+                        <li>Zone de réaction.</li>
+                        <li>Recherche ou présence de liquidité.</li>
+                        <li>Confluence utile.</li>
+                        <li>Timing d’entrée.</li>
+                    </ul>
+                </div>
+
+                <div class="academy-info-card">
+                    <h3>Les pièges à éviter</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Entrer sur une cassure visuelle sans validation.</li>
+                        <li>Confondre activité et qualité d’exécution.</li>
+                        <li>Ajouter des indicateurs sans hiérarchie.</li>
+                        <li>Modifier le plan sous pression émotionnelle.</li>
+                        <li>Ignorer le contexte global du marché.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
-<section class="academy-section">
+<section class="academy-section" id="module-1">
     <div class="academy-shell">
         <div class="academy-section-title">
             <span class="academy-kicker">Chapitre 1</span>
@@ -172,6 +300,12 @@
                 Cette lecture n’est pas purement descriptive : elle influence directement la qualité d’une décision.
                 Acheter contre une structure baissière ou vendre contre une structure haussière revient souvent
                 à prendre un risque supplémentaire sans justification suffisante.
+            </p>
+            <p>
+                La structure ne donne pas une certitude absolue. Elle fournit une hiérarchie de cohérence.
+                Elle indique dans quel sens le marché a, pour l’instant, le plus de continuité logique.
+                C’est déjà immense, car cela permet d’éviter une partie des décisions prises simplement
+                par impatience ou par sentiment.
             </p>
 
             <div class="academy-definition-box">
@@ -198,6 +332,18 @@
                     est actuellement la plus forte.
                 </p>
             </div>
+
+            <div class="academy-academic-block" style="margin-top: 22px;">
+                <span class="academy-box-label">Lecture pratique</span>
+                <h3>Questions à se poser</h3>
+                <ul class="academy-reflection-list">
+                    <li>Les sommets montent-ils ou baissent-ils ?</li>
+                    <li>Les creux montent-ils ou baissent-ils ?</li>
+                    <li>Les impulsions sont-elles plus fortes que les corrections ?</li>
+                    <li>Le marché construit-il ou détruit-il une logique précédente ?</li>
+                    <li>Ma décision respecte-t-elle cette structure ?</li>
+                </ul>
+            </div>
         </div>
     </div>
 </section>
@@ -222,6 +368,11 @@
                 plus fréquemment piégeuses. La transition, enfin, est souvent la zone la plus délicate :
                 elle concentre incertitude, faux départs et lecture ambiguë.
             </p>
+            <p>
+                Le régime de marché agit comme un filtre majeur. Un trader qui ne l’identifie pas correctement
+                risque d’appliquer des comportements incompatibles avec le contexte.
+                Il ne perd pas seulement parce qu’il “s’est trompé”, mais parce qu’il a mal classé l’environnement.
+            </p>
 
             <div class="academy-warning-box">
                 <span class="academy-box-label">Erreur fréquente</span>
@@ -235,6 +386,52 @@
                 <p>
                     Avant de demander “où entrer ?”, il faut demander “dans quel environnement est-ce que j’opère ?”.
                 </p>
+            </div>
+
+            <div class="academy-summary-grid">
+                <div class="academy-info-card">
+                    <h3>En tendance</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Travailler dans le sens du flux dominant.</li>
+                        <li>Observer la qualité des replis.</li>
+                        <li>Éviter les contre-tendances impulsives sans cadre.</li>
+                    </ul>
+                </div>
+
+                <div class="academy-info-card">
+                    <h3>En range / transition</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Se méfier des cassures visibles.</li>
+                        <li>Attendre plus de confirmation.</li>
+                        <li>Réduire l’agressivité et augmenter la sélectivité.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="academy-comparison-box">
+                <span class="academy-box-label">Lecture comparative</span>
+                <div class="academy-comparison-table">
+                    <div class="academy-comparison-row academy-comparison-head">
+                        <div>Régime</div>
+                        <div>Opportunité principale</div>
+                        <div>Piège principal</div>
+                    </div>
+                    <div class="academy-comparison-row">
+                        <div>Tendance</div>
+                        <div>Suivre le flux dominant</div>
+                        <div>Entrer trop tard</div>
+                    </div>
+                    <div class="academy-comparison-row">
+                        <div>Range</div>
+                        <div>Réactions sur bornes</div>
+                        <div>Faux breakout</div>
+                    </div>
+                    <div class="academy-comparison-row">
+                        <div>Transition</div>
+                        <div>Attendre la clarification</div>
+                        <div>Sur-interprétation</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -260,6 +457,11 @@
                 un niveau visible, déclenche les entrées tardives, puis réintègre rapidement la zone.
                 Le trader discipliné doit apprendre à distinguer cassure et validation.
             </p>
+            <p>
+                Une grande partie des pertes opérationnelles vient de cette confusion :
+                voir un niveau franchi et croire immédiatement que le marché a “prouvé” quelque chose.
+                Or, dans de nombreux cas, le comportement post-cassure est plus important que la cassure elle-même.
+            </p>
 
             <div class="academy-case-box">
                 <span class="academy-box-label">Étude de cas</span>
@@ -277,6 +479,37 @@
                     Une ligne franchie n’est pas encore une validation. Le comportement post-cassure
                     compte autant que la cassure elle-même.
                 </p>
+            </div>
+
+            <div class="academy-academic-block" style="margin-top: 22px;">
+                <span class="academy-box-label">Checklist</span>
+                <h3>Avant de traiter une cassure comme valide</h3>
+                <ul class="academy-reflection-list">
+                    <li>La cassure intervient-elle dans un contexte cohérent ?</li>
+                    <li>Le mouvement est-il propre ou désordonné ?</li>
+                    <li>La clôture confirme-t-elle réellement l’accélération ?</li>
+                    <li>Le prix poursuit-il ou réintègre-t-il rapidement la zone ?</li>
+                    <li>Le breakout est-il nourri par une vraie dynamique ou par un excès émotionnel ?</li>
+                </ul>
+            </div>
+
+            <div class="academy-chart-grid" style="margin-top: 24px;">
+                <div class="academy-chart-card">
+                    <h3>Breakout validé</h3>
+                    <p>
+                        La cassure n’est utile que si elle est suivie d’une tenue structurelle.
+                    </p>
+                    <canvas id="validBreakoutChart" height="120"></canvas>
+                </div>
+
+                <div class="academy-chart-card">
+                    <h3>Faux breakout</h3>
+                    <p>
+                        Le piège se produit souvent lorsque la cassure attire les retardataires
+                        avant une réintégration rapide.
+                    </p>
+                    <canvas id="falseBreakoutChart" height="120"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -303,6 +536,11 @@
                 avant de revenir. Il ne s’agit pas seulement de direction ; il s’agit aussi de recherche
                 d’ordres et de confrontation.
             </p>
+            <p>
+                Pour le trader en progression, cette notion est essentielle : le marché n’avance pas seulement
+                parce qu’il “veut monter ou baisser”, mais aussi parce qu’il traverse des zones où
+                l’interaction entre intérêts opposés devient plus intense.
+            </p>
 
             <div class="academy-definition-box">
                 <span class="academy-box-label">Définition</span>
@@ -318,6 +556,44 @@
                     Le marché ne se déplace pas uniquement “dans un sens”. Il se déplace aussi vers des zones
                     où l’information et les ordres se concentrent.
                 </p>
+            </div>
+
+            <div class="academy-example-box">
+                <span class="academy-box-label">Exemple simple</span>
+                <p>
+                    Un plus haut récent peut attirer le prix non parce qu’il “doit casser”,
+                    mais parce qu’il concentre de l’attention, des stops et de la liquidité potentielle.
+                </p>
+            </div>
+
+            <div class="academy-cards" style="margin-top: 24px;">
+                <article class="academy-case-card">
+                    <span class="academy-mini-badge">BTC</span>
+                    <h3>Cas réel — Sweep au-dessus d’un sommet récent</h3>
+                    <p>
+                        Le prix dépasse brièvement un sommet visible, attire les achats impulsifs,
+                        puis réintègre. Le mouvement n’était pas seulement directionnel : il allait chercher
+                        de la liquidité avant de se retourner.
+                    </p>
+                </article>
+
+                <article class="academy-case-card">
+                    <span class="academy-mini-badge">EUR/USD</span>
+                    <h3>Cas réel — Mèche sous un plus bas de range</h3>
+                    <p>
+                        Une extension sous le bas du range peut piéger les vendeurs tardifs puis relancer
+                        une réaction opposée. La lecture de la liquidité améliore la compréhension du piège.
+                    </p>
+                </article>
+
+                <article class="academy-case-card">
+                    <span class="academy-mini-badge">GOLD</span>
+                    <h3>Cas réel — Nettoyage avant reprise</h3>
+                    <p>
+                        L’or peut balayer une zone visible avant de reprendre sa logique dominante.
+                        Sans lecture de liquidité, ce mouvement semble “irrationnel”. Avec elle, il devient lisible.
+                    </p>
+                </article>
             </div>
         </div>
     </div>
@@ -342,6 +618,10 @@
                 où l’on cherche tellement de confirmations que l’on ne décide jamais. La confluence utile
                 n’est pas l’accumulation désordonnée d’arguments, mais la cohérence entre quelques éléments majeurs.
             </p>
+            <p>
+                Ce qui fait la force d’un scénario n’est donc pas la quantité d’arguments,
+                mais leur hiérarchie et leur compatibilité.
+            </p>
 
             <div class="academy-summary-grid">
                 <div class="academy-info-card">
@@ -362,6 +642,48 @@
                         <li>Validation artificielle après coup</li>
                         <li>Décision dictée par l’émotion</li>
                     </ul>
+                </div>
+            </div>
+
+            <div class="academy-academic-block" style="margin-top: 22px;">
+                <span class="academy-box-label">Règle avancée</span>
+                <h3>Une bonne confluence reste simple</h3>
+                <ul class="academy-reflection-list">
+                    <li>Un ou deux arguments forts valent mieux que cinq arguments faibles.</li>
+                    <li>La confluence doit aider à décider, pas à éviter toute responsabilité.</li>
+                    <li>La qualité d’exécution dépend souvent d’une lecture plus simple, mais plus juste.</li>
+                    <li>Plus la lecture est forcée, plus elle est fragile.</li>
+                </ul>
+            </div>
+
+            <div class="academy-comparison-box">
+                <span class="academy-box-label">Exemple de hiérarchie</span>
+                <div class="academy-comparison-table">
+                    <div class="academy-comparison-row academy-comparison-head">
+                        <div>Élément</div>
+                        <div>Poids utile</div>
+                        <div>Commentaire</div>
+                    </div>
+                    <div class="academy-comparison-row">
+                        <div>Structure</div>
+                        <div>Fort</div>
+                        <div>Cadre principal</div>
+                    </div>
+                    <div class="academy-comparison-row">
+                        <div>Zone</div>
+                        <div>Fort</div>
+                        <div>Point d’intérêt opérationnel</div>
+                    </div>
+                    <div class="academy-comparison-row">
+                        <div>Timing</div>
+                        <div>Fort</div>
+                        <div>Qualité d’exécution</div>
+                    </div>
+                    <div class="academy-comparison-row">
+                        <div>Indicateurs multiples</div>
+                        <div>Secondaire</div>
+                        <div>Doivent rester au service du plan</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -387,6 +709,11 @@
                 rendement/risque et augmente souvent la probabilité d’un essoufflement immédiat. Le timing exige donc
                 une patience active : observer, attendre, confirmer sans tomber dans la paralysie.
             </p>
+            <p>
+                Cette patience active distingue fortement le trader plus mature du trader impulsif.
+                Le premier tolère l’attente pour améliorer la qualité du point d’entrée.
+                Le second cherche surtout à être “dans le marché”, même si son exécution est médiocre.
+            </p>
 
             <div class="academy-warning-box">
                 <span class="academy-box-label">Erreur fréquente</span>
@@ -400,6 +727,26 @@
                 <p>
                     Le bon timing ne cherche pas à être le plus rapide ; il cherche à être le plus cohérent.
                 </p>
+            </div>
+
+            <div class="academy-academic-block" style="margin-top: 22px;">
+                <span class="academy-box-label">Checklist timing</span>
+                <h3>Avant d’entrer en position</h3>
+                <ul class="academy-reflection-list">
+                    <li>Le contexte justifie-t-il vraiment l’entrée ?</li>
+                    <li>Le prix est-il sur une zone logique ?</li>
+                    <li>Le risque est-il encore acceptable ?</li>
+                    <li>Le mouvement est-il déjà trop avancé ?</li>
+                    <li>Suis-je en train d’entrer par logique ou par peur de rater ?</li>
+                </ul>
+            </div>
+
+            <div class="academy-chart-card" style="margin-top: 24px;">
+                <h3>Timing tôt / idéal / tardif</h3>
+                <p>
+                    Un même scénario peut donner des résultats très différents selon la qualité du point d’entrée.
+                </p>
+                <canvas id="timingChart" height="120"></canvas>
             </div>
         </div>
     </div>
@@ -425,6 +772,10 @@
                 Modifier un trade parce que la structure évolue peut être pertinent. Le modifier parce qu’on ne supporte
                 pas le stress du marché l’est beaucoup moins.
             </p>
+            <p>
+                La gestion active bien comprise ne consiste donc pas à “faire quelque chose” en permanence.
+                Elle consiste à rester aligné avec la logique du scénario, même lorsque le marché met cette logique sous tension.
+            </p>
 
             <div class="academy-example-box">
                 <span class="academy-box-label">Exemple concret</span>
@@ -433,6 +784,55 @@
                     En revanche, déplacer un stop prématurément sous l’effet de la peur peut sortir le trader
                     d’un scénario encore valide.
                 </p>
+            </div>
+
+            <div class="academy-summary-grid">
+                <div class="academy-info-card">
+                    <h3>Ajustement rationnel</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Le marché confirme une partie du scénario.</li>
+                        <li>Une zone intermédiaire a été atteinte.</li>
+                        <li>La structure permet une sécurisation logique.</li>
+                    </ul>
+                </div>
+
+                <div class="academy-info-card">
+                    <h3>Ajustement émotionnel</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Le trader ne supporte plus le stress.</li>
+                        <li>Le stop est déplacé sans justification structurelle.</li>
+                        <li>La sortie est provoquée par la peur plus que par le prix.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="academy-cards" style="margin-top: 24px;">
+                <article class="academy-case-card">
+                    <span class="academy-mini-badge">NASDAQ</span>
+                    <h3>Cas réel — Sécurisation après impulsion</h3>
+                    <p>
+                        Après une expansion nette sur indice, une sécurisation partielle peut être rationnelle
+                        si une zone intermédiaire importante est atteinte.
+                    </p>
+                </article>
+
+                <article class="academy-case-card">
+                    <span class="academy-mini-badge">BTC</span>
+                    <h3>Cas réel — Stop déplacé trop tôt</h3>
+                    <p>
+                        Déplacer trop vite le stop à break-even peut sortir le trader d’un scénario encore sain
+                        lors d’un simple retracement technique.
+                    </p>
+                </article>
+
+                <article class="academy-case-card">
+                    <span class="academy-mini-badge">GOLD</span>
+                    <h3>Cas réel — Dégradation structurelle</h3>
+                    <p>
+                        Lorsque la structure perd sa cohérence, une sortie anticipée peut devenir rationnelle,
+                        même avant l’atteinte du stop initial.
+                    </p>
+                </article>
             </div>
         </div>
     </div>
@@ -457,12 +857,43 @@
                 la qualité de la décision. Deux trades perdants n’ont pas la même signification : l’un peut être
                 une bonne exécution battue par le marché, l’autre une erreur de comportement évitable.
             </p>
+            <p>
+                L’écriture du journal est l’un des ponts les plus puissants entre expérience et progression.
+                Elle transforme l’impression subjective en matériau d’amélioration.
+            </p>
 
             <div class="academy-keytakeaway-box">
                 <span class="academy-box-label">À retenir</span>
                 <p>
                     Sans mémoire structurée, l’expérience se dissipe. Avec un journal, elle devient capital d’apprentissage.
                 </p>
+            </div>
+
+            <div class="academy-academic-block" style="margin-top: 22px;">
+                <span class="academy-box-label">Structure conseillée</span>
+                <h3>Que noter dans un journal</h3>
+                <ul class="academy-reflection-list">
+                    <li>Contexte du marché.</li>
+                    <li>Scénario et justification de l’entrée.</li>
+                    <li>Risque accepté.</li>
+                    <li>Qualité du timing.</li>
+                    <li>Évolution émotionnelle pendant le trade.</li>
+                    <li>Qualité de la sortie.</li>
+                    <li>Leçon principale à retenir.</li>
+                </ul>
+            </div>
+
+            <div class="academy-checklist">
+                <span class="academy-box-label">Template simple</span>
+                <h3>Exemple de fiche post-trade</h3>
+                <ul class="academy-reflection-list">
+                    <li>Actif : BTC / GOLD / EURUSD / NASDAQ...</li>
+                    <li>Régime : tendance / range / transition.</li>
+                    <li>Type d’idée : breakout, retest, sweep, rebond, continuation...</li>
+                    <li>Confluence : structure, zone, liquidité, timing.</li>
+                    <li>Résultat : gain, perte, break-even.</li>
+                    <li>Leçon : technique, discipline ou psychologie.</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -502,12 +933,47 @@
                 contre les réactions les plus coûteuses : impatience, vengeance, euphorie, panique,
                 refus de l’invalidation, besoin compulsif d’activité.
             </p>
+            <p>
+                Plus le niveau technique augmente, plus la dimension psychologique devient déterminante.
+                Le trader ne perd plus seulement parce qu’il “ne sait pas”, mais aussi parce qu’il n’arrive pas
+                toujours à rester fidèle à ce qu’il sait déjà.
+            </p>
 
             <div class="academy-keytakeaway-box">
                 <span class="academy-box-label">À retenir</span>
                 <p>
                     Plus le niveau technique monte, plus la qualité psychologique devient déterminante.
                 </p>
+            </div>
+
+            <div class="academy-summary-grid">
+                <div class="academy-info-card">
+                    <h3>Réaction fragile</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Entrer trop vite.</li>
+                        <li>Couper trop tôt sans raison structurelle.</li>
+                        <li>Déplacer un stop par peur.</li>
+                        <li>Surtrader après une perte ou un gain.</li>
+                    </ul>
+                </div>
+
+                <div class="academy-info-card">
+                    <h3>Réaction mature</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Observer avant d’agir.</li>
+                        <li>Rester fidèle au plan.</li>
+                        <li>Distinguer inconfort et invalidation réelle.</li>
+                        <li>Documenter objectivement ses erreurs.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="academy-chart-card" style="margin-top: 24px;">
+                <h3>Psychologie fragile vs psychologie mature</h3>
+                <p>
+                    Le niveau technique seul ne suffit pas. La stabilité émotionnelle change fortement la qualité des décisions.
+                </p>
+                <canvas id="psychologyChart" height="120"></canvas>
             </div>
         </div>
     </div>
@@ -557,6 +1023,20 @@
                 </ul>
             </div>
         </div>
+
+        <div class="academy-academic-block" style="margin-top: 24px;">
+            <span class="academy-box-label">Checklist finale</span>
+            <h3>Checklist opérateur niveau 2</h3>
+            <ul class="academy-reflection-list">
+                <li>Ai-je identifié la structure dominante ?</li>
+                <li>Le régime de marché est-il clair ?</li>
+                <li>Ma zone est-elle logique ?</li>
+                <li>La confluence est-elle réelle ou forcée ?</li>
+                <li>Mon timing protège-t-il encore mon ratio rendement/risque ?</li>
+                <li>Ma gestion active reste-t-elle rationnelle ?</li>
+                <li>Ai-je documenté ce trade ou vais-je laisser l’expérience se perdre ?</li>
+            </ul>
+        </div>
     </div>
 </section>
 
@@ -591,10 +1071,24 @@
                     <label><input type="radio" name="q3" value="c"> éviter toute perte future</label>
                 </div>
 
+                <div class="academy-question">
+                    <h3>4. Le bon timing d’entrée consiste surtout à :</h3>
+                    <label><input type="radio" name="q4" value="a"> entrer le plus vite possible</label>
+                    <label><input type="radio" name="q4" value="b"> entrer seulement lorsque le point d’entrée reste cohérent avec le scénario et le risque</label>
+                    <label><input type="radio" name="q4" value="c"> attendre une certitude absolue</label>
+                </div>
+
+                <div class="academy-question">
+                    <h3>5. La gestion active de position doit être :</h3>
+                    <label><input type="radio" name="q5" value="a"> impulsive pour s’adapter vite</label>
+                    <label><input type="radio" name="q5" value="b"> fondée sur la structure et l’évolution réelle du scénario</label>
+                    <label><input type="radio" name="q5" value="c"> systématiquement agressive</label>
+                </div>
+
                 <button
                     type="button"
                     class="academy-btn academy-btn-primary"
-                    onclick="submitQuiz('academyQuiz2', ['a','b','b'], 'quiz2Result')">
+                    onclick="submitQuiz('academyQuiz2', ['a','b','b','b','b'], 'quiz2Result')">
                     Valider le quiz final
                 </button>
 
@@ -607,7 +1101,7 @@
                 </button>
             </form>
 
-            {% if academy_progress.certificate_ready %}
+            {% if academy_progress and academy_progress.certificate_ready %}
             <div class="academy-certificate-card">
                 <span class="academy-kicker">Certification débloquée</span>
                 <h3>VelWolf Academy Certificate</h3>
@@ -619,7 +1113,7 @@
             <div class="academy-locked-box">
                 <div class="academy-lock-icon">🔒</div>
                 <h3>Évaluation finale réservée au plan Pro</h3>
-                <p>Débloquez la validation complète, la progression réelle et la certification premium.</p>
+                <p>Débloquez la validation complète, les graphes, les checklists, les cas réels, la progression réelle et la certification premium.</p>
                 <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
                     Passer au plan Pro
                 </a>
@@ -631,5 +1125,162 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{ url_for('static', filename='academy.js') }}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const chartFontColor = "#cbd5e1";
+    const gridColor = "rgba(148, 163, 184, 0.15)";
+
+    function baseOptions() {
+        return {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: chartFontColor
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: chartFontColor },
+                    grid: { color: gridColor }
+                },
+                y: {
+                    ticks: { color: chartFontColor },
+                    grid: { color: gridColor }
+                }
+            }
+        };
+    }
+
+    const decisionQualityChart = document.getElementById("decisionQualityChart");
+    if (decisionQualityChart) {
+        new Chart(decisionQualityChart, {
+            type: "radar",
+            data: {
+                labels: ["Structure", "Confluence", "Timing", "Discipline", "Gestion", "Sélectivité"],
+                datasets: [
+                    {
+                        label: "Avant niveau 2",
+                        data: [4, 3, 4, 4, 3, 3]
+                    },
+                    {
+                        label: "Après niveau 2",
+                        data: [8, 8, 8, 8, 7, 9]
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: chartFontColor }
+                    }
+                },
+                scales: {
+                    r: {
+                        angleLines: { color: gridColor },
+                        grid: { color: gridColor },
+                        pointLabels: { color: chartFontColor },
+                        ticks: {
+                            color: chartFontColor,
+                            backdropColor: "transparent"
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    const selectivityChart = document.getElementById("selectivityChart");
+    if (selectivityChart) {
+        new Chart(selectivityChart, {
+            type: "bar",
+            data: {
+                labels: ["Trades pris", "Trades évités", "Pièges évités"],
+                datasets: [{
+                    label: "Opérateur plus mature",
+                    data: [8, 14, 10]
+                }]
+            },
+            options: baseOptions()
+        });
+    }
+
+    const validBreakoutChart = document.getElementById("validBreakoutChart");
+    if (validBreakoutChart) {
+        new Chart(validBreakoutChart, {
+            type: "line",
+            data: {
+                labels: ["A", "B", "C", "D", "E", "F"],
+                datasets: [{
+                    label: "Cassure puis continuation",
+                    data: [100, 101, 102, 106, 108, 110],
+                    tension: 0.35
+                }]
+            },
+            options: baseOptions()
+        });
+    }
+
+    const falseBreakoutChart = document.getElementById("falseBreakoutChart");
+    if (falseBreakoutChart) {
+        new Chart(falseBreakoutChart, {
+            type: "line",
+            data: {
+                labels: ["A", "B", "C", "D", "E", "F"],
+                datasets: [{
+                    label: "Cassure puis réintégration",
+                    data: [100, 101, 102, 105, 101, 99],
+                    tension: 0.35
+                }]
+            },
+            options: baseOptions()
+        });
+    }
+
+    const timingChart = document.getElementById("timingChart");
+    if (timingChart) {
+        new Chart(timingChart, {
+            type: "bar",
+            data: {
+                labels: ["Trop tôt", "Timing cohérent", "Trop tard"],
+                datasets: [{
+                    label: "Qualité d’entrée",
+                    data: [4, 9, 3]
+                }]
+            },
+            options: baseOptions()
+        });
+    }
+
+    const psychologyChart = document.getElementById("psychologyChart");
+    if (psychologyChart) {
+        new Chart(psychologyChart, {
+            type: "line",
+            data: {
+                labels: ["Trade 1", "Trade 2", "Trade 3", "Trade 4", "Trade 5", "Trade 6"],
+                datasets: [
+                    {
+                        label: "Réaction émotionnelle",
+                        data: [6, 4, 8, 3, 7, 2],
+                        tension: 0.35
+                    },
+                    {
+                        label: "Stabilité mature",
+                        data: [7, 7, 7, 8, 8, 8],
+                        tension: 0.35
+                    }
+                ]
+            },
+            options: baseOptions()
+        });
+    }
+});
+</script>
 {% endblock %}

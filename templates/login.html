@@ -1,117 +1,76 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion - VelWolef</title>
-    <meta name="description" content="Connectez-vous à votre compte VelWolef pour accéder à votre dashboard premium.">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-</head>
-<body class="home-body auth-page">
+{% extends "base.html" %}
 
-    {% include "partials/navbar.html" %}
+{% block title %}{{ t("login", "Connexion") }}{% endblock %}
 
-    <section class="auth-section auth-section-login">
-        <div class="hero-bg-grid"></div>
-        <div class="hero-glow hero-glow-1"></div>
-        <div class="hero-glow hero-glow-2"></div>
+{% block content %}
 
-        <div class="section-container">
-            <div class="auth-layout">
+<section class="auth-section auth-section-login">
 
-                <div class="auth-left auth-card">
-                    <div class="auth-badge auth-badge-green">
-                        🔐 Accès sécurisé
-                    </div>
+    <div class="section-container">
+        <div class="auth-layout">
 
-                    <h1 class="auth-title">
-                        Connectez-vous à votre espace trading.
-                    </h1>
+            <div class="auth-left auth-card">
 
-                    <p class="auth-text">
-                        Retrouvez votre dashboard, vos statistiques, vos signaux
-                        et votre accès Premium dans une interface claire et professionnelle.
-                    </p>
+                <h1 class="auth-title">
+                    {{ t("login_title", "Connectez-vous à votre espace trading") }}
+                </h1>
 
-                    <div class="auth-points">
-                        <div class="auth-point">
-                            <span class="auth-point-icon">📊</span>
-                            <span>Dashboard complet et suivi des performances</span>
-                        </div>
-                        <div class="auth-point">
-                            <span class="auth-point-icon">📲</span>
-                            <span>Notifications Telegram en direct</span>
-                        </div>
-                        <div class="auth-point">
-                            <span class="auth-point-icon">💎</span>
-                            <span>Accès Premium et gestion d’abonnement</span>
-                        </div>
-                    </div>
+                <p class="auth-text">
+                    {{ t("login_desc", "Accédez à votre dashboard et vos signaux") }}
+                </p>
 
-                    <div class="auth-back-link-wrap">
-                        <a href="{{ url_for('main.home') }}" class="auth-back-link">← Retour à l’accueil</a>
-                    </div>
-                </div>
-
-                <div class="auth-right auth-card auth-form-card">
-                    <div class="auth-form-header">
-                        <h2>Connexion</h2>
-                        <p>Entrez vos identifiants pour accéder à votre compte.</p>
-                    </div>
-
-                    {% with messages = get_flashed_messages() %}
-                      {% if messages %}
-                        <div class="flash-stack">
-                            {% for message in messages %}
-                              <div class="flash-message">
-                                  {{ message }}
-                              </div>
-                            {% endfor %}
-                        </div>
-                      {% endif %}
-                    {% endwith %}
-
-                    <form method="POST" class="auth-form">
-                        <div class="form-group">
-                            <label for="login-email">Adresse email</label>
-                            <input
-                                id="login-email"
-                                type="email"
-                                name="email"
-                                placeholder="Votre email"
-                                required
-                            >
-                        </div>
-
-                        <div class="form-group">
-                            <label for="login-password">Mot de passe</label>
-                            <input
-                                id="login-password"
-                                type="password"
-                                name="password"
-                                placeholder="Votre mot de passe"
-                                required
-                            >
-                        </div>
-
-                        <button type="submit" class="auth-submit-btn auth-submit-btn-blue">
-                            Se connecter
-                        </button>
-                    </form>
-
-                    <div class="auth-bottom-link">
-                        <p>Pas encore de compte ?</p>
-                        <a href="{{ url_for('auth.register') }}">Créer un compte</a>
-                    </div>
-                </div>
+                <!-- 🔥 FIX -->
+                <a href="{{ url_for('main.home', lang_code=current_lang) }}" class="auth-back-link">
+                    ← {{ t("back_home", "Accueil") }}
+                </a>
 
             </div>
-        </div>
-    </section>
 
-</body>
-</html>
+            <div class="auth-right auth-card auth-form-card">
+
+                <h2>{{ t("login", "Connexion") }}</h2>
+
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="flash-message">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST">
+
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="password" name="password" placeholder="Mot de passe" required>
+                    
+    <!-- 🔥 AJOUT IMPORTANT -->
+    <div style="text-align:right;margin-top:-8px;margin-bottom:15px;">
+        <a href="{{ url_for('auth.forgot_password', lang_code=current_lang) }}"
+           style="color:#00ff99;font-size:13px;text-decoration:none;">
+            Mot de passe oublié ?
+        </a>
+    </div>
+
+                    <button type="submit" class="auth-submit-btn">
+                        {{ t("login", "Connexion") }}
+                    </button>
+
+                </form>
+
+                <p>
+                    {{ t("no_account", "Pas de compte ?") }}
+
+                    <!-- 🔥 FIX -->
+                    <a href="{{ url_for('auth.register', lang_code=current_lang) }}">
+                        {{ t("signup", "Créer un compte") }}
+                    </a>
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}

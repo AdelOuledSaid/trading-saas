@@ -1,10 +1,45 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ current_lang }}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}VelWolf{% endblock %}</title>
 
+    <!-- GOOGLE SEARCH CONSOLE -->
+    <meta name="google-site-verification" content="V1Eg9EWFsV2ipI3aI62p9i-H0zm2RgXE0-rAoY9CGAs" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO TITLE -->
+    <title>{% block title %}{{ t("seo_home_title", "VelWolef | Trading Signals & Academy") }}{% endblock %}</title>
+
+    <!-- SEO DESCRIPTION -->
+    <meta name="description" content="{% block meta_description %}{{ t('seo_home_description', 'Plateforme premium de trading, signaux, academy et analyse marché.') }}{% endblock %}">
+
+    <!-- OPTIONAL SEO -->
+    <meta name="robots" content="index,follow">
+    <meta name="theme-color" content="#0b1220">
+
+    <!-- CANONICAL -->
+    <link rel="canonical" href="{{ request.url }}">
+
+    <!-- HREFLANG (Google Multi-langue) -->
+    <link rel="alternate" hreflang="fr" href="{{ switch_lang_url('fr') }}">
+    <link rel="alternate" hreflang="en" href="{{ switch_lang_url('en') }}">
+    <link rel="alternate" hreflang="es" href="{{ switch_lang_url('es') }}">
+    <link rel="alternate" hreflang="x-default" href="{{ switch_lang_url('fr') }}">
+
+    <!-- OPEN GRAPH -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{% block og_title %}{{ t('seo_home_title', 'VelWolef | Trading Signals & Academy') }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ t('seo_home_description', 'Plateforme premium de trading, signaux, academy et analyse marché.') }}{% endblock %}">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:site_name" content="VelWolef">
+
+    <!-- TWITTER -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}{{ t('seo_home_title', 'VelWolef | Trading Signals & Academy') }}{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}{{ t('seo_home_description', 'Plateforme premium de trading, signaux, academy et analyse marché.') }}{% endblock %}">
+
+    <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -12,10 +47,12 @@
 
     {% block extra_css %}{% endblock %}
 </head>
+
 <body>
 
     {% include "partials/navbar.html" %}
 
+    <!-- FLASH -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="flash-wrapper">
@@ -28,75 +65,106 @@
         {% endif %}
     {% endwith %}
 
+    <!-- MAIN -->
     <main>
         {% block content %}{% endblock %}
     </main>
 
+    <!-- FOOTER -->
     <footer class="site-footer">
         <div class="section-container footer-inner">
 
             <div class="footer-brand">
-                <h3>VelWolf</h3>
+                <h3>VelWolef</h3>
                 <p>
-                    Plateforme premium de signaux, résultats, dashboard et academy
-                    pour une expérience trading plus claire et plus professionnelle.
+                    {{ t("footer_desc", "Plateforme premium de signaux trading, résultats et academy.") }}
                 </p>
             </div>
 
             <div class="footer-links">
-                <a href="{{ url_for('main.home') }}">Accueil</a>
-                <a href="{{ url_for('billing.pricing') }}">Offres</a>
-                <a href="{{ url_for('signals.results') }}">Résultats</a>
-                <a href="{{ url_for('pages.faq_page') }}">FAQ</a>
-                <a href="{{ url_for('pages.cgu') }}">CGU</a>
-                <a href="{{ url_for('pages.mentions_legales') }}">Mentions légales</a>
+                <a href="{{ url_for('main.home', lang_code=current_lang) }}">
+                    {{ t("home", "Accueil") }}
+                </a>
+
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}">
+                    {{ t("pricing", "Offres") }}
+                </a>
+
+                <a href="{{ url_for('signals.results', lang_code=current_lang) }}">
+                    {{ t("results", "Résultats") }}
+                </a>
+
+                <a href="{{ url_for('pages.faq_page', lang_code=current_lang) }}">
+                    FAQ
+                </a>
+
+                <a href="{{ url_for('pages.cgu', lang_code=current_lang) }}">
+                    CGU
+                </a>
+
+                <a href="{{ url_for('pages.mentions_legales', lang_code=current_lang) }}">
+                    {{ t("legal", "Mentions légales") }}
+                </a>
             </div>
 
         </div>
     </footer>
 
+    <!-- UPGRADE POPUP -->
     <div id="upgradePopup" class="upgrade-popup" aria-hidden="true">
         <div class="upgrade-popup-box">
-            <div class="upgrade-popup-badge">Accès Pro requis</div>
-            <h3>🔒 Contenu réservé aux membres Pro</h3>
+            <div class="upgrade-popup-badge">
+                {{ t("pro_required", "Accès Pro requis") }}
+            </div>
+
+            <h3>🔒 {{ t("premium_content", "Contenu réservé aux membres Pro") }}</h3>
+
             <p>
-                Débloquez l’Academy complète, les vidéos premium, les quiz, la certification
-                et l’expérience de progression avancée.
+                {{ t("upgrade_text", "Débloquez l’Academy complète, les vidéos et la certification.") }}
             </p>
 
             <div class="upgrade-popup-actions">
                 {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('billing.create_checkout_pro') }}" class="academy-btn academy-btn-gold">
-                        Débloquer maintenant
-                    </a>
+                    <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST" style="display:inline;">
+                        <input type="hidden" name="plan" value="premium">
+                        <button type="submit" class="academy-btn academy-btn-gold">
+                            {{ t("upgrade_now", "Débloquer maintenant") }}
+                        </button>
+                    </form>
                 {% else %}
-                    <a href="{{ url_for('auth.login') }}" class="academy-btn academy-btn-gold">
-                        Se connecter pour upgrader
+                    <a href="{{ url_for('auth.login', lang_code=current_lang) }}" class="academy-btn academy-btn-gold">
+                        {{ t("login_upgrade", "Se connecter pour upgrader") }}
                     </a>
                 {% endif %}
 
                 <button type="button" class="upgrade-popup-close" onclick="closeUpgradePopup()">
-                    Fermer
+                    {{ t("close", "Fermer") }}
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- STICKY CTA -->
     {% if current_user.is_authenticated %}
     <div class="upgrade-sticky">
-        <a href="{{ url_for('billing.create_checkout_pro') }}">
-            🚀 Passer Pro
-        </a>
+        <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST" style="display:inline;">
+            <input type="hidden" name="plan" value="premium">
+            <button type="submit" style="all:unset; cursor:pointer;">
+                🚀 {{ t("go_pro", "Passer Pro") }}
+            </button>
+        </form>
     </div>
     {% else %}
     <div class="upgrade-sticky">
-        <a href="{{ url_for('auth.login') }}">
-            🔐 Connexion pour débloquer Pro
+        <a href="{{ url_for('auth.login', lang_code=current_lang) }}">
+            🔐 {{ t("login_unlock", "Connexion pour débloquer Pro") }}
         </a>
     </div>
     {% endif %}
 
+    <!-- JS -->
     <script src="{{ url_for('static', filename='main.js') }}"></script>
     {% block extra_js %}{% endblock %}
+
 </body>
 </html>

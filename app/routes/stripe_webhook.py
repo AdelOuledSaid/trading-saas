@@ -87,8 +87,6 @@ def stripe_webhook():
             plan = get_plan_from_price_id(price_id)
             status = subscription.get("status")
 
-            # IMPORTANT:
-            # On ne garde premium que si l'abonnement est réellement actif.
             active_statuses = ["trialing", "active"]
 
             user.stripe_customer_id = subscription.get("customer")
@@ -96,7 +94,7 @@ def stripe_webhook():
 
             if status in active_statuses:
                 user.plan = plan
-                user.is_premium = plan in ["basic", "premium", "vip"]
+                user.is_premium = plan in ["basic", "premium", "vip", "pro"]
             else:
                 user.plan = "free"
                 user.is_premium = False

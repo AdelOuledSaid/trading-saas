@@ -13,8 +13,14 @@ async function loadReplay() {
         const res = await fetch(`/api/replay/${replayId}`);
         replayData = await res.json();
 
-        if (!replayData || replayData.error) {
+        if (!res.ok || !replayData || replayData.error) {
             console.error("Erreur replay:", replayData?.error || "Données invalides");
+            renderChartMessage("Aucun replay disponible pour ce trade.");
+            return;
+        }
+
+        if (!replayData.candles || replayData.candles.length === 0) {
+            renderChartMessage("Ce replay ne contient pas encore de bougies.");
             return;
         }
 
@@ -27,9 +33,27 @@ async function loadReplay() {
             "Le score apparaîtra après ton choix.",
             ""
         );
+
+        // Démarrage automatique pour éviter une zone vide
+        setTimeout(() => {
+            startReplay();
+        }, 300);
+
     } catch (error) {
         console.error("Erreur chargement replay:", error);
+        renderChartMessage("Impossible de charger le replay.");
     }
+}
+
+function renderChartMessage(message) {
+    const container = document.getElementById("chart");
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="replay-empty-state">
+            ${message}
+        </div>
+    `;
 }
 
 function initChart() {
@@ -38,6 +62,9 @@ function initChart() {
         console.error("Container #chart introuvable");
         return;
     }
+
+    // Nettoyage si reset / reload
+    container.innerHTML = "";
 
     chart = LightweightCharts.createChart(container, {
         width: container.clientWidth,
@@ -147,7 +174,10 @@ function startReplay() {
         });
 
         highlightEvents(index);
-        chart.timeScale().scrollToRealTime();
+
+        if (chart) {
+            chart.timeScale().scrollToRealTime();
+        }
 
         index++;
     }, speed);
@@ -180,6 +210,10 @@ function resetReplay() {
         "Le score apparaîtra après ton choix.",
         ""
     );
+
+    setTimeout(() => {
+        startReplay();
+    }, 150);
 }
 
 function setSpeed(multiplier) {
@@ -228,7 +262,7 @@ function highlightEvents(currentIndex) {
 function checkDecisionPoint(currentIndex) {
     if (decisionShown) return;
 
-    if (currentIndex === 2) {
+    if (currentIndex === 20) {
         decisionShown = true;
         pauseReplay();
 
@@ -267,8 +301,6 @@ function makeDecision(choice) {
         decisionBox.classList.add("hidden");
     }
 
-    console.log("Choix utilisateur :", choice);
-
     let score = 0;
     let status = "";
     let feedback = "";
@@ -288,7 +320,7 @@ function makeDecision(choice) {
         score = 0;
         status = "bad";
         statusText = "Sortie émotionnelle";
-        feedback = "❌ Mauvaise décision. Le marché repart ensuite dans le bon sens, tu coupes trop tôt.";
+        feedback = "❌ Mauvaise décision. Tu coupes trop tôt par manque de discipline.";
     }
 
     traderScore = score;
@@ -302,16 +334,6 @@ function updateScoreUI(score, statusText, messageText, level) {
     const scoreEl = document.getElementById("trader-score");
     const statusEl = document.getElementById("trader-status");
     const feedbackEl = document.getElementById("decision-feedback");
-
-    console.log("updateScoreUI appelé", {
-        scoreEl,
-        statusEl,
-        feedbackEl,
-        score,
-        statusText,
-        messageText,
-        level
-    });
 
     if (scoreEl) {
         scoreEl.textContent = String(score);

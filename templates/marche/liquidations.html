@@ -1,0 +1,895 @@
+{% extends "base.html" %}
+
+{% block title %}Liquidations | VelWolf{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='liquidations.css') }}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<section class="inner-hero liquidations-hero">
+    <div class="section-container">
+        <div class="liq-hero-top">
+            <span class="section-badge">Derivatives Pressure Monitor</span>
+            <span class="live-badge">
+                <span class="live-dot"></span>
+                LIVE FLOW
+            </span>
+        </div>
+
+        <h1 class="inner-page-title">Liquidations</h1>
+        <p class="inner-page-text">
+            Cette page suit les liquidations importantes sur les principaux actifs afin d’identifier
+            les phases de purge, les short squeezes, les flushs de longs et les zones où le marché
+            force massivement des sorties de position. L’objectif n’est pas seulement de voir les chiffres,
+            mais de comprendre la pression réelle qui agit sur le prix.
+        </p>
+
+        <div class="liq-hero-stats">
+            <div class="liq-hero-stat">
+                <span>Total Events</span>
+                <strong id="heroTotalEvents">{{ summary.total_events or 0 }}</strong>
+            </div>
+            <div class="liq-hero-stat">
+                <span>Total Liquidated</span>
+                <strong id="heroTotalValue">{{ summary.total_value or "$0.0M" }}</strong>
+            </div>
+            <div class="liq-hero-stat">
+                <span>Dominant Bias</span>
+                <strong id="heroBias">{{ summary.dominant_bias or "Neutral" }}</strong>
+            </div>
+            <div class="liq-hero-stat">
+                <span>High Impact</span>
+                <strong id="heroHighImpact">{{ summary.high_impact_count or 0 }}</strong>
+            </div>
+        </div>
+
+        <div id="liveStatus" class="live-status live-status-waiting">
+            Waiting live data...
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="results-proof-box liq-summary-box">
+            <div class="results-proof-left">
+                <span class="proof-badge">Résumé du marché</span>
+                <h2>Vue d’ensemble des liquidations détectées</h2>
+                <p>
+                    Les liquidations ne constituent pas un signal autonome, mais elles offrent un contexte
+                    institutionnel précieux. Une vague de shorts liquidés peut alimenter une extension haussière.
+                    Une série de longs liquidés peut au contraire confirmer une phase de panique ou une cassure
+                    structurelle du marché.
+                </p>
+
+                <div class="results-mini-grid">
+                    <div class="results-mini-card">
+                        <strong id="miniTotalEvents">{{ summary.total_events or 0 }}</strong>
+                        <span>Événements détectés</span>
+                    </div>
+                    <div class="results-mini-card">
+                        <strong id="miniTotalValue">{{ summary.total_value or "$0.0M" }}</strong>
+                        <span>Valeur liquidée</span>
+                    </div>
+                    <div class="results-mini-card">
+                        <strong id="miniBias">{{ summary.dominant_bias or "Neutral" }}</strong>
+                        <span>Lecture dominante</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-proof-right">
+                <div class="proof-card metric-glow">
+                    <strong>Longs liquidés</strong>
+                    <span id="longsBox">{{ summary.long_value or "$0.0M" }} • {{ summary.long_count or 0 }} événements</span>
+                </div>
+                <div class="proof-card metric-glow blue-glow">
+                    <strong>Shorts liquidés</strong>
+                    <span id="shortsBox">{{ summary.short_value or "$0.0M" }} • {{ summary.short_count or 0 }} événements</span>
+                </div>
+                <div class="proof-card metric-glow">
+                    <strong>High Impact</strong>
+                    <span id="highImpactBox">{{ summary.high_impact_count or 0 }} alertes à fort impact</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="liq-dual-grid">
+            <div class="glass-panel">
+                <div class="section-title align-left">
+                    <span>Market Pressure</span>
+                    <h2>Ratio Long / Short Liquidations</h2>
+                    <p>
+                        Cette lecture permet d’identifier quel côté du marché souffre réellement.
+                        Lorsqu’un camp est massivement liquidé, cela crée souvent une asymétrie exploitable.
+                    </p>
+                </div>
+
+                <div class="why-grid">
+                    <div class="why-card">
+                        <strong>Ratio Long / Short</strong>
+                        <h2 id="ratioText">{{ summary.long_count or 0 }} / {{ summary.short_count or 0 }}</h2>
+                        <p>
+                            Si les longs dominent, le marché peut être en phase de fragilité baissière.
+                            Si les shorts dominent, un squeeze haussier peut être en cours.
+                        </p>
+                    </div>
+
+                    <div class="why-card">
+                        <strong>Lecture Pro</strong>
+                        <p>
+                            Les professionnels regardent la concentration temporelle, l’intensité et
+                            la réaction immédiate du prix après la purge.
+                        </p>
+                    </div>
+
+                    <div class="why-card">
+                        <strong>Signal Brut</strong>
+                        <p>
+                            Biais actuel :
+                            <strong id="signalBias">{{ summary.dominant_bias or "Neutral" }}</strong>.
+                            À lire avec la structure et le momentum.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel pressure-panel">
+                <div class="section-title align-left">
+                    <span>Pressure Gauge</span>
+                    <h2>Balance du stress</h2>
+                    <p>
+                        Vue synthétique pour repérer en un coup d’œil le côté du marché sous pression.
+                    </p>
+                </div>
+
+                {% set long_count = summary.long_count or 0 %}
+                {% set short_count = summary.short_count or 0 %}
+                {% set total_count = long_count + short_count %}
+
+                {% if total_count > 0 %}
+                    {% set short_pct = (short_count * 100 / total_count) | round(0) %}
+                    {% set long_pct = (long_count * 100 / total_count) | round(0) %}
+                {% else %}
+                    {% set short_pct = 50 %}
+                    {% set long_pct = 50 %}
+                {% endif %}
+
+                <div class="pressure-meter-card">
+                    <div class="pressure-meter-header">
+                        <span>Bull / Bear Pressure</span>
+                        <strong id="pressureBias">{{ summary.dominant_bias or "Neutral" }}</strong>
+                    </div>
+
+                    <div class="pressure-bar">
+                        <div id="pressureShort" class="pressure-short" style="width: {{ short_pct }}%;">
+                            <span id="pressureShortText">{{ short_pct }}%</span>
+                        </div>
+                        <div id="pressureLong" class="pressure-long" style="width: {{ long_pct }}%;">
+                            <span id="pressureLongText">{{ long_pct }}%</span>
+                        </div>
+                    </div>
+
+                    <div class="pressure-legend">
+                        <div><span class="legend-dot green"></span> Shorts liquidés</div>
+                        <div><span class="legend-dot red"></span> Longs liquidés</div>
+                    </div>
+
+                    <div class="pressure-notes">
+                        <div class="mini-note">
+                            <strong>Lecture</strong>
+                            <p>Plus la barre est déséquilibrée, plus la pression est concentrée sur un seul camp.</p>
+                        </div>
+                        <div class="mini-note">
+                            <strong>Usage</strong>
+                            <p>Utile pour détecter les squeezes et les capitulations avant extension ou rebond.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Visualisation</span>
+            <h2>Distribution des liquidations</h2>
+            <p>
+                Ce graphique donne une lecture immédiate de la pression dominante.
+                Il permet de voir rapidement si le marché a surtout nettoyé les acheteurs
+                ou les vendeurs sur la période observée.
+            </p>
+        </div>
+
+        <div class="proof-box chart-box">
+            <div class="proof-left">
+                <div class="chart-shell">
+                    <canvas id="liqChart" height="110"></canvas>
+                </div>
+            </div>
+            <div class="proof-right">
+                <div class="proof-card">
+                    <strong>Lecture rapide</strong>
+                    <span>
+                        Une domination des shorts liquidés favorise souvent une poursuite haussière
+                        à court terme. Une domination des longs liquidés reflète davantage une faiblesse
+                        ou une purge du marché.
+                    </span>
+                </div>
+                <div class="proof-card">
+                    <strong>Utilité</strong>
+                    <span>
+                        Ce visuel sert à localiser immédiatement où se concentre le stress de marché.
+                    </span>
+                </div>
+                <div class="proof-card">
+                    <strong>Contexte</strong>
+                    <span>
+                        À combiner avec volume, structure, funding et open interest pour une lecture pro.
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Lecture du flux</span>
+            <h2>Comment lire les liquidations</h2>
+            <p>
+                Une liquidation représente une sortie forcée de position. Elle devient particulièrement
+                intéressante lorsqu’elle apparaît en série, sur plusieurs exchanges, ou lorsqu’elle
+                confirme une extension de prix déjà visible sur le marché.
+            </p>
+        </div>
+
+        <div class="why-grid">
+            <div class="why-card">
+                <strong>Short squeeze</strong>
+                <p>
+                    Lorsque de nombreux shorts sont liquidés sur une courte période, cela peut alimenter
+                    une accélération haussière provoquée par le rachat forcé des positions vendeuses.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Long flush</strong>
+                <p>
+                    Lorsque de nombreux longs sont liquidés, cela peut signaler une purge baissière,
+                    souvent liée à un excès de levier ou à une cassure brutale de support.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Lecture tactique</strong>
+                <p>
+                    Une vague de liquidations devient beaucoup plus utile lorsqu’elle est croisée
+                    avec les niveaux techniques clés, l’open interest, le volume et la réaction du prix.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="proof-box">
+            <div class="proof-left">
+                <span class="proof-badge">Top liquidations</span>
+                <h2>Événements à surveiller en priorité</h2>
+                <p>
+                    Les liquidations ci-dessous correspondent aux événements les plus importants détectés
+                    sur la période. Elles révèlent souvent les zones où le marché a forcé la sortie
+                    de positions massivement exposées.
+                </p>
+            </div>
+
+            <div class="proof-right" id="topEventsBox">
+                {% if top_events %}
+                    {% for item in top_events %}
+                    <div class="proof-card top-event-card">
+                        <strong>{{ item.asset }} — {{ item.side }} liquidation</strong>
+                        <span>
+                            {{ item.value_usd }} • {{ item.exchange }} • {{ item.price }}
+                            • {{ item.time }} • biais {{ item.market_bias }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="proof-card">
+                        <strong>Aucune liquidation majeure</strong>
+                        <span>Les prochains événements importants apparaîtront ici.</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="proof-box">
+            <div class="proof-left">
+                <span class="proof-badge">Smart Alerts</span>
+                <h2>Détection automatique du stress de marché</h2>
+                <p>
+                    Cette zone transforme les données brutes en lecture exploitable.
+                    Elle aide à distinguer un simple bruit de marché d’un vrai déséquilibre
+                    de liquidité pouvant produire un mouvement violent.
+                </p>
+            </div>
+
+            <div class="proof-right">
+                <div class="proof-card">
+                    <strong>Squeeze potentiel</strong>
+                    <span id="smartSqueeze">
+                        {% if (summary.short_count or 0) > (summary.long_count or 0) %}
+                            Forte pression sur les shorts → potentiel de continuation haussière.
+                        {% else %}
+                            Pas de squeeze majeur détecté pour le moment.
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="proof-card">
+                    <strong>Capitulation potentielle</strong>
+                    <span id="smartCapitulation">
+                        {% if (summary.long_count or 0) > (summary.short_count or 0) %}
+                            Pression dominante sur les longs → risque de panic sell ou flush.
+                        {% else %}
+                            Pas de capitulation longue dominante détectée.
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="proof-card">
+                    <strong>Lecture de régime</strong>
+                    <span id="smartRegime">
+                        {% if summary.dominant_bias %}
+                            Régime détecté : {{ summary.dominant_bias }}.
+                        {% else %}
+                            Régime de marché non dominant ou neutre.
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Filtres</span>
+            <h2>Filtrer les événements</h2>
+            <p>
+                Les filtres permettent d’isoler rapidement un actif, un côté du marché,
+                un niveau d’impact ou un nombre d’événements plus adapté à ton analyse.
+            </p>
+        </div>
+
+        <div class="proof-box">
+            <div class="proof-left">
+                <strong class="liq-block-title">Actifs</strong>
+                <div class="liq-filters">
+                    <a href="{{ url_for('liquidations.liquidations_page', limit=active_filters.limit) }}"
+                       class="filter-chip {% if not active_filters.asset %}active{% endif %}">Tous</a>
+                    <a href="{{ url_for('liquidations.liquidations_page', asset='BTC', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
+                       class="filter-chip {% if active_filters.asset == 'BTC' %}active{% endif %}">BTC</a>
+                    <a href="{{ url_for('liquidations.liquidations_page', asset='ETH', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
+                       class="filter-chip {% if active_filters.asset == 'ETH' %}active{% endif %}">ETH</a>
+                    <a href="{{ url_for('liquidations.liquidations_page', asset='SOL', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
+                       class="filter-chip {% if active_filters.asset == 'SOL' %}active{% endif %}">SOL</a>
+                    <a href="{{ url_for('liquidations.liquidations_page', asset='BNB', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
+                       class="filter-chip {% if active_filters.asset == 'BNB' %}active{% endif %}">BNB</a>
+                    <a href="{{ url_for('liquidations.liquidations_page', asset='XRP', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
+                       class="filter-chip {% if active_filters.asset == 'XRP' %}active{% endif %}">XRP</a>
+                </div>
+
+                <strong class="liq-block-title">Côté liquidé</strong>
+                <div class="liq-filters">
+                    <a href="{{ url_for('liquidations.liquidations_page', asset=active_filters.asset, impact=active_filters.impact, limit=active_filters.limit) }}"
+                       class="filter-chip {% if not active_filters.side %}active{% endif %}">Tous</a>
+                    <a href="{{ url_for('liquidations.liquidations_page', asset=active_filters.asset, side='long', impact=active_filters.impact, limit=active_filters.limit) }}"
+                       class="filter-chip {% if active_filters.side == 'long' %}active{% endif %}">Longs</a>
+                    <a href="{{ url_for('liquidations.liquidations_page', asset=active_filters.asset, side='short', impact=active_filters.impact, limit=active_filters.limit) }}"
+                       class="filter-chip {% if active_filters.side == 'short' %}active{% endif %}">Shorts</a>
+                </div>
+            </div>
+
+            <div class="proof-right">
+                <div>
+                    <strong class="liq-block-title">Impact</strong>
+                    <div class="liq-filters">
+                        <a href="{{ url_for('liquidations.liquidations_page', asset=active_filters.asset, side=active_filters.side, limit=active_filters.limit) }}"
+                           class="filter-chip {% if not active_filters.impact %}active{% endif %}">Tous niveaux</a>
+                        <a href="{{ url_for('liquidations.liquidations_page', asset=active_filters.asset, side=active_filters.side, impact='high', limit=active_filters.limit) }}"
+                           class="filter-chip {% if active_filters.impact == 'high' %}active{% endif %}">High Impact</a>
+                    </div>
+                </div>
+
+                <div style="margin-top:22px;">
+                    <strong class="liq-block-title">Nombre d’événements</strong>
+                    <div class="liq-filters">
+                        <a href="{{ url_for('liquidations.liquidations_page', asset=active_filters.asset, side=active_filters.side, impact=active_filters.impact, limit=6) }}"
+                           class="filter-chip {% if active_filters.limit == 6 %}active{% endif %}">6</a>
+                        <a href="{{ url_for('liquidations.liquidations_page', asset=active_filters.asset, side=active_filters.side, impact=active_filters.impact, limit=12) }}"
+                           class="filter-chip {% if active_filters.limit == 12 %}active{% endif %}">12</a>
+                        <a href="{{ url_for('liquidations.liquidations_page', asset=active_filters.asset, side=active_filters.side, impact=active_filters.impact, limit=24) }}"
+                           class="filter-chip {% if active_filters.limit == 24 %}active{% endif %}">24</a>
+                    </div>
+                </div>
+
+                <div style="margin-top:22px;">
+                    <a href="{{ url_for('liquidations.liquidations_page') }}" class="primary-link-btn">Réinitialiser les filtres</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Flux principal</span>
+            <h2>Tableau des liquidations</h2>
+            <p>
+                Tableau détaillé des événements détectés sur les actifs suivis, avec le côté liquidé,
+                la valeur, l’exchange concerné, la timeframe et le biais de lecture associé.
+            </p>
+        </div>
+
+        <div class="btc-signals-table-wrap premium-table-wrap">
+            <table class="btc-signals-table premium-table">
+                <thead>
+                    <tr>
+                        <th>Actif</th>
+                        <th>Côté</th>
+                        <th>Exchange</th>
+                        <th>Prix</th>
+                        <th>Valeur USD</th>
+                        <th>Quantité</th>
+                        <th>Timeframe</th>
+                        <th>Impact</th>
+                        <th>Biais</th>
+                        <th>Heure</th>
+                    </tr>
+                </thead>
+                <tbody id="liquidationsTableBody">
+                    {% if liquidation_events %}
+                        {% for event in liquidation_events %}
+                        <tr>
+                            <td><strong>{{ event.asset }}</strong></td>
+                            <td>
+                                {% if event.side == 'Long' %}
+                                    <span class="pill pill-red">{{ event.side }}</span>
+                                {% else %}
+                                    <span class="pill pill-green">{{ event.side }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ event.exchange }}</td>
+                            <td>{{ event.price }}</td>
+                            <td>{{ event.value_usd }}</td>
+                            <td>{{ event.quantity }}</td>
+                            <td>{{ event.timeframe }}</td>
+                            <td><span class="pill pill-neutral">{{ event.impact }}</span></td>
+                            <td>
+                                {% if event.market_bias == 'Bullish' %}
+                                    <span class="pill pill-green">{{ event.market_bias }}</span>
+                                {% elif event.market_bias == 'Bearish' %}
+                                    <span class="pill pill-red">{{ event.market_bias }}</span>
+                                {% else %}
+                                    <span class="pill pill-blue">{{ event.market_bias }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ event.time }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="10" class="empty-live-row">
+                                Aucun événement live pour le moment.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Lecture pratique</span>
+            <h2>Exemples d’interprétation</h2>
+            <p>
+                Voici quelques cas concrets pour mieux exploiter les informations affichées sur cette page.
+                L’intérêt des liquidations réside surtout dans leur lecture combinée avec le comportement du prix.
+            </p>
+        </div>
+
+        <div class="why-grid">
+            <div class="why-card">
+                <strong>Purge haussière</strong>
+                <p>
+                    Une forte vague de shorts liquidés suivie d’une accélération rapide du prix
+                    peut signaler un squeeze. Ce type de mouvement peut prolonger l’impulsion.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Purge baissière</strong>
+                <p>
+                    Une forte vague de longs liquidés peut indiquer un flush brutal.
+                    La réaction du prix après la purge aide à distinguer capitulation et continuation.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Réaction du prix</strong>
+                <p>
+                    Après une vague de liquidations, observe si le marché rebondit,
+                    consolide ou continue dans le même sens. C’est souvent là que se trouve la vraie info.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Strategy</span>
+            <h2>Comment trader les liquidations</h2>
+            <p>
+                Les liquidations sont utiles pour repérer les zones de stress où le marché nettoie les positions
+                trop exposées. Elles peuvent être utilisées en continuation ou en contrarien selon le contexte.
+            </p>
+        </div>
+
+        <div class="why-grid">
+            <div class="why-card">
+                <strong>Entrée contrarienne</strong>
+                <p>
+                    Après une grosse vague de liquidations et une stabilisation du prix,
+                    le marché peut produire un rebond violent lorsque l’excès de levier a été nettoyé.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Confirmation de tendance</strong>
+                <p>
+                    Si les liquidations accompagnent un mouvement déjà engagé et que le prix
+                    ne réintègre pas rapidement, cela peut confirmer une continuation directionnelle.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Timing institutionnel</strong>
+                <p>
+                    Les meilleures opportunités apparaissent souvent juste après une purge,
+                    lorsque la liquidité est nettoyée et que le marché révèle sa vraie direction.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const ctx = document.getElementById("liqChart");
+    let liqChart = null;
+    let previousTopTimestamp = null;
+
+    function sidePill(side) {
+        if (side === "Long") {
+            return `<span class="pill pill-red">${side}</span>`;
+        }
+        return `<span class="pill pill-green">${side}</span>`;
+    }
+
+    function biasPill(bias) {
+        if (bias === "Bullish") {
+            return `<span class="pill pill-green">${bias}</span>`;
+        }
+        if (bias === "Bearish") {
+            return `<span class="pill pill-red">${bias}</span>`;
+        }
+        return `<span class="pill pill-blue">${bias}</span>`;
+    }
+
+    function impactPill(impact) {
+        return `<span class="pill pill-neutral">${impact}</span>`;
+    }
+
+    function updateChart(summary) {
+        if (!ctx) return;
+
+        const longValue = Number(summary.long_value_numeric || 0);
+        const shortValue = Number(summary.short_value_numeric || 0);
+
+        if (!liqChart) {
+            liqChart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: ["Longs liquidés", "Shorts liquidés"],
+                    datasets: [{
+                        label: "Liquidations ($)",
+                        data: [longValue, shortValue],
+                        borderWidth: 1,
+                        borderRadius: 12
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 500
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return "$" + Number(context.raw).toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: "rgba(255,255,255,0.72)" },
+                            grid: { color: "rgba(255,255,255,0.04)" }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: "rgba(255,255,255,0.72)",
+                                callback: function(value) {
+                                    return "$" + Number(value).toLocaleString();
+                                }
+                            },
+                            grid: { color: "rgba(255,255,255,0.05)" }
+                        }
+                    }
+                }
+            });
+        } else {
+            liqChart.data.datasets[0].data = [longValue, shortValue];
+            liqChart.update();
+        }
+    }
+
+    function updateStats(summary) {
+        const heroTotalEvents = document.getElementById("heroTotalEvents");
+        const heroTotalValue = document.getElementById("heroTotalValue");
+        const heroBias = document.getElementById("heroBias");
+        const heroHighImpact = document.getElementById("heroHighImpact");
+
+        const miniTotalEvents = document.getElementById("miniTotalEvents");
+        const miniTotalValue = document.getElementById("miniTotalValue");
+        const miniBias = document.getElementById("miniBias");
+
+        const longsBox = document.getElementById("longsBox");
+        const shortsBox = document.getElementById("shortsBox");
+        const highImpactBox = document.getElementById("highImpactBox");
+
+        const ratioText = document.getElementById("ratioText");
+        const signalBias = document.getElementById("signalBias");
+        const pressureBias = document.getElementById("pressureBias");
+
+        if (heroTotalEvents) heroTotalEvents.textContent = summary.total_events || 0;
+        if (heroTotalValue) heroTotalValue.textContent = summary.total_value || "$0.0M";
+        if (heroBias) heroBias.textContent = summary.dominant_bias || "Neutral";
+        if (heroHighImpact) heroHighImpact.textContent = summary.high_impact_count || 0;
+
+        if (miniTotalEvents) miniTotalEvents.textContent = summary.total_events || 0;
+        if (miniTotalValue) miniTotalValue.textContent = summary.total_value || "$0.0M";
+        if (miniBias) miniBias.textContent = summary.dominant_bias || "Neutral";
+
+        if (longsBox) {
+            longsBox.textContent = `${summary.long_value || "$0.0M"} • ${summary.long_count || 0} événements`;
+        }
+
+        if (shortsBox) {
+            shortsBox.textContent = `${summary.short_value || "$0.0M"} • ${summary.short_count || 0} événements`;
+        }
+
+        if (highImpactBox) {
+            highImpactBox.textContent = `${summary.high_impact_count || 0} alertes à fort impact`;
+        }
+
+        if (ratioText) {
+            ratioText.textContent = `${summary.long_count || 0} / ${summary.short_count || 0}`;
+        }
+
+        if (signalBias) {
+            signalBias.textContent = summary.dominant_bias || "Neutral";
+        }
+
+        if (pressureBias) {
+            pressureBias.textContent = summary.dominant_bias || "Neutral";
+        }
+
+        const longCount = Number(summary.long_count || 0);
+        const shortCount = Number(summary.short_count || 0);
+        const total = longCount + shortCount;
+
+        let shortPct = 50;
+        let longPct = 50;
+
+        if (total > 0) {
+            shortPct = Math.round((shortCount * 100) / total);
+            longPct = Math.round((longCount * 100) / total);
+        }
+
+        const pressureShort = document.getElementById("pressureShort");
+        const pressureLong = document.getElementById("pressureLong");
+        const pressureShortText = document.getElementById("pressureShortText");
+        const pressureLongText = document.getElementById("pressureLongText");
+
+        if (pressureShort) pressureShort.style.width = `${shortPct}%`;
+        if (pressureLong) pressureLong.style.width = `${longPct}%`;
+        if (pressureShortText) pressureShortText.textContent = `${shortPct}%`;
+        if (pressureLongText) pressureLongText.textContent = `${longPct}%`;
+
+        const smartSqueeze = document.getElementById("smartSqueeze");
+        const smartCapitulation = document.getElementById("smartCapitulation");
+        const smartRegime = document.getElementById("smartRegime");
+
+        if (smartSqueeze) {
+            smartSqueeze.textContent = shortCount > longCount
+                ? "Forte pression sur les shorts → potentiel de continuation haussière."
+                : "Pas de squeeze majeur détecté pour le moment.";
+        }
+
+        if (smartCapitulation) {
+            smartCapitulation.textContent = longCount > shortCount
+                ? "Pression dominante sur les longs → risque de panic sell ou flush."
+                : "Pas de capitulation longue dominante détectée.";
+        }
+
+        if (smartRegime) {
+            smartRegime.textContent = `Régime détecté : ${summary.dominant_bias || "Neutral"}.`;
+        }
+    }
+
+    function updateTable(events) {
+        const tbody = document.getElementById("liquidationsTableBody");
+        if (!tbody) return;
+
+        if (!events || !events.length) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="10" class="empty-live-row">
+                        Aucun événement live pour le moment.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = events.map(event => `
+            <tr class="live-row">
+                <td><strong>${event.asset || "-"}</strong></td>
+                <td>${sidePill(event.side || "-")}</td>
+                <td>${event.exchange || "-"}</td>
+                <td>${event.price || "-"}</td>
+                <td>${event.value_usd || "-"}</td>
+                <td>${event.quantity || "-"}</td>
+                <td>${event.timeframe || "-"}</td>
+                <td>${impactPill(event.impact || "-")}</td>
+                <td>${biasPill(event.market_bias || "Neutral")}</td>
+                <td>${event.time || "-"}</td>
+            </tr>
+        `).join("");
+    }
+
+    function updateTopEvents(topEvents) {
+        const box = document.getElementById("topEventsBox");
+        if (!box) return;
+
+        if (!topEvents || !topEvents.length) {
+            box.innerHTML = `
+                <div class="proof-card">
+                    <strong>Aucune liquidation majeure</strong>
+                    <span>Les prochains événements importants apparaîtront ici.</span>
+                </div>
+            `;
+            return;
+        }
+
+        box.innerHTML = topEvents.map(item => `
+            <div class="proof-card top-event-card">
+                <strong>${item.asset} — ${item.side} liquidation</strong>
+                <span>
+                    ${item.value_usd} • ${item.exchange} • ${item.price}
+                    • ${item.time} • biais ${item.market_bias}
+                </span>
+            </div>
+        `).join("");
+    }
+
+    function flashIfNew(events) {
+        if (!events || !events.length) return;
+
+        const first = events[0];
+        if (!first.timestamp) return;
+
+        if (previousTopTimestamp && previousTopTimestamp !== first.timestamp) {
+            document.body.classList.add("liquidation-flash");
+            setTimeout(() => {
+                document.body.classList.remove("liquidation-flash");
+            }, 700);
+        }
+
+        previousTopTimestamp = first.timestamp;
+    }
+
+    function updateStatus(summary, events) {
+        const status = document.getElementById("liveStatus");
+        if (!status) return;
+
+        if (!events || !events.length || !summary.total_events) {
+            status.className = "live-status live-status-waiting";
+            status.textContent = "Waiting live data...";
+            return;
+        }
+
+        status.className = "live-status live-status-ok";
+        status.textContent = `Live active • ${summary.total_events} events tracked`;
+    }
+
+    async function fetchLiveData() {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const response = await fetch(`/marche/api/liquidations/live?${params.toString()}`, {
+                cache: "no-store"
+            });
+
+            if (!response.ok) return;
+
+            const data = await response.json();
+            if (!data || !data.ok) return;
+
+            updateStats(data.summary || {});
+            updateTable(data.events || []);
+            updateTopEvents(data.top_events || []);
+            updateChart(data.summary || {});
+            updateStatus(data.summary || {}, data.events || []);
+            flashIfNew(data.events || []);
+        } catch (error) {
+            const status = document.getElementById("liveStatus");
+            if (status) {
+                status.className = "live-status live-status-error";
+                status.textContent = "Live feed unavailable";
+            }
+        }
+    }
+
+    updateChart({
+        long_value_numeric: {{ summary.long_value_numeric or 0 }},
+        short_value_numeric: {{ summary.short_value_numeric or 0 }}
+    });
+
+    fetchLiveData();
+    setInterval(fetchLiveData, 5000);
+});
+</script>
+
+{% endblock %}

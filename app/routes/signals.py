@@ -1,9 +1,10 @@
 import requests
 from datetime import datetime, timedelta
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, jsonify
 from flask_login import current_user
 
-from app.models import Signal
+from app.extensions import db
+from app.models import Signal, TradeReplay, UserReplayDecision
 from app.services.signal_service import calculate_trade_pnl
 from app.services.market_service import (
     get_crypto_market_live,
@@ -17,13 +18,21 @@ from app.access import signal_limit_for_plan, has_access
 signals_bp = Blueprint("signals", __name__)
 
 
-@signals_bp.route("/signals")
-def signals_page():
+def _get_user_plan():
+    return (
+        getattr(current_user, "plan", "free")
+        if getattr(current_user, "is_authenticated", False)
+        else "free"
+    )
+
+
+@signals_bp.route("/<lang_code>/signals")
+def signals_page(lang_code):
     return render_template("signals/index.html")
 
 
-@signals_bp.route("/results")
-def results():
+@signals_bp.route("/<lang_code>/results")
+def results(lang_code):
     asset_filter = request.args.get("asset", "ALL").upper().strip()
     time_filter = request.args.get("time", "all").lower().strip()
 
@@ -60,9 +69,8 @@ def results():
 
     all_signals = query.order_by(Signal.created_at.asc()).all()
 
-    user_plan = getattr(current_user, "plan", "free") if getattr(current_user, "is_authenticated", False) else "free"
+    user_plan = _get_user_plan()
     signal_limit = signal_limit_for_plan(user_plan)
-
     recent_signals = list(reversed(all_signals[-signal_limit:])) if signal_limit > 0 else []
 
     total_signals = len(all_signals)
@@ -72,6 +80,63 @@ def results():
     closed_signals = win_signals + loss_signals
 
     can_view_stats = has_access(user_plan, "advanced_stats")
+
+    featured_query = Signal.query.filter(Signal.status == "WIN")
+
+    if asset_filter != "ALL":
+        featured_query = featured_query.filter(Signal.asset == asset_filter)
+
+    if time_threshold is not None:
+        featured_query = featured_query.filter(Signal.created_at >= time_threshold)
+
+    featured_with_percent = (
+        featured_query
+        .filter(
+            Signal.result_percent.isnot(None),
+            Signal.result_percent > 0
+        )
+        .order_by(Signal.result_percent.desc())
+        .limit(2)
+        .all()
+    )
+
+    if len(featured_with_percent) >= 2:
+        featured_signals = featured_with_percent
+    else:
+        featured_signals = (
+            featured_query
+            .order_by(Signal.created_at.desc())
+            .limit(2)
+            .all()
+        )
+
+    if not featured_signals:
+        fallback_query = Signal.query
+
+        if asset_filter != "ALL":
+            fallback_query = fallback_query.filter(Signal.asset == asset_filter)
+
+        if time_threshold is not None:
+            fallback_query = fallback_query.filter(Signal.created_at >= time_threshold)
+
+        featured_signals = (
+            fallback_query
+            .order_by(Signal.created_at.desc())
+            .limit(2)
+            .all()
+        )
+
+    recent_cutoff = datetime.utcnow() - timedelta(days=7)
+    recent_closed = [
+        s for s in all_signals
+        if s.created_at and s.created_at >= recent_cutoff and s.status in {"WIN", "LOSS"}
+    ]
+
+    if recent_closed:
+        recent_wins = len([s for s in recent_closed if s.status == "WIN"])
+        recent_success_rate = round((recent_wins / len(recent_closed)) * 100, 2)
+    else:
+        recent_success_rate = None
 
     if can_view_stats:
         winrate = round((win_signals / closed_signals) * 100, 2) if closed_signals > 0 else 0
@@ -83,15 +148,11 @@ def results():
         ]
         estimated_pnl = round(sum(closed_trade_pnls), 2)
 
-        avg_win = round(
-            sum(p for p in closed_trade_pnls if p > 0) / len([p for p in closed_trade_pnls if p > 0]),
-            2
-        ) if any(p > 0 for p in closed_trade_pnls) else 0
+        positive_pnls = [p for p in closed_trade_pnls if p > 0]
+        negative_pnls = [p for p in closed_trade_pnls if p < 0]
 
-        avg_loss = round(
-            sum(p for p in closed_trade_pnls if p < 0) / len([p for p in closed_trade_pnls if p < 0]),
-            2
-        ) if any(p < 0 for p in closed_trade_pnls) else 0
+        avg_win = round(sum(positive_pnls) / len(positive_pnls), 2) if positive_pnls else 0
+        avg_loss = round(sum(negative_pnls) / len(negative_pnls), 2) if negative_pnls else 0
 
         rr_values = []
         for signal in all_signals:
@@ -145,6 +206,8 @@ def results():
     return render_template(
         "results.html",
         signals=recent_signals,
+        featured_signals=featured_signals,
+        recent_success_rate=recent_success_rate,
         total_signals=total_signals,
         win_signals=win_signals,
         loss_signals=loss_signals,
@@ -175,9 +238,201 @@ def results():
     )
 
 
-@signals_bp.route("/signals/btc")
-def signals_btc():
-    user_plan = getattr(current_user, "plan", "free") if getattr(current_user, "is_authenticated", False) else "free"
+@signals_bp.route("/api/replay/<int:signal_id>")
+def api_replay(signal_id):
+    signal = Signal.query.get_or_404(signal_id)
+
+    if signal.replay and signal.replay.candles:
+        replay = signal.replay
+
+        candles = [
+            {
+                "time": candle.candle_time.isoformat(),
+                "open": candle.open,
+                "high": candle.high,
+                "low": candle.low,
+                "close": candle.close,
+                "volume": candle.volume,
+                "index": candle.position_index,
+            }
+            for candle in replay.candles
+        ]
+
+        events = [
+            {
+                "index": event.position_index,
+                "title": event.title,
+                "description": event.description or "",
+                "event_type": event.event_type,
+                "price_level": event.price_level,
+                "time": event.event_time.isoformat() if event.event_time else None,
+            }
+            for event in replay.events
+        ]
+
+        return jsonify({
+            "trade": {
+                "symbol": replay.symbol,
+                "direction": replay.direction,
+                "entry_price": replay.entry_price,
+                "stop_loss": replay.stop_loss,
+                "take_profit": replay.take_profit,
+                "result": replay.result or "OPEN",
+                "result_percent": replay.result_percent,
+                "timeframe": replay.timeframe,
+            },
+            "candles": candles,
+            "events": events,
+        })
+
+    entry = float(signal.entry_price or 100.0)
+    stop_loss = float(signal.stop_loss or (entry * 0.99))
+    take_profit = float(signal.take_profit or (entry * 1.02))
+    direction = (signal.action or "BUY").upper()
+    result = (signal.status or "OPEN").upper()
+
+    candles = []
+    base_time = datetime.utcnow() - timedelta(minutes=60)
+
+    for i in range(60):
+        wave = ((i % 8) - 4) * (entry * 0.00035)
+        trend = i * entry * 0.00008
+
+        if direction == "SELL":
+            trend = -trend
+
+        price = entry + wave + trend
+
+        if result == "WIN" and i > 38:
+            if direction == "BUY":
+                price += (take_profit - entry) * ((i - 38) / 22)
+            else:
+                price -= abs(take_profit - entry) * ((i - 38) / 22)
+        elif result == "LOSS" and i > 38:
+            if direction == "BUY":
+                price -= abs(entry - stop_loss) * ((i - 38) / 22)
+            else:
+                price += abs(entry - stop_loss) * ((i - 38) / 22)
+
+        open_price = round(price - (entry * 0.00045), 2)
+        close_price = round(price + (entry * 0.00045), 2)
+        high_price = round(max(open_price, close_price) + (entry * 0.0009), 2)
+        low_price = round(min(open_price, close_price) - (entry * 0.0009), 2)
+
+        candles.append({
+            "time": (base_time + timedelta(minutes=i)).isoformat(),
+            "open": open_price,
+            "high": high_price,
+            "low": low_price,
+            "close": close_price,
+            "volume": None,
+            "index": i,
+        })
+
+    events = [
+        {
+            "index": 3,
+            "title": "Observation du setup",
+            "description": "Le marché arrive sur une zone intéressante avec contexte technique exploitable.",
+            "event_type": "context",
+            "price_level": entry,
+            "time": (base_time + timedelta(minutes=3)).isoformat(),
+        },
+        {
+            "index": 8,
+            "title": "Entrée validée",
+            "description": f"Entrée {direction} proche de {entry}. Le plan est activé avec niveaux définis.",
+            "event_type": "entry",
+            "price_level": entry,
+            "time": (base_time + timedelta(minutes=8)).isoformat(),
+        },
+        {
+            "index": 20,
+            "title": "Phase de respiration",
+            "description": "Le marché consolide avant le mouvement principal. Discipline requise.",
+            "event_type": "pullback",
+            "price_level": entry,
+            "time": (base_time + timedelta(minutes=20)).isoformat(),
+        },
+        {
+            "index": 32,
+            "title": "Point de décision",
+            "description": "Retour temporaire contre la position. Gestion émotionnelle importante.",
+            "event_type": "decision",
+            "price_level": entry,
+            "time": (base_time + timedelta(minutes=32)).isoformat(),
+        },
+        {
+            "index": 52,
+            "title": "Développement final",
+            "description": "Le trade entre dans sa phase décisive avec accélération du mouvement.",
+            "event_type": "expansion",
+            "price_level": take_profit if result == "WIN" else stop_loss,
+            "time": (base_time + timedelta(minutes=52)).isoformat(),
+        },
+    ]
+
+    return jsonify({
+        "trade": {
+            "symbol": signal.asset or "BTCUSD",
+            "direction": direction,
+            "entry_price": entry,
+            "stop_loss": stop_loss,
+            "take_profit": take_profit,
+            "result": result,
+            "result_percent": signal.result_percent,
+            "timeframe": signal.timeframe or "15m",
+        },
+        "candles": candles,
+        "events": events,
+    })
+
+
+@signals_bp.route("/api/replay/<int:signal_id>/decision", methods=["POST"])
+def replay_decision(signal_id):
+    signal = Signal.query.get_or_404(signal_id)
+
+    if not signal.replay:
+        return jsonify({"error": "Replay introuvable pour ce signal."}), 404
+
+    if not current_user.is_authenticated:
+        return jsonify({"error": "Authentification requise."}), 401
+
+    payload = request.get_json(silent=True) or {}
+
+    decision = (payload.get("decision") or "").strip().lower()
+    score = int(payload.get("score") or 0)
+    status = (payload.get("status") or "").strip().lower() or None
+    feedback = (payload.get("feedback") or "").strip() or None
+
+    if decision not in {"close", "hold", "partial"}:
+        return jsonify({"error": "Décision invalide."}), 400
+
+    replay = signal.replay
+
+    new_decision = UserReplayDecision(
+        user_id=current_user.id,
+        trade_replay_id=replay.id,
+        decision=decision,
+        score=score,
+        status=status,
+        feedback=feedback,
+    )
+
+    db.session.add(new_decision)
+    db.session.commit()
+
+    return jsonify({
+        "status": "ok",
+        "saved": True,
+        "decision": decision,
+        "score": score,
+    })
+
+
+@signals_bp.route("/<lang_code>/signals/btc")
+def signals_btc(lang_code):
+    user_plan = _get_user_plan()
     signal_limit = signal_limit_for_plan(user_plan)
 
     btc_signals = (
@@ -194,6 +449,7 @@ def signals_btc():
     btc_price = format_big_number(btc.get("usd")) if btc.get("usd") else "..."
     if btc.get("usd"):
         btc_price = f"{btc.get('usd'):,.2f}".replace(",", " ")
+
     btc_change = round(btc.get("usd_24h_change", 0), 2) if btc.get("usd_24h_change") else "..."
     btc_market_cap = format_big_number(btc.get("usd_market_cap"))
     btc_volume = format_big_number(btc.get("usd_24h_vol"))
@@ -213,9 +469,9 @@ def signals_btc():
     )
 
 
-@signals_bp.route("/signals/eth")
-def eth_signals_page():
-    user_plan = getattr(current_user, "plan", "free") if getattr(current_user, "is_authenticated", False) else "free"
+@signals_bp.route("/<lang_code>/signals/eth")
+def eth_signals_page(lang_code):
+    user_plan = _get_user_plan()
     signal_limit = signal_limit_for_plan(user_plan)
 
     try:
@@ -225,7 +481,7 @@ def eth_signals_page():
             "vs_currencies": "usd",
             "include_market_cap": "true",
             "include_24hr_vol": "true",
-            "include_24hr_change": "true"
+            "include_24hr_change": "true",
         }
 
         res = requests.get(url, params=params, timeout=10)
@@ -273,7 +529,6 @@ def eth_signals_page():
     try:
         eth_support_1 = round(eth_price * 0.97, 2)
         eth_support_2 = round(eth_price * 0.94, 2)
-
         eth_resistance_1 = round(eth_price * 1.03, 2)
         eth_resistance_2 = round(eth_price * 1.06, 2)
     except Exception:
@@ -282,10 +537,8 @@ def eth_signals_page():
     try:
         fg = requests.get("https://api.alternative.me/fng/", timeout=10).json()
         fg_data = fg["data"][0]
-
         fear_greed_value = fg_data["value"]
         fear_greed_classification = fg_data["value_classification"]
-
     except Exception:
         fear_greed_value = None
         fear_greed_classification = None
@@ -335,9 +588,9 @@ def eth_signals_page():
     )
 
 
-@signals_bp.route("/signals/gold")
-def signals_gold():
-    user_plan = getattr(current_user, "plan", "free") if getattr(current_user, "is_authenticated", False) else "free"
+@signals_bp.route("/<lang_code>/signals/gold")
+def signals_gold(lang_code):
+    user_plan = _get_user_plan()
     signal_limit = signal_limit_for_plan(user_plan)
 
     gold_signals = (
@@ -371,9 +624,9 @@ def signals_gold():
     )
 
 
-@signals_bp.route("/signals/us100")
-def signals_us100():
-    user_plan = getattr(current_user, "plan", "free") if getattr(current_user, "is_authenticated", False) else "free"
+@signals_bp.route("/<lang_code>/signals/us100")
+def signals_us100(lang_code):
+    user_plan = _get_user_plan()
     signal_limit = signal_limit_for_plan(user_plan)
 
     us100_signals = (

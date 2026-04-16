@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify, request
+from flask import Blueprint, render_template, jsonify, request, redirect, session, url_for
 import os
 
 from app.services.market_service import get_market_updates
@@ -12,9 +12,68 @@ from app.services.telegram_dispatcher import (
 
 main_bp = Blueprint("main", __name__)
 
+SUPPORTED_LANGS = ["fr", "en", "es"]
+DEFAULT_LANG = "fr"
+
 CRON_SECRET = os.getenv("CRON_SECRET", "")
 
 
+# =========================
+# LANG HANDLER (IMPORTANT)
+# =========================
+def resolve_lang(lang_code=None):
+    # priorité URL
+    if lang_code in SUPPORTED_LANGS:
+        session["lang"] = lang_code
+        return lang_code
+
+    # priorité session
+    session_lang = session.get("lang")
+    if session_lang in SUPPORTED_LANGS:
+        return session_lang
+
+    # priorité cookie
+    cookie_lang = request.cookies.get("user_lang")
+    if cookie_lang in SUPPORTED_LANGS:
+        session["lang"] = cookie_lang
+        return cookie_lang
+
+    # fallback navigateur
+    browser_lang = request.accept_languages.best_match(SUPPORTED_LANGS)
+    session["lang"] = browser_lang or DEFAULT_LANG
+
+    return session["lang"]
+
+
+# =========================
+# ROOT → REDIRECTION INTELLIGENTE
+# =========================
+@main_bp.route("/")
+def root():
+    lang = resolve_lang()
+
+    return redirect(url_for("main.home", lang_code=lang))
+
+
+# =========================
+# HOME MULTILANGUE
+# =========================
+@main_bp.route("/<lang_code>/")
+def home(lang_code):
+    current_lang = resolve_lang(lang_code)
+
+    market_updates = get_market_updates()
+
+    return render_template(
+        "home.html",
+        market_updates=market_updates,
+        current_lang=current_lang
+    )
+
+
+# =========================
+# CRON SECURITY
+# =========================
 def _cron_authorized() -> bool:
     if not CRON_SECRET:
         return True
@@ -28,12 +87,9 @@ def _unauthorized():
     }), 403
 
 
-@main_bp.route("/")
-def home():
-    market_updates = get_market_updates()
-    return render_template("home.html", market_updates=market_updates)
-
-
+# =========================
+# CRON ROUTES
+# =========================
 @main_bp.route("/cron/morning")
 def cron_morning():
     if not _cron_authorized():
@@ -41,15 +97,9 @@ def cron_morning():
 
     try:
         result = send_morning_briefings()
-        return jsonify({
-            "status": "success",
-            "result": result
-        })
+        return jsonify({"status": "success", "result": result})
     except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e)
-        }), 500
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 
 @main_bp.route("/cron/news-morning")
@@ -59,15 +109,9 @@ def cron_news_morning():
 
     try:
         result = send_daily_news(slot="morning")
-        return jsonify({
-            "status": "success",
-            "result": result
-        })
+        return jsonify({"status": "success", "result": result})
     except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e)
-        }), 500
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 
 @main_bp.route("/cron/news-evening")
@@ -77,15 +121,9 @@ def cron_news_evening():
 
     try:
         result = send_daily_news(slot="evening")
-        return jsonify({
-            "status": "success",
-            "result": result
-        })
+        return jsonify({"status": "success", "result": result})
     except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e)
-        }), 500
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 
 @main_bp.route("/cron/midday")
@@ -113,15 +151,9 @@ Checklist :
             slot="midday",
         )
 
-        return jsonify({
-            "status": "success",
-            "result": result
-        })
+        return jsonify({"status": "success", "result": result})
     except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e)
-        }), 500
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 
 @main_bp.route("/cron/evening")
@@ -149,15 +181,9 @@ Checklist :
             slot="evening",
         )
 
-        return jsonify({
-            "status": "success",
-            "result": result
-        })
+        return jsonify({"status": "success", "result": result})
     except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e)
-        }), 500
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 
 @main_bp.route("/cron/breaking-news")
@@ -182,8 +208,6 @@ def cron_breaking_news():
             "article_title": article.get("title"),
             "result": result
         })
+
     except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e)
-        }), 500
+        return jsonify({"status": "error", "message": str(e)}), 500

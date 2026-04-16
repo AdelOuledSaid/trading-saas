@@ -24,7 +24,8 @@
 {% set safe_best_asset = best_asset if best_asset is not none else 'BTCUSD' %}
 {% set safe_best_asset_pnl = best_asset_pnl if best_asset_pnl is not none else '—' %}
 {% set public_featured = featured_signals if featured_signals is defined and featured_signals else signals[:2] %}
-{% set recent_success_rate = recent_success_rate if recent_success_rate is defined and recent_success_rate is not none else None %}
+{% set public_preview = signals[:4] if signals else [] %}
+{% set recent_rate = recent_success_rate if recent_success_rate is defined and recent_success_rate is not none else None %}
 
 <section class="rs-hero">
     <div class="rs-hero-overlay"></div>
@@ -105,8 +106,8 @@
                         <span class="rs-stat-icon">◌</span>
                     </div>
                     <strong>
-                        {% if can_view_stats and recent_success_rate is not none %}
-                            {{ recent_success_rate }}%
+                        {% if can_view_stats and recent_rate is not none %}
+                            {{ recent_rate }}%
                         {% elif can_view_stats %}
                             {{ safe_winrate }}%
                         {% else %}
@@ -114,8 +115,8 @@
                         {% endif %}
                     </strong>
                     <small>
-                        {% if can_view_stats and recent_success_rate is not none %}
-                            Réussite récente
+                        {% if can_view_stats and recent_rate is not none %}
+                            Performance récente
                         {% elif can_view_stats %}
                             Performance observée
                         {% else %}
@@ -173,8 +174,8 @@
                             <div class="rs-quality-head">
                                 <span>Qualité globale</span>
                                 <strong>
-                                    {% if can_view_stats and recent_success_rate is not none %}
-                                        {{ recent_success_rate }}%
+                                    {% if can_view_stats and recent_rate is not none %}
+                                        {{ recent_rate }}%
                                     {% elif can_view_stats %}
                                         {{ safe_winrate }}%
                                     {% else %}
@@ -184,7 +185,7 @@
                             </div>
 
                             <div class="rs-quality-track">
-                                <div class="rs-quality-fill" style="width: {% if can_view_stats and recent_success_rate is not none %}{{ recent_success_rate }}{% elif can_view_stats %}{{ safe_winrate }}{% else %}14{% endif %}%;"></div>
+                                <div class="rs-quality-fill" style="width: {% if can_view_stats and recent_rate is not none %}{{ recent_rate }}{% elif can_view_stats %}{{ safe_winrate }}{% else %}14{% endif %}%;"></div>
                             </div>
 
                             <p>
@@ -248,9 +249,15 @@
                                         {{ signal.action or "—" }}
                                     </span>
 
-                                    <span class="status-pill status-win">
-                                        TOP TRADE
-                                    </span>
+                                    <span class="status-pill {% if signal.status == 'WIN' or (signal.result_percent is not none and signal.result_percent > 0) %}status-win{% elif signal.status == 'LOSS' or (signal.result_percent is not none and signal.result_percent < 0) %}status-loss{% else %}status-open{% endif %}">
+                                          {% if signal.status == 'WIN' or (signal.result_percent is not none and signal.result_percent > 0) %}
+                                          TOP TRADE
+                                         {% elif signal.status == 'LOSS' or (signal.result_percent is not none and signal.result_percent < 0) %}
+                                          TRADE FAIBLE
+                                         {% else %}
+                                          SETUP
+                                         {% endif %}
+                                   </span>
                                 </div>
 
                                 <div class="rs-card-date">
@@ -274,13 +281,13 @@
                                     <strong>{{ signal.take_profit or "—" }}</strong>
                                 </div>
 
-                                <div class="rs-metric rs-metric-win">
-                                    <span>Résultat</span>
-                                    {% if signal.result_percent is not none %}
-                                        <strong>+{{ signal.result_percent }}%</strong>
-                                    {% else %}
-                                        <strong>WIN</strong>
-                                    {% endif %}
+                                <div class="rs-metric {% if signal.status == 'WIN' or (signal.result_percent is not none and signal.result_percent > 0) %}rs-metric-win{% elif signal.status == 'LOSS' or (signal.result_percent is not none and signal.result_percent < 0) %}rs-metric-loss{% else %}rs-metric-neutral{% endif %}">
+                                      <span>Résultat</span>
+                                      {% if signal.result_percent is not none %}
+                                      <strong>{{ signal.result_percent }}%</strong>
+                                      {% else %}
+                                      <strong>{{ signal.status or "—" }}</strong>
+                                      {% endif %}
                                 </div>
 
                                 <div class="rs-metric">
@@ -350,14 +357,14 @@
                         </div>
 
                         <div class="rs-head-counter">
-                            <span>{{ signals|length }}</span>
+                            <span>{{ public_preview|length }}</span>
                             <small>aperçu visible</small>
                         </div>
                     </div>
 
-                    {% if signals %}
+                    {% if public_preview %}
                     <div class="rs-signal-list">
-                        {% for signal in signals[:4] %}
+                        {% for signal in public_preview %}
                         <article class="rs-card">
                             <div class="rs-card-glow"></div>
 
@@ -422,7 +429,7 @@
                         </article>
                         {% endfor %}
 
-                        {% if total_signals > 4 %}
+                        {% if total_signals > public_preview|length %}
                         <article class="rs-card rs-locked-card">
                             <div class="rs-card-head">
                                 <div class="rs-card-left">
@@ -467,7 +474,7 @@
                         <li><strong>Trades clôturés :</strong> {{ closed_signals or 0 }}</li>
                         <li><strong>Top setups visibles :</strong> {{ public_featured|length }}</li>
                         <li><strong>Meilleur actif :</strong> {{ safe_best_asset }}</li>
-                        <li><strong>Performance récente :</strong> {% if can_view_stats and recent_success_rate is not none %}{{ recent_success_rate }}%{% elif can_view_stats %}{{ safe_winrate }}%{% else %}🔒{% endif %}</li>
+                        <li><strong>Performance récente :</strong> {% if can_view_stats and recent_rate is not none %}{{ recent_rate }}%{% elif can_view_stats %}{{ safe_winrate }}%{% else %}🔒{% endif %}</li>
                         <li><strong>R/R moyen :</strong> {% if can_view_stats %}{{ safe_avg_rr }}{% else %}🔒{% endif %}</li>
                         <li><strong>PnL estimé :</strong> {% if can_view_stats %}{{ safe_estimated_pnl }}{% else %}🔒{% endif %}</li>
                     </ul>

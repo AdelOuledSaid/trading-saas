@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}Token Unlocks | VelWolf{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='token_unlocks.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="token-unlocks-page">
+    <div class="token-unlocks-container">
+        <div class="tu-header">
+            <div>
+                <p class="tu-breadcrumb">Marchés <span>›</span> Crypto <span>›</span> Token Unlocks</p>
+                <h1>Crypto Token Unlocks</h1>
+                <p class="tu-subtitle">
+                    Déblocages de tokens, score de risque automatique, calendrier mensuel et lecture marché.
+                </p>
+            </div>
+        </div>
+
+        {% if alert_summary.has_alert %}
+        <div class="tu-alert tu-alert-{{ alert_summary.level }}">
+            <div class="tu-alert-badge">ALERTE</div>
+            <div class="tu-alert-content">
+                <strong>{{ alert_summary.title }}</strong>
+                <p>{{ alert_summary.message }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="tu-grid">
+            <div class="tu-main">
+                <div class="tu-card">
+                    <div class="tu-card-head">
+                        <h2>Marché crypto global</h2>
+                        <span class="tu-badge {% if snapshot.market_cap_change_24h < 0 %}negative{% else %}positive{% endif %}">
+                            {{ "%.2f"|format(snapshot.market_cap_change_24h or 0) }}%
+                        </span>
+                    </div>
+
+                    <div class="tu-stats">
+                        <div class="tu-stat-box">
+                            <span>Market Cap</span>
+                            <strong>${{ "{:,.0f}".format(snapshot.market_cap_usd or 0) }}</strong>
+                        </div>
+                        <div class="tu-stat-box">
+                            <span>Volume 24h</span>
+                            <strong>${{ "{:,.0f}".format(snapshot.volume_usd or 0) }}</strong>
+                        </div>
+                        <div class="tu-stat-box">
+                            <span>BTC Dominance</span>
+                            <strong>{{ "%.2f"|format(snapshot.btc_dominance or 0) }}%</strong>
+                        </div>
+                        <div class="tu-stat-box">
+                            <span>Active Cryptos</span>
+                            <strong>{{ "{:,}".format(snapshot.active_cryptos or 0) }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tu-card">
+                    <div class="tu-card-head">
+                        <h2>Unlocks sur 30 jours</h2>
+                    </div>
+
+                    <div class="tu-chart-wrap">
+                        {% for item in unlock_chart %}
+                        <div class="tu-bar-col">
+                            <div class="tu-bar-zone">
+                                <div
+                                    class="tu-bar"
+                                    style="height: {{ ((item.value / max_unlock_value) * 320)|round(0, 'floor') if max_unlock_value > 0 else 4 }}px; background: {{ item.color }};"
+                                    title="{{ item.token or 'No event' }} | ${{ '{:,.0f}'.format(item.value or 0) }} | {{ item.events }} event(s)"
+                                ></div>
+                            </div>
+                            <span class="tu-bar-label">{{ item.day }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="tu-card">
+                    <div class="tu-card-head">
+                        <h2>{{ calendar_data.month_name }}, {{ calendar_data.year }}</h2>
+                    </div>
+
+                    <div class="tu-calendar-grid tu-calendar-head-row">
+                        <div>Sun</div>
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
+                    </div>
+
+                    <div class="tu-calendar-grid">
+                        {% for week in calendar_data.weeks %}
+                            {% for day in week %}
+                            <div class="tu-calendar-cell {% if not day.is_current_month %}is-muted{% endif %}">
+                                <span class="tu-calendar-day">{{ "%02d"|format(day.day) }}</span>
+
+                                {% if day.unlock %}
+                                <div class="tu-calendar-event {% if day.unlock.risk_level == 'high' %}event-high{% endif %}" style="border-left-color: {{ day.unlock.token_color }};">
+                                    <strong>{{ day.unlock.token }}</strong>
+                                    <small>${{ "{:,.0f}".format(day.unlock.value or 0) }}</small>
+                                    <span class="risk risk-{{ day.unlock.risk_level }}">{{ day.unlock.risk_label }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="tu-card">
+                    <div class="tu-card-head">
+                        <h2>Watchlist temps réel</h2>
+                    </div>
+
+                    <div class="tu-watchlist">
+                        {% for coin in watchlist %}
+                        <div class="tu-watch-item">
+                            <div class="tu-watch-left">
+                                <img src="{{ coin.image }}" alt="{{ coin.symbol }}">
+                                <div>
+                                    <strong>{{ coin.symbol }}</strong>
+                                    <p>{{ coin.name }}</p>
+                                </div>
+                            </div>
+
+                            <div class="tu-watch-center">
+                                <span>Price</span>
+                                <strong>${{ "{:,.2f}".format(coin.price or 0) }}</strong>
+                            </div>
+
+                            <div class="tu-watch-center">
+                                <span>Market Cap</span>
+                                <strong>${{ "{:,.0f}".format(coin.market_cap or 0) }}</strong>
+                            </div>
+
+                            <div class="tu-watch-right">
+                                <span>24h</span>
+                                <strong class="{% if coin.change_24h < 0 %}negative{% else %}positive{% endif %}">
+                                    {{ "%.2f"|format(coin.change_24h or 0) }}%
+                                </strong>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <aside class="tu-sidebar">
+                <div class="tu-card">
+                    <div class="tu-card-head">
+                        <h2>Top Unlocks suivis</h2>
+                    </div>
+
+                    <div class="tu-unlocks-list">
+                        {% for item in top_unlocks %}
+                        <div class="tu-unlock-item">
+                            <div class="tu-unlock-left">
+                                <div class="tu-token-line">
+                                    <span class="tu-token-dot" style="background: {{ item.token_color }};"></span>
+                                    <strong>{{ item.token }}</strong>
+                                </div>
+                                <p>{{ item.name }}</p>
+                                <small>{{ item.date_label }} | J-{{ item.days_until }}</small>
+                                {% if item.is_big %}
+                                <div class="tu-big-badge">BIG</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="tu-unlock-right">
+                                <strong>${{ "{:,.0f}".format(item.value or 0) }}</strong>
+                                <span>{{ "%.2f"|format(item.market_cap_ratio or 0) }}% mcap</span>
+                                <div class="risk risk-{{ item.risk_level }}">{{ item.risk_label }}</div>
+                                <div class="tu-score">Score {{ item.score }}/100</div>
+                                <div class="signal-badge signal-{{ item.signal_level }}">{{ item.signal }}</div>
+                            </div>
+
+                            <div class="tu-signal-note">
+                                {{ item.signal_note }}
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="tu-empty-state">
+                            Aucun unlock à venir dans la fenêtre sélectionnée.
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}

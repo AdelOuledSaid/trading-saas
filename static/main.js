@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const burger = document.querySelector(".burger, .nav-toggle");
     const dropdownButtons = document.querySelectorAll(".nav-drop-btn");
 
-    if (!navbar || !burger) return;
+    if (!navbar) return;
 
     function closeAllDropdowns() {
         document.querySelectorAll(".nav-dropdown").forEach((item) => {
@@ -13,17 +13,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function closeMobileMenu() {
         navbar.classList.remove("mobile-open");
-        burger.classList.remove("active");
+        if (burger) burger.classList.remove("active");
         document.body.classList.remove("menu-open");
         closeAllDropdowns();
     }
 
-    burger.addEventListener("click", function (e) {
-        e.stopPropagation();
-        navbar.classList.toggle("mobile-open");
-        burger.classList.toggle("active");
-        document.body.classList.toggle("menu-open");
-    });
+    if (burger) {
+        burger.addEventListener("click", function (e) {
+            e.stopPropagation();
+            navbar.classList.toggle("mobile-open");
+            burger.classList.toggle("active");
+            document.body.classList.toggle("menu-open");
+        });
+    }
 
     dropdownButtons.forEach((btn) => {
         btn.addEventListener("click", function (e) {

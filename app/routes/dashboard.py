@@ -72,9 +72,9 @@ def _build_dashboard_brief_preview(briefing, user_plan: str):
     return None, None, False
 
 
-@dashboard_bp.route("/dashboard")
+@dashboard_bp.route("/<lang_code>/dashboard")
 @login_required
-def dashboard():
+def dashboard(lang_code):
     sync_user_premium_status(current_user)
 
     user_plan = getattr(current_user, "plan", "free")
@@ -94,16 +94,9 @@ def dashboard():
         for row in db.session.query(Signal.asset).distinct().order_by(Signal.asset).all()
     ]
 
-    # =========================
-    # SIGNAL LIMIT BY PLAN
-    # Basic = 5 / Premium = 10 / VIP = unlimited
-    # =========================
     limit = signal_limit_for_plan(user_plan)
     signals = all_signals[-limit:] if limit > 0 else []
 
-    # =========================
-    # BASIC COUNTS
-    # =========================
     total_signals = len(all_signals)
     total_buy = len([s for s in all_signals if s.action == "BUY"])
     total_sell = len([s for s in all_signals if s.action == "SELL"])
@@ -116,25 +109,15 @@ def dashboard():
     calculated_winrate = round((total_win / closed_trades) * 100, 2) if closed_trades > 0 else 0
     last_signal = all_signals[-1] if all_signals else None
 
-    # =========================
-    # ACCESS FLAGS
-    # =========================
     can_view_stats = has_access(user_plan, "advanced_stats")
     can_view_replay = has_access(user_plan, "trade_replays")
     can_view_full_history = has_access(user_plan, "full_history")
 
-    # Business logic briefing:
-    # Basic = morning_brief
-    # Premium = premium_brief_2
-    # VIP = vip_briefings
     can_view_basic_brief = has_access(user_plan, "morning_brief")
     can_view_premium_brief = has_access(user_plan, "premium_brief_2")
     can_view_vip_brief = has_access(user_plan, "vip_briefings")
     can_view_briefing = can_view_basic_brief or can_view_premium_brief or can_view_vip_brief
 
-    # =========================
-    # LIVE DAILY SIGNAL QUOTA
-    # =========================
     if user_plan == "vip":
         daily_signal_limit = "unlimited"
         sent_today_count = count_sent_today("signal_open", "vip")
@@ -160,9 +143,6 @@ def dashboard():
         quota_progress_pct = 0
         quota_status_label = "0/0"
 
-    # =========================
-    # ADVANCED STATS
-    # =========================
     if can_view_stats:
         estimated_pnl = round(sum(calculate_trade_pnl(s) for s in all_signals), 2)
         winrate = calculated_winrate
@@ -211,12 +191,6 @@ def dashboard():
         capital_labels = []
         capital_values = []
 
-    # =========================
-    # BRIEFING BY PLAN
-    # Basic = simple
-    # Premium = full
-    # VIP = detailed
-    # =========================
     raw_briefing = None
     latest_briefing = None
     briefing_plan_label = None
@@ -227,9 +201,6 @@ def dashboard():
             raw_briefing, user_plan
         )
 
-    # =========================
-    # LATEST REPLAY
-    # =========================
     latest_replay = None
     if can_view_replay:
         replay_query = TradeReplay.query
@@ -281,9 +252,9 @@ def dashboard():
     )
 
 
-@dashboard_bp.route("/debug-user")
+@dashboard_bp.route("/<lang_code>/debug-user")
 @login_required
-def debug_user():
+def debug_user(lang_code):
     return {
         "email": current_user.email,
         "is_premium": current_user.is_premium,
@@ -293,17 +264,17 @@ def debug_user():
     }
 
 
-@dashboard_bp.route("/premium-data")
+@dashboard_bp.route("/<lang_code>/premium-data")
 @login_required
 @plan_required("basic")
-def premium_data():
+def premium_data(lang_code):
     return "🔥 Données premium secrètes"
 
 
-@dashboard_bp.route("/briefing")
+@dashboard_bp.route("/<lang_code>/briefing")
 @login_required
 @plan_required("basic")
-def briefing_page():
+def briefing_page(lang_code):
     briefing = ensure_daily_briefing()
     latest_briefing, briefing_plan_label, can_view_briefing = _build_dashboard_brief_preview(
         briefing, getattr(current_user, "plan", "free")

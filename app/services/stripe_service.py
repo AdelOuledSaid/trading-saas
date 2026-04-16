@@ -6,10 +6,19 @@ from app.extensions import db
 
 stripe.api_key = config.STRIPE_SECRET_KEY
 
+# 🔥 MULTI PRICE SUPPORT
 PRICE_TO_PLAN = {
-    config.STRIPE_PRICE_BASIC: "basic",
-    config.STRIPE_PRICE_PREMIUM: "premium",
-    config.STRIPE_PRICE_VIP: "vip",
+    # BASIC
+    config.STRIPE_PRICE_BASIC_EUR: "basic",
+    config.STRIPE_PRICE_BASIC_USD: "basic",
+
+    # PREMIUM
+    config.STRIPE_PRICE_PREMIUM_EUR: "premium",
+    config.STRIPE_PRICE_PREMIUM_USD: "premium",
+
+    # VIP
+    config.STRIPE_PRICE_VIP_EUR: "vip",
+    config.STRIPE_PRICE_VIP_USD: "vip",
 }
 
 PLAN_HIERARCHY = {
@@ -62,15 +71,19 @@ def normalize_plan(plan: str) -> str:
     return "free"
 
 
-def get_price_id_for_plan(plan: str) -> str:
+# 🔥 MODIFIÉ
+def get_price_id_for_plan(plan: str, lang_code: str) -> str:
     plan = normalize_plan(plan)
+    is_us = lang_code == "en"
 
     if plan == "basic":
-        return config.STRIPE_PRICE_BASIC
+        return config.STRIPE_PRICE_BASIC_USD if is_us else config.STRIPE_PRICE_BASIC_EUR
+
     if plan == "premium":
-        return config.STRIPE_PRICE_PREMIUM
+        return config.STRIPE_PRICE_PREMIUM_USD if is_us else config.STRIPE_PRICE_PREMIUM_EUR
+
     if plan == "vip":
-        return config.STRIPE_PRICE_VIP
+        return config.STRIPE_PRICE_VIP_USD if is_us else config.STRIPE_PRICE_VIP_EUR
 
     return ""
 
@@ -105,23 +118,21 @@ def get_subscription(subscription_id: str):
     try:
         return stripe.Subscription.retrieve(subscription_id)
     except Exception as e:
-        current_app.logger.error("Erreur récupération abonnement Stripe: %s", repr(e))
+        current_app.logger.error("Erreur Stripe: %s", repr(e))
         return None
 
 
 def get_subscription_status(subscription_id: str):
-    subscription = get_subscription(subscription_id)
-    if not subscription:
-        return None
-    return subscription.get("status")
+    sub = get_subscription(subscription_id)
+    return sub.get("status") if sub else None
 
 
 def get_subscription_price_id(subscription_id: str):
-    subscription = get_subscription(subscription_id)
-    if not subscription:
+    sub = get_subscription(subscription_id)
+    if not sub:
         return None
 
-    items = subscription.get("items", {}).get("data", [])
+    items = sub.get("items", {}).get("data", [])
     if not items:
         return None
 
@@ -136,76 +147,31 @@ def has_active_stripe_subscription(user) -> bool:
     return status in ["trialing", "active", "past_due"]
 
 
-def sync_user_premium_status(user) -> None:
-    """
-    Synchronisation défensive depuis Stripe.
-    Le webhook Stripe reste la source principale de vérité.
-    """
+def sync_user_premium_status(user):
     if not user:
         return
 
     if not getattr(user, "stripe_subscription_id", None):
-        changed = False
-
-        if getattr(user, "is_premium", False):
-            user.is_premium = False
-            changed = True
-
-        if normalize_plan(getattr(user, "plan", "free")) != "free":
-            user.plan = "free"
-            changed = True
-
-        if changed:
-            db.session.commit()
-            current_app.logger.info(
-                "Utilisateur repassé en FREE (pas d'abonnement) : %s",
-                getattr(user, "email", "unknown"),
-            )
-        return
-
-    subscription = get_subscription(user.stripe_subscription_id)
-    if not subscription:
-        return
-
-    status = subscription.get("status")
-    items = subscription.get("items", {}).get("data", [])
-    price_id = None
-
-    if items:
-        price_id = items[0].get("price", {}).get("id")
-
-    resolved_plan = get_plan_from_price_id(price_id)
-    is_active = status in ["trialing", "active", "past_due"]
-
-    changed = False
-
-    if is_active:
-        if normalize_plan(getattr(user, "plan", "free")) != resolved_plan:
-            user.plan = resolved_plan
-            changed = True
-
-        if not getattr(user, "is_premium", False):
-            user.is_premium = True
-            changed = True
-    else:
-        if normalize_plan(getattr(user, "plan", "free")) != "free":
-            user.plan = "free"
-            changed = True
-
-        if getattr(user, "is_premium", False):
-            user.is_premium = False
-            changed = True
-
-    customer_id = subscription.get("customer")
-    if customer_id and getattr(user, "stripe_customer_id", None) != customer_id:
-        user.stripe_customer_id = customer_id
-        changed = True
-
-    if changed:
+        user.plan = "free"
+        user.is_premium = False
         db.session.commit()
-        current_app.logger.info(
-            "Abonnement synchronisé | email=%s | plan=%s | active=%s",
-            getattr(user, "email", "unknown"),
-            user.plan,
-            is_active,
-        )
+        return
+
+    sub = get_subscription(user.stripe_subscription_id)
+    if not sub:
+        return
+
+    status = sub.get("status")
+    price_id = get_subscription_price_id(user.stripe_subscription_id)
+
+    plan = get_plan_from_price_id(price_id)
+    active = status in ["trialing", "active", "past_due"]
+
+    if active:
+        user.plan = plan
+        user.is_premium = True
+    else:
+        user.plan = "free"
+        user.is_premium = False
+
+    db.session.commit()

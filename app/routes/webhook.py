@@ -29,9 +29,6 @@ def webhook():
 
     current_app.logger.info("Webhook reçu: %s", data)
 
-    # =========================
-    # SECURITY
-    # =========================
     if config.TRADINGVIEW_WEBHOOK_SECRET and data.get("secret") != config.TRADINGVIEW_WEBHOOK_SECRET:
         current_app.logger.warning("Secret invalide")
         return {"error": "Non autorisé"}, 403
@@ -42,9 +39,6 @@ def webhook():
         current_app.logger.warning("Event non autorisé: %s", event_type)
         return {"error": f"Event non autorisé: {event_type}"}, 400
 
-    # =========================
-    # OPEN SIGNAL
-    # =========================
     if event_type == "OPEN":
         try:
             trade_id = str(data.get("trade_id", "")).strip()
@@ -160,9 +154,6 @@ def webhook():
             "reason": signal.reason,
         }, 200
 
-    # =========================
-    # CLOSE SIGNAL
-    # =========================
     if event_type in ["TP", "SL"]:
         trade_id = str(data.get("trade_id", "")).strip()
         asset = str(data.get("asset", "")).strip().upper()
@@ -227,9 +218,6 @@ def webhook():
     return {"error": "Event inconnu"}, 400
 
 
-# =========================
-# HELPERS
-# =========================
 def _safe_float(value, default=None):
     try:
         if value is None or value == "":

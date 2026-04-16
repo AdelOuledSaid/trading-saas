@@ -1,117 +1,236 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription - ApexSignals</title>
-    <meta name="description" content="Créez votre compte ApexSignals et accédez à une expérience de trading premium.">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-</head>
-<body class="home-body auth-page">
+{% extends "base.html" %}
 
-    {% include "partials/navbar.html" %}
+{% block title %}
+    {% if current_lang == "en" %}
+        Sign Up - VelWolef
+    {% elif current_lang == "es" %}
+        Registro - VelWolef
+    {% else %}
+        Inscription - VelWolef
+    {% endif %}
+{% endblock %}
 
-    <section class="auth-section auth-section-register">
-        <div class="hero-bg-grid"></div>
-        <div class="hero-glow hero-glow-1"></div>
-        <div class="hero-glow hero-glow-2"></div>
+{% block meta_description %}
+    {% if current_lang == "en" %}
+        Create your VelWolef account and access a premium trading experience.
+    {% elif current_lang == "es" %}
+        Crea tu cuenta VelWolef y accede a una experiencia de trading premium.
+    {% else %}
+        Créez votre compte VelWolef et accédez à une expérience de trading premium.
+    {% endif %}
+{% endblock %}
 
-        <div class="section-container">
-            <div class="auth-layout">
+{% block content %}
+<section class="auth-section auth-section-register">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
 
-                <div class="auth-left auth-card">
-                    <div class="auth-badge auth-badge-purple">
+    <div class="section-container">
+        <div class="auth-layout">
+
+            <div class="auth-left auth-card">
+                <div class="auth-badge auth-badge-purple">
+                    {% if current_lang == "en" %}
+                        🚀 New account
+                    {% elif current_lang == "es" %}
+                        🚀 Nueva cuenta
+                    {% else %}
                         🚀 Nouveau compte
-                    </div>
+                    {% endif %}
+                </div>
 
-                    <h1 class="auth-title">
+                <h1 class="auth-title">
+                    {% if current_lang == "en" %}
+                        Create your trading space in seconds.
+                    {% elif current_lang == "es" %}
+                        Crea tu espacio de trading en segundos.
+                    {% else %}
                         Créez votre espace trading en quelques secondes.
-                    </h1>
+                    {% endif %}
+                </h1>
 
-                    <p class="auth-text">
+                <p class="auth-text">
+                    {% if current_lang == "en" %}
+                        Join a clean and modern interface to follow your signals,
+                        performance, statistics and unlock the Premium experience.
+                    {% elif current_lang == "es" %}
+                        Únete a una interfaz limpia y moderna para seguir tus señales,
+                        rendimiento, estadísticas y desbloquear la experiencia Premium.
+                    {% else %}
                         Rejoignez une interface propre et moderne pour suivre vos signaux,
                         vos performances, vos statistiques et débloquer l’expérience Premium.
-                    </p>
+                    {% endif %}
+                </p>
 
-                    <div class="auth-points">
-                        <div class="auth-point">
-                            <span class="auth-point-icon">⚡</span>
-                            <span>Création de compte rapide et simple</span>
-                        </div>
-                        <div class="auth-point">
-                            <span class="auth-point-icon">📊</span>
-                            <span>Accès immédiat au dashboard</span>
-                        </div>
-                        <div class="auth-point">
-                            <span class="auth-point-icon">💎</span>
-                            <span>Possibilité de passer Premium à tout moment</span>
-                        </div>
+                <div class="auth-points">
+                    <div class="auth-point">
+                        <span class="auth-point-icon">⚡</span>
+                        <span>
+                            {% if current_lang == "en" %}
+                                Fast and simple account creation
+                            {% elif current_lang == "es" %}
+                                Creación de cuenta rápida y sencilla
+                            {% else %}
+                                Création de compte rapide et simple
+                            {% endif %}
+                        </span>
                     </div>
-
-                    <div class="auth-back-link-wrap">
-                        <a href="{{ url_for('main.home') }}" class="auth-back-link">← Retour à l’accueil</a>
+                    <div class="auth-point">
+                        <span class="auth-point-icon">📊</span>
+                        <span>
+                            {% if current_lang == "en" %}
+                                Instant access to the dashboard
+                            {% elif current_lang == "es" %}
+                                Acceso inmediato al dashboard
+                            {% else %}
+                                Accès immédiat au dashboard
+                            {% endif %}
+                        </span>
                     </div>
-                </div>
-
-                <div class="auth-right auth-card auth-form-card">
-                    <div class="auth-form-header">
-                        <h2>Créer un compte</h2>
-                        <p>Remplissez les informations ci-dessous pour commencer.</p>
-                    </div>
-
-                    {% with messages = get_flashed_messages() %}
-                      {% if messages %}
-                        <div class="flash-stack">
-                            {% for message in messages %}
-                              <div class="flash-message">
-                                  {{ message }}
-                              </div>
-                            {% endfor %}
-                        </div>
-                      {% endif %}
-                    {% endwith %}
-
-                    <form method="POST" class="auth-form">
-                        <div class="form-group">
-                            <label for="register-email">Adresse email</label>
-                            <input
-                                id="register-email"
-                                type="email"
-                                name="email"
-                                placeholder="Votre email"
-                                required
-                            >
-                        </div>
-
-                        <div class="form-group">
-                            <label for="register-password">Mot de passe</label>
-                            <input
-                                id="register-password"
-                                type="password"
-                                name="password"
-                                placeholder="Votre mot de passe"
-                                required
-                            >
-                        </div>
-
-                        <button type="submit" class="auth-submit-btn auth-submit-btn-purple">
-                            Créer mon compte
-                        </button>
-                    </form>
-
-                    <div class="auth-bottom-link">
-                        <p>Déjà un compte ?</p>
-                        <a href="{{ url_for('auth.login') }}">Se connecter</a>
+                    <div class="auth-point">
+                        <span class="auth-point-icon">💎</span>
+                        <span>
+                            {% if current_lang == "en" %}
+                                Upgrade to Premium at any time
+                            {% elif current_lang == "es" %}
+                                Posibilidad de pasar a Premium en cualquier momento
+                            {% else %}
+                                Possibilité de passer Premium à tout moment
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
 
+                <div class="auth-back-link-wrap">
+                    <a href="{{ url_for('main.home', lang_code=current_lang) }}" class="auth-back-link">
+                        {% if current_lang == "en" %}
+                            ← Back to home
+                        {% elif current_lang == "es" %}
+                            ← Volver al inicio
+                        {% else %}
+                            ← Retour à l’accueil
+                        {% endif %}
+                    </a>
+                </div>
             </div>
-        </div>
-    </section>
 
-</body>
-</html>
+            <div class="auth-right auth-card auth-form-card">
+                <div class="auth-form-header">
+                    <h2>
+                        {% if current_lang == "en" %}
+                            Create an account
+                        {% elif current_lang == "es" %}
+                            Crear una cuenta
+                        {% else %}
+                            Créer un compte
+                        {% endif %}
+                    </h2>
+                    <p>
+                        {% if current_lang == "en" %}
+                            Fill in the information below to get started.
+                        {% elif current_lang == "es" %}
+                            Completa la información a continuación para empezar.
+                        {% else %}
+                            Remplissez les informations ci-dessous pour commencer.
+                        {% endif %}
+                    </p>
+                </div>
+
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    <div class="flash-stack">
+                        {% for message in messages %}
+                          <div class="flash-message">
+                              {{ message }}
+                          </div>
+                        {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endwith %}
+
+                <form method="POST" class="auth-form">
+                    <div class="form-group">
+                        <label for="register-email">
+                            {% if current_lang == "en" %}
+                                Email address
+                            {% elif current_lang == "es" %}
+                                Correo electrónico
+                            {% else %}
+                                Adresse email
+                            {% endif %}
+                        </label>
+                        <input
+                            id="register-email"
+                            type="email"
+                            name="email"
+                            placeholder="{% if current_lang == 'en' %}Your email{% elif current_lang == 'es' %}Tu correo{% else %}Votre email{% endif %}"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-password">
+                            {% if current_lang == "en" %}
+                                Password
+                            {% elif current_lang == "es" %}
+                                Contraseña
+                            {% else %}
+                                Mot de passe
+                            {% endif %}
+                        </label>
+                        <input
+                            id="register-password"
+                            type="password"
+                            name="password"
+                            placeholder="{% if current_lang == 'en' %}Your password{% elif current_lang == 'es' %}Tu contraseña{% else %}Votre mot de passe{% endif %}"
+                            required
+                        >
+                    </div>
+                     <!-- 🔥 AJOUT -->
+<div class="form-group">
+    <label>Confirmer le mot de passe</label>
+    <input
+        type="password"
+        name="confirm_password"
+        placeholder="Confirmer mot de passe"
+        required
+    >
+</div>
+                    <button type="submit" class="auth-submit-btn auth-submit-btn-purple">
+                        {% if current_lang == "en" %}
+                            Create my account
+                        {% elif current_lang == "es" %}
+                            Crear mi cuenta
+                        {% else %}
+                            Créer mon compte
+                        {% endif %}
+                    </button>
+                </form>
+
+                <div class="auth-bottom-link">
+                    <p>
+                        {% if current_lang == "en" %}
+                            Already have an account?
+                        {% elif current_lang == "es" %}
+                            ¿Ya tienes una cuenta?
+                        {% else %}
+                            Déjà un compte ?
+                        {% endif %}
+                    </p>
+                    <a href="{{ url_for('auth.login', lang_code=current_lang) }}">
+                        {% if current_lang == "en" %}
+                            Sign in
+                        {% elif current_lang == "es" %}
+                            Iniciar sesión
+                        {% else %}
+                            Se connecter
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

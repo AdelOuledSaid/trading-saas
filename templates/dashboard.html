@@ -1,18 +1,14 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VelWolf — Trading Intelligence Terminal</title>
+{% extends "base.html" %}
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
-</head>
-<body class="dashboard-body premium-dashboard-body ultra-dashboard-body">
+{% block title %}{{ t("dashboard_seo_title", "VelWolef | Dashboard Trading Intelligence") }}{% endblock %}
+{% block meta_description %}{{ t("dashboard_seo_desc", "Dashboard premium de trading avec signaux, performance, briefing, replay et academy.") }}{% endblock %}
 
-{% include "partials/navbar.html" %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
+{% endblock %}
 
+{% block content %}
 {% set is_basic = user_plan == 'basic' %}
 {% set is_premium_plus = user_plan in ['premium', 'vip'] %}
 {% set is_vip = user_plan == 'vip' %}
@@ -35,16 +31,16 @@
 {% set safe_capital_return_pct = capital_return_pct if capital_return_pct is not none else 0 %}
 
 {% if can_view_stats and safe_winrate >= 75 and total_win >= 20 %}
-    {% set performance_badge_label = 'Elite Trader' %}
+    {% set performance_badge_label = t("elite_trader", "Elite Trader") %}
     {% set performance_badge_tone = 'elite' %}
 {% elif can_view_stats and safe_winrate >= 62 and total_win >= 8 %}
-    {% set performance_badge_label = 'Pro Trader' %}
+    {% set performance_badge_label = t("pro_trader", "Pro Trader") %}
     {% set performance_badge_tone = 'pro' %}
 {% elif total_closed_trades >= 5 %}
-    {% set performance_badge_label = 'Rising Trader' %}
+    {% set performance_badge_label = t("rising_trader", "Rising Trader") %}
     {% set performance_badge_tone = 'rising' %}
 {% else %}
-    {% set performance_badge_label = 'Starter' %}
+    {% set performance_badge_label = t("starter_trader", "Starter") %}
     {% set performance_badge_tone = 'starter' %}
 {% endif %}
 
@@ -57,33 +53,33 @@
     <aside class="dashboard-sidebar ultra-dashboard-sidebar">
         <div class="sidebar-brand-card ultra-glow-card">
             <div class="sidebar-brand-top">
-                <span class="sidebar-brand-badge">VelWolf Intelligence</span>
-                <h2>Trader Space</h2>
+                <span class="sidebar-brand-badge">{{ t("velwolef_intelligence", "VelWolef Intelligence") }}</span>
+                <h2>{{ t("trader_space", "Trader Space") }}</h2>
                 <p>
                     {% if is_vip %}
-                        Accès VIP actif • signaux complets, briefing enrichi et univers privé.
+                        {{ t("dashboard_sidebar_vip", "Accès VIP actif • signaux complets, briefing enrichi et univers privé.") }}
                     {% elif is_premium_plus %}
-                        Accès Premium actif • performance, briefing journalier et analyse complète.
+                        {{ t("dashboard_sidebar_premium", "Accès Premium actif • performance, briefing journalier et analyse complète.") }}
                     {% elif is_basic %}
-                        Accès Basic actif • environnement intermédiaire avec signaux débloqués.
+                        {{ t("dashboard_sidebar_basic", "Accès Basic actif • environnement intermédiaire avec signaux débloqués.") }}
                     {% else %}
-                        Version découverte • aperçu limité pour montrer la qualité du système.
+                        {{ t("dashboard_sidebar_free", "Version découverte • aperçu limité pour montrer la qualité du système.") }}
                     {% endif %}
                 </p>
             </div>
 
             <div class="sidebar-plan-box">
-                <span>Plan actif</span>
+                <span>{{ t("active_plan", "Plan actif") }}</span>
                 <strong>{{ user_plan | upper }}</strong>
             </div>
 
             <div class="sidebar-mini-metrics">
                 <div>
-                    <span>Signaux</span>
+                    <span>{{ t("signals", "Signaux") }}</span>
                     <strong>{{ total_signals }}</strong>
                 </div>
                 <div>
-                    <span>Ouverts</span>
+                    <span>{{ t("open_trades", "Ouverts") }}</span>
                     <strong>{{ total_open }}</strong>
                 </div>
             </div>
@@ -91,59 +87,59 @@
 
         {% if is_upgrade_target %}
         <div class="sidebar-upgrade-box ultra-glow-card">
-            <span class="mini-label">Upgrade conseillé</span>
+            <span class="mini-label">{{ t("recommended_upgrade", "Upgrade conseillé") }}</span>
             <h3>
                 {% if is_free %}
-                    Débloquez l’Academy Pro et le terminal avancé
+                    {{ t("unlock_academy_terminal", "Débloquez l’Academy Pro et le terminal avancé") }}
                 {% else %}
-                    Passez Premium pour débloquer stats, replay et briefing
+                    {{ t("upgrade_premium_briefing", "Passez Premium pour débloquer stats, replay et briefing") }}
                 {% endif %}
             </h3>
             <p>
                 {% if is_free %}
-                    Activez le plan Pro pour accéder aux cours complets, à la progression, aux quiz, à la certification et à une meilleure exploitation des signaux.
+                    {{ t("unlock_academy_terminal_desc", "Activez le plan Pro pour accéder aux cours complets, à la progression, aux quiz, à la certification et à une meilleure exploitation des signaux.") }}
                 {% else %}
-                    Votre plan Basic ouvre la porte. Le niveau supérieur débloque les métriques sensibles, le replay et une lecture marché plus complète.
+                    {{ t("upgrade_premium_briefing_desc", "Votre plan Basic ouvre la porte. Le niveau supérieur débloque les métriques sensibles, le replay et une lecture marché plus complète.") }}
                 {% endif %}
             </p>
-            <a href="{{ url_for('pages.academy_upgrade') }}" class="sidebar-upgrade-btn">Voir l’upgrade Pro</a>
+            <a href="{{ url_for('pages.academy_upgrade', lang_code=current_lang) }}" class="sidebar-upgrade-btn">{{ t("see_pro_upgrade", "Voir l’upgrade Pro") }}</a>
         </div>
         {% endif %}
 
         <nav class="dashboard-sidebar-nav">
-            <a href="{{ url_for('dashboard.dashboard') }}" class="sidebar-link active"><span>📊</span>Dashboard</a>
+            <a href="{{ url_for('dashboard.dashboard', lang_code=current_lang) }}" class="sidebar-link active"><span>📊</span>{{ t("dashboard", "Dashboard") }}</a>
 
-            <a href="{{ url_for('signals.signals_page') if signal_limit > 0 else url_for('billing.pricing') }}"
+            <a href="{{ url_for('signals.signals_page', lang_code=current_lang) if signal_limit > 0 else url_for('billing.pricing', lang_code=current_lang) }}"
                class="sidebar-link {% if signal_limit == 0 %}locked-link{% endif %}">
-                <span>⚡</span>{% if signal_limit > 0 %}Signaux{% else %}Signaux réservés{% endif %}
+                <span>⚡</span>{% if signal_limit > 0 %}{{ t("signals", "Signaux") }}{% else %}{{ t("locked_signals", "Signaux réservés") }}{% endif %}
             </a>
 
-            <a href="{{ url_for('signals.results') if signal_limit > 0 else url_for('billing.pricing') }}"
+            <a href="{{ url_for('signals.results', lang_code=current_lang) if signal_limit > 0 else url_for('billing.pricing', lang_code=current_lang) }}"
                class="sidebar-link {% if signal_limit == 0 %}locked-link{% endif %}">
-                <span>🏆</span>{% if signal_limit > 0 %}Résultats{% else %}Résultats premium{% endif %}
+                <span>🏆</span>{% if signal_limit > 0 %}{{ t("results", "Résultats") }}{% else %}{{ t("premium_results", "Résultats premium") }}{% endif %}
             </a>
 
-            <a href="{{ url_for('pages.academy_index') if is_premium_plus else url_for('pages.academy_upgrade') }}"
+            <a href="{{ url_for('pages.academy_index', lang_code=current_lang) if is_premium_plus else url_for('pages.academy_upgrade', lang_code=current_lang) }}"
                class="sidebar-link {% if not is_premium_plus %}locked-link{% endif %}">
-                <span>🎓</span>{% if is_premium_plus %}Academy Pro{% else %}Academy verrouillée{% endif %}
+                <span>🎓</span>{% if is_premium_plus %}{{ t("academy_pro", "Academy Pro") }}{% else %}{{ t("academy_locked", "Academy verrouillée") }}{% endif %}
             </a>
 
-            <a href="{{ url_for('dashboard.briefing_page') if can_view_briefing else url_for('billing.pricing') }}"
+            <a href="{{ url_for('dashboard.briefing_page', lang_code=current_lang) if can_view_briefing else url_for('billing.pricing', lang_code=current_lang) }}"
                class="sidebar-link {% if not can_view_briefing %}locked-link{% endif %}">
-                <span>🧠</span>{% if can_view_briefing %}Briefing daily{% else %}Briefing réservé{% endif %}
+                <span>🧠</span>{% if can_view_briefing %}{{ t("daily_briefing", "Briefing daily") }}{% else %}{{ t("briefing_locked", "Briefing réservé") }}{% endif %}
             </a>
 
-            <a href="{{ url_for('replay.my_performance') if can_view_replay else url_for('billing.pricing') }}"
+            <a href="{{ url_for('replay.my_performance', lang_code=current_lang) if can_view_replay else url_for('billing.pricing', lang_code=current_lang) }}"
                class="sidebar-link {% if not can_view_replay %}locked-link{% endif %}">
-                <span>🎯</span>{% if can_view_replay %}Replay / Perf{% else %}Replay premium{% endif %}
+                <span>🎯</span>{% if can_view_replay %}{{ t("replay_perf", "Replay / Perf") }}{% else %}{{ t("premium_replay", "Replay premium") }}{% endif %}
             </a>
 
-            <a href="{{ url_for('billing.pricing') }}" class="sidebar-link"><span>💎</span>Offres</a>
-            <a href="{{ url_for('auth.logout') }}" class="sidebar-link logout-link"><span>🚪</span>Déconnexion</a>
+            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="sidebar-link"><span>💎</span>{{ t("pricing", "Offres") }}</a>
+            <a href="{{ url_for('auth.logout') }}" class="sidebar-link logout-link"><span>🚪</span>{{ t("logout", "Déconnexion") }}</a>
         </nav>
 
         <div class="sidebar-market-box">
-            <span>Marchés suivis</span>
+            <span>{{ t("tracked_markets", "Marchés suivis") }}</span>
             <strong>
                 {% if available_assets %}
                     {{ available_assets | join(' • ') }}
@@ -166,43 +162,43 @@
                 </div>
 
                 <div class="hero-title-row">
-                    <h1 class="ultra-title">VelWolf Trading Intelligence Terminal</h1>
+                    <h1 class="ultra-title">{{ t("dashboard_terminal_title", "VelWolef Trading Intelligence Terminal") }}</h1>
                     <span class="ai-badge">AI POWERED</span>
                 </div>
 
                 <p class="hero-subtitle">
-                    Un cockpit inspiré des interfaces hedge fund pour piloter signaux, performance, exécution, apprentissage et progression membre.
+                    {{ t("dashboard_terminal_desc", "Un cockpit inspiré des interfaces hedge fund pour piloter signaux, performance, exécution, apprentissage et progression membre.") }}
                 </p>
 
                 <div class="hero-actions">
-                    <a href="#signals-feed" class="hero-primary-btn">Voir les signaux</a>
-                    <a href="#winning-trades" class="hero-secondary-btn">Trades gagnants</a>
-                    <a href="{{ url_for('dashboard.briefing_page') if can_view_briefing else url_for('billing.pricing') }}" class="hero-secondary-btn">
-                        Débloquer briefing
+                    <a href="#signals-feed" class="hero-primary-btn">{{ t("see_signals", "Voir les signaux") }}</a>
+                    <a href="#winning-trades" class="hero-secondary-btn">{{ t("winning_trades", "Trades gagnants") }}</a>
+                    <a href="{{ url_for('dashboard.briefing_page', lang_code=current_lang) if can_view_briefing else url_for('billing.pricing', lang_code=current_lang) }}" class="hero-secondary-btn">
+                        {{ t("unlock_briefing", "Débloquer briefing") }}
                     </a>
-                    <a href="{{ url_for('dashboard.briefing_page') if can_view_briefing else url_for('billing.pricing') }}#market-news" class="hero-utility-btn">News</a>
-                    <a href="{{ url_for('pages.academy_index') if is_premium_plus else url_for('pages.academy_upgrade') }}" class="hero-utility-btn">Academy</a>
-                    <a href="{{ telegram_vip_link if is_vip else url_for('billing.pricing') }}" {% if is_vip %}target="_blank" rel="noopener"{% endif %} class="hero-utility-btn hero-utility-btn-vip">Telegram VIP</a>
-                    <a href="#leaderboard" class="hero-utility-btn">Leaderboard</a>
-                    <a href="#performance-badge" class="hero-utility-btn">Badge performance</a>
+                    <a href="{{ url_for('dashboard.briefing_page', lang_code=current_lang) if can_view_briefing else url_for('billing.pricing', lang_code=current_lang) }}#market-news" class="hero-utility-btn">{{ t("news", "News") }}</a>
+                    <a href="{{ url_for('pages.academy_index', lang_code=current_lang) if is_premium_plus else url_for('pages.academy_upgrade', lang_code=current_lang) }}" class="hero-utility-btn">{{ t("academy", "Academy") }}</a>
+                    <a href="{{ telegram_vip_link if is_vip else url_for('billing.pricing', lang_code=current_lang) }}" {% if is_vip %}target="_blank" rel="noopener"{% endif %} class="hero-utility-btn hero-utility-btn-vip">Telegram VIP</a>
+                    <a href="#leaderboard" class="hero-utility-btn">{{ t("leaderboard", "Leaderboard") }}</a>
+                    <a href="#performance-badge" class="hero-utility-btn">{{ t("performance_badge", "Badge performance") }}</a>
                 </div>
             </div>
 
             <div class="dashboard-hero-side">
                 <div class="hero-side-card">
-                    <span>Signaux totaux</span>
+                    <span>{{ t("total_signals", "Signaux totaux") }}</span>
                     <strong>{{ total_signals }}</strong>
                 </div>
                 <div class="hero-side-card">
-                    <span>Trades aujourd’hui</span>
+                    <span>{{ t("today_trades", "Trades aujourd’hui") }}</span>
                     <strong>{% if can_view_stats %}{{ safe_today_trades }}{% else %}🔒{% endif %}</strong>
                 </div>
                 <div class="hero-side-card">
-                    <span>Wins aujourd’hui</span>
+                    <span>{{ t("today_wins", "Wins aujourd’hui") }}</span>
                     <strong>{% if can_view_stats %}{{ safe_today_wins }}{% else %}🔒{% endif %}</strong>
                 </div>
                 <div class="hero-side-card">
-                    <span>Plan</span>
+                    <span>{{ t("plan", "Plan") }}</span>
                     <strong>{{ user_plan | upper }}</strong>
                 </div>
             </div>
@@ -212,39 +208,39 @@
         <section class="premium-panel upgrade-banner-panel">
             <div class="panel-heading">
                 <div>
-                    <span class="panel-mini-title">Upgrade member</span>
+                    <span class="panel-mini-title">{{ t("upgrade_member", "Upgrade member") }}</span>
                     <h2>
                         {% if is_free %}
-                            Vous utilisez la version découverte
+                            {{ t("free_discovery_mode", "Vous utilisez la version découverte") }}
                         {% else %}
-                            Votre plan Basic montre le potentiel
+                            {{ t("basic_shows_potential", "Votre plan Basic montre le potentiel") }}
                         {% endif %}
                     </h2>
                 </div>
-                <span class="stat-chip">Conversion zone</span>
+                <span class="stat-chip">{{ t("conversion_zone", "Conversion zone") }}</span>
             </div>
 
             <div class="bottom-cta-box premium-upgrade-box">
                 <div>
-                    <span class="bottom-cta-kicker">Academy Pro</span>
+                    <span class="bottom-cta-kicker">{{ t("academy_pro", "Academy Pro") }}</span>
                     <h2>
                         {% if is_free %}
-                            Débloquez la formation complète, les vidéos premium et la vraie progression.
+                            {{ t("unlock_training_progression", "Débloquez la formation complète, les vidéos premium et la vraie progression.") }}
                         {% else %}
-                            Passez au niveau supérieur pour accéder aux stats avancées, au briefing et au replay.
+                            {{ t("unlock_stats_briefing_replay", "Passez au niveau supérieur pour accéder aux stats avancées, au briefing et au replay.") }}
                         {% endif %}
                     </h2>
                     <p>
                         {% if is_free %}
-                            Le plan gratuit montre l’environnement. Le plan Pro débloque l’Academy complète, les quiz, la certification, le replay et la logique premium derrière les signaux.
+                            {{ t("free_plan_environment", "Le plan gratuit montre l’environnement. Le plan Pro débloque l’Academy complète, les quiz, la certification, le replay et la logique premium derrière les signaux.") }}
                         {% else %}
-                            Le plan Basic est une bonne entrée. Premium et VIP transforment l’expérience en vrai terminal de progression avec plus de profondeur, d’analyse et de rétention.
+                            {{ t("basic_good_entry", "Le plan Basic est une bonne entrée. Premium et VIP transforment l’expérience en vrai terminal de progression avec plus de profondeur, d’analyse et de rétention.") }}
                         {% endif %}
                     </p>
                 </div>
                 <div class="bottom-cta-actions">
-                    <a href="{{ url_for('pages.academy_upgrade') }}" class="hero-primary-btn">Voir l’upgrade Pro</a>
-                    <a href="{{ url_for('pages.academy_upgrade') }}" class="hero-secondary-btn">Débloquer Academy</a>
+                    <a href="{{ url_for('pages.academy_upgrade', lang_code=current_lang) }}" class="hero-primary-btn">{{ t("see_pro_upgrade", "Voir l’upgrade Pro") }}</a>
+                    <a href="{{ url_for('pages.academy_upgrade', lang_code=current_lang) }}" class="hero-secondary-btn">{{ t("unlock_academy", "Débloquer Academy") }}</a>
                 </div>
             </div>
         </section>
@@ -253,8 +249,8 @@
         <section class="premium-panel quota-panel">
             <div class="panel-heading">
                 <div>
-                    <span class="panel-mini-title">Quota signaux</span>
-                    <h2>Consommation de votre plan aujourd’hui</h2>
+                    <span class="panel-mini-title">{{ t("signal_quota", "Quota signaux") }}</span>
+                    <h2>{{ t("today_plan_usage", "Consommation de votre plan aujourd’hui") }}</h2>
                 </div>
                 <span class="stat-chip">
                     {% if user_plan == "vip" %}
@@ -267,29 +263,29 @@
 
             <div class="quota-grid">
                 <div class="quota-card quota-main-card">
-                    <span class="quota-label">Plan actif</span>
+                    <span class="quota-label">{{ t("active_plan", "Plan actif") }}</span>
                     <strong>{{ user_plan | upper }}</strong>
                     <p>
                         {% if user_plan == "basic" %}
-                            Vous recevez jusqu’à 5 signaux par jour avec un briefing plus simple.
+                            {{ t("basic_quota_desc", "Vous recevez jusqu’à 5 signaux par jour avec un briefing plus simple.") }}
                         {% elif user_plan == "premium" %}
-                            Vous recevez jusqu’à 10 signaux par jour avec plus de contexte et un second brief.
+                            {{ t("premium_quota_desc", "Vous recevez jusqu’à 10 signaux par jour avec plus de contexte et un second brief.") }}
                         {% elif user_plan == "vip" %}
-                            Vous recevez tous les signaux, briefs détaillés et updates prioritaires sans limite.
+                            {{ t("vip_quota_desc", "Vous recevez tous les signaux, briefs détaillés et updates prioritaires sans limite.") }}
                         {% else %}
-                            Passez Basic, Premium ou VIP pour débloquer les signaux Telegram.
+                            {{ t("free_quota_desc", "Passez Basic, Premium ou VIP pour débloquer les signaux Telegram.") }}
                         {% endif %}
                     </p>
                 </div>
 
                 <div class="quota-card">
-                    <span class="quota-label">Envoyés aujourd’hui</span>
+                    <span class="quota-label">{{ t("sent_today", "Envoyés aujourd’hui") }}</span>
                     <strong>{{ sent_today_count }}</strong>
-                    <p>Nombre de signaux déjà distribués aujourd’hui sur votre niveau d’abonnement.</p>
+                    <p>{{ t("sent_today_desc", "Nombre de signaux déjà distribués aujourd’hui sur votre niveau d’abonnement.") }}</p>
                 </div>
 
                 <div class="quota-card">
-                    <span class="quota-label">Restants aujourd’hui</span>
+                    <span class="quota-label">{{ t("remaining_today", "Restants aujourd’hui") }}</span>
                     <strong>
                         {% if user_plan == "vip" %}
                             ∞
@@ -299,25 +295,25 @@
                     </strong>
                     <p>
                         {% if user_plan == "vip" %}
-                            Les membres VIP reçoivent un flux illimité.
+                            {{ t("vip_unlimited_flow", "Les membres VIP reçoivent un flux illimité.") }}
                         {% else %}
-                            Une fois ce quota atteint, les nouveaux signaux restent réservés au niveau supérieur.
+                            {{ t("quota_restriction_desc", "Une fois ce quota atteint, les nouveaux signaux restent réservés au niveau supérieur.") }}
                         {% endif %}
                     </p>
                 </div>
 
                 <div class="quota-card">
-                    <span class="quota-label">Briefing du plan</span>
-                    <strong>{{ briefing_plan_label if briefing_plan_label else "Non actif" }}</strong>
+                    <span class="quota-label">{{ t("plan_briefing", "Briefing du plan") }}</span>
+                    <strong>{{ briefing_plan_label if briefing_plan_label else t("inactive", "Non actif") }}</strong>
                     <p>
                         {% if user_plan == "basic" %}
-                            Version courte et plus simple.
+                            {{ t("briefing_basic_desc", "Version courte et plus simple.") }}
                         {% elif user_plan == "premium" %}
-                            Version complète avec plus de contexte.
+                            {{ t("briefing_premium_desc", "Version complète avec plus de contexte.") }}
                         {% elif user_plan == "vip" %}
-                            Version détaillée avec focus prioritaire et lecture desk.
+                            {{ t("briefing_vip_desc", "Version détaillée avec focus prioritaire et lecture desk.") }}
                         {% else %}
-                            Débloquez un plan payant pour activer les briefings.
+                            {{ t("briefing_paid_only", "Débloquez un plan payant pour activer les briefings.") }}
                         {% endif %}
                     </p>
                 </div>
@@ -325,10 +321,10 @@
 
             <div class="quota-progress-wrap">
                 <div class="quota-progress-top">
-                    <span>Utilisation du quota journalier</span>
+                    <span>{{ t("daily_quota_usage", "Utilisation du quota journalier") }}</span>
                     <strong>
                         {% if user_plan == "vip" %}
-                            Illimité
+                            {{ t("unlimited", "Illimité") }}
                         {% else %}
                             {{ quota_status_label }}
                         {% endif %}
@@ -342,13 +338,13 @@
 
                 <div class="quota-progress-note">
                     {% if user_plan == "basic" %}
-                        Basic : 5 signaux maximum par jour.
+                        {{ t("basic_daily_limit", "Basic : 5 signaux maximum par jour.") }}
                     {% elif user_plan == "premium" %}
-                        Premium : 10 signaux maximum par jour.
+                        {{ t("premium_daily_limit", "Premium : 10 signaux maximum par jour.") }}
                     {% elif user_plan == "vip" %}
-                        VIP : flux illimité + briefing détaillé + priorité desk.
+                        {{ t("vip_daily_limit", "VIP : flux illimité + briefing détaillé + priorité desk.") }}
                     {% else %}
-                        Aucun quota actif.
+                        {{ t("no_active_quota", "Aucun quota actif.") }}
                     {% endif %}
                 </div>
             </div>
@@ -357,17 +353,17 @@
         <section class="premium-panel tradingview-panel ultra-market-panel">
             <div class="panel-heading">
                 <div>
-                    <span class="panel-mini-title">Marché en direct</span>
-                    <h2>Vue marché & filtre actif</h2>
+                    <span class="panel-mini-title">{{ t("live_market", "Marché en direct") }}</span>
+                    <h2>{{ t("market_view_filter", "Vue marché & filtre actif") }}</h2>
                 </div>
                 <span class="mini-status">LIVE</span>
             </div>
 
             <div class="market-topbar">
-                <form method="GET" action="{{ url_for('dashboard.dashboard') }}" class="asset-filter-form">
-                    <label for="asset">Actif</label>
+                <form method="GET" action="{{ url_for('dashboard.dashboard', lang_code=current_lang) }}" class="asset-filter-form">
+                    <label for="asset">{{ t("asset", "Actif") }}</label>
                     <select id="asset" name="asset" onchange="this.form.submit()">
-                        <option value="" {% if not selected_asset %}selected{% endif %}>Tous les actifs</option>
+                        <option value="" {% if not selected_asset %}selected{% endif %}>{{ t("all_assets", "Tous les actifs") }}</option>
                         {% for asset in available_assets %}
                             <option value="{{ asset }}" {% if selected_asset == asset %}selected{% endif %}>{{ asset }}</option>
                         {% endfor %}
@@ -375,9 +371,9 @@
                 </form>
 
                 <div class="market-badges">
-                    <span class="market-chip">Actif sélectionné : {{ selected_asset if selected_asset else 'GLOBAL' }}</span>
-                    <span class="market-chip success">Suivi multi-actifs</span>
-                    <span class="market-chip info">Desk mode actif</span>
+                    <span class="market-chip">{{ t("selected_asset", "Actif sélectionné") }} : {{ selected_asset if selected_asset else 'GLOBAL' }}</span>
+                    <span class="market-chip success">{{ t("multi_asset_tracking", "Suivi multi-actifs") }}</span>
+                    <span class="market-chip info">{{ t("desk_mode_active", "Desk mode actif") }}</span>
                 </div>
             </div>
 
@@ -385,7 +381,7 @@
                 <div class="tv-chart-header">
                     <div>
                         <strong>{{ selected_asset if selected_asset else 'BTCUSD' }}</strong>
-                        <span>Vue stratégique membre</span>
+                        <span>{{ t("member_strategic_view", "Vue stratégique membre") }}</span>
                     </div>
                     <div class="tv-price">
                         <strong>
@@ -399,7 +395,7 @@
                             {% if can_view_stats %}
                                 {{ safe_capital_return_pct }}%
                             {% else %}
-                                Mode protégé
+                                {{ t("protected_mode", "Mode protégé") }}
                             {% endif %}
                         </span>
                     </div>
@@ -445,46 +441,46 @@
         <section class="stats-highlight-grid ultra-stats-grid">
             <div class="stat-card premium-neutral">
                 <div class="stat-top">
-                    <span class="stat-kicker">Total trades</span>
-                    <span class="stat-chip">Global</span>
+                    <span class="stat-kicker">{{ t("total_trades", "Total trades") }}</span>
+                    <span class="stat-chip">{{ t("global_view", "Global") }}</span>
                 </div>
                 <h3>{{ total_signals }}</h3>
-                <p>Volume total des signaux enregistrés sur l’historique affiché.</p>
+                <p>{{ t("total_trades_desc", "Volume total des signaux enregistrés sur l’historique affiché.") }}</p>
             </div>
 
             <div class="stat-card premium-neutral">
                 <div class="stat-top">
                     <span class="stat-kicker">BUY / SELL</span>
-                    <span class="stat-chip">Flux</span>
+                    <span class="stat-chip">{{ t("flow", "Flux") }}</span>
                 </div>
                 <h3>{{ total_buy }} / {{ total_sell }}</h3>
-                <p>Répartition directionnelle des opportunités détectées.</p>
+                <p>{{ t("direction_split_desc", "Répartition directionnelle des opportunités détectées.") }}</p>
             </div>
 
             <div class="stat-card {% if can_view_stats %}{% if safe_estimated_pnl >= 0 %}premium-positive{% else %}premium-negative{% endif %}{% else %}premium-locked-stat single-lock-card{% endif %}">
                 <div class="stat-top">
-                    <span class="stat-kicker">P&amp;L cumulé</span>
+                    <span class="stat-kicker">P&amp;L {{ t("cumulative", "cumulé") }}</span>
                 </div>
                 <h3>{% if can_view_stats %}{{ safe_estimated_pnl }}{% else %}🔒{% endif %}</h3>
                 <p>
                     {% if can_view_stats %}
-                        Résultat cumulé de tous les trades clôturés.
+                        {{ t("cumulative_pnl_desc", "Résultat cumulé de tous les trades clôturés.") }}
                     {% else %}
-                        Les performances détaillées sont masquées en mode découverte et Basic.
+                        {{ t("stats_hidden_desc", "Les performances détaillées sont masquées en mode découverte et Basic.") }}
                     {% endif %}
                 </p>
             </div>
 
             <div class="stat-card {% if can_view_stats %}premium-neutral{% else %}premium-locked-stat single-lock-card{% endif %}">
                 <div class="stat-top">
-                    <span class="stat-kicker">Winrate</span>
+                    <span class="stat-kicker">{{ t("winrate", "Winrate") }}</span>
                 </div>
                 <h3>{% if can_view_stats %}{{ safe_winrate }}%{% else %}🔒{% endif %}</h3>
                 <p>
                     {% if can_view_stats %}
-                        Taux de réussite calculé sur les trades clôturés.
+                        {{ t("winrate_desc", "Taux de réussite calculé sur les trades clôturés.") }}
                     {% else %}
-                        Le taux de réussite détaillé est masqué en version découverte et Basic.
+                        {{ t("winrate_hidden_desc", "Le taux de réussite détaillé est masqué en version découverte et Basic.") }}
                     {% endif %}
                 </p>
             </div>
@@ -496,8 +492,8 @@
                 <section class="premium-panel">
                     <div class="panel-heading">
                         <div>
-                            <span class="panel-mini-title">Dernier setup</span>
-                            <h2>Dernier signal exécuté</h2>
+                            <span class="panel-mini-title">{{ t("latest_setup", "Dernier setup") }}</span>
+                            <h2>{{ t("latest_executed_signal", "Dernier signal exécuté") }}</h2>
                         </div>
                         {% if last_signal %}
                             <span class="signal-badge {{ last_signal.action | lower }}">{{ last_signal.action }}</span>
@@ -506,33 +502,33 @@
 
                     {% if last_signal %}
                     <div class="signal-card-grid last-signal-grid">
-                        <div class="signal-info-card"><span>Actif</span><strong>{{ last_signal.asset }}</strong></div>
-                        <div class="signal-info-card"><span>Direction</span><strong>{{ last_signal.action }}</strong></div>
-                        <div class="signal-info-card"><span>Entrée</span><strong>{{ last_signal.entry_price }}</strong></div>
-                        <div class="signal-info-card"><span>Stop loss</span><strong>{{ last_signal.stop_loss }}</strong></div>
-                        <div class="signal-info-card"><span>Take profit</span><strong>{{ last_signal.take_profit }}</strong></div>
-                        <div class="signal-info-card"><span>Statut</span><strong>{{ last_signal.status }}</strong></div>
+                        <div class="signal-info-card"><span>{{ t("asset", "Actif") }}</span><strong>{{ last_signal.asset }}</strong></div>
+                        <div class="signal-info-card"><span>{{ t("direction", "Direction") }}</span><strong>{{ last_signal.action }}</strong></div>
+                        <div class="signal-info-card"><span>{{ t("entry", "Entrée") }}</span><strong>{{ last_signal.entry_price }}</strong></div>
+                        <div class="signal-info-card"><span>{{ t("stop_loss", "Stop loss") }}</span><strong>{{ last_signal.stop_loss }}</strong></div>
+                        <div class="signal-info-card"><span>{{ t("take_profit", "Take profit") }}</span><strong>{{ last_signal.take_profit }}</strong></div>
+                        <div class="signal-info-card"><span>{{ t("status", "Statut") }}</span><strong>{{ last_signal.status }}</strong></div>
                     </div>
 
                     <div class="signal-actions-row">
                         {% if is_premium_plus and last_signal.id %}
-                            <a href="{{ url_for('pages.learn_signal', signal_id=last_signal.id) }}" class="panel-link-btn">Mini cours</a>
+                            <a href="{{ url_for('pages.learn_signal', signal_id=last_signal.id, lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course", "Mini cours") }}</a>
                         {% else %}
-                            <a href="{{ url_for('billing.pricing') }}" class="panel-link-btn">Mini cours Premium</a>
+                            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course_premium", "Mini cours Premium") }}</a>
                         {% endif %}
 
                         {% if can_view_replay and latest_replay and latest_replay.signal_id == last_signal.id %}
-                            <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}" class="replay-btn">Replay</a>
+                            <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id, lang_code=current_lang) }}" class="replay-btn">{{ t("replay", "Replay") }}</a>
                         {% elif can_view_replay %}
-                            <a href="{{ url_for('replay.my_performance') }}" class="panel-link-btn">Zone replay</a>
+                            <a href="{{ url_for('replay.my_performance', lang_code=current_lang) }}" class="panel-link-btn">{{ t("replay_zone", "Zone replay") }}</a>
                         {% else %}
-                            <a href="{{ url_for('billing.pricing') }}" class="panel-link-btn">Replay premium</a>
+                            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="panel-link-btn">{{ t("premium_replay", "Replay premium") }}</a>
                         {% endif %}
                     </div>
                     {% else %}
                     <div class="empty-state-box">
-                        <h3>Aucun signal disponible</h3>
-                        <p>Le dashboard affichera ici le dernier setup exécuté dès qu’un nouveau signal sera enregistré.</p>
+                        <h3>{{ t("no_signal_available", "Aucun signal disponible") }}</h3>
+                        <p>{{ t("latest_signal_empty_desc", "Le dashboard affichera ici le dernier setup exécuté dès qu’un nouveau signal sera enregistré.") }}</p>
                     </div>
                     {% endif %}
                 </section>
@@ -540,10 +536,10 @@
                 <section class="premium-panel" id="signals-feed">
                     <div class="panel-heading">
                         <div>
-                            <span class="panel-mini-title">Signal room</span>
-                            <h2>Feed signaux</h2>
+                            <span class="panel-mini-title">{{ t("signal_room", "Signal room") }}</span>
+                            <h2>{{ t("signals_feed", "Feed signaux") }}</h2>
                         </div>
-                        <span class="stat-chip">{{ displayed_signals }} affichés</span>
+                        <span class="stat-chip">{{ displayed_signals }} {{ t("displayed", "affichés") }}</span>
                     </div>
 
                     <div class="trade-feed-list">
@@ -558,31 +554,31 @@
                             </div>
 
                             <div class="trade-grid">
-                                <div><span>Entrée</span><strong>{{ s.entry_price }}</strong></div>
+                                <div><span>{{ t("entry", "Entrée") }}</span><strong>{{ s.entry_price }}</strong></div>
                                 <div><span>SL</span><strong>{{ s.stop_loss }}</strong></div>
                                 <div><span>TP</span><strong>{{ s.take_profit }}</strong></div>
-                                <div><span>Timeframe</span><strong>{{ s.timeframe or '-' }}</strong></div>
-                                <div><span>Tendance</span><strong>{{ s.market_trend or '-' }}</strong></div>
-                                <div><span>Source</span><strong>{{ s.source or 'tradingview' }}</strong></div>
+                                <div><span>{{ t("timeframe", "Timeframe") }}</span><strong>{{ s.timeframe or '-' }}</strong></div>
+                                <div><span>{{ t("trend", "Tendance") }}</span><strong>{{ s.market_trend or '-' }}</strong></div>
+                                <div><span>{{ t("source", "Source") }}</span><strong>{{ s.source or 'tradingview' }}</strong></div>
                             </div>
 
                             <div class="trade-analysis">
-                                {{ s.reason if s.reason else 'Signal publié avec une logique technique structurée, en attente de validation complète par le marché.' }}
+                                {{ s.reason if s.reason else t("structured_signal_desc", "Signal publié avec une logique technique structurée, en attente de validation complète par le marché.") }}
                             </div>
 
                             <div class="signal-card-actions">
                                 {% if is_premium_plus and s.id %}
-                                    <a href="{{ url_for('pages.learn_signal', signal_id=s.id) }}" class="panel-link-btn">Mini cours</a>
+                                    <a href="{{ url_for('pages.learn_signal', signal_id=s.id, lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course", "Mini cours") }}</a>
                                 {% else %}
-                                    <a href="{{ url_for('billing.pricing') }}" class="panel-link-btn">Mini cours réservé</a>
+                                    <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course_locked", "Mini cours réservé") }}</a>
                                 {% endif %}
 
                                 {% if can_view_replay and latest_replay and latest_replay.signal_id == s.id %}
-                                    <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}" class="replay-btn">Replay</a>
+                                    <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id, lang_code=current_lang) }}" class="replay-btn">{{ t("replay", "Replay") }}</a>
                                 {% elif can_view_replay %}
-                                    <a href="{{ url_for('replay.my_performance') }}" class="panel-link-btn">Replay training</a>
+                                    <a href="{{ url_for('replay.my_performance', lang_code=current_lang) }}" class="panel-link-btn">{{ t("replay_training", "Replay training") }}</a>
                                 {% else %}
-                                    <a href="{{ url_for('billing.pricing') }}" class="panel-link-btn">Replay réservé</a>
+                                    <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="panel-link-btn">{{ t("replay_locked", "Replay réservé") }}</a>
                                 {% endif %}
                             </div>
                         </article>
@@ -592,17 +588,17 @@
                         <article class="trade-card locked-trade-card">
                             <div class="trade-top">
                                 <div>
-                                    <strong>Signaux supplémentaires</strong>
-                                    <span>Réservés aux abonnés supérieurs</span>
+                                    <strong>{{ t("extra_signals", "Signaux supplémentaires") }}</strong>
+                                    <span>{{ t("reserved_higher_subscribers", "Réservés aux abonnés supérieurs") }}</span>
                                 </div>
                                 <span class="status-pill open">LOCKED</span>
                             </div>
                             <div class="trade-analysis">
-                                Vous voyez {{ displayed_signals }} signaux sur {{ total_signals }}. Débloquez l’historique complet, les statistiques premium, les briefs journaliers et l’expérience membre avancée.
+                                {{ t("locked_signals_desc", "Vous voyez") }} {{ displayed_signals }} {{ t("signals_on", "signaux sur") }} {{ total_signals }}. {{ t("unlock_full_history_desc", "Débloquez l’historique complet, les statistiques premium, les briefs journaliers et l’expérience membre avancée.") }}
                             </div>
                             <div class="signal-card-actions locked-signal-actions">
-                                <a href="{{ url_for('billing.pricing') }}" class="hero-primary-btn compact-btn">Débloquer tous les signaux</a>
-                                <a href="{{ telegram_vip_link if is_vip else url_for('billing.pricing') }}" {% if is_vip %}target="_blank" rel="noopener"{% endif %} class="panel-link-btn vip-lock-btn">Telegram VIP</a>
+                                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="hero-primary-btn compact-btn">{{ t("unlock_all_signals", "Débloquer tous les signaux") }}</a>
+                                <a href="{{ telegram_vip_link if is_vip else url_for('billing.pricing', lang_code=current_lang) }}" {% if is_vip %}target="_blank" rel="noopener"{% endif %} class="panel-link-btn vip-lock-btn">Telegram VIP</a>
                             </div>
                         </article>
                         {% endif %}
@@ -612,10 +608,10 @@
                 <section class="premium-panel" id="winning-trades">
                     <div class="panel-heading">
                         <div>
-                            <span class="panel-mini-title">Showcase</span>
-                            <h2>Trades gagnants uniquement</h2>
+                            <span class="panel-mini-title">{{ t("showcase", "Showcase") }}</span>
+                            <h2>{{ t("winning_trades_only", "Trades gagnants uniquement") }}</h2>
                         </div>
-                        <span class="stat-chip success">{{ visible_win_signals|length }} wins visibles</span>
+                        <span class="stat-chip success">{{ visible_win_signals|length }} {{ t("visible_wins", "wins visibles") }}</span>
                     </div>
 
                     {% if visible_win_signals %}
@@ -627,19 +623,19 @@
                                 <span class="status-pill win">WIN</span>
                             </div>
                             <div class="winning-metrics">
-                                <div><span>Direction</span><strong>{{ s.action }}</strong></div>
-                                <div><span>Entrée</span><strong>{{ s.entry_price }}</strong></div>
+                                <div><span>{{ t("direction", "Direction") }}</span><strong>{{ s.action }}</strong></div>
+                                <div><span>{{ t("entry", "Entrée") }}</span><strong>{{ s.entry_price }}</strong></div>
                                 <div><span>TP</span><strong>{{ s.take_profit }}</strong></div>
-                                <div><span>Sortie</span><strong>Objectif touché</strong></div>
+                                <div><span>{{ t("exit", "Sortie") }}</span><strong>{{ t("target_hit", "Objectif touché") }}</strong></div>
                             </div>
                             <div class="signal-card-actions compact-actions">
                                 {% if is_premium_plus and s.id %}
-                                    <a href="{{ url_for('pages.learn_signal', signal_id=s.id) }}" class="panel-link-btn">Mini cours</a>
+                                    <a href="{{ url_for('pages.learn_signal', signal_id=s.id, lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course", "Mini cours") }}</a>
                                 {% endif %}
                                 {% if can_view_replay and latest_replay and latest_replay.signal_id == s.id %}
-                                    <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}" class="replay-btn">Replay</a>
+                                    <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id, lang_code=current_lang) }}" class="replay-btn">{{ t("replay", "Replay") }}</a>
                                 {% elif not can_view_replay %}
-                                    <a href="{{ url_for('billing.pricing') }}" class="panel-link-btn">Replay réservé</a>
+                                    <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="panel-link-btn">{{ t("replay_locked", "Replay réservé") }}</a>
                                 {% endif %}
                             </div>
                         </article>
@@ -647,8 +643,8 @@
                     </div>
                     {% else %}
                     <div class="empty-state-box">
-                        <h3>Pas encore de trade gagnant visible</h3>
-                        <p>Les trades gagnants apparaitront ici automatiquement dès qu’un TP sera validé.</p>
+                        <h3>{{ t("no_visible_winning_trade", "Pas encore de trade gagnant visible") }}</h3>
+                        <p>{{ t("winning_trade_empty_desc", "Les trades gagnants apparaitront ici automatiquement dès qu’un TP sera validé.") }}</p>
                     </div>
                     {% endif %}
                 </section>
@@ -656,21 +652,21 @@
                 <section class="premium-panel briefing-panel" id="market-news">
                     <div class="panel-heading">
                         <div>
-                            <span class="panel-mini-title">Briefing daily</span>
-                            <h2>Lecture marché du jour</h2>
+                            <span class="panel-mini-title">{{ t("daily_briefing", "Briefing daily") }}</span>
+                            <h2>{{ t("today_market_reading", "Lecture marché du jour") }}</h2>
                         </div>
                     </div>
 
                     {% if latest_briefing and can_view_briefing %}
                     <div class="briefing-preview-box">
                         <div class="briefing-content-preview">{{ latest_briefing.content[:420] }}{% if latest_briefing.content|length > 420 %}...{% endif %}</div>
-                        <a href="{{ url_for('dashboard.briefing_page') }}" class="hero-primary-btn compact-btn">Lire le briefing complet</a>
+                        <a href="{{ url_for('dashboard.briefing_page', lang_code=current_lang) }}" class="hero-primary-btn compact-btn">{{ t("read_full_briefing", "Lire le briefing complet") }}</a>
                     </div>
                     {% else %}
                     <div class="locked-preview-card">
-                        <strong>Contenu réservé Premium / VIP</strong>
-                        <p>Le briefing journalier donne un angle marché, le contexte macro et la lecture des actifs à surveiller.</p>
-                        <a href="{{ url_for('billing.pricing') }}" class="hero-primary-btn compact-btn">Débloquer le briefing</a>
+                        <strong>{{ t("premium_vip_content", "Contenu réservé Premium / VIP") }}</strong>
+                        <p>{{ t("briefing_locked_desc", "Le briefing journalier donne un angle marché, le contexte macro et la lecture des actifs à surveiller.") }}</p>
+                        <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="hero-primary-btn compact-btn">{{ t("unlock_briefing", "Débloquer le briefing") }}</a>
                     </div>
                     {% endif %}
                 </section>
@@ -678,23 +674,23 @@
                 <section class="premium-panel watchlist-panel watchlist-wide-panel">
                     <div class="panel-heading">
                         <div>
-                            <span class="panel-mini-title">Watchlist</span>
-                            <h2>Actifs sous surveillance</h2>
+                            <span class="panel-mini-title">{{ t("watchlist", "Watchlist") }}</span>
+                            <h2>{{ t("assets_under_watch", "Actifs sous surveillance") }}</h2>
                         </div>
-                        <span class="stat-chip">Desk coverage</span>
+                        <span class="stat-chip">{{ t("desk_coverage", "Desk coverage") }}</span>
                     </div>
                     <div class="dashboard-watchlist watchlist-wide-grid">
                         {% for asset in available_assets[:6] %}
                         <div class="watch-item">
-                            <span>Actif</span>
+                            <span>{{ t("asset", "Actif") }}</span>
                             <strong>{{ asset }}</strong>
                         </div>
                         {% endfor %}
                         {% if not available_assets %}
-                        <div class="watch-item"><span>Actif</span><strong>BTCUSD</strong></div>
-                        <div class="watch-item"><span>Actif</span><strong>ETHUSD</strong></div>
-                        <div class="watch-item"><span>Actif</span><strong>GOLD</strong></div>
-                        <div class="watch-item"><span>Actif</span><strong>US100</strong></div>
+                        <div class="watch-item"><span>{{ t("asset", "Actif") }}</span><strong>BTCUSD</strong></div>
+                        <div class="watch-item"><span>{{ t("asset", "Actif") }}</span><strong>ETHUSD</strong></div>
+                        <div class="watch-item"><span>{{ t("asset", "Actif") }}</span><strong>GOLD</strong></div>
+                        <div class="watch-item"><span>{{ t("asset", "Actif") }}</span><strong>US100</strong></div>
                         {% endif %}
                     </div>
                 </section>
@@ -704,19 +700,19 @@
                 <section class="premium-panel performance-badge-panel" id="performance-badge">
                     <div class="panel-heading">
                         <div>
-                            <span class="panel-mini-title">Badge performance</span>
-                            <h2>Statut trader</h2>
+                            <span class="panel-mini-title">{{ t("performance_badge", "Badge performance") }}</span>
+                            <h2>{{ t("trader_status", "Statut trader") }}</h2>
                         </div>
                     </div>
                     <div class="performance-badge-card {{ performance_badge_tone }}">
                         <div class="badge-orb"></div>
-                        <span class="performance-badge-kicker">VelWolf ranking</span>
+                        <span class="performance-badge-kicker">{{ t("velwolef_ranking", "VelWolef ranking") }}</span>
                         <h3>{{ performance_badge_label }}</h3>
-                        <p>Badge visible en haut du desk pour suivre le niveau de régularité, la qualité d’exécution et la progression de votre profil.</p>
+                        <p>{{ t("badge_desc", "Badge visible en haut du desk pour suivre le niveau de régularité, la qualité d’exécution et la progression de votre profil.") }}</p>
                         <div class="performance-badge-metrics">
-                            <div><span>Winrate</span><strong>{% if can_view_stats %}{{ safe_winrate }}%{% else %}🔒{% endif %}</strong></div>
-                            <div><span>Wins</span><strong>{{ total_win }}</strong></div>
-                            <div><span>Clôturés</span><strong>{{ total_closed_trades }}</strong></div>
+                            <div><span>{{ t("winrate", "Winrate") }}</span><strong>{% if can_view_stats %}{{ safe_winrate }}%{% else %}🔒{% endif %}</strong></div>
+                            <div><span>{{ t("wins", "Wins") }}</span><strong>{{ total_win }}</strong></div>
+                            <div><span>{{ t("closed_trades", "Clôturés") }}</span><strong>{{ total_closed_trades }}</strong></div>
                         </div>
                     </div>
                 </section>
@@ -724,8 +720,8 @@
                 <section class="premium-panel leaderboard-panel" id="leaderboard">
                     <div class="panel-heading">
                         <div>
-                            <span class="panel-mini-title">Leaderboard</span>
-                            <h2>Classement performance</h2>
+                            <span class="panel-mini-title">{{ t("leaderboard", "Leaderboard") }}</span>
+                            <h2>{{ t("performance_ranking", "Classement performance") }}</h2>
                         </div>
                     </div>
                     <div class="leaderboard-list">
@@ -748,7 +744,7 @@
                         <div class="leaderboard-row leaderboard-current">
                             <div class="leaderboard-rank">#3</div>
                             <div class="leaderboard-user">
-                                <strong>Vous</strong>
+                                <strong>{{ t("you", "Vous") }}</strong>
                                 <span>{{ performance_badge_label }}</span>
                             </div>
                             <div class="leaderboard-score">{{ leaderboard_score }}</div>
@@ -767,35 +763,35 @@
                 <section class="premium-panel telegram-panel">
                     <div class="panel-heading">
                         <div>
-                            <span class="panel-mini-title">Distribution</span>
-                            <h2>Hub Telegram & communauté</h2>
+                            <span class="panel-mini-title">{{ t("distribution", "Distribution") }}</span>
+                            <h2>{{ t("telegram_hub", "Hub Telegram & communauté") }}</h2>
                         </div>
                     </div>
 
                     <div class="telegram-access-card {% if is_vip %}telegram-live{% else %}telegram-locked{% endif %}">
                         <div class="telegram-badge-row">
                             <span class="signal-badge neutral">{% if is_vip %}VIP LIVE{% else %}LOCKED{% endif %}</span>
-                            <span class="telegram-hint">{% if is_vip %}Alertes prioritaires{% else %}Montée en gamme{% endif %}</span>
+                            <span class="telegram-hint">{% if is_vip %}{{ t("priority_alerts", "Alertes prioritaires") }}{% else %}{{ t("upgrade_path", "Montée en gamme") }}{% endif %}</span>
                         </div>
-                        <h3>{% if is_vip %}Votre desk Telegram VIP est ouvert{% else %}Le vrai flux Telegram reste réservé aux VIP{% endif %}</h3>
+                        <h3>{% if is_vip %}{{ t("vip_desk_open", "Votre desk Telegram VIP est ouvert") }}{% else %}{{ t("telegram_vip_locked", "Le vrai flux Telegram reste réservé aux VIP") }}{% endif %}</h3>
                         <p>
                             {% if is_vip %}
-                                Accède à ton canal privé pour recevoir les signaux, les updates rapides et les annonces stratégiques.
+                                {{ t("vip_telegram_desc", "Accède à ton canal privé pour recevoir les signaux, les updates rapides et les annonces stratégiques.") }}
                             {% elif is_premium_plus %}
-                                Le plan Premium débloque la plateforme avancée. Le canal Telegram privé reste la couche exclusive VIP.
+                                {{ t("premium_telegram_desc", "Le plan Premium débloque la plateforme avancée. Le canal Telegram privé reste la couche exclusive VIP.") }}
                             {% elif is_basic %}
-                                Tu as accès au dashboard et aux signaux, mais le flux Telegram prioritaire reste fermé jusqu’au VIP.
+                                {{ t("basic_telegram_desc", "Tu as accès au dashboard et aux signaux, mais le flux Telegram prioritaire reste fermé jusqu’au VIP.") }}
                             {% else %}
-                                Commence par le canal public, puis débloque Premium et VIP pour accéder à la distribution complète.
+                                {{ t("free_telegram_desc", "Commence par le canal public, puis débloque Premium et VIP pour accéder à la distribution complète.") }}
                             {% endif %}
                         </p>
                         <div class="telegram-panel-actions">
                             <a href="{% if is_vip %}{{ telegram_vip_link }}{% else %}{{ telegram_public_link }}{% endif %}" target="_blank" rel="noopener" class="telegram-btn">
-                                {% if is_vip %}Rejoindre le canal VIP{% else %}Ouvrir le canal public{% endif %}
+                                {% if is_vip %}{{ t("join_vip_channel", "Rejoindre le canal VIP") }}{% else %}{{ t("open_public_channel", "Ouvrir le canal public") }}{% endif %}
                             </a>
                             {% if not is_vip %}
-                            <a href="{{ url_for('billing.pricing') }}" class="telegram-outline-btn">
-                                {% if is_premium_plus %}Passer VIP{% else %}Voir les offres{% endif %}
+                            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="telegram-outline-btn">
+                                {% if is_premium_plus %}{{ t("go_vip", "Passer VIP") }}{% else %}{{ t("see_offers", "Voir les offres") }}{% endif %}
                             </a>
                             {% endif %}
                         </div>
@@ -805,61 +801,61 @@
                 <section class="premium-panel summary-panel">
                     <div class="panel-heading">
                         <div>
-                            <span class="panel-mini-title">Compte</span>
-                            <h2>Résumé membre</h2>
+                            <span class="panel-mini-title">{{ t("account", "Compte") }}</span>
+                            <h2>{{ t("member_summary", "Résumé membre") }}</h2>
                         </div>
                     </div>
 
                     <div class="account-summary-list">
                         <div class="account-line"><span>Email</span><strong>{{ email }}</strong></div>
-                        <div class="account-line"><span>Plan</span><strong>{{ user_plan | upper }}</strong></div>
-                        <div class="account-line"><span>Capital initial</span><strong>{{ safe_initial_capital }}</strong></div>
-                        <div class="account-line"><span>Capital actuel</span><strong>{% if can_view_stats %}{{ safe_current_capital }}{% else %}🔒 Premium+{% endif %}</strong></div>
-                        <div class="account-line"><span>ROI capital</span><strong>{% if can_view_stats %}{{ safe_capital_return_pct }}%{% else %}🔒 Premium+{% endif %}</strong></div>
-                        <div class="account-line"><span>PnL du jour</span><strong>{% if can_view_stats %}{{ safe_today_pnl }}{% else %}🔒 Premium+{% endif %}</strong></div>
+                        <div class="account-line"><span>{{ t("plan", "Plan") }}</span><strong>{{ user_plan | upper }}</strong></div>
+                        <div class="account-line"><span>{{ t("initial_capital", "Capital initial") }}</span><strong>{{ safe_initial_capital }}</strong></div>
+                        <div class="account-line"><span>{{ t("current_capital", "Capital actuel") }}</span><strong>{% if can_view_stats %}{{ safe_current_capital }}{% else %}🔒 Premium+{% endif %}</strong></div>
+                        <div class="account-line"><span>{{ t("capital_roi", "ROI capital") }}</span><strong>{% if can_view_stats %}{{ safe_capital_return_pct }}%{% else %}🔒 Premium+{% endif %}</strong></div>
+                        <div class="account-line"><span>{{ t("today_pnl", "PnL du jour") }}</span><strong>{% if can_view_stats %}{{ safe_today_pnl }}{% else %}🔒 Premium+{% endif %}</strong></div>
                     </div>
                 </section>
 
                 <section class="premium-panel quick-stats-panel">
                     <div class="panel-heading">
                         <div>
-                            <span class="panel-mini-title">Exécution</span>
-                            <h2>Lecture rapide</h2>
+                            <span class="panel-mini-title">{{ t("execution", "Exécution") }}</span>
+                            <h2>{{ t("quick_read", "Lecture rapide") }}</h2>
                         </div>
                     </div>
                     <div class="quick-stats-grid">
-                        <div class="quick-stat-box"><span>Wins</span><strong>{{ total_win }}</strong></div>
-                        <div class="quick-stat-box"><span>Losses</span><strong>{{ total_loss }}</strong></div>
-                        <div class="quick-stat-box"><span>Open</span><strong>{{ total_open }}</strong></div>
-                        <div class="quick-stat-box"><span>Trades jour</span><strong>{% if can_view_stats %}{{ safe_today_trades }}{% else %}🔒{% endif %}</strong></div>
+                        <div class="quick-stat-box"><span>{{ t("wins", "Wins") }}</span><strong>{{ total_win }}</strong></div>
+                        <div class="quick-stat-box"><span>{{ t("losses", "Losses") }}</span><strong>{{ total_loss }}</strong></div>
+                        <div class="quick-stat-box"><span>{{ t("open_trades", "Open") }}</span><strong>{{ total_open }}</strong></div>
+                        <div class="quick-stat-box"><span>{{ t("today_trades", "Trades jour") }}</span><strong>{% if can_view_stats %}{{ safe_today_trades }}{% else %}🔒{% endif %}</strong></div>
                     </div>
                 </section>
 
                 <section class="premium-panel replay-panel">
                     <div class="panel-heading">
                         <div>
-                            <span class="panel-mini-title">Replay</span>
-                            <h2>Session de relecture</h2>
+                            <span class="panel-mini-title">{{ t("replay", "Replay") }}</span>
+                            <h2>{{ t("review_session", "Session de relecture") }}</h2>
                         </div>
                     </div>
 
                     {% if latest_replay and can_view_replay %}
                     <div class="replay-highlight-card">
-                        <span>Dernier replay</span>
+                        <span>{{ t("latest_replay", "Dernier replay") }}</span>
                         <strong>{{ latest_replay.symbol }} • {{ latest_replay.direction }}</strong>
-                        <p>Travaille la décision, la gestion et l’exécution avec un replay de trade structuré.</p>
-                        <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id) }}" class="replay-btn">Lancer le replay</a>
+                        <p>{{ t("replay_desc", "Travaille la décision, la gestion et l’exécution avec un replay de trade structuré.") }}</p>
+                        <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id, lang_code=current_lang) }}" class="replay-btn">{{ t("launch_replay", "Lancer le replay") }}</a>
                     </div>
                     {% elif not can_view_replay %}
                     <div class="locked-preview-card">
-                        <strong>Replay réservé Premium / VIP</strong>
-                        <p>Accède aux relectures de trades pour comprendre l’entrée, la gestion et la sortie.</p>
-                        <a href="{{ url_for('billing.pricing') }}" class="hero-primary-btn compact-btn">Débloquer le replay</a>
+                        <strong>{{ t("replay_premium_vip", "Replay réservé Premium / VIP") }}</strong>
+                        <p>{{ t("replay_locked_desc_2", "Accède aux relectures de trades pour comprendre l’entrée, la gestion et la sortie.") }}</p>
+                        <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="hero-primary-btn compact-btn">{{ t("unlock_replay", "Débloquer le replay") }}</a>
                     </div>
                     {% else %}
                     <div class="empty-state-box compact-empty">
-                        <h3>Aucun replay publié</h3>
-                        <p>Ajoutez un replay à un trade pour enrichir la zone d’apprentissage.</p>
+                        <h3>{{ t("no_replay_published", "Aucun replay publié") }}</h3>
+                        <p>{{ t("add_replay_desc", "Ajoutez un replay à un trade pour enrichir la zone d’apprentissage.") }}</p>
                     </div>
                     {% endif %}
                 </section>
@@ -872,23 +868,23 @@
                     <span class="bottom-cta-kicker">Membership</span>
                     <h2>
                         {% if is_vip %}
-                            Votre desk VIP tourne à plein régime.
+                            {{ t("vip_desk_full", "Votre desk VIP tourne à plein régime.") }}
                         {% elif is_premium_plus %}
-                            Votre desk premium tourne à plein régime.
+                            {{ t("premium_desk_full", "Votre desk premium tourne à plein régime.") }}
                         {% elif is_basic %}
-                            Passez au niveau supérieur pour débloquer stats, briefing et replay.
+                            {{ t("upgrade_for_stats_briefing_replay", "Passez au niveau supérieur pour débloquer stats, briefing et replay.") }}
                         {% else %}
-                            Débloquez le terminal complet, le briefing daily et la couche business Premium.
+                            {{ t("unlock_full_terminal", "Débloquez le terminal complet, le briefing daily et la couche business Premium.") }}
                         {% endif %}
                     </h2>
                     <p>
-                        La version découverte reste une vitrine de conversion. Premium débloque les métriques sensibles, le briefing et l’analyse. VIP ajoute Telegram privé, priorité d’alerte et effet club fermé pour booster la valeur perçue.
+                        {{ t("membership_desc", "La version découverte reste une vitrine de conversion. Premium débloque les métriques sensibles, le briefing et l’analyse. VIP ajoute Telegram privé, priorité d’alerte et effet club fermé pour booster la valeur perçue.") }}
                     </p>
                 </div>
                 <div class="bottom-cta-actions">
-                    <a href="{{ url_for('billing.pricing') }}" class="hero-primary-btn">Voir les offres</a>
-                    <a href="{{ url_for('pages.academy_upgrade') if is_upgrade_target else url_for('pages.academy_index') }}" class="hero-secondary-btn">
-                        {% if is_upgrade_target %}Débloquer Academy{% else %}Ouvrir Academy{% endif %}
+                    <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="hero-primary-btn">{{ t("see_offers", "Voir les offres") }}</a>
+                    <a href="{{ url_for('pages.academy_upgrade', lang_code=current_lang) if is_upgrade_target else url_for('pages.academy_index', lang_code=current_lang) }}" class="hero-secondary-btn">
+                        {% if is_upgrade_target %}{{ t("unlock_academy", "Débloquer Academy") }}{% else %}{{ t("open_academy", "Ouvrir Academy") }}{% endif %}
                     </a>
                 </div>
             </div>
@@ -896,6 +892,4 @@
 
     </main>
 </div>
-
-</body>
-</html>
+{% endblock %}

@@ -34,19 +34,54 @@
                     discipline intellectuelle minimale. Avant d’apprendre à exécuter, il faut apprendre
                     à comprendre.
                 </p>
+                <p class="academy-lead">
+                    L’objectif du niveau 1 n’est pas de transformer immédiatement l’utilisateur en trader
+                    avancé. Il vise d’abord à lui donner une structure mentale sérieuse : comprendre ce qu’est
+                    un scénario, ce qu’est une invalidation, pourquoi le risque doit être limité, comment
+                    lire les éléments les plus visibles d’un graphique, et comment éviter les erreurs
+                    structurelles qui détruisent les comptes débutants.
+                </p>
+
+                <div class="academy-actions">
+                    <a href="#module-1" class="academy-btn academy-btn-primary">Commencer le cours</a>
+                    <a href="#quiz-final" class="academy-btn academy-btn-secondary">Aller au quiz</a>
+                    {% if not is_pro %}
+                    <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
+                        Débloquer la version Pro
+                    </a>
+                    {% endif %}
+                </div>
             </div>
 
             <div class="academy-side-progress">
                 <div class="academy-progress-head">
                     <span>Progression actuelle</span>
-                    <strong>{{ academy_progress.level1 }}%</strong>
+                    <strong>{{ academy_progress.level1 if academy_progress else 0 }}%</strong>
                 </div>
                 <div class="academy-progress-bar">
-                    <div class="academy-progress-fill" style="width: {{ academy_progress.level1 }}%;"></div>
+                    <div class="academy-progress-fill" style="width: {{ academy_progress.level1 if academy_progress else 0 }}%;"></div>
                 </div>
+
                 <div class="academy-progress-head academy-progress-head-second">
                     <span>Accès</span>
                     <strong>{% if is_pro %}Complet{% else %}Aperçu limité{% endif %}</strong>
+                </div>
+
+                <div class="academy-info-card" style="margin-top: 18px;">
+                    <h3>Objectif du niveau</h3>
+                    <p>
+                        Remplacer l’intuition floue par une base de compréhension solide,
+                        structurée et exploitable.
+                    </p>
+                </div>
+
+                <div class="academy-info-card" style="margin-top: 18px;">
+                    <h3>Résultat attendu</h3>
+                    <p>
+                        À la fin du niveau 1, l’élève doit être capable de définir un trade,
+                        situer un marché, raisonner en scénario, limiter son risque et identifier
+                        les erreurs les plus dangereuses.
+                    </p>
                 </div>
             </div>
         </div>
@@ -71,7 +106,7 @@
                         <div class="academy-player-overlay-text">
                             <span class="academy-kicker">Vidéo premium</span>
                             <h3>Niveau 1 — Fondations du trading</h3>
-                            <p>Version complète réservée aux membres Pro avec vidéos, progression et validation.</p>
+                            <p>Version complète réservée aux membres Pro avec vidéos, progression, quiz et validation.</p>
                         </div>
                         {% endif %}
                     </div>
@@ -89,12 +124,35 @@
                     </div>
                 </div>
 
+                {% if is_pro %}
+                <div class="academy-academic-block" style="margin-top: 24px;">
+                    <span class="academy-box-label">Visualisation marché</span>
+                    <h3>Graphique pédagogique — BTC/USD</h3>
+                    <p>
+                        Ce graphique sert de support visuel pour relier la théorie à la pratique.
+                        À ce niveau, le but n’est pas encore de multiplier les interprétations avancées,
+                        mais de commencer à observer les bases : tendance simple, réactions du prix, zones visibles,
+                        impulsions et corrections.
+                    </p>
+                    <div class="academy-chart-box">
+                        <iframe
+                            src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_btc_level1&symbol=BINANCE:BTCUSDT&interval=240&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=F1F3F6&studies=[]&theme=dark&style=1&timezone=Etc%2FUTC&withdateranges=1&hideideas=1"
+                            width="100%"
+                            height="420"
+                            frameborder="0"
+                            allowtransparency="true"
+                            scrolling="no">
+                        </iframe>
+                    </div>
+                </div>
+                {% endif %}
+
                 {% if not is_pro %}
                 <div class="academy-lock-overlay">
                     <div class="academy-lock-card">
                         <div class="academy-lock-icon">🔒</div>
                         <h3>Contenu académique réservé aux membres Pro</h3>
-                        <p>Débloquez les vidéos, les études de cas, la progression complète et la validation du niveau.</p>
+                        <p>Débloquez les vidéos, les études de cas, les checklists, les graphes, la progression complète et la validation du niveau.</p>
                         <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
                             Passer Pro maintenant
                         </a>
@@ -117,6 +175,25 @@
                         <li>8. Supports et résistances</li>
                         <li>9. Erreurs structurelles du débutant</li>
                         <li>10. Synthèse et validation</li>
+                    </ul>
+                </div>
+
+                <div class="academy-info-card" style="margin-top: 20px;">
+                    <h3>Ce que ce niveau doit changer</h3>
+                    <p>
+                        Vous faire passer d’une approche émotionnelle, vague ou impulsive
+                        à une approche structurée, disciplinée et compréhensible.
+                    </p>
+                </div>
+
+                <div class="academy-info-card" style="margin-top: 20px;">
+                    <h3>Compétences visées</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Comprendre le langage du trading.</li>
+                        <li>Lire une structure simple.</li>
+                        <li>Formuler une hypothèse de marché.</li>
+                        <li>Protéger le capital par le risque.</li>
+                        <li>Éviter les erreurs les plus destructrices.</li>
                     </ul>
                 </div>
             </aside>
@@ -150,10 +227,65 @@
                 <p>Passer d’une intuition floue à un raisonnement structuré et vérifiable.</p>
             </div>
         </div>
+
+        <div class="academy-chart-grid" style="margin-top: 28px;">
+            <div class="academy-chart-card">
+                <h3>Évolution d’un capital discipliné</h3>
+                <p>
+                    Ce graphique pédagogique montre qu’une croissance durable repose moins sur l’euphorie
+                    que sur la régularité, la répétition de bonnes décisions et la limitation des pertes.
+                </p>
+                <canvas id="capitalDisciplineChart" height="120"></canvas>
+            </div>
+
+            <div class="academy-chart-card">
+                <h3>Impact du risque excessif</h3>
+                <p>
+                    Deux trajectoires peuvent partir du même capital initial. Celle qui utilise un risque
+                    mal maîtrisé devient beaucoup plus instable et vulnérable.
+                </p>
+                <canvas id="riskImpactChart" height="120"></canvas>
+            </div>
+        </div>
+
+        <div class="academy-academic-block" style="margin-top: 28px;">
+            <span class="academy-box-label">Framework fondamental</span>
+            <h3>La structure minimale d’un trade sérieux</h3>
+            <p>
+                Dès le niveau 1, l’utilisateur doit comprendre qu’un trade ne peut pas être réduit
+                à un simple “je pense que ça va monter” ou “ça semble avoir déjà beaucoup baissé”.
+                Toute décision sérieuse doit s’appuyer sur une structure minimale. Sans cette structure,
+                il ne s’agit pas d’un plan de trading, mais d’une exposition désordonnée au hasard.
+            </p>
+
+            <div class="academy-summary-grid">
+                <div class="academy-info-card">
+                    <h3>Les 5 éléments de base</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Le contexte général du marché.</li>
+                        <li>La zone d’intérêt ou de réaction.</li>
+                        <li>Le signal ou comportement du prix.</li>
+                        <li>Le niveau d’invalidation.</li>
+                        <li>L’objectif ou logique de sortie.</li>
+                    </ul>
+                </div>
+
+                <div class="academy-info-card">
+                    <h3>Ce que cela évite</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Entrer sans plan précis.</li>
+                        <li>Déplacer le stop sans logique.</li>
+                        <li>Confondre intuition et méthode.</li>
+                        <li>Prendre un risque non mesuré.</li>
+                        <li>Sortir de façon émotionnelle.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
-<section class="academy-section">
+<section class="academy-section" id="module-1">
     <div class="academy-shell">
         <div class="academy-section-title">
             <span class="academy-kicker">Chapitre 1</span>
@@ -175,6 +307,13 @@
                 décision peut parfois produire une perte, tandis qu’une mauvaise décision peut parfois
                 produire un gain accidentel. Cette distinction entre qualité de décision et résultat immédiat
                 est l’un des premiers marqueurs de maturité intellectuelle.
+            </p>
+            <p>
+                Le débutant souffre souvent d’une confusion fondamentale : il confond justesse analytique
+                et résultat immédiat. Or, dans un univers probabiliste, une bonne décision peut être invalidée
+                par le marché, tandis qu’une mauvaise décision peut être récompensée par hasard. Ce décalage
+                explique pourquoi la progression sérieuse exige un cadre méthodologique plus fort que la simple
+                recherche de gains rapides.
             </p>
 
             <div class="academy-definition-box">
@@ -210,6 +349,18 @@
                     quand il a tort et à exploiter proprement les contextes favorables.
                 </p>
             </div>
+
+            <div class="academy-academic-block" style="margin-top: 22px;">
+                <span class="academy-box-label">Framework pro</span>
+                <h3>Questionnaire mental avant toute décision</h3>
+                <ul class="academy-reflection-list">
+                    <li>Qu’est-ce que j’observe réellement, et non ce que j’espère ?</li>
+                    <li>Quel est le scénario dominant ?</li>
+                    <li>À quel endroit mon idée devient-elle fausse ?</li>
+                    <li>Mon risque est-il clairement défini ?</li>
+                    <li>Ma décision repose-t-elle sur un plan ou sur une impulsion ?</li>
+                </ul>
+            </div>
         </div>
     </div>
 </section>
@@ -240,6 +391,11 @@
                 plus larges : politique monétaire, appétit pour le risque, stress géopolitique, croissance, inflation.
                 Le trader doit donc éviter d’appliquer mécaniquement la même lecture à des actifs de nature différente.
             </p>
+            <p>
+                La première maturité consiste donc à respecter la personnalité propre de chaque marché.
+                Apprendre à trader, ce n’est pas seulement apprendre des patterns ; c’est comprendre
+                l’environnement dans lequel ces patterns apparaissent.
+            </p>
 
             <div class="academy-case-box">
                 <span class="academy-box-label">Étude de cas</span>
@@ -255,6 +411,59 @@
                 <p>
                     Apprendre le trading, c’est aussi apprendre à respecter la personnalité propre de chaque marché.
                 </p>
+            </div>
+
+            <div class="academy-summary-grid">
+                <div class="academy-info-card">
+                    <h3>Crypto</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Volatilité forte.</li>
+                        <li>Sentiment très influent.</li>
+                        <li>Accélérations parfois brutales.</li>
+                        <li>Pièges émotionnels fréquents.</li>
+                    </ul>
+                </div>
+
+                <div class="academy-info-card">
+                    <h3>Forex / Or / Indices</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Réactions macro plus lisibles.</li>
+                        <li>Liquidité souvent plus stable.</li>
+                        <li>Structure parfois plus propre.</li>
+                        <li>Horaires et sessions très importants.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="academy-comparison-box">
+                <span class="academy-box-label">Tableau de lecture</span>
+                <div class="academy-comparison-table">
+                    <div class="academy-comparison-row academy-comparison-head">
+                        <div>Marché</div>
+                        <div>Volatilité</div>
+                        <div>Lecture débutant</div>
+                    </div>
+                    <div class="academy-comparison-row">
+                        <div>Bitcoin / Crypto</div>
+                        <div>Élevée</div>
+                        <div>Prudence émotionnelle</div>
+                    </div>
+                    <div class="academy-comparison-row">
+                        <div>Forex majeur</div>
+                        <div>Moyenne</div>
+                        <div>Lecture plus structurée</div>
+                    </div>
+                    <div class="academy-comparison-row">
+                        <div>Gold</div>
+                        <div>Moyenne à forte</div>
+                        <div>Très sensible au contexte macro</div>
+                    </div>
+                    <div class="academy-comparison-row">
+                        <div>Indices</div>
+                        <div>Variable</div>
+                        <div>Attention aux horaires et news</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -280,6 +489,11 @@
                 Cela implique qu’une position sérieuse contient déjà en elle sa propre invalidation. Entrer
                 sans savoir où l’on a tort n’est pas une décision de trading ; c’est une exposition brute au hasard.
             </p>
+            <p>
+                Cette logique distingue immédiatement le spéculateur désordonné de l’opérateur plus structuré.
+                Le premier “essaie quelque chose”. Le second formule une hypothèse, la conditionne, la cadre,
+                et accepte l’idée que cette hypothèse puisse être invalidée proprement.
+            </p>
 
             <div class="academy-definition-box">
                 <span class="academy-box-label">Définition</span>
@@ -302,6 +516,23 @@
                 <p>
                     Entrer parce que “le prix a déjà beaucoup baissé” ou “semble trop haut” sans structure claire.
                 </p>
+            </div>
+
+            <div class="academy-academic-block" style="margin-top: 22px;">
+                <span class="academy-box-label">Cas réel</span>
+                <h3>Exemple simple — Achat sur support BTC</h3>
+                <p>
+                    Supposons qu’un actif comme Bitcoin arrive sur une zone visiblement défendue à plusieurs reprises.
+                    L’idée d’achat n’est pas valide parce que “le support existe”, mais parce qu’un comportement cohérent
+                    du prix apparaît sur cette zone.
+                </p>
+                <ul class="academy-reflection-list">
+                    <li>Contexte : le prix revient sur une zone clé.</li>
+                    <li>Hypothèse : un rebond peut se produire si la zone tient.</li>
+                    <li>Invalidation : si la zone casse nettement, l’idée devient fausse.</li>
+                    <li>Objectif : viser la prochaine zone logique de réaction.</li>
+                    <li>Conclusion : l’entrée n’est pas une croyance, mais une hypothèse testable.</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -328,6 +559,11 @@
                 avant d’être réellement comprises. Beaucoup de débutants augmentent leur lot ou leur levier
                 pour “aller plus vite”, sans comprendre que l’accélération s’applique aussi aux pertes.
             </p>
+            <p>
+                À ce stade, l’utilisateur n’a pas encore besoin d’une sophistication excessive. Mais il doit
+                comprendre une chose fondamentale : si l’unité de risque n’est pas comprise, alors la position
+                ne peut pas être maîtrisée sérieusement.
+            </p>
 
             <div class="academy-warning-box">
                 <span class="academy-box-label">Attention</span>
@@ -343,6 +579,47 @@
                     Avant de penser rendement, il faut savoir mesurer précisément ce que chaque mouvement
                     du prix représente pour le capital réel.
                 </p>
+            </div>
+
+            <div class="academy-summary-grid">
+                <div class="academy-info-card">
+                    <h3>Ce qu’il faut savoir</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Quelle taille de position j’utilise.</li>
+                        <li>Combien je perds si mon stop est touché.</li>
+                        <li>Quel impact a le spread sur mon entrée.</li>
+                        <li>Quel rôle joue le levier dans mon exposition réelle.</li>
+                    </ul>
+                </div>
+
+                <div class="academy-info-card">
+                    <h3>Ce qu’il faut éviter</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Monter le lot pour compenser une frustration.</li>
+                        <li>Utiliser du levier sans comprendre l’amplification du risque.</li>
+                        <li>Minimiser l’effet cumulé des petites erreurs.</li>
+                        <li>Entrer avec une taille incohérente avec le capital.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="academy-chart-grid" style="margin-top: 24px;">
+                <div class="academy-chart-card">
+                    <h3>Effet pédagogique du levier</h3>
+                    <p>
+                        Plus le levier augmente, plus une faible variation du prix peut produire un impact
+                        disproportionné sur le compte.
+                    </p>
+                    <canvas id="leverageChart" height="120"></canvas>
+                </div>
+
+                <div class="academy-chart-card">
+                    <h3>Lecture simple exposition / risque</h3>
+                    <p>
+                        La compréhension technique doit toujours précéder l’augmentation de la taille de position.
+                    </p>
+                    <canvas id="exposureChart" height="120"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -367,6 +644,11 @@
                 prouve qu’il sait aussi limiter sa cupidité. La structure d’un trade est donc symétrique :
                 il faut savoir où l’on sort si l’on a tort et où l’on sort si l’on a raison.
             </p>
+            <p>
+                Beaucoup de débutants pensent encore qu’un stop est un “mal nécessaire” ou une “punition”.
+                En réalité, il s’agit d’un outil de vérité : le stop indique le point à partir duquel
+                le marché ne valide plus l’hypothèse initiale.
+            </p>
 
             <div class="academy-example-box">
                 <span class="academy-box-label">Exemple concret</span>
@@ -376,11 +658,62 @@
                 </p>
             </div>
 
+            <div class="academy-case-box">
+                <span class="academy-box-label">Cas réel — BTC</span>
+                <p>
+                    Bitcoin arrive sur une zone de support visible sur une unité de temps large.
+                    Le trader observe un rejet haussier, puis une reprise au-dessus d’une bougie de confirmation.
+                    L’entrée peut être envisagée uniquement si le stop est placé sous la zone d’invalidation
+                    et si l’objectif de sortie est cohérent avec la prochaine résistance.
+                </p>
+            </div>
+
             <div class="academy-keytakeaway-box">
                 <span class="academy-box-label">À retenir</span>
                 <p>
                     Un trade sans structure de sortie n’est pas un plan. C’est une vulnérabilité.
                 </p>
+            </div>
+
+            <div class="academy-academic-block" style="margin-top: 22px;">
+                <span class="academy-box-label">Règle simple</span>
+                <h3>Le ratio rendement / risque</h3>
+                <p>
+                    Le débutant doit rapidement intégrer un principe simple : il ne suffit pas qu’une idée
+                    soit “possible”, il faut aussi qu’elle soit rentable au regard du risque pris.
+                </p>
+                <ul class="academy-reflection-list">
+                    <li>Risque = distance entre l’entrée et le stop.</li>
+                    <li>Rendement potentiel = distance entre l’entrée et l’objectif.</li>
+                    <li>Un scénario trop faible au regard du risque doit être évité.</li>
+                    <li>Le ratio ne remplace pas l’analyse, mais il discipline la sélection.</li>
+                </ul>
+            </div>
+
+            <div class="academy-comparison-box">
+                <span class="academy-box-label">Comparaison</span>
+                <div class="academy-comparison-table">
+                    <div class="academy-comparison-row academy-comparison-head">
+                        <div>Situation</div>
+                        <div>Bonne pratique</div>
+                        <div>Mauvaise pratique</div>
+                    </div>
+                    <div class="academy-comparison-row">
+                        <div>Entrée</div>
+                        <div>Zone + signal</div>
+                        <div>Impulsion émotionnelle</div>
+                    </div>
+                    <div class="academy-comparison-row">
+                        <div>Stop</div>
+                        <div>Invalidation logique</div>
+                        <div>Stop arbitraire ou absent</div>
+                    </div>
+                    <div class="academy-comparison-row">
+                        <div>Objectif</div>
+                        <div>Sortie planifiée</div>
+                        <div>Espoir non structuré</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -406,6 +739,11 @@
                 C’est seulement lorsqu’un capital est protégé qu’il devient possible de parler sérieusement
                 de croissance ou de rendement.
             </p>
+            <p>
+                Cette logique de préservation n’est pas un frein à l’ambition. Elle est la condition préalable
+                d’une ambition durable. Sans continuité opérationnelle, il n’y a ni apprentissage réel,
+                ni progression sérieuse.
+            </p>
 
             <div class="academy-definition-box">
                 <span class="academy-box-label">Définition</span>
@@ -428,6 +766,26 @@
                     Un trader durable n’est pas celui qui gagne vite, mais celui qui reste solvable assez longtemps
                     pour devenir compétent.
                 </p>
+            </div>
+
+            <div class="academy-academic-block" style="margin-top: 22px;">
+                <span class="academy-box-label">Règles de base</span>
+                <h3>Discipline minimale recommandée</h3>
+                <ul class="academy-reflection-list">
+                    <li>Risque maximum par trade : limité et défini à l’avance.</li>
+                    <li>Pas de trade sans stop clairement pensé.</li>
+                    <li>Pas d’augmentation émotionnelle de taille.</li>
+                    <li>Pas de vengeance après une perte.</li>
+                    <li>Priorité absolue à la survie du capital.</li>
+                </ul>
+            </div>
+
+            <div class="academy-chart-card" style="margin-top: 24px;">
+                <h3>Discipline vs destruction du capital</h3>
+                <p>
+                    Une gestion disciplinée produit souvent une progression plus lente, mais beaucoup plus stable.
+                </p>
+                <canvas id="disciplineVsChaosChart" height="120"></canvas>
             </div>
         </div>
     </div>
@@ -452,6 +810,11 @@
                 le prix monte-t-il, baisse-t-il, consolide-t-il ? Réagit-il sur une zone évidente ?
                 Cette lecture initiale est plus importante qu’un excès d’indicateurs mal compris.
             </p>
+            <p>
+                Un bon débutant n’est pas celui qui cherche partout des patterns compliqués.
+                C’est celui qui sait déjà identifier les éléments les plus visibles avec calme :
+                direction générale, force apparente, zones de réaction, rythme du mouvement.
+            </p>
 
             <div class="academy-case-box">
                 <span class="academy-box-label">Étude de cas</span>
@@ -460,6 +823,18 @@
                     “ça monte”. Elle indique aussi que les vendeurs reprennent peu de terrain à chaque pause,
                     ce qui renseigne déjà sur la pression dominante.
                 </p>
+            </div>
+
+            <div class="academy-academic-block" style="margin-top: 22px;">
+                <span class="academy-box-label">Checklist de lecture</span>
+                <h3>Questions simples face à un graphique</h3>
+                <ul class="academy-reflection-list">
+                    <li>Le prix avance-t-il plutôt à la hausse, à la baisse ou latéralement ?</li>
+                    <li>Les impulsions sont-elles fortes ou faibles ?</li>
+                    <li>Les corrections sont-elles profondes ou modérées ?</li>
+                    <li>Le prix réagit-il à une zone visible ?</li>
+                    <li>Le comportement actuel confirme-t-il ou fragilise-t-il le scénario ?</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -484,12 +859,45 @@
                 L’erreur du débutant consiste à croire qu’un niveau “doit” fonctionner. Le trader plus rigoureux
                 considère au contraire qu’un niveau est un endroit où le marché peut révéler une information utile.
             </p>
+            <p>
+                Cette différence de posture est décisive. Le débutant attend une certitude. Le trader plus sérieux
+                observe une zone de réaction potentielle et attend une confirmation comportementale.
+            </p>
 
             <div class="academy-keytakeaway-box">
                 <span class="academy-box-label">À retenir</span>
                 <p>
                     Un support ou une résistance ne donne pas une certitude. Il donne un contexte à surveiller.
                 </p>
+            </div>
+
+            <div class="academy-example-box">
+                <span class="academy-box-label">Exemple concret</span>
+                <p>
+                    Une résistance travaillée plusieurs fois peut finir par céder, mais elle peut aussi
+                    produire un faux départ. Ce n’est pas le niveau seul qui compte, mais la manière
+                    dont le prix s’y comporte.
+                </p>
+            </div>
+
+            <div class="academy-summary-grid">
+                <div class="academy-info-card">
+                    <h3>Lecture immature</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Le niveau doit obligatoirement tenir.</li>
+                        <li>La cassure est forcément vraie.</li>
+                        <li>La réaction est interprétée trop vite.</li>
+                    </ul>
+                </div>
+
+                <div class="academy-info-card">
+                    <h3>Lecture plus mature</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Le niveau est une zone d’observation.</li>
+                        <li>Le comportement du prix confirme ou invalide.</li>
+                        <li>La patience prime sur la précipitation.</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -531,12 +939,51 @@
                 Tant que le trading est abordé comme une recherche de sensation ou d’accélération,
                 la discipline reste secondaire et le compte devient fragile.
             </p>
+            <p>
+                Beaucoup d’erreurs destructrices sont comportementales avant d’être techniques.
+                L’utilisateur doit donc apprendre à reconnaître non seulement les mauvais setups,
+                mais aussi les mauvais états mentaux.
+            </p>
 
             <div class="academy-keytakeaway-box">
                 <span class="academy-box-label">À retenir</span>
                 <p>
                     Les plus grandes erreurs ne sont pas techniques. Elles sont souvent comportementales.
                 </p>
+            </div>
+
+            <div class="academy-summary-grid">
+                <div class="academy-info-card">
+                    <h3>Débutant</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Veut agir souvent.</li>
+                        <li>Cherche une certitude impossible.</li>
+                        <li>Refuse d’avoir tort.</li>
+                        <li>Confond activité et compétence.</li>
+                    </ul>
+                </div>
+
+                <div class="academy-info-card">
+                    <h3>Trader plus mature</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Attend une structure plus cohérente.</li>
+                        <li>Accepte l’incertitude.</li>
+                        <li>Limite le risque.</li>
+                        <li>Privilégie la qualité sur la fréquence.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="academy-checklist">
+                <span class="academy-box-label">Auto-diagnostic</span>
+                <h3>Questions à se poser après une perte</h3>
+                <ul class="academy-reflection-list">
+                    <li>Ai-je respecté mon plan initial ?</li>
+                    <li>Ai-je déplacé mon stop sans raison ?</li>
+                    <li>Ai-je pris ce trade par ennui, FOMO ou frustration ?</li>
+                    <li>Ma taille de position était-elle rationnelle ?</li>
+                    <li>Ai-je confondu envie d’action et qualité de setup ?</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -588,10 +1035,23 @@
                 </ul>
             </div>
         </div>
+
+        <div class="academy-academic-block" style="margin-top: 24px;">
+            <span class="academy-box-label">Checklist finale</span>
+            <h3>Checklist avant tout trade débutant</h3>
+            <ul class="academy-reflection-list">
+                <li>Ai-je identifié une zone claire ?</li>
+                <li>Ai-je compris dans quel sens le marché semble évoluer ?</li>
+                <li>Mon scénario a-t-il une invalidation précise ?</li>
+                <li>Mon risque est-il supportable pour mon capital ?</li>
+                <li>Mon entrée est-elle rationnelle ou émotionnelle ?</li>
+                <li>Mon objectif de sortie est-il logique ?</li>
+            </ul>
+        </div>
     </div>
 </section>
 
-<section class="academy-section">
+<section class="academy-section" id="quiz-final">
     <div class="academy-shell">
         <div class="academy-section-title">
             <span class="academy-kicker">Évaluation</span>
@@ -622,10 +1082,24 @@
                     <label><input type="radio" name="q3" value="c"> le surtrading et le refus de l’invalidation</label>
                 </div>
 
+                <div class="academy-question">
+                    <h3>4. Une position sérieuse doit toujours comporter :</h3>
+                    <label><input type="radio" name="q4" value="a"> une opinion forte uniquement</label>
+                    <label><input type="radio" name="q4" value="b"> une entrée, une invalidation et un objectif</label>
+                    <label><input type="radio" name="q4" value="c"> un levier élevé</label>
+                </div>
+
+                <div class="academy-question">
+                    <h3>5. La gestion du risque sert avant tout à :</h3>
+                    <label><input type="radio" name="q5" value="a"> accélérer les gains</label>
+                    <label><input type="radio" name="q5" value="b"> préserver le capital et la continuité d’apprentissage</label>
+                    <label><input type="radio" name="q5" value="c"> supprimer toute perte possible</label>
+                </div>
+
                 <button
                     type="button"
                     class="academy-btn academy-btn-primary"
-                    onclick="submitQuiz('academyQuiz1', ['b','a','c'], 'quiz1Result')">
+                    onclick="submitQuiz('academyQuiz1', ['b','a','c','b','b'], 'quiz1Result')">
                     Valider le quiz
                 </button>
 
@@ -641,7 +1115,7 @@
             <div class="academy-locked-box">
                 <div class="academy-lock-icon">🔒</div>
                 <h3>Évaluation réservée au plan Pro</h3>
-                <p>Débloquez la validation du niveau, la progression réelle et le parcours complet.</p>
+                <p>Débloquez la validation du niveau, la progression réelle, les graphes, les cas réels et le parcours complet.</p>
                 <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
                     Débloquer le quiz
                 </a>
@@ -653,5 +1127,156 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{ url_for('static', filename='academy.js') }}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const chartFontColor = "#cbd5e1";
+    const gridColor = "rgba(148, 163, 184, 0.15)";
+
+    function baseOptions() {
+        return {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: chartFontColor
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: chartFontColor },
+                    grid: { color: gridColor }
+                },
+                y: {
+                    ticks: { color: chartFontColor },
+                    grid: { color: gridColor }
+                }
+            }
+        };
+    }
+
+    const capitalDisciplineChart = document.getElementById("capitalDisciplineChart");
+    if (capitalDisciplineChart) {
+        new Chart(capitalDisciplineChart, {
+            type: "line",
+            data: {
+                labels: ["S1", "S2", "S3", "S4", "S5", "S6"],
+                datasets: [{
+                    label: "Capital discipliné",
+                    data: [1000, 1020, 1040, 1075, 1105, 1140],
+                    tension: 0.35
+                }]
+            },
+            options: baseOptions()
+        });
+    }
+
+    const riskImpactChart = document.getElementById("riskImpactChart");
+    if (riskImpactChart) {
+        new Chart(riskImpactChart, {
+            type: "line",
+            data: {
+                labels: ["S1", "S2", "S3", "S4", "S5", "S6"],
+                datasets: [
+                    {
+                        label: "Risque maîtrisé",
+                        data: [1000, 1015, 1030, 1045, 1065, 1080],
+                        tension: 0.35
+                    },
+                    {
+                        label: "Risque excessif",
+                        data: [1000, 1080, 940, 1120, 880, 980],
+                        tension: 0.35
+                    }
+                ]
+            },
+            options: baseOptions()
+        });
+    }
+
+    const leverageChart = document.getElementById("leverageChart");
+    if (leverageChart) {
+        new Chart(leverageChart, {
+            type: "bar",
+            data: {
+                labels: ["Levier x1", "Levier x5", "Levier x10", "Levier x20"],
+                datasets: [{
+                    label: "Impact potentiel sur le compte",
+                    data: [1, 5, 10, 20]
+                }]
+            },
+            options: baseOptions()
+        });
+    }
+
+    const exposureChart = document.getElementById("exposureChart");
+    if (exposureChart) {
+        new Chart(exposureChart, {
+            type: "radar",
+            data: {
+                labels: ["Compréhension", "Taille", "Stop", "Risque", "Discipline", "Clarté"],
+                datasets: [
+                    {
+                        label: "Avant apprentissage",
+                        data: [3, 2, 3, 2, 3, 2]
+                    },
+                    {
+                        label: "Après apprentissage",
+                        data: [8, 7, 8, 8, 8, 7]
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: chartFontColor
+                        }
+                    }
+                },
+                scales: {
+                    r: {
+                        angleLines: { color: gridColor },
+                        grid: { color: gridColor },
+                        pointLabels: { color: chartFontColor },
+                        ticks: {
+                            color: chartFontColor,
+                            backdropColor: "transparent"
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    const disciplineVsChaosChart = document.getElementById("disciplineVsChaosChart");
+    if (disciplineVsChaosChart) {
+        new Chart(disciplineVsChaosChart, {
+            type: "line",
+            data: {
+                labels: ["M1", "M2", "M3", "M4", "M5", "M6"],
+                datasets: [
+                    {
+                        label: "Gestion disciplinée",
+                        data: [1000, 1010, 1030, 1050, 1070, 1090],
+                        tension: 0.35
+                    },
+                    {
+                        label: "Gestion émotionnelle",
+                        data: [1000, 980, 1020, 930, 960, 880],
+                        tension: 0.35
+                    }
+                ]
+            },
+            options: baseOptions()
+        });
+    }
+});
+</script>
 {% endblock %}

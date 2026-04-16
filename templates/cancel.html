@@ -1,79 +1,165 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paiement annulé</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
-</head>
-<body class="dashboard-body">
+{% extends "base.html" %}
 
-    <div style="min-height:100vh; background: radial-gradient(circle at top, rgba(239,68,68,0.12), transparent 35%), linear-gradient(180deg, #06122d 0%, #030b1f 100%); color:white;">
+{% block title %}
+    {% if current_lang == "en" %}
+        Payment Cancelled
+    {% elif current_lang == "es" %}
+        Pago cancelado
+    {% else %}
+        Paiement annulé
+    {% endif %}
+{% endblock %}
 
-        {% include "partials/navbar.html" %}
+{% block meta_description %}
+    {% if current_lang == "en" %}
+        Your payment was cancelled. You can subscribe again at any time.
+    {% elif current_lang == "es" %}
+        Tu pago fue cancelado. Puedes volver a suscribirte en cualquier momento.
+    {% else %}
+        Votre paiement a été annulé. Vous pouvez reprendre l’abonnement à tout moment.
+    {% endif %}
+{% endblock %}
 
-        <section style="max-width:1000px; margin:0 auto; padding:80px 32px;">
-            <div style="background:linear-gradient(180deg, rgba(8,18,44,0.98), rgba(5,13,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:28px; padding:42px; box-shadow:0 20px 50px rgba(0,0,0,0.28); text-align:center;">
+{% block content %}
+<div style="min-height:100vh; background: radial-gradient(circle at top, rgba(239,68,68,0.12), transparent 35%), linear-gradient(180deg, #06122d 0%, #030b1f 100%); color:white;">
 
-                <div style="display:inline-block; padding:8px 14px; border-radius:999px; background:rgba(239,68,68,0.12); color:#fca5a5; font-size:13px; font-weight:700; margin-bottom:18px;">
+    <section style="max-width:1000px; margin:0 auto; padding:80px 32px;">
+        <div style="background:linear-gradient(180deg, rgba(8,18,44,0.98), rgba(5,13,34,0.98)); border:1px solid rgba(255,255,255,0.05); border-radius:28px; padding:42px; box-shadow:0 20px 50px rgba(0,0,0,0.28); text-align:center;">
+
+            <div style="display:inline-block; padding:8px 14px; border-radius:999px; background:rgba(239,68,68,0.12); color:#fca5a5; font-size:13px; font-weight:700; margin-bottom:18px;">
+                {% if current_lang == "en" %}
+                    ❌ Payment cancelled
+                {% elif current_lang == "es" %}
+                    ❌ Pago cancelado
+                {% else %}
                     ❌ Paiement annulé
-                </div>
+                {% endif %}
+            </div>
 
-                <h1 style="margin:0 0 12px 0; font-size:52px; font-weight:900; letter-spacing:-1.2px;">
+            <h1 style="margin:0 0 12px 0; font-size:52px; font-weight:900; letter-spacing:-1.2px;">
+                {% if current_lang == "en" %}
+                    Subscription not activated
+                {% elif current_lang == "es" %}
+                    Suscripción no activada
+                {% else %}
                     Abonnement non activé
-                </h1>
+                {% endif %}
+            </h1>
 
-                <p style="max-width:760px; margin:0 auto 24px auto; color:#a7b6cf; font-size:18px; line-height:1.8;">
+            <p style="max-width:760px; margin:0 auto 24px auto; color:#a7b6cf; font-size:18px; line-height:1.8;">
+                {% if current_lang == "en" %}
+                    No payment was validated. Your account remains on the free offer,
+                    but you can subscribe again at any time to unlock all Premium features.
+                {% elif current_lang == "es" %}
+                    No se validó ningún pago. Tu cuenta sigue en la oferta gratuita,
+                    pero puedes suscribirte en cualquier momento para desbloquear todas las funciones Premium.
+                {% else %}
                     Aucun paiement n’a été validé. Votre compte reste sur l’offre gratuite,
                     mais vous pouvez reprendre l’abonnement à tout moment pour débloquer toutes les fonctionnalités Premium.
-                </p>
+                {% endif %}
+            </p>
 
-                <div class="responsive-three-cols" style="margin:30px 0;">
-                    <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
-                        <div style="font-size:28px; margin-bottom:10px;">📊</div>
-                        <h3 style="margin:0 0 8px 0;">Statistiques avancées</h3>
-                        <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+            <div class="responsive-three-cols" style="margin:30px 0;">
+                <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
+                    <div style="font-size:28px; margin-bottom:10px;">📊</div>
+                    <h3 style="margin:0 0 8px 0;">
+                        {% if current_lang == "en" %}
+                            Advanced statistics
+                        {% elif current_lang == "es" %}
+                            Estadísticas avanzadas
+                        {% else %}
+                            Statistiques avancées
+                        {% endif %}
+                    </h3>
+                    <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                        {% if current_lang == "en" %}
+                            Unlock detailed analytics and complete monitoring.
+                        {% elif current_lang == "es" %}
+                            Desbloquea análisis detallados y seguimiento completo.
+                        {% else %}
                             Débloquez les analyses détaillées et le suivi complet.
-                        </p>
-                    </div>
+                        {% endif %}
+                    </p>
+                </div>
 
-                    <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
-                        <div style="font-size:28px; margin-bottom:10px;">📈</div>
-                        <h3 style="margin:0 0 8px 0;">Historique complet</h3>
-                        <p style="margin:0; color:#9fb0c9; line-height:1.7;">
-                            Accédez à tous les signaux au lieu des 5 derniers seulement.
-                        </p>
-                    </div>
+                <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
+                    <div style="font-size:28px; margin-bottom:10px;">📈</div>
+                    <h3 style="margin:0 0 8px 0;">
+                        {% if current_lang == "en" %}
+                            Full history
+                        {% elif current_lang == "es" %}
+                            Historial completo
+                        {% else %}
+                            Historique complet
+                        {% endif %}
+                    </h3>
+                    <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                        {% if current_lang == "en" %}
+                            Access all signals instead of only the last few ones.
+                        {% elif current_lang == "es" %}
+                            Accede a todas las señales en lugar de solo las últimas.
+                        {% else %}
+                            Accédez à tous les signaux au lieu des derniers seulement.
+                        {% endif %}
+                    </p>
+                </div>
 
-                    <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
-                        <div style="font-size:28px; margin-bottom:10px;">💎</div>
-                        <h3 style="margin:0 0 8px 0;">Dashboard Premium</h3>
-                        <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:18px;">
+                    <div style="font-size:28px; margin-bottom:10px;">💎</div>
+                    <h3 style="margin:0 0 8px 0;">
+                        {% if current_lang == "en" %}
+                            Premium dashboard
+                        {% elif current_lang == "es" %}
+                            Dashboard Premium
+                        {% else %}
+                            Dashboard Premium
+                        {% endif %}
+                    </h3>
+                    <p style="margin:0; color:#9fb0c9; line-height:1.7;">
+                        {% if current_lang == "en" %}
+                            Enjoy a more complete and more professional experience.
+                        {% elif current_lang == "es" %}
+                            Disfruta de una experiencia más completa y más profesional.
+                        {% else %}
                             Profitez d’une expérience plus complète et plus professionnelle.
-                        </p>
-                    </div>
+                        {% endif %}
+                    </p>
                 </div>
-
-                <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:22px;">
-                    <a href="{{ url_for('billing.pricing') }}" style="text-decoration:none; background:linear-gradient(90deg, #7c3aed, #2563eb); color:white; padding:14px 18px; border-radius:12px; font-weight:800; box-shadow:0 14px 28px rgba(124,58,237,0.18);">
-                        Revenir aux offres
-                    </a>
-
-                    <a href="{{ url_for('dashboard.dashboard') }}" style="text-decoration:none; background:rgba(255,255,255,0.05); color:white; padding:14px 18px; border-radius:12px; font-weight:800; border:1px solid rgba(255,255,255,0.08);">
-                        Retour au dashboard
-                    </a>
-                </div>
-
-                <p style="margin:22px 0 0 0; color:#8ea2c7; font-size:14px;">
-                    Vous pouvez réessayer quand vous voulez depuis la page Premium.
-                </p>
             </div>
-        </section>
 
-    </div>
+            <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:22px;">
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="text-decoration:none; background:linear-gradient(90deg, #7c3aed, #2563eb); color:white; padding:14px 18px; border-radius:12px; font-weight:800; box-shadow:0 14px 28px rgba(124,58,237,0.18);">
+                    {% if current_lang == "en" %}
+                        Back to pricing
+                    {% elif current_lang == "es" %}
+                        Volver a los planes
+                    {% else %}
+                        Revenir aux offres
+                    {% endif %}
+                </a>
 
-</body>
-</html>
+                <a href="{{ url_for('dashboard.dashboard', lang_code=current_lang) }}" style="text-decoration:none; background:rgba(255,255,255,0.05); color:white; padding:14px 18px; border-radius:12px; font-weight:800; border:1px solid rgba(255,255,255,0.08);">
+                    {% if current_lang == "en" %}
+                        Back to dashboard
+                    {% elif current_lang == "es" %}
+                        Volver al dashboard
+                    {% else %}
+                        Retour au dashboard
+                    {% endif %}
+                </a>
+            </div>
+
+            <p style="margin:22px 0 0 0; color:#8ea2c7; font-size:14px;">
+                {% if current_lang == "en" %}
+                    You can try again whenever you want from the pricing page.
+                {% elif current_lang == "es" %}
+                    Puedes volver a intentarlo cuando quieras desde la página de precios.
+                {% else %}
+                    Vous pouvez réessayer quand vous voulez depuis la page Premium.
+                {% endif %}
+            </p>
+        </div>
+    </section>
+
+</div>
+{% endblock %}

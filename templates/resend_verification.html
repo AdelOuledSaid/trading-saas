@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Renvoyer la vérification</title>
+</head>
+<body>
+    <h1>Renvoyer le lien de vérification</h1>
+
+    <form method="POST">
+        <input type="email" name="email" placeholder="Votre email" required>
+        <button type="submit">Renvoyer</button>
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>

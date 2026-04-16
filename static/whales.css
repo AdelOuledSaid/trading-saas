@@ -1,0 +1,912 @@
+/* =========================================================
+   WHALE INTELLIGENCE - VELWOLF
+========================================================= */
+
+.whales-page {
+    --wh-bg: #050816;
+    --wh-bg-soft: #0b1020;
+    --wh-card: rgba(10, 16, 32, 0.78);
+    --wh-card-strong: rgba(13, 20, 38, 0.95);
+    --wh-border: rgba(148, 163, 184, 0.14);
+    --wh-border-strong: rgba(96, 165, 250, 0.20);
+    --wh-text: #f8fafc;
+    --wh-text-soft: #cbd5e1;
+    --wh-text-muted: #94a3b8;
+    --wh-primary: #4f8cff;
+    --wh-primary-2: #7c3aed;
+    --wh-accent: #22c55e;
+    --wh-danger: #ef4444;
+    --wh-warning: #f59e0b;
+    --wh-cyan: #38bdf8;
+    --wh-shadow: 0 20px 60px rgba(2, 6, 23, 0.45);
+    --wh-radius-xl: 28px;
+    --wh-radius-lg: 22px;
+    --wh-radius-md: 16px;
+    background:
+        radial-gradient(circle at top left, rgba(79, 140, 255, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(124, 58, 237, 0.16), transparent 25%),
+        linear-gradient(180deg, #040712 0%, #060b18 45%, #07101d 100%);
+    color: var(--wh-text);
+    min-height: 100vh;
+    padding-bottom: 60px;
+}
+
+.whales-container {
+    width: min(1200px, calc(100% - 32px));
+    margin: 0 auto;
+}
+
+.whales-section {
+    padding: 48px 0;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.whales-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 72px 0 52px;
+}
+
+.whales-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(180deg, rgba(79, 140, 255, 0.08), transparent 40%),
+        linear-gradient(90deg, rgba(124, 58, 237, 0.08), transparent 50%);
+    pointer-events: none;
+}
+
+.whales-hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 28px;
+    align-items: center;
+}
+
+.whales-badge,
+.section-kicker,
+.mini-flow-badge,
+.table-badge,
+.impact-tag,
+.filter-chip {
+    letter-spacing: 0.02em;
+}
+
+.whales-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(96, 165, 250, 0.22);
+    background: rgba(79, 140, 255, 0.12);
+    color: #dbeafe;
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.whales-hero h1 {
+    margin: 0 0 16px;
+    font-size: clamp(2.1rem, 5vw, 4.2rem);
+    line-height: 1.02;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+.whales-hero p {
+    margin: 0;
+    max-width: 720px;
+    color: var(--wh-text-soft);
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.whales-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 26px;
+}
+
+.whales-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    min-height: 50px;
+    padding: 0 20px;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: 0.25s ease;
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+
+.whales-btn-primary {
+    background: linear-gradient(135deg, var(--wh-primary), var(--wh-primary-2));
+    color: #fff;
+    box-shadow: 0 14px 32px rgba(79, 140, 255, 0.28);
+}
+
+.whales-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 38px rgba(79, 140, 255, 0.34);
+}
+
+.whales-btn-secondary {
+    background: rgba(15, 23, 42, 0.55);
+    color: var(--wh-text);
+    border-color: rgba(148, 163, 184, 0.18);
+    backdrop-filter: blur(12px);
+}
+
+.whales-btn-secondary:hover {
+    border-color: rgba(96, 165, 250, 0.28);
+    transform: translateY(-2px);
+}
+
+.whales-hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 30px;
+}
+
+.whales-stat-card,
+.whales-glass-card,
+.impact-card,
+.insight-card,
+.whales-cta-card,
+.whale-mobile-card,
+.whales-empty-state {
+    background: var(--wh-card);
+    border: 1px solid var(--wh-border);
+    box-shadow: var(--wh-shadow);
+    backdrop-filter: blur(14px);
+}
+
+.whales-stat-card {
+    border-radius: var(--wh-radius-md);
+    padding: 20px;
+}
+
+.whales-stat-card .label {
+    display: block;
+    color: var(--wh-text-muted);
+    font-size: 0.86rem;
+    margin-bottom: 10px;
+}
+
+.whales-stat-card strong {
+    display: block;
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+}
+
+.whales-stat-card small {
+    color: var(--wh-text-soft);
+    font-size: 0.86rem;
+}
+
+.whales-glass-card {
+    border-radius: var(--wh-radius-xl);
+    padding: 24px;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.84), rgba(9, 14, 28, 0.94));
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.panel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.panel-dot.green {
+    background: var(--wh-accent);
+    box-shadow: 0 0 14px rgba(34, 197, 94, 0.65);
+}
+
+.panel-title {
+    font-size: 0.94rem;
+    color: var(--wh-text-soft);
+    font-weight: 700;
+}
+
+.snapshot-list {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.snapshot-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.snapshot-item span {
+    color: var(--wh-text-muted);
+    font-size: 0.92rem;
+}
+
+.snapshot-item strong {
+    color: var(--wh-text);
+    font-size: 0.96rem;
+}
+
+.bullish-text {
+    color: #4ade80;
+}
+
+.mini-flow-card {
+    border-radius: 18px;
+    padding: 18px;
+    background: linear-gradient(180deg, rgba(79, 140, 255, 0.11), rgba(124, 58, 237, 0.08));
+    border: 1px solid rgba(96, 165, 250, 0.16);
+}
+
+.mini-flow-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.mini-flow-badge {
+    display: inline-flex;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(34, 197, 94, 0.14);
+    color: #bbf7d0;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.mini-flow-time {
+    color: var(--wh-text-muted);
+    font-size: 0.82rem;
+}
+
+.mini-flow-card h3 {
+    margin: 0 0 10px;
+    font-size: 1.08rem;
+}
+
+.mini-flow-card p {
+    margin: 0;
+    color: var(--wh-text-soft);
+    line-height: 1.7;
+    font-size: 0.96rem;
+}
+
+/* =========================================================
+   SECTION HEADINGS
+========================================================= */
+
+.section-heading {
+    max-width: 760px;
+    margin-bottom: 28px;
+}
+
+.section-heading.compact {
+    margin-bottom: 16px;
+}
+
+.section-kicker {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: #93c5fd;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.section-heading h2 {
+    margin: 0 0 12px;
+    font-size: clamp(1.6rem, 3vw, 2.5rem);
+    line-height: 1.15;
+}
+
+.section-heading p {
+    margin: 0;
+    color: var(--wh-text-soft);
+    line-height: 1.8;
+}
+
+/* =========================================================
+   IMPACT + INSIGHTS
+========================================================= */
+
+.impact-grid,
+.insights-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.insights-grid {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.impact-card,
+.insight-card {
+    border-radius: var(--wh-radius-lg);
+    padding: 24px;
+}
+
+.impact-icon {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+.bullish-card .impact-icon {
+    background: rgba(34, 197, 94, 0.14);
+    color: #86efac;
+}
+
+.bearish-card .impact-icon {
+    background: rgba(239, 68, 68, 0.14);
+    color: #fca5a5;
+}
+
+.neutral-card .impact-icon {
+    background: rgba(56, 189, 248, 0.14);
+    color: #7dd3fc;
+}
+
+.impact-card h3,
+.insight-card h3 {
+    margin: 0 0 12px;
+    font-size: 1.08rem;
+}
+
+.impact-card p,
+.insight-card p {
+    margin: 0 0 14px;
+    color: var(--wh-text-soft);
+    line-height: 1.75;
+}
+
+.impact-tag {
+    display: inline-flex;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.impact-tag.bullish {
+    background: rgba(34, 197, 94, 0.14);
+    color: #bbf7d0;
+}
+
+.impact-tag.bearish {
+    background: rgba(239, 68, 68, 0.14);
+    color: #fecaca;
+}
+
+.impact-tag.neutral {
+    background: rgba(56, 189, 248, 0.14);
+    color: #bae6fd;
+}
+
+/* =========================================================
+   FILTERS
+========================================================= */
+
+.whales-filters-section {
+    padding-top: 28px;
+}
+
+.filter-group {
+    margin-bottom: 18px;
+}
+
+.filter-group-title {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: var(--wh-text-muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.whales-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.filter-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border: 1px solid rgba(148, 163, 184, 0.14);
+    background: rgba(15, 23, 42, 0.58);
+    color: var(--wh-text-soft);
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-size: 0.86rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+    min-height: 42px;
+}
+
+.filter-chip:hover,
+.filter-chip.active {
+    color: #fff;
+    border-color: rgba(96, 165, 250, 0.32);
+    background: rgba(79, 140, 255, 0.16);
+    transform: translateY(-1px);
+}
+
+.filter-reset-row {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.whales-table-wrap {
+    overflow-x: auto;
+    border-radius: 24px;
+    border: 1px solid var(--wh-border);
+    background: rgba(8, 13, 25, 0.82);
+    box-shadow: var(--wh-shadow);
+}
+
+.whales-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 980px;
+}
+
+.whales-table thead th {
+    text-align: left;
+    padding: 18px 16px;
+    font-size: 0.82rem;
+    color: var(--wh-text-muted);
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.whales-table tbody td {
+    padding: 18px 16px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.07);
+    vertical-align: middle;
+    font-size: 0.95rem;
+    color: var(--wh-text-soft);
+}
+
+.whales-table tbody tr:hover {
+    background: rgba(79, 140, 255, 0.04);
+}
+
+.asset-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.asset-cell strong {
+    display: block;
+    color: var(--wh-text);
+    font-size: 0.96rem;
+}
+
+.asset-cell small {
+    color: var(--wh-text-muted);
+    font-size: 0.8rem;
+}
+
+.asset-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.asset-dot.btc {
+    background: #f7931a;
+    box-shadow: 0 0 10px rgba(247, 147, 26, 0.45);
+}
+
+.asset-dot.eth {
+    background: #627eea;
+    box-shadow: 0 0 10px rgba(98, 126, 234, 0.45);
+}
+
+.asset-dot.sol {
+    background: #14f195;
+    box-shadow: 0 0 10px rgba(20, 241, 149, 0.45);
+}
+
+.asset-dot.usdt,
+.asset-dot.usdc {
+    background: #22c55e;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.45);
+}
+
+.table-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 11px;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.table-badge.type {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--wh-text-soft);
+    border: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.table-badge.bullish {
+    background: rgba(34, 197, 94, 0.14);
+    color: #bbf7d0;
+}
+
+.table-badge.bearish {
+    background: rgba(239, 68, 68, 0.14);
+    color: #fecaca;
+}
+
+.table-badge.neutral {
+    background: rgba(56, 189, 248, 0.14);
+    color: #bae6fd;
+}
+
+.table-badge.impact {
+    background: rgba(245, 158, 11, 0.14);
+    color: #fde68a;
+}
+
+/* =========================================================
+   MOBILE LIST
+========================================================= */
+
+.whales-mobile-list {
+    display: none;
+}
+
+.whale-mobile-card {
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 14px;
+}
+
+.mobile-card-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.mobile-time {
+    color: var(--wh-text-muted);
+    font-size: 0.8rem;
+    text-align: right;
+}
+
+.mobile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.mobile-label {
+    display: block;
+    color: var(--wh-text-muted);
+    font-size: 0.78rem;
+    margin-bottom: 4px;
+}
+
+.mobile-grid strong {
+    color: var(--wh-text);
+    font-size: 0.92rem;
+    line-height: 1.4;
+}
+
+.mobile-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.whales-empty-state {
+    padding: 36px 24px;
+    border-radius: 24px;
+    text-align: center;
+}
+
+.whales-empty-state h3 {
+    margin: 0 0 10px;
+    font-size: 1.3rem;
+    color: var(--wh-text);
+}
+
+.whales-empty-state p {
+    margin: 0 0 18px;
+    color: var(--wh-text-soft);
+    line-height: 1.7;
+}
+
+/* =========================================================
+   PREMIUM TOOL CARDS
+========================================================= */
+
+.premium-tool-card {
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(180deg, rgba(14, 22, 42, 0.92), rgba(10, 16, 30, 0.96));
+    border: 1px solid rgba(96, 165, 250, 0.14);
+}
+
+.premium-tool-card::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    background: radial-gradient(circle, rgba(79, 140, 255, 0.10), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+}
+
+.premium-tool-card:hover::before {
+    opacity: 1;
+}
+
+.premium-tool-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(96, 165, 250, 0.22);
+}
+
+/* =========================================================
+   CTA
+========================================================= */
+
+.whales-cta-card {
+    border-radius: 28px;
+    padding: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    background: linear-gradient(135deg, rgba(79, 140, 255, 0.14), rgba(124, 58, 237, 0.11));
+    border: 1px solid rgba(96, 165, 250, 0.18);
+}
+
+.whales-cta-card h2 {
+    margin: 0 0 10px;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+.whales-cta-card p {
+    margin: 0;
+    color: var(--wh-text-soft);
+    line-height: 1.7;
+    max-width: 700px;
+}
+
+.whales-cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1100px) {
+    .whales-hero-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .whales-hero-panel {
+        max-width: 760px;
+    }
+
+    .impact-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .insights-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .whales-hero-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .whales-cta-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .whales-cta-actions {
+        justify-content: flex-start;
+    }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+    .whales-page {
+        padding-bottom: 36px;
+    }
+
+    .whales-container {
+        width: min(100% - 20px, 1200px);
+    }
+
+    .whales-section {
+        padding: 34px 0;
+    }
+
+    .whales-hero {
+        padding: 42px 0 28px;
+    }
+
+    .whales-badge {
+        font-size: 0.78rem;
+        padding: 8px 12px;
+        margin-bottom: 14px;
+    }
+
+    .whales-hero h1 {
+        font-size: clamp(1.8rem, 10vw, 2.7rem);
+        line-height: 1.05;
+        margin-bottom: 12px;
+    }
+
+    .whales-hero p,
+    .section-heading p,
+    .impact-card p,
+    .insight-card p,
+    .mini-flow-card p,
+    .whales-cta-card p,
+    .whales-empty-state p {
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    .whales-btn {
+        width: 100%;
+    }
+
+    .whales-glass-card,
+    .impact-card,
+    .insight-card,
+    .whales-cta-card,
+    .whale-mobile-card,
+    .whales-empty-state {
+        border-radius: 20px;
+    }
+
+    .section-heading h2 {
+        font-size: 1.5rem;
+    }
+
+    .insights-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .whales-table-wrap {
+        display: none;
+    }
+
+    .whales-mobile-list {
+        display: block;
+    }
+
+    .mobile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mobile-card-top {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .mobile-time {
+        text-align: left;
+    }
+
+    .whales-cta-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .whales-cta-actions .whales-btn {
+        width: 100%;
+    }
+
+    .filter-chip {
+        width: auto;
+    }
+}
+
+/* =========================================================
+   EXTRA SMALL
+========================================================= */
+
+@media (max-width: 480px) {
+    .whales-hero-actions {
+        gap: 10px;
+    }
+
+    .whales-stat-card,
+    .whales-glass-card,
+    .impact-card,
+    .insight-card,
+    .whale-mobile-card,
+    .whales-cta-card,
+    .whales-empty-state {
+        padding: 16px;
+    }
+
+    .snapshot-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filter-chip {
+        font-size: 0.8rem;
+        padding: 9px 12px;
+    }
+
+    .section-heading {
+        margin-bottom: 22px;
+    }
+
+    .whales-filters {
+        gap: 10px;
+    }
+}

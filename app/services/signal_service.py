@@ -72,6 +72,8 @@ def find_open_signal_for_closure(trade_id: str, asset: str):
 
 def create_signal(data: dict) -> Signal:
     from app.services.ai_signal_service import compute_confidence, generate_reason
+    from app.services.replay_recorder_service import ensure_trade_replay_for_signal
+    from flask import current_app
 
     signal = Signal(
         trade_id=data.get("trade_id"),
@@ -97,8 +99,16 @@ def create_signal(data: dict) -> Signal:
     signal.confidence = compute_confidence(ai_data)
     signal.reason = generate_reason(ai_data)
 
-    # save
+    # 💾 save signal
     db.session.add(signal)
     db.session.commit()
+
+    # 🔥 AJOUT ICI (IMPORTANT)
+    try:
+        ensure_trade_replay_for_signal(signal)
+    except Exception as e:
+        current_app.logger.warning(
+            "Replay auto non créé pour signal %s: %r", signal.id, e
+        )
 
     return signal

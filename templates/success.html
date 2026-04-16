@@ -1,64 +1,118 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paiement réussi - VelWolef</title>
-    <meta name="description" content="Votre paiement VelWolef a été validé avec succès.">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-</head>
-<body class="home-body success-page">
+{% extends "base.html" %}
 
-    {% include "partials/navbar.html" %}
+{% block title %}
+    {% if current_lang == "en" %}
+        Payment Successful - VelWolef
+    {% elif current_lang == "es" %}
+        Pago completado - VelWolef
+    {% else %}
+        Paiement réussi - VelWolef
+    {% endif %}
+{% endblock %}
 
-    <section class="success-section">
-        <div class="hero-bg-grid"></div>
-        <div class="hero-glow hero-glow-1"></div>
-        <div class="hero-glow hero-glow-2"></div>
+{% block meta_description %}
+    {% if current_lang == "en" %}
+        Your VelWolef payment has been successfully confirmed.
+    {% elif current_lang == "es" %}
+        Tu pago de VelWolef ha sido confirmado con éxito.
+    {% else %}
+        Votre paiement VelWolef a été validé avec succès.
+    {% endif %}
+{% endblock %}
 
-        <div class="section-container">
-            <div class="success-card">
-                <div class="success-icon">✅</div>
+{% block content %}
+<section class="success-section">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
 
-                <span class="success-badge">Paiement confirmé</span>
+    <div class="section-container">
+        <div class="success-card">
+            <div class="success-icon">✅</div>
 
-                <h1>Paiement réussi</h1>
+            <span class="success-badge">
+                {% if current_lang == "en" %}
+                    Payment confirmed
+                {% elif current_lang == "es" %}
+                    Pago confirmado
+                {% else %}
+                    Paiement confirmé
+                {% endif %}
+            </span>
 
-                <p class="success-text">
+            <h1>
+                {% if current_lang == "en" %}
+                    Payment successful
+                {% elif current_lang == "es" %}
+                    Pago completado
+                {% else %}
+                    Paiement réussi
+                {% endif %}
+            </h1>
+
+            <p class="success-text">
+                {% if current_lang == "en" %}
+                    Welcome to VelWolef 🚀 Your access has been activated successfully.
+                    You can now enter your member area and enjoy the premium experience.
+                {% elif current_lang == "es" %}
+                    Bienvenido a VelWolef 🚀 Tu acceso ha sido activado correctamente.
+                    Ahora puedes entrar en tu espacio miembro y disfrutar de la experiencia premium.
+                {% else %}
                     Bienvenue sur VelWolef 🚀
                     Votre accès a bien été activé. Vous pouvez maintenant rejoindre votre espace membre
                     et profiter de l’expérience premium.
+                {% endif %}
+            </p>
+
+            <div class="success-actions">
+                <a href="{{ url_for('dashboard.dashboard', lang_code=current_lang) }}" class="hero-btn-primary">
+                    {% if current_lang == "en" %}
+                        Open dashboard
+                    {% elif current_lang == "es" %}
+                        Acceder al dashboard
+                    {% else %}
+                        Accéder au dashboard
+                    {% endif %}
+                </a>
+
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="hero-btn-secondary">
+                    {% if current_lang == "en" %}
+                        View plans
+                    {% elif current_lang == "es" %}
+                        Ver planes
+                    {% else %}
+                        Voir les offres
+                    {% endif %}
+                </a>
+            </div>
+
+            {% if vip_link %}
+            <div class="success-vip-box">
+                <p class="success-vip-title">
+                    {% if current_lang == "en" %}
+                        🔥 VIP Telegram Access
+                    {% elif current_lang == "es" %}
+                        🔥 Acceso Telegram VIP
+                    {% else %}
+                        🔥 Accès Telegram VIP
+                    {% endif %}
                 </p>
 
-                <div class="success-actions">
-                    <a href="{{ url_for('dashboard.dashboard') }}" class="hero-btn-primary">
-                        Accéder au dashboard
-                    </a>
-
-                    <a href="{{ url_for('billing.pricing') }}" class="hero-btn-secondary">
-                        Voir les offres
-                    </a>
-                </div>
-
-                {% if vip_link %}
-                <div class="success-vip-box">
-                    <p class="success-vip-title">🔥 Accès Telegram VIP</p>
-
-                    <a href="{{ vip_link }}"
-                       target="_blank"
-                       rel="noopener"
-                       class="telegram-vip-btn">
-                       Rejoindre le canal VIP
-                    </a>
-                </div>
-                {% endif %}
+                <a href="{{ vip_link }}"
+                   target="_blank"
+                   rel="noopener"
+                   class="telegram-vip-btn">
+                    {% if current_lang == "en" %}
+                        Join the VIP channel
+                    {% elif current_lang == "es" %}
+                        Unirse al canal VIP
+                    {% else %}
+                        Rejoindre le canal VIP
+                    {% endif %}
+                </a>
             </div>
+            {% endif %}
         </div>
-    </section>
-
-</body>
-</html>
+    </div>
+</section>
+{% endblock %}

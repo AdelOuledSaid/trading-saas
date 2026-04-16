@@ -1,0 +1,633 @@
+{% extends "base.html" %}
+
+{% block title %}Open Interest | VelWolf{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='open_interest.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<section class="inner-hero oi-v2-hero">
+    <div class="section-container">
+        <div class="oi-v2-hero-grid">
+            <div class="oi-v2-hero-left">
+                <div class="oi-terminal-badge">
+                    <span class="dot dot-green"></span>
+                    <span class="dot dot-blue"></span>
+                    <span class="dot dot-red"></span>
+                    <em>VelWolf Derivatives Intelligence</em>
+                </div>
+
+                <span class="section-badge">Institutional Open Interest Terminal</span>
+                <h1 class="inner-page-title">Open Interest V2</h1>
+                <p class="inner-page-text">
+                    Une vue ultra premium du levier, de la pression directionnelle, du risque de squeeze,
+                    des anomalies de positionnement et des actifs qui concentrent le plus d’énergie.
+                </p>
+
+                <div class="hero-chip-row">
+                    <div class="hero-chip">
+                        <span>Market Regime</span>
+                        <strong>{{ dashboard.regime.label }}</strong>
+                    </div>
+                    <div class="hero-chip">
+                        <span>Crowding</span>
+                        <strong>{{ dashboard.crowding_score }}/100</strong>
+                    </div>
+                    <div class="hero-chip">
+                        <span>Pressure</span>
+                        <strong>{{ dashboard.directional_pressure }}</strong>
+                    </div>
+                </div>
+
+                <div class="hero-progress-wrap">
+                    <div class="hero-progress-label">
+                        <strong>Squeeze probability profile</strong>
+                        <span>{{ dashboard.squeeze_probability }}%</span>
+                    </div>
+                    <div class="hero-progress">
+                        <span style="width: {{ dashboard.squeeze_probability }}%;"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="oi-v2-hero-right">
+                <div class="terminal-card">
+                    <div class="terminal-card-head">
+                        <span>Live regime output</span>
+                        <strong>{{ dashboard.regime.label }}</strong>
+                    </div>
+
+                    <div class="terminal-output">
+                        <div class="terminal-line">
+                            <label>[build-up]</label>
+                            <span>{{ dashboard.build_up_state }}</span>
+                        </div>
+                        <div class="terminal-line">
+                            <label>[leverage]</label>
+                            <span>{{ dashboard.leverage_pressure }}</span>
+                        </div>
+                        <div class="terminal-line">
+                            <label>[volatility]</label>
+                            <span>{{ dashboard.volatility_state }}</span>
+                        </div>
+                        <div class="terminal-line">
+                            <label>[dominant bias]</label>
+                            <span>{{ summary.dominant_bias or "Neutral" }}</span>
+                        </div>
+                        <div class="terminal-line">
+                            <label>[alert mode]</label>
+                            <span>{{ dashboard.alert_mode }}</span>
+                        </div>
+                    </div>
+
+                    <div class="terminal-footnote">
+                        {{ dashboard.market_note }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="oi-signal-strip">
+            <div class="signal-box">
+                <span>Tracked Assets</span>
+                <strong>{{ summary.total_assets or 0 }}</strong>
+                <small>Actifs dérivés monitorés</small>
+            </div>
+
+            <div class="signal-box">
+                <span>Aggregated OI</span>
+                <strong>{{ summary.total_oi or "$0.0B" }}</strong>
+                <small>Open interest agrégé</small>
+            </div>
+
+            <div class="signal-box">
+                <span>High Conviction</span>
+                <strong>{{ dashboard.high_conviction_count }}</strong>
+                <small>Snapshots intensifs</small>
+            </div>
+
+            <div class="signal-box">
+                <span>Risk Cluster</span>
+                <strong>{{ dashboard.risk_cluster }}</strong>
+                <small>Concentration du levier</small>
+            </div>
+
+            <div class="signal-box">
+                <span>Bull / Bear</span>
+                <strong>{{ dashboard.bullish_count }}/{{ dashboard.bearish_count }}</strong>
+                <small>Balance directionnelle</small>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="oi-v2-grid">
+            <div class="glass-panel">
+                <div class="panel-head">
+                    <span>Confluence engine</span>
+                    <h2>Lecture institutionnelle</h2>
+                </div>
+
+                <div class="confluence-grid">
+                    <div class="confluence-card">
+                        <span>Build-up State</span>
+                        <strong>{{ dashboard.build_up_state }}</strong>
+                        <p>
+                            Mesure si le marché dérivé semble construire de nouvelles positions
+                            ou simplement nettoyer le levier.
+                        </p>
+                    </div>
+
+                    <div class="confluence-card">
+                        <span>Leverage Pressure</span>
+                        <strong>{{ dashboard.leverage_pressure }}</strong>
+                        <p>
+                            Indique si le système approche d’une zone de tension où les mouvements
+                            peuvent devenir plus violents.
+                        </p>
+                    </div>
+
+                    <div class="confluence-card">
+                        <span>Directional Tilt</span>
+                        <strong>{{ dashboard.directional_pressure }}</strong>
+                        <p>
+                            Résume le biais dominant à partir du nombre de snapshots bullish,
+                            bearish ou neutres.
+                        </p>
+                    </div>
+
+                    <div class="confluence-card">
+                        <span>Alert Mode</span>
+                        <strong>{{ dashboard.alert_mode }}</strong>
+                        <p>
+                            Passe en mode surveillance élevée lorsque le crowding, les anomalies
+                            et la concentration montent ensemble.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel">
+                <div class="panel-head">
+                    <span>Pressure map</span>
+                    <h2>Balance des forces</h2>
+                </div>
+
+                <div class="pressure-stack">
+                    <div class="pressure-item">
+                        <div class="pressure-meta">
+                            <strong>Bullish pressure</strong>
+                            <span>{{ dashboard.bullish_count }} actifs</span>
+                        </div>
+                        <div class="pressure-bar bullish">
+                            <span style="width: {{ dashboard.bullish_ratio }}%;"></span>
+                        </div>
+                    </div>
+
+                    <div class="pressure-item">
+                        <div class="pressure-meta">
+                            <strong>Bearish pressure</strong>
+                            <span>{{ dashboard.bearish_count }} actifs</span>
+                        </div>
+                        <div class="pressure-bar bearish">
+                            <span style="width: {{ dashboard.bearish_ratio_percent }}%;"></span>
+                        </div>
+                    </div>
+
+                    <div class="pressure-item">
+                        <div class="pressure-meta">
+                            <strong>Neutral / mixed</strong>
+                            <span>{{ dashboard.neutral_count }} actifs</span>
+                        </div>
+                        <div class="pressure-bar neutral">
+                            <span style="width: {{ dashboard.neutral_ratio }}%;"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-callout">
+                    <strong>Desk note</strong>
+                    <p>{{ dashboard.market_note }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Priority board</span>
+            <h2>Leaderboard des actifs les plus chauds</h2>
+            <p>
+                Les actifs sont classés par score synthétique de conviction, anomalies et intensité de variation.
+            </p>
+        </div>
+
+        <div class="leaderboard-grid">
+            {% if dashboard.priority_assets %}
+                {% for item in dashboard.priority_assets %}
+                <div class="leader-card">
+                    <div class="leader-rank">#{{ loop.index }}</div>
+
+                    <div class="leader-head">
+                        <div>
+                            <span class="mini-label">Priority asset</span>
+                            <h3>{{ item.asset }}</h3>
+                        </div>
+                        <div class="leader-bias {{ item.badge_class }}">
+                            {{ item.market_bias }}
+                        </div>
+                    </div>
+
+                    <div class="leader-metrics">
+                        <div>
+                            <span>Price</span>
+                            <strong>{{ item.price }}</strong>
+                        </div>
+                        <div>
+                            <span>OI</span>
+                            <strong>{{ item.oi_value }}</strong>
+                        </div>
+                        <div>
+                            <span>Score</span>
+                            <strong>{{ item.conviction_score }}/100</strong>
+                        </div>
+                    </div>
+
+                    <div class="leader-bars">
+                        <div class="leader-bar-row">
+                            <label>1h</label>
+                            <div class="leader-bar">
+                                <span style="width: {{ item.bar_1h }}%;"></span>
+                            </div>
+                            <em>{{ item.change_1h }}</em>
+                        </div>
+
+                        <div class="leader-bar-row">
+                            <label>4h</label>
+                            <div class="leader-bar">
+                                <span style="width: {{ item.bar_4h }}%;"></span>
+                            </div>
+                            <em>{{ item.change_4h }}</em>
+                        </div>
+
+                        <div class="leader-bar-row">
+                            <label>24h</label>
+                            <div class="leader-bar">
+                                <span style="width: {{ item.bar_24h }}%;"></span>
+                            </div>
+                            <em>{{ item.change_24h }}</em>
+                        </div>
+                    </div>
+
+                    <div class="leader-footer">
+                        <div class="leader-squeeze">
+                            <span>Squeeze Risk</span>
+                            <strong>{{ item.squeeze_risk }}/100</strong>
+                        </div>
+                        <div class="leader-anomaly">
+                            <span>Anomaly</span>
+                            <strong>{{ item.anomaly_score }}/100</strong>
+                        </div>
+                    </div>
+
+                    <p class="leader-note">{{ item.interpretation }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="proof-box">
+                    <div class="proof-left">
+                        <h2>Aucun actif prioritaire</h2>
+                        <p>Le leaderboard apparaîtra ici dès que les snapshots seront disponibles.</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="oi-v2-grid">
+            <div class="glass-panel">
+                <div class="panel-head">
+                    <span>Squeeze radar</span>
+                    <h2>Alert center</h2>
+                </div>
+
+                {% if dashboard.alerts %}
+                    <div class="alert-stack">
+                        {% for alert in dashboard.alerts %}
+                        <div class="alert-card {{ alert.level_class }}">
+                            <div class="alert-top">
+                                <strong>{{ alert.asset }}</strong>
+                                <span>{{ alert.level }}</span>
+                            </div>
+                            <p>{{ alert.message }}</p>
+                            <small>
+                                Score {{ alert.conviction_score }}/100 ·
+                                Squeeze {{ alert.squeeze_risk }}/100 ·
+                                Anomaly {{ alert.anomaly_score }}/100
+                            </small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="proof-card">
+                        <strong>Aucune alerte majeure</strong>
+                        <span>Le centre d’alerte affichera ici les situations les plus chargées.</span>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="glass-panel">
+                <div class="panel-head">
+                    <span>Anomaly radar</span>
+                    <h2>Mouvements extrêmes</h2>
+                </div>
+
+                {% if dashboard.anomalies %}
+                    <div class="anomaly-stack">
+                        {% for item in dashboard.anomalies %}
+                        <div class="anomaly-row-card">
+                            <div class="anomaly-row-left">
+                                <strong>{{ item.asset }}</strong>
+                                <span>{{ item.market_bias }} · {{ item.exchange_focus }}</span>
+                            </div>
+                            <div class="anomaly-row-right">
+                                <strong>{{ item.anomaly_score }}/100</strong>
+                                <small>1h {{ item.change_1h }} · 4h {{ item.change_4h }} · 24h {{ item.change_24h }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="proof-card">
+                        <strong>Aucune anomalie</strong>
+                        <span>Les anomalies les plus fortes seront affichées ici.</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="glass-panel">
+            <div class="panel-head">
+                <span>Filters</span>
+                <h2>Filtrer les snapshots</h2>
+            </div>
+
+            <div class="filter-grid-v2">
+                <div>
+                    <strong class="oi-block-title">Actifs</strong>
+                    <div class="oi-filters">
+                        <a href="{{ url_for('open_interest.open_interest_page', limit=active_filters.limit) }}"
+                           class="filter-chip {% if not active_filters.asset %}active{% endif %}">Tous</a>
+                        <a href="{{ url_for('open_interest.open_interest_page', asset='BTC', conviction=active_filters.conviction, limit=active_filters.limit) }}"
+                           class="filter-chip {% if active_filters.asset == 'BTC' %}active{% endif %}">BTC</a>
+                        <a href="{{ url_for('open_interest.open_interest_page', asset='ETH', conviction=active_filters.conviction, limit=active_filters.limit) }}"
+                           class="filter-chip {% if active_filters.asset == 'ETH' %}active{% endif %}">ETH</a>
+                        <a href="{{ url_for('open_interest.open_interest_page', asset='SOL', conviction=active_filters.conviction, limit=active_filters.limit) }}"
+                           class="filter-chip {% if active_filters.asset == 'SOL' %}active{% endif %}">SOL</a>
+                        <a href="{{ url_for('open_interest.open_interest_page', asset='BNB', conviction=active_filters.conviction, limit=active_filters.limit) }}"
+                           class="filter-chip {% if active_filters.asset == 'BNB' %}active{% endif %}">BNB</a>
+                        <a href="{{ url_for('open_interest.open_interest_page', asset='XRP', conviction=active_filters.conviction, limit=active_filters.limit) }}"
+                           class="filter-chip {% if active_filters.asset == 'XRP' %}active{% endif %}">XRP</a>
+                    </div>
+                </div>
+
+                <div>
+                    <strong class="oi-block-title">Conviction</strong>
+                    <div class="oi-filters">
+                        <a href="{{ url_for('open_interest.open_interest_page', asset=active_filters.asset, limit=active_filters.limit) }}"
+                           class="filter-chip {% if not active_filters.conviction %}active{% endif %}">Toutes</a>
+                        <a href="{{ url_for('open_interest.open_interest_page', asset=active_filters.asset, conviction='high', limit=active_filters.limit) }}"
+                           class="filter-chip {% if active_filters.conviction == 'high' %}active{% endif %}">High Conviction</a>
+                    </div>
+                </div>
+
+                <div>
+                    <strong class="oi-block-title">Snapshots</strong>
+                    <div class="oi-filters">
+                        <a href="{{ url_for('open_interest.open_interest_page', asset=active_filters.asset, conviction=active_filters.conviction, limit=6) }}"
+                           class="filter-chip {% if active_filters.limit == 6 %}active{% endif %}">6</a>
+                        <a href="{{ url_for('open_interest.open_interest_page', asset=active_filters.asset, conviction=active_filters.conviction, limit=12) }}"
+                           class="filter-chip {% if active_filters.limit == 12 %}active{% endif %}">12</a>
+                        <a href="{{ url_for('open_interest.open_interest_page', asset=active_filters.asset, conviction=active_filters.conviction, limit=24) }}"
+                           class="filter-chip {% if active_filters.limit == 24 %}active{% endif %}">24</a>
+                    </div>
+                </div>
+
+                <div class="filter-reset-wrap">
+                    <a href="{{ url_for('open_interest.open_interest_page') }}" class="primary-link-btn">
+                        Réinitialiser les filtres
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Control table</span>
+            <h2>Open Interest Control Matrix</h2>
+            <p>
+                Table premium enrichie avec score, squeeze risk et lecture synthétique par snapshot.
+            </p>
+        </div>
+
+        {% if oi_snapshots %}
+        <div class="btc-signals-table-wrap oi-matrix-wrap">
+            <table class="btc-signals-table oi-matrix-table">
+                <thead>
+                    <tr>
+                        <th>Actif</th>
+                        <th>Prix</th>
+                        <th>OI</th>
+                        <th>1h</th>
+                        <th>4h</th>
+                        <th>24h</th>
+                        <th>Biais</th>
+                        <th>Score</th>
+                        <th>Squeeze</th>
+                        <th>Exchange</th>
+                        <th>Heure</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in oi_snapshots %}
+                    <tr>
+                        <td><strong>{{ item.asset }}</strong></td>
+                        <td>{{ item.price }}</td>
+                        <td>{{ item.oi_value }}</td>
+
+                        <td>
+                            {% if item.change_1h_number > 0 %}
+                                <span class="text-green">{{ item.change_1h }}</span>
+                            {% elif item.change_1h_number < 0 %}
+                                <span class="text-red">{{ item.change_1h }}</span>
+                            {% else %}
+                                <span class="text-blue">{{ item.change_1h }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if item.change_4h_number > 0 %}
+                                <span class="text-green">{{ item.change_4h }}</span>
+                            {% elif item.change_4h_number < 0 %}
+                                <span class="text-red">{{ item.change_4h }}</span>
+                            {% else %}
+                                <span class="text-blue">{{ item.change_4h }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if item.change_24h_number > 0 %}
+                                <span class="text-green">{{ item.change_24h }}</span>
+                            {% elif item.change_24h_number < 0 %}
+                                <span class="text-red">{{ item.change_24h }}</span>
+                            {% else %}
+                                <span class="text-blue">{{ item.change_24h }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if item.market_bias == 'Bullish' %}
+                                <span class="text-green">{{ item.market_bias }}</span>
+                            {% elif item.market_bias == 'Bearish' %}
+                                <span class="text-red">{{ item.market_bias }}</span>
+                            {% else %}
+                                <span class="text-blue">{{ item.market_bias }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <div class="table-meter">
+                                <span>{{ item.conviction_score or 0 }}</span>
+                                <div class="table-meter-bar">
+                                    <i style="width: {{ item.conviction_score or 0 }}%;"></i>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="table-meter">
+                                <span>{{ item.squeeze_risk or 0 }}</span>
+                                <div class="table-meter-bar danger">
+                                    <i style="width: {{ item.squeeze_risk or 0 }}%;"></i>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>{{ item.exchange_focus }}</td>
+                        <td>{{ item.time }}</td>
+                    </tr>
+
+                    <tr class="oi-interpret-row">
+                        <td colspan="11">
+                            <span class="oi-interpret-label">Lecture :</span>
+                            {{ item.interpretation }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="proof-box">
+            <div class="proof-left">
+                <h2>Aucun snapshot pour ces filtres</h2>
+                <p>Essaie un autre actif ou enlève le filtre High Conviction.</p>
+            </div>
+            <div class="proof-right">
+                <a href="{{ url_for('open_interest.open_interest_page') }}" class="primary-link-btn">Voir tous les snapshots</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="oi-v2-grid">
+            <div class="glass-panel">
+                <div class="panel-head">
+                    <span>Execution playbooks</span>
+                    <h2>Comment exploiter la lecture</h2>
+                </div>
+
+                <div class="playbook-grid">
+                    <div class="playbook-card">
+                        <strong>Trend build-up</strong>
+                        <p>
+                            Prix + OI qui montent ensemble sur un actif top leaderboard :
+                            possible construction propre de positions.
+                        </p>
+                    </div>
+
+                    <div class="playbook-card">
+                        <strong>Short covering</strong>
+                        <p>
+                            Prix qui monte pendant que l’OI baisse :
+                            le mouvement peut être porté par fermetures de shorts.
+                        </p>
+                    </div>
+
+                    <div class="playbook-card">
+                        <strong>Long flush</strong>
+                        <p>
+                            Prix qui baisse avec baisse de l’OI :
+                            désendettement ou sortie du levier.
+                        </p>
+                    </div>
+
+                    <div class="playbook-card">
+                        <strong>Squeeze zone</strong>
+                        <p>
+                            Quand crowding, anomaly et squeeze risk montent ensemble,
+                            le marché devient plus explosif.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel">
+                <div class="panel-head">
+                    <span>Top snapshots</span>
+                    <h2>Lectures immédiates</h2>
+                </div>
+
+                {% if top_snapshots %}
+                    <div class="snapshot-stack">
+                        {% for item in top_snapshots %}
+                        <div class="snapshot-card-v2">
+                            <strong>{{ item.asset }} — {{ item.oi_value }}</strong>
+                            <span>
+                                Prix {{ item.price }} · 1h {{ item.change_1h }} · 4h {{ item.change_4h }}
+                                · 24h {{ item.change_24h }} · {{ item.time }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="proof-card">
+                        <strong>Aucun snapshot disponible</strong>
+                        <span>Les prochaines lectures importantes apparaîtront ici.</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

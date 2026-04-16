@@ -1,0 +1,349 @@
+{% extends "base.html" %}
+
+{% block title %}Whale Intelligence | VelWolf{% endblock %}
+
+{% block content %}
+
+<section class="inner-hero">
+    <div class="section-container">
+        <span class="section-badge">Institutional Flow Monitor</span>
+        <h1 class="inner-page-title">Whale Intelligence</h1>
+        <p class="inner-page-text">
+            Suivez les mouvements des gros portefeuilles crypto, identifiez les flux vers les exchanges,
+            surveillez les retraits stratégiques et analysez le biais du marché avec une vision institutionnelle.
+        </p>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="results-proof-box">
+            <div class="results-proof-left">
+                <span class="proof-badge">Executive Summary</span>
+                <h2>Lecture exécutive du flux baleines</h2>
+                <p>
+                    Cette page centralise les flux majeurs détectés sur les principaux actifs suivis.
+                    L’objectif n’est pas seulement de voir les transactions, mais de comprendre si le marché
+                    est en phase d’accumulation, de distribution ou de préparation de liquidité.
+                </p>
+
+                <div class="results-mini-grid">
+                    <div class="results-mini-card">
+                        <strong>{{ snapshot.total_alerts or 0 }}</strong>
+                        <span>Transactions surveillées</span>
+                    </div>
+                    <div class="results-mini-card">
+                        <strong>{{ snapshot.exchange_flows or 0 }}</strong>
+                        <span>Flux exchange détectés</span>
+                    </div>
+                    <div class="results-mini-card">
+                        <strong>{{ snapshot.dominant_bias or "Neutral" }}</strong>
+                        <span>Biais dominant</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-proof-right">
+                <div class="proof-card">
+                    <strong>Plus grosse transaction</strong>
+                    <span>
+                        {{ snapshot.biggest_transaction_asset or "BTC" }}
+                        — {{ snapshot.biggest_transaction_value or "$0.0M" }}
+                    </span>
+                </div>
+                <div class="proof-card">
+                    <strong>Type dominant</strong>
+                    <span>{{ snapshot.biggest_transaction_type or "Exchange Flow" }}</span>
+                </div>
+                <div class="proof-card">
+                    <strong>Volume total tracké</strong>
+                    <span>{{ snapshot.total_usd_tracked or "$0.0M" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Macro Reading</span>
+            <h2>Lecture rapide de l’impact marché</h2>
+            <p>
+                Tous les mouvements baleines ne se valent pas. Le sens du flux, la présence d’un exchange
+                et le type d’actif permettent d’avoir une lecture tactique plus propre.
+            </p>
+        </div>
+
+        <div class="why-grid">
+            <div class="why-card">
+                <strong>Exchange Outflow</strong>
+                <p>
+                    Quand de grosses quantités quittent un exchange vers des wallets privés, cela peut signaler
+                    une accumulation ou une baisse de l’offre immédiatement disponible.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Exchange Inflow</strong>
+                <p>
+                    Quand des baleines déposent massivement sur un exchange, cela peut signaler une préparation
+                    de vente, de prise de profit ou de couverture.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Wallet / Treasury Flow</strong>
+                <p>
+                    Les transferts internes et treasury sont souvent moins directionnels, mais ils donnent
+                    des indices utiles sur la préparation de liquidité et le repositionnement des fonds.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="proof-box">
+            <div class="proof-left">
+                <span class="proof-badge">Top Flows</span>
+                <h2>Transactions les plus importantes</h2>
+                <p>
+                    Voici les flux qui méritent la plus grande attention dans une logique de lecture tactique
+                    et institutionnelle.
+                </p>
+            </div>
+
+            <div class="proof-right">
+                {% if latest_high_impact %}
+                    {% for item in latest_high_impact %}
+                    <div class="proof-card">
+                        <strong>{{ item.asset }} — {{ item.flow_type }}</strong>
+                        <span>
+                            {{ item.usd_value }} • {{ item.wallet_from }} → {{ item.wallet_to }}
+                            • biais {{ item.bias }} • {{ item.time }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="proof-card">
+                        <strong>Aucune alerte high impact</strong>
+                        <span>Les prochaines grosses transactions apparaîtront ici.</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Live Feed</span>
+            <h2>Flux principal des alertes baleines</h2>
+            <p>
+                Tableau de surveillance des grosses transactions détectées sur les actifs suivis par la plateforme.
+            </p>
+        </div>
+
+        {% if whale_alerts %}
+        <div class="btc-signals-table-wrap">
+            <table class="btc-signals-table">
+                <thead>
+                    <tr>
+                        <th>Actif</th>
+                        <th>Montant</th>
+                        <th>Valeur USD</th>
+                        <th>Depuis</th>
+                        <th>Vers</th>
+                        <th>Type</th>
+                        <th>Biais</th>
+                        <th>Impact</th>
+                        <th>Heure</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for whale in whale_alerts %}
+                    <tr>
+                        <td><strong>{{ whale.asset }}</strong><br><span>{{ whale.network }}</span></td>
+                        <td>{{ whale.amount }}</td>
+                        <td>{{ whale.usd_value }}</td>
+                        <td>{{ whale.wallet_from }}</td>
+                        <td>{{ whale.wallet_to }}</td>
+                        <td>{{ whale.flow_type }}</td>
+                        <td>
+                            {% if whale.bias == 'Bullish' %}
+                                <span class="text-green">{{ whale.bias }}</span>
+                            {% elif whale.bias == 'Bearish' %}
+                                <span class="text-red">{{ whale.bias }}</span>
+                            {% else %}
+                                <span class="text-blue">{{ whale.bias }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ whale.impact }}</td>
+                        <td>{{ whale.time }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="proof-box">
+            <div class="proof-left">
+                <h2>Aucune alerte pour ces filtres</h2>
+                <p>
+                    Essaie un autre actif, retire le filtre High Impact ou réinitialise la vue.
+                </p>
+            </div>
+            <div class="proof-right">
+                <a href="{{ url_for('pages.whales') }}" class="primary-link-btn">Voir toutes les alertes</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Institutional Read</span>
+            <h2>Comment exploiter le whale flow</h2>
+            <p>
+                Le whale flow devient vraiment puissant lorsqu’il est croisé avec la structure de prix,
+                la volatilité, le momentum et l’activité stablecoin.
+            </p>
+        </div>
+
+        <div class="why-grid">
+            <div class="why-card">
+                <strong>Accumulation discrète</strong>
+                <p>
+                    Des outflows répétés sur BTC ou ETH peuvent signaler une phase d’accumulation lente,
+                    surtout si les réserves exchange diminuent en parallèle.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Distribution progressive</strong>
+                <p>
+                    Une série d’inflows après extension haussière peut indiquer une rotation ou une
+                    préparation de vente partielle.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Stablecoin dry powder</strong>
+                <p>
+                    Les gros transferts USDT et USDC vers les plateformes peuvent représenter du capital
+                    prêt à être déployé sur les actifs risqués.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Premium Desk Tools</span>
+            <h2>Modules avancés de lecture marché</h2>
+            <p>
+                Trois angles complémentaires pour enrichir l’analyse whale.
+            </p>
+        </div>
+
+        <div class="market-updates-grid">
+            <article class="market-news-card">
+                <div class="market-news-meta">
+                    <span>Liquidity Watch</span>
+                </div>
+                <h3>Stablecoin Pressure Monitor</h3>
+                <p>
+                    Les mouvements USDT et USDC vers les plateformes peuvent signaler une réserve de liquidité
+                    prête à entrer sur les actifs risqués.
+                </p>
+            </article>
+
+            <article class="market-news-card">
+                <div class="market-news-meta">
+                    <span>Rotation Signal</span>
+                </div>
+                <h3>Institutional Rotation Watch</h3>
+                <p>
+                    Une alternance entre flux entrants et sortants sur différents actifs peut indiquer
+                    une rotation institutionnelle plutôt qu’une simple pression directionnelle.
+                </p>
+            </article>
+
+            <article class="market-news-card">
+                <div class="market-news-meta">
+                    <span>Pressure Read</span>
+                </div>
+                <h3>Directional Pressure Map</h3>
+                <p>
+                    Une concentration de flux de même nature dans une courte fenêtre de temps augmente souvent
+                    la valeur tactique du signal.
+                </p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Market Scenarios</span>
+            <h2>Scénarios de lecture pour l’utilisateur</h2>
+            <p>
+                Voici comment transformer l’information brute en décisions de surveillance plus claires.
+            </p>
+        </div>
+
+        <div class="why-grid">
+            <div class="why-card">
+                <strong>Scénario bullish</strong>
+                <p>
+                    BTC ou ETH en outflow massif + structure haussière intacte + baisse des réserves exchange
+                    = environnement favorable à la continuation.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Scénario bearish</strong>
+                <p>
+                    Inflows répétés vers les grandes plateformes après extension = risque accru de prise
+                    de profit ou de rotation défensive.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <strong>Scénario opportuniste</strong>
+                <p>
+                    Activité stablecoin croissante + outflows actifs majeurs = combinaison souvent intéressante
+                    pour surveiller un breakout ou un rebond de qualité.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="final-cta-section">
+    <div class="section-container">
+        <div class="final-cta-box">
+            <span class="final-cta-badge">Premium Intelligence</span>
+            <h2>Donne à tes abonnés une vraie lecture desk du marché</h2>
+            <p>
+                Combine Whale Intelligence, signaux, replay, sentiment et suivi marché pour construire
+                une expérience premium à haute valeur perçue.
+            </p>
+
+            <div class="final-cta-actions">
+                <a href="{{ url_for('billing.pricing') }}" class="primary-link-btn">Découvrir Premium</a>
+                <a href="{{ url_for('dashboard.dashboard') }}" class="white-outline-btn">Retour Dashboard</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

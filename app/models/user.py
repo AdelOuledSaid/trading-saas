@@ -11,6 +11,9 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     password = db.Column(db.String(255), nullable=False)
 
+    # Email verification
+    is_verified = db.Column(db.Boolean, default=False, nullable=False, index=True)
+
     # Subscription
     is_premium = db.Column(db.Boolean, default=False, nullable=False)
     plan = db.Column(db.String(20), default="free", nullable=False, index=True)
@@ -26,4 +29,4 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     def __repr__(self):
-        return f"<User {self.email} plan={self.plan}>"
+        return f"<User {self.email} plan={self.plan} verified={self.is_verified}>"

@@ -1,0 +1,1055 @@
+{% extends base.html %}
+
+{% block title %}Academy Niveau 3  VelWolf{% endblock %}
+
+{% block extra_css %}
+link rel=stylesheet href={{ url_for('static', filename='academy.css') }}
+{% endblock %}
+
+{% block content %}
+{% if not is_pro %}
+script
+    document.addEventListener(DOMContentLoaded, function () {
+        document.body.dataset.autoUpgradePopup = true;
+    });
+script
+{% endif %}
+
+section class=academy-page-hero academy-section
+    div class=academy-shell
+        div class=academy-breadcrumb
+            a href={{ url_for('pages.academy_index') }}Academya
+            spanspan
+            spanNiveau 3span
+        div
+
+        div class=academy-page-grid
+            div
+                span class=academy-kickerNiveau 3 — Trading professionnel & plan de marchéspan
+                h1Construire une lecture multi-timeframe et penser comme un opérateur structuréh1
+                p class=academy-lead
+                    Le niveau 3 marque une transition décisive  l’objectif n’est plus seulement
+                    de bien lire un setup isolé, mais de construire une lecture complète du marché,
+                    hiérarchisée, contextualisée et exploitable. L’apprenant entre dans une logique
+                    de planification, de sélection et de gestion avancée.
+                p
+                p class=academy-lead
+                    Ici, le trader ne se contente plus de réagir à un mouvement. Il prépare des scénarios,
+                    hiérarchise les informations, observe les corrélations, classe les actifs,
+                    adapte son risque et construit un plan avant même que l’entrée n’existe.
+                p
+
+                div class=academy-actions
+                    a href=#module-1 class=academy-btn academy-btn-primaryCommencer Niveau 3a
+                    a href=#quiz-final class=academy-btn academy-btn-secondaryAller à l’examena
+                    {% if not is_pro %}
+                    a href={{ url_for('pages.academy_upgrade') }} class=academy-btn academy-btn-gold
+                        Débloquer le niveau 3
+                    a
+                    {% endif %}
+                div
+            div
+
+            div class=academy-side-progress
+                div class=academy-progress-head
+                    spanProgression actuellespan
+                    strong{{ academy_progress.level3 if academy_progress and academy_progress.level3 is defined else 0 }}%strong
+                div
+                div class=academy-progress-bar
+                    div class=academy-progress-fill academy-progress-fill-purple style=width {{ academy_progress.level3 if academy_progress and academy_progress.level3 is defined else 0 }}%;div
+                div
+
+                div class=academy-progress-head academy-progress-head-second
+                    spanAccèsspan
+                    strong{% if is_pro %}Complet{% else %}Aperçu limité{% endif %}strong
+                div
+
+                div class=academy-info-card style=margin-top 18px;
+                    h3Objectif du niveauh3
+                    p
+                        Faire passer l’utilisateur d’une logique de setup à une logique de planification
+                        professionnelle, multi-actifs et multi-horizons.
+                    p
+                div
+
+                div class=academy-info-card style=margin-top 18px;
+                    h3Résultat attenduh3
+                    p
+                        À la fin du niveau 3, l’élève doit savoir préparer une séance, hiérarchiser
+                        les unités de temps, construire des scénarios ABC et gérer une exposition
+                        plus intelligemment.
+                    p
+                div
+            div
+        div
+    div
+section
+
+section class=academy-section
+    div class=academy-shell
+        div class=academy-video-layout
+            div class=academy-video-main {% if not is_pro %}academy-locked-wrap{% endif %}
+                div class=academy-player academy-player-pro
+                    div class=academy-player-screen academy-player-screen-embed
+                        {% if is_pro %}
+                        iframe
+                            src=httpswww.youtube.comembedVIDEO_ID_3
+                            title=Formation trading niveau 3
+                            frameborder=0
+                            allow=accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share
+                            allowfullscreen
+                        iframe
+                        {% else %}
+                        div class=academy-player-overlay-text
+                            span class=academy-kickerVidéo premiumspan
+                            h3Niveau 3 — Plan de marché & logique proh3
+                            pVersion complète réservée aux membres Pro avec études de cas avancées, frameworks, corrélations et validation finale.p
+                        div
+                        {% endif %}
+                    div
+
+                    div class=academy-player-controls
+                        {% if is_pro %}
+                            button class=academy-control-btn type=button▶ Lecturebutton
+                            button class=academy-control-btn type=button⏸ Pausebutton
+                            button class=academy-control-btn type=button⏭ Module suivantbutton
+                        {% else %}
+                            button class=academy-control-btn type=button data-upgrade-trigger=true🔒 Lecture Probutton
+                            button class=academy-control-btn type=button data-upgrade-trigger=true🔒 Cas réels avancésbutton
+                            button class=academy-control-btn type=button data-upgrade-trigger=true🚀 Débloquerbutton
+                        {% endif %}
+                    div
+                div
+
+                {% if is_pro %}
+                div class=academy-academic-block style=margin-top 24px;
+                    span class=academy-box-labelVisualisation prospan
+                    h3Graphique pédagogique — NASDAQ  US100h3
+                    p
+                        À ce niveau, le graphique devient un support de planification.
+                        Il sert à identifier le contexte large, la structure intermédiaire,
+                        les zones clés, les scénarios d’ouverture et les réactions possibles
+                        selon les sessions de marché.
+                    p
+                    div class=academy-chart-box
+                        iframe
+                            src=httpss.tradingview.comwidgetembedframeElementId=tradingview_us100_level3&symbol=OANDANAS100USD&interval=240&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=F1F3F6&studies=[]&theme=dark&style=1&timezone=Etc%2FUTC&withdateranges=1&hideideas=1
+                            width=100%
+                            height=420
+                            frameborder=0
+                            allowtransparency=true
+                            scrolling=no
+                        iframe
+                    div
+                div
+                {% endif %}
+
+                {% if not is_pro %}
+                div class=academy-lock-overlay
+                    div class=academy-lock-card
+                        div class=academy-lock-icon🔒div
+                        h3Niveau 3 réservé aux membres Proh3
+                        pDébloquez la lecture multi-timeframe, les plans de marché, les cas avancés, les corrélations, la validation finale et le parcours premium complet.p
+                        a href={{ url_for('pages.academy_upgrade') }} class=academy-btn academy-btn-gold
+                            Passer Pro maintenant
+                        a
+                    div
+                div
+                {% endif %}
+            div
+
+            aside class=academy-sidebar
+                div class=academy-module-list
+                    h3Programme universitaire — Niveau 3h3
+                    ul
+                        li class=active1. Analyse multi-timeframeli
+                        li2. Top-down market analysisli
+                        li3. Plan de marché A  B  Cli
+                        li4. Sélection d’actifsli
+                        li5. Corrélations et contexte globalli
+                        li6. Sessions de marchéli
+                        li7. Risk management avancéli
+                        li8. Scaling in  scaling outli
+                        li9. Études de cas professionnellesli
+                        li10. Routine & validationli
+                    ul
+                div
+
+                div class=academy-info-card style=margin-top 20px;
+                    h3Ce que ce niveau doit changerh3
+                    p
+                        Vous faire sortir d’une logique de réaction immédiate pour entrer
+                        dans une logique d’anticipation structurée.
+                    p
+                div
+
+                div class=academy-info-card style=margin-top 20px;
+                    h3Compétences ciblesh3
+                    ul class=academy-reflection-list
+                        liPréparer une journée de trading.li
+                        liConstruire plusieurs scénarios cohérents.li
+                        liSélectionner les meilleurs actifs.li
+                        liGérer l’exposition globalement.li
+                        liExécuter avec logique et hiérarchie.li
+                    ul
+                div
+            aside
+        div
+    div
+section
+
+section class=academy-section academy-dark-band
+    div class=academy-shell
+        div class=academy-section-title
+            span class=academy-kickerCadre d’apprentissagespan
+            h2Compétences visées à l’issue du niveau 3h2
+            p class=academy-lead academy-section-lead
+                À la fin de ce niveau, l’utilisateur doit savoir construire un plan complet 
+                contexte global, lecture multi-timeframe, scénario principal, scénarios alternatifs,
+                actifs à surveiller, invalidations, objectifs et règles de gestion.
+            p
+        div
+
+        div class=academy-grid-3
+            div class=academy-info-card
+                h3Vision hiérarchiqueh3
+                pComprendre qu’une unité de temps n’a pas la même valeur qu’une autre.p
+            div
+            div class=academy-info-card
+                h3Planificationh3
+                pPréparer avant la séance au lieu d’improviser dans le bruit.p
+            div
+            div class=academy-info-card
+                h3Gestion globaleh3
+                pPenser en exposition totale et non plus seulement trade par trade.p
+            div
+        div
+
+        div class=academy-chart-grid style=margin-top 28px;
+            div class=academy-chart-card
+                h3Lecture isolée vs lecture hiérarchiséeh3
+                p
+                    Le niveau 3 apprend à replacer chaque setup dans une structure plus large.
+                p
+                canvas id=hierarchyChart height=120canvas
+            div
+
+            div class=academy-chart-card
+                h3Qualité de planificationh3
+                p
+                    Plus la préparation est forte, plus la décision devient stable et moins impulsive.
+                p
+                canvas id=planningChart height=120canvas
+            div
+        div
+
+        div class=academy-academic-block style=margin-top 28px;
+            span class=academy-box-labelFramework niveau 3span
+            h3Architecture complète d’un plan professionnelh3
+            p
+                Une vraie préparation de marché ne consiste pas à noter un niveau puis attendre.
+                Elle consiste à comprendre où l’on se trouve, ce qui domine, ce qui pourrait changer,
+                quels actifs méritent l’attention, quels scénarios sont prioritaires et comment le risque
+                sera géré si plusieurs opportunités apparaissent en même temps.
+            p
+
+            div class=academy-summary-grid
+                div class=academy-info-card
+                    h3Les 7 piliersh3
+                    ul class=academy-reflection-list
+                        liContexte macro et sentiment.li
+                        liLecture HTF et structure dominante.li
+                        liZones d’intérêt sur unités intermédiaires.li
+                        liScénario principal + scénarios alternatifs.li
+                        liActifs prioritaires.li
+                        liConditions d’exécution.li
+                        liCadre de gestion du risque.li
+                    ul
+                div
+
+                div class=academy-info-card
+                    h3Les erreurs avancéesh3
+                    ul class=academy-reflection-list
+                        liÊtre trop précis sans avoir de vision large.li
+                        liMultiplier les actifs sans hiérarchie.li
+                        liSurpondérer un scénario unique.li
+                        liIgnorer les corrélations.li
+                        liExposer trop de capital au même thème de marché.li
+                    ul
+                div
+            div
+        div
+    div
+section
+
+section class=academy-section id=module-1
+    div class=academy-shell
+        div class=academy-section-title
+            span class=academy-kickerChapitre 1span
+            h2Analyse multi-timeframeh2
+        div
+
+        div class=academy-academic-block
+            h3Lire le marché selon plusieurs horizons, sans contradiction artificielleh3
+            p
+                L’analyse multi-timeframe consiste à hiérarchiser les unités de temps afin de comprendre
+                comment une même réalité de marché peut s’exprimer différemment selon l’horizon observé.
+                Ce qui paraît être une “baisse” sur une petite unité peut n’être qu’un simple retracement
+                dans une structure haussière plus large.
+            p
+            p
+                La maturité commence lorsque le trader cesse de traiter toutes les unités de temps comme équivalentes.
+                L’unité haute donne le contexte. L’unité intermédiaire donne la structure exploitable.
+                L’unité basse affine l’entrée. Sans cette hiérarchie, le trader se perd dans des signaux contradictoires.
+            p
+            p
+                L’objectif n’est pas d’ajouter toujours plus d’écrans, mais de donner une logique à l’observation.
+                La bonne question n’est pas “que dit chaque timeframe ”, mais “quelle timeframe commande la lecture globale,
+                laquelle prépare l’opportunité, et laquelle optimise l’exécution ”.
+            p
+
+            div class=academy-definition-box
+                span class=academy-box-labelDéfinitionspan
+                p
+                    L’analyse multi-timeframe est une méthode de hiérarchisation des unités de temps visant
+                    à relier contexte, structure et timing dans une seule lecture cohérente.
+                p
+            div
+
+            div class=academy-keytakeaway-box
+                span class=academy-box-labelÀ retenirspan
+                p
+                    Une petite unité n’invalide pas automatiquement une grande structure. Elle doit être replacée
+                    dans sa hiérarchie.
+                p
+            div
+
+            div class=academy-academic-block style=margin-top 22px;
+                span class=academy-box-labelFramework pratiquespan
+                h3Répartition simple des rôlesh3
+                ul class=academy-reflection-list
+                    liHTF  contexte dominant.li
+                    liMTF  structure exploitable.li
+                    liLTF  précision d’entrée et timing.li
+                    liSi les trois sont incohérents, la prudence augmente.li
+                    liSi les trois convergent, la qualité du plan progresse fortement.li
+                ul
+            div
+        div
+    div
+section
+
+section class=academy-section academy-dark-band
+    div class=academy-shell
+        div class=academy-section-title
+            span class=academy-kickerChapitre 2span
+            h2Top-down market analysish2
+        div
+
+        div class=academy-academic-block
+            h3Du global vers le précish3
+            p
+                Le top-down analysis consiste à commencer par le cadre le plus large avant de descendre vers
+                l’exécution. Cette méthode protège le trader contre l’erreur classique qui consiste à tomber
+                amoureux d’un setup local sans comprendre le contexte qui l’entoure.
+            p
+            p
+                Une bonne préparation commence par des questions simples  quel est le climat général 
+                Où se situent les grandes zones  Quel actif a le plus de clarté relative 
+                Quel thème domine actuellement  risk-on, risk-off, dollar fort, stress macro, expansion techno,
+                rotation de capitaux, recherche de refuge 
+            p
+            p
+                Une fois ce cadre posé, le trader peut descendre progressivement  structure dominante,
+                zones de travail, comportement actuel du prix, puis timing éventuel d’entrée.
+                Le top-down évite l’erreur de commencer par le micro en oubliant le macro.
+            p
+
+            div class=academy-warning-box
+                span class=academy-box-labelErreur fréquentespan
+                p
+                    Construire un trade détaillé sur une petite unité alors que le contexte large le rend fragile.
+                p
+            div
+
+            div class=academy-checklist
+                span class=academy-box-labelMéthodespan
+                h3Ordre logique de préparationh3
+                ul class=academy-reflection-list
+                    li1. Contexte global et sentiment de marché.li
+                    li2. Structures dominantes sur grandes unités.li
+                    li3. Zones intermédiaires pertinentes.li
+                    li4. Actifs prioritaires à surveiller.li
+                    li5. Scénarios opérationnels.li
+                    li6. Conditions précises d’exécution.li
+                ul
+            div
+        div
+    div
+section
+
+section class=academy-section
+    div class=academy-shell
+        div class=academy-section-title
+            span class=academy-kickerChapitre 3span
+            h2Plan de marché A  B  Ch2
+        div
+
+        div class=academy-academic-block
+            h3Le professionnel ne dépend pas d’un scénario uniqueh3
+            p
+                Un trader fragile construit souvent une seule histoire et s’y attache émotionnellement.
+                Un trader plus mature accepte qu’un marché puisse évoluer selon plusieurs chemins crédibles.
+                Le plan A représente le scénario privilégié. Le plan B représente une alternative cohérente.
+                Le plan C représente souvent le scénario d’invalidation ou de rupture.
+            p
+            p
+                Cette architecture protège l’esprit contre la rigidité. Lorsque le marché n’exécute pas
+                le scénario espéré, l’opérateur préparé ne panique pas  il reclassifie la situation.
+                Il passe d’un scénario à un autre selon des critères définis, au lieu de réagir dans le désordre.
+            p
+            p
+                Le plan ABC transforme l’incertitude en cadre opérationnel. Il ne supprime pas le doute,
+                mais il lui donne une forme exploitable.
+            p
+
+            div class=academy-summary-grid
+                div class=academy-info-card
+                    h3Plan Ah3
+                    ul class=academy-reflection-list
+                        liScénario principal.li
+                        liLe plus cohérent avec le contexte.li
+                        liExécution privilégiée si conditions réunies.li
+                    ul
+                div
+
+                div class=academy-info-card
+                    h3Plan B  Ch3
+                    ul class=academy-reflection-list
+                        liAlternative crédible.li
+                        liChangement de logique si niveau clé cède ou tient.li
+                        liProtection contre le biais de fixation.li
+                    ul
+                div
+            div
+
+            div class=academy-case-box
+                span class=academy-box-labelCas réel — BTCspan
+                p
+                    Plan A  continuation haussière après retest d’une cassure propre.
+                    Plan B  réintégration du range et retour vers son milieu.
+                    Plan C  perte du support de retest et changement d’environnement.
+                p
+            div
+        div
+    div
+section
+
+section class=academy-section academy-dark-band
+    div class=academy-shell
+        div class=academy-section-title
+            span class=academy-kickerChapitre 4span
+            h2Sélection d’actifsh2
+        div
+
+        div class=academy-academic-block
+            h3Tous les actifs ne méritent pas la même attentionh3
+            p
+                L’un des signes d’un trader en progression est sa capacité à ne pas tout surveiller avec la même intensité.
+                Un opérateur professionnel classe les actifs  actifs clairs, actifs secondaires, actifs à éviter.
+                Le capital d’attention est limité ; il doit être alloué avec intelligence.
+            p
+            p
+                Certains actifs possèdent une structure lisible, des zones propres et une cohérence relative.
+                D’autres sont trop bruités, trop ambigus, ou déjà trop avancés. L’erreur du débutant
+                consiste à croire qu’il faut être partout. L’erreur avancée consiste à croire que plus d’actifs
+                signifie plus d’opportunités exploitables.
+            p
+            p
+                Une vraie sélection repose sur la clarté, la liquidité, la cohérence structurelle,
+                l’intérêt relatif et l’adéquation avec la stratégie du jour.
+            p
+
+            div class=academy-comparison-box
+                span class=academy-box-labelGrille simplespan
+                div class=academy-comparison-table
+                    div class=academy-comparison-row academy-comparison-head
+                        divClassementdiv
+                        divQualitédiv
+                        divActiondiv
+                    div
+                    div class=academy-comparison-row
+                        divActif Adiv
+                        divStructure proprediv
+                        divSurveillance prioritairediv
+                    div
+                    div class=academy-comparison-row
+                        divActif Bdiv
+                        divLisible mais secondairediv
+                        divSurveillance opportunistediv
+                    div
+                    div class=academy-comparison-row
+                        divActif Cdiv
+                        divTrop bruité  ambigudiv
+                        divÉviterdiv
+                    div
+                div
+            div
+
+            div class=academy-keytakeaway-box
+                span class=academy-box-labelÀ retenirspan
+                p
+                    La force d’un trader ne vient pas du nombre d’actifs suivis, mais de la qualité de la sélection.
+                p
+            div
+        div
+    div
+section
+
+section class=academy-section
+    div class=academy-shell
+        div class=academy-section-title
+            span class=academy-kickerChapitre 5span
+            h2Corrélations et contexte globalh2
+        div
+
+        div class=academy-academic-block
+            h3Penser en système, pas en marché isoléh3
+            p
+                À un niveau plus avancé, il devient dangereux de traiter chaque actif comme un monde fermé.
+                Les marchés interagissent. Le dollar, les taux, les indices, l’or, le Bitcoin,
+                l’aversion au risque ou l’appétit pour le risque peuvent créer des cohérences utiles.
+            p
+            p
+                Le but n’est pas de transformer l’analyse en encyclopédie macroéconomique.
+                Le but est plus simple  comprendre qu’une position sur plusieurs actifs peut parfois
+                exprimer le même pari caché. Acheter NASDAQ, acheter Bitcoin et vendre dollar agressivement
+                peut exposer le trader à un même thème risk-on.
+            p
+            p
+                La corrélation devient donc un outil de gestion du risque global. Elle aide à éviter
+                de surexposer le compte sans le voir.
+            p
+
+            div class=academy-warning-box
+                span class=academy-box-labelErreur fréquentespan
+                p
+                    Croire que trois trades différents sur trois actifs différents représentent forcément trois risques indépendants.
+                p
+            div
+
+            div class=academy-cards style=margin-top 24px;
+                article class=academy-case-card
+                    span class=academy-mini-badgeRisk-Onspan
+                    h3BTC + NASDAQh3
+                    p
+                        Dans certains environnements, Bitcoin et indices croissance peuvent évoluer
+                        dans des logiques proches de prise de risque.
+                    p
+                article
+
+                article class=academy-case-card
+                    span class=academy-mini-badgeDollarspan
+                    h3DXY et Forex majeurh3
+                    p
+                        Une force du dollar peut influencer plusieurs paires à la fois
+                        et modifier la lisibilité de plusieurs idées simultanément.
+                    p
+                article
+
+                article class=academy-case-card
+                    span class=academy-mini-badgeRefugespan
+                    h3Gold & stress de marchéh3
+                    p
+                        L’or peut parfois bénéficier de logiques de refuge ou réagir
+                        à la lecture des taux et du climat macro.
+                    p
+                article
+            div
+        div
+    div
+section
+
+section class=academy-section academy-dark-band
+    div class=academy-shell
+        div class=academy-section-title
+            span class=academy-kickerChapitre 6span
+            h2Sessions de marchéh2
+        div
+
+        div class=academy-academic-block
+            h3Le temps n’est pas neutre en tradingh3
+            p
+                Le marché ne produit pas la même qualité de mouvement à toute heure.
+                Les sessions influencent la liquidité, la vitesse, la qualité des cassures,
+                les réactions aux niveaux et la fiabilité relative de certains patterns.
+            p
+            p
+                Un trader plus avancé n’ignore pas le temps. Il sait qu’un setup moyen au bon moment
+                peut parfois être plus propre qu’un très bon setup dans une période de faible participation.
+                La compréhension des horaires n’est pas un détail  elle participe à la qualité d’exécution.
+            p
+            p
+                L’objectif n’est pas de rigidifier à l’excès, mais de comprendre que la probabilité
+                opérationnelle n’est pas indépendante de la session.
+            p
+
+            div class=academy-checklist
+                span class=academy-box-labelChecklist sessionspan
+                h3Questions utilesh3
+                ul class=academy-reflection-list
+                    liLe marché est-il dans une phase active ou lente li
+                    liLe setup dépend-il d’une vraie impulsion li
+                    liUne ouverture de session peut-elle changer la lecture li
+                    liLe timing choisi favorise-t-il la liquidité ou le bruit li
+                ul
+            div
+
+            div class=academy-chart-card style=margin-top 24px;
+                h3Qualité relative selon les périodesh3
+                p
+                    Toutes les heures n’offrent pas la même intensité ni la même propreté d’exécution.
+                p
+                canvas id=sessionChart height=120canvas
+            div
+        div
+    div
+section
+
+section class=academy-section
+    div class=academy-shell
+        div class=academy-section-title
+            span class=academy-kickerChapitre 7span
+            h2Risk management avancéh2
+        div
+
+        div class=academy-academic-block
+            h3Passer du risque par trade au risque globalh3
+            p
+                À partir d’un certain niveau, la gestion du risque ne peut plus être pensée uniquement
+                trade par trade. Le trader doit commencer à raisonner en exposition cumulée,
+                en concentration de thème et en corrélation entre positions.
+            p
+            p
+                Deux idées “petites” peuvent devenir une grande exposition si elles dépendent du même moteur.
+                Le risk management avancé consiste donc à gérer le portefeuille d’idées,
+                pas seulement l’unité isolée d’exécution.
+            p
+            p
+                Cette logique permet d’éviter la fausse diversification et d’introduire une vraie hiérarchie
+                des paris de marché.
+            p
+
+            div class=academy-summary-grid
+                div class=academy-info-card
+                    h3Risque débutanth3
+                    ul class=academy-reflection-list
+                        liJe regarde chaque trade seul.li
+                        liJe sous-estime les corrélations.li
+                        liJe pense être diversifié alors que non.li
+                    ul
+                div
+
+                div class=academy-info-card
+                    h3Risque avancéh3
+                    ul class=academy-reflection-list
+                        liJe regarde l’exposition totale.li
+                        liJe hiérarchise les convictions.li
+                        liJe limite la concentration cachée.li
+                    ul
+                div
+            div
+
+            div class=academy-keytakeaway-box
+                span class=academy-box-labelÀ retenirspan
+                p
+                    Le vrai risque n’est pas seulement ce que vous perdez sur un trade.
+                    C’est aussi ce que plusieurs trades racontent ensemble.
+                p
+            div
+        div
+    div
+section
+
+section class=academy-section academy-dark-band
+    div class=academy-shell
+        div class=academy-section-title
+            span class=academy-kickerChapitre 8span
+            h2Scaling in  scaling outh2
+        div
+
+        div class=academy-academic-block
+            h3Entrer et sortir avec plus de finesseh3
+            p
+                Le scaling in consiste à construire progressivement une position.
+                Le scaling out consiste à alléger progressivement une exposition gagnante.
+                Ces techniques peuvent améliorer la qualité de gestion, mais elles exigent une discipline élevée.
+            p
+            p
+                Mal utilisées, elles deviennent un prétexte à l’indécision ou au désordre.
+                Bien utilisées, elles permettent d’adapter l’engagement au niveau de confirmation
+                et de gérer plus finement la réalisation du gain.
+            p
+            p
+                L’idée n’est pas d’ajouter de la sophistication gratuite. L’idée est d’introduire
+                une logique graduelle lorsque le marché ou la structure le justifient.
+            p
+
+            div class=academy-example-box
+                span class=academy-box-labelExemplespan
+                p
+                    Un trader peut initier une petite exposition sur une zone HTF, ajouter sur confirmation,
+                    puis alléger une partie sur une première cible avant de laisser courir le reste.
+                p
+            div
+
+            div class=academy-warning-box
+                span class=academy-box-labelRisquespan
+                p
+                    Le scaling ne doit pas masquer une mauvaise lecture initiale ou servir de justification
+                    à une moyenne émotionnelle mal contrôlée.
+                p
+            div
+
+            div class=academy-chart-card style=margin-top 24px;
+                h3Gestion linéaire vs gestion graduelleh3
+                p
+                    Une gestion graduelle peut améliorer la souplesse, mais seulement si elle reste planifiée.
+                p
+                canvas id=scalingChart height=120canvas
+            div
+        div
+    div
+section
+
+section class=academy-section
+    div class=academy-shell
+        div class=academy-section-title
+            span class=academy-kickerChapitre 9span
+            h2Études de cas professionnellesh2
+        div
+
+        div class=academy-cards
+            article class=academy-case-card
+                span class=academy-mini-badgeBTCspan
+                h3Cas 1 — Plan A  B  C sur cassure HTFh3
+                p
+                    Le Bitcoin approche une zone large très observée. Le trader prépare un plan
+                    de continuation, un plan de réintégration et un plan d’échec structurel,
+                    sans dépendre d’un seul récit.
+                p
+                ul class=academy-reflection-list
+                    liHTF  résistance majeure.li
+                    liMTF  compression sous zone.li
+                    liLTF  attente de confirmation.li
+                    liGestion  exposition initiale réduite, ajout sur validation.li
+                ul
+            article
+
+            article class=academy-case-card
+                span class=academy-mini-badgeGOLDspan
+                h3Cas 2 — Lecture macro + techniqueh3
+                p
+                    L’or se trouve sur une zone clé alors que le marché réévalue les anticipations de taux.
+                    Le trader ne lit pas seulement le niveau ; il lit aussi le climat qui peut modifier
+                    la force de la réaction.
+                p
+                ul class=academy-reflection-list
+                    liContexte  sensibilité taux  dollar.li
+                    liZone  support journalier.li
+                    liScénario  réaction ou rupture.li
+                    liPlan  attendre la qualité du comportement.li
+                ul
+            article
+
+            article class=academy-case-card
+                span class=academy-mini-badgeEURUSDspan
+                h3Cas 3 — Corrélation dollar et sélection d’actifh3
+                p
+                    Au lieu de traiter plusieurs paires sans hiérarchie, le trader utilise la lecture
+                    du dollar pour mieux sélectionner l’actif le plus clair.
+                p
+                ul class=academy-reflection-list
+                    liContexte  dollar moteur.li
+                    liChoix  privilégier la paire la plus propre.li
+                    liRisque  éviter la surconcentration cachée.li
+                    liExécution  rester sélectif.li
+                ul
+            article
+        div
+
+        div class=academy-academic-block style=margin-top 24px;
+            h3Ce que montrent ces cash3
+            p
+                À ce niveau, le métier change de nature. Le trader n’est plus seulement un lecteur de bougies.
+                Il devient un organisateur d’information  il priorise, classe, prépare, filtre et exécute.
+                Le setup n’est plus le point de départ absolu. Il est l’aboutissement d’une lecture plus large.
+            p
+        div
+    div
+section
+
+section class=academy-section academy-dark-band
+    div class=academy-shell
+        div class=academy-section-title
+            span class=academy-kickerChapitre 10span
+            h2Routine professionnelle & validationh2
+        div
+
+        div class=academy-academic-block
+            h3Transformer la compétence en processus régulierh3
+            p
+                La vraie progression ne vient pas seulement des bonnes idées. Elle vient de la répétition
+                d’un processus de qualité. Une routine professionnelle réduit le bruit, structure l’attention
+                et stabilise la décision.
+            p
+            p
+                Le trader plus mature prépare avant la séance, observe pendant la séance, documente après la séance.
+                Cette continuité transforme des intuitions ponctuelles en méthode durable.
+            p
+
+            div class=academy-summary-grid
+                div class=academy-info-card
+                    h3Avant séanceh3
+                    ul class=academy-reflection-list
+                        liContexte global.li
+                        liActifs prioritaires.li
+                        liScénarios ABC.li
+                        liNiveaux clés.li
+                        liCadre de risque.li
+                    ul
+                div
+
+                div class=academy-info-card
+                    h3Après séanceh3
+                    ul class=academy-reflection-list
+                        liDécisions prises.li
+                        liQualité des entrées.li
+                        liRespect du plan.li
+                        liErreurs récurrentes.li
+                        liAmélioration du lendemain.li
+                    ul
+                div
+            div
+
+            div class=academy-checklist style=margin-top 24px;
+                span class=academy-box-labelChecklist finalespan
+                h3Checklist opérateur niveau 3h3
+                ul class=academy-reflection-list
+                    liAi-je un contexte global clair li
+                    liAi-je hiérarchisé mes unités de temps li
+                    liAi-je un plan A  B  C li
+                    liAi-je sélectionné les meilleurs actifs au lieu de tout surveiller li
+                    liMon exposition globale est-elle cohérente li
+                    liMes corrélations ont-elles été prises en compte li
+                    liMa routine transforme-t-elle l’expérience en amélioration réelle li
+                ul
+            div
+        div
+    div
+section
+
+section class=academy-section id=quiz-final
+    div class=academy-shell
+        div class=academy-section-title
+            span class=academy-kickerÉvaluation finalespan
+            h2Validation du niveau 3h2
+        div
+
+        div class=academy-quiz-card
+            {% if is_pro %}
+            form class=academy-quiz-form id=academyQuiz3
+                div class=academy-question
+                    h31. L’analyse multi-timeframe sert principalement à h3
+                    labelinput type=radio name=q1 value=a regarder un maximum de graphiques sans hiérarchielabel
+                    labelinput type=radio name=q1 value=b relier contexte, structure et timing dans une lecture hiérarchiséelabel
+                    labelinput type=radio name=q1 value=c éviter toute incertitudelabel
+                div
+
+                div class=academy-question
+                    h32. Un plan A  B  C permet surtout de h3
+                    labelinput type=radio name=q2 value=a dépendre d’un scénario uniquelabel
+                    labelinput type=radio name=q2 value=b préparer plusieurs chemins cohérents selon l’évolution du marchélabel
+                    labelinput type=radio name=q2 value=c entrer plus vitelabel
+                div
+
+                div class=academy-question
+                    h33. Le risk management avancé implique de h3
+                    labelinput type=radio name=q3 value=a raisonner seulement trade par tradelabel
+                    labelinput type=radio name=q3 value=b regarder l’exposition globale et les corrélationslabel
+                    labelinput type=radio name=q3 value=c augmenter la taille quand plusieurs idées se ressemblentlabel
+                div
+
+                div class=academy-question
+                    h34. Le top-down analysis commence par h3
+                    labelinput type=radio name=q4 value=a le plus petit timeframelabel
+                    labelinput type=radio name=q4 value=b le contexte large avant de descendre vers l’exécutionlabel
+                    labelinput type=radio name=q4 value=c l’entrée exacte immédiatementlabel
+                div
+
+                div class=academy-question
+                    h35. La sélection d’actifs professionnelle consiste à h3
+                    labelinput type=radio name=q5 value=a surveiller le plus d’actifs possiblelabel
+                    labelinput type=radio name=q5 value=b hiérarchiser les actifs selon leur clarté et leur intérêt relatiflabel
+                    labelinput type=radio name=q5 value=c trader tous les marchés ouvertslabel
+                div
+
+                button
+                    type=button
+                    class=academy-btn academy-btn-primary
+                    onclick=submitQuiz('academyQuiz3', ['b','b','b','b','b'], 'quiz3Result')
+                    Valider le quiz final
+                button
+
+                div id=quiz3Result class=academy-quiz-resultdiv
+            form
+
+            form method=POST action={{ url_for('pages.academy_complete_level', level='level3') }} class=academy-complete-form
+                button class=academy-btn academy-btn-secondary type=submit
+                    Valider le niveau 3
+                button
+            form
+            {% else %}
+            div class=academy-locked-box
+                div class=academy-lock-icon🔒div
+                h3Validation réservée au plan Proh3
+                pDébloquez le quiz, les cas avancés, les plans de marché, la progression réelle et l’expérience Academy complète.p
+                a href={{ url_for('pages.academy_upgrade') }} class=academy-btn academy-btn-gold
+                    Débloquer le niveau 3
+                a
+            div
+            {% endif %}
+        div
+    div
+section
+{% endblock %}
+
+{% block extra_js %}
+script src=httpscdn.jsdelivr.netnpmchart.jsscript
+script src={{ url_for('static', filename='academy.js') }}script
+
+script
+document.addEventListener(DOMContentLoaded, function () {
+    const chartFontColor = #cbd5e1;
+    const gridColor = rgba(148, 163, 184, 0.15);
+
+    function baseOptions() {
+        return {
+            responsive true,
+            maintainAspectRatio false,
+            plugins {
+                legend {
+                    labels {
+                        color chartFontColor
+                    }
+                }
+            },
+            scales {
+                x {
+                    ticks { color chartFontColor },
+                    grid { color gridColor }
+                },
+                y {
+                    ticks { color chartFontColor },
+                    grid { color gridColor }
+                }
+            }
+        };
+    }
+
+    const hierarchyChart = document.getElementById(hierarchyChart);
+    if (hierarchyChart) {
+        new Chart(hierarchyChart, {
+            type radar,
+            data {
+                labels [Contexte, Structure, Timing, Sélectivité, Vision, Cohérence],
+                datasets [
+                    {
+                        label Lecture isolée,
+                        data [3, 4, 5, 3, 2, 4]
+                    },
+                    {
+                        label Lecture hiérarchisée,
+                        data [9, 8, 8, 8, 9, 9]
+                    }
+                ]
+            },
+            options {
+                responsive true,
+                maintainAspectRatio false,
+                plugins {
+                    legend {
+                        labels { color chartFontColor }
+                    }
+                },
+                scales {
+                    r {
+                        angleLines { color gridColor },
+                        grid { color gridColor },
+                        pointLabels { color chartFontColor },
+                        ticks {
+                            color chartFontColor,
+                            backdropColor transparent
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    const planningChart = document.getElementById(planningChart);
+    if (planningChart) {
+        new Chart(planningChart, {
+            type line,
+            data {
+                labels [Préparation, Sélection, Exécution, Gestion, Review],
+                datasets [{
+                    label Qualité du processus,
+                    data [8, 8, 7, 8, 9],
+                    tension 0.35
+                }]
+            },
+            options baseOptions()
+        });
+    }
+
+    const sessionChart = document.getElementById(sessionChart);
+    if (sessionChart) {
+        new Chart(sessionChart, {
+            type bar,
+            data {
+                labels [Période lente, Pré-ouverture, Ouverture active, Milieu de session, Réactivation],
+                datasets [{
+                    label Qualité relative d’exécution,
+                    data [3, 6, 9, 5, 7]
+                }]
+            },
+            options baseOptions()
+        });
+    }
+
+    const scalingChart = document.getElementById(scalingChart);
+    if (scalingChart) {
+        new Chart(scalingChart, {
+            type line,
+            data {
+                labels [Entrée initiale, Confirmation, Ajout, Première cible, Sortie finale],
+                datasets [
+                    {
+                        label Gestion graduelle,
+                        data [2, 4, 6, 4, 0],
+                        tension 0.35
+                    },
+                    {
+                        label Gestion linéaire,
+                        data [6, 6, 6, 6, 0],
+                        tension 0.35
+                    }
+                ]
+            },
+            options baseOptions()
+        });
+    }
+});
+script
+{% endblock %}

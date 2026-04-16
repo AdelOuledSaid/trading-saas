@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+{% block title %}Economic Calendar | VelWolf{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='economic_calendar.css') }}">
+
+<section class="eco-page">
+
+    <div class="eco-hero">
+        <div class="eco-hero-grid">
+
+            <div class="eco-hero-main">
+                <span class="eco-badge">MACRO INTELLIGENCE</span>
+
+                <h1>Economic Calendar</h1>
+
+                <p class="eco-hero-text">
+                    Suis les publications économiques majeures, les annonces de banques centrales
+                    et les catalyseurs macro qui peuvent faire bouger le <strong>Forex</strong>,
+                    le <strong>Gold</strong>, le <strong>Bitcoin</strong> et les <strong>indices US</strong>.
+                </p>
+
+                <div class="eco-hero-actions">
+                    <a href="{{ url_for('pages.economic_calendar', period='today') }}" class="eco-main-btn">
+                        Today’s Events
+                    </a>
+                    <a href="{{ url_for('pages.economic_calendar', period='this_week', impact_only='1') }}" class="eco-secondary-btn">
+                        High Impact This Week
+                    </a>
+                </div>
+            </div>
+
+            <div class="eco-hero-side">
+                <div class="eco-side-card">
+                    <span class="eco-side-label">Market Bias</span>
+                    <strong>{{ market_bias or 'Neutral' }}</strong>
+                    <p>
+                        Lecture rapide des zones de volatilité dominantes selon les événements chargés.
+                    </p>
+                </div>
+
+                <div class="eco-side-card">
+                    <span class="eco-side-label">Macro Focus</span>
+                    <strong>
+                        {% if importance %}
+                            {{ importance|capitalize }} Impact
+                        {% elif impact_only == '1' %}
+                            High Impact
+                        {% else %}
+                            All Events
+                        {% endif %}
+                    </strong>
+                    <p>
+                        Filtre actif sur la session macro en cours.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {% if fallback_mode %}
+    <div class="eco-fallback-banner">
+        Live premium API unavailable — fallback macro mode active.
+    </div>
+    {% endif %}
+
+    <div class="eco-stats">
+        <div class="eco-stat-card">
+            <span class="eco-stat-label">Total Events</span>
+            <strong>{{ total_events if total_events is defined else events|length }}</strong>
+        </div>
+
+        <div class="eco-stat-card">
+            <span class="eco-stat-label">High Impact</span>
+            <strong>{{ high_impact_count if high_impact_count is defined else 0 }}</strong>
+        </div>
+
+        <div class="eco-stat-card">
+            <span class="eco-stat-label">Medium Impact</span>
+            <strong>{{ medium_impact_count if medium_impact_count is defined else 0 }}</strong>
+        </div>
+
+        <div class="eco-stat-card">
+            <span class="eco-stat-label">Low Impact</span>
+            <strong>{{ low_impact_count if low_impact_count is defined else 0 }}</strong>
+        </div>
+    </div>
+
+    <form method="GET" class="eco-toolbar">
+        <div class="eco-search-group">
+
+            <input
+                type="text"
+                name="q"
+                value="{{ q or '' }}"
+                placeholder="Search event: CPI, NFP, FED, inflation..."
+                class="eco-input"
+            >
+
+            <input
+                type="text"
+                name="country"
+                value="{{ country or '' }}"
+                placeholder="Country / Currency: US, USD, EUR, JPY..."
+                class="eco-input"
+            >
+
+            <select name="importance" class="eco-select">
+                <option value="">All Impact</option>
+                <option value="high" {% if importance == 'high' %}selected{% endif %}>High Impact</option>
+                <option value="medium" {% if importance == 'medium' %}selected{% endif %}>Medium Impact</option>
+                <option value="low" {% if importance == 'low' %}selected{% endif %}>Low Impact</option>
+            </select>
+
+            <input type="hidden" name="period" value="{{ active_period or 'today' }}">
+            <input type="hidden" name="impact_only" value="{{ impact_only or '0' }}">
+
+            <button type="submit" class="eco-search-btn">Apply Filters</button>
+        </div>
+    </form>
+
+    <div class="eco-filter-row">
+        <a href="{{ url_for('pages.economic_calendar', period='yesterday', q=q, country=country, importance=importance, impact_only=impact_only) }}"
+           class="eco-filter-btn {% if active_period == 'yesterday' %}active{% endif %}">
+            Yesterday
+        </a>
+
+        <a href="{{ url_for('pages.economic_calendar', period='today', q=q, country=country, importance=importance, impact_only=impact_only) }}"
+           class="eco-filter-btn {% if active_period == 'today' %}active{% endif %}">
+            Today
+        </a>
+
+        <a href="{{ url_for('pages.economic_calendar', period='tomorrow', q=q, country=country, importance=importance, impact_only=impact_only) }}"
+           class="eco-filter-btn {% if active_period == 'tomorrow' %}active{% endif %}">
+            Tomorrow
+        </a>
+
+        <a href="{{ url_for('pages.economic_calendar', period='this_week', q=q, country=country, importance=importance, impact_only=impact_only) }}"
+           class="eco-filter-btn {% if active_period == 'this_week' %}active{% endif %}">
+            This Week
+        </a>
+
+        <a href="{{ url_for('pages.economic_calendar', period='next_week', q=q, country=country, importance=importance, impact_only=impact_only) }}"
+           class="eco-filter-btn {% if active_period == 'next_week' %}active{% endif %}">
+            Next Week
+        </a>
+
+        <a href="{{ url_for('pages.economic_calendar', period=active_period or 'today', q=q, country=country, impact_only='1') }}"
+           class="eco-filter-btn {% if impact_only == '1' %}active{% endif %}">
+            High Impact Only
+        </a>
+
+        <a href="{{ url_for('pages.economic_calendar', period=active_period or 'today') }}"
+           class="eco-filter-btn eco-filter-reset">
+            Reset
+        </a>
+    </div>
+
+    <div class="eco-intel-strip">
+        <div class="eco-intel-card">
+            <span class="eco-intel-label">USD Events</span>
+            <p>Souvent les plus sensibles pour Gold, Nasdaq, DXY et le risk sentiment global.</p>
+        </div>
+
+        <div class="eco-intel-card">
+            <span class="eco-intel-label">Rates & CPI</span>
+            <p>Les annonces inflation / banques centrales créent souvent les plus gros mouvements intraday.</p>
+        </div>
+
+        <div class="eco-intel-card">
+            <span class="eco-intel-label">Execution Tip</span>
+            <p>Évite les entrées agressives juste avant les publications high impact.</p>
+        </div>
+    </div>
+
+    <div class="eco-table-card">
+        <div class="eco-table-head">
+            <div>
+                <h2>Macro Event Feed</h2>
+                <p>Calendrier filtré selon ta vue active et tes critères de recherche.</p>
+            </div>
+        </div>
+
+        <div class="eco-table-wrap">
+            <table class="eco-table">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Currency</th>
+                        <th>Impact</th>
+                        <th>Event</th>
+                        <th>Actual</th>
+                        <th>Forecast</th>
+                        <th>Previous</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for e in events %}
+                    <tr>
+                        <td class="eco-time-cell">{{ e.date_display }}</td>
+
+                        <td>
+                            <span class="eco-currency">{{ e.currency }}</span>
+                        </td>
+
+                        <td>
+                            <span class="impact-badge impact-{{ e.impact }}">
+                                {{ e.impact|capitalize }}
+                            </span>
+                        </td>
+
+                        <td class="event-name">
+                            <div class="event-name-main">{{ e.event }}</div>
+
+                            <div class="event-tags">
+                                <span class="event-country">{{ e.country }}</span>
+
+                                {% if e.currency == "USD" %}
+                                    <span class="event-tag">Gold / Nasdaq</span>
+                                {% elif e.currency == "EUR" %}
+                                    <span class="event-tag">EURUSD</span>
+                                {% elif e.currency == "JPY" %}
+                                    <span class="event-tag">USDJPY</span>
+                                {% elif e.currency == "GBP" %}
+                                    <span class="event-tag">GBP Pairs</span>
+                                {% elif e.currency == "AUD" %}
+                                    <span class="event-tag">AUD Volatility</span>
+                                {% elif e.currency == "CAD" %}
+                                    <span class="event-tag">Oil Correlation</span>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                        <td class="eco-actual">{{ e.actual }}</td>
+                        <td>{{ e.forecast }}</td>
+                        <td>{{ e.previous }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="eco-empty">
+                            Aucun événement disponible pour ces filtres.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="eco-mobile-list">
+        {% for e in events %}
+        <article class="eco-mobile-card">
+
+            <div class="eco-mobile-top">
+                <span class="impact-badge impact-{{ e.impact }}">{{ e.impact|capitalize }}</span>
+                <span class="eco-mobile-date">{{ e.date_display }}</span>
+            </div>
+
+            <h3>{{ e.event }}</h3>
+
+            <div class="eco-mobile-currency-row">
+                <span class="eco-currency">{{ e.currency }}</span>
+                <span class="eco-country-pill">{{ e.country }}</span>
+            </div>
+
+            <div class="eco-mobile-tags">
+                {% if e.currency == "USD" %}
+                    <span class="event-tag">Gold / Nasdaq</span>
+                {% elif e.currency == "EUR" %}
+                    <span class="event-tag">EURUSD</span>
+                {% elif e.currency == "JPY" %}
+                    <span class="event-tag">USDJPY</span>
+                {% elif e.currency == "GBP" %}
+                    <span class="event-tag">GBP Pairs</span>
+                {% elif e.currency == "AUD" %}
+                    <span class="event-tag">AUD Volatility</span>
+                {% elif e.currency == "CAD" %}
+                    <span class="event-tag">Oil Correlation</span>
+                {% endif %}
+            </div>
+
+            <div class="eco-mobile-grid">
+                <div class="eco-mobile-metric">
+                    <span>Actual</span>
+                    <strong>{{ e.actual }}</strong>
+                </div>
+                <div class="eco-mobile-metric">
+                    <span>Forecast</span>
+                    <strong>{{ e.forecast }}</strong>
+                </div>
+                <div class="eco-mobile-metric">
+                    <span>Previous</span>
+                    <strong>{{ e.previous }}</strong>
+                </div>
+            </div>
+
+        </article>
+        {% else %}
+        <div class="eco-empty-card">
+            Aucun événement disponible pour ces filtres.
+        </div>
+        {% endfor %}
+    </div>
+
+</section>
+{% endblock %}
