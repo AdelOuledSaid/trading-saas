@@ -27,13 +27,14 @@ def _is_true(value):
     return str(value).strip().lower() in {"1", "true", "yes", "on"}
 
 
+def _normalize_plan(plan_value):
+    plan = (plan_value or "basic").strip().lower()
+    if plan not in {"basic", "premium", "vip"}:
+        return "basic"
+    return plan
+
+
 def _should_autostart_liquidations(app):
-    """
-    Auto-start safe:
-    - activable via AUTO_START_LIQUIDATIONS=true
-    - sur Render, démarre automatiquement par défaut
-    - en debug local, évite le double démarrage du reloader Flask
-    """
     auto_start_env = os.environ.get("AUTO_START_LIQUIDATIONS")
 
     if auto_start_env is None:
@@ -57,18 +58,12 @@ def create_app():
         static_folder="../static"
     )
 
-    # =========================
-    # CONFIGURATION
-    # =========================
     app.config["SECRET_KEY"] = config.SECRET_KEY
     app.config["SQLALCHEMY_DATABASE_URI"] = config.DATABASE_URL
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["RESEND_API_KEY"] = getattr(config, "RESEND_API_KEY", "")
     app.config["APP_BASE_URL"] = getattr(config, "APP_BASE_URL", "")
 
-    # =========================
-    # SECURITE
-    # =========================
     app.config["SESSION_COOKIE_SECURE"] = True
     app.config["REMEMBER_COOKIE_SECURE"] = True
     app.config["SESSION_COOKIE_HTTPONLY"] = True
@@ -76,9 +71,6 @@ def create_app():
     app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
     app.config["PREFERRED_URL_SCHEME"] = "https"
 
-    # =========================
-    # INIT EXTENSIONS
-    # =========================
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
@@ -86,19 +78,10 @@ def create_app():
 
     login_manager.user_loader(load_user)
 
-    # =========================
-    # STRIPE
-    # =========================
     stripe.api_key = config.STRIPE_SECRET_KEY
 
-    # =========================
-    # JINJA FILTERS
-    # =========================
     app.jinja_env.filters["explain_reason"] = explain_reason
 
-    # =========================
-    # LANGUE / TRADUCTION
-    # =========================
     @app.before_request
     def set_language():
         lang = None
@@ -127,9 +110,6 @@ def create_app():
         g.current_lang = current_lang
         g.translations = load_translations(current_lang)
 
-    # =========================
-    # COOKIE LANGUE
-    # =========================
     @app.after_request
     def persist_language_cookie(response):
         lang = session.get("lang", DEFAULT_LANG)
@@ -143,9 +123,6 @@ def create_app():
         )
         return response
 
-    # =========================
-    # AUTO-INJECTION LANG_CODE
-    # =========================
     @app.url_defaults
     def add_language_code(endpoint, values):
         if values is None:
@@ -164,9 +141,6 @@ def create_app():
         except Exception:
             pass
 
-    # =========================
-    # URL HELPERS
-    # =========================
     def switch_lang_url(lang: str) -> str:
         if lang not in SUPPORTED_LANGS:
             lang = DEFAULT_LANG
@@ -182,9 +156,6 @@ def create_app():
         except Exception:
             return url_for("main.home", lang_code=lang)
 
-    # =========================
-    # JINJA GLOBALS
-    # =========================
     @app.context_processor
     def inject_globals():
         from flask_login import current_user
@@ -192,11 +163,25 @@ def create_app():
         translations = getattr(g, "translations", {})
         current_lang = getattr(g, "current_lang", DEFAULT_LANG)
 
+        is_logged_in = getattr(current_user, "is_authenticated", False)
+
+        if is_logged_in:
+            user_plan = _normalize_plan(getattr(current_user, "plan", "basic"))
+        else:
+            user_plan = "guest"
+
         return {
             "has_access": has_access,
             "get_plan_level": get_plan_level,
             "signal_limit_for_plan": signal_limit_for_plan,
-            "user_plan": getattr(current_user, "plan", "free"),
+            "is_logged_in": is_logged_in,
+            "user_plan": user_plan,
+            "is_guest": user_plan == "guest",
+            "is_basic": user_plan == "basic",
+            "is_premium": user_plan == "premium",
+            "is_vip": user_plan == "vip",
+            "has_level1_access": user_plan in {"basic", "premium", "vip"},
+            "has_academy_plus": user_plan in {"premium", "vip"},
             "current_lang": current_lang,
             "supported_langs": SUPPORTED_LANGS,
             "t": lambda key, fallback=None: translate(translations, key, fallback),
@@ -204,9 +189,6 @@ def create_app():
             "pricing": get_pricing_data(current_lang),
         }
 
-    # =========================
-    # BLUEPRINTS
-    # =========================
     from app.routes.main import main_bp
     from app.routes.auth import auth_bp
     from app.routes.dashboard import dashboard_bp
@@ -234,9 +216,6 @@ def create_app():
     app.register_blueprint(liquidations_bp)
     app.register_blueprint(open_interest_bp)
 
-    # =========================
-    # AUTO START LIQUIDATIONS
-    # =========================
     if _should_autostart_liquidations(app):
         try:
             from app.services.liquidations_service import get_liquidations_service

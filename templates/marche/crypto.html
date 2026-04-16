@@ -3,53 +3,175 @@
 {% block title %}Crypto Market | VelWolf{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='marche.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='marche_crypto_prime.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="market-page">
+<div class="market-page market-page-prime">
+
+    <div class="market-bg-orb orb-1"></div>
+    <div class="market-bg-orb orb-2"></div>
+    <div class="market-bg-grid"></div>
+    <div class="market-noise-layer"></div>
+    <div class="market-scanline"></div>
 
     <section class="market-hero">
         <div class="market-shell">
-            <span class="market-badge">Marchés • Crypto</span>
-            <h1>Crypto Market Intelligence</h1>
-            <p>
-                Une lecture institutionnelle du marché crypto avec contexte global,
-                données visuelles, momentum, structure, dominance Bitcoin et zones de surveillance premium.
-            </p>
+            <div class="market-hero-layout reveal-up">
+                <div class="market-hero-copy">
+                    <span class="market-badge">VelWolf Prime • Crypto Command Center</span>
+                    <h1>Lis le marché avant que la foule ne réagisse.</h1>
+                    <p>
+                        Structure, momentum, dominance, rotation du capital et pression macro
+                        réunis dans un desk premium pensé pour les traders qui veulent une lecture
+                        claire, rapide et redoutable du marché crypto.
+                    </p>
 
-            <div class="market-kpi-row">
-                <div class="market-kpi positive">
-                    <span class="label">Prix Live</span>
-                    <span class="value">BTCUSD</span>
-                    <span class="meta">Actif directeur du marché</span>
+                    <div class="market-hero-actions">
+                        <a href="#prime-desk" class="market-btn">Entrer dans le desk</a>
+                        <a href="#regime-engine" class="market-btn secondary">Voir le régime marché</a>
+                    </div>
+
+                    <div class="hero-trust-bar reveal-up delay-1">
+                        <div class="trust-item">
+                            <span class="trust-label">Mode</span>
+                            <strong>Institutional Read</strong>
+                        </div>
+                        <div class="trust-item">
+                            <span class="trust-label">Signal</span>
+                            <strong>Context Driven</strong>
+                        </div>
+                        <div class="trust-item">
+                            <span class="trust-label">Focus</span>
+                            <strong>BTC • ETH • TOTAL</strong>
+                        </div>
+                    </div>
+
+                    <div class="market-kpi-row reveal-up delay-1">
+                        <div class="market-kpi positive">
+                            <div class="market-kpi-top">
+                                <span class="label">BTC Price</span>
+                                <span class="live-dot"></span>
+                            </div>
+                            <span class="value">BTCUSD</span>
+                            <span class="meta">Actif directeur • lecture structurelle</span>
+                        </div>
+
+                        <div class="market-kpi positive">
+                            <div class="market-kpi-top">
+                                <span class="label">Dominance</span>
+                                <span class="live-dot"></span>
+                            </div>
+                            <span class="value">BTC.D</span>
+                            <span class="meta">Flux de capital • rotation marché</span>
+                        </div>
+
+                        <div class="market-kpi">
+                            <div class="market-kpi-top">
+                                <span class="label">Market Cap</span>
+                                <span class="live-dot soft"></span>
+                            </div>
+                            <span class="value">TOTAL</span>
+                            <span class="meta">Force globale • validation macro</span>
+                        </div>
+
+                        <div class="market-kpi warning">
+                            <div class="market-kpi-top">
+                                <span class="label">Risk Mode</span>
+                                <span class="live-dot amber"></span>
+                            </div>
+                            <span class="value">Risk-On</span>
+                            <span class="meta">Appétit spéculatif • session active</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="market-kpi positive">
-                    <span class="label">Dominance</span>
-                    <span class="value">BTC.D</span>
-                    <span class="meta">Rotation du capital</span>
-                </div>
-                <div class="market-kpi">
-                    <span class="label">Market Cap</span>
-                    <span class="value">TOTAL</span>
-                    <span class="meta">Capitalisation crypto</span>
-                </div>
-                <div class="market-kpi warning">
-                    <span class="label">Sentiment</span>
-                    <span class="value">Risk-On</span>
-                    <span class="meta">Lecture globale</span>
+
+                <div class="market-hero-panel reveal-up delay-2">
+                    <div class="hero-panel-card">
+                        <div class="hero-panel-head">
+                            <span class="eyebrow">Live Desk Status</span>
+                            <span class="status-pill">Realtime</span>
+                        </div>
+
+                        <div class="hero-panel-list">
+                            <div class="hero-panel-item">
+                                <span>Market Regime</span>
+                                <strong>Expansion Bias</strong>
+                            </div>
+                            <div class="hero-panel-item">
+                                <span>BTC Dominance</span>
+                                <strong>Capital Lead</strong>
+                            </div>
+                            <div class="hero-panel-item">
+                                <span>Altcoin Appetite</span>
+                                <strong>Selective</strong>
+                            </div>
+                            <div class="hero-panel-item">
+                                <span>Macro Pressure</span>
+                                <strong>Monitored</strong>
+                            </div>
+                            <div class="hero-panel-item">
+                                <span>Execution Mode</span>
+                                <strong>Context First</strong>
+                            </div>
+                        </div>
+
+                        <div class="hero-panel-footer">
+                            <p>
+                                Un cockpit premium pour filtrer le bruit, confirmer le contexte,
+                                et éviter les entrées isolées sans structure.
+                            </p>
+                            <div class="hero-panel-signalbar">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="market-section">
+    <section class="market-status-strip reveal-up delay-1">
+        <div class="market-shell">
+            <div class="status-strip-inner">
+                <div class="status-chip">
+                    <span class="chip-label">Regime</span>
+                    <strong>Trend Expansion</strong>
+                </div>
+                <div class="status-chip">
+                    <span class="chip-label">BTC</span>
+                    <strong>Leader Asset</strong>
+                </div>
+                <div class="status-chip">
+                    <span class="chip-label">ETH</span>
+                    <strong>Rotation Watch</strong>
+                </div>
+                <div class="status-chip">
+                    <span class="chip-label">TOTAL</span>
+                    <strong>Macro Confirmation</strong>
+                </div>
+                <div class="status-chip">
+                    <span class="chip-label">Volatility</span>
+                    <strong>Controlled</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="market-section" id="prime-desk">
         <div class="market-shell">
 
-            <div class="tv-card tv-card-tape">
-                <div class="tv-card-head">
-                    <h2>Live Tape</h2>
-                    <p>Suivi direct des principaux repères du marché crypto et des actifs corrélés.</p>
+            <div class="tv-card tv-card-tape reveal-up">
+                <div class="tv-card-head tv-card-head-row">
+                    <div>
+                        <span class="eyebrow">Realtime Feed</span>
+                        <h2>Live Tape</h2>
+                        <p>Repères instantanés des actifs majeurs et des corrélations macro utiles à la lecture du marché crypto.</p>
+                    </div>
+                    <span class="desk-label">Prime Desk Feed</span>
                 </div>
 
                 <div class="tradingview-widget-container">
@@ -74,12 +196,13 @@
                 </div>
             </div>
 
-            <div class="market-grid-2">
+            <div class="market-grid-2 desk-main-grid reveal-up delay-1">
 
-                <article class="market-card-chart">
+                <article class="market-card-chart feature-chart">
                     <div class="tv-card-head">
+                        <span class="eyebrow">Lead Asset</span>
                         <h2>Bitcoin — graphique principal</h2>
-                        <p>Le pivot central pour lire la tendance dominante et la structure générale du marché.</p>
+                        <p>Le pivot central pour lire la tendance dominante, les impulsions et la structure du marché global.</p>
                     </div>
 
                     <div class="tradingview-widget-container chart-widget">
@@ -104,10 +227,61 @@
                     </div>
                 </article>
 
+                <aside class="market-intel-panel">
+                    <div class="market-intel-head">
+                        <span class="eyebrow">Desk Intelligence</span>
+                        <h2>Lecture instantanée</h2>
+                        <p>Une synthèse premium pour cadrer rapidement le contexte avant l’exécution.</p>
+                    </div>
+
+                    <div class="intel-stack">
+                        <div class="intel-card">
+                            <span class="intel-label">Bias principal</span>
+                            <strong>Continuation haussière sous surveillance</strong>
+                            <p>BTC reste le pivot de lecture tant que la structure principale tient.</p>
+                        </div>
+
+                        <div class="intel-card">
+                            <span class="intel-label">Rotation du capital</span>
+                            <strong>BTC → ETH → alts sélectives</strong>
+                            <p>La qualité des rotations dépend de la stabilité de la dominance et du contexte macro.</p>
+                        </div>
+
+                        <div class="intel-card">
+                            <span class="intel-label">Priorité du desk</span>
+                            <strong>Contexte avant setup</strong>
+                            <p>Pas d’entrée isolée sans validation structurelle, dominance et liquidité.</p>
+                        </div>
+
+                        <div class="intel-mini-grid">
+                            <div class="intel-mini-item">
+                                <span>Momentum</span>
+                                <strong>Stable</strong>
+                            </div>
+                            <div class="intel-mini-item">
+                                <span>Dominance</span>
+                                <strong>Positive</strong>
+                            </div>
+                            <div class="intel-mini-item">
+                                <span>Macro</span>
+                                <strong>Mixed</strong>
+                            </div>
+                            <div class="intel-mini-item">
+                                <span>Execution</span>
+                                <strong>Selective</strong>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+            </div>
+
+            <div class="market-grid-2 secondary-overview-grid reveal-up delay-2">
                 <article class="market-card-chart">
                     <div class="tv-card-head">
+                        <span class="eyebrow">Global View</span>
                         <h2>Vue marché crypto</h2>
-                        <p>Les grands actifs et indicateurs pour une lecture rapide de l’environnement global.</p>
+                        <p>Les grands actifs et indicateurs pour une lecture rapide de l’environnement global et des rotations potentielles.</p>
                     </div>
 
                     <div class="tradingview-widget-container market-overview-widget">
@@ -141,80 +315,145 @@
                     </div>
                 </article>
 
+                <article class="market-edge-box">
+                    <div class="market-edge-head">
+                        <span class="eyebrow">Today’s Edge</span>
+                        <h2>Ce qui compte maintenant</h2>
+                        <p>Un bloc conçu pour donner l’impression d’un vrai desk premium orienté décision, pas seulement des graphiques.</p>
+                    </div>
+
+                    <div class="edge-list">
+                        <div class="edge-item">
+                            <span>Main scenario</span>
+                            <strong>Continuation haussière si la structure BTC reste propre</strong>
+                        </div>
+                        <div class="edge-item">
+                            <span>Invalidation</span>
+                            <strong>Perte de structure + faiblesse dominance + pression macro</strong>
+                        </div>
+                        <div class="edge-item">
+                            <span>Assets focus</span>
+                            <strong>BTC / ETH / TOTAL / BTC.D</strong>
+                        </div>
+                        <div class="edge-item">
+                            <span>Desk mode</span>
+                            <strong>Context-Driven Execution</strong>
+                        </div>
+                    </div>
+                </article>
             </div>
 
-            <div class="market-grid">
-                <article class="market-card">
-                    <span class="eyebrow">Structure</span>
-                    <h2>Phase de marché</h2>
-                    <p>
-                        Un bon signal dépend toujours du contexte. Cette page aide à distinguer
-                        expansion, compression, reprise ou distribution avant de passer à l’exécution.
-                    </p>
-                    <div class="card-stat">
-                        <span class="name">Focus</span>
-                        <span class="num">Tendance dominante</span>
+        </div>
+    </section>
+
+    <section class="market-section regime-engine" id="regime-engine">
+        <div class="market-shell">
+            <div class="section-head centered">
+                <span class="eyebrow">Exclusive Engine</span>
+                <h2>Market Regime Engine</h2>
+                <p>Une lecture instantanée du contexte pour éviter les entrées sans structure et comprendre où se situe le marché.</p>
+            </div>
+
+            <div class="regime-grid reveal-up">
+                <article class="regime-card active">
+                    <span class="state">01</span>
+                    <h3>Expansion</h3>
+                    <p>Flux haussiers, impulsion dominante, suivi de tendance et structure nette.</p>
+                </article>
+
+                <article class="regime-card">
+                    <span class="state">02</span>
+                    <h3>Compression</h3>
+                    <p>Range, volume contracté, marché en attente d’un déclencheur directionnel clair.</p>
+                </article>
+
+                <article class="regime-card">
+                    <span class="state">03</span>
+                    <h3>Rotation</h3>
+                    <p>Déplacement du capital de BTC vers ETH puis vers certaines poches altcoins.</p>
+                </article>
+
+                <article class="regime-card danger">
+                    <span class="state">04</span>
+                    <h3>Breakdown Risk</h3>
+                    <p>Affaiblissement structurel, risque d’invalidation et sensibilité macro accrue.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="market-section">
+        <div class="market-shell">
+            <div class="section-head">
+                <span class="eyebrow">Priority Board</span>
+                <h2>Watchlist premium</h2>
+                <p>Une présentation plus exclusive qu’un tableau simple, avec un positionnement plus desk institutionnel.</p>
+            </div>
+
+            <div class="watchlist-grid reveal-up delay-1">
+                <article class="watch-card high">
+                    <div class="watch-top">
+                        <h3>Bitcoin</h3>
+                        <span class="watch-score">9.4</span>
+                    </div>
+                    <p>Leader du marché, repère principal pour la direction globale et la qualité des impulsions.</p>
+                    <div class="watch-meta">
+                        <span>Leader</span>
+                        <span>High Priority</span>
                     </div>
                 </article>
 
-                <article class="market-card">
-                    <span class="eyebrow">Rotation</span>
-                    <h2>Dominance Bitcoin</h2>
-                    <p>
-                        Quand la dominance progresse, les flux se concentrent souvent sur BTC.
-                        Quand elle ralentit, le marché peut ouvrir plus d’espace aux altcoins.
-                    </p>
-                    <div class="card-stat">
-                        <span class="name">Lecture</span>
-                        <span class="num">Flux de capital</span>
+                <article class="watch-card high">
+                    <div class="watch-top">
+                        <h3>Ethereum</h3>
+                        <span class="watch-score">8.8</span>
+                    </div>
+                    <p>Actif de transition clé pour lire la rotation du capital et le comportement altcoin.</p>
+                    <div class="watch-meta">
+                        <span>Rotation Watch</span>
+                        <span>High Priority</span>
+                    </div>
+                </article>
+
+                <article class="watch-card">
+                    <div class="watch-top">
+                        <h3>Solana</h3>
+                        <span class="watch-score">7.9</span>
+                    </div>
+                    <p>Momentum spéculatif élevé, utile pour mesurer l’appétit au risque du marché.</p>
+                    <div class="watch-meta">
+                        <span>Momentum</span>
+                        <span>Selective</span>
+                    </div>
+                </article>
+
+                <article class="watch-card macro">
+                    <div class="watch-top">
+                        <h3>Total Market Cap</h3>
+                        <span class="watch-score">9.1</span>
+                    </div>
+                    <p>Vue macro indispensable pour confirmer la force globale du marché et valider les scénarios.</p>
+                    <div class="watch-meta">
+                        <span>Macro</span>
+                        <span>High Priority</span>
                     </div>
                 </article>
             </div>
+        </div>
+    </section>
 
-            <div class="market-table-card" style="margin-top: 24px;">
-                <div class="market-table-head">
-                    <span>Actif</span>
-                    <span>Focus</span>
-                    <span>Contexte</span>
-                    <span>Priorité</span>
+    <section class="market-section">
+        <div class="market-shell">
+            <div class="market-highlight market-highlight-premium reveal-up delay-2">
+                <div class="highlight-copy">
+                    <span class="eyebrow">Mission du desk</span>
+                    <h3>Un cockpit premium avant chaque prise de décision</h3>
+                    <p>
+                        Ici, tu ne regardes pas seulement le prix. Tu lis la structure,
+                        les flux, la dominance, les rotations et l’environnement global
+                        pour transformer l’information en avantage réel.
+                    </p>
                 </div>
-
-                <div class="market-table-row">
-                    <span><strong>Bitcoin</strong></span>
-                    <span>Leader</span>
-                    <span>Direction marché</span>
-                    <span class="market-up">Haute</span>
-                </div>
-
-                <div class="market-table-row">
-                    <span><strong>Ethereum</strong></span>
-                    <span>Transition</span>
-                    <span>Rotation altcoins</span>
-                    <span class="market-up">Haute</span>
-                </div>
-
-                <div class="market-table-row">
-                    <span><strong>Solana</strong></span>
-                    <span>Momentum</span>
-                    <span>Appétit spéculatif</span>
-                    <span>Moyenne</span>
-                </div>
-
-                <div class="market-table-row">
-                    <span><strong>Total Market Cap</strong></span>
-                    <span>Macro</span>
-                    <span>Force globale</span>
-                    <span>Haute</span>
-                </div>
-            </div>
-
-            <div class="market-highlight">
-                <h3>Mission de cette page</h3>
-                <p>
-                    Offrir un cockpit premium avant chaque prise de décision. Ici, tu ne regardes pas
-                    seulement le prix : tu lis la structure, les flux, la dominance et l’environnement macro
-                    pour éviter les entrées isolées sans contexte.
-                </p>
 
                 <div class="market-mini-list">
                     <div class="market-mini-item">
@@ -231,7 +470,7 @@
                     </div>
                     <div class="market-mini-item">
                         <span class="label">Style</span>
-                        <span class="value">Desk Pro</span>
+                        <span class="value">Prime Desk</span>
                     </div>
                 </div>
 
@@ -240,7 +479,6 @@
                     <a href="{{ url_for('signals.eth_signals_page') }}" class="market-btn secondary">Voir Ethereum</a>
                 </div>
             </div>
-
         </div>
     </section>
 

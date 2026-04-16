@@ -85,7 +85,7 @@ def get_price_id_for_plan(plan: str, lang_code: str) -> str:
     if plan == "vip":
         return config.STRIPE_PRICE_VIP_USD if is_us else config.STRIPE_PRICE_VIP_EUR
 
-    return ""
+    return None
 
 
 def get_plan_from_price_id(price_id: str) -> str:

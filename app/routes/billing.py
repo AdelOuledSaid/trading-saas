@@ -13,10 +13,32 @@ from app.services.stripe_service import (
     get_subscription_status,
 )
 from app.services.email_service import send_email
+
 billing_bp = Blueprint("billing", __name__)
 stripe.api_key = config.STRIPE_SECRET_KEY
 
 ALLOWED_PLANS = ["basic", "premium", "vip"]
+
+
+def get_display_prices(lang_code):
+    lang = (lang_code or "").lower()
+
+    if lang == "en":
+        return {
+            "basic": "$9",
+            "premium": "$19",
+            "vip": "$39",
+            "currency": "usd",
+            "symbol": "$",
+        }
+
+    return {
+        "basic": "9€",
+        "premium": "19€",
+        "vip": "39€",
+        "currency": "eur",
+        "symbol": "€",
+    }
 
 
 @billing_bp.route("/<lang_code>/pricing")
@@ -31,11 +53,14 @@ def pricing(lang_code):
         user_plan = "free"
         subscription_status = None
 
+    prices = get_display_prices(lang_code)
+
     return render_template(
         "pricing.html",
         stripe_publishable_key=config.STRIPE_PUBLISHABLE_KEY,
         user_plan=user_plan,
         subscription_status=subscription_status,
+        prices=prices,
     )
 
 
@@ -67,7 +92,7 @@ def create_checkout_session(lang_code):
         return redirect(url_for("billing.pricing", lang_code=lang_code))
 
     try:
-        if not current_user.stripe_customer_id:
+        if not getattr(current_user, "stripe_customer_id", None):
             customer = stripe.Customer.create(email=current_user.email)
             current_user.stripe_customer_id = customer["id"]
             db.session.commit()
@@ -113,7 +138,7 @@ def create_checkout_session(lang_code):
 @billing_bp.route("/<lang_code>/create-customer-portal-session", methods=["POST"])
 @login_required
 def create_customer_portal_session(lang_code):
-    if not current_user.stripe_customer_id:
+    if not getattr(current_user, "stripe_customer_id", None):
         flash("Aucun client Stripe lié à ce compte.", "warning")
         return redirect(url_for("billing.pricing", lang_code=lang_code))
 
@@ -148,10 +173,10 @@ def success(lang_code):
             customer_id = session_data.get("customer")
             subscription_id = session_data.get("subscription")
 
-            if customer_id and not current_user.stripe_customer_id:
+            if customer_id and not getattr(current_user, "stripe_customer_id", None):
                 current_user.stripe_customer_id = customer_id
 
-            if subscription_id and not current_user.stripe_subscription_id:
+            if subscription_id and not getattr(current_user, "stripe_subscription_id", None):
                 current_user.stripe_subscription_id = subscription_id
 
             db.session.commit()
@@ -177,7 +202,7 @@ def success(lang_code):
                     html
                 )
             except Exception as e:
-                current_app.logger.warning(f"Erreur email paiement: {e}")
+                current_app.logger.warning("Erreur email paiement: %s", repr(e))
 
             try:
                 plan_name = normalize_plan(getattr(current_user, "plan", "free"))
@@ -197,7 +222,10 @@ def success(lang_code):
         except Exception as e:
             current_app.logger.error("Erreur récupération session Stripe: %s", repr(e))
 
-    if (getattr(current_user, "plan", "") or "").lower() == "vip" and getattr(config, "TELEGRAM_VIP_INVITE_LINK", None):
+    if (
+        (getattr(current_user, "plan", "") or "").lower() == "vip"
+        and getattr(config, "TELEGRAM_VIP_INVITE_LINK", None)
+    ):
         vip_link = config.TELEGRAM_VIP_INVITE_LINK
 
     return render_template(

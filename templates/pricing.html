@@ -1,101 +1,496 @@
 {% extends "base.html" %}
 
-{% block title %}
-    {{ t("pricing_title", "Offres VelWolef") }}
+{% block title %}Offres Premium | VelWolef{% endblock %}
+{% block body_class %}dashboard-body{% endblock %}
+
+{% block extra_css %}
+<style>
+.pricing-page{
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 50px 20px 80px;
+}
+
+.pricing-hero{
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.pricing-hero h1{
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: 900;
+    margin-bottom: 14px;
+    color: #ffffff;
+    letter-spacing: -0.03em;
+}
+
+.pricing-hero p{
+    max-width: 760px;
+    margin: 0 auto;
+    color: #9fb0c9;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.pricing-grid{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 26px;
+    align-items: stretch;
+}
+
+.pricing-card{
+    position: relative;
+    border-radius: 28px;
+    padding: 28px 24px;
+    background: linear-gradient(180deg, rgba(16,22,37,0.96), rgba(9,13,24,0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+.pricing-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:.22;
+}
+
+.plan-basic::before{
+    background: radial-gradient(circle at top left, rgba(0,198,255,0.35), transparent 45%);
+}
+
+.plan-premium::before{
+    background: radial-gradient(circle at top left, rgba(255,196,0,0.35), transparent 45%);
+}
+
+.plan-vip::before{
+    background: radial-gradient(circle at top left, rgba(163,53,238,0.38), transparent 45%);
+}
+
+.plan-basic{
+    border-color: rgba(0,198,255,0.28);
+}
+
+.plan-premium{
+    border-color: rgba(255,196,0,0.34);
+    transform: translateY(-8px);
+    box-shadow: 0 24px 80px rgba(255,196,0,0.10), 0 20px 60px rgba(0,0,0,0.35);
+}
+
+.plan-vip{
+    border-color: rgba(163,53,238,0.34);
+}
+
+.plan-badge{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+}
+
+.plan-basic .plan-badge{
+    background: rgba(0,198,255,0.14);
+    color: #67dcff;
+    border: 1px solid rgba(0,198,255,0.24);
+}
+
+.plan-premium .plan-badge{
+    background: rgba(255,196,0,0.16);
+    color: #ffd34d;
+    border: 1px solid rgba(255,196,0,0.28);
+}
+
+.plan-vip .plan-badge{
+    background: rgba(163,53,238,0.16);
+    color: #d38cff;
+    border: 1px solid rgba(163,53,238,0.28);
+}
+
+.plan-title{
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #fff;
+    margin: 0 0 10px;
+}
+
+.plan-subtitle{
+    color: #9fb0c9;
+    line-height: 1.7;
+    margin-bottom: 24px;
+    min-height: 52px;
+}
+
+.plan-price{
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.plan-price strong{
+    font-size: 3rem;
+    line-height: 1;
+    color: #fff;
+    font-weight: 900;
+}
+
+.plan-price span{
+    color: #93a4bf;
+    font-size: 1rem;
+    padding-bottom: 5px;
+}
+
+.plan-separator{
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    margin: 0 0 22px;
+}
+
+.plan-features{
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+    display: grid;
+    gap: 12px;
+}
+
+.plan-features li{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.03);
+    color: #dbe7ff;
+    font-size: 0.98rem;
+    line-height: 1.5;
+}
+
+.feature-yes{
+    border: 1px solid rgba(38, 208, 124, 0.14);
+}
+
+.feature-no{
+    border: 1px solid rgba(255, 80, 80, 0.14);
+    opacity: 0.88;
+}
+
+.feature-icon{
+    width: 24px;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    font-weight: 900;
+}
+
+.feature-yes .feature-icon{
+    background: rgba(38, 208, 124, 0.18);
+    color: #39e58a;
+    box-shadow: inset 0 0 0 1px rgba(38, 208, 124, 0.25);
+}
+
+.feature-no .feature-icon{
+    background: rgba(255, 80, 80, 0.16);
+    color: #ff6b6b;
+    box-shadow: inset 0 0 0 1px rgba(255, 80, 80, 0.24);
+}
+
+.plan-note{
+    margin-top: auto;
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #d9e4fb;
+}
+
+.plan-basic .plan-note{
+    background: rgba(0,198,255,0.08);
+    border: 1px solid rgba(0,198,255,0.14);
+}
+
+.plan-premium .plan-note{
+    background: rgba(255,196,0,0.09);
+    border: 1px solid rgba(255,196,0,0.16);
+}
+
+.plan-vip .plan-note{
+    background: rgba(163,53,238,0.09);
+    border: 1px solid rgba(163,53,238,0.16);
+}
+
+.plan-btn,
+.plan-btn:hover,
+.plan-btn:visited{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 54px;
+    border-radius: 16px;
+    font-weight: 900;
+    font-size: 1rem;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+}
+
+.plan-btn:hover{
+    transform: translateY(-2px);
+}
+
+.plan-basic .plan-btn{
+    color: #06131c;
+    background: linear-gradient(135deg, #44d9ff, #12bfff);
+    box-shadow: 0 14px 30px rgba(18,191,255,0.24);
+}
+
+.plan-premium .plan-btn{
+    color: #1b1300;
+    background: linear-gradient(135deg, #ffd44d, #ffb800);
+    box-shadow: 0 14px 30px rgba(255,184,0,0.24);
+}
+
+.plan-vip .plan-btn{
+    color: #ffffff;
+    background: linear-gradient(135deg, #a855f7, #7c3aed);
+    box-shadow: 0 14px 30px rgba(124,58,237,0.24);
+}
+
+.plan-btn.current-plan{
+    background: rgba(255,255,255,0.08) !important;
+    color: #cfdaf1 !important;
+    box-shadow: none !important;
+    border: 1px solid rgba(255,255,255,0.10);
+    cursor: default;
+}
+
+.pricing-extra{
+    margin-top: 42px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.pricing-mini-card{
+    background: linear-gradient(180deg, rgba(15,20,33,0.95), rgba(8,11,20,0.98));
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 22px;
+    padding: 22px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.24);
+}
+
+.pricing-mini-card h3{
+    margin: 0 0 10px;
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+.pricing-mini-card p{
+    margin: 0;
+    color: #9fb0c9;
+    line-height: 1.7;
+}
+
+@media (max-width: 1100px){
+    .pricing-grid,
+    .pricing-extra{
+        grid-template-columns: 1fr;
+    }
+
+    .plan-premium{
+        transform: none;
+    }
+}
+
+@media (max-width: 640px){
+    .pricing-page{
+        padding: 28px 14px 60px;
+    }
+
+    .pricing-card{
+        border-radius: 22px;
+        padding: 22px 16px;
+    }
+
+    .plan-title{
+        font-size: 1.55rem;
+    }
+
+    .plan-price strong{
+        font-size: 2.45rem;
+    }
+
+    .plan-features li{
+        font-size: 0.94rem;
+        padding: 11px 12px;
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
+<div class="pricing-page">
 
-<section class="pricing-section">
-
-    <div class="container">
-
-        <h1 class="pricing-title">
-            {{ t("pricing_title", "Choisissez votre plan") }}
-        </h1>
-
-        <p class="pricing-subtitle">
-            {{ t("pricing_subtitle", "Accédez aux signaux premium et à l'academy complète") }}
+    <section class="pricing-hero">
+        <h1>Choisis ton niveau de puissance</h1>
+        <p>
+            Trois abonnements. Trois niveaux. Une seule mission :
+            t’offrir une expérience trading premium, lisible, rapide et rentable.
         </p>
+    </section>
 
-        <div class="pricing-grid">
+    <section class="pricing-grid">
 
-            <!-- FREE -->
-            <div class="pricing-card free">
-                <h2>{{ t("free", "Free") }}</h2>
+        <!-- BASIC -->
+        <div class="pricing-card plan-basic">
+            <div class="plan-badge">⚡ Starter</div>
+            <h2 class="plan-title">Basic</h2>
+            <p class="plan-subtitle">
+                L’entrée premium pour démarrer proprement avec les signaux et un accès essentiel.
+            </p>
 
-                <div class="price">
-                    0€
-                </div>
-
-                <ul>
-                    <li>✔ {{ t("basic_signals", "Signaux basiques") }}</li>
-                    <li>✔ {{ t("limited_access", "Accès limité") }}</li>
-                </ul>
-
-                <a href="{{ url_for('auth.register', lang_code=current_lang) }}" class="btn">
-                    {{ t("start", "Commencer") }}
-                </a>
+            <div class="plan-price">
+                <strong>{{ prices.basic if prices else '9€' }}</strong>
+                <span>/ mois</span>
             </div>
 
-            <!-- PRO -->
-            <div class="pricing-card pro">
+            <div class="plan-separator"></div>
 
-                <div class="badge">🔥 BEST</div>
+            <ul class="plan-features">
+                <li class="feature-yes"><span class="feature-icon">✓</span> Signaux en temps réel</li>
+                <li class="feature-yes"><span class="feature-icon">✓</span> Dashboard basique</li>
+                <li class="feature-yes"><span class="feature-icon">✓</span> Historique limité</li>
+                <li class="feature-no"><span class="feature-icon">✕</span> Briefing IA quotidien</li>
+                <li class="feature-no"><span class="feature-icon">✕</span> Statistiques avancées</li>
+                <li class="feature-no"><span class="feature-icon">✕</span> Telegram VIP</li>
+            </ul>
 
-                <h2>PRO</h2>
-
-                <!-- 🔥 PRIX DYNAMIQUE ICI -->
-                <div class="price">
-                    {{ pricing.price }}
-                    <span class="period">/mo</span>
-                </div>
-
-                <p class="price-note">
-                    {% if current_lang == "en" %}
-                        Special price for your region
-                    {% elif current_lang == "fr" %}
-                        Prix adapté à votre région
-                    {% elif current_lang == "es" %}
-                        Precio adaptado a tu región
-                    {% endif %}
-                </p>
-
-                <ul>
-                    <li>✔ {{ t("all_signals", "Tous les signaux") }}</li>
-                    <li>✔ {{ t("academy_full", "Academy complète") }}</li>
-                    <li>✔ {{ t("alerts", "Alertes Telegram") }}</li>
-                    <li>✔ {{ t("analysis", "Analyse avancée") }}</li>
-                </ul>
-
-                <a href="{{ url_for('billing.create_checkout_pro', lang_code=current_lang) }}" class="btn btn-pro">
-                    🚀 {{ t("upgrade", "Passer Pro") }}
-                </a>
+            <div class="plan-note">
+                Idéal pour découvrir la plateforme sans aller directement sur une formule avancée.
             </div>
 
-            <!-- VIP -->
-            <div class="pricing-card vip">
-                <h2>VIP</h2>
-
-                <div class="price">
-                    {{ pricing.price }}
-                </div>
-
-                <ul>
-                    <li>✔ {{ t("everything_pro", "Tout PRO") }}</li>
-                    <li>✔ {{ t("vip_signals", "Signaux VIP") }}</li>
-                    <li>✔ {{ t("priority_support", "Support prioritaire") }}</li>
-                </ul>
-
-                <a href="{{ url_for('billing.create_checkout_pro', lang_code=current_lang) }}" class="btn">
-                    💎 {{ t("go_vip", "Devenir VIP") }}
-                </a>
-            </div>
-
+            {% if user_plan == "basic" %}
+                <a href="{{ url_for('dashboard') }}" class="plan-btn current-plan">Plan actuel</a>
+            {% else %}
+                <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
+                    <input type="hidden" name="plan" value="basic">
+                    <button type="submit" class="plan-btn">Choisir Basic</button>
+                </form>
+            {% endif %}
         </div>
 
-    </div>
+        <!-- PREMIUM -->
+        <div class="pricing-card plan-premium">
+            <div class="plan-badge">🔥 Populaire</div>
+            <h2 class="plan-title">Premium</h2>
+            <p class="plan-subtitle">
+                Le meilleur équilibre entre performance, profondeur d’analyse et confort d’utilisation.
+            </p>
 
-</section>
+            <div class="plan-price">
+                <strong>{{ prices.premium if prices else '19€' }}</strong>
+                <span>/ mois</span>
+            </div>
 
+            <div class="plan-separator"></div>
+
+            <ul class="plan-features">
+                <li class="feature-yes"><span class="feature-icon">✓</span> Tous les signaux</li>
+                <li class="feature-yes"><span class="feature-icon">✓</span> Historique complet</li>
+                <li class="feature-yes"><span class="feature-icon">✓</span> Statistiques avancées</li>
+                <li class="feature-yes"><span class="feature-icon">✓</span> PnL cumulatif</li>
+                <li class="feature-yes"><span class="feature-icon">✓</span> Capital simulé</li>
+                <li class="feature-yes"><span class="feature-icon">✓</span> Briefing IA quotidien</li>
+                <li class="feature-no"><span class="feature-icon">✕</span> Telegram VIP privé</li>
+            </ul>
+
+            <div class="plan-note">
+                La formule la plus rentable pour la majorité des utilisateurs sérieux.
+            </div>
+
+            {% if user_plan == "premium" %}
+                <a href="{{ url_for('dashboard') }}" class="plan-btn current-plan">Plan actuel</a>
+            {% else %}
+                <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
+                    <input type="hidden" name="plan" value="premium">
+                    <button type="submit" class="plan-btn">Choisir Premium</button>
+                </form>
+            {% endif %}
+        </div>
+
+        <!-- VIP -->
+        <div class="pricing-card plan-vip">
+            <div class="plan-badge">👑 Elite</div>
+            <h2 class="plan-title">VIP</h2>
+            <p class="plan-subtitle">
+                L’expérience maximale pour ceux qui veulent le niveau le plus haut sans compromis.
+            </p>
+
+            <div class="plan-price">
+                <strong>{{ prices.vip if prices else '39€' }}</strong>
+                <span>/ mois</span>
+            </div>
+
+            <div class="plan-separator"></div>
+
+            <ul class="plan-features">
+                <li class="feature-yes"><span class="feature-icon">✓</span> Tout le Premium</li>
+                <li class="feature-yes"><span class="feature-icon">✓</span> Telegram VIP privé</li>
+                <li class="feature-yes"><span class="feature-icon">✓</span> Alertes prioritaires</li>
+                <li class="feature-yes"><span class="feature-icon">✓</span> Accès anticipé aux nouveautés</li>
+                <li class="feature-yes"><span class="feature-icon">✓</span> Briefings enrichis</li>
+                <li class="feature-yes"><span class="feature-icon">✓</span> Support prioritaire</li>
+            </ul>
+
+            <div class="plan-note">
+                Pour les utilisateurs qui veulent la version la plus complète, la plus rapide et la plus exclusive.
+            </div>
+
+            {% if user_plan == "vip" %}
+                <a href="{{ url_for('dashboard') }}" class="plan-btn current-plan">Plan actuel</a>
+            {% else %}
+                <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
+                    <input type="hidden" name="plan" value="vip">
+                    <button type="submit" class="plan-btn">Choisir VIP</button>
+                </form>
+            {% endif %}
+        </div>
+
+    </section>
+
+    <section class="pricing-extra">
+        <div class="pricing-mini-card">
+            <h3>📈 Signaux premium</h3>
+            <p>Des signaux plus lisibles, plus propres, et une hiérarchie claire entre accès Basic, Premium et VIP.</p>
+        </div>
+        <div class="pricing-mini-card">
+            <h3>🧠 IA & analyse</h3>
+            <p>Plus tu montes en gamme, plus tu débloques d’analyse, de contexte marché et d’intelligence de décision.</p>
+        </div>
+        <div class="pricing-mini-card">
+            <h3>🚀 Expérience évolutive</h3>
+            <p>Chaque formule a sa couleur, son identité, et un vrai sentiment de progression premium.</p>
+        </div>
+    </section>
+
+</div>
 {% endblock %}

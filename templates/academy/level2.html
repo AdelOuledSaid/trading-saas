@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-{% if not is_pro %}
+{% if not has_academy_plus %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         document.body.dataset.autoUpgradePopup = "true";
@@ -41,12 +41,26 @@
                 </p>
 
                 <div class="academy-actions">
+                    {% if has_academy_plus %}
                     <a href="#module-1" class="academy-btn academy-btn-primary">Commencer Niveau 2</a>
                     <a href="#quiz-final" class="academy-btn academy-btn-secondary">Aller à l’examen final</a>
-                    {% if not is_pro %}
-                    <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
-                        Débloquer la version Pro
-                    </a>
+                    {% else %}
+                    <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-primary">Débloquer le Niveau 2</a>
+                    <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">Passer Premium / VIP</a>
+                    {% endif %}
+                </div>
+
+                <div class="academy-access-strip">
+                    {% if has_academy_plus %}
+                        {% if is_vip %}
+                            <span class="academy-plan-badge-vip">Plan VIP</span>
+                        {% else %}
+                            <span class="academy-plan-badge-premium">Plan Premium</span>
+                        {% endif %}
+                        <strong>Niveau 2 débloqué</strong>
+                    {% else %}
+                        <span class="academy-plan-badge-basic">Plan Basic</span>
+                        <strong>Niveau 2 réservé aux plans Premium / VIP</strong>
                     {% endif %}
                 </div>
             </div>
@@ -62,7 +76,7 @@
 
                 <div class="academy-progress-head academy-progress-head-second">
                     <span>Accès</span>
-                    <strong>{% if is_pro %}Complet{% else %}Aperçu limité{% endif %}</strong>
+                    <strong>{% if has_academy_plus %}Débloqué{% else %}Premium / VIP requis{% endif %}</strong>
                 </div>
 
                 <div class="academy-info-card" style="margin-top: 18px;">
@@ -80,6 +94,18 @@
                         régime, liquidité, faux signal, confluence réelle et gestion active rationnelle.
                     </p>
                 </div>
+
+                {% if not has_academy_plus %}
+                <div class="academy-info-card" style="margin-top: 18px;">
+                    <h3>Inclus avec upgrade</h3>
+                    <ul class="academy-reflection-list">
+                        <li>Niveau 2 complet</li>
+                        <li>Niveau 3 complet</li>
+                        <li>Quiz et progression avancée</li>
+                        <li>Cas réels, graphes et certification</li>
+                    </ul>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -88,10 +114,10 @@
 <section class="academy-section">
     <div class="academy-shell">
         <div class="academy-video-layout">
-            <div class="academy-video-main {% if not is_pro %}academy-locked-wrap{% endif %}">
+            <div class="academy-video-main {% if not has_academy_plus %}academy-locked-wrap{% endif %}">
                 <div class="academy-player academy-player-pro">
                     <div class="academy-player-screen academy-player-screen-embed">
-                        {% if is_pro %}
+                        {% if has_academy_plus %}
                         <iframe
                             src="https://www.youtube.com/embed/VIDEO_ID_2"
                             title="Formation trading niveau 2"
@@ -101,27 +127,31 @@
                         </iframe>
                         {% else %}
                         <div class="academy-player-overlay-text">
-                            <span class="academy-kicker">Vidéo premium</span>
+                            <span class="academy-kicker">Contenu Premium / VIP</span>
                             <h3>Niveau 2 — Structure, confluence et exécution</h3>
-                            <p>Version complète réservée aux membres Pro avec validation finale, graphes, cas réels et certificat.</p>
+                            <p>
+                                Le plan Basic inclut le niveau 1.
+                                Passez à Premium ou VIP pour débloquer le niveau 2 complet,
+                                les graphes, les cas réels, la validation finale et la certification.
+                            </p>
                         </div>
                         {% endif %}
                     </div>
 
                     <div class="academy-player-controls">
-                        {% if is_pro %}
+                        {% if has_academy_plus %}
                             <button class="academy-control-btn" type="button">▶ Lecture</button>
                             <button class="academy-control-btn" type="button">⏸ Pause</button>
                             <button class="academy-control-btn" type="button">⏭ Module suivant</button>
                         {% else %}
-                            <button class="academy-control-btn" type="button" data-upgrade-trigger="true">🔒 Lecture Pro</button>
+                            <button class="academy-control-btn" type="button" data-upgrade-trigger="true">🔒 Lecture Premium</button>
                             <button class="academy-control-btn" type="button" data-upgrade-trigger="true">🔒 Examen final</button>
                             <button class="academy-control-btn" type="button" data-upgrade-trigger="true">🚀 Débloquer</button>
                         {% endif %}
                     </div>
                 </div>
 
-                {% if is_pro %}
+                {% if has_academy_plus %}
                 <div class="academy-academic-block" style="margin-top: 24px;">
                     <span class="academy-box-label">Visualisation marché</span>
                     <h3>Graphique pédagogique — GOLD / XAUUSD</h3>
@@ -143,14 +173,18 @@
                 </div>
                 {% endif %}
 
-                {% if not is_pro %}
+                {% if not has_academy_plus %}
                 <div class="academy-lock-overlay">
                     <div class="academy-lock-card">
                         <div class="academy-lock-icon">🔒</div>
-                        <h3>Niveau 2 réservé aux membres Pro</h3>
-                        <p>Débloquez les études de cas, les frameworks avancés, les graphes, la validation finale, la certification et le contenu enrichi.</p>
+                        <h3>Niveau 2 réservé aux membres Premium et VIP</h3>
+                        <p>
+                            Votre plan Basic inclut le niveau 1.
+                            Passez à Premium ou VIP pour débloquer le niveau 2,
+                            les graphes, le quiz final et la progression avancée.
+                        </p>
                         <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
-                            Passer Pro maintenant
+                            Débloquer avec Premium
                         </a>
                     </div>
                 </div>
@@ -192,12 +226,22 @@
                         <li>Gérer un trade sans réaction émotionnelle.</li>
                     </ul>
                 </div>
+
+                {% if not has_academy_plus %}
+                <div class="academy-info-card" style="margin-top: 20px;">
+                    <h3>Accès requis</h3>
+                    <p>
+                        Ce niveau avancé fait partie du parcours Academy Premium / VIP.
+                        Le niveau 1 reste inclus dans votre plan Basic.
+                    </p>
+                </div>
+                {% endif %}
             </aside>
         </div>
     </div>
 </section>
 
-<section class="academy-section academy-dark-band">
+<section class="academy-section academy-dark-band" id="module-1">
     <div class="academy-shell">
         <div class="academy-section-title">
             <span class="academy-kicker">Cadre d’apprentissage</span>
@@ -280,7 +324,7 @@
     </div>
 </section>
 
-<section class="academy-section" id="module-1">
+<section class="academy-section">
     <div class="academy-shell">
         <div class="academy-section-title">
             <span class="academy-kicker">Chapitre 1</span>
@@ -1048,7 +1092,7 @@
         </div>
 
         <div class="academy-quiz-card">
-            {% if is_pro %}
+            {% if has_academy_plus %}
             <form class="academy-quiz-form" id="academyQuiz2">
                 <div class="academy-question">
                     <h3>1. La confluence correspond à :</h3>
@@ -1112,10 +1156,13 @@
             {% else %}
             <div class="academy-locked-box">
                 <div class="academy-lock-icon">🔒</div>
-                <h3>Évaluation finale réservée au plan Pro</h3>
-                <p>Débloquez la validation complète, les graphes, les checklists, les cas réels, la progression réelle et la certification premium.</p>
+                <h3>Évaluation finale réservée au plan Premium / VIP</h3>
+                <p>
+                    Débloquez la validation complète, les graphes, les checklists,
+                    les cas réels, la progression réelle et la certification premium.
+                </p>
                 <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
-                    Passer au plan Pro
+                    Passer au plan Premium
                 </a>
             </div>
             {% endif %}

@@ -2,6 +2,8 @@
 
 {% block title %}{{ t("dashboard_seo_title", "VelWolef | Dashboard Trading Intelligence") }}{% endblock %}
 {% block meta_description %}{{ t("dashboard_seo_desc", "Dashboard premium de trading avec signaux, performance, briefing, replay et academy.") }}{% endblock %}
+{% block body_class %}dashboard-body premium-dashboard-body ultra-dashboard-body{% endblock %}
+{% block main_class %}dashboard-main-shell{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
@@ -47,8 +49,17 @@
 {% set leaderboard_score = (total_win * 12) - (total_loss * 4) + (safe_winrate | int) %}
 {% set telegram_public_link = telegram_public_link|default('https://t.me/velwolfsignals') %}
 {% set telegram_vip_link = telegram_vip_link|default('https://t.me/velwolfvip') %}
+{% set level_progress = 22 if performance_badge_tone == 'starter' else 52 if performance_badge_tone == 'rising' else 78 if performance_badge_tone == 'pro' else 96 %}
+{% set ai_confidence = 64 if is_free else 72 if is_basic else 86 if is_premium_plus else 94 %}
+{% set market_bias = 'BULLISH' if total_buy >= total_sell else 'BEARISH' %}
+{% set market_energy = 'EXPLOSIVE' if safe_today_trades >= 5 else 'ACTIVE' if safe_today_trades >= 2 else 'BUILDING' %}
+{% set next_upgrade_label = 'Premium' if user_plan in ['free','basic'] else 'VIP' if user_plan == 'premium' else 'MAX' %}
+{% set momentum_phase = 'BREAKOUT' if safe_today_pnl > 0 else 'COMPRESSION' if safe_today_pnl == 0 else 'REVERSAL' %}
 
 <div class="dashboard-shell ultra-dashboard-shell">
+    <div class="dashboard-ambient dashboard-ambient-1"></div>
+    <div class="dashboard-ambient dashboard-ambient-2"></div>
+    <div class="dashboard-gridlines" aria-hidden="true"></div>
 
     <aside class="dashboard-sidebar ultra-dashboard-sidebar">
         <div class="sidebar-brand-card ultra-glow-card">
@@ -139,14 +150,25 @@
         </nav>
 
         <div class="sidebar-market-box">
-            <span>{{ t("tracked_markets", "Marchés suivis") }}</span>
-            <strong>
-                {% if available_assets %}
-                    {{ available_assets | join(' • ') }}
-                {% else %}
-                    BTCUSD • ETHUSD • GOLD • US100
-                {% endif %}
-            </strong>
+            <span>{{ t("tracked_markets", "Couverture marchés") }}</span>
+            <div class="market-coverage-list">
+                <div class="coverage-item">
+                    <small>Crypto</small>
+                    <strong>BTC • ETH • SOL</strong>
+                </div>
+                <div class="coverage-item">
+                    <small>Forex</small>
+                    <strong>EURUSD • GBPUSD • USDJPY</strong>
+                </div>
+                <div class="coverage-item">
+                    <small>Indices</small>
+                    <strong>US100 • SPX • DAX</strong>
+                </div>
+                <div class="coverage-item">
+                    <small>Commodities</small>
+                    <strong>GOLD • OIL • SILVER</strong>
+                </div>
+            </div>
         </div>
     </aside>
 
@@ -162,7 +184,9 @@
                 </div>
 
                 <div class="hero-title-row">
-                    <h1 class="ultra-title">{{ t("dashboard_terminal_title", "VelWolef Trading Intelligence Terminal") }}</h1>
+                    <h1 class="ultra-title">
+                        VelWolef <span class="title-accent">Trading Intelligence</span> Terminal
+                    </h1>
                     <span class="ai-badge">AI POWERED</span>
                 </div>
 
@@ -201,6 +225,108 @@
                     <span>{{ t("plan", "Plan") }}</span>
                     <strong>{{ user_plan | upper }}</strong>
                 </div>
+            </div>
+        </section>
+
+        <section class="neural-command-deck">
+            <div class="command-deck-left premium-panel">
+                <div class="panel-heading compact-heading">
+                    <div>
+                        <span class="panel-mini-title">{{ t("ai_market_brain", "AI Market Brain") }}</span>
+                        <h2>{{ t("neural_engine_live", "Neural engine live") }}</h2>
+                    </div>
+                    <span class="mini-status pulse-status">LIVE AI</span>
+                </div>
+
+                <div class="ai-brain-grid-v4">
+                    <div class="ai-brain-card bias">
+                        <span>{{ t("market_bias", "Biais marché") }}</span>
+                        <strong class="{% if market_bias == 'BULLISH' %}text-buy{% else %}text-loss{% endif %}">{{ market_bias }}</strong>
+                        <small>{{ t("flow_detection", "Détection du flux dominant") }}</small>
+                    </div>
+                    <div class="ai-brain-card confidence">
+                        <span>{{ t("confidence", "Confiance") }}</span>
+                        <strong>{{ ai_confidence }}%</strong>
+                        <small>{{ t("multi_factor_model", "Modèle multi-facteurs") }}</small>
+                    </div>
+                    <div class="ai-brain-card energy">
+                        <span>{{ t("market_energy", "Énergie marché") }}</span>
+                        <strong>{{ market_energy }}</strong>
+                        <small>{{ t("tempo_detection", "Tempo & volatilité") }}</small>
+                    </div>
+                    <div class="ai-brain-card phase">
+                        <span>{{ t("next_move", "Prochaine phase") }}</span>
+                        <strong>{{ momentum_phase }}</strong>
+                        <small>{{ t("execution_projection", "Projection d’exécution") }}</small>
+                    </div>
+                </div>
+
+                <div class="neural-wave-wrap">
+                    <div class="neural-wave">
+                        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                    <div class="neural-wave-meta">
+                        <span>{{ t("brain_signal_sync", "Brain signal sync") }}</span>
+                        <strong>{{ t("adaptive_market_pattern", "Adaptive market pattern recognition active") }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="command-deck-right premium-panel">
+                <div class="panel-heading compact-heading">
+                    <div>
+                        <span class="panel-mini-title">{{ t("trader_xp", "Trader XP") }}</span>
+                        <h2>{{ t("dopamine_progression", "Progression dopamine") }}</h2>
+                    </div>
+                    <span class="stat-chip">LVL {{ 1 if performance_badge_tone == 'starter' else 4 if performance_badge_tone == 'rising' else 7 if performance_badge_tone == 'pro' else 10 }}</span>
+                </div>
+
+                <div class="xp-core-card">
+                    <div class="xp-ring">
+                        <div class="xp-ring-inner">{{ level_progress }}%</div>
+                    </div>
+                    <div class="xp-copy">
+                        <strong>{{ performance_badge_label }}</strong>
+                        <p>{{ t("xp_desc", "Chaque win, replay et exécution nourrit ton niveau pour pousser vers la version trader élite.") }}</p>
+                    </div>
+                </div>
+
+                <div class="xp-bar-wrap">
+                    <div class="xp-bar"><div class="xp-fill" style="width: {{ level_progress }}%"></div></div>
+                    <div class="xp-bar-meta">
+                        <span>{{ t("current_progress", "Progression actuelle") }}</span>
+                        <strong>{{ t("next_target", "Prochaine cible") }}: {{ next_upgrade_label }}</strong>
+                    </div>
+                </div>
+
+                <div class="streak-grid">
+                    <div class="streak-box">
+                        <span>{{ t("wins", "Wins") }}</span>
+                        <strong>{{ total_win }}</strong>
+                    </div>
+                    <div class="streak-box">
+                        <span>{{ t("today", "Aujourd’hui") }}</span>
+                        <strong>{% if can_view_stats %}{{ safe_today_trades }}{% else %}--{% endif %}</strong>
+                    </div>
+                    <div class="streak-box">
+                        <span>{{ t("ranking", "Ranking") }}</span>
+                        <strong>#3</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="ultra-ticker-ribbon">
+            <div class="ticker-track-v4">
+                <span>⚡ {{ t("live_mode_active", "LIVE MODE ACTIVE") }}</span>
+                <span>• {{ t("ai_bias", "AI Bias") }}: {{ market_bias }}</span>
+                <span>• {{ t("confidence", "Confidence") }}: {{ ai_confidence }}%</span>
+                <span>• {{ t("leaderboard", "Leaderboard") }}: #3</span>
+                <span>• {{ t("desk_energy", "Desk energy") }}: {{ market_energy }}</span>
+                <span>• {{ t("active_plan", "Plan actif") }}: {{ user_plan|upper }}</span>
+                <span>• {{ t("live_mode_active", "LIVE MODE ACTIVE") }}</span>
+                <span>• {{ t("ai_bias", "AI Bias") }}: {{ market_bias }}</span>
+                <span>• {{ t("confidence", "Confidence") }}: {{ ai_confidence }}%</span>
             </div>
         </section>
 
@@ -486,6 +612,39 @@
             </div>
         </section>
 
+        <section class="premium-panel scanner-panel-v4">
+            <div class="panel-heading">
+                <div>
+                    <span class="panel-mini-title">{{ t("opportunity_scanner", "Opportunity Scanner") }}</span>
+                    <h2>{{ t("what_the_ai_sees_now", "Ce que l’AI voit maintenant") }}</h2>
+                </div>
+                <span class="mini-status pulse-status">SCAN</span>
+            </div>
+
+            <div class="scanner-grid">
+                <article class="scanner-card scanner-green">
+                    <span>{{ t("highest_conviction", "Conviction haute") }}</span>
+                    <strong>{{ selected_asset if selected_asset else 'BTCUSD' }}</strong>
+                    <p>{{ t("scanner_conviction_desc", "Zone la plus propre du moment selon le flux, la structure et la dynamique récente.") }}</p>
+                </article>
+                <article class="scanner-card scanner-blue">
+                    <span>{{ t("risk_heat", "Risque heat") }}</span>
+                    <strong>{% if can_view_stats and safe_today_losses > safe_today_wins %}HOT{% else %}CONTROLLED{% endif %}</strong>
+                    <p>{{ t("scanner_risk_desc", "Lecture synthétique du danger de faux départ et des zones de squeeze.") }}</p>
+                </article>
+                <article class="scanner-card scanner-violet">
+                    <span>{{ t("execution_window", "Fenêtre d’exécution") }}</span>
+                    <strong>{{ momentum_phase }}</strong>
+                    <p>{{ t("scanner_window_desc", "Le moteur détecte si le marché est en expansion, attente ou reprise de tendance.") }}</p>
+                </article>
+                <article class="scanner-card scanner-orange">
+                    <span>{{ t("member_edge", "Member edge") }}</span>
+                    <strong>{{ performance_badge_label }}</strong>
+                    <p>{{ t("scanner_edge_desc", "Le niveau du membre influence la profondeur, la vitesse et l’expérience du cockpit.") }}</p>
+                </article>
+            </div>
+        </section>
+
         <section class="dashboard-main-grid dashboard-main-grid-dense">
             <div class="dashboard-main-left">
 
@@ -671,6 +830,78 @@
                     {% endif %}
                 </section>
 
+                <section class="premium-panel market-radar-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="panel-mini-title">Market Radar 360</span>
+                            <h2>Radar multi-marchés en temps réel</h2>
+                        </div>
+                        <span class="stat-chip">LIVE SCAN</span>
+                    </div>
+
+                    <div class="market-radar-grid">
+                        <article class="radar-card radar-crypto">
+                            <div class="radar-top">
+                                <strong>Crypto Pulse</strong>
+                                <span class="status-pill win">HIGH MOMENTUM</span>
+                            </div>
+                            <div class="radar-meter">
+                                <div class="radar-fill" style="width: 82%;"></div>
+                            </div>
+                            <div class="radar-stats">
+                                <div><span>Biais</span><strong>Bullish</strong></div>
+                                <div><span>Risque</span><strong>Medium</strong></div>
+                                <div><span>Focus</span><strong>BTC • ETH • SOL</strong></div>
+                            </div>
+                        </article>
+
+                        <article class="radar-card radar-forex">
+                            <div class="radar-top">
+                                <strong>Forex Flow</strong>
+                                <span class="status-pill open">BALANCED</span>
+                            </div>
+                            <div class="radar-meter">
+                                <div class="radar-fill" style="width: 61%;"></div>
+                            </div>
+                            <div class="radar-stats">
+                                <div><span>Biais</span><strong>Neutral</strong></div>
+                                <div><span>Risque</span><strong>Low</strong></div>
+                                <div><span>Focus</span><strong>EURUSD • GBPUSD • USDJPY</strong></div>
+                            </div>
+                        </article>
+
+                        <article class="radar-card radar-indices">
+                            <div class="radar-top">
+                                <strong>Index Heat</strong>
+                                <span class="status-pill win">BREAKOUT</span>
+                            </div>
+                            <div class="radar-meter">
+                                <div class="radar-fill" style="width: 76%;"></div>
+                            </div>
+                            <div class="radar-stats">
+                                <div><span>Biais</span><strong>Risk On</strong></div>
+                                <div><span>Risque</span><strong>Medium</strong></div>
+                                <div><span>Focus</span><strong>US100 • SPX • DAX</strong></div>
+                            </div>
+                        </article>
+
+                        <article class="radar-card radar-commodities">
+                            <div class="radar-top">
+                                <strong>Commodities Watch</strong>
+                                <span class="status-pill loss">WATCH</span>
+                            </div>
+                            <div class="radar-meter">
+                                <div class="radar-fill" style="width: 48%;"></div>
+                            </div>
+                            <div class="radar-stats">
+                                <div><span>Biais</span><strong>Mixed</strong></div>
+                                <div><span>Risque</span><strong>High</strong></div>
+                                <div><span>Focus</span><strong>GOLD • OIL • SILVER</strong></div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
                 <section class="premium-panel watchlist-panel watchlist-wide-panel">
                     <div class="panel-heading">
                         <div>
@@ -706,7 +937,7 @@
                     </div>
                     <div class="performance-badge-card {{ performance_badge_tone }}">
                         <div class="badge-orb"></div>
-                        <span class="performance-badge-kicker">{{ t("velwolef_ranking", "VelWolef ranking") }}</span>
+                        <span class="performance_badge_kicker performance-badge-kicker">{{ t("velwolef_ranking", "VelWolef ranking") }}</span>
                         <h3>{{ performance_badge_label }}</h3>
                         <p>{{ t("badge_desc", "Badge visible en haut du desk pour suivre le niveau de régularité, la qualité d’exécution et la progression de votre profil.") }}</p>
                         <div class="performance-badge-metrics">
@@ -794,6 +1025,39 @@
                                 {% if is_premium_plus %}{{ t("go_vip", "Passer VIP") }}{% else %}{{ t("see_offers", "Voir les offres") }}{% endif %}
                             </a>
                             {% endif %}
+                        </div>
+                    </div>
+                </section>
+
+                <section class="premium-panel mission-timeline-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="panel-mini-title">{{ t("mission_timeline", "Mission timeline") }}</span>
+                            <h2>{{ t("desk_activity_flow", "Flux activité du desk") }}</h2>
+                        </div>
+                    </div>
+
+                    <div class="timeline-v4">
+                        <div class="timeline-item">
+                            <span class="timeline-dot"></span>
+                            <div>
+                                <strong>{{ t("signal_engine_sync", "Signal engine synchronisé") }}</strong>
+                                <p>{{ t("timeline_sync_desc", "Le moteur surveille structure, tendance et momentum pour détecter les setups propres.") }}</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="timeline-dot"></span>
+                            <div>
+                                <strong>{{ t("briefing_layer_ready", "Briefing layer prêt") }}</strong>
+                                <p>{{ t("timeline_brief_desc", "Le cockpit aligne le contexte du jour avec les opportunités les plus exploitables.") }}</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="timeline-dot"></span>
+                            <div>
+                                <strong>{{ t("performance_feedback", "Feedback performance") }}</strong>
+                                <p>{{ t("timeline_perf_desc", "Les wins, losses et replays nourrissent ta progression et le sentiment d’élite.") }}</p>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -892,4 +1156,33 @@
 
     </main>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const cards = document.querySelectorAll('.stat-card, .trade-card, .scanner-card, .hero-side-card, .quota-card');
+    setInterval(() => {
+        cards.forEach((card, index) => {
+            setTimeout(() => card.classList.toggle('pulse-pop'), index * 35);
+            setTimeout(() => card.classList.remove('pulse-pop'), 650 + index * 35);
+        });
+    }, 5200);
+
+    const liveTexts = [
+        'AI SCAN ACTIVE',
+        'FLOW DETECTED',
+        'EDGE MODE ON',
+        'DESK INTELLIGENCE LIVE'
+    ];
+    const liveEl = document.querySelector('.pulse-status');
+    if (liveEl) {
+        let i = 0;
+        setInterval(() => {
+            i = (i + 1) % liveTexts.length;
+            liveEl.textContent = liveTexts[i];
+        }, 2600);
+    }
+});
+</script>
 {% endblock %}

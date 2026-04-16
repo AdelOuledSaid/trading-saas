@@ -1,25 +1,57 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Renvoyer la vérification</title>
-</head>
-<body>
-    <h1>Renvoyer le lien de vérification</h1>
+{% extends "base.html" %}
 
-    <form method="POST">
-        <input type="email" name="email" placeholder="Votre email" required>
-        <button type="submit">Renvoyer</button>
-    </form>
+{% block content %}
 
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul>
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-</body>
-</html>
+<div class="auth-container">
+    <div class="auth-card">
+
+        <div class="auth-badge">
+            🔒 Vérification requise
+        </div>
+
+        <h1 class="auth-title">
+            Confirme ton email
+        </h1>
+
+        <p class="auth-subtitle">
+            Tu dois vérifier ton adresse email pour accéder à ton compte.
+        </p>
+
+        <form method="POST" class="auth-form">
+
+            <input 
+                type="email" 
+                name="email" 
+                placeholder="Votre email" 
+                required
+                class="auth-input"
+            >
+
+            <button type="submit" class="auth-btn">
+                Renvoyer le lien
+            </button>
+
+        </form>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="auth-messages">
+                    {% for category, message in messages %}
+                        <div class="auth-alert {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="auth-footer">
+            <a href="{{ url_for('auth.login', lang_code=session.get('lang','fr')) }}">
+                ← Retour à la connexion
+            </a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

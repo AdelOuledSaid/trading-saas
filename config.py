@@ -12,15 +12,17 @@ DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///users.db")
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-APP_BASE_URL = os.getenv("APP_BASE_URL", "")
 # =========================
 # SECURITY
 # =========================
 SECRET_KEY = os.getenv("SECRET_KEY", "change-moi-plus-tard")
+
+
 # =========================
 # RESEND EMAIL 🔥
 # =========================
 RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
+
 # =========================
 # DOMAIN
 # =========================
