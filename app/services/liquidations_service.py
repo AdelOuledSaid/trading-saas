@@ -7,7 +7,10 @@ from typing import List, Dict, Any, Optional
 import json
 import time
 
-from websocket import WebSocketApp
+try:
+    from websocket import WebSocketApp
+except ImportError:
+    WebSocketApp = None
 
 
 @dataclass
@@ -31,40 +34,85 @@ class LiquidationsService:
     WS_URL = "wss://fstream.binance.com/ws/!forceOrder@arr"
     SUPPORTED_ASSETS = {"BTC", "ETH", "SOL", "XRP", "BNB"}
 
-    _events: List[LiquidationEvent] = []
-    _lock = Lock()
-    _started = False
-    _max_events = 200
-
     def __init__(self) -> None:
-        self._ensure_started()
+        self._events: List[LiquidationEvent] = []
+        self._lock = Lock()
+        self._started = False
+        self._max_events = 200
+        self._ws = None
+        self._thread: Optional[Thread] = None
 
-    @classmethod
-    def _ensure_started(cls) -> None:
-        if cls._started:
-            return
-        cls._started = True
-        thread = Thread(target=cls._run_ws_forever, daemon=True)
-        thread.start()
+    def start(self) -> bool:
+        """
+        Démarre le WebSocket en arrière-plan une seule fois par process.
+        Ne casse pas l'app si websocket-client n'est pas installé.
+        """
+        with self._lock:
+            if self._started:
+                print("[Liquidations] Already started")
+                return True
 
-    @classmethod
-    def _run_ws_forever(cls) -> None:
+            if WebSocketApp is None:
+                print("[Liquidations] websocket-client not installed; live feed disabled")
+                return False
+
+            self._started = True
+            self._thread = Thread(target=self._run_ws_forever, daemon=True)
+            self._thread.start()
+            print("[Liquidations] Background worker started")
+            return True
+
+    def stop(self) -> None:
+        with self._lock:
+            self._started = False
+            ws = self._ws
+
+        if ws is not None:
+            try:
+                ws.close()
+            except Exception as e:
+                print(f"[Liquidations] Stop error: {e}")
+
+    def is_running(self) -> bool:
+        with self._lock:
+            thread_alive = self._thread.is_alive() if self._thread else False
+            return self._started and thread_alive
+
+    def _run_ws_forever(self) -> None:
         while True:
+            with self._lock:
+                if not self._started:
+                    break
+
             try:
                 print("[Liquidations] Connecting Binance WS...")
+
                 ws = WebSocketApp(
-                    cls.WS_URL,
-                    on_message=cls._on_message,
-                    on_error=cls._on_error,
-                    on_close=cls._on_close,
+                    self.WS_URL,
+                    on_message=self._on_message,
+                    on_error=self._on_error,
+                    on_close=self._on_close,
+                    on_open=self._on_open,
                 )
+
+                with self._lock:
+                    self._ws = ws
+
                 ws.run_forever(ping_interval=120, ping_timeout=30)
+
             except Exception as e:
                 print(f"[Liquidations] WS fatal error: {e}")
+
+            with self._lock:
+                if not self._started:
+                    break
+
             time.sleep(5)
 
-    @classmethod
-    def _on_message(cls, ws, message: str) -> None:
+    def _on_open(self, ws) -> None:
+        print("[Liquidations] Binance WS connected")
+
+    def _on_message(self, ws, message: str) -> None:
         try:
             payload = json.loads(message)
             order = payload.get("o", {})
@@ -74,34 +122,34 @@ class LiquidationsService:
                 return
 
             asset = symbol.replace("USDT", "").upper()
-            if asset not in cls.SUPPORTED_ASSETS:
+            if asset not in self.SUPPORTED_ASSETS:
                 return
 
             side_raw = order.get("S", "")
             side = "Short" if side_raw == "SELL" else "Long"
 
-            avg_price = cls._to_float(order.get("ap")) or cls._to_float(order.get("p"))
-            qty = cls._to_float(order.get("z")) or cls._to_float(order.get("q"))
+            avg_price = self._to_float(order.get("ap")) or self._to_float(order.get("p"))
+            qty = self._to_float(order.get("z")) or self._to_float(order.get("q"))
             value_usd_number = avg_price * qty
 
             if value_usd_number <= 0:
                 return
 
-            impact = cls._impact_from_value(value_usd_number)
+            impact = self._impact_from_value(value_usd_number)
             market_bias = "Bullish" if side == "Short" else "Bearish"
-            score = cls._score_from_event(value_usd_number, impact)
+            score = self._score_from_event(value_usd_number, impact)
 
             trade_ts = order.get("T") or payload.get("E")
-            event_dt = cls._ts_to_datetime(trade_ts)
+            event_dt = self._ts_to_datetime(trade_ts)
 
             event = LiquidationEvent(
                 asset=asset,
                 side=side,
                 exchange="Binance",
-                price=cls._format_price(avg_price, asset),
-                value_usd=cls._format_usd(value_usd_number),
+                price=self._format_price(avg_price, asset),
+                value_usd=self._format_usd(value_usd_number),
                 value_usd_number=value_usd_number,
-                quantity=cls._format_quantity(qty, asset),
+                quantity=self._format_quantity(qty, asset),
                 timeframe="Live",
                 impact=impact,
                 market_bias=market_bias,
@@ -110,19 +158,17 @@ class LiquidationsService:
                 score=score,
             )
 
-            with cls._lock:
-                cls._events.insert(0, event)
-                cls._events = cls._events[: cls._max_events]
+            with self._lock:
+                self._events.insert(0, event)
+                self._events = self._events[: self._max_events]
 
         except Exception as e:
             print(f"[Liquidations] Parse error: {e}")
 
-    @classmethod
-    def _on_error(cls, ws, error) -> None:
+    def _on_error(self, ws, error) -> None:
         print(f"[Liquidations] WS error: {error}")
 
-    @classmethod
-    def _on_close(cls, ws, close_status_code, close_msg) -> None:
+    def _on_close(self, ws, close_status_code, close_msg) -> None:
         print(f"[Liquidations] WS closed: {close_status_code} - {close_msg}")
 
     def _get_all_events(self) -> List[LiquidationEvent]:
@@ -409,8 +455,14 @@ class LiquidationsService:
             return "Recent"
 
 
-service_instance = LiquidationsService()
+_service_instance: Optional[LiquidationsService] = None
+_service_lock = Lock()
 
 
 def get_liquidations_service() -> LiquidationsService:
-    return service_instance
+    global _service_instance
+
+    with _service_lock:
+        if _service_instance is None:
+            _service_instance = LiquidationsService()
+        return _service_instance

@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, g, session, request, url_for
 import stripe
 import config
@@ -14,10 +16,38 @@ from app.routes.token_unlocks import token_unlocks_bp
 from app.routes.liquidations import liquidations_bp
 from app.routes.open_interest import open_interest_bp
 from app.utils.pricing import get_pricing_data
+
 migrate = Migrate()
 
 SUPPORTED_LANGS = ["fr", "en", "es"]
 DEFAULT_LANG = "fr"
+
+
+def _is_true(value):
+    return str(value).strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _should_autostart_liquidations(app):
+    """
+    Auto-start safe:
+    - activable via AUTO_START_LIQUIDATIONS=true
+    - sur Render, démarre automatiquement par défaut
+    - en debug local, évite le double démarrage du reloader Flask
+    """
+    auto_start_env = os.environ.get("AUTO_START_LIQUIDATIONS")
+
+    if auto_start_env is None:
+        auto_start = os.environ.get("RENDER") == "true"
+    else:
+        auto_start = _is_true(auto_start_env)
+
+    if not auto_start:
+        return False
+
+    if app.debug:
+        return os.environ.get("WERKZEUG_RUN_MAIN") == "true"
+
+    return True
 
 
 def create_app():
@@ -35,6 +65,7 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["RESEND_API_KEY"] = getattr(config, "RESEND_API_KEY", "")
     app.config["APP_BASE_URL"] = getattr(config, "APP_BASE_URL", "")
+
     # =========================
     # SECURITE
     # =========================
@@ -72,21 +103,17 @@ def create_app():
     def set_language():
         lang = None
 
-        # priorité à l'URL
         if request.view_args:
             lang = request.view_args.get("lang_code")
 
-        # si la langue vient de l'URL, on la garde
         if lang in SUPPORTED_LANGS:
             session["lang"] = lang
 
-        # sinon cookie
         if "lang" not in session:
             cookie_lang = request.cookies.get("user_lang")
             if cookie_lang in SUPPORTED_LANGS:
                 session["lang"] = cookie_lang
 
-        # sinon navigateur
         if "lang" not in session:
             browser_lang = request.accept_languages.best_match(SUPPORTED_LANGS)
             session["lang"] = browser_lang or DEFAULT_LANG
@@ -121,10 +148,6 @@ def create_app():
     # =========================
     @app.url_defaults
     def add_language_code(endpoint, values):
-        """
-        Ajoute automatiquement lang_code aux url_for(...)
-        uniquement pour les routes qui en ont besoin.
-        """
         if values is None:
             return
 
@@ -178,7 +201,6 @@ def create_app():
             "supported_langs": SUPPORTED_LANGS,
             "t": lambda key, fallback=None: translate(translations, key, fallback),
             "switch_lang_url": switch_lang_url,
-             # 🔥 AJOUT ICI
             "pricing": get_pricing_data(current_lang),
         }
 
@@ -211,5 +233,16 @@ def create_app():
     app.register_blueprint(token_unlocks_bp)
     app.register_blueprint(liquidations_bp)
     app.register_blueprint(open_interest_bp)
+
+    # =========================
+    # AUTO START LIQUIDATIONS
+    # =========================
+    if _should_autostart_liquidations(app):
+        try:
+            from app.services.liquidations_service import get_liquidations_service
+            get_liquidations_service().start()
+            print("[Liquidations] Auto-start enabled")
+        except Exception as e:
+            print(f"[Liquidations] Auto-start skipped: {e}")
 
     return app

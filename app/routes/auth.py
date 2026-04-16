@@ -27,7 +27,6 @@ def normalize_and_validate_email(email_raw: str):
     if not email_raw:
         raise EmailNotValidError("empty email")
 
-    # check_deliverability=True = vérifie mieux le domaine mail
     valid = validate_email(email_raw, check_deliverability=True)
     return valid.email.lower()
 
@@ -56,35 +55,80 @@ def confirm_reset_token(token, expiration=3600):
     return serializer.loads(token, salt="password-reset", max_age=expiration)
 
 
+def build_absolute_url(endpoint, **values):
+    base_url = current_app.config.get("APP_BASE_URL", "").rstrip("/")
+
+    path = url_for(endpoint, **values)
+
+    if base_url:
+        return f"{base_url}{path}"
+
+    return path
+
+
 def send_verification_email(user, lang_code):
     token = generate_confirmation_token(user.email)
 
-    base_url = current_app.config.get("APP_BASE_URL", "")
-    confirm_url = base_url + url_for(
-        "auth.reset_password",
+    confirm_url = build_absolute_url(
+        "auth.confirm_email",
         token=token,
         lang_code=lang_code
     )
 
     html = f"""
-    <div style="background:#0b0f1a;padding:30px;color:white;font-family:Arial,sans-serif;">
-        <h2 style="color:#00ff99;margin-bottom:10px;">VelWolef 🚀</h2>
-        <p style="font-size:15px;line-height:1.6;">
-            Confirme ton email pour activer ton compte.
-        </p>
+    <div style="margin:0;padding:0;background:#05070b;font-family:Arial,sans-serif;">
+      <div style="max-width:640px;margin:0 auto;padding:32px 20px;">
+        <div style="background:linear-gradient(180deg,#0b1220 0%,#09101b 100%);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:40px 32px;box-shadow:0 20px 60px rgba(0,0,0,0.35);">
 
-        <a href="{confirm_url}"
-           style="display:inline-block;margin-top:20px;padding:12px 20px;background:#00ff99;color:#000;text-decoration:none;border-radius:6px;font-weight:bold;">
-            Confirmer mon compte
-        </a>
+          <div style="margin-bottom:24px;">
+            <div style="display:inline-block;padding:8px 12px;border-radius:999px;background:rgba(34,197,94,0.12);color:#86efac;font-size:12px;font-weight:700;letter-spacing:.04em;">
+              VÉRIFICATION DE COMPTE
+            </div>
+          </div>
 
-        <p style="margin-top:25px;font-size:12px;color:#aaaaaa;">
-            Si tu n’as pas créé ce compte, ignore cet email.
-        </p>
+          <h1 style="margin:0 0 14px 0;color:#f8fafc;font-size:30px;line-height:1.2;font-weight:800;">
+            Bienvenue sur VelWolef
+          </h1>
 
-        <p style="margin-top:15px;font-size:12px;color:#777777;word-break:break-all;">
-            Lien direct : {confirm_url}
-        </p>
+          <p style="margin:0 0 18px 0;color:#cbd5e1;font-size:16px;line-height:1.7;">
+            Merci d’avoir créé ton compte. Confirme ton adresse email pour activer ton accès et sécuriser ton espace.
+          </p>
+
+          <div style="margin:28px 0 30px 0;">
+            <a href="{confirm_url}"
+               style="display:inline-block;background:linear-gradient(135deg,#22c55e,#3b82f6);color:#ffffff;text-decoration:none;font-size:16px;font-weight:800;padding:14px 24px;border-radius:14px;">
+              Confirmer mon compte
+            </a>
+          </div>
+
+          <div style="margin:0 0 22px 0;padding:16px 18px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+            <p style="margin:0 0 8px 0;color:#f8fafc;font-size:14px;font-weight:700;">
+              Pourquoi cet email ?
+            </p>
+            <p style="margin:0;color:#94a3b8;font-size:14px;line-height:1.6;">
+              Tu reçois cet email car une demande de création de compte a été effectuée sur VelWolef.
+            </p>
+          </div>
+
+          <p style="margin:0 0 8px 0;color:#94a3b8;font-size:13px;line-height:1.6;">
+            Si le bouton ne fonctionne pas, copie ce lien dans ton navigateur :
+          </p>
+
+          <p style="margin:0 0 28px 0;word-break:break-all;">
+            <a href="{confirm_url}" style="color:#60a5fa;font-size:13px;text-decoration:none;">{confirm_url}</a>
+          </p>
+
+          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:0 0 20px 0;">
+
+          <p style="margin:0 0 8px 0;color:#e2e8f0;font-size:13px;font-weight:700;">
+            VelWolef
+          </p>
+          <p style="margin:0;color:#64748b;font-size:12px;line-height:1.6;">
+            Plateforme de signaux trading, performance et academy.<br>
+            support@velwolef.com
+          </p>
+        </div>
+      </div>
     </div>
     """
 
@@ -98,32 +142,70 @@ def send_verification_email(user, lang_code):
 def send_reset_password_email(user, lang_code):
     token = generate_reset_token(user.email)
 
-    reset_url = url_for(
+    reset_url = build_absolute_url(
         "auth.reset_password",
         token=token,
-        lang_code=lang_code,
-        _external=True
+        lang_code=lang_code
     )
 
     html = f"""
-    <div style="background:#0b0f1a;padding:30px;color:white;font-family:Arial,sans-serif;">
-        <h2 style="color:#ff4d4d;margin-bottom:10px;">VelWolef 🔐</h2>
-        <p style="font-size:15px;line-height:1.6;">
-            Tu as demandé la réinitialisation de ton mot de passe.
-        </p>
+    <div style="margin:0;padding:0;background:#05070b;font-family:Arial,sans-serif;">
+      <div style="max-width:640px;margin:0 auto;padding:32px 20px;">
+        <div style="background:linear-gradient(180deg,#0b1220 0%,#09101b 100%);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:40px 32px;box-shadow:0 20px 60px rgba(0,0,0,0.35);">
 
-        <a href="{reset_url}"
-           style="display:inline-block;margin-top:20px;padding:12px 20px;background:#ff4d4d;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;">
-            Réinitialiser mon mot de passe
-        </a>
+          <div style="margin-bottom:24px;">
+            <div style="display:inline-block;padding:8px 12px;border-radius:999px;background:rgba(239,68,68,0.12);color:#fca5a5;font-size:12px;font-weight:700;letter-spacing:.04em;">
+              SÉCURITÉ COMPTE
+            </div>
+          </div>
 
-        <p style="margin-top:25px;font-size:12px;color:#aaaaaa;">
-            Si tu n’es pas à l’origine de cette demande, ignore cet email.
-        </p>
+          <h1 style="margin:0 0 14px 0;color:#f8fafc;font-size:30px;line-height:1.2;font-weight:800;">
+            Réinitialisation du mot de passe
+          </h1>
 
-        <p style="margin-top:15px;font-size:12px;color:#777777;word-break:break-all;">
-            Lien direct : {reset_url}
-        </p>
+          <p style="margin:0 0 18px 0;color:#cbd5e1;font-size:16px;line-height:1.7;">
+            Nous avons reçu une demande de réinitialisation pour ton compte VelWolef.
+          </p>
+
+          <p style="margin:0 0 24px 0;color:#94a3b8;font-size:14px;line-height:1.7;">
+            Si tu es à l’origine de cette demande, clique sur le bouton ci-dessous pour choisir un nouveau mot de passe.
+          </p>
+
+          <div style="margin:28px 0 30px 0;">
+            <a href="{reset_url}"
+               style="display:inline-block;background:linear-gradient(135deg,#ef4444,#f97316);color:#ffffff;text-decoration:none;font-size:16px;font-weight:800;padding:14px 24px;border-radius:14px;">
+              Réinitialiser mon mot de passe
+            </a>
+          </div>
+
+          <div style="margin:0 0 22px 0;padding:16px 18px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+            <p style="margin:0 0 8px 0;color:#f8fafc;font-size:14px;font-weight:700;">
+              Important
+            </p>
+            <p style="margin:0;color:#94a3b8;font-size:14px;line-height:1.6;">
+              Si tu n’as pas demandé cette action, ignore simplement cet email. Ton mot de passe actuel restera inchangé.
+            </p>
+          </div>
+
+          <p style="margin:0 0 8px 0;color:#94a3b8;font-size:13px;line-height:1.6;">
+            Si le bouton ne fonctionne pas, copie ce lien dans ton navigateur :
+          </p>
+
+          <p style="margin:0 0 28px 0;word-break:break-all;">
+            <a href="{reset_url}" style="color:#60a5fa;font-size:13px;text-decoration:none;">{reset_url}</a>
+          </p>
+
+          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:0 0 20px 0;">
+
+          <p style="margin:0 0 8px 0;color:#e2e8f0;font-size:13px;font-weight:700;">
+            VelWolef
+          </p>
+          <p style="margin:0;color:#64748b;font-size:12px;line-height:1.6;">
+            Plateforme de signaux trading, performance et academy.<br>
+            support@velwolef.com
+          </p>
+        </div>
+      </div>
     </div>
     """
 
@@ -134,9 +216,6 @@ def send_reset_password_email(user, lang_code):
     )
 
 
-# =========================
-# REGISTER
-# =========================
 @auth_bp.route("/<lang_code>/register", methods=["GET", "POST"])
 def register(lang_code):
     current_lang = get_lang(lang_code)
@@ -182,7 +261,7 @@ def register(lang_code):
         try:
             send_verification_email(new_user, current_lang)
             flash("Compte créé avec succès. Vérifie ton email avant de te connecter.", "success")
-        except Exception as e:
+        except Exception:
             current_app.logger.exception("Erreur envoi email verification")
             flash("Compte créé, mais l'email de confirmation n'a pas pu être envoyé.", "danger")
 
@@ -191,9 +270,6 @@ def register(lang_code):
     return render_template("register.html")
 
 
-# =========================
-# EMAIL CONFIRMATION
-# =========================
 @auth_bp.route("/<lang_code>/confirm/<token>")
 def confirm_email(lang_code, token):
     current_lang = get_lang(lang_code)
@@ -224,9 +300,6 @@ def confirm_email(lang_code, token):
     return redirect(url_for("auth.login", lang_code=current_lang))
 
 
-# =========================
-# RESEND VERIFICATION
-# =========================
 @auth_bp.route("/<lang_code>/resend-verification", methods=["GET", "POST"])
 def resend_verification(lang_code):
     current_lang = get_lang(lang_code)
@@ -266,9 +339,6 @@ def resend_verification(lang_code):
     return render_template("resend_verification.html")
 
 
-# =========================
-# RESET PASSWORD REQUEST
-# =========================
 @auth_bp.route("/<lang_code>/forgot-password", methods=["GET", "POST"])
 def forgot_password(lang_code):
     current_lang = get_lang(lang_code)
@@ -302,9 +372,6 @@ def forgot_password(lang_code):
     return render_template("forgot_password.html")
 
 
-# =========================
-# RESET PASSWORD
-# =========================
 @auth_bp.route("/<lang_code>/reset-password/<token>", methods=["GET", "POST"])
 def reset_password(lang_code, token):
     current_lang = get_lang(lang_code)
@@ -349,9 +416,6 @@ def reset_password(lang_code, token):
     return render_template("reset_password.html", token=token)
 
 
-# =========================
-# LOGIN
-# =========================
 @auth_bp.route("/<lang_code>/login", methods=["GET", "POST"])
 def login(lang_code):
     current_lang = get_lang(lang_code)
@@ -387,9 +451,6 @@ def login(lang_code):
     return render_template("login.html")
 
 
-# =========================
-# LOGOUT
-# =========================
 @auth_bp.route("/<lang_code>/logout")
 @login_required
 def logout(lang_code):

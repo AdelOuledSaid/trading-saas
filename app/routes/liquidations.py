@@ -160,4 +160,5 @@ def liquidations_live_api():
         "summary": summary,
         "events": liquidation_events,
         "top_events": top_events,
+        "service_running": service.is_running(),
     })
