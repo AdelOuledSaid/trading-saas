@@ -1932,3 +1932,76 @@
         max-width: 274px !important;
     }
 }
+
+
+
+/* =========================================================
+   HOME MOBILE SAFE FIX
+   Keeps desktop intact, prevents overlap with fixed navbar
+========================================================= */
+@media (max-width: 980px) {
+    .home-v3-shell {
+        padding-top: 0 !important;
+    }
+
+    .market-ticker-live {
+        margin-top: 8px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .home-hero.v3-hero {
+        padding-top: 18px !important;
+    }
+
+    .hero-v3-container {
+        grid-template-columns: 1fr !important;
+        gap: 22px !important;
+        align-items: start !important;
+    }
+
+    .hero-left,
+    .hero-right-v3 {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .v3-proof-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .market-ticker-live {
+        margin-top: 6px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .ticker-shell {
+        align-items: center !important;
+    }
+
+    .ticker-live-badge {
+        flex: 0 0 auto !important;
+    }
+
+    .hero-title-v3 {
+        max-width: 100% !important;
+        word-break: normal !important;
+        overflow-wrap: anywhere !important;
+    }
+
+    .hero-text-v3 {
+        max-width: 100% !important;
+    }
+
+    .v3-proof-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .v3-proof-card,
+    .hero-btn-glow,
+    .hero-btn-ghost,
+    .ticker-shell {
+        width: 100% !important;
+    }
+}
