@@ -1,6 +1,10 @@
 from flask import Blueprint, render_template, jsonify, request, redirect, session, url_for
 import os
-from app.services.market_service import get_market_updates, get_market_overview
+from app.services.market_service import (
+    get_market_updates,
+    get_market_overview,
+    get_crypto_command_center,
+)
 from app.services.news_digest_service import prepare_digest_articles
 from app.services.telegram_dispatcher import (
     send_morning_briefings,
@@ -17,46 +21,32 @@ DEFAULT_LANG = "fr"
 CRON_SECRET = os.getenv("CRON_SECRET", "")
 
 
-# =========================
-# LANG HANDLER (IMPORTANT)
-# =========================
 def resolve_lang(lang_code=None):
-    # priorité URL
     if lang_code in SUPPORTED_LANGS:
         session["lang"] = lang_code
         return lang_code
 
-    # priorité session
     session_lang = session.get("lang")
     if session_lang in SUPPORTED_LANGS:
         return session_lang
 
-    # priorité cookie
     cookie_lang = request.cookies.get("user_lang")
     if cookie_lang in SUPPORTED_LANGS:
         session["lang"] = cookie_lang
         return cookie_lang
 
-    # fallback navigateur
     browser_lang = request.accept_languages.best_match(SUPPORTED_LANGS)
     session["lang"] = browser_lang or DEFAULT_LANG
 
     return session["lang"]
 
 
-# =========================
-# ROOT → REDIRECTION INTELLIGENTE
-# =========================
 @main_bp.route("/")
 def root():
     lang = resolve_lang()
-
     return redirect(url_for("main.home", lang_code=lang))
 
 
-# =========================
-# HOME MULTILANGUE
-# =========================
 @main_bp.route("/<lang_code>/")
 def home(lang_code):
     current_lang = resolve_lang(lang_code)
@@ -71,9 +61,27 @@ def home(lang_code):
         current_lang=current_lang
     )
 
-# =========================
-# CRON SECURITY
-# =========================
+
+@main_bp.route("/<lang_code>/marches/crypto")
+def crypto_market(lang_code):
+    current_lang = resolve_lang(lang_code)
+    market_snapshot = get_crypto_command_center()
+
+    return render_template(
+        "crypto.html",
+        current_lang=current_lang,
+        market_snapshot=market_snapshot
+    )
+
+
+@main_bp.route("/api/crypto/command-center")
+def crypto_command_center_api():
+    return jsonify({
+        "ok": True,
+        "data": get_crypto_command_center()
+    })
+
+
 def _cron_authorized() -> bool:
     if not CRON_SECRET:
         return True
@@ -87,9 +95,6 @@ def _unauthorized():
     }), 403
 
 
-# =========================
-# CRON ROUTES
-# =========================
 @main_bp.route("/cron/morning")
 def cron_morning():
     if not _cron_authorized():

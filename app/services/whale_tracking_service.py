@@ -2,8 +2,15 @@ from __future__ import annotations
 
 from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta, timezone
+from decimal import Decimal
 from typing import List, Dict, Any, Optional
-import random
+import os
+import time
+import requests
+
+from flask import current_app
+
+from app.extensions import cache
 
 
 @dataclass
@@ -28,21 +35,25 @@ class WhaleAlert:
 
 class WhaleTrackingService:
     """
-    Service Whale Tracking.
+    Whale Tracking Service - Real V1
 
-    Version actuelle :
-    - retourne des données mockées propres
-    - structure prête pour brancher une API réelle plus tard
+    Sources réelles dans cette V1:
+    - Etherscan V2:
+      - ETH native tx
+      - ERC20 transfers USDT / USDC
+    - TRONSCAN:
+      - TRC20 transfers USDT
 
-    Utilisation :
-        service = WhaleTrackingService()
-        alerts = service.get_whale_alerts()
-
-    Pour templates Jinja :
-        alerts = service.get_whale_alerts_dict()
+    Fallback:
+    - BTC et SOL restent mock pour l'instant
+    - si API indisponible, on garde aussi un fallback mock
     """
 
+    ETHERSCAN_BASE_URL = "https://api.etherscan.io/v2/api"
+    TRONSCAN_BASE_URL = "https://apilist.tronscanapi.com"
+
     SUPPORTED_ASSETS = {"BTC", "ETH", "SOL", "USDT", "USDC"}
+
     KNOWN_EXCHANGES = {
         "Binance",
         "Coinbase",
@@ -54,8 +65,40 @@ class WhaleTrackingService:
         "Gate.io",
     }
 
+    EVM_EXCHANGE_ADDRESSES = {
+        # Binance
+        "0x3f5ce5fbfe3e9af3971dD833D26BA9b5C936f0bE".lower(): "Binance",
+        "0x564286362092D8e7936f0549571a803B203aAceD".lower(): "Binance",
+        "0x0681d8db095565fe8a346fa0277bffde9c0edbbf".lower(): "Binance",
+        # Coinbase
+        "0x71660c4005ba85c37ccec55d0c4493e66fe775d3".lower(): "Coinbase",
+        "0x503828976d22510aad0201ac7ec88293211d23da".lower(): "Coinbase",
+        # Kraken
+        "0x267be1c1d684f78cb4f6a176c4911b741e4ffdc0".lower(): "Kraken",
+        # Bitfinex
+        "0x742d35cc6634c0532925a3b844bc454e4438f44e".lower(): "Bitfinex",
+        # OKX
+        "0x1ab4978a48dc892cd9971ece8e01dcc7688f8f23".lower(): "OKX",
+        # Bybit
+        "0xf89d7b9c864f589bbf53a82105107622b35eaa40".lower(): "Bybit",
+    }
+
+    TRON_EXCHANGE_ADDRESSES = {
+        # Binance hot wallet widely referenced
+        "TQef1n2J4jr5qM9hXn9ZWyM8xWw3y7hR6D": "Binance",
+        # OKX / sample placeholders can be extended
+        "TJRyWwFs9wTFGZg3J7D6z8L5f5gK7bK4xX": "OKX",
+    }
+
+    # Contracts connus
+    ETH_USDT = "0xdAC17F958D2ee523a2206206994597C13D831ec7".lower()
+    ETH_USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48".lower()
+    TRON_USDT = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
+
     def __init__(self) -> None:
-        pass
+        self.etherscan_api_key = os.getenv("ETHERSCAN_API_KEY", "").strip()
+        self.tronscan_api_key = os.getenv("TRONSCAN_API_KEY", "").strip()
+        self.min_usd = float(os.getenv("WHALE_MIN_USD", "250000"))
 
     # =========================================================
     # PUBLIC API
@@ -68,16 +111,7 @@ class WhaleTrackingService:
         direction: Optional[str] = None,
         limit: int = 20,
     ) -> List[WhaleAlert]:
-        """
-        Retourne une liste d'alertes WhaleAlert.
-
-        Params:
-            asset: BTC / ETH / SOL / USDT / USDC
-            only_high_impact: filtre High Impact uniquement
-            direction: inflow / outflow / transfer / treasury
-            limit: nombre max d'éléments
-        """
-        alerts = self._load_mock_alerts()
+        alerts = self._load_real_alerts()
 
         if asset:
             asset = asset.upper().strip()
@@ -90,8 +124,7 @@ class WhaleTrackingService:
             direction = direction.lower().strip()
             alerts = [a for a in alerts if a.direction == direction]
 
-        alerts = sorted(alerts, key=lambda x: x.score, reverse=True)
-
+        alerts = sorted(alerts, key=lambda x: (x.score, x.timestamp), reverse=True)
         return alerts[:limit]
 
     def get_whale_alerts_dict(
@@ -101,10 +134,6 @@ class WhaleTrackingService:
         direction: Optional[str] = None,
         limit: int = 20,
     ) -> List[Dict[str, Any]]:
-        """
-        Retourne les alertes sous forme de dictionnaires
-        pour render_template().
-        """
         alerts = self.get_whale_alerts(
             asset=asset,
             only_high_impact=only_high_impact,
@@ -114,10 +143,7 @@ class WhaleTrackingService:
         return [asdict(alert) for alert in alerts]
 
     def get_dashboard_snapshot(self) -> Dict[str, Any]:
-        """
-        Retourne un résumé global utile pour hero, cards, dashboard.
-        """
-        alerts = self._load_mock_alerts()
+        alerts = self._load_real_alerts()
 
         total_alerts = len(alerts)
         exchange_flows = sum(1 for a in alerts if a.exchange_related)
@@ -148,45 +174,551 @@ class WhaleTrackingService:
         }
 
     def get_latest_high_impact(self, limit: int = 5) -> List[Dict[str, Any]]:
-        """
-        Retourne les plus grosses alertes à fort impact.
-        """
         alerts = self.get_whale_alerts(only_high_impact=True, limit=limit)
         return [asdict(a) for a in alerts]
-
-    # =========================================================
-    # REAL API PLACEHOLDER
-    # =========================================================
 
     def get_live_whale_alerts(
         self,
         asset: Optional[str] = None,
         limit: int = 20,
     ) -> List[Dict[str, Any]]:
-        """
-        Placeholder pour future intégration API réelle.
-
-        Plus tard tu pourras :
-        - appeler Whale Alert API
-        - appeler Etherscan / Solscan / Arkham / Glassnode
-        - normaliser les données reçues
-        - calculer bias / impact / score
-        """
-        # Pour l'instant on renvoie les mocks
         return self.get_whale_alerts_dict(asset=asset, limit=limit)
 
     # =========================================================
-    # INTERNAL HELPERS
+    # REAL DATA LOADER
     # =========================================================
 
-    def _load_mock_alerts(self) -> List[WhaleAlert]:
-        """
-        Base mock premium.
-        """
-        raw_alerts = self._mock_seed_data()
+    @cache.memoize(timeout=90)
+    def _load_real_alerts(self) -> List[WhaleAlert]:
         alerts: List[WhaleAlert] = []
 
-        for item in raw_alerts:
+        # Etherscan réel
+        try:
+            alerts.extend(self._fetch_eth_native_whales())
+        except Exception as e:
+            self._log_warning(f"[whales] ETH native fetch failed: {repr(e)}")
+
+        try:
+            alerts.extend(self._fetch_erc20_whales(self.ETH_USDT, "USDT"))
+        except Exception as e:
+            self._log_warning(f"[whales] ETH USDT fetch failed: {repr(e)}")
+
+        try:
+            alerts.extend(self._fetch_erc20_whales(self.ETH_USDC, "USDC"))
+        except Exception as e:
+            self._log_warning(f"[whales] ETH USDC fetch failed: {repr(e)}")
+
+        # TRONSCAN réel
+        try:
+            alerts.extend(self._fetch_tronscan_trc20_whales(self.TRON_USDT, "USDT"))
+        except Exception as e:
+            self._log_warning(f"[whales] TRON USDT fetch failed: {repr(e)}")
+
+        # Fallback mock minimal pour BTC / SOL tant qu'on n'a pas branché une vraie source
+        if not any(a.asset == "BTC" for a in alerts):
+            alerts.extend(self._mock_asset_subset({"BTC"}))
+
+        if not any(a.asset == "SOL" for a in alerts):
+            alerts.extend(self._mock_asset_subset({"SOL"}))
+
+        # Déduplication simple par timestamp + from + to + asset + usd
+        dedup = {}
+        for a in alerts:
+            key = f"{a.asset}|{a.wallet_from}|{a.wallet_to}|{a.timestamp}|{int(a.usd_value_number)}"
+            dedup[key] = a
+
+        return list(dedup.values())
+
+    # =========================================================
+    # ETHERSCAN
+    # =========================================================
+
+    def _etherscan_headers(self) -> Dict[str, str]:
+        return {"accept": "application/json"}
+
+    def _etherscan_params(self, **extra) -> Dict[str, Any]:
+        params = {
+            "chainid": "1",
+            "apikey": self.etherscan_api_key,
+        }
+        params.update(extra)
+        return params
+
+    def _fetch_eth_native_whales(self) -> List[WhaleAlert]:
+        if not self.etherscan_api_key:
+            return []
+
+        # On lit l'historique normal de plusieurs wallets exchange connus
+        seeds = list(self.EVM_EXCHANGE_ADDRESSES.items())[:6]
+        rows: List[Dict[str, Any]] = []
+
+        for address, _label in seeds:
+            data = self._etherscan_get(
+                module="account",
+                action="txlist",
+                address=address,
+                startblock=0,
+                endblock=99999999,
+                page=1,
+                offset=20,
+                sort="desc",
+            )
+            if isinstance(data, list):
+                rows.extend(data)
+            time.sleep(0.15)
+
+        alerts: List[WhaleAlert] = []
+        seen_hashes = set()
+
+        for tx in rows:
+            tx_hash = tx.get("hash")
+            if not tx_hash or tx_hash in seen_hashes:
+                continue
+            seen_hashes.add(tx_hash)
+
+            value_wei = tx.get("value", "0")
+            try:
+                eth_value = float(Decimal(value_wei) / Decimal(10**18))
+            except Exception:
+                continue
+
+            if eth_value <= 0:
+                continue
+
+            from_addr = (tx.get("from") or "").lower()
+            to_addr = (tx.get("to") or "").lower()
+
+            usd_price = self._get_eth_usd_price()
+            usd_value_number = eth_value * usd_price
+
+            if usd_value_number < self.min_usd:
+                continue
+
+            wallet_from = self._label_evm_address(from_addr)
+            wallet_to = self._label_evm_address(to_addr)
+            direction = self._infer_direction(wallet_from, wallet_to)
+            bias = self._compute_bias(direction=direction, wallet_from=wallet_from, wallet_to=wallet_to)
+            exchange_related = self._is_exchange(wallet_from) or self._is_exchange(wallet_to)
+            score = self._compute_impact_score(
+                usd_value_number=usd_value_number,
+                exchange_related=exchange_related,
+                asset="ETH",
+                direction=direction,
+            )
+            impact = self._score_to_impact(score)
+
+            ts = self._unix_to_iso(tx.get("timeStamp"))
+
+            alerts.append(
+                WhaleAlert(
+                    asset="ETH",
+                    network="Ethereum",
+                    amount=self._format_amount(eth_value, "ETH"),
+                    usd_value=self._format_usd(usd_value_number),
+                    wallet_from=wallet_from,
+                    wallet_to=wallet_to,
+                    flow_type=self._flow_type_from_direction(direction),
+                    bias=bias,
+                    impact=impact,
+                    time=self._humanize_timestamp(ts),
+                    timestamp=ts,
+                    amount_value=eth_value,
+                    usd_value_number=usd_value_number,
+                    exchange_related=exchange_related,
+                    direction=direction,
+                    score=score,
+                )
+            )
+
+        return alerts
+
+    def _fetch_erc20_whales(self, contract_address: str, asset_symbol: str) -> List[WhaleAlert]:
+        if not self.etherscan_api_key:
+            return []
+
+        seeds = list(self.EVM_EXCHANGE_ADDRESSES.items())[:6]
+        rows: List[Dict[str, Any]] = []
+
+        for address, _label in seeds:
+            data = self._etherscan_get(
+                module="account",
+                action="tokentx",
+                address=address,
+                contractaddress=contract_address,
+                page=1,
+                offset=25,
+                sort="desc",
+            )
+            if isinstance(data, list):
+                rows.extend(data)
+            time.sleep(0.15)
+
+        alerts: List[WhaleAlert] = []
+        seen_hashes = set()
+
+        for tx in rows:
+            tx_hash = tx.get("hash")
+            log_index = tx.get("logIndex", "")
+            dedup_hash = f"{tx_hash}:{log_index}"
+            if not tx_hash or dedup_hash in seen_hashes:
+                continue
+            seen_hashes.add(dedup_hash)
+
+            decimals = int(tx.get("tokenDecimal") or 0)
+            raw_value = tx.get("value", "0")
+            try:
+                token_value = float(Decimal(raw_value) / Decimal(10**decimals))
+            except Exception:
+                continue
+
+            if token_value <= 0:
+                continue
+
+            # stablecoins => usd ~= amount
+            usd_value_number = token_value if asset_symbol in {"USDT", "USDC"} else 0.0
+            if usd_value_number < self.min_usd:
+                continue
+
+            from_addr = (tx.get("from") or "").lower()
+            to_addr = (tx.get("to") or "").lower()
+
+            wallet_from = self._label_evm_address(from_addr)
+            wallet_to = self._label_evm_address(to_addr)
+            direction = self._infer_direction(wallet_from, wallet_to)
+            bias = self._compute_bias(direction=direction, wallet_from=wallet_from, wallet_to=wallet_to)
+            exchange_related = self._is_exchange(wallet_from) or self._is_exchange(wallet_to)
+            score = self._compute_impact_score(
+                usd_value_number=usd_value_number,
+                exchange_related=exchange_related,
+                asset=asset_symbol,
+                direction=direction,
+            )
+            impact = self._score_to_impact(score)
+
+            ts = self._unix_to_iso(tx.get("timeStamp"))
+
+            alerts.append(
+                WhaleAlert(
+                    asset=asset_symbol,
+                    network="Ethereum",
+                    amount=self._format_amount(token_value, asset_symbol),
+                    usd_value=self._format_usd(usd_value_number),
+                    wallet_from=wallet_from,
+                    wallet_to=wallet_to,
+                    flow_type=self._flow_type_from_direction(direction, stablecoin=True),
+                    bias=bias,
+                    impact=impact,
+                    time=self._humanize_timestamp(ts),
+                    timestamp=ts,
+                    amount_value=token_value,
+                    usd_value_number=usd_value_number,
+                    exchange_related=exchange_related,
+                    direction=direction,
+                    score=score,
+                )
+            )
+
+        return alerts
+
+    def _etherscan_get(self, **params) -> Any:
+        r = requests.get(
+            self.ETHERSCAN_BASE_URL,
+            params=self._etherscan_params(**params),
+            headers=self._etherscan_headers(),
+            timeout=15,
+        )
+        r.raise_for_status()
+        data = r.json()
+
+        status = str(data.get("status", ""))
+        result = data.get("result")
+
+        # Etherscan peut renvoyer status=0 avec "No transactions found"
+        if status == "0" and isinstance(result, str) and "No transactions found" in result:
+            return []
+
+        if result is None:
+            return []
+
+        return result
+
+    # =========================================================
+    # TRONSCAN
+    # =========================================================
+
+    def _tronscan_headers(self) -> Dict[str, str]:
+        headers = {"accept": "application/json"}
+        if self.tronscan_api_key:
+            headers["TRON-PRO-API-KEY"] = self.tronscan_api_key
+        return headers
+
+    def _fetch_tronscan_trc20_whales(self, contract_address: str, asset_symbol: str) -> List[WhaleAlert]:
+        if not self.tronscan_api_key:
+            return []
+
+        # Endpoint documenté par TRONSCAN pour les transferts TRC20 filtrables par relatedAddress
+        # On sonde quelques wallets exchange connus
+        rows: List[Dict[str, Any]] = []
+        seeds = list(self.TRON_EXCHANGE_ADDRESSES.items())[:2]
+
+        for address, _label in seeds:
+            params = {
+                "limit": 20,
+                "start": 0,
+                "contract_address": contract_address,
+                "relatedAddress": address,
+                "confirm": "true",
+                "filterTokenValue": 1,
+            }
+            r = requests.get(
+                f"{self.TRONSCAN_BASE_URL}/api/token_trc20/transfers",
+                params=params,
+                headers=self._tronscan_headers(),
+                timeout=15,
+            )
+            r.raise_for_status()
+            data = r.json()
+
+            token_transfers = data.get("token_transfers") or data.get("data") or []
+            if isinstance(token_transfers, list):
+                rows.extend(token_transfers)
+            time.sleep(0.2)
+
+        alerts: List[WhaleAlert] = []
+        seen = set()
+
+        for tx in rows:
+            tx_hash = tx.get("transaction_id") or tx.get("hash")
+            if not tx_hash or tx_hash in seen:
+                continue
+            seen.add(tx_hash)
+
+            raw_amount = tx.get("quant") or tx.get("amount_str") or tx.get("amount")
+            decimals = int(tx.get("tokenInfo", {}).get("tokenDecimal") or tx.get("decimals") or 6)
+
+            try:
+                token_value = float(Decimal(str(raw_amount)) / Decimal(10**decimals))
+            except Exception:
+                continue
+
+            usd_value_number = token_value
+            if usd_value_number < self.min_usd:
+                continue
+
+            from_addr = tx.get("from_address") or tx.get("from") or ""
+            to_addr = tx.get("to_address") or tx.get("to") or ""
+
+            wallet_from = self._label_tron_address(from_addr)
+            wallet_to = self._label_tron_address(to_addr)
+
+            direction = self._infer_direction(wallet_from, wallet_to)
+            bias = self._compute_bias(direction=direction, wallet_from=wallet_from, wallet_to=wallet_to)
+            exchange_related = self._is_exchange(wallet_from) or self._is_exchange(wallet_to)
+            score = self._compute_impact_score(
+                usd_value_number=usd_value_number,
+                exchange_related=exchange_related,
+                asset=asset_symbol,
+                direction=direction,
+            )
+            impact = self._score_to_impact(score)
+
+            ts = self._ms_to_iso(tx.get("block_ts") or tx.get("timestamp"))
+
+            alerts.append(
+                WhaleAlert(
+                    asset=asset_symbol,
+                    network="Tron",
+                    amount=self._format_amount(token_value, asset_symbol),
+                    usd_value=self._format_usd(usd_value_number),
+                    wallet_from=wallet_from,
+                    wallet_to=wallet_to,
+                    flow_type=self._flow_type_from_direction(direction, stablecoin=True),
+                    bias=bias,
+                    impact=impact,
+                    time=self._humanize_timestamp(ts),
+                    timestamp=ts,
+                    amount_value=token_value,
+                    usd_value_number=usd_value_number,
+                    exchange_related=exchange_related,
+                    direction=direction,
+                    score=score,
+                )
+            )
+
+        return alerts
+
+    # =========================================================
+    # LABELING / HELPERS
+    # =========================================================
+
+    def _label_evm_address(self, address: str) -> str:
+        if not address:
+            return "Unknown Wallet"
+        label = self.EVM_EXCHANGE_ADDRESSES.get(address.lower())
+        if label:
+            return label
+        return "Unknown Wallet"
+
+    def _label_tron_address(self, address: str) -> str:
+        if not address:
+            return "Unknown Wallet"
+        label = self.TRON_EXCHANGE_ADDRESSES.get(address)
+        if label:
+            return label
+        if address in {"Tether Treasury", "Circle Treasury"}:
+            return address
+        return "Unknown Wallet"
+
+    def _infer_direction(self, wallet_from: str, wallet_to: str) -> str:
+        from_exchange = self._is_exchange(wallet_from)
+        to_exchange = self._is_exchange(wallet_to)
+
+        if from_exchange and not to_exchange:
+            return "outflow"
+        if not from_exchange and to_exchange:
+            return "inflow"
+        if "Treasury" in wallet_from or "Treasury" in wallet_to:
+            return "treasury"
+        return "transfer"
+
+    def _flow_type_from_direction(self, direction: str, stablecoin: bool = False) -> str:
+        if direction == "outflow":
+            return "Exchange Outflow"
+        if direction == "inflow":
+            return "Exchange Inflow"
+        if direction == "treasury":
+            return "Stablecoin Mint / Transfer" if stablecoin else "Treasury Transfer"
+        return "Transfer"
+
+    def _compute_bias(self, direction: str, wallet_from: str, wallet_to: str) -> str:
+        from_exchange = self._is_exchange(wallet_from)
+        to_exchange = self._is_exchange(wallet_to)
+
+        if direction == "outflow" and from_exchange and not to_exchange:
+            return "Bullish"
+
+        if direction == "inflow" and not from_exchange and to_exchange:
+            return "Bearish"
+
+        if direction in {"treasury", "transfer"}:
+            return "Neutral"
+
+        return "Neutral"
+
+    def _compute_impact_score(
+        self,
+        usd_value_number: float,
+        exchange_related: bool,
+        asset: str,
+        direction: str,
+    ) -> int:
+        score = 0
+
+        if usd_value_number >= 250_000:
+            score += 1
+        if usd_value_number >= 1_000_000:
+            score += 2
+        if usd_value_number >= 10_000_000:
+            score += 2
+        if usd_value_number >= 50_000_000:
+            score += 2
+        if usd_value_number >= 100_000_000:
+            score += 1
+
+        if exchange_related:
+            score += 2
+
+        if asset in {"BTC", "ETH"}:
+            score += 1
+
+        if direction in {"inflow", "outflow"}:
+            score += 1
+
+        return score
+
+    def _score_to_impact(self, score: int) -> str:
+        if score >= 7:
+            return "High Impact"
+        if score >= 4:
+            return "Medium Impact"
+        return "Low Impact"
+
+    def _is_exchange(self, name: str) -> bool:
+        return name in self.KNOWN_EXCHANGES
+
+    def _format_amount(self, value: float, asset: str) -> str:
+        if asset in {"USDT", "USDC"}:
+            return f"{value:,.0f} {asset}"
+        if asset == "SOL":
+            return f"{value:,.0f} {asset}"
+        if asset in {"BTC", "ETH"}:
+            if value >= 1000:
+                return f"{value:,.0f} {asset}"
+            return f"{value:,.2f} {asset}"
+        return f"{value:,.2f} {asset}"
+
+    def _format_usd(self, value: float) -> str:
+        if value >= 1_000_000_000:
+            return f"${value / 1_000_000_000:.2f}B"
+        return f"${value / 1_000_000:.1f}M"
+
+    def _unix_to_iso(self, ts: Any) -> str:
+        try:
+            return datetime.fromtimestamp(int(ts), tz=timezone.utc).isoformat()
+        except Exception:
+            return datetime.now(timezone.utc).isoformat()
+
+    def _ms_to_iso(self, ts: Any) -> str:
+        try:
+            return datetime.fromtimestamp(int(ts) / 1000, tz=timezone.utc).isoformat()
+        except Exception:
+            return datetime.now(timezone.utc).isoformat()
+
+    def _humanize_timestamp(self, ts: str) -> str:
+        try:
+            dt = datetime.fromisoformat(ts)
+            now = datetime.now(timezone.utc)
+            diff = now - dt
+
+            seconds = int(diff.total_seconds())
+            if seconds < 60:
+                return "Just now"
+
+            minutes = seconds // 60
+            if minutes < 60:
+                return f"{minutes} min"
+
+            hours = minutes // 60
+            mins = minutes % 60
+            if mins == 0:
+                return f"{hours}h"
+            return f"{hours}h {mins:02d}"
+        except Exception:
+            return "Recent"
+
+    @cache.memoize(timeout=300)
+    def _get_eth_usd_price(self) -> float:
+        # prix simple via CoinGecko public; caché pour limiter les appels
+        try:
+            r = requests.get(
+                "https://api.coingecko.com/api/v3/simple/price",
+                params={"ids": "ethereum", "vs_currencies": "usd"},
+                timeout=10,
+            )
+            r.raise_for_status()
+            return float(r.json().get("ethereum", {}).get("usd", 0) or 0)
+        except Exception as e:
+            self._log_warning(f"[whales] ETH price fallback used: {repr(e)}")
+            return 3000.0
+
+    def _mock_asset_subset(self, assets: set[str]) -> List[WhaleAlert]:
+        raw = self._mock_seed_data()
+        alerts: List[WhaleAlert] = []
+
+        for item in raw:
+            if item["asset"] not in assets:
+                continue
+
             flow_type = item["flow_type"]
             wallet_from = item["wallet_from"]
             wallet_to = item["wallet_to"]
@@ -227,10 +759,18 @@ class WhaleTrackingService:
 
         return alerts
 
+    def _detect_direction(self, flow_type: str) -> str:
+        flow = flow_type.lower()
+
+        if "outflow" in flow:
+            return "outflow"
+        if "inflow" in flow:
+            return "inflow"
+        if "treasury" in flow:
+            return "treasury"
+        return "transfer"
+
     def _mock_seed_data(self) -> List[Dict[str, Any]]:
-        """
-        Données mockées réalistes.
-        """
         now = datetime.now(timezone.utc)
 
         def ts(minutes_ago: int) -> str:
@@ -249,17 +789,6 @@ class WhaleTrackingService:
                 "timestamp": ts(12),
             },
             {
-                "asset": "ETH",
-                "network": "Ethereum",
-                "amount_value": 38200,
-                "usd_value_number": 118_700_000,
-                "wallet_from": "Unknown Wallet",
-                "wallet_to": "Coinbase",
-                "flow_type": "Exchange Inflow",
-                "time": "18 min",
-                "timestamp": ts(18),
-            },
-            {
                 "asset": "SOL",
                 "network": "Solana",
                 "amount_value": 920000,
@@ -269,61 +798,6 @@ class WhaleTrackingService:
                 "flow_type": "Exchange Inflow",
                 "time": "26 min",
                 "timestamp": ts(26),
-            },
-            {
-                "asset": "USDT",
-                "network": "Ethereum",
-                "amount_value": 125_000_000,
-                "usd_value_number": 125_000_000,
-                "wallet_from": "Tether Treasury",
-                "wallet_to": "OKX",
-                "flow_type": "Stablecoin Mint / Transfer",
-                "time": "39 min",
-                "timestamp": ts(39),
-            },
-            {
-                "asset": "BTC",
-                "network": "Bitcoin",
-                "amount_value": 1240,
-                "usd_value_number": 79_800_000,
-                "wallet_from": "Unknown Wallet",
-                "wallet_to": "Binance",
-                "flow_type": "Exchange Inflow",
-                "time": "54 min",
-                "timestamp": ts(54),
-            },
-            {
-                "asset": "ETH",
-                "network": "Ethereum",
-                "amount_value": 21700,
-                "usd_value_number": 67_400_000,
-                "wallet_from": "Kraken",
-                "wallet_to": "Cold Wallet",
-                "flow_type": "Exchange Outflow",
-                "time": "1h 07",
-                "timestamp": ts(67),
-            },
-            {
-                "asset": "USDC",
-                "network": "Ethereum",
-                "amount_value": 84_000_000,
-                "usd_value_number": 84_000_000,
-                "wallet_from": "Circle Treasury",
-                "wallet_to": "Unknown Wallet",
-                "flow_type": "Treasury Transfer",
-                "time": "1h 22",
-                "timestamp": ts(82),
-            },
-            {
-                "asset": "SOL",
-                "network": "Solana",
-                "amount_value": 410000,
-                "usd_value_number": 65_700_000,
-                "wallet_from": "Binance",
-                "wallet_to": "Unknown Wallet",
-                "flow_type": "Exchange Outflow",
-                "time": "1h 48",
-                "timestamp": ts(108),
             },
             {
                 "asset": "BTC",
@@ -337,131 +811,24 @@ class WhaleTrackingService:
                 "timestamp": ts(124),
             },
             {
-                "asset": "ETH",
-                "network": "Ethereum",
-                "amount_value": 14500,
-                "usd_value_number": 44_300_000,
-                "wallet_from": "Unknown Wallet",
-                "wallet_to": "Bybit",
-                "flow_type": "Exchange Inflow",
-                "time": "2h 16",
-                "timestamp": ts(136),
-            },
-            {
-                "asset": "USDT",
-                "network": "Tron",
-                "amount_value": 52_000_000,
-                "usd_value_number": 52_000_000,
-                "wallet_from": "Unknown Wallet",
-                "wallet_to": "Binance",
-                "flow_type": "Stablecoin Transfer",
-                "time": "2h 32",
-                "timestamp": ts(152),
-            },
-            {
-                "asset": "BTC",
-                "network": "Bitcoin",
-                "amount_value": 890,
-                "usd_value_number": 57_600_000,
-                "wallet_from": "Unknown Wallet",
-                "wallet_to": "Bitfinex",
-                "flow_type": "Exchange Inflow",
-                "time": "2h 44",
-                "timestamp": ts(164),
+                "asset": "SOL",
+                "network": "Solana",
+                "amount_value": 410000,
+                "usd_value_number": 65_700_000,
+                "wallet_from": "Binance",
+                "wallet_to": "Unknown Wallet",
+                "flow_type": "Exchange Outflow",
+                "time": "1h 48",
+                "timestamp": ts(108),
             },
         ]
 
-    def _compute_bias(self, direction: str, wallet_from: str, wallet_to: str) -> str:
-        """
-        Logique simple de lecture marché.
-        """
-        from_exchange = self._is_exchange(wallet_from)
-        to_exchange = self._is_exchange(wallet_to)
+    def _log_warning(self, msg: str) -> None:
+        try:
+            current_app.logger.warning(msg)
+        except Exception:
+            print(msg)
 
-        if direction == "outflow" and from_exchange and not to_exchange:
-            return "Bullish"
-
-        if direction == "inflow" and not from_exchange and to_exchange:
-            return "Bearish"
-
-        if direction in {"treasury", "transfer"}:
-            return "Neutral"
-
-        return "Neutral"
-
-    def _compute_impact_score(
-        self,
-        usd_value_number: float,
-        exchange_related: bool,
-        asset: str,
-        direction: str,
-    ) -> int:
-        """
-        Score interne d’importance.
-        """
-        score = 0
-
-        if usd_value_number >= 25_000_000:
-            score += 1
-        if usd_value_number >= 50_000_000:
-            score += 2
-        if usd_value_number >= 100_000_000:
-            score += 2
-        if usd_value_number >= 250_000_000:
-            score += 2
-
-        if exchange_related:
-            score += 2
-
-        if asset in {"BTC", "ETH"}:
-            score += 1
-
-        if direction in {"inflow", "outflow"}:
-            score += 1
-
-        return score
-
-    def _score_to_impact(self, score: int) -> str:
-        if score >= 7:
-            return "High Impact"
-        if score >= 4:
-            return "Medium Impact"
-        return "Low Impact"
-
-    def _detect_direction(self, flow_type: str) -> str:
-        flow = flow_type.lower()
-
-        if "outflow" in flow:
-            return "outflow"
-        if "inflow" in flow:
-            return "inflow"
-        if "treasury" in flow:
-            return "treasury"
-        return "transfer"
-
-    def _is_exchange(self, name: str) -> bool:
-        return name in self.KNOWN_EXCHANGES
-
-    def _format_amount(self, value: float, asset: str) -> str:
-        if asset in {"USDT", "USDC"}:
-            return f"{value:,.0f} {asset}"
-        if asset == "SOL":
-            return f"{value:,.0f} {asset}"
-        if asset in {"BTC", "ETH"}:
-            if value >= 1000:
-                return f"{value:,.0f} {asset}"
-            return f"{value:,.2f} {asset}"
-        return f"{value:,.2f} {asset}"
-
-    def _format_usd(self, value: float) -> str:
-        if value >= 1_000_000_000:
-            return f"${value / 1_000_000_000:.2f}B"
-        return f"${value / 1_000_000:.1f}M"
-
-
-# =========================================================
-# OPTIONAL HELPER FUNCTION
-# =========================================================
 
 def get_whale_tracking_service() -> WhaleTrackingService:
     return WhaleTrackingService()

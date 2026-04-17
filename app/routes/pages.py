@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 
 from app.models import Signal
 from app.services.whale_tracking_service import WhaleTrackingService
-
+from app.services.market_service import get_crypto_command_center
 pages_bp = Blueprint("pages", __name__)
 
 SUPPORTED_LANGS = ["fr", "en", "es"]
@@ -168,7 +168,16 @@ def lab_psychology(lang_code=None):
 @pages_bp.route("/<lang_code>/markets/crypto")
 def market_crypto(lang_code=None):
     normalize_lang(lang_code)
-    return render_template("marche/crypto.html")
+
+    try:
+        market_snapshot = get_crypto_command_center()
+    except Exception:
+        market_snapshot = None
+
+    return render_template(
+        "marche/crypto.html",
+        market_snapshot=market_snapshot
+    )
 
 
 @pages_bp.route("/marches/forex")

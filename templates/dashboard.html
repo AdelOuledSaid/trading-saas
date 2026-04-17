@@ -50,12 +50,12 @@
 {% set telegram_public_link = telegram_public_link|default('https://t.me/velwolfsignals') %}
 {% set telegram_vip_link = telegram_vip_link|default('https://t.me/velwolfvip') %}
 {% set level_progress = 22 if performance_badge_tone == 'starter' else 52 if performance_badge_tone == 'rising' else 78 if performance_badge_tone == 'pro' else 96 %}
-{% set ai_confidence = 64 if is_free else 72 if is_basic else 86 if is_premium_plus else 94 %}
-{% set market_bias = 'BULLISH' if total_buy >= total_sell else 'BEARISH' %}
-{% set market_energy = 'EXPLOSIVE' if safe_today_trades >= 5 else 'ACTIVE' if safe_today_trades >= 2 else 'BUILDING' %}
+{% set ai_confidence = live_ai_confidence if live_ai_confidence is defined else 50 %}
+{% set market_bias = live_market_bias if live_market_bias is defined else 'NEUTRAL' %}
+{% set market_energy = live_market_energy if live_market_energy is defined else 'BUILDING' %}
 {% set next_upgrade_label = 'Premium' if user_plan in ['free','basic'] else 'VIP' if user_plan == 'premium' else 'MAX' %}
-{% set momentum_phase = 'BREAKOUT' if safe_today_pnl > 0 else 'COMPRESSION' if safe_today_pnl == 0 else 'REVERSAL' %}
-
+{% set momentum_phase = live_momentum_phase if live_momentum_phase is defined else 'COMPRESSION' %}
+{% set sentiment_score = market_snapshot.sentiment_score if market_snapshot.sentiment_score is defined else 50 %}
 <div class="dashboard-shell ultra-dashboard-shell">
     <div class="dashboard-ambient dashboard-ambient-1"></div>
     <div class="dashboard-ambient dashboard-ambient-2"></div>
@@ -241,23 +241,45 @@
                 <div class="ai-brain-grid-v4">
                     <div class="ai-brain-card bias">
                         <span>{{ t("market_bias", "Biais marché") }}</span>
-                        <strong class="{% if market_bias == 'BULLISH' %}text-buy{% else %}text-loss{% endif %}">{{ market_bias }}</strong>
-                        <small>{{ t("flow_detection", "Détection du flux dominant") }}</small>
+                        <strong class="{% if market_snapshot.risk_mode in ['Risk-On', 'Bullish', 'Positive'] %}text-buy{% elif market_snapshot.risk_mode in ['Risk-Off', 'Defensive'] %}text-loss{% else %}text-muted-strong{% endif %}">
+                            {{ market_snapshot.risk_mode }}
+                        </strong>
+                        <small>{{ market_snapshot.market_regime }} • Score {{ sentiment_score }}/100</small>
                     </div>
+
                     <div class="ai-brain-card confidence">
                         <span>{{ t("confidence", "Confiance") }}</span>
-                        <strong>{{ ai_confidence }}%</strong>
-                        <small>{{ t("multi_factor_model", "Modèle multi-facteurs") }}</small>
+                        <strong class="{% if ai_confidence >= 75 %}text-buy{% elif ai_confidence <= 45 %}text-loss{% else %}text-muted-strong{% endif %}">
+                            {{ ai_confidence }}%
+                        </strong>
+                        <small>
+                            {% if ai_confidence >= 75 %}
+                                Forte confiance
+                            {% elif ai_confidence <= 45 %}
+                                Faible confiance
+                            {% else %}
+                                Confiance modérée
+                            {% endif %}
+                        </small>
+                        <small class="muted">
+                            {% if market_snapshot.ai_confidence_explanation %}
+                                {{ market_snapshot.ai_confidence_explanation }}
+                            {% else %}
+                                Dominance + Fear &amp; Greed + Regime
+                            {% endif %}
+                        </small>
                     </div>
+
                     <div class="ai-brain-card energy">
                         <span>{{ t("market_energy", "Énergie marché") }}</span>
                         <strong>{{ market_energy }}</strong>
-                        <small>{{ t("tempo_detection", "Tempo & volatilité") }}</small>
+                        <small>Volume global : {{ market_snapshot.total_volume }}</small>
                     </div>
+
                     <div class="ai-brain-card phase">
                         <span>{{ t("next_move", "Prochaine phase") }}</span>
                         <strong>{{ momentum_phase }}</strong>
-                        <small>{{ t("execution_projection", "Projection d’exécution") }}</small>
+                        <small>{{ market_snapshot.execution_mode }}</small>
                     </div>
                 </div>
 
@@ -310,24 +332,24 @@
                     </div>
                     <div class="streak-box">
                         <span>{{ t("ranking", "Ranking") }}</span>
-                        <strong>#3</strong>
+                        <strong>#{{ 1 if asset_leaderboard and selected_asset and asset_leaderboard[0].asset == selected_asset else 3 }}</strong>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="ultra-ticker-ribbon">
-            <div class="ticker-track-v4">
-                <span>⚡ {{ t("live_mode_active", "LIVE MODE ACTIVE") }}</span>
-                <span>• {{ t("ai_bias", "AI Bias") }}: {{ market_bias }}</span>
-                <span>• {{ t("confidence", "Confidence") }}: {{ ai_confidence }}%</span>
-                <span>• {{ t("leaderboard", "Leaderboard") }}: #3</span>
-                <span>• {{ t("desk_energy", "Desk energy") }}: {{ market_energy }}</span>
-                <span>• {{ t("active_plan", "Plan actif") }}: {{ user_plan|upper }}</span>
-                <span>• {{ t("live_mode_active", "LIVE MODE ACTIVE") }}</span>
-                <span>• {{ t("ai_bias", "AI Bias") }}: {{ market_bias }}</span>
-                <span>• {{ t("confidence", "Confidence") }}: {{ ai_confidence }}%</span>
-            </div>
+             <div class="ticker-track-v4">
+                  <span>⚡ {{ t("live_mode_active", "LIVE MODE ACTIVE") }}</span>
+                  <span>• {{ t("ai_bias", "AI Bias") }}: {{ market_bias }}</span>
+                  <span>• {{ t("confidence", "Confidence") }}: {{ ai_confidence }}%</span>
+                  <span>• Score: {{ sentiment_score }}/100</span>
+                  <span>• {{ t("desk_energy", "Desk energy") }}: {{ market_energy }}</span>
+                  <span>• {{ t("active_plan", "Plan actif") }}: {{ user_plan|upper }}</span>
+                  <span>• {{ t("live_mode_active", "LIVE MODE ACTIVE") }}</span>
+                  <span>• {{ t("ai_bias", "AI Bias") }}: {{ market_bias }}</span>
+                  <span>• {{ t("confidence", "Confidence") }}: {{ ai_confidence }}%</span>
+             </div>
         </section>
 
         {% if is_upgrade_target %}
@@ -527,39 +549,10 @@
                     </div>
                 </div>
 
-                <div class="tv-chart">
-                    <svg viewBox="0 0 900 320" preserveAspectRatio="none" aria-hidden="true">
-                        <g class="tv-grid">
-                            <line x1="0" y1="40" x2="900" y2="40" />
-                            <line x1="0" y1="90" x2="900" y2="90" />
-                            <line x1="0" y1="140" x2="900" y2="140" />
-                            <line x1="0" y1="190" x2="900" y2="190" />
-                            <line x1="0" y1="240" x2="900" y2="240" />
-                            <line x1="0" y1="290" x2="900" y2="290" />
-                        </g>
-
-                        <g class="tv-candles advanced-candles">
-                            <g transform="translate(68,226)"><line x1="7" x2="7" y1="-48" y2="26"/><rect x="0" y="-20" width="14" height="44" class="bull"/></g>
-                            <g transform="translate(132,208)"><line x1="7" x2="7" y1="-58" y2="32"/><rect x="0" y="-28" width="14" height="54" class="bull"/></g>
-                            <g transform="translate(196,188)"><line x1="7" x2="7" y1="-42" y2="20"/><rect x="0" y="-16" width="14" height="40" class="bear"/></g>
-                            <g transform="translate(260,176)"><line x1="7" x2="7" y1="-60" y2="30"/><rect x="0" y="-30" width="14" height="58" class="bull"/></g>
-                            <g transform="translate(324,160)"><line x1="7" x2="7" y1="-66" y2="26"/><rect x="0" y="-34" width="14" height="62" class="bull"/></g>
-                            <g transform="translate(388,172)"><line x1="7" x2="7" y1="-34" y2="22"/><rect x="0" y="-14" width="14" height="40" class="bear"/></g>
-                            <g transform="translate(452,150)"><line x1="7" x2="7" y1="-56" y2="28"/><rect x="0" y="-28" width="14" height="52" class="bull"/></g>
-                            <g transform="translate(516,134)"><line x1="7" x2="7" y1="-62" y2="26"/><rect x="0" y="-32" width="14" height="58" class="bull"/></g>
-                            <g transform="translate(580,146)"><line x1="7" x2="7" y1="-30" y2="22"/><rect x="0" y="-12" width="14" height="38" class="bear"/></g>
-                            <g transform="translate(644,126)"><line x1="7" x2="7" y1="-60" y2="24"/><rect x="0" y="-30" width="14" height="56" class="bull"/></g>
-                            <g transform="translate(708,118)"><line x1="7" x2="7" y1="-56" y2="22"/><rect x="0" y="-28" width="14" height="50" class="bull"/></g>
-                            <g transform="translate(772,110)"><line x1="7" x2="7" y1="-52" y2="24"/><rect x="0" y="-24" width="14" height="46" class="bull"/></g>
-                        </g>
-
-                        <path d="M0,252 C100,242 188,220 272,194 C356,168 450,148 546,132 C640,118 748,104 900,84" class="tv-line" />
-                        <path d="M0,286 C132,280 246,260 358,226 C470,194 604,170 900,152" class="tv-line secondary" />
-                    </svg>
-
-                    <div class="tv-marker buy" style="left:58%; top:36%;">BUY ZONE</div>
-                    <div class="tv-marker sell" style="left:28%; top:62%;">SELL TRAP</div>
-                    <div class="tv-marker neutral" style="left:78%; top:22%;">BREAKOUT</div>
+                <div class="tv-chart real-tv-chart">
+                    <div class="tradingview-widget-container" style="height: 100%; width: 100%;">
+                        <div id="dashboard-tv-chart" style="height: 100%; width: 100%;"></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -629,7 +622,7 @@
                 </article>
                 <article class="scanner-card scanner-blue">
                     <span>{{ t("risk_heat", "Risque heat") }}</span>
-                    <strong>{% if can_view_stats and safe_today_losses > safe_today_wins %}HOT{% else %}CONTROLLED{% endif %}</strong>
+                    <strong>{{ market_snapshot.macro_pressure|upper }}</strong>
                     <p>{{ t("scanner_risk_desc", "Lecture synthétique du danger de faux départ et des zones de squeeze.") }}</p>
                 </article>
                 <article class="scanner-card scanner-violet">
@@ -834,69 +827,69 @@
                     <div class="panel-heading">
                         <div>
                             <span class="panel-mini-title">Market Radar 360</span>
-                            <h2>Radar multi-marchés en temps réel</h2>
+                            <h2>Radar marché réel</h2>
                         </div>
-                        <span class="stat-chip">LIVE SCAN</span>
+                        <span class="stat-chip">LIVE DATA</span>
                     </div>
 
                     <div class="market-radar-grid">
                         <article class="radar-card radar-crypto">
                             <div class="radar-top">
                                 <strong>Crypto Pulse</strong>
-                                <span class="status-pill win">HIGH MOMENTUM</span>
+                                <span class="status-pill win">{{ market_snapshot.risk_mode }}</span>
                             </div>
                             <div class="radar-meter">
-                                <div class="radar-fill" style="width: 82%;"></div>
+                                <div class="radar-fill" style="width: {{ ai_confidence }}%;"></div>
                             </div>
                             <div class="radar-stats">
-                                <div><span>Biais</span><strong>Bullish</strong></div>
-                                <div><span>Risque</span><strong>Medium</strong></div>
-                                <div><span>Focus</span><strong>BTC • ETH • SOL</strong></div>
+                                <div><span>Regime</span><strong>{{ market_snapshot.market_regime }}</strong></div>
+                                <div><span>Dominance</span><strong>{{ market_snapshot.btc_dominance }}%</strong></div>
+                                <div><span>Focus</span><strong>{{ market_snapshot.assets_focus }}</strong></div>
                             </div>
                         </article>
 
                         <article class="radar-card radar-forex">
                             <div class="radar-top">
-                                <strong>Forex Flow</strong>
-                                <span class="status-pill open">BALANCED</span>
+                                <strong>Fear &amp; Greed</strong>
+                                <span class="status-pill open">{{ market_snapshot.fear_greed_label }}</span>
                             </div>
                             <div class="radar-meter">
-                                <div class="radar-fill" style="width: 61%;"></div>
+                                <div class="radar-fill" style="width: {{ market_snapshot.fear_greed_value }}%;"></div>
                             </div>
                             <div class="radar-stats">
-                                <div><span>Biais</span><strong>Neutral</strong></div>
-                                <div><span>Risque</span><strong>Low</strong></div>
-                                <div><span>Focus</span><strong>EURUSD • GBPUSD • USDJPY</strong></div>
+                                <div><span>Index</span><strong>{{ market_snapshot.fear_greed_value }}</strong></div>
+                                <div><span>Macro</span><strong>{{ market_snapshot.macro_pressure }}</strong></div>
+                                <div><span>Execution</span><strong>{{ market_snapshot.execution_mode }}</strong></div>
                             </div>
                         </article>
 
                         <article class="radar-card radar-indices">
                             <div class="radar-top">
-                                <strong>Index Heat</strong>
-                                <span class="status-pill win">BREAKOUT</span>
+                                <strong>BTC / ETH Flow</strong>
+                                <span class="status-pill win">{{ market_snapshot.altcoin_appetite }}</span>
                             </div>
                             <div class="radar-meter">
-                                <div class="radar-fill" style="width: 76%;"></div>
+                                <div class="radar-fill" style="width: {% if market_snapshot.market_regime == 'Expansion' %}82{% elif market_snapshot.market_regime == 'Rotation' %}68{% elif market_snapshot.market_regime == 'Compression' %}48{% else %}34{% endif %}%;"></div>
                             </div>
                             <div class="radar-stats">
-                                <div><span>Biais</span><strong>Risk On</strong></div>
-                                <div><span>Risque</span><strong>Medium</strong></div>
-                                <div><span>Focus</span><strong>US100 • SPX • DAX</strong></div>
+                                <div><span>BTC</span><strong>{{ market_snapshot.btc_price }}</strong></div>
+                                <div><span>ETH</span><strong>{{ market_snapshot.eth_price }}</strong></div>
+                                <div><span>Rotation</span><strong>{{ market_snapshot.rotation_text }}</strong></div>
                             </div>
                         </article>
 
                         <article class="radar-card radar-commodities">
                             <div class="radar-top">
-                                <strong>Commodities Watch</strong>
-                                <span class="status-pill loss">WATCH</span>
+                                <strong>Total Market</strong>
+                                <span class="status-pill {% if market_snapshot.market_regime == 'Breakdown Risk' %}loss{% else %}open{% endif %}">{{ market_snapshot.market_regime }}</span>
                             </div>
                             <div class="radar-meter">
-                                <div class="radar-fill" style="width: 48%;"></div>
+                                <div class="radar-fill" style="width: {% if market_snapshot.market_regime == 'Expansion' %}78{% elif market_snapshot.market_regime == 'Rotation' %}64{% elif market_snapshot.market_regime == 'Compression' %}45{% else %}28{% endif %}%;"></div>
                             </div>
                             <div class="radar-stats">
-                                <div><span>Biais</span><strong>Mixed</strong></div>
-                                <div><span>Risque</span><strong>High</strong></div>
-                                <div><span>Focus</span><strong>GOLD • OIL • SILVER</strong></div>
+                                <div><span>Cap</span><strong>{{ market_snapshot.total_market_cap }}</strong></div>
+                                <div><span>Volume</span><strong>{{ market_snapshot.total_volume }}</strong></div>
+                                <div><span>Desk</span><strong>{{ market_snapshot.desk_mode }}</strong></div>
                             </div>
                         </article>
                     </div>
@@ -952,42 +945,31 @@
                     <div class="panel-heading">
                         <div>
                             <span class="panel-mini-title">{{ t("leaderboard", "Leaderboard") }}</span>
-                            <h2>{{ t("performance_ranking", "Classement performance") }}</h2>
+                            <h2>Classement réel des actifs</h2>
                         </div>
                     </div>
                     <div class="leaderboard-list">
-                        <div class="leaderboard-row leaderboard-top">
-                            <div class="leaderboard-rank">#1</div>
-                            <div class="leaderboard-user">
-                                <strong>Desk Alpha</strong>
-                                <span>Institutional flow</span>
+                        {% if asset_leaderboard %}
+                            {% for item in asset_leaderboard %}
+                            <div class="leaderboard-row {% if loop.index == 1 %}leaderboard-top{% elif selected_asset and item.asset == selected_asset %}leaderboard-current{% endif %}">
+                                <div class="leaderboard-rank">#{{ loop.index }}</div>
+                                <div class="leaderboard-user">
+                                    <strong>{{ item.asset }}</strong>
+                                    <span>{{ item.wins }}W / {{ item.losses }}L • {{ item.winrate }}%</span>
+                                </div>
+                                <div class="leaderboard-score">{{ item.score }}</div>
                             </div>
-                            <div class="leaderboard-score">{{ leaderboard_score + 38 }}</div>
-                        </div>
-                        <div class="leaderboard-row leaderboard-top">
-                            <div class="leaderboard-rank">#2</div>
-                            <div class="leaderboard-user">
-                                <strong>Macro Hunter</strong>
-                                <span>Trend execution</span>
+                            {% endfor %}
+                        {% else %}
+                            <div class="leaderboard-row leaderboard-current">
+                                <div class="leaderboard-rank">#1</div>
+                                <div class="leaderboard-user">
+                                    <strong>Aucune donnée</strong>
+                                    <span>Pas assez de trades clôturés</span>
+                                </div>
+                                <div class="leaderboard-score">0</div>
                             </div>
-                            <div class="leaderboard-score">{{ leaderboard_score + 19 }}</div>
-                        </div>
-                        <div class="leaderboard-row leaderboard-current">
-                            <div class="leaderboard-rank">#3</div>
-                            <div class="leaderboard-user">
-                                <strong>{{ t("you", "Vous") }}</strong>
-                                <span>{{ performance_badge_label }}</span>
-                            </div>
-                            <div class="leaderboard-score">{{ leaderboard_score }}</div>
-                        </div>
-                        <div class="leaderboard-row">
-                            <div class="leaderboard-rank">#4</div>
-                            <div class="leaderboard-user">
-                                <strong>Momentum Desk</strong>
-                                <span>Scalp engine</span>
-                            </div>
-                            <div class="leaderboard-score">{{ leaderboard_score - 16 }}</div>
-                        </div>
+                        {% endif %}
                     </div>
                 </section>
 
@@ -1159,8 +1141,29 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://s3.tradingview.com/tv.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+    if (window.TradingView && document.getElementById("dashboard-tv-chart")) {
+        new TradingView.widget({
+            "container_id": "dashboard-tv-chart",
+            "symbol": "{{ dashboard_tv_symbol }}",
+            "interval": "60",
+            "timezone": "Europe/Paris",
+            "theme": "dark",
+            "style": "1",
+            "locale": "fr",
+            "toolbar_bg": "#0b1220",
+            "enable_publishing": false,
+            "hide_side_toolbar": false,
+            "allow_symbol_change": true,
+            "calendar": false,
+            "withdateranges": true,
+            "autosize": true,
+            "support_host": "https://www.tradingview.com"
+        });
+    }
+
     const cards = document.querySelectorAll('.stat-card, .trade-card, .scanner-card, .hero-side-card, .quota-card');
     setInterval(() => {
         cards.forEach((card, index) => {

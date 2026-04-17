@@ -7,6 +7,29 @@
 {% endblock %}
 
 {% block content %}
+{% set market_snapshot = market_snapshot or {
+    "btc_price": "...",
+    "btc_dominance": "...",
+    "total_market_cap": "...",
+    "risk_mode": "Neutral",
+    "market_regime": "Compression",
+    "dominance_label": "Balanced",
+    "altcoin_appetite": "Selective",
+    "macro_pressure": "Monitored",
+    "execution_mode": "Patience",
+    "bias_principal": "Loading...",
+    "rotation_text": "Loading...",
+    "desk_priority": "Context First",
+    "momentum_label": "Stable",
+    "dominance_state": "Balanced",
+    "macro_state": "Monitored",
+    "execution_state": "Selective",
+    "main_scenario": "Loading...",
+    "invalidation": "Loading...",
+    "assets_focus": "BTC / ETH / TOTAL / BTC.D",
+    "desk_mode": "Context",
+    "watchlist": []
+} %}
 <div class="market-page market-page-prime">
 
     <div class="market-bg-orb orb-1"></div>
@@ -53,7 +76,7 @@
                                 <span class="label">BTC Price</span>
                                 <span class="live-dot"></span>
                             </div>
-                            <span class="value">BTCUSD</span>
+                            <span class="value">{{ market_snapshot.btc_price }}</span>
                             <span class="meta">Actif directeur • lecture structurelle</span>
                         </div>
 
@@ -62,7 +85,7 @@
                                 <span class="label">Dominance</span>
                                 <span class="live-dot"></span>
                             </div>
-                            <span class="value">BTC.D</span>
+                            <span class="value">{{ market_snapshot.btc_dominance }}%</span>
                             <span class="meta">Flux de capital • rotation marché</span>
                         </div>
 
@@ -71,7 +94,7 @@
                                 <span class="label">Market Cap</span>
                                 <span class="live-dot soft"></span>
                             </div>
-                            <span class="value">TOTAL</span>
+                            <span class="value">{{ market_snapshot.total_market_cap }}</span>
                             <span class="meta">Force globale • validation macro</span>
                         </div>
 
@@ -80,7 +103,7 @@
                                 <span class="label">Risk Mode</span>
                                 <span class="live-dot amber"></span>
                             </div>
-                            <span class="value">Risk-On</span>
+                            <span class="value">{{ market_snapshot.risk_mode }}</span>
                             <span class="meta">Appétit spéculatif • session active</span>
                         </div>
                     </div>
@@ -96,23 +119,23 @@
                         <div class="hero-panel-list">
                             <div class="hero-panel-item">
                                 <span>Market Regime</span>
-                                <strong>Expansion Bias</strong>
+                                <strong>{{ market_snapshot.market_regime }}</strong>
                             </div>
                             <div class="hero-panel-item">
                                 <span>BTC Dominance</span>
-                                <strong>Capital Lead</strong>
+                                <strong>{{ market_snapshot.dominance_label }}</strong>
                             </div>
                             <div class="hero-panel-item">
                                 <span>Altcoin Appetite</span>
-                                <strong>Selective</strong>
+                                <strong>{{ market_snapshot.altcoin_appetite }}</strong>
                             </div>
                             <div class="hero-panel-item">
                                 <span>Macro Pressure</span>
-                                <strong>Monitored</strong>
+                                <strong>{{ market_snapshot.macro_pressure }}</strong>
                             </div>
                             <div class="hero-panel-item">
                                 <span>Execution Mode</span>
-                                <strong>Context First</strong>
+                                <strong>{{ market_snapshot.execution_mode }}</strong>
                             </div>
                         </div>
 
@@ -139,23 +162,23 @@
             <div class="status-strip-inner">
                 <div class="status-chip">
                     <span class="chip-label">Regime</span>
-                    <strong>Trend Expansion</strong>
+                    <strong>{{ market_snapshot.market_regime }}</strong>
                 </div>
                 <div class="status-chip">
                     <span class="chip-label">BTC</span>
-                    <strong>Leader Asset</strong>
+                    <strong>{{ market_snapshot.dominance_label }}</strong>
                 </div>
                 <div class="status-chip">
                     <span class="chip-label">ETH</span>
-                    <strong>Rotation Watch</strong>
+                    <strong>{{ market_snapshot.altcoin_appetite }}</strong>
                 </div>
                 <div class="status-chip">
                     <span class="chip-label">TOTAL</span>
-                    <strong>Macro Confirmation</strong>
+                    <strong>{{ market_snapshot.total_market_cap }}</strong>
                 </div>
                 <div class="status-chip">
                     <span class="chip-label">Volatility</span>
-                    <strong>Controlled</strong>
+                    <strong>{{ market_snapshot.macro_pressure }}</strong>
                 </div>
             </div>
         </div>
@@ -237,38 +260,38 @@
                     <div class="intel-stack">
                         <div class="intel-card">
                             <span class="intel-label">Bias principal</span>
-                            <strong>Continuation haussière sous surveillance</strong>
+                            <strong>{{ market_snapshot.bias_principal }}</strong>
                             <p>BTC reste le pivot de lecture tant que la structure principale tient.</p>
                         </div>
 
                         <div class="intel-card">
                             <span class="intel-label">Rotation du capital</span>
-                            <strong>BTC → ETH → alts sélectives</strong>
+                            <strong>{{ market_snapshot.rotation_text }}</strong>
                             <p>La qualité des rotations dépend de la stabilité de la dominance et du contexte macro.</p>
                         </div>
 
                         <div class="intel-card">
                             <span class="intel-label">Priorité du desk</span>
-                            <strong>Contexte avant setup</strong>
+                            <strong>{{ market_snapshot.desk_priority }}</strong>
                             <p>Pas d’entrée isolée sans validation structurelle, dominance et liquidité.</p>
                         </div>
 
                         <div class="intel-mini-grid">
                             <div class="intel-mini-item">
                                 <span>Momentum</span>
-                                <strong>Stable</strong>
+                                <strong>{{ market_snapshot.momentum_label }}</strong>
                             </div>
                             <div class="intel-mini-item">
                                 <span>Dominance</span>
-                                <strong>Positive</strong>
+                                <strong>{{ market_snapshot.dominance_state }}</strong>
                             </div>
                             <div class="intel-mini-item">
                                 <span>Macro</span>
-                                <strong>Mixed</strong>
+                                <strong>{{ market_snapshot.macro_state }}</strong>
                             </div>
                             <div class="intel-mini-item">
                                 <span>Execution</span>
-                                <strong>Selective</strong>
+                                <strong>{{ market_snapshot.execution_state }}</strong>
                             </div>
                         </div>
                     </div>
@@ -325,19 +348,19 @@
                     <div class="edge-list">
                         <div class="edge-item">
                             <span>Main scenario</span>
-                            <strong>Continuation haussière si la structure BTC reste propre</strong>
+                            <strong>{{ market_snapshot.main_scenario }}</strong>
                         </div>
                         <div class="edge-item">
                             <span>Invalidation</span>
-                            <strong>Perte de structure + faiblesse dominance + pression macro</strong>
+                            <strong>{{ market_snapshot.invalidation }}</strong>
                         </div>
                         <div class="edge-item">
                             <span>Assets focus</span>
-                            <strong>BTC / ETH / TOTAL / BTC.D</strong>
+                            <strong>{{ market_snapshot.assets_focus }}</strong>
                         </div>
                         <div class="edge-item">
                             <span>Desk mode</span>
-                            <strong>Context-Driven Execution</strong>
+                            <strong>{{ market_snapshot.desk_mode }}</strong>
                         </div>
                     </div>
                 </article>
@@ -355,25 +378,25 @@
             </div>
 
             <div class="regime-grid reveal-up">
-                <article class="regime-card active">
+                <article class="regime-card {% if market_snapshot.market_regime == 'Expansion' %}active{% endif %}">
                     <span class="state">01</span>
                     <h3>Expansion</h3>
                     <p>Flux haussiers, impulsion dominante, suivi de tendance et structure nette.</p>
                 </article>
 
-                <article class="regime-card">
+                <article class="regime-card {% if market_snapshot.market_regime == 'Compression' %}active{% endif %}">
                     <span class="state">02</span>
                     <h3>Compression</h3>
                     <p>Range, volume contracté, marché en attente d’un déclencheur directionnel clair.</p>
                 </article>
 
-                <article class="regime-card">
+                <article class="regime-card {% if market_snapshot.market_regime == 'Rotation' %}active{% endif %}">
                     <span class="state">03</span>
                     <h3>Rotation</h3>
                     <p>Déplacement du capital de BTC vers ETH puis vers certaines poches altcoins.</p>
                 </article>
 
-                <article class="regime-card danger">
+                <article class="regime-card danger {% if market_snapshot.market_regime == 'Breakdown Risk' %}active{% endif %}">
                     <span class="state">04</span>
                     <h3>Breakdown Risk</h3>
                     <p>Affaiblissement structurel, risque d’invalidation et sensibilité macro accrue.</p>
@@ -391,53 +414,19 @@
             </div>
 
             <div class="watchlist-grid reveal-up delay-1">
-                <article class="watch-card high">
+                {% for item in market_snapshot.watchlist %}
+                <article class="watch-card {{ item.css_class }}">
                     <div class="watch-top">
-                        <h3>Bitcoin</h3>
-                        <span class="watch-score">9.4</span>
+                        <h3>{{ item.name }}</h3>
+                        <span class="watch-score">{{ item.score }}</span>
                     </div>
-                    <p>Leader du marché, repère principal pour la direction globale et la qualité des impulsions.</p>
+                    <p>{{ item.description }}</p>
                     <div class="watch-meta">
-                        <span>Leader</span>
-                        <span>High Priority</span>
+                        <span>{{ item.tag_1 }}</span>
+                        <span>{{ item.tag_2 }}</span>
                     </div>
                 </article>
-
-                <article class="watch-card high">
-                    <div class="watch-top">
-                        <h3>Ethereum</h3>
-                        <span class="watch-score">8.8</span>
-                    </div>
-                    <p>Actif de transition clé pour lire la rotation du capital et le comportement altcoin.</p>
-                    <div class="watch-meta">
-                        <span>Rotation Watch</span>
-                        <span>High Priority</span>
-                    </div>
-                </article>
-
-                <article class="watch-card">
-                    <div class="watch-top">
-                        <h3>Solana</h3>
-                        <span class="watch-score">7.9</span>
-                    </div>
-                    <p>Momentum spéculatif élevé, utile pour mesurer l’appétit au risque du marché.</p>
-                    <div class="watch-meta">
-                        <span>Momentum</span>
-                        <span>Selective</span>
-                    </div>
-                </article>
-
-                <article class="watch-card macro">
-                    <div class="watch-top">
-                        <h3>Total Market Cap</h3>
-                        <span class="watch-score">9.1</span>
-                    </div>
-                    <p>Vue macro indispensable pour confirmer la force globale du marché et valider les scénarios.</p>
-                    <div class="watch-meta">
-                        <span>Macro</span>
-                        <span>High Priority</span>
-                    </div>
-                </article>
+                {% endfor %}
             </div>
         </div>
     </section>
@@ -462,7 +451,7 @@
                     </div>
                     <div class="market-mini-item">
                         <span class="label">Rotation</span>
-                        <span class="value">Altcoins</span>
+                        <span class="value">{{ market_snapshot.altcoin_appetite }}</span>
                     </div>
                     <div class="market-mini-item">
                         <span class="label">Vue</span>
