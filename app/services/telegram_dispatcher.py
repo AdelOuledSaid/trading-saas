@@ -54,8 +54,8 @@ TIER_RULES = {
         allow_tp_sl_updates=False,
         allow_morning_brief=False,
         allow_second_brief=False,
-        daily_news_count=2,
-        allow_breaking_news=False,
+        daily_news_count=24,
+        allow_breaking_news=True,
         include_learn_link=False,
         news_title="Velwolf Public Market News",
         news_intro="📢 Les actualités marché publiques les plus importantes du moment :",
@@ -67,8 +67,8 @@ TIER_RULES = {
         allow_tp_sl_updates=True,
         allow_morning_brief=True,
         allow_second_brief=False,
-        daily_news_count=3,
-        allow_breaking_news=False,
+        daily_news_count=24,
+        allow_breaking_news=True,
         include_learn_link=False,
         news_title="Velwolf Basic Daily News",
         news_intro="📊 Les news essentielles pour les membres Basic :",
@@ -80,7 +80,7 @@ TIER_RULES = {
         allow_tp_sl_updates=True,
         allow_morning_brief=True,
         allow_second_brief=True,
-        daily_news_count=6,
+        daily_news_count=24,
         allow_breaking_news=True,
         include_learn_link=True,
         news_title="Velwolf Premium Market News",
@@ -93,7 +93,7 @@ TIER_RULES = {
         allow_tp_sl_updates=True,
         allow_morning_brief=True,
         allow_second_brief=True,
-        daily_news_count=10,
+        daily_news_count=24,
         allow_breaking_news=True,
         include_learn_link=True,
         news_title="Velwolf VIP Market Intelligence",
@@ -454,6 +454,47 @@ def send_daily_news(slot: str = "morning") -> dict:
     return results
 
 
+def send_hourly_news() -> dict:
+    """
+    Envoie 1 news fraîche par heure sur tous les canaux autorisés.
+    Déduplication automatique via breaking_news_key + hash contenu.
+    """
+    articles = prepare_digest_articles(limit=12, max_age_hours=6)
+
+    if not articles:
+        _log_warning("[telegram_dispatcher] Aucune news horaire disponible.")
+        return {}
+
+    results = {}
+
+    article = articles[0]
+    article_id = str(article.get("id", "")).strip() or None
+    article_url = str(article.get("url", "")).strip() or None
+    article_hash = build_article_fingerprint(article)
+
+    for tier in get_all_tiers():
+        rules = get_rules(tier)
+
+        if not rules.allow_breaking_news:
+            continue
+
+        key = breaking_news_key(
+            tier,
+            article_id=article_id,
+            article_url=article_url,
+        )
+
+        results[tier] = _send_breaking_news(
+            tier=tier,
+            article=article,
+            dedup_key=key,
+            content_ref=article_url or article_id,
+            content_hash=article_hash,
+        )
+
+    return results
+
+
 def send_breaking_news(article: dict) -> dict:
     if not article:
         _log_warning("[telegram_dispatcher] Breaking news vide.")
@@ -464,22 +505,16 @@ def send_breaking_news(article: dict) -> dict:
     article_url = str(article.get("url", "")).strip() or None
     article_hash = build_article_fingerprint(article)
 
-    if get_rules("premium").allow_breaking_news:
-        key_premium = breaking_news_key("premium", article_id=article_id, article_url=article_url)
-        results["premium"] = _send_breaking_news(
-            tier="premium",
-            article=article,
-            dedup_key=key_premium,
-            content_ref=article_url or article_id,
-            content_hash=article_hash,
-        )
+    for tier in get_all_tiers():
+        rules = get_rules(tier)
+        if not rules.allow_breaking_news:
+            continue
 
-    if get_rules("vip").allow_breaking_news:
-        key_vip = breaking_news_key("vip", article_id=article_id, article_url=article_url)
-        results["vip"] = _send_breaking_news(
-            tier="vip",
+        key = breaking_news_key(tier, article_id=article_id, article_url=article_url)
+        results[tier] = _send_breaking_news(
+            tier=tier,
             article=article,
-            dedup_key=key_vip,
+            dedup_key=key,
             content_ref=article_url or article_id,
             content_hash=article_hash,
         )
@@ -696,6 +731,9 @@ def dispatch_event(
 
     if event == "daily_news":
         return send_daily_news(slot=slot)
+
+    if event == "hourly_news":
+        return send_hourly_news()
 
     if event == "breaking_news":
         return send_breaking_news(article or {})

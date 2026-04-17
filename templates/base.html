@@ -14,14 +14,14 @@
     <!-- SEO DESCRIPTION -->
     <meta name="description" content="{% block meta_description %}{{ t('seo_home_description', 'Plateforme premium de trading, signaux, academy et analyse marché.') }}{% endblock %}">
 
-    <!-- OPTIONAL SEO -->
+    <!-- SEO -->
     <meta name="robots" content="index,follow">
     <meta name="theme-color" content="#0b1220">
 
     <!-- CANONICAL -->
     <link rel="canonical" href="{{ request.url }}">
 
-    <!-- HREFLANG (Google Multi-langue) -->
+    <!-- HREFLANG -->
     <link rel="alternate" hreflang="fr" href="{{ switch_lang_url('fr') }}">
     <link rel="alternate" hreflang="en" href="{{ switch_lang_url('en') }}">
     <link rel="alternate" hreflang="es" href="{{ switch_lang_url('es') }}">
@@ -50,9 +50,10 @@
 
 <body class="{% block body_class %}{% endblock %}">
 
+    <!-- NAVBAR -->
     {% include "partials/navbar.html" %}
 
-    <!-- FLASH -->
+    <!-- FLASH MESSAGES -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="flash-wrapper">
@@ -65,54 +66,18 @@
         {% endif %}
     {% endwith %}
 
-    <!-- MAIN -->
+    <!-- MAIN CONTENT -->
     <main class="{% block main_class %}site-main{% endblock %}">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- FOOTER -->
-    <footer class="site-footer">
-        <div class="section-container footer-inner">
-
-            <div class="footer-brand">
-                <h3>VelWolef</h3>
-                <p>
-                    {{ t("footer_desc", "Plateforme premium de signaux trading, résultats et academy.") }}
-                </p>
-            </div>
-
-            <div class="footer-links">
-                <a href="{{ url_for('main.home', lang_code=current_lang) }}">
-                    {{ t("home", "Accueil") }}
-                </a>
-
-                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}">
-                    {{ t("pricing", "Offres") }}
-                </a>
-
-                <a href="{{ url_for('signals.results', lang_code=current_lang) }}">
-                    {{ t("results", "Résultats") }}
-                </a>
-
-                <a href="{{ url_for('pages.faq_page', lang_code=current_lang) }}">
-                    FAQ
-                </a>
-
-                <a href="{{ url_for('pages.cgu', lang_code=current_lang) }}">
-                    CGU
-                </a>
-
-                <a href="{{ url_for('pages.mentions_legales', lang_code=current_lang) }}">
-                    {{ t("legal", "Mentions légales") }}
-                </a>
-            </div>
-
-        </div>
-    </footer>
+    <!-- 🔥 FOOTER GLOBAL PRO -->
+    {% include "partials/footer.html" %}
 
     <!-- UPGRADE POPUP -->
     <div id="upgradePopup" class="upgrade-popup" aria-hidden="true">
         <div class="upgrade-popup-box">
+
             <div class="upgrade-popup-badge">
                 {{ t("pro_required", "Accès Pro requis") }}
             </div>
@@ -124,8 +89,9 @@
             </p>
 
             <div class="upgrade-popup-actions">
+
                 {% if current_user.is_authenticated %}
-                    <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST" style="display:inline;">
+                    <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
                         <input type="hidden" name="plan" value="premium">
                         <button type="submit" class="academy-btn academy-btn-gold">
                             {{ t("upgrade_now", "Débloquer maintenant") }}
@@ -140,11 +106,10 @@
                 <button type="button" class="upgrade-popup-close" onclick="closeUpgradePopup()">
                     {{ t("close", "Fermer") }}
                 </button>
+
             </div>
         </div>
     </div>
-
-    
 
     <!-- JS -->
     <script src="{{ url_for('static', filename='main.js') }}"></script>

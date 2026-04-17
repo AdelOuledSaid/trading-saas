@@ -9,7 +9,6 @@ from app.services.telegram_dispatcher import (
     send_second_briefings,
     send_breaking_news,
 )
-from app.services.news_dispatcher import send_daily_news
 from app.services.news_digest_service import prepare_digest_articles
 from app.services.telegram_dedup import purge_old_dispatch_logs
 
@@ -78,18 +77,6 @@ def job_evening_brief():
         )
 
 
-def job_daily_news_morning():
-    with app.app_context():
-        print(f"[{datetime.now()}] Daily news morning...")
-        print(send_daily_news(slot="morning"))
-
-
-def job_daily_news_evening():
-    with app.app_context():
-        print(f"[{datetime.now()}] Daily news evening...")
-        print(send_daily_news(slot="evening"))
-
-
 def job_breaking_news():
     with app.app_context():
         print(f"[{datetime.now()}] Breaking news check...")
@@ -122,13 +109,6 @@ def run_scheduler():
     )
 
     scheduler.add_job(
-        job_daily_news_morning,
-        CronTrigger(hour=9, minute=0),
-        id="daily_news_morning",
-        replace_existing=True,
-    )
-
-    scheduler.add_job(
         job_breaking_news,
         CronTrigger(minute="*/10"),
         id="breaking_news",
@@ -139,13 +119,6 @@ def run_scheduler():
         job_midday_brief,
         CronTrigger(hour=13, minute=0),
         id="midday_brief",
-        replace_existing=True,
-    )
-
-    scheduler.add_job(
-        job_daily_news_evening,
-        CronTrigger(hour=17, minute=30),
-        id="daily_news_evening",
         replace_existing=True,
     )
 

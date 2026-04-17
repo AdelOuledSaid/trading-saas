@@ -1,5 +1,5 @@
 <footer class="site-footer">
-    <div class="section-container footer-inner">
+    <div class="footer-container">
 
         <div class="footer-brand">
             <h3>VelWolef</h3>
@@ -7,43 +7,83 @@
                 Plateforme premium de signaux, trading et formation.
                 Une expérience structurée pour comprendre et performer.
             </p>
+
+            <div class="footer-socials">
+                <a href="https://t.me/TON_TELEGRAM" target="_blank" rel="noopener" aria-label="Telegram" class="social-link social-telegram">
+                    <span class="social-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
+                            <path d="M21.5 4.5L18.4 19.2C18.17 20.24 17.56 20.49 16.69 20.01L12.1 16.63L9.89 18.76C9.65 19 9.45 19.2 8.99 19.2L9.32 14.53L17.82 6.85C18.19 6.52 17.74 6.34 17.24 6.67L6.73 13.29L2.2 11.88C1.22 11.57 1.2 10.9 2.41 10.43L20.12 3.6C20.94 3.3 21.66 3.79 21.5 4.5Z" fill="currentColor"/>
+                        </svg>
+                    </span>
+                    <span>Telegram</span>
+                </a>
+
+                <a href="https://instagram.com/TON_INSTAGRAM" target="_blank" rel="noopener" aria-label="Instagram" class="social-link social-instagram">
+                    <span class="social-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
+                            <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.9"/>
+                            <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.9"/>
+                            <circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/>
+                        </svg>
+                    </span>
+                    <span>Instagram</span>
+                </a>
+
+                <a href="https://x.com/TON_X" target="_blank" rel="noopener" aria-label="X" class="social-link social-x">
+                    <span class="social-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
+                            <path d="M18.9 3H21L14.08 10.91L22.22 21H15.85L10.86 14.88L5.51 21H3.4L10.8 12.53L3 3H9.53L14.04 8.58L18.9 3ZM18.16 19.74H19.33L8.89 4.19H7.64L18.16 19.74Z" fill="currentColor"/>
+                        </svg>
+                    </span>
+                    <span>X</span>
+                </a>
+
+                <a href="https://www.coingecko.com/" target="_blank" rel="noopener" aria-label="CoinGecko" class="social-link social-coingecko">
+                    <span class="social-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
+                            <circle cx="12" cy="12" r="9" fill="currentColor" opacity="0.18"/>
+                            <path d="M19 11.7C19 15.75 15.87 19 12 19C8.13 19 5 15.75 5 11.7C5 7.66 8.13 4.4 12 4.4C13.74 4.4 15.32 5.06 16.52 6.16C15.33 6 13.86 6.14 12.47 6.74C10.2 7.72 8.65 9.92 8.39 12.24C8.25 13.49 8.46 14.71 9.03 15.72C9.64 16.8 10.67 17.57 12.04 17.81C13.49 18.06 14.84 17.73 15.99 16.82C17.1 15.95 17.87 14.64 18.14 13.15C18.23 12.65 18.28 12.16 18.28 11.68C18.52 11.65 18.76 11.66 19 11.7Z" fill="currentColor"/>
+                            <circle cx="14.95" cy="10.1" r="1" fill="currentColor"/>
+                        </svg>
+                    </span>
+                    <span>CoinGecko</span>
+                </a>
+            </div>
         </div>
 
-        <div class="footer-links">
-
+        <div class="footer-links-group">
             <div class="footer-col">
                 <h4>Navigation</h4>
-                <a href="{{ url_for('main.home') }}">Accueil</a>
-                <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
-                <a href="{{ url_for('signals.results') }}">Résultats</a>
-                <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
-                <a href="{{ url_for('billing.pricing') }}">Offres</a>
+                <a href="{{ url_for('main.home', lang_code=current_lang) }}">{{ t('home', 'Accueil') }}</a>
+                <a href="{{ url_for('signals.signals_page', lang_code=current_lang) }}">{{ t('signals', 'Signaux') }}</a>
+                <a href="{{ url_for('signals.results', lang_code=current_lang) }}">{{ t('results', 'Résultats') }}</a>
+                <a href="{{ url_for('pages.trading_lab', lang_code=current_lang) }}">Trading Lab</a>
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}">{{ t('pricing', 'Offres') }}</a>
             </div>
 
             <div class="footer-col">
                 <h4>Academy</h4>
-                <a href="{{ url_for('pages.academy_index') }}">Academy</a>
-                <a href="{{ url_for('pages.academy_level_1') }}">Niveau 1</a>
-                <a href="{{ url_for('pages.academy_level_2') }}">Niveau 2</a>
-                <a href="{{ url_for('pages.academy_upgrade') }}">Upgrade</a>
+                <a href="{{ url_for('pages.academy_index', lang_code=current_lang) }}">Academy</a>
+                <a href="{{ url_for('pages.academy_level_1', lang_code=current_lang) }}">Niveau 1</a>
+                <a href="{{ url_for('pages.academy_level_2', lang_code=current_lang) }}">Niveau 2</a>
+                <a href="{{ url_for('pages.academy_level_3', lang_code=current_lang) }}">Niveau 3</a>
+                <a href="{{ url_for('pages.academy_upgrade', lang_code=current_lang) }}">Upgrade</a>
             </div>
 
             <div class="footer-col">
                 <h4>Support</h4>
-                <a href="{{ url_for('pages.contact') }}">Contact</a>
-                <a href="{{ url_for('pages.faq_page') }}">FAQ</a>
-                <a href="{{ url_for('pages.about') }}">À propos</a>
+                <a href="{{ url_for('pages.contact', lang_code=current_lang) }}">Contact</a>
+                <a href="{{ url_for('pages.faq_page', lang_code=current_lang) }}">FAQ</a>
+                <a href="{{ url_for('pages.about', lang_code=current_lang) }}">À propos</a>
             </div>
 
             <div class="footer-col">
                 <h4>Légal</h4>
-                <a href="{{ url_for('pages.cgu') }}">CGU</a>
-                <a href="{{ url_for('pages.mentions_legales') }}">Mentions légales</a>
-                <a href="{{ url_for('pages.privacy') }}">Confidentialité</a>
+                <a href="{{ url_for('pages.cgu', lang_code=current_lang) }}">CGU</a>
+                <a href="{{ url_for('pages.mentions_legales', lang_code=current_lang) }}">Mentions légales</a>
+                <a href="{{ url_for('pages.privacy', lang_code=current_lang) }}">Confidentialité</a>
             </div>
-
         </div>
-
     </div>
 
     <div class="footer-bottom">

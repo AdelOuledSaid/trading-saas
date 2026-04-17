@@ -2275,3 +2275,535 @@ body.ultra-dashboard-body main.dashboard-main-shell {
         grid-template-columns: 1fr;
     }
 }
+/* =========================================================
+   MOBILE PREMIUM V2 - phone first enhancements only
+   Desktop untouched
+========================================================= */
+
+@media (max-width: 820px) {
+    .dashboard-shell,
+    .ultra-dashboard-shell {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: calc(100% - 14px);
+        margin: 10px auto 22px;
+    }
+
+    .dashboard-content,
+    .ultra-dashboard-content {
+        order: 1;
+        gap: 14px;
+    }
+
+    .dashboard-sidebar,
+    .ultra-dashboard-sidebar {
+        order: 2;
+        position: static;
+        gap: 12px;
+    }
+
+    .dashboard-hero,
+    .ultra-hero {
+        padding: 18px;
+        border-radius: 22px;
+        gap: 14px;
+        box-shadow: 0 12px 34px rgba(0, 0, 0, 0.26);
+    }
+
+    .hero-badge-line {
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .hero-live-dot {
+        min-height: 30px;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .ultra-title,
+    .dashboard-hero h1 {
+        font-size: clamp(1.7rem, 7vw, 2.25rem);
+        line-height: 1.02;
+        letter-spacing: -0.05em;
+    }
+
+    .hero-subtitle {
+        margin-top: 10px;
+        font-size: 0.93rem;
+        line-height: 1.65;
+        max-width: 100%;
+    }
+
+    .hero-actions {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .dashboard-hero-side {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .hero-side-card {
+        padding: 14px;
+        min-height: 88px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.025));
+    }
+
+    .hero-side-card strong {
+        font-size: 1.05rem;
+    }
+
+    .premium-panel,
+    .watchlist-panel,
+    .watchlist-wide-panel,
+    .bottom-cta-box,
+    .stat-card,
+    .sidebar-brand-card,
+    .sidebar-market-box,
+    .sidebar-upgrade-box,
+    .dashboard-sidebar-nav {
+        border-radius: 18px;
+    }
+
+    .premium-panel,
+    .watchlist-panel,
+    .watchlist-wide-panel,
+    .bottom-cta-box,
+    .stat-card,
+    .sidebar-brand-card,
+    .sidebar-market-box,
+    .sidebar-upgrade-box {
+        padding: 16px;
+    }
+
+    .panel-heading {
+        margin-bottom: 14px;
+        gap: 10px;
+    }
+
+    .panel-heading h2,
+    .sidebar-brand-card h2,
+    .bottom-cta-box h2 {
+        font-size: 1.12rem;
+        line-height: 1.15;
+    }
+
+    .panel-mini-title,
+    .stat-kicker {
+        font-size: 0.68rem;
+        letter-spacing: 0.09em;
+    }
+
+    .dashboard-sidebar-nav {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 8px;
+        background: rgba(15, 23, 42, 0.94);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    .sidebar-link {
+        min-height: 48px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        justify-content: center;
+        text-align: center;
+        font-size: 0.82rem;
+        line-height: 1.2;
+        gap: 8px;
+    }
+
+    .sidebar-link span {
+        font-size: 1rem;
+        line-height: 1;
+    }
+
+    .sidebar-mini-metrics,
+    .signal-card-grid,
+    .last-signal-grid,
+    .trade-grid,
+    .dashboard-watchlist,
+    .watchlist-wide-grid,
+    .winning-trades-grid,
+    .performance-badge-metrics,
+    .quick-stats-grid,
+    .scanner-grid,
+    .streak-grid,
+    .quota-grid,
+    .ai-brain-grid-v4,
+    .market-radar-grid,
+    .stats-highlight-grid,
+    .ultra-stats-grid,
+    .dashboard-main-right {
+        grid-template-columns: 1fr;
+    }
+
+    .signal-info-card,
+    .quick-stat-box,
+    .watch-item,
+    .winning-trade-box,
+    .quota-card,
+    .ai-brain-card,
+    .scanner-card,
+    .streak-box,
+    .replay-highlight-card,
+    .briefing-preview-box,
+    .locked-preview-card,
+    .empty-state-box,
+    .trade-card,
+    .radar-card,
+    .performance-badge-metrics div,
+    .leaderboard-row,
+    .account-line,
+    .coverage-item {
+        padding: 13px;
+        border-radius: 14px;
+    }
+
+    .trade-card,
+    .winning-trade-box,
+    .radar-card,
+    .quota-card,
+    .signal-info-card,
+    .quick-stat-box,
+    .watch-item,
+    .scanner-card,
+    .streak-box,
+    .hero-side-card,
+    .ai-brain-card {
+        box-shadow: 0 8px 20px rgba(0,0,0,0.14);
+    }
+
+    .trade-top,
+    .winning-top,
+    .account-line,
+    .tv-chart-header,
+    .market-topbar,
+    .signal-actions-row,
+    .quota-progress-top,
+    .telegram-badge-row,
+    .xp-bar-meta,
+    .leaderboard-row,
+    .radar-top {
+        gap: 8px;
+    }
+
+    .trade-top strong,
+    .winning-top strong,
+    .leaderboard-user strong,
+    .radar-top strong {
+        font-size: 0.98rem;
+    }
+
+    .trade-analysis,
+    .briefing-content-preview,
+    .locked-preview-card p,
+    .quota-card p,
+    .quota-progress-note,
+    .scanner-card p,
+    .ai-brain-card small {
+        font-size: 0.87rem;
+        line-height: 1.6;
+    }
+
+    .stat-card {
+        min-height: auto;
+        gap: 10px;
+    }
+
+    .stat-card h3,
+    .performance-badge-card h3,
+    .quota-card strong,
+    .tv-price strong {
+        font-size: 1.45rem;
+    }
+
+    .tv-chart-box {
+        border-radius: 16px;
+    }
+
+    .tv-chart-header {
+        padding: 14px 14px 0;
+    }
+
+    .tv-chart {
+        height: 220px;
+        min-height: 220px;
+        margin-top: 10px;
+    }
+
+    .tv-chart svg {
+        min-height: 220px;
+    }
+
+    .tv-marker {
+        font-size: 0.62rem;
+        padding: 5px 8px;
+    }
+
+    .ultra-ticker-ribbon {
+        min-height: 42px;
+        border-radius: 14px;
+    }
+
+    .ticker-track-v4 {
+        font-size: 0.76rem;
+        gap: 18px;
+        animation-duration: 18s;
+    }
+
+    .xp-core-card {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        justify-items: start;
+    }
+
+    .xp-ring {
+        width: 88px;
+        height: 88px;
+        padding: 8px;
+    }
+
+    .xp-ring-inner {
+        font-size: 1rem;
+    }
+
+    .leaderboard-row {
+        display: grid;
+        grid-template-columns: 46px minmax(0, 1fr);
+        align-items: start;
+    }
+
+    .leaderboard-score {
+        grid-column: 2;
+        justify-self: start;
+        font-size: 0.98rem;
+    }
+
+    .bottom-cta-box {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+
+    .bottom-cta-actions,
+    .telegram-panel-actions,
+    .signal-card-actions,
+    .locked-signal-actions,
+    .compact-actions,
+    .hero-actions {
+        width: 100%;
+    }
+
+    .hero-primary-btn,
+    .hero-secondary-btn,
+    .hero-utility-btn,
+    .panel-link-btn,
+    .replay-btn,
+    .telegram-btn,
+    .telegram-outline-btn,
+    .compact-btn,
+    .vip-lock-btn,
+    .sidebar-upgrade-btn {
+        min-height: 46px;
+        border-radius: 13px;
+        font-size: 0.88rem;
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .account-line strong,
+    .hero-live-dot,
+    .leaderboard-user strong,
+    .watch-item strong,
+    .quota-card strong,
+    .signal-info-card strong,
+    .trade-grid strong,
+    .winning-metrics strong {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        white-space: normal;
+    }
+}
+
+@media (max-width: 640px) {
+    body.dashboard-body main.dashboard-main-shell,
+    body.premium-dashboard-body main.dashboard-main-shell,
+    body.ultra-dashboard-body main.dashboard-main-shell {
+        padding-top: calc(var(--nav-h) + 12px);
+    }
+
+    .dashboard-shell,
+    .ultra-dashboard-shell {
+        width: calc(100% - 10px);
+        margin: 8px auto 18px;
+        gap: 10px;
+    }
+
+    .dashboard-hero,
+    .ultra-hero,
+    .premium-panel,
+    .watchlist-panel,
+    .watchlist-wide-panel,
+    .bottom-cta-box,
+    .stat-card,
+    .sidebar-brand-card,
+    .sidebar-market-box,
+    .sidebar-upgrade-box {
+        padding: 14px;
+        border-radius: 16px;
+    }
+
+    .dashboard-sidebar-nav {
+        grid-template-columns: 1fr;
+        gap: 7px;
+        border-radius: 16px;
+    }
+
+    .sidebar-link {
+        justify-content: flex-start;
+        text-align: left;
+        padding: 12px 14px;
+    }
+
+    .hero-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-hero-side {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .ultra-title,
+    .dashboard-hero h1 {
+        font-size: 1.52rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.89rem;
+        line-height: 1.58;
+    }
+
+    .hero-badge,
+    .ai-badge,
+    .hero-live-dot,
+    .stat-chip,
+    .signal-badge,
+    .mini-status,
+    .market-chip,
+    .lock-badge-inline,
+    .performance-badge-kicker {
+        font-size: 0.64rem;
+    }
+
+    .market-badges,
+    .hero-badge-line {
+        gap: 6px;
+    }
+
+    .asset-filter-form select {
+        min-width: 100%;
+        width: 100%;
+    }
+
+    .tv-chart {
+        height: 190px;
+        min-height: 190px;
+    }
+
+    .tv-chart svg {
+        min-height: 190px;
+    }
+
+    .ticker-track-v4 {
+        font-size: 0.72rem;
+        gap: 14px;
+    }
+
+    .trade-grid,
+    .signal-card-grid,
+    .last-signal-grid,
+    .winning-metrics,
+    .sidebar-mini-metrics {
+        gap: 10px;
+    }
+}
+
+@media (max-width: 420px) {
+    .dashboard-shell,
+    .ultra-dashboard-shell {
+        width: calc(100% - 8px);
+    }
+
+    .dashboard-hero,
+    .ultra-hero,
+    .premium-panel,
+    .watchlist-panel,
+    .watchlist-wide-panel,
+    .bottom-cta-box,
+    .stat-card,
+    .sidebar-brand-card,
+    .sidebar-market-box,
+    .sidebar-upgrade-box {
+        padding: 12px;
+        border-radius: 14px;
+    }
+
+    .dashboard-hero-side {
+        grid-template-columns: 1fr;
+    }
+
+    .ultra-title,
+    .dashboard-hero h1 {
+        font-size: 1.36rem;
+    }
+
+    .panel-heading h2,
+    .sidebar-brand-card h2,
+    .bottom-cta-box h2 {
+        font-size: 1.02rem;
+    }
+
+    .stat-card h3,
+    .performance-badge-card h3,
+    .quota-card strong,
+    .tv-price strong,
+    .hero-side-card strong {
+        font-size: 1.12rem;
+    }
+
+    .tv-chart {
+        height: 170px;
+        min-height: 170px;
+    }
+
+    .tv-chart svg {
+        min-height: 170px;
+    }
+
+    .hero-primary-btn,
+    .hero-secondary-btn,
+    .hero-utility-btn,
+    .panel-link-btn,
+    .replay-btn,
+    .telegram-btn,
+    .telegram-outline-btn,
+    .compact-btn,
+    .vip-lock-btn,
+    .sidebar-upgrade-btn {
+        min-height: 44px;
+        font-size: 0.84rem;
+    }
+}
