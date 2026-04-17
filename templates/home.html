@@ -14,6 +14,7 @@
 
 <div class="home-v3-shell">
 
+    <!-- LIVE MARKET TICKER -->
     <div class="market-ticker-live">
         <div class="section-container">
             <div class="ticker-shell">
@@ -31,6 +32,7 @@
         </div>
     </div>
 
+    <!-- HERO -->
     <section class="home-hero v3-hero">
         <div class="v3-grid-overlay"></div>
         <div class="v3-radar-ring ring-1"></div>
@@ -137,6 +139,9 @@
                     <div class="v3-mini-pill">
                         {{ t("market_live", "Marché en direct") }}
                     </div>
+                    <div class="v3-mini-pill">
+                        {{ t("ai_driven", "AI Driven") }}
+                    </div>
                 </div>
 
                 <h1 class="hero-title-v3">
@@ -201,6 +206,7 @@
                         <span>{{ t("dominant_signal_desc", "Momentum maintenu sur les actifs majeurs") }}</span>
                     </div>
 
+                    <!-- TÉLÉPHONE CONSERVÉ POUR PC -->
                     <div class="v3-phone-card hero-parallax-layer" data-speed="10">
                         <div class="v3-phone-notch"></div>
                         <div class="v3-phone-inner">
@@ -294,6 +300,84 @@
         </div>
     </section>
 
+    <!-- MARKET HUB -->
+    <section class="market-hub-home" id="market-hub">
+        <div class="section-container">
+            <div class="market-hub-header">
+                <div>
+                    <span class="market-hub-kicker">Market Intelligence</span>
+                    <h2>Global Market Pulse</h2>
+                    <p>
+                        Lecture rapide du marché avec biais, sentiment, dominance BTC et actifs clés.
+                        Une vraie couche “intel” directement dans la page d’accueil.
+                    </p>
+                </div>
+            </div>
+
+            <div class="market-hub-grid">
+                <div class="market-hub-hero">
+                    <div class="hub-badge">
+                        <span>Bias</span>
+                        <strong>{{ market.hero.market_bias if market and market.hero else 'Neutral' }}</strong>
+                    </div>
+
+                    <div class="hub-badge">
+                        <span>Fear & Greed</span>
+                        <strong>{{ market.hero.fear_greed_value if market and market.hero else '50' }}</strong>
+                        <small>{{ market.hero.fear_greed_label if market and market.hero else 'Neutral' }}</small>
+                    </div>
+
+                    <div class="hub-badge">
+                        <span>BTC Dominance</span>
+                        <strong>
+                            {% if market and market.hero and market.hero.btc_dominance is not none %}
+                                {{ market.hero.btc_dominance }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="market-assets-grid">
+                    {% if market and market.assets %}
+                        {% for asset in market.assets %}
+                        <div class="asset-mini-card">
+                            <span class="symbol">{{ asset.symbol }}</span>
+
+                            <strong class="price">
+                                {% if asset.symbol in ['BTC', 'ETH'] %}
+                                    ${{ "{:,.0f}".format(asset.price or 0) }}
+                                {% elif asset.symbol == 'BTC.D' %}
+                                    {{ asset.price }}%
+                                {% else %}
+                                    {{ asset.price }}
+                                {% endif %}
+                            </strong>
+
+                            {% if asset.change_24h is not none %}
+                            <span class="change {% if asset.change_24h >= 0 %}up{% else %}down{% endif %}">
+                                {{ "+" if asset.change_24h >= 0 else "" }}{{ asset.change_24h }}%
+                            </span>
+                            {% endif %}
+
+                            {% if asset.market_cap %}
+                            <small class="asset-meta">{{ asset.market_cap }}</small>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="asset-mini-card"><span class="symbol">BTC</span><strong class="price">--</strong></div>
+                        <div class="asset-mini-card"><span class="symbol">ETH</span><strong class="price">--</strong></div>
+                        <div class="asset-mini-card"><span class="symbol">BTC.D</span><strong class="price">--</strong></div>
+                        <div class="asset-mini-card"><span class="symbol">F&G</span><strong class="price">--</strong></div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMMAND -->
     <section class="v3-command-section">
         <div class="section-container">
             <div class="v3-command-grid">
@@ -413,6 +497,7 @@
         </div>
     </section>
 
+    <!-- LIVE FEED -->
     <section class="v3-live-feed-section">
         <div class="section-container">
             <div class="v3-feed-wrap">
@@ -493,56 +578,7 @@
         </div>
     </section>
 
-    <section class="v3-magnetic-section">
-        <div class="section-container">
-            <div class="v3-magnetic-grid">
-                <article class="v3-magnetic-card magnetic-card">
-                    <div class="icon">01</div>
-                    <h3>{{ t("clarity", "Clarté immédiate") }}</h3>
-                    <p>{{ t("clarity_desc", "Chaque signal est lisible en quelques secondes.") }}</p>
-                    <span class="mini">{{ t("entry", "Entrée") }} • TP • SL</span>
-                </article>
-
-                <article class="v3-magnetic-card magnetic-card">
-                    <div class="icon">02</div>
-                    <h3>{{ t("logic", "Structure logique") }}</h3>
-                    <p>{{ t("logic_desc", "Entrée, risque et objectif clairement définis.") }}</p>
-                    <span class="mini">AI + Context</span>
-                </article>
-
-                <article class="v3-magnetic-card magnetic-card">
-                    <div class="icon">03</div>
-                    <h3>{{ t("speed", "Exécution rapide") }}</h3>
-                    <p>{{ t("speed_desc", "Moins d’hésitation, plus d’action.") }}</p>
-                    <span class="mini">Signal Engine</span>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <section class="power-strip-section">
-        <div class="section-container">
-            <div class="power-strip">
-                <div class="power-strip-item">
-                    <span>{{ t("execution_clear", "Exécution claire") }}</span>
-                    <strong>{{ t("execution_clear_desc", "Entrée, SL, TP, statut") }}</strong>
-                </div>
-                <div class="power-strip-item">
-                    <span>{{ t("decision_fast", "Décision rapide") }}</span>
-                    <strong>{{ t("decision_fast_desc", "Lecture visuelle immédiate") }}</strong>
-                </div>
-                <div class="power-strip-item">
-                    <span>{{ t("pro_framework", "Cadre pro") }}</span>
-                    <strong>{{ t("pro_framework_desc", "Dashboard, résultats, lab") }}</strong>
-                </div>
-                <div class="power-strip-item">
-                    <span>{{ t("premium_approach", "Approche premium") }}</span>
-                    <strong>{{ t("premium_approach_desc", "Conçue pour traders sérieux") }}</strong>
-                </div>
-            </div>
-        </div>
-    </section>
-
+    <!-- NEWS -->
     <section class="market-updates-section">
         <div class="section-container">
             <div class="market-updates-header">
@@ -596,176 +632,7 @@
         </div>
     </section>
 
-    <section class="platform-showcase-section">
-        <div class="section-container">
-            <div class="section-title left-title">
-                <span>{{ t("platform", "La plateforme") }}</span>
-                <h2>{{ t("platform_title", "Un environnement construit pour filtrer le bruit et accélérer l’exécution") }}</h2>
-                <p>
-                    {{ t("platform_desc", "VelWolef réunit les signaux, les résultats, le Trading Lab et l’espace membre dans une expérience pensée comme un vrai produit premium.") }}
-                </p>
-            </div>
-
-            <div class="platform-v2-grid">
-                <article class="platform-v2-hero-card">
-                    <div class="platform-v2-badge">Signal Engine</div>
-
-                    <h3>{{ t("signal_engine_title", "Des signaux exploitables en quelques secondes, sans ambiguïté") }}</h3>
-
-                    <p>
-                        {{ t("signal_engine_desc", "Chaque setup met en avant les niveaux clés, le contexte de marché, le statut du signal et une lecture visuelle immédiate.") }}
-                    </p>
-
-                    <div class="platform-v2-metrics">
-                        <div class="platform-v2-metric">
-                            <span>{{ t("entry", "Entrée") }}</span>
-                            <strong>61 240</strong>
-                        </div>
-                        <div class="platform-v2-metric">
-                            <span>{{ t("take_profit", "Take Profit") }}</span>
-                            <strong>62 180</strong>
-                        </div>
-                        <div class="platform-v2-metric">
-                            <span>{{ t("stop_loss", "Stop Loss") }}</span>
-                            <strong>60 780</strong>
-                        </div>
-                    </div>
-
-                    <div class="platform-v2-visual">
-                        <div class="platform-v2-visual-top">
-                            <span class="mini-dot green"></span>
-                            <span class="mini-pill">BTCUSD • BUY</span>
-                            <span class="mini-status">{{ t("status_active", "Actif") }}</span>
-                        </div>
-
-                        <div class="platform-v2-chart">
-                            <div class="chart-line chart-line-1"></div>
-                            <div class="chart-line chart-line-2"></div>
-                            <div class="chart-candle candle-1"></div>
-                            <div class="chart-candle candle-2"></div>
-                            <div class="chart-candle candle-3"></div>
-                            <div class="chart-candle candle-4"></div>
-                            <div class="chart-buy-tag">BUY</div>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="platform-v2-side-card">
-                    <div class="platform-v2-badge">{{ t("results", "Résultats") }}</div>
-                    <h3>{{ t("results_title", "Une lecture claire de la performance") }}</h3>
-                    <p>{{ t("results_desc", "Winrate, historique visible et progression structurée dans une interface crédible.") }}</p>
-                </article>
-
-                <article class="platform-v2-side-card">
-                    <div class="platform-v2-badge">{{ t("trading_lab", "Trading Lab") }}</div>
-                    <h3>{{ t("lab_title", "Comprendre avant d’exécuter") }}</h3>
-                    <p>{{ t("lab_desc", "Structure, gestion du risque, psychologie et logique d’exécution.") }}</p>
-                </article>
-
-                <article class="platform-v2-bottom-card">
-                    <div class="platform-v2-badge">Dashboard</div>
-                    <h3>{{ t("dashboard_title", "Une vraie sensation de produit premium") }}</h3>
-                    <p>{{ t("dashboard_desc", "L’espace membre prolonge l’expérience avec une navigation plus rapide, des vues utiles et une perception plus haut de gamme.") }}</p>
-                </article>
-
-                <article class="platform-v2-mini-card">
-                    <span>{{ t("market_reading", "Lecture marché") }}</span>
-                    <strong>{{ t("market_reading_desc", "Contexte visuel immédiat") }}</strong>
-                </article>
-
-                <article class="platform-v2-mini-card">
-                    <span>{{ t("execution", "Exécution") }}</span>
-                    <strong>{{ t("execution_desc", "Entrée, TP, SL et statut") }}</strong>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <section class="why-v2">
-        <div class="section-container why-v2-container">
-            <div class="why-v2-left">
-                <span class="section-badge">{{ t("why_velwolef", "Pourquoi VelWolef") }}</span>
-
-                <h2>
-                    {{ t("why_title_1", "Une plateforme conçue pour") }}
-                    <span class="gradient-text">{{ t("why_title_2", "réduire le bruit") }}</span>
-                    {{ t("why_title_3", "et accélérer la décision") }}
-                </h2>
-
-                <p>
-                    {{ t("why_desc", "VelWolef structure l’information marché pour transformer la complexité en lecture claire et actionnable.") }}
-                </p>
-            </div>
-
-            <div class="why-v2-right">
-                <div class="why-v2-card">
-                    <strong>{{ t("clarity", "Clarté immédiate") }}</strong>
-                    <span>{{ t("clarity_desc", "Chaque signal est lisible en quelques secondes.") }}</span>
-                </div>
-
-                <div class="why-v2-card">
-                    <strong>{{ t("logic", "Structure logique") }}</strong>
-                    <span>{{ t("logic_desc", "Entrée, risque et objectif clairement définis.") }}</span>
-                </div>
-
-                <div class="why-v2-card">
-                    <strong>{{ t("speed", "Exécution rapide") }}</strong>
-                    <span>{{ t("speed_desc", "Moins d’hésitation, plus d’action.") }}</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="results-proof-section">
-        <div class="section-container">
-            <div class="results-proof-box">
-                <div class="results-proof-left">
-                    <span class="proof-badge">{{ t("data_performance", "Données & performance") }}</span>
-
-                    <h2>{{ t("proof_title", "Des résultats lisibles, vérifiables et directement exploitables") }}</h2>
-
-                    <p>
-                        {{ t("proof_desc", "VelWolef met l’accent sur la transparence des performances. Chaque signal s’inscrit dans un historique clair, avec une logique d’exécution cohérente et une lecture immédiate des résultats.") }}
-                    </p>
-
-                    <div class="results-mini-grid">
-                        <div class="results-mini-card">
-                            <strong>73%</strong>
-                            <span>{{ t("proof_card_1", "Winrate moyen documenté") }}</span>
-                        </div>
-
-                        <div class="results-mini-card">
-                            <strong>+1200</strong>
-                            <span>{{ t("proof_card_2", "Trades analysables") }}</span>
-                        </div>
-
-                        <div class="results-mini-card">
-                            <strong>{{ t("multi_assets", "Multi-actifs") }}</strong>
-                            <span>{{ t("proof_card_3", "Crypto, indices, matières premières") }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="results-proof-right">
-                    <div class="proof-card">
-                        <strong>{{ t("decision_structure", "Structure orientée décision") }}</strong>
-                        <span>{{ t("decision_structure_desc", "L’information est organisée pour permettre une prise de décision rapide, sans surcharge visuelle ni ambiguïté.") }}</span>
-                    </div>
-
-                    <div class="proof-card">
-                        <strong>{{ t("data_priority", "Hiérarchisation des données") }}</strong>
-                        <span>{{ t("data_priority_desc", "Les éléments clés sont mis en avant pour comprendre instantanément le contexte et le niveau de conviction du signal.") }}</span>
-                    </div>
-
-                    <div class="proof-card">
-                        <strong>{{ t("pro_environment", "Environnement professionnel") }}</strong>
-                        <span>{{ t("pro_environment_desc", "Une interface conçue pour un usage réel, combinant lisibilité, rigueur et efficacité opérationnelle au quotidien.") }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
+    <!-- FINAL CTA -->
     <section class="final-cta-section">
         <div class="section-container">
             <div class="final-cta-box">
@@ -962,78 +829,6 @@ document.addEventListener("DOMContentLoaded", () => {
     resize();
     draw();
     window.addEventListener("resize", resize);
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    const feedSignals = document.getElementById("liveFeedSignals");
-    const feedEvents = document.getElementById("liveFeedEvents");
-    if (!feedSignals || !feedEvents) return;
-
-    const signalItems = [
-        { title: "BTCUSD • BUY", text: "Breakout structure confirmed above key zone", result: "+2.1%", loss: false },
-        { title: "ETHUSD • BUY", text: "Momentum continuation on higher timeframe", result: "+1.4%", loss: false },
-        { title: "GOLD • WATCH", text: "Rejection forming under resistance cluster", result: "WATCH", loss: false },
-        { title: "US100 • SELL", text: "Volatility spike near resistance", result: "-0.5%", loss: true },
-        { title: "SOLUSD • BUY", text: "Impulse leg confirmed after pullback", result: "+3.2%", loss: false }
-    ];
-
-    const eventItems = [
-        { title: "AI Confirmation", text: "Liquidity shift detected on BTC structure", result: "OK", loss: false },
-        { title: "Dashboard Sync", text: "New active setup pushed to member area", result: "LIVE", loss: false },
-        { title: "Watchlist Update", text: "Gold added to neutral monitoring zone", result: "SYNC", loss: false },
-        { title: "Risk Engine", text: "High volatility condition flagged on US100", result: "ALERT", loss: true },
-        { title: "Signal Engine", text: "Execution layer refreshed on premium feed", result: "READY", loss: false }
-    ];
-
-    function buildItem(item) {
-        return `
-            <div class="v3-feed-item ${item.loss ? "loss" : ""}">
-                <div class="v3-feed-dot"></div>
-                <div class="main">
-                    <strong>${item.title}</strong>
-                    <span>${item.text}</span>
-                </div>
-                <div class="result">${item.result}</div>
-            </div>
-        `;
-    }
-
-    function pushItem(container, items) {
-        const item = items[Math.floor(Math.random() * items.length)];
-        container.insertAdjacentHTML("afterbegin", buildItem(item));
-
-        const children = container.querySelectorAll(".v3-feed-item");
-        if (children.length > 6) {
-            children[children.length - 1].remove();
-        }
-    }
-
-    setInterval(() => pushItem(feedSignals, signalItems), 3200);
-    setInterval(() => pushItem(feedEvents, eventItems), 4100);
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    if (window.innerWidth <= 980) return;
-
-    const cards = document.querySelectorAll(".magnetic-card");
-
-    cards.forEach(card => {
-        card.addEventListener("mousemove", (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = ((y - centerY) / centerY) * -4;
-            const rotateY = ((x - centerX) / centerX) * 5;
-
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
-        });
-
-        card.addEventListener("mouseleave", () => {
-            card.style.transform = "";
-        });
-    });
 });
 </script>
 {% endblock %}

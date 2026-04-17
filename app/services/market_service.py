@@ -4,6 +4,9 @@ import config
 from app.extensions import cache
 
 
+NEWS_BACKUP_CACHE_KEY = "market_updates_backup_v1"
+
+
 def get_btc_data():
     url = "https://api.coingecko.com/api/v3/coins/markets"
     params = {
@@ -71,10 +74,12 @@ Risque de forte volatilité aujourd’hui.
 """.strip()
 
 
+@cache.memoize(timeout=900)
 def get_market_updates():
     if not config.NEWS_API_KEY:
         current_app.logger.warning("NEWS_API_KEY manquante. Market Updates vide.")
-        return []
+        cached = cache.get(NEWS_BACKUP_CACHE_KEY)
+        return cached or []
 
     url = "https://newsapi.org/v2/everything"
     params = {
@@ -109,11 +114,14 @@ def get_market_updates():
                 "url": article_url,
             })
 
-        return articles[:6]
+        articles = articles[:6]
+        cache.set(NEWS_BACKUP_CACHE_KEY, articles, timeout=3600)
+        return articles
 
     except Exception as e:
-        current_app.logger.error("Erreur récupération Market Updates: %s", repr(e))
-        return []
+        current_app.logger.warning("Market Updates fallback utilisé: %s", repr(e))
+        cached = cache.get(NEWS_BACKUP_CACHE_KEY)
+        return cached or []
 
 
 def coingecko_headers():
@@ -138,6 +146,49 @@ def format_big_number(value):
     if value >= 1_000:
         return f"{value / 1_000:.2f}K"
     return f"{value:.2f}"
+
+
+def safe_float(value, default=0.0):
+    try:
+        return float(value)
+    except Exception:
+        return default
+
+
+def compute_market_bias(change_btc, change_eth, btc_dominance, fear_value):
+    score = 0
+
+    if change_btc > 0:
+        score += 1
+    elif change_btc < 0:
+        score -= 1
+
+    if change_eth > 0:
+        score += 1
+    elif change_eth < 0:
+        score -= 1
+
+    if btc_dominance >= 55:
+        score += 1
+    elif btc_dominance < 50:
+        score -= 1
+
+    if fear_value >= 60:
+        score += 1
+    elif fear_value <= 40:
+        score -= 1
+
+    if score >= 3:
+        return "Risk-On"
+    if score == 2:
+        return "Bullish"
+    if score == 1:
+        return "Positive"
+    if score == 0:
+        return "Neutral"
+    if score <= -3:
+        return "Risk-Off"
+    return "Defensive"
 
 
 @cache.memoize(timeout=120)
@@ -213,6 +264,7 @@ def get_asset_news(asset_key, limit=6):
 def get_fear_greed_live():
     try:
         r = requests.get("https://api.alternative.me/fng/?limit=1", timeout=10)
+        r.raise_for_status()
         data = r.json()["data"][0]
         return {
             "value": data["value"],
@@ -226,7 +278,74 @@ def get_fear_greed_live():
 def get_btc_dominance_live():
     try:
         r = requests.get("https://api.coingecko.com/api/v3/global", timeout=10)
+        r.raise_for_status()
         data = r.json()["data"]
         return round(data["market_cap_percentage"]["btc"], 2)
     except Exception:
         return "..."
+
+
+@cache.memoize(timeout=180)
+def get_market_overview():
+    crypto = get_crypto_market_live("bitcoin,ethereum")
+    fear = get_fear_greed_live()
+    btc_dominance = get_btc_dominance_live()
+
+    btc = crypto.get("bitcoin", {})
+    eth = crypto.get("ethereum", {})
+
+    btc_price = safe_float(btc.get("usd"))
+    eth_price = safe_float(eth.get("usd"))
+    btc_change = safe_float(btc.get("usd_24h_change"))
+    eth_change = safe_float(eth.get("usd_24h_change"))
+    btc_cap = btc.get("usd_market_cap")
+    eth_cap = eth.get("usd_market_cap")
+
+    fear_raw = fear.get("value", 50)
+    try:
+        fear_value = int(fear_raw)
+    except Exception:
+        fear_value = 50
+
+    btc_dom_value = safe_float(btc_dominance)
+
+    bias = compute_market_bias(btc_change, eth_change, btc_dom_value, fear_value)
+
+    return {
+        "hero": {
+            "market_bias": bias,
+            "fear_greed_value": fear_value,
+            "fear_greed_label": fear.get("classification", "Neutral"),
+            "btc_dominance": round(btc_dom_value, 2),
+        },
+        "assets": [
+            {
+                "symbol": "BTC",
+                "name": "Bitcoin",
+                "price": round(btc_price, 2) if btc_price else 0,
+                "change_24h": round(btc_change, 2),
+                "market_cap": format_big_number(btc_cap) if btc_cap else "-",
+            },
+            {
+                "symbol": "ETH",
+                "name": "Ethereum",
+                "price": round(eth_price, 2) if eth_price else 0,
+                "change_24h": round(eth_change, 2),
+                "market_cap": format_big_number(eth_cap) if eth_cap else "-",
+            },
+            {
+                "symbol": "BTC.D",
+                "name": "BTC Dominance",
+                "price": round(btc_dom_value, 2),
+                "change_24h": None,
+                "market_cap": "-",
+            },
+            {
+                "symbol": "F&G",
+                "name": "Fear & Greed",
+                "price": fear_value,
+                "change_24h": None,
+                "market_cap": fear.get("classification", "Neutral"),
+            },
+        ]
+    }

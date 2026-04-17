@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VelWolf - FAQ</title>
+    <meta name="description" content="Questions fréquentes sur VelWolf, la plateforme premium de signaux, résultats, dashboard et academy.">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+</head>
+
+<body class="home-body">
+
+{% include "partials/navbar.html" %}
+
+<section class="inner-hero">
+    <div class="section-container">
+        <span class="hero-badge">FAQ VelWolf</span>
+        <h1 class="inner-page-title">Questions fréquentes sur la plateforme</h1>
+        <p class="inner-page-text">
+            Retrouvez les réponses essentielles sur les signaux, les abonnements,
+            le dashboard, l’Academy et l’expérience membre VelWolf.
+        </p>
+    </div>
+</section>
+
+<section class="section-standard">
+    <div class="section-container">
+        <div class="section-title">
+            <span>Support & informations</span>
+            <h2>Tout ce qu’il faut savoir avant de rejoindre la plateforme</h2>
+            <p>
+                Cette FAQ a été pensée pour répondre rapidement aux questions les plus fréquentes
+                et renforcer la clarté de l’expérience utilisateur.
+            </p>
+        </div>
+
+        <div class="faq-container">
+
+            {% for question, answer in [
+                ("Que propose VelWolf ?", "VelWolf propose une plateforme premium avec signaux de trading, résultats, dashboard, replay, academy et contenus éducatifs avancés."),
+                ("Quels actifs sont suivis ?", "La plateforme suit principalement Bitcoin, Ethereum, Gold, US100 et d'autres actifs stratégiques selon les opportunités de marché."),
+                ("À quoi sert le Trading Lab ?", "Le Trading Lab aide à mieux comprendre la structure d’un setup, la gestion du risque, la psychologie et la logique d’exécution."),
+                ("Les résultats sont-ils visibles ?", "Oui. La plateforme met en avant les résultats, l’historique, les performances et différents niveaux de lecture selon votre abonnement."),
+                ("Y a-t-il un espace membre ?", "Oui. Le dashboard regroupe les signaux, la performance, l’Academy, le briefing et les outils de progression membre."),
+                ("L’Academy est-elle incluse dans tous les plans ?", "Non. L’Academy complète est réservée aux plans Premium et VIP selon la logique d’accès définie sur la plateforme."),
+                ("Puis-je annuler mon abonnement ?", "Oui, l’abonnement peut être interrompu selon les modalités définies dans les conditions générales et votre espace de facturation."),
+                ("VelWolf est-il un conseil financier ?", "Non. Les contenus, analyses et signaux sont fournis à titre informatif et éducatif. Le trading comporte des risques et reste sous votre responsabilité.")
+            ] %}
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFAQ(this)">
+                    <span>{{ question }}</span>
+                    <div class="faq-icon">+</div>
+                </div>
+                <div class="faq-content">
+                    <p>{{ answer }}</p>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+
+<section class="final-cta-section">
+    <div class="section-container">
+        <div class="final-cta-box">
+            <span class="final-cta-badge">VelWolf Premium</span>
+            <h2>Accédez à une plateforme pensée pour exécuter avec plus de clarté et plus de structure</h2>
+            <p>
+                Rejoignez VelWolf pour retrouver une expérience premium avec signaux,
+                dashboard, résultats, academy et environnement de progression complet.
+            </p>
+            <div class="final-cta-actions">
+                <a href="{{ url_for('billing.pricing') }}" class="hero-btn-primary">Voir les offres</a>
+                {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('auth.register') }}" class="hero-btn-secondary">Créer un compte</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="section-container footer-pro">
+        <div class="footer-brand">
+            <h3>VelWolf</h3>
+            <p>
+                Plateforme premium de signaux, résultats, dashboard et academy
+                dans une interface claire, moderne et orientée exécution.
+            </p>
+        </div>
+
+        <div class="footer-columns">
+            <div class="footer-col">
+                <h4>Plateforme</h4>
+                <div class="footer-links">
+                    <a href="{{ url_for('main.home') }}">Accueil</a>
+                    <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
+                    <a href="{{ url_for('signals.results') }}">Résultats</a>
+                    <a href="{{ url_for('billing.pricing') }}">Offres</a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Informations</h4>
+                <div class="footer-links">
+                    <a href="{{ url_for('pages.faq_page') }}">FAQ</a>
+                    <a href="{{ url_for('pages.cgu') }}">CGU</a>
+                    <a href="{{ url_for('pages.mentions_legales') }}">Mentions légales</a>
+                    <a href="{{ url_for('pages.contact') }}">Contact</a>
+                    <a href="{{ url_for('pages.about') }}">À propos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+function toggleFAQ(el) {
+    const item = el.parentElement;
+    const content = item.querySelector(".faq-content");
+    const icon = item.querySelector(".faq-icon");
+
+    item.classList.toggle("active");
+
+    if (item.classList.contains("active")) {
+        content.style.maxHeight = content.scrollHeight + "px";
+        icon.textContent = "−";
+    } else {
+        content.style.maxHeight = null;
+        icon.textContent = "+";
+    }
+}
+</script>
+
+</body>
+</html>

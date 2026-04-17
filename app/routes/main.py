@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, jsonify, request, redirect, session, url_for
 import os
-
-from app.services.market_service import get_market_updates
+from app.services.market_service import get_market_updates, get_market_overview
 from app.services.news_digest_service import prepare_digest_articles
 from app.services.telegram_dispatcher import (
     send_morning_briefings,
@@ -63,13 +62,14 @@ def home(lang_code):
     current_lang = resolve_lang(lang_code)
 
     market_updates = get_market_updates()
+    market = get_market_overview()
 
     return render_template(
         "home.html",
         market_updates=market_updates,
+        market=market,
         current_lang=current_lang
     )
-
 
 # =========================
 # CRON SECURITY
