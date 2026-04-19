@@ -1,0 +1,327 @@
+{% extends "base.html" %}
+
+{% block title %}Technical Analysis | VelWolef{% endblock %}
+{% block meta_description %}Analyse technique réelle avec données marché live, indicateurs calculés backend et résumé IA premium.{% endblock %}
+{% block body_class %}technical-analysis-body{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='technical_analysis.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="ta-shell">
+    <div class="ta-noise"></div>
+    <div class="ta-glow ta-glow-a"></div>
+    <div class="ta-glow ta-glow-b"></div>
+
+    <header class="ta-hero">
+        <div class="ta-hero-copy">
+            <div class="ta-hero-badges">
+                <span class="ta-ui-badge">Real Market Data</span>
+                <span class="ta-ui-badge ta-ui-badge-soft">VelWolef AI Desk</span>
+            </div>
+
+            <h1>
+                Technical Analysis
+                <span>Live Institutional Style</span>
+            </h1>
+
+            <p class="ta-hero-text">
+                Vraies données de marché, vrais indicateurs calculés côté backend, vraie synthèse IA.
+                Choisis un token, un timeframe et un indicateur pour obtenir une lecture premium.
+            </p>
+
+            <div class="ta-hero-actions">
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ta-btn ta-btn-primary">
+                    Unlock VIP Desk
+                </a>
+                <a href="{{ url_for('signals.signals_page', lang_code=current_lang) }}" class="ta-btn ta-btn-dark">
+                    Open Signals
+                </a>
+            </div>
+
+            <div class="ta-hero-metrics">
+                <div class="ta-metric-card">
+                    <strong id="heroPrice">$--</strong>
+                    <span>Live Price</span>
+                </div>
+                <div class="ta-metric-card">
+                    <strong id="heroMarketCap">$--</strong>
+                    <span>Market Cap</span>
+                </div>
+                <div class="ta-metric-card">
+                    <strong id="heroVolume">$--</strong>
+                    <span>24H Volume</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="ta-hero-preview">
+            <div class="ta-preview-device">
+                <div class="ta-preview-notch"></div>
+                <div class="ta-preview-terminal">
+                    <div class="ta-terminal-top">
+                        <div>
+                            <p class="ta-eyebrow">Live Asset</p>
+                            <h3 id="heroAsset">BTC</h3>
+                        </div>
+                        <div id="heroSignal" class="ta-signal-pill ta-signal-buy">Bullish</div>
+                    </div>
+
+                    <div class="ta-terminal-chart">
+                        <div class="ta-chart-grid"></div>
+                        <svg viewBox="0 0 600 260" class="ta-chart-svg" preserveAspectRatio="none">
+                            <path id="mainPath" class="ta-path-main"
+                                d="M0,190 C40,182 70,165 100,154 C125,145 150,128 180,125 C220,122 245,138 270,116 C298,92 330,80 360,96 C390,112 420,110 445,88 C470,68 500,60 530,72 C560,84 580,98 600,62" />
+                            <path id="fillPath" class="ta-path-fill"
+                                d="M0,190 C40,182 70,165 100,154 C125,145 150,128 180,125 C220,122 245,138 270,116 C298,92 330,80 360,96 C390,112 420,110 445,88 C470,68 500,60 530,72 C560,84 580,98 600,62 L600,260 L0,260 Z" />
+                        </svg>
+
+                        <div class="ta-chart-tag ta-chart-tag-r">R1</div>
+                        <div class="ta-chart-tag ta-chart-tag-p">Pivot</div>
+                        <div class="ta-chart-tag ta-chart-tag-s">S1</div>
+                    </div>
+
+                    <div class="ta-terminal-bottom">
+                        <div>
+                            <span>Trend</span>
+                            <strong id="heroTrend">--</strong>
+                        </div>
+                        <div>
+                            <span>RSI</span>
+                            <strong id="heroRsi">--</strong>
+                        </div>
+                        <div>
+                            <span>MFI</span>
+                            <strong id="heroMfi">--</strong>
+                        </div>
+                        <div>
+                            <span>Confidence</span>
+                            <strong id="heroConfidence">--</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="ta-layout">
+        <aside class="ta-sidebar ta-glass-card">
+            <div class="ta-section-head">
+                <h2>Analysis Controls</h2>
+                <p>Live configuration</p>
+            </div>
+
+            <div class="ta-field">
+                <label for="assetSelect">Token</label>
+                <select id="assetSelect">
+                    <option value="BTC">BTC</option>
+                    <option value="ETH">ETH</option>
+                    <option value="XRP">XRP</option>
+                    <option value="SOL">SOL</option>
+                    <option value="BNB">BNB</option>
+                    <option value="DOGE">DOGE</option>
+                </select>
+            </div>
+
+            <div class="ta-field">
+                <label for="timeframeSelect">Timeframe</label>
+                <select id="timeframeSelect">
+                    <option value="15m">15m</option>
+                    <option value="1h" selected>1H</option>
+                    <option value="4h">4H</option>
+                    <option value="1d">1D</option>
+                </select>
+            </div>
+
+            <div class="ta-field">
+                <label for="indicatorSelect">Indicator</label>
+                <select id="indicatorSelect">
+                    <option value="stochasticrsi" selected>Stochastic RSI</option>
+                    <option value="rsi">RSI</option>
+                    <option value="mfi">Money Flow Index</option>
+                    <option value="ema">EMA Bias</option>
+                    <option value="macd">MACD</option>
+                </select>
+            </div>
+
+            <button id="runAnalysisBtn" class="ta-btn ta-btn-primary ta-btn-block">
+                Get Analysis
+            </button>
+
+            <div class="ta-watchlist">
+                <div class="ta-section-head ta-section-head-row">
+                    <h3>Watchlist</h3>
+                    <span>Live</span>
+                </div>
+                <div id="watchlistContainer"></div>
+            </div>
+        </aside>
+
+        <section class="ta-content">
+            <div class="ta-grid-top">
+                <section class="ta-glass-card ta-summary-card">
+                    <div class="ta-section-head ta-section-head-row">
+                        <div>
+                            <h2>AI Market Summary</h2>
+                            <p>Real context + AI synthesis</p>
+                        </div>
+                        <div id="biasBadge" class="ta-bias-pill ta-bias-bullish">--</div>
+                    </div>
+
+                    <div class="ta-summary-stats">
+                        <div class="ta-mini-box">
+                            <span>Signal</span>
+                            <strong id="signalValue">--</strong>
+                        </div>
+                        <div class="ta-mini-box">
+                            <span>Confidence</span>
+                            <strong id="confidenceValue">--</strong>
+                        </div>
+                        <div class="ta-mini-box">
+                            <span>EMA Bias</span>
+                            <strong id="emaValue">--</strong>
+                        </div>
+                        <div class="ta-mini-box">
+                            <span>Volume</span>
+                            <strong id="volumeValue">--</strong>
+                        </div>
+                    </div>
+
+                    <p id="summaryText" class="ta-summary-text">Chargement de l’analyse...</p>
+
+                    <div class="ta-summary-tags" id="summaryTags"></div>
+                </section>
+
+                <section class="ta-glass-card ta-desk-card">
+                    <div class="ta-section-head">
+                        <h2>Desk Snapshot</h2>
+                        <p>Live indicators</p>
+                    </div>
+
+                    <div class="ta-snapshot-grid">
+                        <div class="ta-snapshot-item">
+                            <span>Trend</span>
+                            <strong id="trendValue">--</strong>
+                        </div>
+                        <div class="ta-snapshot-item">
+                            <span>RSI</span>
+                            <strong id="rsiValue">--</strong>
+                        </div>
+                        <div class="ta-snapshot-item">
+                            <span>Stoch RSI K</span>
+                            <strong id="stochValue">--</strong>
+                        </div>
+                        <div class="ta-snapshot-item">
+                            <span>MFI</span>
+                            <strong id="mfiValue">--</strong>
+                        </div>
+                        <div class="ta-snapshot-item">
+                            <span>MACD</span>
+                            <strong id="macdValue">--</strong>
+                        </div>
+                        <div class="ta-snapshot-item">
+                            <span>Risk Mode</span>
+                            <strong id="riskValue">--</strong>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="ta-grid-mid">
+                <section class="ta-glass-card ta-chart-card-large">
+                    <div class="ta-section-head ta-section-head-row">
+                        <div>
+                            <h2>Price Structure</h2>
+                            <p>Live chart style</p>
+                        </div>
+                        <div class="ta-tabs">
+                            <button class="ta-tab active">Price</button>
+                            <button class="ta-tab">RSI</button>
+                            <button class="ta-tab">MFI</button>
+                        </div>
+                    </div>
+
+                    <div class="ta-big-chart">
+                        <div class="ta-big-chart-grid"></div>
+                        <svg viewBox="0 0 900 380" class="ta-big-chart-svg" preserveAspectRatio="none">
+                            <path id="bigMainPath" class="ta-big-path-main"
+                                d="M0,285 C55,270 85,220 130,210 C175,200 220,238 270,205 C320,172 360,145 400,160 C450,180 500,200 555,155 C610,110 650,105 700,125 C760,148 810,185 860,130 C880,112 890,95 900,90" />
+                            <path id="bigFillPath" class="ta-big-path-fill"
+                                d="M0,285 C55,270 85,220 130,210 C175,200 220,238 270,205 C320,172 360,145 400,160 C450,180 500,200 555,155 C610,110 650,105 700,125 C760,148 810,185 860,130 C880,112 890,95 900,90 L900,380 L0,380 Z" />
+                        </svg>
+
+                        <div class="ta-line-marker ta-resistance-marker">Resistance</div>
+                        <div class="ta-line-marker ta-pivot-marker">Pivot</div>
+                        <div class="ta-line-marker ta-support-marker">Support</div>
+                    </div>
+                </section>
+
+                <section class="ta-glass-card ta-levels-card">
+                    <div class="ta-section-head">
+                        <h2>Key Levels</h2>
+                        <p>Real auto-mapped levels</p>
+                    </div>
+
+                    <div class="ta-level-stack">
+                        <div class="ta-level-box resistance">
+                            <span>Resistance 1</span>
+                            <strong id="res1">--</strong>
+                        </div>
+                        <div class="ta-level-box resistance">
+                            <span>Resistance 2</span>
+                            <strong id="res2">--</strong>
+                        </div>
+                        <div class="ta-level-box pivot">
+                            <span>Pivot</span>
+                            <strong id="pivot">--</strong>
+                        </div>
+                        <div class="ta-level-box support">
+                            <span>Support 1</span>
+                            <strong id="sup1">--</strong>
+                        </div>
+                        <div class="ta-level-box support">
+                            <span>Support 2</span>
+                            <strong id="sup2">--</strong>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="ta-grid-bottom">
+                <section class="ta-glass-card">
+                    <div class="ta-section-head">
+                        <h2>Trending</h2>
+                        <p>Top market movers by live market data</p>
+                    </div>
+                    <div id="trendingContainer" class="ta-indicator-list"></div>
+                </section>
+
+                <section class="ta-glass-card">
+                    <div class="ta-section-head">
+                        <h2>Execution Plan</h2>
+                        <p>AI-ready interpretation</p>
+                    </div>
+
+                    <div id="executionPlan" class="ta-execution-box">
+                        <p>Chargement...</p>
+                    </div>
+
+                    <div class="ta-cta-stack">
+                        <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ta-btn ta-btn-primary ta-btn-block">
+                            Send to Telegram VIP
+                        </a>
+                        <a href="{{ url_for('signals.results', lang_code=current_lang) }}" class="ta-btn ta-btn-dark ta-btn-block">
+                            View Results
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='technical_analysis.js') }}"></script>
+{% endblock %}

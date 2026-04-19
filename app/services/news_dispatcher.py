@@ -23,10 +23,10 @@ from app.services.telegram_service import (
 
 
 NEWS_LIMITS = {
-    "public": 2,
-    "basic": 2,
+    "public": 3,
+    "basic": 3,
     "premium": 5,
-    "vip": 999999,
+    "vip": 5,
 }
 
 

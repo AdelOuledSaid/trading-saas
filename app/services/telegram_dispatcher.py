@@ -1,13 +1,17 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Optional
 
 from flask import current_app
 
 from app.models import Signal
-from app.services.briefing_service import ensure_daily_briefing
+from app.services.briefing_service import (
+    ensure_daily_briefing,
+    get_daily_briefing_for_plan,
+    get_briefing_content_for_plan,
+)
 from app.services.news_digest_service import prepare_digest_articles
 from app.services.telegram_dedup import (
     briefing_key,
@@ -26,9 +30,13 @@ from app.services.telegram_service import (
     build_signal_telegram_message,
     build_sl_telegram_message,
     build_tp_telegram_message,
+    build_vip_result_teaser_message,
     send_breaking_news_to_tier,
     send_message_to_tier,
 )
+from app.services.liquidations_service import get_liquidations_service
+from app.services.whale_tracking_service import get_whale_tracking_service
+from app.services.free_unlocks_service import FreeUnlocksService
 
 
 @dataclass(frozen=True)
@@ -62,7 +70,7 @@ TIER_RULES = {
     ),
     "basic": TierRules(
         tier="basic",
-        signal_limit=5,
+        signal_limit=3,
         allow_open_signals=True,
         allow_tp_sl_updates=True,
         allow_morning_brief=True,
@@ -75,7 +83,7 @@ TIER_RULES = {
     ),
     "premium": TierRules(
         tier="premium",
-        signal_limit=10,
+        signal_limit=3,
         allow_open_signals=True,
         allow_tp_sl_updates=True,
         allow_morning_brief=True,
@@ -103,6 +111,10 @@ TIER_RULES = {
 
 
 VALID_SLOTS = {"morning", "midday", "evening"}
+
+PREMIUM_LIQUIDATION_DAILY_LIMIT = 20
+VIP_WHALE_DAILY_LIMIT = 10
+VIP_UNLOCK_DAILY_LIMIT = 3
 
 
 def get_rules(tier: str) -> TierRules:
@@ -143,6 +155,13 @@ def _log_warning(message: str) -> None:
         current_app.logger.warning(message)
     except Exception:
         print(message)
+
+
+def _dedup_key(prefix: str, *parts) -> str:
+    safe_parts = []
+    for part in parts:
+        safe_parts.append(str(part).replace(" ", "_").replace("/", "_").replace(":", "_"))
+    return f"{prefix}:{':'.join(safe_parts)}"
 
 
 def _send_text(
@@ -233,7 +252,7 @@ def format_briefing_message(
 
     header = f"🧠 <b>{title}</b>\n\n"
     tier_line = f"🏷 <b>Niveau</b> : {tier.upper()}\n\n"
-    body = briefing_content.strip()
+    body = (briefing_content or "").strip()
     footer = f"\n\n{signature}"
 
     message = header + tier_line + body + footer
@@ -242,39 +261,15 @@ def format_briefing_message(
     return message
 
 
-def _build_basic_morning_content(base_content: str) -> str:
-    return (
-        base_content[:900].strip()
-        + "\n\n━━━━━━━━━━━━━━━━━━"
-        + "\n📌 <b>Basic Focus</b>"
-        + "\n- lecture simple du marché"
-        + "\n- zones principales à surveiller"
-        + "\n- prudence avant toute entrée"
-    )
+def _get_plan_briefing_content(tier: str, fallback_content: str = "") -> str:
+    plan_briefing = get_daily_briefing_for_plan(tier)
+    if plan_briefing and getattr(plan_briefing, "content", None):
+        return plan_briefing.content
 
+    if fallback_content:
+        return get_briefing_content_for_plan(fallback_content, tier)
 
-def _build_premium_morning_content(base_content: str) -> str:
-    return (
-        base_content.strip()
-        + "\n\n━━━━━━━━━━━━━━━━━━"
-        + "\n📊 <b>Premium Focus</b>"
-        + "\n- lecture détaillée de la tendance"
-        + "\n- actifs prioritaires"
-        + "\n- zones de réaction importantes"
-    )
-
-
-def _build_vip_morning_content(base_content: str) -> str:
-    return (
-        base_content.strip()
-        + "\n\n━━━━━━━━━━━━━━━━━━"
-        + "\n🔒 <b>VIP Focus</b>"
-        + "\n- zones de liquidité prioritaires"
-        + "\n- actifs à surveiller en priorité"
-        + "\n- lecture macro / momentum"
-        + "\n- scénarios invalidation / continuation"
-        + "\n- préparation desk pour opportunités rapides"
-    )
+    return ""
 
 
 def _build_premium_second_content(base_content: str) -> str:
@@ -301,6 +296,68 @@ def _build_vip_second_content(base_content: str) -> str:
     )
 
 
+def _format_liquidation_message(event) -> str:
+    return f"""
+🚨 <b>Premium Liquidation Alert</b>
+
+💰 <b>{event.asset}</b> • {event.side}
+💵 <b>Value</b> : {event.value_usd}
+📍 <b>Price</b> : {event.price}
+
+⚡ <b>Impact</b> : {event.impact}
+📊 <b>Bias</b> : {event.market_bias}
+🏦 <b>Exchange</b> : {event.exchange}
+⏱ <b>Time</b> : {event.time}
+
+💎 <b>Premium Flow</b>
+""".strip()
+
+
+def _format_whale_message(alert: dict) -> str:
+    return f"""
+🐋 <b>VIP Whale Flow</b>
+
+💰 <b>{alert.get("asset", "-")}</b>
+💵 <b>Value</b> : {alert.get("usd_value", "-")}
+🔁 <b>Flow</b> : {alert.get("flow_type", "-")}
+
+➡️ <b>From</b> : {alert.get("wallet_from", "-")}
+⬅️ <b>To</b> : {alert.get("wallet_to", "-")}
+
+⚡ <b>Impact</b> : {alert.get("impact", "-")}
+🧠 <b>Bias</b> : {alert.get("bias", "-")}
+🌐 <b>Network</b> : {alert.get("network", "-")}
+⏱ <b>Time</b> : {alert.get("time", "-")}
+
+💎 <b>VIP Intelligence</b>
+""".strip()
+
+
+def _format_unlock_message(unlock: dict) -> str:
+    unlock_date = unlock.get("date")
+    if hasattr(unlock_date, "strftime"):
+        unlock_date = unlock_date.strftime("%Y-%m-%d")
+
+    value = unlock.get("value", 0) or 0
+    try:
+        value_text = f"${float(value):,.0f}"
+    except Exception:
+        value_text = str(value)
+
+    return f"""
+🔓 <b>VIP Token Unlock Watch</b>
+
+🪙 <b>{unlock.get("token", "-")}</b>
+🏷 <b>Name</b> : {unlock.get("name", "-")}
+💵 <b>Value</b> : {value_text}
+📅 <b>Date</b> : {unlock_date}
+
+⚠️ <b>Potential impact</b> : supply event to monitor
+
+💎 <b>VIP Intelligence</b>
+""".strip()
+
+
 def send_morning_briefings() -> dict:
     briefing = ensure_daily_briefing()
     if not briefing or not getattr(briefing, "content", None):
@@ -310,10 +367,11 @@ def send_morning_briefings() -> dict:
     today_str = datetime.utcnow().strftime("%Y-%m-%d")
     slot = "morning"
     results = {}
+    raw_content = briefing.content
 
     if get_rules("basic").allow_morning_brief:
         msg_basic = format_briefing_message(
-            briefing_content=_build_basic_morning_content(briefing.content),
+            briefing_content=_get_plan_briefing_content("basic", raw_content),
             title="Morning Brief",
             tier="basic",
         )
@@ -328,7 +386,7 @@ def send_morning_briefings() -> dict:
 
     if get_rules("premium").allow_morning_brief:
         msg_premium = format_briefing_message(
-            briefing_content=_build_premium_morning_content(briefing.content),
+            briefing_content=_get_plan_briefing_content("premium", raw_content),
             title="Morning Brief Premium",
             tier="premium",
         )
@@ -343,7 +401,7 @@ def send_morning_briefings() -> dict:
 
     if get_rules("vip").allow_morning_brief:
         msg_vip = format_briefing_message(
-            briefing_content=_build_vip_morning_content(briefing.content),
+            briefing_content=_get_plan_briefing_content("vip", raw_content),
             title="Morning Brief VIP",
             tier="vip",
         )
@@ -371,10 +429,11 @@ def send_second_briefings(
     slot = _normalize_slot(slot)
     today_str = datetime.utcnow().strftime("%Y-%m-%d")
     results = {}
+    base_content = second_brief_content.strip()
 
     if get_rules("premium").allow_second_brief:
         msg_premium = format_briefing_message(
-            briefing_content=_build_premium_second_content(second_brief_content),
+            briefing_content=_build_premium_second_content(base_content),
             title=title,
             tier="premium",
         )
@@ -389,7 +448,7 @@ def send_second_briefings(
 
     if get_rules("vip").allow_second_brief:
         msg_vip = format_briefing_message(
-            briefing_content=_build_vip_second_content(second_brief_content),
+            briefing_content=_build_vip_second_content(base_content),
             title=title,
             tier="vip",
         )
@@ -455,10 +514,6 @@ def send_daily_news(slot: str = "morning") -> dict:
 
 
 def send_hourly_news() -> dict:
-    """
-    Envoie 1 news fraîche par heure sur tous les canaux autorisés.
-    Déduplication automatique via breaking_news_key + hash contenu.
-    """
     articles = prepare_digest_articles(limit=12, max_age_hours=6)
 
     if not articles:
@@ -566,26 +621,35 @@ def send_signal_tp(signal: Signal) -> dict:
         _log_warning("[telegram_dispatcher] Signal TP vide.")
         return {}
 
-    message = build_tp_telegram_message(signal)
     results = {}
 
-    for tier in get_paid_tiers():
-        rules = get_rules(tier)
-        if not rules.allow_tp_sl_updates:
-            continue
+    vip_key = signal_event_key(
+        event_type="signal_tp",
+        tier="vip",
+        signal_id=getattr(signal, "id", None),
+        trade_id=getattr(signal, "trade_id", None),
+    )
+    results["vip"] = _send_text(
+        tier="vip",
+        message=build_tp_telegram_message(signal),
+        content_type="signal_tp",
+        dedup_key=vip_key,
+        content_ref=str(getattr(signal, "id", "")),
+    )
 
-        key = signal_event_key(
-            event_type="signal_tp",
+    teaser_message = build_vip_result_teaser_message(signal)
+    for tier in ["basic", "premium"]:
+        teaser_key = signal_event_key(
+            event_type="signal_tp_teaser",
             tier=tier,
             signal_id=getattr(signal, "id", None),
             trade_id=getattr(signal, "trade_id", None),
         )
-
         results[tier] = _send_text(
             tier=tier,
-            message=message,
-            content_type="signal_tp",
-            dedup_key=key,
+            message=teaser_message,
+            content_type="signal_tp_teaser",
+            dedup_key=teaser_key,
             content_ref=str(getattr(signal, "id", "")),
         )
 
@@ -597,29 +661,176 @@ def send_signal_sl(signal: Signal) -> dict:
         _log_warning("[telegram_dispatcher] Signal SL vide.")
         return {}
 
-    message = build_sl_telegram_message(signal)
     results = {}
 
-    for tier in get_paid_tiers():
-        rules = get_rules(tier)
-        if not rules.allow_tp_sl_updates:
-            continue
+    vip_key = signal_event_key(
+        event_type="signal_sl",
+        tier="vip",
+        signal_id=getattr(signal, "id", None),
+        trade_id=getattr(signal, "trade_id", None),
+    )
+    results["vip"] = _send_text(
+        tier="vip",
+        message=build_sl_telegram_message(signal),
+        content_type="signal_sl",
+        dedup_key=vip_key,
+        content_ref=str(getattr(signal, "id", "")),
+    )
 
-        key = signal_event_key(
-            event_type="signal_sl",
+    teaser_message = build_vip_result_teaser_message(signal)
+    for tier in ["basic", "premium"]:
+        teaser_key = signal_event_key(
+            event_type="signal_sl_teaser",
             tier=tier,
             signal_id=getattr(signal, "id", None),
             trade_id=getattr(signal, "trade_id", None),
         )
-
         results[tier] = _send_text(
             tier=tier,
-            message=message,
-            content_type="signal_sl",
-            dedup_key=key,
+            message=teaser_message,
+            content_type="signal_sl_teaser",
+            dedup_key=teaser_key,
             content_ref=str(getattr(signal, "id", "")),
         )
 
+    return results
+
+
+def send_liquidations_alerts() -> dict:
+    sent_today = count_sent_today("liquidation_alert", "premium")
+    if sent_today >= PREMIUM_LIQUIDATION_DAILY_LIMIT:
+        _log_info("[telegram_dispatcher] Limite quotidienne liquidations atteinte pour premium.")
+        return {}
+
+    service = get_liquidations_service()
+    try:
+        service.start()
+    except Exception:
+        pass
+
+    events = service.get_events(only_high_impact=True, limit=10)
+    filtered = [e for e in events if e.asset in {"BTC", "ETH", "SOL"}]
+
+    if not filtered:
+        _log_warning("[telegram_dispatcher] Aucune liquidation high impact exploitable.")
+        return {}
+
+    results = {}
+    sent_count = 0
+
+    for event in filtered[:3]:
+        dedup_key = _dedup_key(
+            "liquidation_alert",
+            "premium",
+            event.asset,
+            event.side,
+            event.timestamp,
+            int(event.value_usd_number),
+        )
+
+        ok = _send_text(
+            tier="premium",
+            message=_format_liquidation_message(event),
+            content_type="liquidation_alert",
+            dedup_key=dedup_key,
+            content_ref=f"{event.asset}:{event.timestamp}",
+        )
+        if ok:
+            sent_count += 1
+
+    results["premium"] = sent_count > 0
+    return results
+
+
+def send_whale_alerts() -> dict:
+    sent_today = count_sent_today("whale_alert", "vip")
+    if sent_today >= VIP_WHALE_DAILY_LIMIT:
+        _log_info("[telegram_dispatcher] Limite quotidienne whales atteinte pour vip.")
+        return {}
+
+    service = get_whale_tracking_service()
+    alerts = service.get_latest_high_impact(limit=10)
+
+    filtered = [
+        a for a in alerts
+        if (
+            (a.get("usd_value_number", 0) or 0) >= 500_000
+            and a.get("direction") in {"inflow", "outflow"}
+            and a.get("exchange_related") is True
+        )
+    ]
+
+    if not filtered:
+        _log_warning("[telegram_dispatcher] Aucune whale alert smart-money exploitable.")
+        return {}
+
+    results = {}
+    sent_count = 0
+
+    for alert in filtered[:3]:
+        dedup_key = _dedup_key(
+            "whale_alert",
+            "vip",
+            alert.get("asset"),
+            alert.get("timestamp"),
+            int(alert.get("usd_value_number", 0) or 0),
+        )
+
+        ok = _send_text(
+            tier="vip",
+            message=_format_whale_message(alert),
+            content_type="whale_alert",
+            dedup_key=dedup_key,
+            content_ref=f"{alert.get('asset')}:{alert.get('timestamp')}",
+        )
+        if ok:
+            sent_count += 1
+
+    results["vip"] = sent_count > 0
+    return results
+
+
+def send_token_unlocks_alerts() -> dict:
+    service = FreeUnlocksService()
+    unlocks = service.get_top_unlocks(days=7, limit=10)
+
+    if not unlocks:
+        return {}
+
+    filtered = [
+        u for u in unlocks
+        if u.get("value", 0) >= 1_000_000
+        or u.get("risk_level") in ["high", "medium"]
+    ]
+
+    results = {}
+    sent = 0
+
+    for u in filtered[:3]:
+        msg = f"""
+🔓 <b>VIP Token Unlock</b>
+
+🪙 {u.get("token")}
+💵 ${u.get("value", 0):,.0f}
+📅 J-{u.get("days_until")}
+
+⚠️ Risk: {u.get("risk_level")}
+🧠 Signal: {u.get("signal_level")}
+
+💎 VIP Intelligence
+""".strip()
+
+        ok = _send_text(
+            tier="vip",
+            message=msg,
+            content_type="token_unlock",
+            dedup_key=f"unlock:{u.get('token')}:{u.get('date')}"
+        )
+
+        if ok:
+            sent += 1
+
+    results["vip"] = sent > 0
     return results
 
 
@@ -746,5 +957,14 @@ def dispatch_event(
 
     if event == "signal_sl":
         return send_signal_sl(signal)
+
+    if event == "liquidations":
+        return send_liquidations_alerts()
+
+    if event == "whales":
+        return send_whale_alerts()
+
+    if event == "unlocks":
+        return send_token_unlocks_alerts()
 
     raise ValueError(f"Event type non supporté: {event_type}")

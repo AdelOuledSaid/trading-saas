@@ -257,110 +257,305 @@ def send_telegram_message(
 def build_signal_telegram_message(signal) -> str:
     asset = (signal.asset or "").upper()
     action = (signal.action or "").upper()
+
     asset_icon = asset_emoji(asset)
     dir_icon = action_emoji(action)
     conf_icon = confidence_icon(signal)
 
     learn_link = build_learn_link(signal)
+
+    confidence_value = getattr(signal, "confidence", 0) or 0
+    try:
+        confidence_value = float(confidence_value)
+    except Exception:
+        confidence_value = 0
+
+    rr_value = getattr(signal, "risk_reward", None)
+    try:
+        rr_value_num = float(rr_value) if rr_value is not None else 0
+    except Exception:
+        rr_value_num = 0
+
+    trend_text = format_market_trend(signal)
+    setup_text = html.escape(format_reason(signal))
+    timeframe_text = html.escape(format_timeframe(signal))
+    signal_type_text = html.escape(format_signal_type(signal))
+    trade_id_text = html.escape(str(signal.trade_id or "-"))
+
+    if confidence_value >= 85 and rr_value_num >= 2:
+        setup_badge = "🎯 <b>SNIPER SETUP</b>"
+        urgency_line = "⚡ <b>Priority</b> : élevée"
+        execution_line = "🧨 <b>Execution</b> : confirmation forte + timing agressif"
+    elif confidence_value >= 75:
+        setup_badge = "🔥 <b>HIGH CONVICTION SETUP</b>"
+        urgency_line = "⚡ <b>Priority</b> : élevée"
+        execution_line = "🎯 <b>Execution</b> : bon alignement marché"
+    elif confidence_value >= 65:
+        setup_badge = "📈 <b>ACTIVE SETUP</b>"
+        urgency_line = "⚡ <b>Priority</b> : normale"
+        execution_line = "🧭 <b>Execution</b> : attendre confirmation propre"
+    else:
+        setup_badge = "🛡 <b>WATCHLIST SETUP</b>"
+        urgency_line = "⚡ <b>Priority</b> : sélective"
+        execution_line = "👀 <b>Execution</b> : prudence, setup à surveiller"
+
+    trend_lower = (trend_text or "").lower()
+    if trend_lower in ["bullish", "uptrend", "haussier", "bull"]:
+        bias_line = "🟢 <b>Market Bias</b> : bullish structure"
+    elif trend_lower in ["bearish", "downtrend", "baissier", "bear"]:
+        bias_line = "🔻 <b>Market Bias</b> : bearish structure"
+    elif trend_text and trend_text != "-":
+        bias_line = f"⚖️ <b>Market Bias</b> : {html.escape(trend_text)}"
+    else:
+        bias_line = "⚖️ <b>Market Bias</b> : neutral / mixed"
+
     learn_block = (
-        f'\n🎓 <a href="{learn_link}">Mini cours : comprendre ce signal</a>\n'
+        f'\n🎓 <a href="{learn_link}">Voir le mini cours lié à ce setup</a>'
         if learn_link else ""
     )
 
-    return f"""
-⚡ <b>Trade Setup</b>
+    message = f"""
+{setup_badge}
 
 {asset_icon} <b>{asset}</b> • {dir_icon} <b>{action}</b>
 
 ━━━━━━━━━━━━━━━━━━
 💰 <b>Entry</b> : {format_price(signal.entry_price)}
-🛑 <b>SL</b> : {format_price(signal.stop_loss)}
-🎯 <b>TP</b> : {format_price(signal.take_profit)}
-⚖️ <b>RR</b> : {format_rr(signal)}
+🛑 <b>Stop Loss</b> : {format_price(signal.stop_loss)}
+🎯 <b>Take Profit</b> : {format_price(signal.take_profit)}
+⚖️ <b>Risk/Reward</b> : {format_rr(signal)}
 
 ━━━━━━━━━━━━━━━━━━
 🔥 <b>Confidence</b> : {conf_icon} {format_confidence(signal)}
-🧠 <b>Setup</b> : {html.escape(format_reason(signal))}
+{urgency_line}
+{execution_line}
 
 ━━━━━━━━━━━━━━━━━━
-⏱ <b>Timeframe</b> : {html.escape(format_timeframe(signal))}
-🧭 <b>Trend</b> : {html.escape(format_market_trend(signal))}
-📦 <b>Type</b> : {html.escape(format_signal_type(signal))}
-🆔 <b>Trade ID</b> : {html.escape(str(signal.trade_id or "-"))}
+🧠 <b>Setup Logic</b> : {setup_text}
+{bias_line}
+⏱ <b>Timeframe</b> : {timeframe_text}
+📦 <b>Type</b> : {signal_type_text}
+🆔 <b>Trade ID</b> : {trade_id_text}
 
-━━━━━━━━━━━━━━━━━━{learn_block}
+━━━━━━━━━━━━━━━━━━
 📌 <b>Status</b> : OPEN
-🕒 <b>Time</b> : {signal.created_at.strftime('%Y-%m-%d %H:%M:%S')} UTC
+🕒 <b>Time</b> : {signal.created_at.strftime('%Y-%m-%d %H:%M:%S')} UTC{learn_block}
 
 💎 <b>Velwolf Private Desk</b>
 """.strip()
+
+    if len(message) > 3900:
+        message = message[:3890].rstrip() + "..."
+
+    return message
 
 
 def build_tp_telegram_message(signal) -> str:
     asset = (signal.asset or "").upper()
     action = (signal.action or "").upper()
+
     asset_icon = asset_emoji(asset)
     dir_icon = action_emoji(action)
     conf_icon = confidence_icon(signal)
-    pnl = calculate_trade_pnl(signal)
 
+    pnl = calculate_trade_pnl(signal)
     learn_link = build_learn_link(signal)
+
+    confidence_value = getattr(signal, "confidence", 0) or 0
+    try:
+        confidence_value = float(confidence_value)
+    except Exception:
+        confidence_value = 0
+
+    rr_value = getattr(signal, "risk_reward", None)
+    try:
+        rr_value_num = float(rr_value) if rr_value is not None else 0
+    except Exception:
+        rr_value_num = 0
+
+    setup_text = html.escape(format_reason(signal))
+    timeframe_text = html.escape(format_timeframe(signal))
+    signal_type_text = html.escape(format_signal_type(signal))
+    trend_text = format_market_trend(signal)
+    trade_id_text = html.escape(str(signal.trade_id or "-"))
+
+    if confidence_value >= 85 and rr_value_num >= 2:
+        result_badge = "🏆 <b>SNIPER TARGET HIT</b>"
+        quality_line = "🎯 <b>Quality</b> : execution premium validée"
+    elif confidence_value >= 75:
+        result_badge = "✅ <b>HIGH CONVICTION WIN</b>"
+        quality_line = "🔥 <b>Quality</b> : setup fort confirmé"
+    else:
+        result_badge = "✅ <b>TARGET REACHED</b>"
+        quality_line = "📈 <b>Quality</b> : scénario respecté"
+
+    trend_lower = (trend_text or "").lower()
+    if trend_lower in ["bullish", "uptrend", "haussier", "bull"]:
+        bias_line = "🟢 <b>Market Bias</b> : bullish structure respected"
+    elif trend_lower in ["bearish", "downtrend", "baissier", "bear"]:
+        bias_line = "🔻 <b>Market Bias</b> : bearish structure respected"
+    elif trend_text and trend_text != "-":
+        bias_line = f"⚖️ <b>Market Bias</b> : {html.escape(trend_text)}"
+    else:
+        bias_line = "⚖️ <b>Market Bias</b> : neutral / mixed"
+
     learn_block = (
-        f'\n🎓 <a href="{learn_link}">Revoir l’analyse de ce signal</a>\n'
+        f'\n🎓 <a href="{learn_link}">Revoir l’analyse complète de ce trade</a>'
         if learn_link else ""
     )
 
-    return f"""
-✅ <b>Target Reached</b>
+    message = f"""
+{result_badge}
 
 {asset_icon} <b>{asset}</b> • {dir_icon} <b>{action}</b>
 
 ━━━━━━━━━━━━━━━━━━
 💰 <b>Entry</b> : {format_price(signal.entry_price)}
-🎯 <b>TP Hit</b> : {format_price(signal.take_profit)}
+🎯 <b>Target Hit</b> : {format_price(signal.take_profit)}
 💵 <b>PnL</b> : +{format_price(abs(pnl))}
+⚖️ <b>Risk/Reward</b> : {format_rr(signal)}
 
 ━━━━━━━━━━━━━━━━━━
 🔥 <b>Initial Confidence</b> : {conf_icon} {format_confidence(signal)}
-🧠 <b>Setup</b> : {html.escape(format_reason(signal))}
+{quality_line}
+📌 <b>Outcome</b> : objective reached cleanly
 
-━━━━━━━━━━━━━━━━━━{learn_block}
-🏆 <b>Status</b> : WIN
+━━━━━━━━━━━━━━━━━━
+🧠 <b>Setup Logic</b> : {setup_text}
+{bias_line}
+⏱ <b>Timeframe</b> : {timeframe_text}
+📦 <b>Type</b> : {signal_type_text}
+🆔 <b>Trade ID</b> : {trade_id_text}
+
+━━━━━━━━━━━━━━━━━━
+🏆 <b>Status</b> : WIN{learn_block}
 
 💎 <b>Velwolf Intelligence</b>
 """.strip()
+
+    if len(message) > 3900:
+        message = message[:3890].rstrip() + "..."
+
+    return message
 
 
 def build_sl_telegram_message(signal) -> str:
     asset = (signal.asset or "").upper()
     action = (signal.action or "").upper()
+
     asset_icon = asset_emoji(asset)
     dir_icon = action_emoji(action)
     conf_icon = confidence_icon(signal)
-    pnl = calculate_trade_pnl(signal)
 
+    pnl = calculate_trade_pnl(signal)
     learn_link = build_learn_link(signal)
+
+    confidence_value = getattr(signal, "confidence", 0) or 0
+    try:
+        confidence_value = float(confidence_value)
+    except Exception:
+        confidence_value = 0
+
+    rr_value = getattr(signal, "risk_reward", None)
+    try:
+        rr_value_num = float(rr_value) if rr_value is not None else 0
+    except Exception:
+        rr_value_num = 0
+
+    setup_text = html.escape(format_reason(signal))
+    timeframe_text = html.escape(format_timeframe(signal))
+    signal_type_text = html.escape(format_signal_type(signal))
+    trend_text = format_market_trend(signal)
+    trade_id_text = html.escape(str(signal.trade_id or "-"))
+
+    if confidence_value >= 85 and rr_value_num >= 2:
+        result_badge = "⚠️ <b>SNIPER SETUP INVALIDATED</b>"
+        discipline_line = "🛡 <b>Risk Control</b> : invalidation exécutée proprement"
+    elif confidence_value >= 75:
+        result_badge = "❌ <b>HIGH CONVICTION SETUP FAILED</b>"
+        discipline_line = "🧯 <b>Risk Control</b> : perte contrôlée"
+    else:
+        result_badge = "❌ <b>RISK INVALIDATED</b>"
+        discipline_line = "📉 <b>Risk Control</b> : scénario non confirmé"
+
+    trend_lower = (trend_text or "").lower()
+    if trend_lower in ["bullish", "uptrend", "haussier", "bull"]:
+        bias_line = "🟢 <b>Market Bias</b> : bullish context failed to hold"
+    elif trend_lower in ["bearish", "downtrend", "baissier", "bear"]:
+        bias_line = "🔻 <b>Market Bias</b> : bearish context failed to extend"
+    elif trend_text and trend_text != "-":
+        bias_line = f"⚖️ <b>Market Bias</b> : {html.escape(trend_text)}"
+    else:
+        bias_line = "⚖️ <b>Market Bias</b> : neutral / mixed"
+
     learn_block = (
-        f'\n🎓 <a href="{learn_link}">Comprendre pourquoi ce signal a échoué</a>\n'
+        f'\n🎓 <a href="{learn_link}">Comprendre pourquoi le setup a échoué</a>'
         if learn_link else ""
     )
 
-    return f"""
-❌ <b>Risk Invalidated</b>
+    message = f"""
+{result_badge}
 
 {asset_icon} <b>{asset}</b> • {dir_icon} <b>{action}</b>
 
 ━━━━━━━━━━━━━━━━━━
 💰 <b>Entry</b> : {format_price(signal.entry_price)}
-🛑 <b>SL Hit</b> : {format_price(signal.stop_loss)}
+🛑 <b>Stop Hit</b> : {format_price(signal.stop_loss)}
 💵 <b>PnL</b> : -{format_price(abs(pnl))}
+⚖️ <b>Risk/Reward</b> : {format_rr(signal)}
 
 ━━━━━━━━━━━━━━━━━━
 🔥 <b>Initial Confidence</b> : {conf_icon} {format_confidence(signal)}
-🧠 <b>Setup</b> : {html.escape(format_reason(signal))}
+{discipline_line}
+📌 <b>Outcome</b> : invalidation respected
 
-━━━━━━━━━━━━━━━━━━{learn_block}
-⚠️ <b>Status</b> : LOSS
+━━━━━━━━━━━━━━━━━━
+🧠 <b>Setup Logic</b> : {setup_text}
+{bias_line}
+⏱ <b>Timeframe</b> : {timeframe_text}
+📦 <b>Type</b> : {signal_type_text}
+🆔 <b>Trade ID</b> : {trade_id_text}
+
+━━━━━━━━━━━━━━━━━━
+⚠️ <b>Status</b> : LOSS{learn_block}
+
+💎 <b>Velwolf Intelligence</b>
+""".strip()
+
+    if len(message) > 3900:
+        message = message[:3890].rstrip() + "..."
+
+    return message
+
+
+def build_vip_result_teaser_message(signal) -> str:
+    asset = (signal.asset or "").upper()
+    action = (signal.action or "").upper()
+
+    asset_icon = asset_emoji(asset)
+    dir_icon = action_emoji(action)
+    timeframe_text = html.escape(format_timeframe(signal))
+    trade_id_text = html.escape(str(signal.trade_id or "-"))
+
+    return f"""
+🔒 <b>Trade Update Reserved</b>
+
+{asset_icon} <b>{asset}</b> • {dir_icon} <b>{action}</b>
+
+━━━━━━━━━━━━━━━━━━
+⏱ <b>Timeframe</b> : {timeframe_text}
+🆔 <b>Trade ID</b> : {trade_id_text}
+
+━━━━━━━━━━━━━━━━━━
+Le résultat final de ce trade est réservé aux membres <b>VIP</b>.
+
+💎 <b>VIP Unlock</b>
+• TP / SL en temps réel
+• résultat complet
+• PnL du trade
+• suivi desk complet
+
+🚀 <b>Upgrade requis pour voir la clôture</b>
 
 💎 <b>Velwolf Intelligence</b>
 """.strip()

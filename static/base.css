@@ -583,3 +583,73 @@ a {
         font-size: 0.86rem;
     }
 }
+
+
+
+
+
+
+
+.nav-ai-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #cfe7ff;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.nav-ai-link:hover {
+    color: #ffffff;
+}
+
+.nav-ai-icon {
+    font-size: 15px;
+    line-height: 1;
+}
+
+.nav-ai-text {
+    line-height: 1;
+}
+
+.nav-ai-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: #ffffff;
+    background: linear-gradient(135deg, #775cff, #28c7ff);
+    box-shadow: 0 8px 20px rgba(119, 92, 255, 0.22);
+}
+
+/* MOBILE CLEAN */
+@media (max-width: 991px) {
+    .nav-ai-link {
+        width: 100%;
+        justify-content: space-between;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        margin-top: 6px;
+    }
+
+    .nav-ai-link .nav-ai-icon {
+        font-size: 16px;
+    }
+
+    .nav-ai-link .nav-ai-text {
+        flex: 1;
+        margin-left: 2px;
+    }
+
+    .nav-ai-badge {
+        font-size: 9px;
+        padding: 2px 6px;
+    }
+}

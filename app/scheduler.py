@@ -8,6 +8,9 @@ from app.services.telegram_dispatcher import (
     send_morning_briefings,
     send_second_briefings,
     send_breaking_news,
+    send_liquidations_alerts,
+    send_whale_alerts,
+    send_token_unlocks_alerts,
 )
 from app.services.news_digest_service import prepare_digest_articles
 from app.services.telegram_dedup import purge_old_dispatch_logs
@@ -92,6 +95,24 @@ def job_breaking_news():
         print(send_breaking_news(article))
 
 
+def job_liquidations():
+    with app.app_context():
+        print(f"[{datetime.now()}] Liquidations check...")
+        print(send_liquidations_alerts())
+
+
+def job_whales():
+    with app.app_context():
+        print(f"[{datetime.now()}] Whale alerts check...")
+        print(send_whale_alerts())
+
+
+def job_unlocks():
+    with app.app_context():
+        print(f"[{datetime.now()}] Token unlocks check...")
+        print(send_token_unlocks_alerts())
+
+
 def job_cleanup_dispatch_logs():
     with app.app_context():
         deleted = purge_old_dispatch_logs(days=30)
@@ -110,8 +131,29 @@ def run_scheduler():
 
     scheduler.add_job(
         job_breaking_news,
-        CronTrigger(minute="*/10"),
+        CronTrigger(minute="0"),
         id="breaking_news",
+        replace_existing=True,
+    )
+
+    scheduler.add_job(
+        job_liquidations,
+        CronTrigger(minute="*/15"),
+        id="liquidations",
+        replace_existing=True,
+    )
+
+    scheduler.add_job(
+        job_whales,
+        CronTrigger(minute="10,40"),
+        id="whales",
+        replace_existing=True,
+    )
+
+    scheduler.add_job(
+        job_unlocks,
+        CronTrigger(hour="9,13,18", minute=5),
+        id="unlocks",
         replace_existing=True,
     )
 

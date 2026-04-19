@@ -2807,3 +2807,14 @@ body.ultra-dashboard-body main.dashboard-main-shell {
         font-size: 0.84rem;
     }
 }
+
+.status-pill.locked {
+    background: rgba(255, 80, 80, 0.15);
+    color: #ff5a5a;
+    border: 1px solid rgba(255, 80, 80, 0.4);
+}
+
+.status-pill.locked::before,
+.status-pill.locked::after {
+    content: none !important;
+}
