@@ -2818,3 +2818,45 @@ body.ultra-dashboard-body main.dashboard-main-shell {
 .status-pill.locked::after {
     content: none !important;
 }
+
+
+
+
+.telegram-link-box{
+    margin-bottom: 16px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.telegram-link-box strong{
+    display: block;
+    color: #fff;
+    margin-bottom: 8px;
+    font-weight: 800;
+}
+
+.telegram-link-box p{
+    margin: 0 0 12px 0;
+    color: #9fb0c9;
+    line-height: 1.6;
+}
+
+.telegram-link-btn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 800;
+    color: white;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+}
+
+.telegram-linked-box{
+    border-color: rgba(34,197,94,0.22);
+    background: rgba(34,197,94,0.08);
+}

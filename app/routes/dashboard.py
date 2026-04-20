@@ -14,7 +14,8 @@ from app.services.briefing_service import ensure_daily_briefing
 from app.access import signal_limit_for_plan, has_access
 from app.services.telegram_dedup import count_sent_today
 from app.services.market_service import get_crypto_command_center
-
+from app.utils.telegram_access import get_user_telegram_link
+from app.utils.telegram_link import build_telegram_bot_link, is_telegram_linked
 dashboard_bp = Blueprint("dashboard", __name__)
 
 
@@ -179,7 +180,7 @@ def _build_dashboard_brief_preview(briefing, user_plan: str):
 @dashboard_bp.route("/<lang_code>/dashboard")
 @login_required
 def dashboard(lang_code):
-    sync_user_premium_status(current_user)
+    #sync_user_premium_status(current_user)
 
     user_plan = getattr(current_user, "plan", "free")
 
@@ -355,6 +356,29 @@ def dashboard(lang_code):
 
     asset_leaderboard = build_asset_leaderboard(all_signals)
 
+    telegram_user_link = get_user_telegram_link(current_user)
+    telegram_public_link = getattr(config, "TELEGRAM_PUBLIC_LINK", "") or ""
+    telegram_basic_link = getattr(config, "TELEGRAM_BASIC_INVITE_LINK", "") or ""
+    telegram_premium_link = getattr(config, "TELEGRAM_PREMIUM_INVITE_LINK", "") or ""
+    telegram_vip_link = getattr(config, "TELEGRAM_VIP_INVITE_LINK", "") or ""
+    telegram_linked = is_telegram_linked(current_user)
+
+    telegram_bot_username = getattr(config, "TELEGRAM_BOT_USERNAME", "") or ""
+    from app.utils.telegram_link import ensure_telegram_link_token
+
+    telegram_bot_link = ""
+
+    if telegram_bot_username and not telegram_linked:
+       # 🔥 force la création du token
+       token = ensure_telegram_link_token(current_user)
+
+       telegram_bot_link = f"https://t.me/{telegram_bot_username}?start={token}"
+
+       print("TELEGRAM BOT LINK =", telegram_bot_link)
+       print("telegram_linked =", telegram_linked, flush=True)
+       print("telegram_bot_username =", telegram_bot_username, flush=True)
+       print("telegram_bot_link =", telegram_bot_link, flush=True)
+       print("telegram_link_token =", getattr(current_user, "telegram_link_token", None), flush=True)
     return render_template(
         "dashboard.html",
         email=current_user.email,
@@ -404,6 +428,14 @@ def dashboard(lang_code):
         live_market_energy=live_market_energy,
         live_momentum_phase=live_momentum_phase,
         asset_leaderboard=asset_leaderboard,
+        telegram_user_link=telegram_user_link,
+        telegram_public_link=telegram_public_link,
+        telegram_basic_link=telegram_basic_link,
+        telegram_premium_link=telegram_premium_link,
+        telegram_vip_link=telegram_vip_link, 
+        telegram_linked=telegram_linked,
+        telegram_bot_link=telegram_bot_link,
+        telegram_bot_username=telegram_bot_username,
     )
 
 

@@ -1,0 +1,54 @@
+[
+  {
+    "timestamp": 1776636348,
+    "token": "BTC",
+    "interval": "1h",
+    "signal": "sell",
+    "bias": "bearish",
+    "confidence": 35,
+    "price": 74041.57,
+    "orderflow_state": "aggressive_selling",
+    "orderflow_strength": 92,
+    "confluence_score": 60,
+    "simulated_outcome_pct": -1.25
+  },
+  {
+    "timestamp": 1776637795,
+    "token": "BTC",
+    "interval": "1h",
+    "signal": "sell",
+    "bias": "bearish",
+    "confidence": 35,
+    "price": 73947.92,
+    "orderflow_state": "aggressive_selling",
+    "orderflow_strength": 95,
+    "confluence_score": 60,
+    "simulated_outcome_pct": -1.25
+  },
+  {
+    "timestamp": 1776687661,
+    "token": "BTC",
+    "interval": "1h",
+    "signal": "neutral",
+    "bias": "mixed",
+    "confidence": 65,
+    "price": 75537.75,
+    "orderflow_state": "balanced",
+    "orderflow_strength": 58,
+    "confluence_score": 100,
+    "simulated_outcome_pct": -0.75
+  },
+  {
+    "timestamp": 1776687753,
+    "token": "BTC",
+    "interval": "1h",
+    "signal": "neutral",
+    "bias": "mixed",
+    "confidence": 65,
+    "price": 75493.16,
+    "orderflow_state": "balanced",
+    "orderflow_strength": 58,
+    "confluence_score": 100,
+    "simulated_outcome_pct": -0.75
+  }
+]

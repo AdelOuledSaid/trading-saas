@@ -1,360 +1,218 @@
-let replayData = null;
-let chart = null;
-let candleSeries = null;
-let index = 0;
+let chart;
+let candleSeries;
+let candles = [];
+let events = [];
+
+let currentIndex = 0;
 let interval = null;
-let speed = 700;
-let eventElements = [];
-let decisionShown = false;
-let traderScore = 0;
+let speed = 800;
 
-async function loadReplay() {
-    try {
-        const res = await fetch(`/api/replay/${replayId}`);
-        replayData = await res.json();
+let decisionIndex = null;
+let decisionMade = false;
 
-        if (!res.ok || !replayData || replayData.error) {
-            console.error("Erreur replay:", replayData?.error || "Données invalides");
-            renderChartMessage("Aucun replay disponible pour ce trade.");
-            return;
-        }
+// =========================
+// INIT
+// =========================
+async function initReplay() {
+    const res = await fetch(replayApiBase);
+    const data = await res.json();
 
-        if (!replayData.candles || replayData.candles.length === 0) {
-            renderChartMessage("Ce replay ne contient pas encore de bougies.");
-            return;
-        }
+    candles = data.candles;
+    events = data.events;
 
-        initChart();
-        renderEvents();
-        drawLines();
-        updateScoreUI(
-            0,
-            "En attente de décision",
-            "Le score apparaîtra après ton choix.",
-            ""
-        );
+    decisionIndex = data.trade.decision_index;
 
-        // Démarrage automatique pour éviter une zone vide
-        setTimeout(() => {
-            startReplay();
-        }, 300);
+    initChart();
+    renderEvents(events);
+    renderLessons(data.trade.lessons);
 
-    } catch (error) {
-        console.error("Erreur chargement replay:", error);
-        renderChartMessage("Impossible de charger le replay.");
-    }
+    updateMeta(0);
 }
 
-function renderChartMessage(message) {
-    const container = document.getElementById("chart");
-    if (!container) return;
-
-    container.innerHTML = `
-        <div class="replay-empty-state">
-            ${message}
-        </div>
-    `;
-}
-
+// =========================
+// CHART
+// =========================
 function initChart() {
-    const container = document.getElementById("chart");
-    if (!container) {
-        console.error("Container #chart introuvable");
-        return;
-    }
-
-    // Nettoyage si reset / reload
-    container.innerHTML = "";
-
-    chart = LightweightCharts.createChart(container, {
-        width: container.clientWidth,
-        height: 430,
+    chart = LightweightCharts.createChart(document.getElementById('chart'), {
         layout: {
-            background: { color: "#031124" },
-            textColor: "#cbd5e1",
+            background: { color: '#0b0f1a' },
+            textColor: '#d1d5db'
         },
         grid: {
-            vertLines: { color: "rgba(148,163,184,0.08)" },
-            horzLines: { color: "rgba(148,163,184,0.08)" },
+            vertLines: { color: '#1f2937' },
+            horzLines: { color: '#1f2937' }
         },
-        rightPriceScale: {
-            borderColor: "rgba(148,163,184,0.15)",
-        },
-        timeScale: {
-            borderColor: "rgba(148,163,184,0.15)",
-            timeVisible: true,
-            secondsVisible: false,
-        },
-        crosshair: {
-            mode: LightweightCharts.CrosshairMode.Normal,
-        },
+        width: document.getElementById('chart').clientWidth,
+        height: 400
     });
 
-    candleSeries = chart.addSeries(LightweightCharts.CandlestickSeries, {
-        upColor: "#22c55e",
-        downColor: "#ef4444",
-        borderVisible: false,
-        wickUpColor: "#22c55e",
-        wickDownColor: "#ef4444",
-    });
+    candleSeries = chart.addCandlestickSeries();
 
-    window.addEventListener("resize", () => {
-        if (chart) {
-            chart.applyOptions({
-                width: container.clientWidth
-            });
-        }
+    window.addEventListener('resize', () => {
+        chart.resize(document.getElementById('chart').clientWidth, 400);
     });
 }
 
-function normalizeTime(value) {
-    return Math.floor(new Date(value).getTime() / 1000);
-}
-
-function drawLines() {
-    if (!candleSeries || !replayData || !replayData.trade) return;
-
-    const trade = replayData.trade;
-
-    candleSeries.createPriceLine({
-        price: Number(trade.entry_price),
-        color: "#38bdf8",
-        lineWidth: 2,
-        axisLabelVisible: true,
-        title: "Entrée",
-    });
-
-    if (trade.stop_loss) {
-        candleSeries.createPriceLine({
-            price: Number(trade.stop_loss),
-            color: "#ef4444",
-            lineWidth: 2,
-            axisLabelVisible: true,
-            title: "SL",
-            lineStyle: LightweightCharts.LineStyle.Dashed,
-        });
-    }
-
-    if (trade.take_profit) {
-        candleSeries.createPriceLine({
-            price: Number(trade.take_profit),
-            color: "#22c55e",
-            lineWidth: 2,
-            axisLabelVisible: true,
-            title: "TP",
-            lineStyle: LightweightCharts.LineStyle.Dashed,
-        });
-    }
-}
-
+// =========================
+// REPLAY CONTROL
+// =========================
 function startReplay() {
-    if (!replayData || !replayData.candles || !candleSeries) {
-        console.error("Replay non prêt");
-        return;
-    }
-
-    clearInterval(interval);
+    if (interval) return;
 
     interval = setInterval(() => {
-        if (index >= replayData.candles.length) {
-            clearInterval(interval);
+        if (currentIndex >= candles.length) {
+            pauseReplay();
             return;
         }
 
-        checkDecisionPoint(index);
-
-        const c = replayData.candles[index];
+        const c = candles[currentIndex];
 
         candleSeries.update({
-            time: normalizeTime(c.time),
-            open: Number(c.open),
-            high: Number(c.high),
-            low: Number(c.low),
-            close: Number(c.close),
+            time: new Date(c.time).getTime() / 1000,
+            open: c.open,
+            high: c.high,
+            low: c.low,
+            close: c.close
         });
 
-        highlightEvents(index);
+        updateMeta(currentIndex);
+        checkDecisionMoment(currentIndex);
 
-        if (chart) {
-            chart.timeScale().scrollToRealTime();
-        }
-
-        index++;
+        currentIndex++;
     }, speed);
 }
 
 function pauseReplay() {
     clearInterval(interval);
+    interval = null;
 }
 
 function resetReplay() {
-    clearInterval(interval);
-    index = 0;
-    decisionShown = false;
-    traderScore = 0;
+    pauseReplay();
+    currentIndex = 0;
+    decisionMade = false;
 
-    if (candleSeries) {
-        candleSeries.setData([]);
-    }
+    document.getElementById("decision-box").classList.add("hidden");
 
-    eventElements.forEach((el) => el.classList.remove("active"));
-
-    const decisionBox = document.getElementById("decision-box");
-    if (decisionBox) {
-        decisionBox.classList.add("hidden");
-    }
-
-    updateScoreUI(
-        0,
-        "En attente de décision",
-        "Le score apparaîtra après ton choix.",
-        ""
-    );
-
-    setTimeout(() => {
-        startReplay();
-    }, 150);
+    chart.remove();
+    initChart();
+    updateMeta(0);
 }
 
 function setSpeed(multiplier) {
-    speed = 700 / multiplier;
-
+    speed = 800 / multiplier;
     if (interval) {
+        pauseReplay();
         startReplay();
     }
 }
 
-function renderEvents() {
-    const container = document.getElementById("events");
-    if (!container || !replayData || !replayData.events) return;
+// =========================
+// META UI
+// =========================
+function updateMeta(index) {
+    const progress = Math.round((index / candles.length) * 100);
 
-    container.innerHTML = "";
-    eventElements = [];
+    document.getElementById("progress-text").innerText = progress + "%";
+    document.getElementById("candle-counter").innerText = `${index} / ${candles.length}`;
 
-    replayData.events.forEach((e) => {
-        const div = document.createElement("div");
-        div.className = "replay-event";
-        div.dataset.index = e.index;
-
-        div.innerHTML = `
-            <strong>${e.title}</strong>
-            <span>${e.description || ""}</span>
-        `;
-
-        container.appendChild(div);
-        eventElements.push(div);
-    });
+    document.getElementById("progress-bar").style.width = progress + "%";
 }
 
-function highlightEvents(currentIndex) {
-    eventElements.forEach((el) => {
-        const idx = parseInt(el.dataset.index, 10);
-
-        if (idx === currentIndex) {
-            el.classList.add("active");
-            el.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        } else {
-            el.classList.remove("active");
-        }
-    });
-}
-
-function checkDecisionPoint(currentIndex) {
-    if (decisionShown) return;
-
-    if (currentIndex === 20) {
-        decisionShown = true;
+// =========================
+// DECISION SYSTEM
+// =========================
+function checkDecisionMoment(index) {
+    if (!decisionMade && index >= decisionIndex) {
         pauseReplay();
-
-        const decisionBox = document.getElementById("decision-box");
-        if (decisionBox) {
-            decisionBox.classList.remove("hidden");
-        }
+        showDecisionBox();
     }
 }
 
-async function saveDecisionToServer(decision, score, status, feedback) {
-    try {
-        const res = await fetch(`/api/replay/${replayId}/decision`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                decision: decision,
-                score: score,
-                status: status,
-                feedback: feedback
-            })
-        });
-
-        const data = await res.json();
-        console.log("Sauvegarde décision :", data);
-    } catch (error) {
-        console.error("Erreur sauvegarde décision :", error);
-    }
+function showDecisionBox() {
+    document.getElementById("decision-box").classList.remove("hidden");
 }
 
-function makeDecision(choice) {
-    const decisionBox = document.getElementById("decision-box");
-    if (decisionBox) {
-        decisionBox.classList.add("hidden");
-    }
+async function makeDecision(choice) {
+    decisionMade = true;
 
-    let score = 0;
-    let status = "";
-    let feedback = "";
-    let statusText = "";
+    const res = await fetch(`${replayApiBase}/decision`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ decision: choice })
+    });
 
-    if (choice === "hold") {
-        score = 10;
-        status = "good";
-        statusText = "Discipline excellente";
-        feedback = "✅ Bonne décision. Il fallait conserver la position et respecter le plan.";
-    } else if (choice === "partial") {
-        score = 5;
-        status = "medium";
-        statusText = "Gestion prudente";
-        feedback = "⚠️ Décision correcte mais incomplète. Tu sécurises, mais tu réduis le potentiel du trade.";
-    } else if (choice === "close") {
-        score = 0;
-        status = "bad";
-        statusText = "Sortie émotionnelle";
-        feedback = "❌ Mauvaise décision. Tu coupes trop tôt par manque de discipline.";
-    }
+    const data = await res.json();
 
-    traderScore = score;
-    updateScoreUI(score, statusText, feedback, status);
-    saveDecisionToServer(choice, score, status, feedback);
+    displayScore(data);
+    document.getElementById("decision-box").classList.add("hidden");
 
     startReplay();
 }
 
-function updateScoreUI(score, statusText, messageText, level) {
-    const scoreEl = document.getElementById("trader-score");
+// =========================
+// SCORE DISPLAY
+// =========================
+function displayScore(data) {
+    document.getElementById("trader-score").innerText = data.score;
+
     const statusEl = document.getElementById("trader-status");
+    statusEl.innerText = data.status_text;
+
     const feedbackEl = document.getElementById("decision-feedback");
+    feedbackEl.innerText = data.feedback;
 
-    if (scoreEl) {
-        scoreEl.textContent = String(score);
+    if (data.status === "good") {
+        statusEl.style.color = "#22c55e";
+    } else if (data.status === "medium") {
+        statusEl.style.color = "#f59e0b";
+    } else {
+        statusEl.style.color = "#ef4444";
     }
 
-    if (feedbackEl) {
-        feedbackEl.textContent = messageText;
-    }
-
-    if (statusEl) {
-        statusEl.textContent = statusText;
-        statusEl.className = "score-status";
-
-        if (level === "good") {
-            statusEl.classList.add("good");
-        } else if (level === "medium") {
-            statusEl.classList.add("medium");
-        } else if (level === "bad") {
-            statusEl.classList.add("bad");
-        }
-    }
+    // mini scores (simple simulation)
+    document.getElementById("discipline-score").innerText = `${data.score}/10`;
+    document.getElementById("timing-score").innerText = `${Math.max(0, data.score - 2)}/10`;
 }
 
-loadReplay();
+// =========================
+// EVENTS TIMELINE
+// =========================
+function renderEvents(events) {
+    const container = document.getElementById("events");
+    container.innerHTML = "";
+
+    events.forEach(e => {
+        const div = document.createElement("div");
+        div.className = "event";
+
+        div.innerHTML = `
+            <strong>${e.title}</strong>
+            <p>${e.description || ""}</p>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+// =========================
+// LESSONS
+// =========================
+function renderLessons(lessons) {
+    const container = document.getElementById("lessons-list");
+    container.innerHTML = "";
+
+    lessons.forEach(l => {
+        const div = document.createElement("div");
+        div.className = "lesson-item";
+        div.innerText = l;
+        container.appendChild(div);
+    });
+}
+
+// =========================
+// START
+// =========================
+window.onload = initReplay;

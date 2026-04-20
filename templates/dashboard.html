@@ -202,7 +202,20 @@
                     </a>
                     <a href="{{ url_for('dashboard.briefing_page', lang_code=current_lang) if can_view_briefing else url_for('billing.pricing', lang_code=current_lang) }}#market-news" class="hero-utility-btn">{{ t("news", "News") }}</a>
                     <a href="{{ url_for('pages.academy_index', lang_code=current_lang) if is_premium_plus else url_for('pages.academy_upgrade', lang_code=current_lang) }}" class="hero-utility-btn">{{ t("academy", "Academy") }}</a>
-                    <a href="{{ telegram_vip_link if is_vip else url_for('billing.pricing', lang_code=current_lang) }}" {% if is_vip %}target="_blank" rel="noopener"{% endif %} class="hero-utility-btn hero-utility-btn-vip">Telegram VIP</a>
+                     <a href="{{ telegram_user_link if telegram_user_link else telegram_public_link }}"
+                        target="_blank"
+                        rel="noopener"
+                        class="hero-utility-btn hero-utility-btn-vip">
+                        {% if user_plan == "vip" %}
+                            Telegram VIP
+                        {% elif user_plan == "premium" %}
+                            Telegram Premium
+                        {% elif user_plan == "basic" %}
+                            Telegram Basic
+                        {% else %}
+                            Telegram Public
+                        {% endif %}
+                    </a>
                     <a href="#leaderboard" class="hero-utility-btn">{{ t("leaderboard", "Leaderboard") }}</a>
                     <a href="#performance-badge" class="hero-utility-btn">{{ t("performance_badge", "Badge performance") }}</a>
                 </div>
@@ -750,7 +763,20 @@
                             </div>
                             <div class="signal-card-actions locked-signal-actions">
                                 <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="hero-primary-btn compact-btn">{{ t("unlock_all_signals", "Débloquer tous les signaux") }}</a>
-                                <a href="{{ telegram_vip_link if is_vip else url_for('billing.pricing', lang_code=current_lang) }}" {% if is_vip %}target="_blank" rel="noopener"{% endif %} class="panel-link-btn vip-lock-btn">Telegram VIP</a>
+                                <a href="{{ telegram_user_link if telegram_user_link else telegram_public_link }}"
+                                   target="_blank"
+                                    rel="noopener"
+                                    class="panel-link-btn vip-lock-btn">
+                                    {% if user_plan == "vip" %}
+                                       Telegram VIP
+                                    {% elif user_plan == "premium" %}
+                                        Telegram Premium
+                                    {% elif user_plan == "basic" %}
+                                        Telegram Basic
+                                    {% else %}
+                                        Telegram Public
+                                     {% endif %}
+                                </a>
                             </div>
                         </article>
                         {% endif %}
@@ -987,6 +1013,9 @@
                             <span class="telegram-hint">{% if is_vip %}{{ t("priority_alerts", "Alertes prioritaires") }}{% else %}{{ t("upgrade_path", "Montée en gamme") }}{% endif %}</span>
                         </div>
                         <h3>{% if is_vip %}{{ t("vip_desk_open", "Votre desk Telegram VIP est ouvert") }}{% else %}{{ t("telegram_vip_locked", "Le vrai flux Telegram reste réservé aux VIP") }}{% endif %}</h3>
+                        
+
+                         
                         <p>
                             {% if is_vip %}
                                 {{ t("vip_telegram_desc", "Accède à ton canal privé pour recevoir les signaux, les updates rapides et les annonces stratégiques.") }}
@@ -998,17 +1027,88 @@
                                 {{ t("free_telegram_desc", "Commence par le canal public, puis débloque Premium et VIP pour accéder à la distribution complète.") }}
                             {% endif %}
                         </p>
+{% if user_plan == "free" %}
+<div class="telegram-link-box">
+    <strong>🔒 Accès Telegram</strong>
+    <p>
+        Passe au plan Basic pour connecter ton compte Telegram
+        et recevoir les signaux en temps réel.
+    </p>
+</div>
+
+{% elif user_plan in ["basic", "premium", "vip"] and not telegram_linked %}
+<div class="telegram-link-box">
+    <strong>🔗 Lier mon compte Telegram</strong>
+    <p>
+        Connecte ton compte Telegram pour sécuriser l’accès à ton canal privé
+        et recevoir automatiquement le bon accès selon ton abonnement.
+    </p>
+    <a href="{{ telegram_bot_link }}"
+       target="_blank"
+       rel="noopener"
+       class="telegram-link-btn">
+        🤖 Lier mon Telegram
+    </a>
+</div>
+
+{% elif user_plan in ["basic", "premium", "vip"] and telegram_linked %}
+<div class="telegram-link-box telegram-linked-box">
+    <strong>✅ Telegram lié</strong>
+    <p>
+        {% if current_user.telegram_username %}
+            Compte connecté : @{{ current_user.telegram_username }}
+        {% else %}
+            Ton compte Telegram est bien connecté.
+        {% endif %}
+    </p>
+</div>
+{% endif %}
                         <div class="telegram-panel-actions">
-                            <a href="{% if is_vip %}{{ telegram_vip_link }}{% else %}{{ telegram_public_link }}{% endif %}" target="_blank" rel="noopener" class="telegram-btn">
-                                {% if is_vip %}{{ t("join_vip_channel", "Rejoindre le canal VIP") }}{% else %}{{ t("open_public_channel", "Ouvrir le canal public") }}{% endif %}
-                            </a>
-                            {% if not is_vip %}
-                            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="telegram-outline-btn">
-                                {% if is_premium_plus %}{{ t("go_vip", "Passer VIP") }}{% else %}{{ t("see_offers", "Voir les offres") }}{% endif %}
-                            </a>
-                            {% endif %}
-                        </div>
-                    </div>
+
+    {% if user_plan in ["basic", "premium", "vip"] and telegram_linked %}
+    <button type="button"
+            class="telegram-btn"
+            id="generate-telegram-invite-btn">
+
+        {% if user_plan == "vip" %}
+            👑 {{ t("join_vip_channel", "Rejoindre le canal VIP") }}
+        {% elif user_plan == "premium" %}
+            🔥 Rejoindre le canal Premium
+        {% else %}
+            ⚡ Rejoindre le canal Basic
+        {% endif %}
+
+    </button>
+    {% else %}
+    <a href="{{ telegram_user_link if telegram_user_link else telegram_public_link }}"
+       target="_blank"
+       rel="noopener"
+       class="telegram-btn">
+
+       {% if user_plan == "vip" %}
+           👑 {{ t("join_vip_channel", "Rejoindre le canal VIP") }}
+       {% elif user_plan == "premium" %}
+           🔥 Rejoindre le canal Premium
+       {% elif user_plan == "basic" %}
+           ⚡ Rejoindre le canal Basic
+       {% else %}
+           🌍 {{ t("open_public_channel", "Ouvrir le canal public") }}
+       {% endif %}
+
+    </a>
+    {% endif %}
+
+    {% if not is_vip %}
+    <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="telegram-outline-btn">
+        {% if is_premium_plus %}
+            {{ t("go_vip", "Passer VIP") }}
+        {% else %}
+            {{ t("see_offers", "Voir les offres") }}
+        {% endif %}
+    </a>
+    {% endif %}
+
+</div>
                 </section>
 
                 <section class="premium-panel mission-timeline-panel">
@@ -1185,6 +1285,42 @@ document.addEventListener("DOMContentLoaded", () => {
             i = (i + 1) % liveTexts.length;
             liveEl.textContent = liveTexts[i];
         }, 2600);
+    }
+
+    const inviteBtn = document.getElementById("generate-telegram-invite-btn");
+
+    if (inviteBtn) {
+        inviteBtn.addEventListener("click", async () => {
+            const originalText = inviteBtn.innerHTML;
+            inviteBtn.disabled = true;
+            inviteBtn.innerHTML = "⏳ Génération du lien...";
+
+            try {
+                const response = await fetch("/telegram/generate-invite", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.ok || !data.invite_link) {
+                    alert("❌ Impossible de générer le lien Telegram.");
+                    inviteBtn.disabled = false;
+                    inviteBtn.innerHTML = originalText;
+                    return;
+                }
+
+                window.open(data.invite_link, "_blank", "noopener");
+
+            } catch (error) {
+                alert("❌ Erreur de connexion.");
+            } finally {
+                inviteBtn.disabled = false;
+                inviteBtn.innerHTML = originalText;
+            }
+        });
     }
 });
 </script>

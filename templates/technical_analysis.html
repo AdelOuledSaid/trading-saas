@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}Technical Analysis | VelWolef{% endblock %}
-{% block meta_description %}Analyse technique réelle avec données marché live, indicateurs calculés backend et résumé IA premium.{% endblock %}
+{% block meta_description %}Analyse technique institutionnelle avec multi-timeframe, confluence, orderflow, replay et desk VIP.{% endblock %}
 {% block body_class %}technical-analysis-body{% endblock %}
 
 {% block extra_css %}
@@ -9,7 +9,11 @@
 {% endblock %}
 
 {% block content %}
-<section class="ta-shell">
+{% set user_plan = (current_user.plan if current_user.is_authenticated else 'free')|lower %}
+{% set is_premium = user_plan in ['premium', 'vip'] %}
+{% set is_vip = user_plan == 'vip' %}
+
+<section class="ta-shell ta-shell-v2">
     <div class="ta-noise"></div>
     <div class="ta-glow ta-glow-a"></div>
     <div class="ta-glow ta-glow-b"></div>
@@ -17,18 +21,18 @@
     <header class="ta-hero">
         <div class="ta-hero-copy">
             <div class="ta-hero-badges">
-                <span class="ta-ui-badge">Real Market Data</span>
-                <span class="ta-ui-badge ta-ui-badge-soft">VelWolef AI Desk</span>
+                <span class="ta-ui-badge">Institutional Dashboard</span>
+                <span class="ta-ui-badge ta-ui-badge-soft">Real Multi-Timeframe Engine</span>
             </div>
 
             <h1>
                 Technical Analysis
-                <span>Live Institutional Style</span>
+                <span>Orderflow • Confluence • Replay • VIP Desk</span>
             </h1>
 
             <p class="ta-hero-text">
-                Vraies données de marché, vrais indicateurs calculés côté backend, vraie synthèse IA.
-                Choisis un token, un timeframe et un indicateur pour obtenir une lecture premium.
+                D&eacute;tection avanc&eacute;e du contexte de march&eacute; avec vraie logique multi-timeframe,
+                orderflow simul&eacute;, replay des setups, niveaux de liquidit&eacute; et lecture d'ex&eacute;cution VIP.
             </p>
 
             <div class="ta-hero-actions">
@@ -53,12 +57,17 @@
                     <strong id="heroVolume">$--</strong>
                     <span>24H Volume</span>
                 </div>
+                <div class="ta-metric-card">
+                    <strong id="heroConfidence">--</strong>
+                    <span>VIP Score</span>
+                </div>
             </div>
         </div>
 
         <div class="ta-hero-preview">
             <div class="ta-preview-device">
                 <div class="ta-preview-notch"></div>
+
                 <div class="ta-preview-terminal">
                     <div class="ta-terminal-top">
                         <div>
@@ -96,8 +105,8 @@
                             <strong id="heroMfi">--</strong>
                         </div>
                         <div>
-                            <span>Confidence</span>
-                            <strong id="heroConfidence">--</strong>
+                            <span>Desk</span>
+                            <strong id="heroDeskMode">--</strong>
                         </div>
                     </div>
                 </div>
@@ -127,7 +136,7 @@
             <div class="ta-field">
                 <label for="timeframeSelect">Timeframe</label>
                 <select id="timeframeSelect">
-                    <option value="15m">15m</option>
+                    <option value="15m">15M</option>
                     <option value="1h" selected>1H</option>
                     <option value="4h">4H</option>
                     <option value="1d">1D</option>
@@ -149,6 +158,26 @@
                 Get Analysis
             </button>
 
+            <div class="ta-side-mini-stack">
+                <div class="ta-mini-monitor">
+                    <span>Confluence</span>
+                    <strong id="sideConfluenceScore">--</strong>
+                    <small id="sideConfluenceLabel">No data</small>
+                </div>
+
+                <div class="ta-mini-monitor">
+                    <span>Orderflow</span>
+                    <strong id="sideOrderflowState">--</strong>
+                    <small id="sideOrderflowStrength">Strength --</small>
+                </div>
+
+                <div class="ta-mini-monitor">
+                    <span>Replay</span>
+                    <strong id="sideReplayWinrate">--</strong>
+                    <small id="sideReplayCount">0 setups</small>
+                </div>
+            </div>
+
             <div class="ta-watchlist">
                 <div class="ta-section-head ta-section-head-row">
                     <h3>Watchlist</h3>
@@ -164,7 +193,7 @@
                     <div class="ta-section-head ta-section-head-row">
                         <div>
                             <h2>AI Market Summary</h2>
-                            <p>Real context + AI synthesis</p>
+                            <p>Real context + desk synthesis</p>
                         </div>
                         <div id="biasBadge" class="ta-bias-pill ta-bias-bullish">--</div>
                     </div>
@@ -188,15 +217,14 @@
                         </div>
                     </div>
 
-                    <p id="summaryText" class="ta-summary-text">Chargement de l’analyse...</p>
-
+                    <p id="summaryText" class="ta-summary-text">Clique sur Get Analysis pour charger l’analyse.</p>
                     <div class="ta-summary-tags" id="summaryTags"></div>
                 </section>
 
                 <section class="ta-glass-card ta-desk-card">
                     <div class="ta-section-head">
                         <h2>Desk Snapshot</h2>
-                        <p>Live indicators</p>
+                        <p>Live indicators and market state</p>
                     </div>
 
                     <div class="ta-snapshot-grid">
@@ -228,6 +256,99 @@
                 </section>
             </div>
 
+            <div class="ta-grid-super">
+                <section class="ta-glass-card ta-confluence-card">
+                    <div class="ta-section-head ta-section-head-row">
+                        <div>
+                            <h2>Confluence Engine</h2>
+                            <p>Multi-timeframe institutional alignment</p>
+                        </div>
+                        <div class="ta-score-badge">
+                            <span>Score</span>
+                            <strong id="confluenceScore">--</strong>
+                        </div>
+                    </div>
+
+                    <div class="ta-confluence-meta">
+                        <div class="ta-confluence-meta-box">
+                            <span>Dominant Bias</span>
+                            <strong id="confluenceBias">--</strong>
+                        </div>
+                        <div class="ta-confluence-meta-box">
+                            <span>Alignment</span>
+                            <strong id="confluenceAlignment">--</strong>
+                        </div>
+                        <div class="ta-confluence-meta-box">
+                            <span>Entry Quality</span>
+                            <strong id="confluenceEntryQuality">--</strong>
+                        </div>
+                    </div>
+
+                    <div class="ta-mtf-grid">
+                        <div class="ta-mtf-card">
+                            <span>15M</span>
+                            <strong id="mtf15mBias">--</strong>
+                            <small id="mtf15mMeta">RSI -- · Conf --</small>
+                        </div>
+                        <div class="ta-mtf-card">
+                            <span>1H</span>
+                            <strong id="mtf1hBias">--</strong>
+                            <small id="mtf1hMeta">RSI -- · Conf --</small>
+                        </div>
+                        <div class="ta-mtf-card">
+                            <span>4H</span>
+                            <strong id="mtf4hBias">--</strong>
+                            <small id="mtf4hMeta">RSI -- · Conf --</small>
+                        </div>
+                        <div class="ta-mtf-card">
+                            <span>1D</span>
+                            <strong id="mtf1dBias">--</strong>
+                            <small id="mtf1dMeta">RSI -- · Conf --</small>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="ta-glass-card ta-orderflow-card">
+                    <div class="ta-section-head ta-section-head-row">
+                        <div>
+                            <h2>Orderflow Simulation</h2>
+                            <p>Pressure, imbalance and absorption</p>
+                        </div>
+                        <span class="ta-membership-badge ta-membership-badge-vip">VIP</span>
+                    </div>
+
+                    <div class="ta-orderflow-grid">
+                        <div class="ta-orderflow-box">
+                            <span>State</span>
+                            <strong id="orderflowState">--</strong>
+                        </div>
+                        <div class="ta-orderflow-box">
+                            <span>Strength</span>
+                            <strong id="orderflowStrength">--</strong>
+                        </div>
+                        <div class="ta-orderflow-box">
+                            <span>Imbalance</span>
+                            <strong id="orderflowImbalance">--</strong>
+                        </div>
+                        <div class="ta-orderflow-box">
+                            <span>Absorption</span>
+                            <strong id="orderflowAbsorption">--</strong>
+                        </div>
+                    </div>
+
+                    <div class="ta-orderflow-bars">
+                        <div class="ta-flow-bar-wrap">
+                            <span>Buy Pressure</span>
+                            <strong id="buyPressureValue">--</strong>
+                        </div>
+                        <div class="ta-flow-bar-wrap">
+                            <span>Sell Pressure</span>
+                            <strong id="sellPressureValue">--</strong>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
             <div class="ta-grid-mid">
                 <section class="ta-glass-card ta-chart-card-large">
                     <div class="ta-section-head ta-section-head-row">
@@ -235,10 +356,11 @@
                             <h2>Price Structure</h2>
                             <p>Live chart style</p>
                         </div>
+
                         <div class="ta-tabs">
-                            <button class="ta-tab active">Price</button>
-                            <button class="ta-tab">RSI</button>
-                            <button class="ta-tab">MFI</button>
+                            <button class="ta-tab active" data-tab="price" type="button">Price</button>
+                            <button class="ta-tab" data-tab="rsi" type="button">RSI</button>
+                            <button class="ta-tab" data-tab="mfi" type="button">MFI</button>
                         </div>
                     </div>
 
@@ -289,12 +411,37 @@
             </div>
 
             <div class="ta-grid-bottom">
-                <section class="ta-glass-card">
-                    <div class="ta-section-head">
-                        <h2>Trending</h2>
-                        <p>Top market movers by live market data</p>
+                <section class="ta-glass-card ta-replay-card">
+                    <div class="ta-section-head ta-section-head-row">
+                        <div>
+                            <h2>Setup Replay</h2>
+                            <p>Historical setup memory and desk performance</p>
+                        </div>
+                        <span class="ta-membership-badge ta-membership-badge-premium">PREMIUM</span>
                     </div>
-                    <div id="trendingContainer" class="ta-indicator-list"></div>
+
+                    <div class="ta-replay-stats">
+                        <div class="ta-mini-box">
+                            <span>Setups</span>
+                            <strong id="replayCount">--</strong>
+                        </div>
+                        <div class="ta-mini-box">
+                            <span>Winrate</span>
+                            <strong id="replayWinrate">--</strong>
+                        </div>
+                        <div class="ta-mini-box">
+                            <span>Avg Confidence</span>
+                            <strong id="replayAvgConfidence">--</strong>
+                        </div>
+                        <div class="ta-mini-box">
+                            <span>Best Bias</span>
+                            <strong id="replayBestBias">--</strong>
+                        </div>
+                    </div>
+
+                    <div id="replayHistory" class="ta-replay-history">
+                        <p>No replay history loaded.</p>
+                    </div>
                 </section>
 
                 <section class="ta-glass-card">
@@ -304,12 +451,12 @@
                     </div>
 
                     <div id="executionPlan" class="ta-execution-box">
-                        <p>Chargement...</p>
+                        <p>Click Get Analysis to load the execution plan.</p>
                     </div>
 
                     <div class="ta-cta-stack">
                         <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ta-btn ta-btn-primary ta-btn-block">
-                            Send to Telegram VIP
+                            Unlock Full Analysis
                         </a>
                         <a href="{{ url_for('signals.results', lang_code=current_lang) }}" class="ta-btn ta-btn-dark ta-btn-block">
                             View Results
@@ -317,9 +464,250 @@
                     </div>
                 </section>
             </div>
+
+            <div class="ta-grid-bottom">
+                <section class="ta-glass-card">
+                    <div class="ta-section-head">
+                        <h2>Trending</h2>
+                        <p>Top market movers by live market data</p>
+                    </div>
+                    <div id="trendingContainer" class="ta-indicator-list"></div>
+                </section>
+
+                <section class="ta-glass-card ta-telegram-card">
+                    <div class="ta-section-head ta-section-head-row">
+                        <div>
+                            <h2>VIP Alert Engine</h2>
+                            <p>Telegram automation readiness</p>
+                        </div>
+                        <span class="ta-membership-badge ta-membership-badge-vip">VIP</span>
+                    </div>
+
+                    <div class="ta-telegram-status">
+                        <div class="ta-mini-box">
+                            <span>Status</span>
+                            <strong id="telegramReady">--</strong>
+                        </div>
+                        <div class="ta-mini-box">
+                            <span>Execution</span>
+                            <strong id="telegramExecutionMode">--</strong>
+                        </div>
+                        <div class="ta-mini-box">
+                            <span>Risk</span>
+                            <strong id="telegramRiskProfile">--</strong>
+                        </div>
+                    </div>
+
+                    <div class="ta-execution-box">
+                        <p id="telegramNote">No VIP alert condition loaded.</p>
+                    </div>
+                </section>
+            </div>
         </section>
     </div>
+
+    <div class="ta-membership-stack">
+
+        {% if is_premium %}
+        <section class="ta-glass-card ta-membership-card ta-premium-desk">
+            <div class="ta-section-head ta-section-head-row">
+                <div>
+                    <h2>Premium Desk</h2>
+                    <p>Advanced context reserved for Premium and VIP members</p>
+                </div>
+                <span class="ta-membership-badge ta-membership-badge-premium">PREMIUM</span>
+            </div>
+
+            <div class="ta-premium-grid">
+                <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" data-tier="premium" type="button">
+                    <span>15M Bias</span>
+                    <strong id="premiumBias15m">Fast</strong>
+                    <small>Fast structure confirmation</small>
+                </button>
+
+                <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" data-tier="premium" type="button">
+                    <span>1H Bias</span>
+                    <strong id="premiumBias1h">Aligned</strong>
+                    <small>Main execution window</small>
+                </button>
+
+                <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" data-tier="premium" type="button">
+                    <span>4H Bias</span>
+                    <strong id="premiumBias4h">Context</strong>
+                    <small>Higher timeframe direction</small>
+                </button>
+
+                <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" data-tier="premium" type="button">
+                    <span>Daily Bias</span>
+                    <strong id="premiumBias1d">Macro</strong>
+                    <small>Big picture framework</small>
+                </button>
+            </div>
+
+            <div class="ta-premium-details-grid">
+                <button class="ta-premium-panel ta-interactive-card" data-insight="premium-breakdown" data-tier="premium" type="button">
+                    <h3>Indicator Breakdown</h3>
+                    <ul class="ta-breakdown-list">
+                        <li><span>RSI State</span><strong id="premiumRsiState">Loading...</strong></li>
+                        <li><span>MFI State</span><strong id="premiumMfiState">Loading...</strong></li>
+                        <li><span>MACD Regime</span><strong id="premiumMacdState">Loading...</strong></li>
+                        <li><span>Volume Quality</span><strong id="premiumVolumeState">Loading...</strong></li>
+                    </ul>
+                </button>
+
+                <button class="ta-premium-panel ta-interactive-card" data-insight="premium-ai" data-tier="premium" type="button">
+                    <h3>Premium AI Context</h3>
+                    <p id="premiumAiSummary" class="ta-membership-text">
+                        Premium context loading...
+                    </p>
+                </button>
+            </div>
+        </section>
+        {% else %}
+        <section class="ta-glass-card ta-membership-card ta-membership-locked ta-premium-desk">
+            <div class="ta-section-head ta-section-head-row">
+                <div>
+                    <h2>Premium Desk</h2>
+                    <p>Advanced multi-timeframe context, replay engine and richer AI interpretation</p>
+                </div>
+                <span class="ta-membership-badge ta-membership-badge-premium">PREMIUM</span>
+            </div>
+
+            <div class="ta-locked-preview">
+                <div class="ta-locked-grid">
+                    <button class="ta-locked-box ta-interactive-card" data-insight="premium-alignment" data-tier="premium" type="button">
+                        Multi-Timeframe Alignment
+                    </button>
+                    <button class="ta-locked-box ta-interactive-card" data-insight="premium-breakdown" data-tier="premium" type="button">
+                        Indicator Breakdown
+                    </button>
+                    <button class="ta-locked-box ta-interactive-card" data-insight="premium-ai" data-tier="premium" type="button">
+                        Premium AI Context
+                    </button>
+                    <button class="ta-locked-box ta-interactive-card" data-insight="premium-read" data-tier="premium" type="button">
+                        Replay + Advanced Market Read
+                    </button>
+                </div>
+
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ta-btn ta-btn-primary">
+                    Unlock Premium Desk
+                </a>
+            </div>
+        </section>
+        {% endif %}
+
+        {% if is_vip %}
+        <section class="ta-glass-card ta-membership-card ta-vip-desk">
+            <div class="ta-section-head ta-section-head-row">
+                <div>
+                    <h2>VIP Desk</h2>
+                    <p>Institutional execution layer reserved for VIP members</p>
+                </div>
+                <span class="ta-membership-badge ta-membership-badge-vip">VIP</span>
+            </div>
+
+            <div class="ta-vip-grid">
+                <button class="ta-vip-score-card ta-interactive-card" data-insight="vip-score" data-tier="vip" type="button">
+                    <span>Confluence Score</span>
+                    <strong id="vipConfluenceScore">82 / 100</strong>
+                    <small>Trend + Momentum + Volume + Structure</small>
+                </button>
+
+                <button class="ta-vip-score-card ta-interactive-card" data-insight="vip-execution" data-tier="vip" type="button">
+                    <span>Execution Mode</span>
+                    <strong id="vipExecutionMode">Selective</strong>
+                    <small>Institutional style filtering</small>
+                </button>
+
+                <button class="ta-vip-score-card ta-interactive-card" data-insight="vip-score" data-tier="vip" type="button">
+                    <span>Risk Profile</span>
+                    <strong id="vipRiskProfile">Controlled</strong>
+                    <small>Scenario-based interpretation</small>
+                </button>
+            </div>
+
+            <div class="ta-vip-panels">
+                <button class="ta-vip-panel ta-interactive-card" data-insight="vip-scenarios" data-tier="vip" type="button">
+                    <h3>VIP Scenarios</h3>
+                    <div class="ta-scenario-box">
+                        <span>Bullish Scenario</span>
+                        <p id="vipBullScenario">Waiting for premium scenario details...</p>
+                    </div>
+                    <div class="ta-scenario-box">
+                        <span>Bearish Scenario</span>
+                        <p id="vipBearScenario">Waiting for premium scenario details...</p>
+                    </div>
+                    <div class="ta-scenario-box">
+                        <span>Neutral / Wait Scenario</span>
+                        <p id="vipNeutralScenario">Waiting for premium scenario details...</p>
+                    </div>
+                </button>
+
+                <button class="ta-vip-panel ta-interactive-card" data-insight="vip-notes" data-tier="vip" type="button">
+                    <h3>VIP Desk Notes</h3>
+                    <p id="vipDeskNotes" class="ta-membership-text">
+                        VIP notes loading...
+                    </p>
+                </button>
+            </div>
+        </section>
+        {% else %}
+        <section class="ta-glass-card ta-membership-card ta-membership-locked ta-vip-desk">
+            <div class="ta-section-head ta-section-head-row">
+                <div>
+                    <h2>VIP Desk</h2>
+                    <p>Institutional execution scenarios, Telegram alerts and desk notes</p>
+                </div>
+                <span class="ta-membership-badge ta-membership-badge-vip">VIP</span>
+            </div>
+
+            <div class="ta-locked-preview">
+                <div class="ta-locked-grid">
+                    <button class="ta-locked-box ta-interactive-card" data-insight="vip-score" data-tier="vip" type="button">
+                        Confluence Score
+                    </button>
+                    <button class="ta-locked-box ta-interactive-card" data-insight="vip-scenarios" data-tier="vip" type="button">
+                        Bull / Bear / Neutral Scenarios
+                    </button>
+                    <button class="ta-locked-box ta-interactive-card" data-insight="vip-notes" data-tier="vip" type="button">
+                        VIP Desk Notes
+                    </button>
+                    <button class="ta-locked-box ta-interactive-card" data-insight="vip-execution" data-tier="vip" type="button">
+                        Telegram + Institutional Execution Layer
+                    </button>
+                </div>
+
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ta-btn ta-btn-primary">
+                    Unlock VIP Desk
+                </a>
+            </div>
+        </section>
+        {% endif %}
+
+    </div>
 </section>
+
+<div id="taInsightModal" class="ta-insight-modal" aria-hidden="true">
+    <div class="ta-insight-backdrop" data-close="true"></div>
+
+    <div class="ta-insight-dialog">
+        <button id="taInsightClose" class="ta-insight-close" type="button" aria-label="Close">
+            ×
+        </button>
+
+        <div class="ta-insight-head">
+            <span id="taInsightBadge" class="ta-insight-badge">PREMIUM</span>
+            <h3 id="taInsightTitle">Advanced Insight</h3>
+            <p id="taInsightSubtitle">Desk interpretation</p>
+        </div>
+
+        <div class="ta-insight-body">
+            <div id="taInsightContent" class="ta-insight-content">
+                Loading...
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}

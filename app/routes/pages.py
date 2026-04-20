@@ -398,35 +398,4 @@ def whales(lang_code=None):
     )
 #---------------------------------------------------
 
-@pages_bp.route("/technical-analysis")
-@pages_bp.route("/<lang_code>/technical-analysis")
-def technical_analysis(lang_code=None):
-    normalize_lang(lang_code)
-    return render_template("technical_analysis.html")
 
-
-@pages_bp.route("/api/technical-analysis")
-@pages_bp.route("/<lang_code>/api/technical-analysis")
-def technical_analysis_api(lang_code=None):
-    normalize_lang(lang_code)
-
-    token = request.args.get("token", "BTC")
-    interval = request.args.get("interval", "1h")
-    indicator = request.args.get("indicator", "stochasticrsi")
-
-    ta_service = TechnicalAnalysisService()
-    ai_service = AISummaryService()
-
-    analysis = ta_service.analyze(token=token, interval=interval, indicator=indicator)
-    data = analysis.to_dict()
-    data["ai_summary"] = ai_service.summarize(data["summary_context"])
-
-    return jsonify(data)
-
-
-@pages_bp.route("/api/technical-analysis/tokens")
-@pages_bp.route("/<lang_code>/api/technical-analysis/tokens")
-def technical_analysis_tokens(lang_code=None):
-    normalize_lang(lang_code)
-    ta_service = TechnicalAnalysisService()
-    return jsonify({"tokens": ta_service.get_available_tokens()})

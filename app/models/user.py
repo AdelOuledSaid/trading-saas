@@ -28,5 +28,11 @@ class User(UserMixin, db.Model):
     # Dates
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
+    # 🔐 TELEGRAM (IMPORTANT)
+    telegram_user_id = db.Column(db.String(64), nullable=True)
+    telegram_username = db.Column(db.String(128), nullable=True)
+    telegram_link_token = db.Column(db.String(128), nullable=True, index=True)
+    telegram_verified_at = db.Column(db.DateTime, nullable=True)
+
     def __repr__(self):
         return f"<User {self.email} plan={self.plan} verified={self.is_verified}>"
