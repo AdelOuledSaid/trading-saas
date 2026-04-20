@@ -1,0 +1,1017 @@
+{% set academy_level = level4 %}
+{% set academy_level_name = Niveau 4 Pro %}
+{% set academy_total_lessons = 10 %}
+
+{% extends base.html %}
+
+{% block title %}Academy Niveau 4 Pro  VelWolf{% endblock %}
+
+{% block extra_css %}
+link rel=stylesheet href={{ url_for('static', filename='academy.css') }}
+{% endblock %}
+
+{% block content %}
+{% if not is_vip %}
+script
+document.addEventListener(DOMContentLoaded, function () {
+    document.body.dataset.autoUpgradePopup = true;
+});
+script
+{% endif %}
+
+section class=academy-page-hero academy-section
+    div class=academy-shell
+        div class=academy-breadcrumb
+            a href={{ url_for('pages.academy_index') }}Academya
+            spanspan
+            spanNiveau 4 Prospan
+        div
+
+        div class=academy-page-grid
+            div
+                span class=academy-kickerNiveau 4 Pro — Desk  Institutionnel  Allocationspan
+                h1Penser comme un desk  régime macro, exposition, exécution et portefeuille d’idéesh1
+
+                p class=academy-lead
+                    Le niveau 4 ne cherche plus à former un simple trader “avancé”. Il cherche à faire entrer
+                    l’utilisateur dans une logique de desk  organisation de l’information, lecture macro relative,
+                    sélection d’opportunités, hiérarchisation des convictions, exposition globale, construction
+                    d’un portefeuille d’idées et discipline d’exécution.
+                p
+
+                p class=academy-lead
+                    Ici, le trade isolé cesse d’être l’unité principale de pensée. L’unité de pensée devient
+                    le système  régime de marché, thèmes dominants, corrélations, concentration cachée,
+                    allocation du risque, séquençage des entrées, revue de performance et qualité du process.
+                p
+
+                div class=academy-actions
+                    {% if is_vip %}
+                    a href=#learning-hub class=academy-btn academy-btn-primaryOuvrir le hub Proa
+                    a href=#lesson-1 class=academy-btn academy-btn-secondaryCommencer module 1a
+                    a href=#quiz-final class=academy-btn academy-btn-secondaryAller à la certificationa
+                    {% else %}
+                    a href={{ url_for('pages.academy_upgrade') }} class=academy-btn academy-btn-primaryDébloquer Niveau 4 Proa
+                    a href={{ url_for('pages.academy_upgrade') }} class=academy-btn academy-btn-goldPasser VIPa
+                    {% endif %}
+                div
+
+                div class=academy-access-strip
+                    {% if is_vip %}
+                        span class=academy-plan-badge-vipPlan VIPspan
+                        strongNiveau 4 Pro débloquéstrong
+                    {% else %}
+                        span class=academy-plan-badge-basicAccès restreintspan
+                        strongNiveau 4 Pro réservé au plan VIPstrong
+                    {% endif %}
+                div
+            div
+
+            div class=academy-side-progress
+                div class=academy-progress-head
+                    spanProgression actuellespan
+                    strong{{ academy_progress.level4 if academy_progress and academy_progress.level4 is defined else 0 }}%strong
+                div
+
+                div class=academy-progress-bar
+                    div
+                        class=academy-progress-fill academy-progress-fill-purple
+                        style=width {{ academy_progress.level4 if academy_progress and academy_progress.level4 is defined else 0 }}%;
+                    div
+                div
+
+                div class=academy-progress-head academy-progress-head-second
+                    spanAccèsspan
+                    strong{% if is_vip %}VIP Pro{% else %}VIP requis{% endif %}strong
+                div
+
+                div class=academy-info-card style=margin-top 18px;
+                    h3Objectif du niveauh3
+                    p
+                        Faire passer l’utilisateur d’une logique d’opérateur structuré à une logique
+                        de desk  régime, thèmes de marché, allocation, portefeuille d’idées et exécution hiérarchisée.
+                    p
+                div
+
+                div class=academy-info-card style=margin-top 18px;
+                    h3Résultat attenduh3
+                    p
+                        À la fin du niveau 4, l’élève doit savoir mapper un régime de marché,
+                        construire une lecture inter-marchés, gérer l’exposition globale,
+                        hiérarchiser ses convictions et documenter un process institutionnel.
+                    p
+                div
+
+                {% if not is_vip %}
+                div class=academy-info-card style=margin-top 18px;
+                    h3Inclus dans ce niveauh3
+                    ul class=academy-reflection-list
+                        liRégime macro et intermarketli
+                        liAllocation du risqueli
+                        liDesk workflowli
+                        liSimulation de portefeuille d’idéesli
+                    ul
+                div
+                {% endif %}
+            div
+        div
+    div
+section
+
+section class=academy-section id=learning-hub
+    div class=academy-shell
+        div class=academy-level-grid
+            div
+                div class=academy-academic-block academy-learning-hub
+                    span class=academy-box-labelPro Desk Hubspan
+                    h3Level 4 Dashboard — Institutional Process Scoreh3
+                    p
+                        Le niveau 4 organise la pensée en logique de desk. L’objectif n’est plus
+                        simplement de bien lire un marché, mais de gérer un système d’idées,
+                        de contextes, de corrélations et d’expositions. Vous entrez ici dans la logique
+                        de portefeuille décisionnel.
+                    p
+
+                    div class=academy-kpi-row
+                        div class=academy-kpi-card
+                            spanModulesspan
+                            strong10strong
+                        div
+                        div class=academy-kpi-card
+                            spanCertificationspan
+                            strongDesk Prostrong
+                        div
+                        div class=academy-kpi-card
+                            spanAccèsspan
+                            strongVIPstrong
+                        div
+                        div class=academy-kpi-card
+                            spanNiveauspan
+                            strongInstitutionalstrong
+                        div
+                    div
+
+                    div class=academy-summary-grid style=margin-top 22px;
+                        div class=academy-info-card
+                            h3Score visuelh3
+                            div class=academy-score-ring-wrap
+                                div class=academy-score-ring style=--score {{ academy_progress.level4 if academy_progress and academy_progress.level4 is defined else 0 }};
+                                    div class=academy-score-ring-inner
+                                        strong{{ academy_progress.level4 if academy_progress and academy_progress.level4 is defined else 0 }}%strong
+                                        spanProgressionspan
+                                    div
+                                div
+                            div
+
+                            div class=academy-checkline
+                                div class=academy-checkline-itemspan✓span Régime macro avant trade localdiv
+                                div class=academy-checkline-itemspan✓span Exposition totale avant conviction individuellediv
+                                div class=academy-checkline-itemspan✓span Process desk avant performance brutediv
+                            div
+                        div
+
+                        div class=academy-info-card
+                            h3Timeline de progressionh3
+                            div class=academy-progress-timeline
+                                div class=academy-timeline-item
+                                    div class=academy-timeline-dot1div
+                                    div class=academy-timeline-card
+                                        div class=academy-status-badge done● Operator Basediv
+                                        p style=margin-top10px;Les niveaux 1 à 3 ont construit le langage, la structure, l’exécution et la planification opérateur.p
+                                    div
+                                div
+
+                                div class=academy-timeline-item
+                                    div class=academy-timeline-dot2div
+                                    div class=academy-timeline-card
+                                        div class=academy-status-badge live● Desk Processdiv
+                                        p style=margin-top10px;Le niveau 4 installe une logique de régime, d’allocation, de thèmes de marché et de pilotage des idées.p
+                                    div
+                                div
+
+                                div class=academy-timeline-item
+                                    div class=academy-timeline-dot3div
+                                    div class=academy-timeline-card
+                                        div class=academy-status-badge locked● Institutional Disciplinediv
+                                        p style=margin-top10px;La finalité est moins de multiplier les trades que d’élever la qualité, la cohérence et la continuité du process.p
+                                    div
+                                div
+                            div
+                        div
+                    div
+
+                    div class=academy-mastery-board
+                        div class=academy-mastery-card
+                            h3Market regimeh3
+                            pIdentifier les thèmes dominants du marché avant de regarder les setups.p
+                            div class=academy-mastery-meter
+                                div class=academy-mastery-fill style=width 90%;div
+                            div
+                        div
+
+                        div class=academy-mastery-card
+                            h3Intermarket logich3
+                            pRelier dollar, taux, indices, or, crypto et sentiment de risque.p
+                            div class=academy-mastery-meter
+                                div class=academy-mastery-fill style=width 88%;div
+                            div
+                        div
+
+                        div class=academy-mastery-card
+                            h3Allocation du risqueh3
+                            pRépartir l’attention et le risque comme un portefeuille d’idées.p
+                            div class=academy-mastery-meter
+                                div class=academy-mastery-fill style=width 86%;div
+                            div
+                        div
+
+                        div class=academy-mastery-card
+                            h3Desk reviewh3
+                            pMesurer la qualité du process et pas seulement le PnL immédiat.p
+                            div class=academy-mastery-meter
+                                div class=academy-mastery-fill style=width 84%;div
+                            div
+                        div
+                    div
+
+                    div class=academy-info-card style=margin-top 22px;
+                        h3Progression réelleh3
+                        p data-academy-completion-text010 modules validés • 0% complétép
+                        div id=academyCompletionBadge style=margin-top 14px;div
+                    div
+                div
+
+                {% if is_vip %}
+                div class=academy-academic-block style=margin-top 24px;
+                    span class=academy-box-labelDesk Quick Checkspan
+                    h3Validation express — Lecture institutionnelleh3
+                    p
+                        Un desk ne pense pas d’abord “trade”. Il pense d’abord régime, thème,
+                        exposition, priorité et qualité du contexte.
+                    p
+
+                    div class=academy-quiz-card style=margin-top 18px;
+                        form class=academy-quiz-form id=academyQuickStartQuiz4
+                            div class=academy-question
+                                h31. Le régime de marché sert principalement à h3
+                                labelinput type=radio name=q1 value=a choisir une couleur de graphiquelabel
+                                labelinput type=radio name=q1 value=b comprendre le thème dominant avant les trades locauxlabel
+                                labelinput type=radio name=q1 value=c supprimer toute volatilitélabel
+                            div
+
+                            div class=academy-question
+                                h32. Plusieurs trades sur plusieurs actifs peuvent rester un même pari caché si h3
+                                labelinput type=radio name=q2 value=a ils expriment le même thème macrolabel
+                                labelinput type=radio name=q2 value=b ils sont ouverts à des heures différenteslabel
+                                labelinput type=radio name=q2 value=c ils n’ont pas le même symbolelabel
+                            div
+
+                            div class=academy-question
+                                h33. Une vraie revue institutionnelle mesure surtout h3
+                                labelinput type=radio name=q3 value=a uniquement le dernier tradelabel
+                                labelinput type=radio name=q3 value=b la cohérence du process et la qualité des décisionslabel
+                                labelinput type=radio name=q3 value=c seulement le taux de réussitelabel
+                            div
+
+                            button
+                                type=button
+                                class=academy-btn academy-btn-primary
+                                onclick=submitQuiz('academyQuickStartQuiz4', ['b','a','b'], 'academyQuickStartResult4')
+                                Vérifier mon niveau
+                            button
+
+                            div id=academyQuickStartResult4 class=academy-quiz-resultdiv
+                        form
+                    div
+                div
+
+                div class=academy-academic-block style=margin-top 24px;
+                    span class=academy-box-labelInstitutional Visualspan
+                    h3Graphique pédagogique — DXY  Dollar Indexh3
+                    p
+                        Le niveau 4 utilise le graphique non plus seulement comme support de timing,
+                        mais comme outil de lecture relative. Ici, le dollar sert de moteur potentiel
+                        pour de nombreuses classes d’actifs et permet de penser le marché en système.
+                    p
+                    div class=academy-chart-box
+                        iframe
+                            src=httpss.tradingview.comwidgetembedframeElementId=tradingview_dxy_level4&symbol=TVCDXY&interval=240&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=F1F3F6&studies=[]&theme=dark&style=1&timezone=Etc%2FUTC&withdateranges=1&hideideas=1
+                            width=100%
+                            height=420
+                            frameborder=0
+                            allowtransparency=true
+                            scrolling=no
+                        iframe
+                    div
+                div
+                {% else %}
+                div class=academy-lock-card style=margin-top24px;
+                    div class=academy-lock-icon🔒div
+                    h3Niveau 4 Pro réservé au plan VIPh3
+                    p
+                        Ce niveau débloque la logique desk  institutionnelle 
+                        régime macro, intermarket, allocation du risque, exécution hiérarchisée,
+                        review pro et portefeuille d’idées.
+                    p
+                    a href={{ url_for('pages.academy_upgrade') }} class=academy-btn academy-btn-gold academy-btn-full style=margin-top16px;
+                        Passer VIP
+                    a
+                div
+                {% endif %}
+
+                {% if is_vip %}
+                div class=academy-accordion
+
+                    details class=academy-lesson id=lesson-1 open
+                        summary class=academy-lesson-summary
+                            div class=academy-lesson-title-wrap
+                                div class=academy-lesson-kicker
+                                    span class=academy-module-badge current data-lesson-badge=lesson-1Module 01span
+                                    span class=academy-mini-scoreRegime Mapspan
+                                div
+                                h2 class=academy-lesson-titleMarket regime mappingh2
+                                pLire le marché par thème dominant plutôt que par réaction locale.p
+                            div
+                            div class=academy-lesson-arrow⌄div
+                        summary
+                        div class=academy-lesson-body
+                            div class=academy-academic-block
+                                h3Le régime commande la lectureh3
+                                p
+                                    Un desk commence rarement par un setup. Il commence par une question plus large 
+                                    quel régime domine actuellement  Risk-on, risk-off, dollar fort,
+                                    stress obligataire, rotation sectorielle, expansion tech, recherche de refuge 
+                                p
+                                p
+                                    Ce régime ne dicte pas mécaniquement chaque trade, mais il structure le champ
+                                    des opportunités crédibles et le type d’erreurs à éviter.
+                                p
+
+                                div class=academy-definition-box
+                                    span class=academy-box-labelDéfinitionspan
+                                    p
+                                        Le market regime mapping consiste à identifier les forces dominantes
+                                        qui organisent la lecture relative des marchés à un moment donné.
+                                    p
+                                div
+
+                                div class=academy-keytakeaway-box
+                                    span class=academy-box-labelÀ retenirspan
+                                    p
+                                        Un même setup n’a pas la même valeur selon le régime dans lequel il apparaît.
+                                    p
+                                div
+
+                                div class=academy-lesson-tools
+                                    button class=academy-btn academy-btn-secondary type=button data-complete-lesson=lesson-1
+                                        ✔ Marquer comme terminé
+                                    button
+                                    a class=academy-anchor-btn href=#lesson-2Module suivanta
+                                div
+                            div
+                        div
+                    details
+
+                    details class=academy-lesson id=lesson-2
+                        summary class=academy-lesson-summary
+                            div class=academy-lesson-title-wrap
+                                div class=academy-lesson-kicker
+                                    span class=academy-module-badge data-lesson-badge=lesson-2Module 02span
+                                div
+                                h2 class=academy-lesson-titleMacro bias & intermarket logich2
+                                pRelier les marchés entre eux pour éviter la lecture isolée.p
+                            div
+                            div class=academy-lesson-arrow⌄div
+                        summary
+                        div class=academy-lesson-body
+                            div class=academy-academic-block
+                                h3Le desk lit des relations, pas des actifs isolésh3
+                                p
+                                    Le bias macro ne consiste pas à “prédire l’économie”. Il consiste
+                                    à identifier les moteurs relatifs  dollar, taux, indices, matières premières,
+                                    crypto, flux refuges, pression sur la duration, rotation du risque.
+                                p
+                                p
+                                    L’intermarket logic aide à comprendre pourquoi certains actifs deviennent plus lisibles,
+                                    pourquoi certaines idées se renforcent mutuellement, et pourquoi d’autres se neutralisent.
+                                p
+
+                                div class=academy-summary-grid
+                                    div class=academy-info-card
+                                        h3Ce qu’on chercheh3
+                                        ul class=academy-reflection-list
+                                            liMoteur dominant.li
+                                            liActifs alignés avec le thème.li
+                                            liActifs en contradiction.li
+                                            liEffets de second ordre.li
+                                        ul
+                                    div
+
+                                    div class=academy-info-card
+                                        h3Erreur fréquenteh3
+                                        ul class=academy-reflection-list
+                                            liPrendre plusieurs trades sans voir le moteur commun.li
+                                            liTraiter le dollar comme un détail.li
+                                            liConfondre diversification apparente et vraie indépendance.li
+                                        ul
+                                    div
+                                div
+
+                                div class=academy-lesson-tools
+                                    button class=academy-btn academy-btn-secondary type=button data-complete-lesson=lesson-2
+                                        ✔ Marquer comme terminé
+                                    button
+                                    a class=academy-anchor-btn href=#lesson-3Module suivanta
+                                div
+                            div
+                        div
+                    details
+
+                    details class=academy-lesson id=lesson-3
+                        summary class=academy-lesson-summary
+                            div class=academy-lesson-title-wrap
+                                div class=academy-lesson-kicker
+                                    span class=academy-module-badge data-lesson-badge=lesson-3Module 03span
+                                div
+                                h2 class=academy-lesson-titleInstitutional execution frameworkh2
+                                pOrganiser une exécution hiérarchisée, et non émotionnelle.p
+                            div
+                            div class=academy-lesson-arrow⌄div
+                        summary
+                        div class=academy-lesson-body
+                            div class=academy-academic-block
+                                h3La qualité d’exécution naît d’un cadreh3
+                                p
+                                    Une exécution institutionnelle ne signifie pas “entrer parfaitement”.
+                                    Elle signifie exécuter dans un cadre répétable  thème dominant,
+                                    actif prioritaire, zone de travail, conditions d’activation,
+                                    taille adaptée et gestion cohérente.
+                                p
+                                p
+                                    Le trader de desk ne s’évalue pas seulement sur l’entrée.
+                                    Il s’évalue sur la cohérence de toute la chaîne de décision.
+                                p
+
+                                div class=academy-checklist
+                                    span class=academy-box-labelExecution stackspan
+                                    ul class=academy-reflection-list
+                                        liThème de marché.li
+                                        liActif prioritaire.li
+                                        liStructure  zone.li
+                                        liCondition de déclenchement.li
+                                        liTaille  invalidation.li
+                                        liPlan de gestion.li
+                                    ul
+                                div
+
+                                div class=academy-lesson-tools
+                                    button class=academy-btn academy-btn-secondary type=button data-complete-lesson=lesson-3
+                                        ✔ Marquer comme terminé
+                                    button
+                                    a class=academy-anchor-btn href=#lesson-4Module suivanta
+                                div
+                            div
+                        div
+                    details
+
+                    details class=academy-lesson id=lesson-4
+                        summary class=academy-lesson-summary
+                            div class=academy-lesson-title-wrap
+                                div class=academy-lesson-kicker
+                                    span class=academy-module-badge data-lesson-badge=lesson-4Module 04span
+                                div
+                                h2 class=academy-lesson-titleLiquidity engineeringh2
+                                pComprendre comment le marché attire, balaie et redistribue l’attention.p
+                            div
+                            div class=academy-lesson-arrow⌄div
+                        summary
+                        div class=academy-lesson-body
+                            div class=academy-academic-block
+                                h3Le marché révèle parfois après avoir désorientéh3
+                                p
+                                    Dans une logique plus institutionnelle, la liquidité n’est pas seulement
+                                    un détail technique. Elle devient un langage  zones visibles, balayeuses,
+                                    réintégrations, déplacements de stops, accélérations trompeuses et reprises directionnelles.
+                                p
+                                p
+                                    Le desk n’essaie pas seulement d’éviter les pièges. Il essaie aussi de comprendre
+                                    ce que ces pièges révèlent sur la qualité réelle du mouvement.
+                                p
+
+                                div class=academy-warning-box
+                                    span class=academy-box-labelErreur fréquentespan
+                                    p
+                                        Réagir au premier mouvement visible sans attendre ce que le marché révèle après la prise de liquidité.
+                                    p
+                                div
+
+                                div class=academy-lesson-tools
+                                    button class=academy-btn academy-btn-secondary type=button data-complete-lesson=lesson-4
+                                        ✔ Marquer comme terminé
+                                    button
+                                    a class=academy-anchor-btn href=#lesson-5Module suivanta
+                                div
+                            div
+                        div
+                    details
+
+                    details class=academy-lesson id=lesson-5
+                        summary class=academy-lesson-summary
+                            div class=academy-lesson-title-wrap
+                                div class=academy-lesson-kicker
+                                    span class=academy-module-badge data-lesson-badge=lesson-5Module 05span
+                                div
+                                h2 class=academy-lesson-titleScenario tree A  B  C  Dh2
+                                pConstruire un arbre décisionnel, pas une conviction unique.p
+                            div
+                            div class=academy-lesson-arrow⌄div
+                        summary
+                        div class=academy-lesson-body
+                            div class=academy-academic-block
+                                h3Le desk pense en arborescenceh3
+                                p
+                                    Au lieu de préparer seulement trois scénarios simples, le niveau 4 apprend à construire
+                                    un arbre décisionnel plus fin  scénario principal, scénario alternatif, scénario de rupture,
+                                    scénario de neutralisation.
+                                p
+                                p
+                                    L’objectif n’est pas de complexifier gratuitement, mais d’éviter la rigidité mentale.
+                                p
+
+                                div class=academy-summary-grid
+                                    div class=academy-info-card
+                                        h3Pourquoi c’est utileh3
+                                        ul class=academy-reflection-list
+                                            liRéduire le biais de fixation.li
+                                            liMieux gérer l’incertitude.li
+                                            liAdapter l’exposition selon la qualité du scénario.li
+                                        ul
+                                    div
+                                    div class=academy-info-card
+                                        h3À surveillerh3
+                                        ul class=academy-reflection-list
+                                            liTrop de scénarios tue la hiérarchie.li
+                                            liLe scénario principal doit rester clair.li
+                                            liLes alternatives doivent être déclenchées par des critères précis.li
+                                        ul
+                                    div
+                                div
+
+                                div class=academy-lesson-tools
+                                    button class=academy-btn academy-btn-secondary type=button data-complete-lesson=lesson-5
+                                        ✔ Marquer comme terminé
+                                    button
+                                    a class=academy-anchor-btn href=#lesson-6Module suivanta
+                                div
+                            div
+                        div
+                    details
+
+                    details class=academy-lesson id=lesson-6
+                        summary class=academy-lesson-summary
+                            div class=academy-lesson-title-wrap
+                                div class=academy-lesson-kicker
+                                    span class=academy-module-badge data-lesson-badge=lesson-6Module 06span
+                                div
+                                h2 class=academy-lesson-titlePortfolio exposure logich2
+                                pLe vrai risque se lit au niveau du portefeuille d’idées.p
+                            div
+                            div class=academy-lesson-arrow⌄div
+                        summary
+                        div class=academy-lesson-body
+                            div class=academy-academic-block
+                                h3Passer du trade à l’allocationh3
+                                p
+                                    Le niveau 4 ne raisonne plus seulement en risque unitaire. Il raisonne en allocation 
+                                    combien d’idées sont en jeu, combien expriment le même thème,
+                                    quelles convictions méritent plus de place, quelles idées doivent rester secondaires.
+                                p
+                                p
+                                    L’exposition totale devient une variable centrale, au même titre que la qualité d’un setup.
+                                p
+
+                                div class=academy-keytakeaway-box
+                                    span class=academy-box-labelÀ retenirspan
+                                    p
+                                        Une bonne idée peut devenir mauvaise si elle s’ajoute à une exposition déjà saturée.
+                                    p
+                                div
+
+                                div class=academy-lesson-tools
+                                    button class=academy-btn academy-btn-secondary type=button data-complete-lesson=lesson-6
+                                        ✔ Marquer comme terminé
+                                    button
+                                    a class=academy-anchor-btn href=#lesson-7Module suivanta
+                                div
+                            div
+                        div
+                    details
+
+                    details class=academy-lesson id=lesson-7
+                        summary class=academy-lesson-summary
+                            div class=academy-lesson-title-wrap
+                                div class=academy-lesson-kicker
+                                    span class=academy-module-badge data-lesson-badge=lesson-7Module 07span
+                                div
+                                h2 class=academy-lesson-titleScaling & partial executionh2
+                                pGérer la conviction et la confirmation avec plus de finesse.p
+                            div
+                            div class=academy-lesson-arrow⌄div
+                        summary
+                        div class=academy-lesson-body
+                            div class=academy-academic-block
+                                h3L’intensité de conviction doit rester graduelleh3
+                                p
+                                    Une exécution plus institutionnelle n’est pas obligatoirement “full size”.
+                                    Elle peut être graduelle  test initial, renfort sur confirmation,
+                                    réduction partielle sur objectif intermédiaire, conservation résiduelle selon contexte.
+                                p
+                                p
+                                    Cette logique permet de traiter le marché comme un processus et non comme un pari binaire.
+                                p
+
+                                div class=academy-example-box
+                                    span class=academy-box-labelExemplespan
+                                    p
+                                        Une petite taille sur une zone HTF peut devenir une conviction plus significative
+                                        seulement si le comportement du marché confirme le thème initial.
+                                    p
+                                div
+
+                                div class=academy-lesson-tools
+                                    button class=academy-btn academy-btn-secondary type=button data-complete-lesson=lesson-7
+                                        ✔ Marquer comme terminé
+                                    button
+                                    a class=academy-anchor-btn href=#lesson-8Module suivanta
+                                div
+                            div
+                        div
+                    details
+
+                    details class=academy-lesson id=lesson-8
+                        summary class=academy-lesson-summary
+                            div class=academy-lesson-title-wrap
+                                div class=academy-lesson-kicker
+                                    span class=academy-module-badge data-lesson-badge=lesson-8Module 08span
+                                div
+                                h2 class=academy-lesson-titleSession model and timing maph2
+                                pCartographier les moments où l’information a le plus de valeur.p
+                            div
+                            div class=academy-lesson-arrow⌄div
+                        summary
+                        div class=academy-lesson-body
+                            div class=academy-academic-block
+                                h3Le temps organise aussi la qualitéh3
+                                p
+                                    Une logique desk ne traite pas la séance comme un bloc uniforme.
+                                    Elle distingue  pré-ouverture, impulsion initiale, digestion,
+                                    réactivation, inertie, réallocation de fin de session.
+                                p
+                                p
+                                    Le timing map aide à savoir quand un thème a le plus de chances
+                                    de se révéler proprement, et quand le bruit risque de dominer.
+                                p
+
+                                div class=academy-chart-card style=margin-top 24px;
+                                    h3Carte relative des moments de décisionh3
+                                    p
+                                        Toutes les périodes ne portent pas la même qualité de mouvement,
+                                        ni la même qualité d’information.
+                                    p
+                                    canvas id=deskTimingChart height=120canvas
+                                div
+
+                                div class=academy-lesson-tools
+                                    button class=academy-btn academy-btn-secondary type=button data-complete-lesson=lesson-8
+                                        ✔ Marquer comme terminé
+                                    button
+                                    a class=academy-anchor-btn href=#lesson-9Module suivanta
+                                div
+                            div
+                        div
+                    details
+
+                    details class=academy-lesson id=lesson-9
+                        summary class=academy-lesson-summary
+                            div class=academy-lesson-title-wrap
+                                div class=academy-lesson-kicker
+                                    span class=academy-module-badge data-lesson-badge=lesson-9Module 09span
+                                div
+                                h2 class=academy-lesson-titleReview framework proh2
+                                pMesurer la qualité du process, pas seulement le résultat brut.p
+                            div
+                            div class=academy-lesson-arrow⌄div
+                        summary
+                        div class=academy-lesson-body
+                            div class=academy-academic-block
+                                h3Le dernier trade ne dit pas toute la véritéh3
+                                p
+                                    Une review professionnelle ne cherche pas seulement à savoir si le trade a gagné ou perdu.
+                                    Elle cherche à savoir si le process était cohérent, si l’exposition était justifiée,
+                                    si la hiérarchie était claire et si les erreurs sont récurrentes ou accidentelles.
+                                p
+                                p
+                                    La review pro sert à améliorer la continuité de la méthode,
+                                    pas à flatter ou punir l’ego.
+                                p
+
+                                div class=academy-checklist
+                                    span class=academy-box-labelReview stackspan
+                                    ul class=academy-reflection-list
+                                        liQualité du contexte.li
+                                        liHiérarchie correcte ou non.li
+                                        liExposition adéquate.li
+                                        liExécution fidèle au plan.li
+                                        liGestion cohérente ou émotionnelle.li
+                                        liLeçon transférable.li
+                                    ul
+                                div
+
+                                div class=academy-lesson-tools
+                                    button class=academy-btn academy-btn-secondary type=button data-complete-lesson=lesson-9
+                                        ✔ Marquer comme terminé
+                                    button
+                                    a class=academy-anchor-btn href=#lesson-10Module suivanta
+                                div
+                            div
+                        div
+                    details
+
+                    details class=academy-lesson id=lesson-10
+                        summary class=academy-lesson-summary
+                            div class=academy-lesson-title-wrap
+                                div class=academy-lesson-kicker
+                                    span class=academy-module-badge data-lesson-badge=lesson-10Module 10span
+                                div
+                                h2 class=academy-lesson-titleDesk routine & certification preph2
+                                pTransformer la lecture avancée en routine institutionnelle.p
+                            div
+                            div class=academy-lesson-arrow⌄div
+                        summary
+                        div class=academy-lesson-body
+                            div class=academy-academic-block
+                                h3Le process institutionnel est une discipline de continuitéh3
+                                p
+                                    La finalité du niveau 4 n’est pas de produire un trader “impressionnant”.
+                                    Elle est de produire un opérateur capable de répéter un process clair 
+                                    préparer, classer, hiérarchiser, exécuter, mesurer, corriger.
+                                p
+                                p
+                                    Le desk routine transforme une suite de lectures avancées en méthode durable.
+                                p
+
+                                div class=academy-summary-grid
+                                    div class=academy-info-card
+                                        h3Avant séanceh3
+                                        ul class=academy-reflection-list
+                                            liRégime dominant.li
+                                            liMoteurs macro prioritaires.li
+                                            liActifs principaux  secondaires.li
+                                            liExposition maximale tolérée.li
+                                            liScénarios par thème.li
+                                        ul
+                                    div
+
+                                    div class=academy-info-card
+                                        h3Après séanceh3
+                                        ul class=academy-reflection-list
+                                            liQualité du process.li
+                                            liCohérence des tailles.li
+                                            liConcentration cachée ou non.li
+                                            liExécution fidèle ou non.li
+                                            liAxes d’amélioration récurrents.li
+                                        ul
+                                    div
+                                div
+
+                                div class=academy-checklist style=margin-top 24px;
+                                    span class=academy-box-labelCertification prepspan
+                                    h3Checklist opérateur niveau 4h3
+                                    ul class=academy-reflection-list
+                                        liAi-je identifié le régime dominant li
+                                        liAi-je compris le moteur intermarket principal li
+                                        liMes idées expriment-elles des thèmes différents ou le même pari caché li
+                                        liMa taille reflète-t-elle la hiérarchie de conviction li
+                                        liMon process est-il meilleur que ma simple envie d’agir li
+                                    ul
+                                div
+
+                                div class=academy-lesson-tools
+                                    button class=academy-btn academy-btn-secondary type=button data-complete-lesson=lesson-10
+                                        ✔ Marquer comme terminé
+                                    button
+                                    a class=academy-anchor-btn href=#quiz-finalAller à la certificationa
+                                div
+                            div
+                        div
+                    details
+
+                div
+                {% endif %}
+            div
+
+            aside class=academy-sticky-card
+                div class=academy-info-card academy-sticky-nav
+                    h3Navigation stickyh3
+                    div class=academy-outline-nav style=margin-top 14px;
+                        a class=academy-outline-link href=#learning-hub
+                            spanHub Pro & scorespan
+                            smallOverviewsmall
+                        a
+                        a class=academy-outline-link href=#lesson-1
+                            span01 — Regime mappingspan
+                            smallMacro regimesmall
+                        a
+                        a class=academy-outline-link href=#lesson-2
+                            span02 — Intermarket logicspan
+                            smallCross-marketsmall
+                        a
+                        a class=academy-outline-link href=#lesson-3
+                            span03 — Execution frameworkspan
+                            smallDesk stacksmall
+                        a
+                        a class=academy-outline-link href=#lesson-4
+                            span04 — Liquidity engineeringspan
+                            smallMarket trapssmall
+                        a
+                        a class=academy-outline-link href=#lesson-5
+                            span05 — Scenario treespan
+                            smallA  B  C  Dsmall
+                        a
+                        a class=academy-outline-link href=#lesson-6
+                            span06 — Portfolio exposurespan
+                            smallAllocationsmall
+                        a
+                        a class=academy-outline-link href=#lesson-7
+                            span07 — Scaling executionspan
+                            smallPosition buildingsmall
+                        a
+                        a class=academy-outline-link href=#lesson-8
+                            span08 — Timing mapspan
+                            smallSession modelsmall
+                        a
+                        a class=academy-outline-link href=#lesson-9
+                            span09 — Pro reviewspan
+                            smallProcess auditsmall
+                        a
+                        a class=academy-outline-link href=#lesson-10
+                            span10 — Desk routinespan
+                            smallCertification prepsmall
+                        a
+                        a class=academy-outline-link href=#quiz-final
+                            spanCertification finalespan
+                            smallValidationsmall
+                        a
+                    div
+                div
+
+                div class=academy-info-card
+                    h3Badges du niveauh3
+                    div class=academy-lesson-tools style=margin-top 14px;
+                        span class=academy-module-badge validated✓ Institutional Logicspan
+                        span class=academy-module-badge currentDesk Allocationspan
+                        span class=academy-module-badgeAcademy Level 4 Prospan
+                    div
+                div
+
+                div class=academy-info-card
+                    h3Ce que ce niveau doit changerh3
+                    p
+                        Vous faire passer d’un bon opérateur structuré à une logique de desk 
+                        système, exposition, sélection, hiérarchie et continuité du process.
+                    p
+                div
+            aside
+        div
+    div
+section
+
+section class=academy-section id=quiz-final
+    div class=academy-shell
+        div class=academy-section-title
+            span class=academy-kickerCertification Prospan
+            h2Validation du niveau 4 Proh2
+        div
+
+        div class=academy-quiz-card
+            {% if is_vip %}
+            form class=academy-quiz-form id=academyQuiz4
+                div class=academy-question
+                    h31. Le market regime mapping sert surtout à h3
+                    labelinput type=radio name=q1 value=a prédire chaque bougielabel
+                    labelinput type=radio name=q1 value=b identifier les forces dominantes qui structurent les opportunitéslabel
+                    labelinput type=radio name=q1 value=c choisir le levier maximallabel
+                div
+
+                div class=academy-question
+                    h32. Une lecture institutionnelle des corrélations cherche à h3
+                    labelinput type=radio name=q2 value=a prouver que tout est indépendantlabel
+                    labelinput type=radio name=q2 value=b détecter les paris cachés exprimés par plusieurs actifslabel
+                    labelinput type=radio name=q2 value=c éviter d’analyser le dollarlabel
+                div
+
+                div class=academy-question
+                    h33. L’allocation du risque dans une logique de desk consiste à h3
+                    labelinput type=radio name=q3 value=a répartir mécaniquement le même risque partoutlabel
+                    labelinput type=radio name=q3 value=b hiérarchiser les tailles selon la qualité relative des convictionslabel
+                    labelinput type=radio name=q3 value=c augmenter automatiquement la taille après un gainlabel
+                div
+
+                div class=academy-question
+                    h34. Une review pro mesure avant tout h3
+                    labelinput type=radio name=q4 value=a le process et la qualité des décisionslabel
+                    labelinput type=radio name=q4 value=b uniquement le pourcentage de trades gagnantslabel
+                    labelinput type=radio name=q4 value=c l’émotion ressentie sur le dernier tradelabel
+                div
+
+                div class=academy-question
+                    h35. Le niveau 4 transforme le trader parce qu’il h3
+                    labelinput type=radio name=q5 value=a le pousse à trader plus souventlabel
+                    labelinput type=radio name=q5 value=b remplace le setup isolé par une logique de système, de desk et d’expositionlabel
+                    labelinput type=radio name=q5 value=c supprime toute incertitude de marchélabel
+                div
+
+                button
+                    type=button
+                    class=academy-btn academy-btn-primary
+                    onclick=submitQuiz('academyQuiz4', ['b','b','b','a','b'], 'quiz4Result')
+                    Valider la certification
+                button
+
+                div id=quiz4Result class=academy-quiz-resultdiv
+            form
+
+            form method=POST action={{ url_for('pages.academy_complete_level', level='level4') }} class=academy-complete-form
+                button class=academy-btn academy-btn-secondary type=submit
+                    Valider le niveau 4 Pro
+                button
+            form
+            {% else %}
+            div class=academy-locked-box
+                div class=academy-lock-icon🔒div
+                h3Certification réservée au plan VIPh3
+                p
+                    Passez VIP pour débloquer le niveau 4 Pro, la certification finale,
+                    la progression complète et l’expérience Academy institutionnelle.
+                p
+                a href={{ url_for('pages.academy_upgrade') }} class=academy-btn academy-btn-gold
+                    Passer VIP
+                a
+            div
+            {% endif %}
+        div
+    div
+section
+
+{% endblock %}
+
+{% block extra_js %}
+script src=httpscdn.jsdelivr.netnpmchart.jsscript
+script src={{ url_for('static', filename='academy.js') }}script
+
+script
+document.addEventListener(DOMContentLoaded, function () {
+    const chartFontColor = #cbd5e1;
+    const gridColor = rgba(148, 163, 184, 0.15);
+
+    function baseOptions() {
+        return {
+            responsive true,
+            maintainAspectRatio false,
+            plugins {
+                legend {
+                    labels {
+                        color chartFontColor
+                    }
+                }
+            },
+            scales {
+                x {
+                    ticks { color chartFontColor },
+                    grid { color gridColor }
+                },
+                y {
+                    ticks { color chartFontColor },
+                    grid { color gridColor }
+                }
+            }
+        };
+    }
+
+    const deskTimingChart = document.getElementById(deskTimingChart);
+    if (deskTimingChart) {
+        new Chart(deskTimingChart, {
+            type bar,
+            data {
+                labels [Préparation, Ouverture, Expansion, Compression, Review],
+                datasets [{
+                    label Qualité relative d'information,
+                    data [8, 9, 7, 5, 9]
+                }]
+            },
+            options baseOptions()
+        });
+    }
+});
+script
+{% endblock %}
