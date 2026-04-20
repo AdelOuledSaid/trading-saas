@@ -29,6 +29,11 @@ def _send_bot_message(chat_id: str | int, text: str) -> None:
             },
             timeout=20,
         )
+        current_app.logger.info(
+            "sendMessage status=%s body=%s",
+            response.status_code,
+            response.text,
+        )
         response.raise_for_status()
     except Exception as e:
         current_app.logger.warning("Telegram sendMessage error: %s", e)
@@ -43,6 +48,11 @@ def approve_request(chat_id: str | int, user_id: str | int) -> None:
         },
         timeout=20,
     )
+    current_app.logger.info(
+        "approveChatJoinRequest status=%s body=%s",
+        response.status_code,
+        response.text,
+    )
     response.raise_for_status()
 
 
@@ -54,6 +64,11 @@ def decline_request(chat_id: str | int, user_id: str | int) -> None:
             "user_id": int(user_id),
         },
         timeout=20,
+    )
+    current_app.logger.info(
+        "declineChatJoinRequest status=%s body=%s",
+        response.status_code,
+        response.text,
     )
     response.raise_for_status()
 
@@ -194,7 +209,14 @@ def _handle_join_request(join: dict) -> None:
             telegram_user_id,
             chat_id,
         )
-        decline_request(chat_id, telegram_user_id)
+        try:
+            decline_request(chat_id, telegram_user_id)
+        except Exception:
+            current_app.logger.exception(
+                "Erreur declineChatJoinRequest | tg_user=%s | chat_id=%s",
+                telegram_user_id,
+                chat_id,
+            )
         return
 
     if invite.is_expired:
@@ -205,7 +227,16 @@ def _handle_join_request(join: dict) -> None:
         )
         invite.is_revoked = True
         db.session.commit()
-        decline_request(chat_id, telegram_user_id)
+
+        try:
+            decline_request(chat_id, telegram_user_id)
+        except Exception:
+            current_app.logger.exception(
+                "Erreur declineChatJoinRequest sur invite expiré | invite_id=%s | tg_user=%s | chat_id=%s",
+                invite.id,
+                telegram_user_id,
+                chat_id,
+            )
         return
 
     if invite.telegram_user_id and invite.telegram_user_id != telegram_user_id:
@@ -215,7 +246,16 @@ def _handle_join_request(join: dict) -> None:
             invite.telegram_user_id,
             telegram_user_id,
         )
-        decline_request(chat_id, telegram_user_id)
+        try:
+            decline_request(chat_id, telegram_user_id)
+        except Exception:
+            current_app.logger.exception(
+                "Erreur declineChatJoinRequest sur mismatch | invite_id=%s | expected=%s | got=%s | chat_id=%s",
+                invite.id,
+                invite.telegram_user_id,
+                telegram_user_id,
+                chat_id,
+            )
         return
 
     try:
@@ -229,9 +269,14 @@ def _handle_join_request(join: dict) -> None:
             telegram_user_id,
             chat_id,
         )
-    except Exception as e:
-        current_app.logger.warning("Erreur approveChatJoinRequest: %s", e)
-        decline_request(chat_id, telegram_user_id)
+    except Exception:
+        current_app.logger.exception(
+            "Erreur approveChatJoinRequest | invite_id=%s | tg_user=%s | chat_id=%s",
+            invite.id,
+            telegram_user_id,
+            chat_id,
+        )
+        return
 
 
 @telegram_webhook_bp.route("/telegram/webhook", methods=["POST"])
@@ -249,6 +294,6 @@ def telegram_webhook():
 
         return jsonify({"ok": True}), 200
 
-    except Exception as e:
-        current_app.logger.exception("Telegram webhook error: %s", e)
+    except Exception:
+        current_app.logger.exception("Telegram webhook error")
         return jsonify({"ok": False, "error": "internal_error"}), 500
