@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Academy Pro | VelWolf{% endblock %}
+{% block title %}VelWolf Academy | Parcours complet{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}">
@@ -8,861 +8,265 @@
 
 {% block content %}
 
-<section class="academy-hero academy-section">
+<section class="academy-section academy-page-hero">
     <div class="academy-shell">
-        <div class="academy-hero-grid">
-            <div class="academy-hero-content">
+
+        <div class="academy-page-grid">
+            <div>
                 <span class="academy-kicker">VelWolf Academy</span>
-                <h1>Une vraie formation trading premium intégrée à votre plateforme</h1>
+                <h1>Un parcours structuré du niveau débutant au niveau desk</h1>
 
                 <p class="academy-lead">
-                    VelWolf Academy a été pensée comme un parcours de montée en compétence réel,
-                    pas comme une simple suite de paragraphes décoratifs. L’objectif est double :
-                    aider l’utilisateur à mieux comprendre les marchés, et lui donner un cadre
-                    professionnel pour exploiter plus intelligemment les signaux, la lecture graphique,
-                    le risque, l’exécution et la prise de décision.
+                    L’Academy VelWolf est conçue comme une progression réelle. 
+                    Vous ne consommez pas simplement du contenu : vous évoluez
+                    dans votre manière de lire le marché.
                 </p>
 
                 <p class="academy-lead">
-                    Le niveau 1 construit les fondations rationnelles. Le niveau 2 élève l’utilisateur
-                    vers une lecture plus mature de la structure, de la confluence, de la liquidité,
-                    du timing et de la gestion active. Le niveau 3 ajoute une logique plus professionnelle :
-                    multi-timeframe, plan de marché, sélection d’actifs, corrélations et gestion globale du risque.
+                    Chaque niveau apporte une transformation :
+                    comprendre → structurer → planifier → penser comme un desk.
                 </p>
 
                 <div class="academy-actions">
-                    <a href="{{ url_for('pages.academy_level_1') }}" class="academy-btn academy-btn-primary">
-                        Ouvrir Niveau 1
-                    </a>
-
-                    {% if has_academy_plus %}
-                    <a href="{{ url_for('pages.academy_level_2') }}" class="academy-btn academy-btn-secondary">
-                        Ouvrir Niveau 2
-                    </a>
-                    <a href="{{ url_for('pages.academy_level_3') }}" class="academy-btn academy-btn-secondary">
-                        Ouvrir Niveau 3
-                    </a>
-                    {% else %}
-                    <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-secondary">
-                        Débloquer Niveau 2
-                    </a>
-                    <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-secondary">
-                        Débloquer Niveau 3
-                    </a>
-                    {% endif %}
+                    <a href="#levels" class="academy-btn academy-btn-primary">Voir les niveaux</a>
                 </div>
 
                 <div class="academy-access-strip">
                     {% if is_vip %}
-                        <span class="academy-plan-badge-vip">Plan VIP</span>
-                        <strong>Accès complet à toute l’Academy</strong>
+                        <span class="academy-plan-badge-vip">VIP</span>
+                        <strong>Accès complet aux 4 niveaux</strong>
                     {% elif is_premium %}
-                        <span class="academy-plan-badge-premium">Plan Premium</span>
-                        <strong>Accès complet à toute l’Academy</strong>
+                        <span class="academy-plan-badge-premium">Premium</span>
+                        <strong>Accès niveaux 1 à 3</strong>
                     {% else %}
-                        <span class="academy-plan-badge-basic">Plan Basic</span>
-                        <strong>Niveau 1 inclus • Niveau 2 et 3 réservés à Premium / VIP</strong>
+                        <span class="academy-plan-badge-basic">Basic</span>
+                        <strong>Accès niveau 1</strong>
                     {% endif %}
                 </div>
             </div>
 
-            <div class="academy-hero-card">
-                <div class="academy-status-card">
-                    <span class="academy-card-label">Statut accès</span>
-
-                    {% if is_vip %}
-                        <strong class="academy-status-pro">Membre VIP actif</strong>
-                        <p>
-                            Accès complet aux niveaux 1, 2 et 3, aux quiz, à la progression,
-                            aux cas réels, aux graphes pédagogiques et à la certification finale.
-                        </p>
-                    {% elif is_premium %}
-                        <strong class="academy-status-pro">Membre Premium actif</strong>
-                        <p>
-                            Accès complet aux niveaux 1, 2 et 3, aux quiz, à la progression,
-                            aux cas réels, aux graphes pédagogiques et à la certification finale.
-                        </p>
-                    {% else %}
-                        <strong class="academy-status-locked">Plan Basic</strong>
-                        <p>
-                            Votre plan inclut le niveau 1 de l’Academy.
-                            Les niveaux 2 et 3, les validations avancées et l’expérience Academy complète
-                            sont réservés aux membres Premium et VIP.
-                        </p>
-                    {% endif %}
+            <div class="academy-side-progress">
+                <div class="academy-progress-head">
+                    <span>Progression globale</span>
+                    <strong>
+                        {% if academy_progress %}
+                            {{
+                                (
+                                    academy_progress.level1 +
+                                    academy_progress.level2 +
+                                    academy_progress.level3 +
+                                    academy_progress.level4
+                                ) // 4
+                            }}%
+                        {% else %}
+                            0%
+                        {% endif %}
+                    </strong>
                 </div>
 
-                <div class="academy-progress-box">
-                    <div class="academy-progress-head">
-                        <span>Progression Niveau 1</span>
-                        <strong>{{ academy_progress.level1 if academy_progress else 0 }}%</strong>
-                    </div>
-                    <div class="academy-progress-bar">
-                        <div class="academy-progress-fill" style="width: {{ academy_progress.level1 if academy_progress else 0 }}%;"></div>
-                    </div>
-
-                    <div class="academy-progress-head academy-progress-head-second">
-                        <span>Progression Niveau 2</span>
-                        <strong>{{ academy_progress.level2 if academy_progress else 0 }}%</strong>
-                    </div>
-                    <div class="academy-progress-bar">
-                        <div class="academy-progress-fill academy-progress-fill-purple" style="width: {{ academy_progress.level2 if academy_progress else 0 }}%;"></div>
-                    </div>
-
-                    <div class="academy-progress-head academy-progress-head-second">
-                        <span>Progression Niveau 3</span>
-                        <strong>{{ academy_progress.level3 if academy_progress and academy_progress.level3 is defined else 0 }}%</strong>
-                    </div>
-                    <div class="academy-progress-bar">
-                        <div class="academy-progress-fill academy-progress-fill-purple" style="width: {{ academy_progress.level3 if academy_progress and academy_progress.level3 is defined else 0 }}%;"></div>
+                <div class="academy-progress-bar">
+                    <div class="academy-progress-fill"
+                        style="width:
+                        {% if academy_progress %}
+                            {{
+                                (
+                                    academy_progress.level1 +
+                                    academy_progress.level2 +
+                                    academy_progress.level3 +
+                                    academy_progress.level4
+                                ) // 4
+                            }}%
+                        {% else %}
+                            0%
+                        {% endif %}
+                    ">
                     </div>
                 </div>
 
-                <div class="academy-info-card" style="margin-top: 18px;">
-                    <h3>Philosophie pédagogique</h3>
+                <div class="academy-info-card" style="margin-top:20px;">
+                    <h3>Objectif final</h3>
                     <p>
-                        Comprendre avant d’exécuter. Structurer avant d’accélérer.
-                        Protéger avant de performer.
+                        Construire une logique complète :
+                        lecture du marché, exécution propre,
+                        préparation, allocation et discipline.
                     </p>
                 </div>
             </div>
         </div>
+
     </div>
 </section>
 
-<section class="academy-section academy-dark-band">
+<section class="academy-section academy-dark-band" id="levels">
     <div class="academy-shell">
+
+        <div class="academy-section-title">
+            <span class="academy-kicker">Parcours Academy</span>
+            <h2>Les 4 niveaux</h2>
+        </div>
+
+        <div class="academy-grid-2">
+
+            <!-- LEVEL 1 -->
+            <div class="academy-course-card academy-course-card-featured">
+                <div class="academy-course-top">
+                    <span class="academy-level-pill">Level 1</span>
+                    <span class="academy-mini-badge">Inclus</span>
+                </div>
+
+                <h3>Foundations</h3>
+
+                <p>
+                    Base du trading : structure, risque,
+                    invalidation et discipline.
+                </p>
+
+                <ul class="academy-reflection-list">
+                    <li>Comprendre le trading</li>
+                    <li>Lire une structure simple</li>
+                    <li>Protéger le capital</li>
+                </ul>
+
+                <a href="{{ url_for('academy.academy_level_1') }}" class="academy-link-btn">
+                    Accéder →
+                </a>
+            </div>
+
+            <!-- LEVEL 2 -->
+            <div class="academy-course-card">
+                <div class="academy-course-top">
+                    <span class="academy-level-pill">Level 2</span>
+                    <span class="academy-mini-badge">Premium</span>
+                </div>
+
+                <h3>Structure & Execution</h3>
+
+                <p>
+                    Lecture avancée : confluence, timing,
+                    liquidité et précision d’entrée.
+                </p>
+
+                <ul class="academy-reflection-list">
+                    <li>Structure de marché</li>
+                    <li>Confluence</li>
+                    <li>Execution propre</li>
+                </ul>
+
+                {% if is_premium %}
+                <a href="{{ url_for('academy.academy_level_2') }}" class="academy-link-btn">
+                    Accéder →
+                </a>
+                {% else %}
+                <a href="{{ url_for('academy.academy_upgrade') }}" class="academy-link-btn">
+                    Débloquer →
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- LEVEL 3 -->
+            <div class="academy-course-card">
+                <div class="academy-course-top">
+                    <span class="academy-level-pill">Level 3</span>
+                    <span class="academy-mini-badge">Premium</span>
+                </div>
+
+                <h3>Operator Vision</h3>
+
+                <p>
+                    Planification, multi-timeframe,
+                    scénarios et vision globale.
+                </p>
+
+                <ul class="academy-reflection-list">
+                    <li>Analyse top-down</li>
+                    <li>Scénarios A/B/C</li>
+                    <li>Vision opérateur</li>
+                </ul>
+
+                {% if is_premium %}
+                <a href="{{ url_for('academy.academy_level_3') }}" class="academy-link-btn">
+                    Accéder →
+                </a>
+                {% else %}
+                <a href="{{ url_for('academy.academy_upgrade') }}" class="academy-link-btn">
+                    Débloquer →
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- LEVEL 4 -->
+            <div class="academy-course-card academy-course-card-featured">
+                <div class="academy-course-top">
+                    <span class="academy-level-pill">Level 4 Pro</span>
+                    <span class="academy-mini-badge">VIP</span>
+                </div>
+
+                <h3>Desk / Institutionnel</h3>
+
+                <p>
+                    Logique professionnelle : régime macro,
+                    intermarket, allocation et process desk.
+                </p>
+
+                <ul class="academy-reflection-list">
+                    <li>Market regime</li>
+                    <li>Intermarket</li>
+                    <li>Allocation du risque</li>
+                    <li>Process institutionnel</li>
+                </ul>
+
+                {% if is_vip %}
+                <a href="{{ url_for('academy.academy_level_4') }}" class="academy-link-btn">
+                    Accéder →
+                </a>
+                {% else %}
+                <a href="{{ url_for('academy.academy_upgrade') }}" class="academy-link-btn">
+                    Passer VIP →
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="academy-section">
+    <div class="academy-shell">
+
         <div class="academy-section-title">
             <span class="academy-kicker">Vision</span>
-            <h2>Une Academy conçue pour créer de la compétence, pas seulement de l’engagement</h2>
-            <p class="academy-lead academy-section-lead">
-                La majorité des espaces “éducatifs” dans le trading se limitent à quelques notions dispersées.
-                VelWolf Academy suit une autre logique : structurer la pensée, professionnaliser la lecture de marché,
-                et transformer les erreurs répétées en apprentissage exploitable.
-            </p>
+            <h2>Pourquoi ce parcours est différent</h2>
         </div>
 
         <div class="academy-grid-3">
+
             <div class="academy-info-card">
-                <h3>Fondations solides</h3>
+                <h3>Progression réelle</h3>
                 <p>
-                    Le niveau 1 installe le langage, les mécanismes et la discipline intellectuelle
-                    indispensable à toute progression durable.
+                    Chaque niveau change votre manière
+                    de penser le marché.
                 </p>
             </div>
+
             <div class="academy-info-card">
-                <h3>Exécution avancée</h3>
+                <h3>Pas de bullshit</h3>
                 <p>
-                    Le niveau 2 fait entrer l’utilisateur dans une logique plus mature :
-                    structure, régime de marché, confluence, timing, liquidité et gestion active.
+                    Aucun contenu fictif. Seulement
+                    ce qui existe réellement.
                 </p>
             </div>
+
             <div class="academy-info-card">
-                <h3>Lecture professionnelle</h3>
+                <h3>Niveau Pro</h3>
                 <p>
-                    Le niveau 3 introduit la préparation de marché, l’analyse multi-timeframe,
-                    les scénarios A/B/C, les corrélations et la gestion d’exposition plus globale.
+                    Le Level 4 introduit une logique
+                    proche d’un desk professionnel.
                 </p>
             </div>
+
         </div>
+
     </div>
 </section>
 
-<section class="academy-section">
-    <div class="academy-shell">
-        <div class="academy-section-title">
-            <span class="academy-kicker">Parcours</span>
-            <h2>Trois niveaux, un vrai chemin de progression</h2>
-            <p class="academy-lead academy-section-lead">
-                Chaque niveau a un rôle distinct. Le premier stabilise les bases. Le second améliore
-                la qualité d’exécution. Le troisième professionnalise la préparation, la sélection et
-                la lecture stratégique du marché.
-            </p>
-        </div>
-
-        <div class="academy-cards">
-            <article class="academy-course-card">
-                <div class="academy-course-top">
-                    <span class="academy-level-pill">Niveau 1</span>
-                    <span class="academy-mini-badge">Inclus Basic</span>
-                </div>
-                <h3>Comprendre les bases du trading</h3>
-                <p>
-                    Marchés, logique buy/sell, hypothèse de marché, pip, lot, spread, levier,
-                    stop loss, take profit, gestion du risque, lecture graphique élémentaire,
-                    supports, résistances et erreurs structurelles du débutant.
-                </p>
-                <div class="academy-progress-head">
-                    <span>Progression</span>
-                    <strong>{{ academy_progress.level1 if academy_progress else 0 }}%</strong>
-                </div>
-                <div class="academy-progress-bar">
-                    <div class="academy-progress-fill" style="width: {{ academy_progress.level1 if academy_progress else 0 }}%;"></div>
-                </div>
-                <a href="{{ url_for('pages.academy_level_1') }}" class="academy-link-btn">Accéder</a>
-            </article>
-
-            <article class="academy-course-card academy-course-card-featured">
-                <div class="academy-course-top">
-                    <span class="academy-level-pill">Niveau 2</span>
-                    <span class="academy-mini-badge">Premium / VIP</span>
-                </div>
-                <h3>Passer à une lecture plus professionnelle</h3>
-                <p>
-                    Structure de marché, tendance, range, transition, breakout, faux breakout,
-                    liquidité, zones de réaction, confluence, timing d’entrée, gestion active,
-                    journal de trading, psychologie avancée et validation intermédiaire.
-                </p>
-                <div class="academy-progress-head">
-                    <span>Progression</span>
-                    <strong>{{ academy_progress.level2 if academy_progress else 0 }}%</strong>
-                </div>
-                <div class="academy-progress-bar">
-                    <div class="academy-progress-fill academy-progress-fill-purple" style="width: {{ academy_progress.level2 if academy_progress else 0 }}%;"></div>
-                </div>
-
-                {% if has_academy_plus %}
-                <a href="{{ url_for('pages.academy_level_2') }}" class="academy-link-btn">Accéder</a>
-                {% else %}
-                <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-link-btn">Débloquer</a>
-                {% endif %}
-            </article>
-
-            <article class="academy-course-card">
-                <div class="academy-course-top">
-                    <span class="academy-level-pill">Niveau 3</span>
-                    <span class="academy-mini-badge">Premium / VIP</span>
-                </div>
-                <h3>Plan de marché & analyse multi-timeframe</h3>
-                <p>
-                    Top-down analysis, scénarios A/B/C, sélection d’actifs, corrélations,
-                    sessions de marché, risk management avancé, scaling et logique de routine
-                    plus professionnelle.
-                </p>
-                <div class="academy-progress-head">
-                    <span>Progression</span>
-                    <strong>{{ academy_progress.level3 if academy_progress and academy_progress.level3 is defined else 0 }}%</strong>
-                </div>
-                <div class="academy-progress-bar">
-                    <div class="academy-progress-fill academy-progress-fill-purple" style="width: {{ academy_progress.level3 if academy_progress and academy_progress.level3 is defined else 0 }}%;"></div>
-                </div>
-
-                {% if has_academy_plus %}
-                <a href="{{ url_for('pages.academy_level_3') }}" class="academy-link-btn">Explorer</a>
-                {% else %}
-                <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-link-btn">Débloquer</a>
-                {% endif %}
-            </article>
-        </div>
-
-        <div class="academy-cards" style="margin-top: 24px;">
-            <article class="academy-course-card">
-                <div class="academy-course-top">
-                    <span class="academy-level-pill">Certification</span>
-                    <span class="academy-mini-badge">Validation</span>
-                </div>
-                <h3>Quiz final & certificat</h3>
-                <p>
-                    À l’issue du parcours, l’utilisateur valide ses acquis, structure sa progression,
-                    et renforce son sentiment d’appartenance à un environnement premium plus sérieux.
-                </p>
-
-                {% if academy_progress and academy_progress.certificate_ready %}
-                    <div class="academy-certificate-ready">Certificat disponible</div>
-                {% else %}
-                    <div class="academy-certificate-locked">Débloqué après validation du parcours avancé</div>
-                {% endif %}
-
-                {% if has_academy_plus %}
-                <a href="{{ url_for('pages.academy_level_3') }}#quiz-final" class="academy-link-btn">
-                    Voir l’examen final
-                </a>
-                {% else %}
-                <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-link-btn">
-                    Débloquer l’Academy complète
-                </a>
-                {% endif %}
-            </article>
-
-            <article class="academy-course-card">
-                <div class="academy-course-top">
-                    <span class="academy-level-pill">Progression</span>
-                    <span class="academy-mini-badge">Suivi</span>
-                </div>
-                <h3>Suivi de parcours</h3>
-                <p>
-                    La progression visible renforce la discipline, l’engagement et la perception premium
-                    de la plateforme. Elle transforme l’apprentissage en processus structuré.
-                </p>
-                <ul class="academy-reflection-list">
-                    <li>Niveau 1 : compréhension.</li>
-                    <li>Niveau 2 : exécution.</li>
-                    <li>Niveau 3 : préparation & vision pro.</li>
-                </ul>
-            </article>
-
-            <article class="academy-course-card">
-                <div class="academy-course-top">
-                    <span class="academy-level-pill">Upgrade</span>
-                    <span class="academy-mini-badge">Premium / VIP</span>
-                </div>
-                <h3>Débloquer les niveaux avancés</h3>
-                <p>
-                    Le plan Basic inclut le niveau 1.
-                    Passez à Premium ou VIP pour accéder aux niveaux 2 et 3,
-                    aux quiz, à la progression complète et à la certification.
-                </p>
-                {% if has_academy_plus %}
-                <a href="{{ url_for('pages.academy_level_2') }}" class="academy-link-btn">Continuer</a>
-                {% else %}
-                <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-link-btn">Voir l’upgrade</a>
-                {% endif %}
-            </article>
-        </div>
-    </div>
-</section>
-
-<section class="academy-section academy-dark-band">
-    <div class="academy-shell">
-        <div class="academy-section-title">
-            <span class="academy-kicker">Données visuelles</span>
-            <h2>Des graphiques pour transformer la théorie en compréhension concrète</h2>
-            <p class="academy-lead academy-section-lead">
-                Un bon cours de trading ne repose pas seulement sur du texte. Il doit aussi montrer
-                visuellement comment évoluent le rendement, le risque, la régularité et la qualité
-                décisionnelle d’un trader discipliné.
-            </p>
-        </div>
-
-        <div class="academy-chart-grid">
-            <div class="academy-info-card academy-chart-card">
-                <h3>Exemple d’évolution d’un capital discipliné</h3>
-                <p>
-                    Illustration pédagogique d’une croissance progressive obtenue avec régularité,
-                    risque contrôlé et exécution stable.
-                </p>
-                <canvas id="equityCurveChart" height="120"></canvas>
-            </div>
-
-            <div class="academy-info-card academy-chart-card">
-                <h3>Répartition type gains / pertes</h3>
-                <p>
-                    Visualisation d’un modèle sain : petites pertes contrôlées, gains plus larges,
-                    logique probabiliste et respect du plan.
-                </p>
-                <canvas id="winLossChart" height="120"></canvas>
-            </div>
-        </div>
-
-        <div class="academy-chart-grid" style="margin-top: 24px;">
-            <div class="academy-info-card academy-chart-card">
-                <h3>Impact du risk management</h3>
-                <p>
-                    Comparaison pédagogique entre une exposition trop agressive et une gestion du risque stable.
-                </p>
-                <canvas id="riskManagementChart" height="120"></canvas>
-            </div>
-
-            <div class="academy-info-card academy-chart-card">
-                <h3>Qualité de décision avant / après méthode</h3>
-                <p>
-                    Le but d’une Academy sérieuse est d’augmenter la qualité des décisions,
-                    pas de multiplier le nombre de trades.
-                </p>
-                <canvas id="disciplineChart" height="120"></canvas>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="academy-section">
-    <div class="academy-shell">
-        <div class="academy-section-title">
-            <span class="academy-kicker">Framework</span>
-            <h2>Le framework VelWolf de prise de décision</h2>
-            <p class="academy-lead academy-section-lead">
-                Un trade professionnel n’est pas une impulsion. C’est une hypothèse structurée.
-                Chaque idée doit passer par un cadre simple, clair et répétable.
-            </p>
-        </div>
-
-        <div class="academy-cards">
-            <div class="academy-info-card">
-                <h3>1. Contexte</h3>
-                <p>
-                    Identifier le régime du marché : tendance haussière, tendance baissière, range,
-                    compression, expansion ou transition. Un setup n’a pas la même valeur selon le contexte.
-                </p>
-            </div>
-            <div class="academy-info-card">
-                <h3>2. Zone</h3>
-                <p>
-                    Définir l’endroit où le prix peut réagir : support, résistance, zone de liquidité,
-                    retest de breakout, moyenne mobile clé, point bas / point haut significatif.
-                </p>
-            </div>
-            <div class="academy-info-card">
-                <h3>3. Signal</h3>
-                <p>
-                    Attendre une confirmation : rejet propre, cassure validée, reprise de momentum,
-                    bougie d’impulsion, reprise après pullback, alignement du flux.
-                </p>
-            </div>
-        </div>
-
-        <div class="academy-cards" style="margin-top: 24px;">
-            <div class="academy-info-card">
-                <h3>4. Invalidation</h3>
-                <p>
-                    Déterminer le niveau où le scénario n’est plus valide. L’invalidation n’est pas un détail,
-                    c’est ce qui protège le capital.
-                </p>
-            </div>
-            <div class="academy-info-card">
-                <h3>5. Objectif</h3>
-                <p>
-                    Fixer une cible logique : prochaine zone, extension, reprise de structure ou objectif
-                    mesuré par le ratio rendement / risque.
-                </p>
-            </div>
-            <div class="academy-info-card">
-                <h3>6. Exécution</h3>
-                <p>
-                    Vérifier que le trade respecte la règle de risque, l’heure, le contexte macro, la volatilité
-                    et la cohérence avec le plan global.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="academy-section academy-dark-band">
-    <div class="academy-shell">
-        <div class="academy-section-title">
-            <span class="academy-kicker">Cas réels</span>
-            <h2>Études de cas concrètes sur des actifs suivis par la plateforme</h2>
-            <p class="academy-lead academy-section-lead">
-                Le rôle des cas réels est de relier la théorie à des situations compréhensibles.
-                Chaque cas montre comment un trader structuré pense avant d’entrer en position.
-            </p>
-        </div>
-
-        <div class="academy-cards">
-            <article class="academy-info-card academy-case-card">
-                <span class="academy-mini-badge">BTC</span>
-                <h3>Cas 1 — Breakout puis retest propre</h3>
-                <p>
-                    Le Bitcoin casse une résistance majeure après plusieurs compressions.
-                    Le débutant entre trop tard dans l’impulsion. Le trader discipliné attend le retest,
-                    vérifie la tenue de la zone, puis cherche un signal de reprise.
-                </p>
-                <ul class="academy-reflection-list">
-                    <li><strong>Contexte :</strong> tendance haussière active</li>
-                    <li><strong>Zone :</strong> ancienne résistance devenue support</li>
-                    <li><strong>Signal :</strong> rejet haussier sur retest</li>
-                    <li><strong>Invalidation :</strong> retour net sous la zone</li>
-                    <li><strong>Erreur classique :</strong> achat impulsif au sommet de la bougie</li>
-                </ul>
-            </article>
-
-            <article class="academy-info-card academy-case-card">
-                <span class="academy-mini-badge">GOLD</span>
-                <h3>Cas 2 — Réaction sur support avec faux signal initial</h3>
-                <p>
-                    L’or arrive sur une zone technique importante. La première réaction semble haussière,
-                    mais manque de volume et de continuité. Le trader professionnel attend la deuxième
-                    confirmation avant d’entrer.
-                </p>
-                <ul class="academy-reflection-list">
-                    <li><strong>Contexte :</strong> correction dans tendance plus large</li>
-                    <li><strong>Zone :</strong> support quotidien / zone de rebond</li>
-                    <li><strong>Signal :</strong> stabilisation puis reprise</li>
-                    <li><strong>Invalidation :</strong> cassure confirmée du support</li>
-                    <li><strong>Erreur classique :</strong> confondre réaction technique et vrai retournement</li>
-                </ul>
-            </article>
-
-            <article class="academy-info-card academy-case-card">
-                <span class="academy-mini-badge">EUR/USD</span>
-                <h3>Cas 3 — Faux breakout en range</h3>
-                <p>
-                    Sur le forex, le prix casse brièvement le haut du range puis réintègre rapidement
-                    la zone. Le trader impulsif achète la cassure. Le trader avancé comprend qu’il s’agit
-                    d’un piège de liquidité et attend la confirmation inverse.
-                </p>
-                <ul class="academy-reflection-list">
-                    <li><strong>Contexte :</strong> marché en range</li>
-                    <li><strong>Zone :</strong> extrémité haute du range</li>
-                    <li><strong>Signal :</strong> rejet + réintégration</li>
-                    <li><strong>Invalidation :</strong> nouvelle reprise propre au-dessus</li>
-                    <li><strong>Erreur classique :</strong> croire que toute cassure est un breakout valide</li>
-                </ul>
-            </article>
-        </div>
-    </div>
-</section>
-
-<section class="academy-section">
-    <div class="academy-shell">
-        <div class="academy-section-title">
-            <span class="academy-kicker">Règles</span>
-            <h2>Les règles non négociables d’un trader sérieux</h2>
-        </div>
-
-        <div class="academy-cards">
-            <div class="academy-info-card">
-                <h3>Risque maximum</h3>
-                <p>
-                    Ne jamais risquer un montant qui déséquilibre émotionnellement la décision.
-                    Le but n’est pas de gagner vite, mais de survivre assez longtemps pour progresser.
-                </p>
-            </div>
-            <div class="academy-info-card">
-                <h3>Un setup > plusieurs impulsions</h3>
-                <p>
-                    La qualité compte plus que la quantité. Dix trades médiocres n’ont pas la valeur
-                    d’un seul setup bien aligné.
-                </p>
-            </div>
-            <div class="academy-info-card">
-                <h3>L’invalidation avant l’entrée</h3>
-                <p>
-                    Un trade sans invalidation définie est une exposition émotionnelle, pas une décision professionnelle.
-                </p>
-            </div>
-        </div>
-
-        <div class="academy-cards" style="margin-top: 24px;">
-            <div class="academy-info-card">
-                <h3>Journal obligatoire</h3>
-                <p>
-                    Chaque trade doit laisser une trace : contexte, raison d’entrée, erreur éventuelle,
-                    qualité d’exécution et ressenti émotionnel.
-                </p>
-            </div>
-            <div class="academy-info-card">
-                <h3>Pas de revenge trading</h3>
-                <p>
-                    Une perte ne se “rattrape” pas par la colère. Elle se comprend, s’accepte et s’analyse.
-                </p>
-            </div>
-            <div class="academy-info-card">
-                <h3>Respect du plan</h3>
-                <p>
-                    La performance durable naît de la répétition d’un comportement cohérent, pas d’un coup de chance isolé.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="academy-section academy-dark-band">
-    <div class="academy-shell">
-        <div class="academy-section-title">
-            <span class="academy-kicker">Checklist</span>
-            <h2>Checklist pré-trade pour réduire les erreurs</h2>
-        </div>
-
-        <div class="academy-summary-grid">
-            <div class="academy-info-card">
-                <h3>Avant l’entrée</h3>
-                <ul class="academy-reflection-list">
-                    <li>Le contexte de marché est-il clair ?</li>
-                    <li>La zone est-elle propre et identifiable ?</li>
-                    <li>Le signal est-il confirmé ou seulement supposé ?</li>
-                    <li>L’invalidation est-elle définie ?</li>
-                    <li>Le ratio rendement / risque est-il cohérent ?</li>
-                    <li>Le trade respecte-t-il le plan du jour ?</li>
-                </ul>
-            </div>
-
-            <div class="academy-info-card">
-                <h3>Après l’entrée</h3>
-                <ul class="academy-reflection-list">
-                    <li>Le marché confirme-t-il le scénario ?</li>
-                    <li>Le stop est-il respecté sans déplacement émotionnel ?</li>
-                    <li>Le trade est-il géré selon des règles fixes ?</li>
-                    <li>La sortie a-t-elle été rationnelle ?</li>
-                    <li>Le trade a-t-il été noté dans le journal ?</li>
-                    <li>Ai-je respecté ma discipline ou suivi mon émotion ?</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="academy-section">
-    <div class="academy-shell">
-        <div class="academy-section-title">
-            <span class="academy-kicker">Valeur pédagogique</span>
-            <h2>Ce que l’utilisateur apprend réellement dans l’Academy</h2>
-        </div>
-
-        <div class="academy-grid-3">
-            <div class="academy-info-card">
-                <h3>Lire le marché</h3>
-                <p>
-                    L’utilisateur apprend à distinguer un prix qui accélère, corrige, piège,
-                    consolide ou change de régime.
-                </p>
-            </div>
-            <div class="academy-info-card">
-                <h3>Penser en scénarios</h3>
-                <p>
-                    Le trading n’est pas présenté comme une prédiction magique, mais comme
-                    une hypothèse avec entrée, invalidation, objectif et risque contrôlé.
-                </p>
-            </div>
-            <div class="academy-info-card">
-                <h3>Réduire les erreurs</h3>
-                <p>
-                    Surtrading, FOMO, refus de l’invalidation, levier émotionnel, mauvaise
-                    confluence et absence de journal deviennent des erreurs identifiables.
-                </p>
-            </div>
-        </div>
-
-        <div class="academy-academic-block" style="margin-top: 28px;">
-            <h3>Une montée en qualité plus qu’une accumulation d’informations</h3>
-            <p>
-                L’objectif de l’Academy n’est pas de submerger l’utilisateur sous des notions.
-                Il s’agit de hiérarchiser l’apprentissage. En premier lieu, le langage et la structure.
-                Ensuite, la qualité décisionnelle. Enfin, la gestion plus fine du contexte, du timing
-                et du comportement.
-            </p>
-            <p>
-                Cette progression est essentielle, car une sophistication prématurée aggrave souvent
-                les erreurs au lieu de les corriger. Une base stable rend possible une montée réelle
-                en compétence. Sans cette base, l’utilisateur ne fait que déplacer son imprécision
-                vers un vocabulaire plus technique.
-            </p>
-        </div>
-    </div>
-</section>
-
-<section class="academy-section academy-dark-band">
-    <div class="academy-shell">
-        <div class="academy-section-title">
-            <span class="academy-kicker">Pour le membre</span>
-            <h2>Pourquoi cette Academy augmente la valeur perçue de la plateforme</h2>
-        </div>
-
-        <div class="academy-grid-3">
-            <div class="academy-info-card">
-                <h3>Plus qu’un flux de signaux</h3>
-                <p>
-                    L’utilisateur ne consomme plus seulement des alertes. Il évolue dans un environnement
-                    qui lui apprend à mieux les comprendre.
-                </p>
-            </div>
-            <div class="academy-info-card">
-                <h3>Rétention plus forte</h3>
-                <p>
-                    Un membre qui progresse reste plus longtemps, s’implique davantage, et perçoit
-                    plus clairement la différence entre un espace basique et une vraie plateforme premium.
-                </p>
-            </div>
-            <div class="academy-info-card">
-                <h3>Montée naturelle vers Premium</h3>
-                <p>
-                    La présence d’une Academy structurée rend l’upgrade plus logique :
-                    le plan payant ne donne pas seulement “plus”, il donne “mieux”.
-                </p>
-            </div>
-        </div>
-
-        <div class="academy-summary-grid" style="margin-top: 26px;">
-            <div class="academy-info-card">
-                <h3>Ce que l’utilisateur gagne</h3>
-                <ul class="academy-reflection-list">
-                    <li>Un langage plus rigoureux.</li>
-                    <li>Une lecture plus claire des signaux.</li>
-                    <li>Une meilleure compréhension du risque.</li>
-                    <li>Un cadre pour éviter les erreurs répétées.</li>
-                    <li>Une progression visible et valorisante.</li>
-                    <li>Une logique de travail plus professionnelle.</li>
-                </ul>
-            </div>
-
-            <div class="academy-info-card">
-                <h3>Ce que la plateforme gagne</h3>
-                <ul class="academy-reflection-list">
-                    <li>Une offre plus premium.</li>
-                    <li>Une meilleure rétention.</li>
-                    <li>Une conversion plus naturelle vers Premium.</li>
-                    <li>Une différenciation plus forte face aux concurrents.</li>
-                    <li>Une image plus sérieuse et plus institutionnelle.</li>
-                    <li>Une profondeur produit bien supérieure à une simple page de signaux.</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="academy-section">
-    <div class="academy-shell">
-        <div class="academy-upgrade-final academy-upgrade-final-business">
-            <span class="academy-kicker">Accès Premium</span>
-            <h2>Débloquez l’intégralité du parcours avancé VelWolf Academy</h2>
-            <p>
-                Le plan Basic inclut déjà le niveau 1.
-                Passez à Premium ou VIP pour débloquer les niveaux 2 et 3, les modules enrichis,
-                les validations, les quiz, la progression complète et l’expérience Academy avancée.
-            </p>
-
-            <div class="academy-upgrade-cta">
-                <a href="{{ url_for('pages.academy_level_1') }}" class="academy-btn academy-btn-secondary">
-                    Voir le Niveau 1
-                </a>
-
-                {% if not has_academy_plus %}
-                <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold academy-btn-large">
-                    🚀 Débloquer Premium / VIP
-                </a>
-                {% else %}
-                <a href="{{ url_for('pages.academy_level_3') }}" class="academy-btn academy-btn-primary academy-btn-large">
-                    Continuer le parcours
-                </a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</section>
-
-{% endblock %}
-
-{% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{{ url_for('static', filename='academy.js') }}"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const chartFontColor = "#cbd5e1";
-    const gridColor = "rgba(148, 163, 184, 0.15)";
-
-    function baseOptions() {
-        return {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: chartFontColor
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: { color: chartFontColor },
-                    grid: { color: gridColor }
-                },
-                y: {
-                    ticks: { color: chartFontColor },
-                    grid: { color: gridColor }
-                }
-            }
-        };
-    }
-
-    const equityCurveCanvas = document.getElementById("equityCurveChart");
-    if (equityCurveCanvas) {
-        new Chart(equityCurveCanvas, {
-            type: "line",
-            data: {
-                labels: ["M1", "M2", "M3", "M4", "M5", "M6"],
-                datasets: [
-                    {
-                        label: "Capital discipliné",
-                        data: [1000, 1040, 1085, 1160, 1215, 1290],
-                        tension: 0.35
-                    }
-                ]
-            },
-            options: baseOptions()
-        });
-    }
-
-    const winLossCanvas = document.getElementById("winLossChart");
-    if (winLossCanvas) {
-        new Chart(winLossCanvas, {
-            type: "bar",
-            data: {
-                labels: ["Trades gagnants", "Trades perdants"],
-                datasets: [
-                    {
-                        label: "Nombre",
-                        data: [18, 12]
-                    }
-                ]
-            },
-            options: baseOptions()
-        });
-    }
-
-    const riskManagementCanvas = document.getElementById("riskManagementChart");
-    if (riskManagementCanvas) {
-        new Chart(riskManagementCanvas, {
-            type: "line",
-            data: {
-                labels: ["S1", "S2", "S3", "S4", "S5", "S6"],
-                datasets: [
-                    {
-                        label: "Risque maîtrisé",
-                        data: [100, 102, 101, 105, 107, 110],
-                        tension: 0.35
-                    },
-                    {
-                        label: "Risque agressif",
-                        data: [100, 108, 92, 115, 87, 120],
-                        tension: 0.35
-                    }
-                ]
-            },
-            options: baseOptions()
-        });
-    }
-
-    const disciplineCanvas = document.getElementById("disciplineChart");
-    if (disciplineCanvas) {
-        new Chart(disciplineCanvas, {
-            type: "radar",
-            data: {
-                labels: ["Patience", "Timing", "Risque", "Journal", "Discipline", "Lecture contexte"],
-                datasets: [
-                    {
-                        label: "Avant méthode",
-                        data: [3, 4, 2, 1, 3, 4]
-                    },
-                    {
-                        label: "Après méthode",
-                        data: [8, 8, 9, 7, 8, 9]
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: chartFontColor
-                        }
-                    }
-                },
-                scales: {
-                    r: {
-                        angleLines: { color: gridColor },
-                        grid: { color: gridColor },
-                        pointLabels: { color: chartFontColor },
-                        ticks: {
-                            color: chartFontColor,
-                            backdropColor: "transparent"
-                        }
-                    }
-                }
-            }
-        });
-    }
-});
-</script>
 {% endblock %}

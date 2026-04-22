@@ -17,7 +17,7 @@ if DATABASE_URL.startswith("postgres://"):
 # =========================
 SECRET_KEY = os.getenv("SECRET_KEY", "change-moi-plus-tard")
 
-
+MANUAL_SIGNAL_SECRET = os.getenv("MANUAL_SIGNAL_SECRET")
 # =========================
 # RESEND EMAIL 🔥
 # =========================

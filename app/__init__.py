@@ -21,7 +21,9 @@ from app.routes.telegram import telegram_bp
 from app.routes.technical_analysis import technical_analysis_bp
 from app.routes.telegram_webhook import telegram_webhook_bp
 
+from app.routes.academy_routes import academy_bp
 
+from app.routes.manual_signal import manual_signal_bp
 
 migrate = Migrate()
 
@@ -216,7 +218,7 @@ def create_app():
     app.register_blueprint(signals_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(replay_bp)
-  
+    app.register_blueprint(manual_signal_bp)
     app.register_blueprint(economic_calendar_bp)
     app.register_blueprint(token_unlocks_bp)
     app.register_blueprint(liquidations_bp)
@@ -225,6 +227,8 @@ def create_app():
     app.register_blueprint(telegram_bp)
     app.register_blueprint(technical_analysis_bp)
     app.register_blueprint(telegram_webhook_bp)
+    
+    app.register_blueprint(academy_bp)
     if _should_autostart_liquidations(app):
         try:
             from app.services.liquidations_service import get_liquidations_service

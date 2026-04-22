@@ -3,6 +3,10 @@ from app.extensions import db
 from app.models import Signal
 from app.services.ai_signal_service import compute_confidence, generate_reason
 
+
+# =========================
+# PNL CALCULATION
+# =========================
 def calculate_trade_pnl(signal) -> float:
     trade_pnl = 0.0
 
@@ -21,39 +25,58 @@ def calculate_trade_pnl(signal) -> float:
     return round(trade_pnl, 2)
 
 
+# =========================
+# DISTANCES PAR ASSET
+# =========================
 def get_asset_distances(asset: str, data: dict) -> tuple[float, float]:
     asset = asset.upper()
 
-    if asset == "BTCUSD":
-        default_sl, default_tp = 100, 200
-    elif asset == "ETHUSD":
-        default_sl, default_tp = 40, 80
-    elif asset == "SOLUSD":
-        default_sl, default_tp = 6, 12
-    elif asset == "XRPUSD":
-        default_sl, default_tp = 0.02, 0.04
-    elif asset == "GOLD":
-        default_sl, default_tp = 5, 10
-    elif asset == "US100":
-        default_sl, default_tp = 80, 160
-    elif asset == "US500":
-        default_sl, default_tp = 20, 40
-    elif asset == "FRA40":
-        default_sl, default_tp = 35, 70
-    else:
-        default_sl, default_tp = 100, 200
+    defaults = {
+        "BTCUSD": (100, 200),
+        "ETHUSD": (40, 80),
+        "SOLUSD": (6, 12),
+        "XRPUSD": (0.02, 0.04),
+        "GOLD": (5, 10),
+        "US100": (80, 160),
+        "US500": (20, 40),
+        "FRA40": (35, 70),
+    }
+
+    default_sl, default_tp = defaults.get(asset, (100, 200))
 
     sl_distance = float(data.get("sl_distance", default_sl))
     tp_distance = float(data.get("tp_distance", default_tp))
+
     return sl_distance, tp_distance
 
 
+# =========================
+# CLOSE SIGNAL (MANUAL / WEBHOOK)
+# =========================
 def close_signal_as_result(signal: Signal, result_event: str) -> None:
     signal.status = "WIN" if result_event == "TP" else "LOSS"
     signal.closed_at = datetime.utcnow()
+
+    # calcul PnL %
+    try:
+        entry = signal.entry_price
+        price = signal.take_profit if result_event == "TP" else signal.stop_loss
+
+        if signal.action == "BUY":
+            pnl = (price - entry) / entry * 100
+        else:
+            pnl = (entry - price) / entry * 100
+
+        signal.result_percent = round(pnl, 2)
+    except Exception:
+        pass
+
     db.session.commit()
 
 
+# =========================
+# FIND SIGNAL
+# =========================
 def find_open_signal_for_closure(trade_id: str, asset: str):
     signal = None
 
@@ -70,8 +93,11 @@ def find_open_signal_for_closure(trade_id: str, asset: str):
 
     return signal
 
+
+# =========================
+# CREATE SIGNAL
+# =========================
 def create_signal(data: dict) -> Signal:
-    from app.services.ai_signal_service import compute_confidence, generate_reason
     from app.services.replay_recorder_service import ensure_trade_replay_for_signal
     from flask import current_app
 
@@ -84,10 +110,13 @@ def create_signal(data: dict) -> Signal:
         take_profit=data.get("take_profit"),
         timeframe=data.get("timeframe"),
         signal_type=data.get("signal_type", "intraday"),
-        market_trend=data.get("trend")
+        market_trend=data.get("trend"),
+        status="OPEN"  # 🔥 important
     )
 
-    # 🔥 IA Velwolef
+    # =========================
+    # IA
+    # =========================
     ai_data = {
         "rsi": data.get("rsi"),
         "trend": data.get("trend"),
@@ -99,11 +128,12 @@ def create_signal(data: dict) -> Signal:
     signal.confidence = compute_confidence(ai_data)
     signal.reason = generate_reason(ai_data)
 
-    # 💾 save signal
     db.session.add(signal)
     db.session.commit()
 
-    # 🔥 AJOUT ICI (IMPORTANT)
+    # =========================
+    # REPLAY AUTO
+    # =========================
     try:
         ensure_trade_replay_for_signal(signal)
     except Exception as e:
@@ -112,3 +142,60 @@ def create_signal(data: dict) -> Signal:
         )
 
     return signal
+
+
+# =========================
+# 🔥 AUTO STATUS ENGINE (IMPORTANT)
+# =========================
+def auto_update_signal_status(price_map: dict):
+    """
+    price_map = {
+        "BTCUSD": 65000,
+        "ETHUSD": 3200,
+        ...
+    }
+    """
+
+    signals = Signal.query.filter_by(status="OPEN").all()
+
+    updated = 0
+
+    for s in signals:
+        try:
+            price = price_map.get(s.asset)
+
+            if not price:
+                continue
+
+            entry = s.entry_price
+            sl = s.stop_loss
+            tp = s.take_profit
+
+            if not entry or not sl or not tp:
+                continue
+
+            direction = (s.action or "BUY").upper()
+
+            # =========================
+            # LOGIQUE PRO
+            # =========================
+            if direction == "BUY":
+                if price >= tp:
+                    close_signal_as_result(s, "TP")
+                    updated += 1
+                elif price <= sl:
+                    close_signal_as_result(s, "SL")
+                    updated += 1
+
+            elif direction == "SELL":
+                if price <= tp:
+                    close_signal_as_result(s, "TP")
+                    updated += 1
+                elif price >= sl:
+                    close_signal_as_result(s, "SL")
+                    updated += 1
+
+        except Exception as e:
+            print("Auto status error:", e)
+
+    return updated

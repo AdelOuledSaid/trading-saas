@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
-{% block title %}Technical Analysis | VelWolef{% endblock %}
-{% block meta_description %}Analyse technique institutionnelle avec multi-timeframe, confluence, orderflow, replay et desk VIP.{% endblock %}
+{% block title %}Analyse Technique | VelWolf{% endblock %}
+{% block meta_description %}Analyse technique premium avec structure de marché, niveaux clés, confluence multi-timeframe, replay, orderflow et plan d'action.{% endblock %}
 {% block body_class %}technical-analysis-body{% endblock %}
 
 {% block extra_css %}
@@ -9,704 +9,784 @@
 {% endblock %}
 
 {% block content %}
-{% set user_plan = (current_user.plan if current_user.is_authenticated else 'free')|lower %}
+{% set raw_plan = access.plan if access is defined and access.plan is defined else (current_user.plan if current_user.is_authenticated else 'free') %}
+{% set user_plan = (raw_plan|string)|lower %}
 {% set is_premium = user_plan in ['premium', 'vip'] %}
 {% set is_vip = user_plan == 'vip' %}
+{% set telegram_linked = access.telegram_linked if access is defined and access.telegram_linked is defined else false %}
 
-<section class="ta-shell ta-shell-v2">
-    <div class="ta-noise"></div>
-    <div class="ta-glow ta-glow-a"></div>
-    <div class="ta-glow ta-glow-b"></div>
-
-    <header class="ta-hero">
-        <div class="ta-hero-copy">
-            <div class="ta-hero-badges">
-                <span class="ta-ui-badge">Institutional Dashboard</span>
-                <span class="ta-ui-badge ta-ui-badge-soft">Real Multi-Timeframe Engine</span>
-            </div>
-
-            <h1>
-                Technical Analysis
-                <span>Orderflow • Confluence • Replay • VIP Desk</span>
-            </h1>
-
-            <p class="ta-hero-text">
-                D&eacute;tection avanc&eacute;e du contexte de march&eacute; avec vraie logique multi-timeframe,
-                orderflow simul&eacute;, replay des setups, niveaux de liquidit&eacute; et lecture d'ex&eacute;cution VIP.
-            </p>
-
-            <div class="ta-hero-actions">
-                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ta-btn ta-btn-primary">
-                    Unlock VIP Desk
-                </a>
-                <a href="{{ url_for('signals.signals_page', lang_code=current_lang) }}" class="ta-btn ta-btn-dark">
-                    Open Signals
-                </a>
-            </div>
-
-            <div class="ta-hero-metrics">
-                <div class="ta-metric-card">
-                    <strong id="heroPrice">$--</strong>
-                    <span>Live Price</span>
-                </div>
-                <div class="ta-metric-card">
-                    <strong id="heroMarketCap">$--</strong>
-                    <span>Market Cap</span>
-                </div>
-                <div class="ta-metric-card">
-                    <strong id="heroVolume">$--</strong>
-                    <span>24H Volume</span>
-                </div>
-                <div class="ta-metric-card">
-                    <strong id="heroConfidence">--</strong>
-                    <span>VIP Score</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="ta-hero-preview">
-            <div class="ta-preview-device">
-                <div class="ta-preview-notch"></div>
-
-                <div class="ta-preview-terminal">
-                    <div class="ta-terminal-top">
-                        <div>
-                            <p class="ta-eyebrow">Live Asset</p>
-                            <h3 id="heroAsset">BTC</h3>
-                        </div>
-                        <div id="heroSignal" class="ta-signal-pill ta-signal-buy">Bullish</div>
-                    </div>
-
-                    <div class="ta-terminal-chart">
-                        <div class="ta-chart-grid"></div>
-                        <svg viewBox="0 0 600 260" class="ta-chart-svg" preserveAspectRatio="none">
-                            <path id="mainPath" class="ta-path-main"
-                                d="M0,190 C40,182 70,165 100,154 C125,145 150,128 180,125 C220,122 245,138 270,116 C298,92 330,80 360,96 C390,112 420,110 445,88 C470,68 500,60 530,72 C560,84 580,98 600,62" />
-                            <path id="fillPath" class="ta-path-fill"
-                                d="M0,190 C40,182 70,165 100,154 C125,145 150,128 180,125 C220,122 245,138 270,116 C298,92 330,80 360,96 C390,112 420,110 445,88 C470,68 500,60 530,72 C560,84 580,98 600,62 L600,260 L0,260 Z" />
-                        </svg>
-
-                        <div class="ta-chart-tag ta-chart-tag-r">R1</div>
-                        <div class="ta-chart-tag ta-chart-tag-p">Pivot</div>
-                        <div class="ta-chart-tag ta-chart-tag-s">S1</div>
-                    </div>
-
-                    <div class="ta-terminal-bottom">
-                        <div>
-                            <span>Trend</span>
-                            <strong id="heroTrend">--</strong>
-                        </div>
-                        <div>
-                            <span>RSI</span>
-                            <strong id="heroRsi">--</strong>
-                        </div>
-                        <div>
-                            <span>MFI</span>
-                            <strong id="heroMfi">--</strong>
-                        </div>
-                        <div>
-                            <span>Desk</span>
-                            <strong id="heroDeskMode">--</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <div class="ta-layout">
-        <aside class="ta-sidebar ta-glass-card">
-            <div class="ta-section-head">
-                <h2>Analysis Controls</h2>
-                <p>Live configuration</p>
-            </div>
-
-            <div class="ta-field">
-                <label for="assetSelect">Token</label>
-                <select id="assetSelect">
-                    <option value="BTC">BTC</option>
-                    <option value="ETH">ETH</option>
-                    <option value="XRP">XRP</option>
-                    <option value="SOL">SOL</option>
-                    <option value="BNB">BNB</option>
-                    <option value="DOGE">DOGE</option>
-                </select>
-            </div>
-
-            <div class="ta-field">
-                <label for="timeframeSelect">Timeframe</label>
-                <select id="timeframeSelect">
-                    <option value="15m">15M</option>
-                    <option value="1h" selected>1H</option>
-                    <option value="4h">4H</option>
-                    <option value="1d">1D</option>
-                </select>
-            </div>
-
-            <div class="ta-field">
-                <label for="indicatorSelect">Indicator</label>
-                <select id="indicatorSelect">
-                    <option value="stochasticrsi" selected>Stochastic RSI</option>
-                    <option value="rsi">RSI</option>
-                    <option value="mfi">Money Flow Index</option>
-                    <option value="ema">EMA Bias</option>
-                    <option value="macd">MACD</option>
-                </select>
-            </div>
-
-            <button id="runAnalysisBtn" class="ta-btn ta-btn-primary ta-btn-block">
-                Get Analysis
-            </button>
-
-            <div class="ta-side-mini-stack">
-                <div class="ta-mini-monitor">
-                    <span>Confluence</span>
-                    <strong id="sideConfluenceScore">--</strong>
-                    <small id="sideConfluenceLabel">No data</small>
-                </div>
-
-                <div class="ta-mini-monitor">
-                    <span>Orderflow</span>
-                    <strong id="sideOrderflowState">--</strong>
-                    <small id="sideOrderflowStrength">Strength --</small>
-                </div>
-
-                <div class="ta-mini-monitor">
-                    <span>Replay</span>
-                    <strong id="sideReplayWinrate">--</strong>
-                    <small id="sideReplayCount">0 setups</small>
-                </div>
-            </div>
-
-            <div class="ta-watchlist">
-                <div class="ta-section-head ta-section-head-row">
-                    <h3>Watchlist</h3>
-                    <span>Live</span>
-                </div>
-                <div id="watchlistContainer"></div>
-            </div>
-        </aside>
-
-        <section class="ta-content">
-            <div class="ta-grid-top">
-                <section class="ta-glass-card ta-summary-card">
-                    <div class="ta-section-head ta-section-head-row">
-                        <div>
-                            <h2>AI Market Summary</h2>
-                            <p>Real context + desk synthesis</p>
-                        </div>
-                        <div id="biasBadge" class="ta-bias-pill ta-bias-bullish">--</div>
-                    </div>
-
-                    <div class="ta-summary-stats">
-                        <div class="ta-mini-box">
-                            <span>Signal</span>
-                            <strong id="signalValue">--</strong>
-                        </div>
-                        <div class="ta-mini-box">
-                            <span>Confidence</span>
-                            <strong id="confidenceValue">--</strong>
-                        </div>
-                        <div class="ta-mini-box">
-                            <span>EMA Bias</span>
-                            <strong id="emaValue">--</strong>
-                        </div>
-                        <div class="ta-mini-box">
-                            <span>Volume</span>
-                            <strong id="volumeValue">--</strong>
-                        </div>
-                    </div>
-
-                    <p id="summaryText" class="ta-summary-text">Clique sur Get Analysis pour charger l’analyse.</p>
-                    <div class="ta-summary-tags" id="summaryTags"></div>
-                </section>
-
-                <section class="ta-glass-card ta-desk-card">
-                    <div class="ta-section-head">
-                        <h2>Desk Snapshot</h2>
-                        <p>Live indicators and market state</p>
-                    </div>
-
-                    <div class="ta-snapshot-grid">
-                        <div class="ta-snapshot-item">
-                            <span>Trend</span>
-                            <strong id="trendValue">--</strong>
-                        </div>
-                        <div class="ta-snapshot-item">
-                            <span>RSI</span>
-                            <strong id="rsiValue">--</strong>
-                        </div>
-                        <div class="ta-snapshot-item">
-                            <span>Stoch RSI K</span>
-                            <strong id="stochValue">--</strong>
-                        </div>
-                        <div class="ta-snapshot-item">
-                            <span>MFI</span>
-                            <strong id="mfiValue">--</strong>
-                        </div>
-                        <div class="ta-snapshot-item">
-                            <span>MACD</span>
-                            <strong id="macdValue">--</strong>
-                        </div>
-                        <div class="ta-snapshot-item">
-                            <span>Risk Mode</span>
-                            <strong id="riskValue">--</strong>
-                        </div>
-                    </div>
-                </section>
-            </div>
-
-            <div class="ta-grid-super">
-                <section class="ta-glass-card ta-confluence-card">
-                    <div class="ta-section-head ta-section-head-row">
-                        <div>
-                            <h2>Confluence Engine</h2>
-                            <p>Multi-timeframe institutional alignment</p>
-                        </div>
-                        <div class="ta-score-badge">
-                            <span>Score</span>
-                            <strong id="confluenceScore">--</strong>
-                        </div>
-                    </div>
-
-                    <div class="ta-confluence-meta">
-                        <div class="ta-confluence-meta-box">
-                            <span>Dominant Bias</span>
-                            <strong id="confluenceBias">--</strong>
-                        </div>
-                        <div class="ta-confluence-meta-box">
-                            <span>Alignment</span>
-                            <strong id="confluenceAlignment">--</strong>
-                        </div>
-                        <div class="ta-confluence-meta-box">
-                            <span>Entry Quality</span>
-                            <strong id="confluenceEntryQuality">--</strong>
-                        </div>
-                    </div>
-
-                    <div class="ta-mtf-grid">
-                        <div class="ta-mtf-card">
-                            <span>15M</span>
-                            <strong id="mtf15mBias">--</strong>
-                            <small id="mtf15mMeta">RSI -- · Conf --</small>
-                        </div>
-                        <div class="ta-mtf-card">
-                            <span>1H</span>
-                            <strong id="mtf1hBias">--</strong>
-                            <small id="mtf1hMeta">RSI -- · Conf --</small>
-                        </div>
-                        <div class="ta-mtf-card">
-                            <span>4H</span>
-                            <strong id="mtf4hBias">--</strong>
-                            <small id="mtf4hMeta">RSI -- · Conf --</small>
-                        </div>
-                        <div class="ta-mtf-card">
-                            <span>1D</span>
-                            <strong id="mtf1dBias">--</strong>
-                            <small id="mtf1dMeta">RSI -- · Conf --</small>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="ta-glass-card ta-orderflow-card">
-                    <div class="ta-section-head ta-section-head-row">
-                        <div>
-                            <h2>Orderflow Simulation</h2>
-                            <p>Pressure, imbalance and absorption</p>
-                        </div>
-                        <span class="ta-membership-badge ta-membership-badge-vip">VIP</span>
-                    </div>
-
-                    <div class="ta-orderflow-grid">
-                        <div class="ta-orderflow-box">
-                            <span>State</span>
-                            <strong id="orderflowState">--</strong>
-                        </div>
-                        <div class="ta-orderflow-box">
-                            <span>Strength</span>
-                            <strong id="orderflowStrength">--</strong>
-                        </div>
-                        <div class="ta-orderflow-box">
-                            <span>Imbalance</span>
-                            <strong id="orderflowImbalance">--</strong>
-                        </div>
-                        <div class="ta-orderflow-box">
-                            <span>Absorption</span>
-                            <strong id="orderflowAbsorption">--</strong>
-                        </div>
-                    </div>
-
-                    <div class="ta-orderflow-bars">
-                        <div class="ta-flow-bar-wrap">
-                            <span>Buy Pressure</span>
-                            <strong id="buyPressureValue">--</strong>
-                        </div>
-                        <div class="ta-flow-bar-wrap">
-                            <span>Sell Pressure</span>
-                            <strong id="sellPressureValue">--</strong>
-                        </div>
-                    </div>
-                </section>
-            </div>
-
-            <div class="ta-grid-mid">
-                <section class="ta-glass-card ta-chart-card-large">
-                    <div class="ta-section-head ta-section-head-row">
-                        <div>
-                            <h2>Price Structure</h2>
-                            <p>Live chart style</p>
-                        </div>
-
-                        <div class="ta-tabs">
-                            <button class="ta-tab active" data-tab="price" type="button">Price</button>
-                            <button class="ta-tab" data-tab="rsi" type="button">RSI</button>
-                            <button class="ta-tab" data-tab="mfi" type="button">MFI</button>
-                        </div>
-                    </div>
-
-                    <div class="ta-big-chart">
-                        <div class="ta-big-chart-grid"></div>
-                        <svg viewBox="0 0 900 380" class="ta-big-chart-svg" preserveAspectRatio="none">
-                            <path id="bigMainPath" class="ta-big-path-main"
-                                d="M0,285 C55,270 85,220 130,210 C175,200 220,238 270,205 C320,172 360,145 400,160 C450,180 500,200 555,155 C610,110 650,105 700,125 C760,148 810,185 860,130 C880,112 890,95 900,90" />
-                            <path id="bigFillPath" class="ta-big-path-fill"
-                                d="M0,285 C55,270 85,220 130,210 C175,200 220,238 270,205 C320,172 360,145 400,160 C450,180 500,200 555,155 C610,110 650,105 700,125 C760,148 810,185 860,130 C880,112 890,95 900,90 L900,380 L0,380 Z" />
-                        </svg>
-
-                        <div class="ta-line-marker ta-resistance-marker">Resistance</div>
-                        <div class="ta-line-marker ta-pivot-marker">Pivot</div>
-                        <div class="ta-line-marker ta-support-marker">Support</div>
-                    </div>
-                </section>
-
-                <section class="ta-glass-card ta-levels-card">
-                    <div class="ta-section-head">
-                        <h2>Key Levels</h2>
-                        <p>Real auto-mapped levels</p>
-                    </div>
-
-                    <div class="ta-level-stack">
-                        <div class="ta-level-box resistance">
-                            <span>Resistance 1</span>
-                            <strong id="res1">--</strong>
-                        </div>
-                        <div class="ta-level-box resistance">
-                            <span>Resistance 2</span>
-                            <strong id="res2">--</strong>
-                        </div>
-                        <div class="ta-level-box pivot">
-                            <span>Pivot</span>
-                            <strong id="pivot">--</strong>
-                        </div>
-                        <div class="ta-level-box support">
-                            <span>Support 1</span>
-                            <strong id="sup1">--</strong>
-                        </div>
-                        <div class="ta-level-box support">
-                            <span>Support 2</span>
-                            <strong id="sup2">--</strong>
-                        </div>
-                    </div>
-                </section>
-            </div>
-
-            <div class="ta-grid-bottom">
-                <section class="ta-glass-card ta-replay-card">
-                    <div class="ta-section-head ta-section-head-row">
-                        <div>
-                            <h2>Setup Replay</h2>
-                            <p>Historical setup memory and desk performance</p>
-                        </div>
-                        <span class="ta-membership-badge ta-membership-badge-premium">PREMIUM</span>
-                    </div>
-
-                    <div class="ta-replay-stats">
-                        <div class="ta-mini-box">
-                            <span>Setups</span>
-                            <strong id="replayCount">--</strong>
-                        </div>
-                        <div class="ta-mini-box">
-                            <span>Winrate</span>
-                            <strong id="replayWinrate">--</strong>
-                        </div>
-                        <div class="ta-mini-box">
-                            <span>Avg Confidence</span>
-                            <strong id="replayAvgConfidence">--</strong>
-                        </div>
-                        <div class="ta-mini-box">
-                            <span>Best Bias</span>
-                            <strong id="replayBestBias">--</strong>
-                        </div>
-                    </div>
-
-                    <div id="replayHistory" class="ta-replay-history">
-                        <p>No replay history loaded.</p>
-                    </div>
-                </section>
-
-                <section class="ta-glass-card">
-                    <div class="ta-section-head">
-                        <h2>Execution Plan</h2>
-                        <p>AI-ready interpretation</p>
-                    </div>
-
-                    <div id="executionPlan" class="ta-execution-box">
-                        <p>Click Get Analysis to load the execution plan.</p>
-                    </div>
-
-                    <div class="ta-cta-stack">
-                        <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ta-btn ta-btn-primary ta-btn-block">
-                            Unlock Full Analysis
-                        </a>
-                        <a href="{{ url_for('signals.results', lang_code=current_lang) }}" class="ta-btn ta-btn-dark ta-btn-block">
-                            View Results
-                        </a>
-                    </div>
-                </section>
-            </div>
-
-            <div class="ta-grid-bottom">
-                <section class="ta-glass-card">
-                    <div class="ta-section-head">
-                        <h2>Trending</h2>
-                        <p>Top market movers by live market data</p>
-                    </div>
-                    <div id="trendingContainer" class="ta-indicator-list"></div>
-                </section>
-
-                <section class="ta-glass-card ta-telegram-card">
-                    <div class="ta-section-head ta-section-head-row">
-                        <div>
-                            <h2>VIP Alert Engine</h2>
-                            <p>Telegram automation readiness</p>
-                        </div>
-                        <span class="ta-membership-badge ta-membership-badge-vip">VIP</span>
-                    </div>
-
-                    <div class="ta-telegram-status">
-                        <div class="ta-mini-box">
-                            <span>Status</span>
-                            <strong id="telegramReady">--</strong>
-                        </div>
-                        <div class="ta-mini-box">
-                            <span>Execution</span>
-                            <strong id="telegramExecutionMode">--</strong>
-                        </div>
-                        <div class="ta-mini-box">
-                            <span>Risk</span>
-                            <strong id="telegramRiskProfile">--</strong>
-                        </div>
-                    </div>
-
-                    <div class="ta-execution-box">
-                        <p id="telegramNote">No VIP alert condition loaded.</p>
-                    </div>
-                </section>
-            </div>
-        </section>
-    </div>
-
-    <div class="ta-membership-stack">
-
-        {% if is_premium %}
-        <section class="ta-glass-card ta-membership-card ta-premium-desk">
-            <div class="ta-section-head ta-section-head-row">
-                <div>
-                    <h2>Premium Desk</h2>
-                    <p>Advanced context reserved for Premium and VIP members</p>
-                </div>
-                <span class="ta-membership-badge ta-membership-badge-premium">PREMIUM</span>
-            </div>
-
-            <div class="ta-premium-grid">
-                <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" data-tier="premium" type="button">
-                    <span>15M Bias</span>
-                    <strong id="premiumBias15m">Fast</strong>
-                    <small>Fast structure confirmation</small>
-                </button>
-
-                <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" data-tier="premium" type="button">
-                    <span>1H Bias</span>
-                    <strong id="premiumBias1h">Aligned</strong>
-                    <small>Main execution window</small>
-                </button>
-
-                <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" data-tier="premium" type="button">
-                    <span>4H Bias</span>
-                    <strong id="premiumBias4h">Context</strong>
-                    <small>Higher timeframe direction</small>
-                </button>
-
-                <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" data-tier="premium" type="button">
-                    <span>Daily Bias</span>
-                    <strong id="premiumBias1d">Macro</strong>
-                    <small>Big picture framework</small>
-                </button>
-            </div>
-
-            <div class="ta-premium-details-grid">
-                <button class="ta-premium-panel ta-interactive-card" data-insight="premium-breakdown" data-tier="premium" type="button">
-                    <h3>Indicator Breakdown</h3>
-                    <ul class="ta-breakdown-list">
-                        <li><span>RSI State</span><strong id="premiumRsiState">Loading...</strong></li>
-                        <li><span>MFI State</span><strong id="premiumMfiState">Loading...</strong></li>
-                        <li><span>MACD Regime</span><strong id="premiumMacdState">Loading...</strong></li>
-                        <li><span>Volume Quality</span><strong id="premiumVolumeState">Loading...</strong></li>
-                    </ul>
-                </button>
-
-                <button class="ta-premium-panel ta-interactive-card" data-insight="premium-ai" data-tier="premium" type="button">
-                    <h3>Premium AI Context</h3>
-                    <p id="premiumAiSummary" class="ta-membership-text">
-                        Premium context loading...
-                    </p>
-                </button>
-            </div>
-        </section>
-        {% else %}
-        <section class="ta-glass-card ta-membership-card ta-membership-locked ta-premium-desk">
-            <div class="ta-section-head ta-section-head-row">
-                <div>
-                    <h2>Premium Desk</h2>
-                    <p>Advanced multi-timeframe context, replay engine and richer AI interpretation</p>
-                </div>
-                <span class="ta-membership-badge ta-membership-badge-premium">PREMIUM</span>
-            </div>
-
-            <div class="ta-locked-preview">
-                <div class="ta-locked-grid">
-                    <button class="ta-locked-box ta-interactive-card" data-insight="premium-alignment" data-tier="premium" type="button">
-                        Multi-Timeframe Alignment
-                    </button>
-                    <button class="ta-locked-box ta-interactive-card" data-insight="premium-breakdown" data-tier="premium" type="button">
-                        Indicator Breakdown
-                    </button>
-                    <button class="ta-locked-box ta-interactive-card" data-insight="premium-ai" data-tier="premium" type="button">
-                        Premium AI Context
-                    </button>
-                    <button class="ta-locked-box ta-interactive-card" data-insight="premium-read" data-tier="premium" type="button">
-                        Replay + Advanced Market Read
-                    </button>
-                </div>
-
-                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ta-btn ta-btn-primary">
-                    Unlock Premium Desk
-                </a>
-            </div>
-        </section>
-        {% endif %}
-
+<section
+  class="ta-shell ta-shell-tv"
+  data-user-plan="{{ user_plan }}"
+  data-is-premium="{{ 'true' if is_premium else 'false' }}"
+  data-is-vip="{{ 'true' if is_vip else 'false' }}"
+  data-telegram-linked="{{ 'true' if telegram_linked else 'false' }}"
+  data-upgrade-url="{{ url_for('billing.pricing', lang_code=current_lang) }}"
+>
+  <header class="ta-tv-header">
+    <div class="ta-tv-header-left">
+      <div class="ta-tv-kicker-row">
+        <span class="ta-tv-kicker">Desk Trading</span>
+        <span class="ta-tv-kicker ta-tv-kicker-soft">Analyse en temps réel</span>
         {% if is_vip %}
-        <section class="ta-glass-card ta-membership-card ta-vip-desk">
-            <div class="ta-section-head ta-section-head-row">
-                <div>
-                    <h2>VIP Desk</h2>
-                    <p>Institutional execution layer reserved for VIP members</p>
-                </div>
-                <span class="ta-membership-badge ta-membership-badge-vip">VIP</span>
-            </div>
-
-            <div class="ta-vip-grid">
-                <button class="ta-vip-score-card ta-interactive-card" data-insight="vip-score" data-tier="vip" type="button">
-                    <span>Confluence Score</span>
-                    <strong id="vipConfluenceScore">82 / 100</strong>
-                    <small>Trend + Momentum + Volume + Structure</small>
-                </button>
-
-                <button class="ta-vip-score-card ta-interactive-card" data-insight="vip-execution" data-tier="vip" type="button">
-                    <span>Execution Mode</span>
-                    <strong id="vipExecutionMode">Selective</strong>
-                    <small>Institutional style filtering</small>
-                </button>
-
-                <button class="ta-vip-score-card ta-interactive-card" data-insight="vip-score" data-tier="vip" type="button">
-                    <span>Risk Profile</span>
-                    <strong id="vipRiskProfile">Controlled</strong>
-                    <small>Scenario-based interpretation</small>
-                </button>
-            </div>
-
-            <div class="ta-vip-panels">
-                <button class="ta-vip-panel ta-interactive-card" data-insight="vip-scenarios" data-tier="vip" type="button">
-                    <h3>VIP Scenarios</h3>
-                    <div class="ta-scenario-box">
-                        <span>Bullish Scenario</span>
-                        <p id="vipBullScenario">Waiting for premium scenario details...</p>
-                    </div>
-                    <div class="ta-scenario-box">
-                        <span>Bearish Scenario</span>
-                        <p id="vipBearScenario">Waiting for premium scenario details...</p>
-                    </div>
-                    <div class="ta-scenario-box">
-                        <span>Neutral / Wait Scenario</span>
-                        <p id="vipNeutralScenario">Waiting for premium scenario details...</p>
-                    </div>
-                </button>
-
-                <button class="ta-vip-panel ta-interactive-card" data-insight="vip-notes" data-tier="vip" type="button">
-                    <h3>VIP Desk Notes</h3>
-                    <p id="vipDeskNotes" class="ta-membership-text">
-                        VIP notes loading...
-                    </p>
-                </button>
-            </div>
-        </section>
+        <span class="ta-tv-kicker ta-tv-kicker-vip">VIP</span>
+        {% elif is_premium %}
+        <span class="ta-tv-kicker ta-tv-kicker-premium">PREMIUM</span>
         {% else %}
-        <section class="ta-glass-card ta-membership-card ta-membership-locked ta-vip-desk">
-            <div class="ta-section-head ta-section-head-row">
-                <div>
-                    <h2>VIP Desk</h2>
-                    <p>Institutional execution scenarios, Telegram alerts and desk notes</p>
-                </div>
-                <span class="ta-membership-badge ta-membership-badge-vip">VIP</span>
-            </div>
-
-            <div class="ta-locked-preview">
-                <div class="ta-locked-grid">
-                    <button class="ta-locked-box ta-interactive-card" data-insight="vip-score" data-tier="vip" type="button">
-                        Confluence Score
-                    </button>
-                    <button class="ta-locked-box ta-interactive-card" data-insight="vip-scenarios" data-tier="vip" type="button">
-                        Bull / Bear / Neutral Scenarios
-                    </button>
-                    <button class="ta-locked-box ta-interactive-card" data-insight="vip-notes" data-tier="vip" type="button">
-                        VIP Desk Notes
-                    </button>
-                    <button class="ta-locked-box ta-interactive-card" data-insight="vip-execution" data-tier="vip" type="button">
-                        Telegram + Institutional Execution Layer
-                    </button>
-                </div>
-
-                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ta-btn ta-btn-primary">
-                    Unlock VIP Desk
-                </a>
-            </div>
-        </section>
+        <span class="ta-tv-kicker ta-tv-kicker-free">FREE</span>
         {% endif %}
+      </div>
 
+      <div class="ta-tv-title-wrap">
+        <div>
+          <h1>Analyse Technique</h1>
+          <p>
+            Lecture claire du marché avec structure, momentum, niveaux clés,
+            confluence multi-timeframe et plan d'action orienté exécution.
+          </p>
+        </div>
+
+        <div class="ta-tv-head-signal">
+          <div id="heroSignal" class="ta-signal-pill ta-signal-neutral">Neutre</div>
+          <div id="biasBadge" class="ta-bias-pill ta-bias-neutral">Biais neutre</div>
+        </div>
+      </div>
     </div>
+
+    <div class="ta-tv-header-right">
+      <div class="ta-tv-top-stat">
+        <span>Actif</span>
+        <strong id="heroAsset">BTC</strong>
+      </div>
+
+      <div class="ta-tv-top-stat">
+        <span>Prix</span>
+        <strong id="heroPrice">$--</strong>
+      </div>
+
+      <div class="ta-tv-top-stat ta-tv-score-stat">
+        <span>Score du desk</span>
+
+        <div class="ta-score-gauge" id="scoreGauge" data-score="0">
+          <div class="ta-score-gauge-svg-wrap">
+            <svg viewBox="0 0 120 70" class="ta-score-gauge-svg" aria-hidden="true">
+              <path
+                class="ta-score-gauge-bg"
+                d="M 10 60 A 50 50 0 0 1 110 60"
+                pathLength="100"
+              ></path>
+              <path
+                id="scoreGaugeProgress"
+                class="ta-score-gauge-progress"
+                d="M 10 60 A 50 50 0 0 1 110 60"
+                pathLength="100"
+                stroke-dasharray="100"
+                stroke-dashoffset="100"
+              ></path>
+            </svg>
+
+            <div class="ta-score-gauge-center">
+              <strong id="heroConfidence">--</strong>
+              <small id="heroConfidenceLabel">Neutre</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ta-tv-top-stat">
+        <span>Volume 24H</span>
+        <strong id="heroVolume">$--</strong>
+      </div>
+    </div>
+  </header>
+
+  <section class="ta-tv-hero-grid">
+    <article class="ta-glass-card ta-tv-executive-card">
+      <div class="ta-tv-card-head">
+        <div>
+          <h2>Résumé exécutif</h2>
+          <p>Vue synthétique et exploitable immédiatement</p>
+        </div>
+        <span class="ta-tv-chip-live">Live</span>
+      </div>
+
+      <div class="ta-tv-exec-stats">
+        <div class="ta-tv-mini-stat">
+          <span>Tendance</span>
+          <strong id="heroTrend">--</strong>
+        </div>
+        <div class="ta-tv-mini-stat">
+          <span>RSI</span>
+          <strong id="heroRsi">--</strong>
+        </div>
+        <div class="ta-tv-mini-stat">
+          <span>MFI</span>
+          <strong id="heroMfi">--</strong>
+        </div>
+        <div class="ta-tv-mini-stat">
+          <span>Mode desk</span>
+          <strong id="heroDeskMode">--</strong>
+        </div>
+      </div>
+
+      <p id="summaryText" class="ta-tv-summary-text">
+        Clique sur « Lancer l'analyse » pour charger la lecture complète du marché.
+      </p>
+
+      <div class="ta-summary-tags" id="summaryTags"></div>
+    </article>
+
+    <article class="ta-glass-card ta-tv-market-card">
+      <div class="ta-tv-card-head">
+        <div>
+          <h2>Vue marché</h2>
+          <p>Contexte général et impulsion actuelle</p>
+        </div>
+      </div>
+
+      <div class="ta-tv-market-grid">
+        <div class="ta-tv-mini-stat">
+          <span>Capitalisation</span>
+          <strong id="heroMarketCap">$--</strong>
+        </div>
+        <div class="ta-tv-mini-stat">
+          <span>Signal</span>
+          <strong id="signalValue">--</strong>
+        </div>
+        <div class="ta-tv-mini-stat">
+          <span>Confiance</span>
+          <strong id="confidenceValue">--</strong>
+        </div>
+        <div class="ta-tv-mini-stat">
+          <span>Volume</span>
+          <strong id="volumeValue">--</strong>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <div class="ta-tv-main">
+    <aside class="ta-glass-card ta-tv-sidebar">
+      <div class="ta-tv-card-head">
+        <div>
+          <h2>Contrôles</h2>
+          <p>Choisis l'actif et la lecture</p>
+        </div>
+      </div>
+
+      <div class="ta-field">
+        <label for="assetSelect">Actif</label>
+        <select id="assetSelect">
+          <option value="BTC">BTC</option>
+          <option value="ETH">ETH</option>
+          <option value="SOL">SOL</option>
+          <option value="BNB">BNB</option>
+          <option value="XRP">XRP</option>
+          <option value="DOGE">DOGE</option>
+          <option value="ADA">ADA</option>
+          <option value="AVAX">AVAX</option>
+          <option value="LINK">LINK</option>
+          <option value="MATIC">MATIC</option>
+          <option value="TRX">TRX</option>
+          <option value="LTC">LTC</option>
+          <option value="DOT">DOT</option>
+          <option value="UNI">UNI</option>
+          <option value="ATOM">ATOM</option>
+        </select>
+      </div>
+
+      <div class="ta-field">
+        <label for="timeframeSelect">Timeframe</label>
+        <select id="timeframeSelect">
+          <option value="15m">15M</option>
+          <option value="1h" selected>1H</option>
+          <option value="4h">4H</option>
+          <option value="1d">1D</option>
+        </select>
+      </div>
+
+      <div class="ta-field">
+        <label for="indicatorSelect">Indicateur</label>
+        <select id="indicatorSelect">
+          <option value="stochasticrsi" selected>Stochastic RSI</option>
+          <option value="rsi">RSI</option>
+          <option value="mfi">Money Flow Index</option>
+          <option value="ema">Biais EMA</option>
+          <option value="macd">MACD</option>
+        </select>
+      </div>
+
+      <button id="runAnalysisBtn" class="ta-btn ta-btn-primary ta-btn-block">
+        Lancer l'analyse
+      </button>
+
+      <div class="ta-tv-side-stack">
+        <div class="ta-tv-side-box">
+          <span>Confluence</span>
+          <strong id="sideConfluenceScore">--</strong>
+          <small id="sideConfluenceLabel">Pas de donnée</small>
+        </div>
+
+        <div class="ta-tv-side-box">
+          <span>Orderflow</span>
+          <strong id="sideOrderflowState">--</strong>
+          <small id="sideOrderflowStrength">Force --</small>
+        </div>
+
+        <div class="ta-tv-side-box">
+          <span>Replay</span>
+          <strong id="sideReplayWinrate">--</strong>
+          <small id="sideReplayCount">0 setup</small>
+        </div>
+      </div>
+
+      <div class="ta-tv-sidebar-watch">
+        <div class="ta-tv-card-head ta-tv-card-head-tight">
+          <div>
+            <h3>Watchlist</h3>
+            <p>Actifs surveillés</p>
+          </div>
+        </div>
+        <div id="watchlistContainer"></div>
+      </div>
+    </aside>
+
+    <section class="ta-tv-center">
+      <section class="ta-glass-card ta-tv-chart-card">
+        <div class="ta-tv-chart-head">
+          <div>
+            <h2>Structure du prix</h2>
+            <p>Vue principale de l'actif sélectionné</p>
+          </div>
+
+          <div class="ta-tabs">
+            <button class="ta-tab active" data-tab="price" type="button">Prix</button>
+            <button class="ta-tab" data-tab="rsi" type="button">RSI</button>
+            <button class="ta-tab" data-tab="mfi" type="button">MFI</button>
+          </div>
+        </div>
+
+        <div class="ta-big-chart ta-tv-big-chart">
+          <div class="ta-big-chart-grid"></div>
+          <svg viewBox="0 0 900 380" class="ta-big-chart-svg" preserveAspectRatio="none">
+            <path
+              id="bigMainPath"
+              class="ta-big-path-main"
+              d="M0,285 C55,270 85,220 130,210 C175,200 220,238 270,205 C320,172 360,145 400,160 C450,180 500,200 555,155 C610,110 650,105 700,125 C760,148 810,185 860,130 C880,112 890,95 900,90"
+            />
+            <path
+              id="bigFillPath"
+              class="ta-big-path-fill"
+              d="M0,285 C55,270 85,220 130,210 C175,200 220,238 270,205 C320,172 360,145 400,160 C450,180 500,200 555,155 C610,110 650,105 700,125 C760,148 810,185 860,130 C880,112 890,95 900,90 L900,380 L0,380 Z"
+            />
+          </svg>
+
+          <div class="ta-line-marker ta-resistance-marker">R</div>
+          <div class="ta-line-marker ta-pivot-marker">Pivot</div>
+          <div class="ta-line-marker ta-support-marker">S</div>
+        </div>
+
+        <div class="ta-tv-bottom-stats">
+          <div class="ta-tv-mini-stat">
+            <span>Tendance</span>
+            <strong id="trendValue">--</strong>
+          </div>
+          <div class="ta-tv-mini-stat">
+            <span>RSI</span>
+            <strong id="rsiValue">--</strong>
+          </div>
+          <div class="ta-tv-mini-stat">
+            <span>Stoch RSI</span>
+            <strong id="stochValue">--</strong>
+          </div>
+          <div class="ta-tv-mini-stat">
+            <span>MFI</span>
+            <strong id="mfiValue">--</strong>
+          </div>
+          <div class="ta-tv-mini-stat">
+            <span>MACD</span>
+            <strong id="macdValue">--</strong>
+          </div>
+          <div class="ta-tv-mini-stat">
+            <span>Risque</span>
+            <strong id="riskValue">--</strong>
+          </div>
+        </div>
+      </section>
+
+      <div class="ta-tv-center-grid">
+        <section class="ta-glass-card ta-tv-confluence-card">
+          <div class="ta-tv-card-head">
+            <div>
+              <h2>Confluence</h2>
+              <p>Alignement multi-timeframe</p>
+            </div>
+            <div class="ta-score-badge">
+              <span>Score</span>
+              <strong id="confluenceScore">--</strong>
+            </div>
+          </div>
+
+          <div class="ta-tv-confluence-top">
+            <div class="ta-tv-confluence-box">
+              <span>Biais dominant</span>
+              <strong id="confluenceBias">--</strong>
+            </div>
+            <div class="ta-tv-confluence-box">
+              <span>Alignement</span>
+              <strong id="confluenceAlignment">--</strong>
+            </div>
+            <div class="ta-tv-confluence-box">
+              <span>Qualité d'entrée</span>
+              <strong id="confluenceEntryQuality">--</strong>
+            </div>
+          </div>
+
+          <div class="ta-tv-mtf-grid">
+            <div class="ta-mtf-card">
+              <span>15M</span>
+              <strong id="mtf15mBias">--</strong>
+              <small id="mtf15mMeta">RSI -- · Conf --</small>
+            </div>
+            <div class="ta-mtf-card">
+              <span>1H</span>
+              <strong id="mtf1hBias">--</strong>
+              <small id="mtf1hMeta">RSI -- · Conf --</small>
+            </div>
+            <div class="ta-mtf-card">
+              <span>4H</span>
+              <strong id="mtf4hBias">--</strong>
+              <small id="mtf4hMeta">RSI -- · Conf --</small>
+            </div>
+            <div class="ta-mtf-card">
+              <span>1D</span>
+              <strong id="mtf1dBias">--</strong>
+              <small id="mtf1dMeta">RSI -- · Conf --</small>
+            </div>
+          </div>
+        </section>
+
+        <section class="ta-glass-card ta-tv-levels-card">
+          <div class="ta-tv-card-head">
+            <div>
+              <h2>Niveaux clés</h2>
+              <p>Zones de travail du desk</p>
+            </div>
+          </div>
+
+          <div class="ta-level-stack">
+            <div class="ta-level-box resistance">
+              <span>Résistance 1</span>
+              <strong id="res1">--</strong>
+            </div>
+            <div class="ta-level-box resistance">
+              <span>Résistance 2</span>
+              <strong id="res2">--</strong>
+            </div>
+            <div class="ta-level-box pivot">
+              <span>Pivot</span>
+              <strong id="pivot">--</strong>
+            </div>
+            <div class="ta-level-box support">
+              <span>Support 1</span>
+              <strong id="sup1">--</strong>
+            </div>
+            <div class="ta-level-box support">
+              <span>Support 2</span>
+              <strong id="sup2">--</strong>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="ta-glass-card ta-tv-advanced-card">
+        <div class="ta-tv-card-head">
+          <div>
+            <h2>Lecture avancée</h2>
+            <p>Structure, momentum, pression et invalidation</p>
+          </div>
+          <div id="advancedAiBias" class="ta-bias-pill ta-bias-neutral">Biais neutre</div>
+        </div>
+
+        <div class="ta-tv-advanced-grid">
+          <div class="ta-tv-advanced-box">
+            <span>Structure</span>
+            <div id="aiMarketStructure">--</div>
+          </div>
+          <div class="ta-tv-advanced-box">
+            <span>Momentum</span>
+            <div id="aiMomentum">--</div>
+          </div>
+          <div class="ta-tv-advanced-box">
+            <span>Pression delta</span>
+            <div id="aiDeltaPressure">--</div>
+          </div>
+          <div class="ta-tv-advanced-box">
+            <span>Zone de déséquilibre</span>
+            <div id="aiImbalanceZone">--</div>
+          </div>
+        </div>
+
+        <div class="ta-tv-advanced-notes">
+          <div class="ta-execution-box">
+            <p><strong>Note d'exécution</strong></p>
+            <p id="aiExecutionNote">Aucune note avancée chargée.</p>
+          </div>
+
+          <div class="ta-execution-box">
+            <p><strong>Invalidation</strong></p>
+            <p id="aiInvalidation">Aucune invalidation chargée.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ta-glass-card ta-tv-plan-card">
+        <div class="ta-tv-card-head">
+          <div>
+            <h2>Plan d'action</h2>
+            <p>Lecture prête à exploiter</p>
+          </div>
+          <span id="vipExecutionMode" class="ta-bias-pill ta-bias-neutral">--</span>
+        </div>
+
+        <div class="ta-tv-plan-grid">
+          <div id="executionPlan" class="ta-execution-box ta-tv-plan-main">
+            <p>Clique sur « Lancer l'analyse » pour charger le plan d'action.</p>
+          </div>
+
+          <div class="ta-tv-plan-side">
+            <div class="ta-tv-mini-stat ta-tv-plan-stat">
+              <span>Score du desk</span>
+              <strong id="vipConfluenceScore">--</strong>
+            </div>
+            <div class="ta-tv-mini-stat ta-tv-plan-stat">
+              <span>Profil de risque</span>
+              <strong id="vipRiskProfile">--</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <aside class="ta-tv-right">
+      <section class="ta-glass-card ta-gated-card" data-required-plan="premium">
+        <div class="ta-tv-card-head">
+          <div>
+            <h2>Orderflow</h2>
+            <p>Lecture détaillée du flux</p>
+          </div>
+          {% if not is_premium %}
+          <span class="ta-membership-badge ta-membership-badge-premium">PREMIUM</span>
+          {% endif %}
+        </div>
+
+        <div class="ta-orderflow-grid">
+          <div class="ta-orderflow-box">
+            <span>État</span>
+            <strong id="orderflowState">--</strong>
+          </div>
+          <div class="ta-orderflow-box">
+            <span>Force</span>
+            <strong id="orderflowStrength">--</strong>
+          </div>
+          <div class="ta-orderflow-box">
+            <span>Déséquilibre</span>
+            <strong id="orderflowImbalance">--</strong>
+          </div>
+          <div class="ta-orderflow-box">
+            <span>Absorption</span>
+            <strong id="orderflowAbsorption">--</strong>
+          </div>
+        </div>
+
+        <div class="ta-orderflow-detail-grid">
+          <div class="ta-mini-box">
+            <span>Agressivité acheteurs</span>
+            <strong id="buyerAggression">--</strong>
+          </div>
+          <div class="ta-mini-box">
+            <span>Agressivité vendeurs</span>
+            <strong id="sellerAggression">--</strong>
+          </div>
+          <div class="ta-mini-box">
+            <span>Body ratio</span>
+            <strong id="bodyRatio">--</strong>
+          </div>
+          <div class="ta-mini-box">
+            <span>Position de clôture</span>
+            <strong id="closePosition">--</strong>
+          </div>
+          <div class="ta-mini-box">
+            <span>Mèche haute</span>
+            <strong id="upperWickRatio">--</strong>
+          </div>
+          <div class="ta-mini-box">
+            <span>Mèche basse</span>
+            <strong id="lowerWickRatio">--</strong>
+          </div>
+          <div class="ta-mini-box">
+            <span>Accélération volume</span>
+            <strong id="volumeAcceleration">--</strong>
+          </div>
+          <div class="ta-mini-box">
+            <span>Épuisement</span>
+            <strong id="orderflowExhaustion">--</strong>
+          </div>
+        </div>
+
+        <div class="ta-orderflow-bars">
+          <div class="ta-flow-bar-wrap">
+            <span>Pression acheteuse</span>
+            <strong id="buyPressureValue">--</strong>
+          </div>
+          <div class="ta-flow-bar-wrap">
+            <span>Pression vendeuse</span>
+            <strong id="sellPressureValue">--</strong>
+          </div>
+        </div>
+
+        {% if not is_premium %}
+        <div class="ta-card-lock" data-lock="premium">
+          <div class="ta-card-lock-content">
+            <span class="ta-membership-badge ta-membership-badge-premium">PREMIUM</span>
+            <strong>Réservé Premium</strong>
+            <p>Débloque l'orderflow détaillé et la lecture avancée du flux.</p>
+          </div>
+        </div>
+        {% endif %}
+      </section>
+
+      <section class="ta-glass-card ta-gated-card" data-required-plan="premium">
+        <div class="ta-tv-card-head">
+          <div>
+            <h2>Replay</h2>
+            <p>Historique simulé des setups</p>
+          </div>
+          {% if not is_premium %}
+          <span class="ta-membership-badge ta-membership-badge-premium">PREMIUM</span>
+          {% endif %}
+        </div>
+
+        <div class="ta-replay-stats">
+          <div class="ta-mini-box">
+            <span>Setups</span>
+            <strong id="replayCount">--</strong>
+          </div>
+          <div class="ta-mini-box">
+            <span>Winrate</span>
+            <strong id="replayWinrate">--</strong>
+          </div>
+          <div class="ta-mini-box">
+            <span>Confiance moyenne</span>
+            <strong id="replayAvgConfidence">--</strong>
+          </div>
+          <div class="ta-mini-box">
+            <span>Meilleur biais</span>
+            <strong id="replayBestBias">--</strong>
+          </div>
+        </div>
+
+        <div id="replayHistory" class="ta-replay-history">
+          <p>Aucun replay chargé.</p>
+        </div>
+
+        {% if not is_premium %}
+        <div class="ta-card-lock" data-lock="premium">
+          <div class="ta-card-lock-content">
+            <span class="ta-membership-badge ta-membership-badge-premium">PREMIUM</span>
+            <strong>Réservé Premium</strong>
+            <p>Débloque le replay des setups et les métriques de validation.</p>
+          </div>
+        </div>
+        {% endif %}
+      </section>
+
+      <section class="ta-glass-card ta-gated-card" data-required-plan="premium">
+        <div class="ta-tv-card-head">
+          <div>
+            <h2>Automation</h2>
+            <p>État de l'alerte et de l'exécution</p>
+          </div>
+          {% if not is_premium %}
+          <span class="ta-membership-badge ta-membership-badge-premium">PREMIUM</span>
+          {% endif %}
+        </div>
+
+        <div class="ta-telegram-status">
+          <div class="ta-mini-box">
+            <span>Telegram lié</span>
+            <strong id="telegramLinked">--</strong>
+          </div>
+          <div class="ta-mini-box">
+            <span>Alerte prête</span>
+            <strong id="telegramReady">--</strong>
+          </div>
+          <div class="ta-mini-box">
+            <span>Exécution</span>
+            <strong id="telegramExecutionMode">--</strong>
+          </div>
+          <div class="ta-mini-box">
+            <span>Risque</span>
+            <strong id="telegramRiskProfile">--</strong>
+          </div>
+        </div>
+
+        <div class="ta-execution-box">
+          <p id="telegramNote">Aucun statut d'automation chargé.</p>
+        </div>
+
+        {% if not is_premium %}
+        <div class="ta-card-lock" data-lock="premium">
+          <div class="ta-card-lock-content">
+            <span class="ta-membership-badge ta-membership-badge-premium">PREMIUM</span>
+            <strong>Réservé Premium</strong>
+            <p>Débloque l'automation et la préparation des alertes avancées.</p>
+          </div>
+        </div>
+        {% endif %}
+      </section>
+    </aside>
+  </div>
+
+  <section
+    id="premiumDeskSection"
+    class="ta-glass-card ta-membership-card ta-tv-premium-desk ta-gated-card"
+    data-required-plan="premium"
+  >
+    <div class="ta-tv-premium-head">
+      <div>
+        <span class="ta-tv-premium-kicker">Modules Premium</span>
+        <h2>Premium Desk</h2>
+        <p>Contexte enrichi, breakdown indicateurs, scénarios du desk et notes d'exécution.</p>
+      </div>
+
+      {% if not is_premium %}
+      <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ta-btn ta-btn-primary">
+        Débloquer Premium
+      </a>
+      {% endif %}
+    </div>
+
+    <div class="ta-tv-premium-bias-grid">
+      <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" type="button">
+        <span>Biais 15M</span>
+        <strong id="premiumBias15m">--</strong>
+        <small>Structure rapide</small>
+      </button>
+
+      <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" type="button">
+        <span>Biais 1H</span>
+        <strong id="premiumBias1h">--</strong>
+        <small>Exécution principale</small>
+      </button>
+
+      <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" type="button">
+        <span>Biais 4H</span>
+        <strong id="premiumBias4h">--</strong>
+        <small>Contexte supérieur</small>
+      </button>
+
+      <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" type="button">
+        <span>Biais 1D</span>
+        <strong id="premiumBias1d">--</strong>
+        <small>Cadre macro</small>
+      </button>
+    </div>
+
+    <div class="ta-tv-premium-grid">
+      <button class="ta-premium-panel ta-interactive-card" data-insight="premium-breakdown" type="button">
+        <h3>Breakdown indicateurs</h3>
+        <ul class="ta-breakdown-list">
+          <li><span>État RSI</span><strong id="premiumRsiState">--</strong></li>
+          <li><span>État MFI</span><strong id="premiumMfiState">--</strong></li>
+          <li><span>Régime MACD</span><strong id="premiumMacdState">--</strong></li>
+          <li><span>Qualité volume</span><strong id="premiumVolumeState">--</strong></li>
+        </ul>
+      </button>
+
+      <button class="ta-premium-panel ta-interactive-card" data-insight="premium-ai" type="button">
+        <h3>Contexte IA premium</h3>
+        <p id="premiumAiSummary" class="ta-membership-text">Chargement du contexte premium...</p>
+      </button>
+    </div>
+
+    <div class="ta-tv-scenarios-grid">
+      <div class="ta-vip-panel">
+        <h3>Scénario haussier</h3>
+        <div class="ta-scenario-box">
+          <span>Continuation</span>
+          <p id="vipBullScenario">En attente du scénario haussier...</p>
+        </div>
+      </div>
+
+      <div class="ta-vip-panel">
+        <h3>Scénario baissier</h3>
+        <div class="ta-scenario-box">
+          <span>Pression vendeuse</span>
+          <p id="vipBearScenario">En attente du scénario baissier...</p>
+        </div>
+      </div>
+
+      <div class="ta-vip-panel">
+        <h3>Scénario neutre</h3>
+        <div class="ta-scenario-box">
+          <span>Range / attente</span>
+          <p id="vipNeutralScenario">En attente du scénario neutre...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ta-tv-desk-notes">
+      <div class="ta-vip-panel">
+        <h3>Notes du desk</h3>
+        <p id="vipDeskNotes" class="ta-membership-text">Chargement des notes du desk...</p>
+      </div>
+    </div>
+
+    {% if not is_premium %}
+    <div class="ta-card-lock" data-lock="premium">
+      <div class="ta-card-lock-content">
+        <span class="ta-membership-badge ta-membership-badge-premium">PREMIUM</span>
+        <strong>Débloquer Premium</strong>
+        <p>Accès au contexte enrichi, replay, modules avancés et automation.</p>
+        <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ta-btn ta-btn-primary ta-lock-cta">
+          Débloquer Premium
+        </a>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+
+  <section class="ta-market-footer">
+    <div class="ta-tv-card-head">
+      <div>
+        <h2>Tendance du marché</h2>
+        <p>Actifs suivis par momentum et capitalisation</p>
+      </div>
+    </div>
+
+    <div id="trendingContainer" class="ta-indicator-list ta-glass-card ta-footer-market-card"></div>
+  </section>
 </section>
 
 <div id="taInsightModal" class="ta-insight-modal" aria-hidden="true">
-    <div class="ta-insight-backdrop" data-close="true"></div>
+  <div class="ta-insight-backdrop" data-close="true"></div>
 
-    <div class="ta-insight-dialog">
-        <button id="taInsightClose" class="ta-insight-close" type="button" aria-label="Close">
-            ×
-        </button>
+  <div class="ta-insight-dialog">
+    <button id="taInsightClose" class="ta-insight-close" type="button" aria-label="Fermer">×</button>
 
-        <div class="ta-insight-head">
-            <span id="taInsightBadge" class="ta-insight-badge">PREMIUM</span>
-            <h3 id="taInsightTitle">Advanced Insight</h3>
-            <p id="taInsightSubtitle">Desk interpretation</p>
-        </div>
-
-        <div class="ta-insight-body">
-            <div id="taInsightContent" class="ta-insight-content">
-                Loading...
-            </div>
-        </div>
+    <div class="ta-insight-head">
+      <span id="taInsightBadge" class="ta-insight-badge ta-membership-badge-premium">PREMIUM</span>
+      <h3 id="taInsightTitle">Insight avancé</h3>
+      <p id="taInsightSubtitle">Lecture du desk</p>
     </div>
+
+    <div class="ta-insight-body">
+      <div id="taInsightContent" class="ta-insight-content">
+        Chargement...
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
 

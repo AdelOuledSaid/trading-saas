@@ -31,10 +31,10 @@ NEWS_LIMITS = {
 
 
 NEWS_TITLES = {
-    "public": "VelWolef Public Market News",
-    "basic": "VelWolef Basic Daily News",
-    "premium": "VelWolef Premium Market News",
-    "vip": "VelWolef VIP Market Intelligence",
+    "public": "Velwolf Public Market News",
+    "basic": "Velwolf Basic Daily News",
+    "premium": "Velwolf Premium Market News",
+    "vip": "Velwolf VIP Market Intelligence",
 }
 
 
@@ -123,6 +123,25 @@ def _send_news_message(
     return ok
 
 
+def _format_breaking_news_batch_message(articles: List[dict], tier: str) -> str:
+    title = {
+        "public": "🚨 <b>Public Breaking News</b>",
+        "basic": "🚨 <b>Basic Breaking News</b>",
+        "premium": "🚨 <b>Premium Breaking News</b>",
+        "vip": "🚨 <b>VIP Breaking News</b>",
+    }.get((tier or "").lower(), "🚨 <b>Breaking News</b>")
+
+    blocks = []
+    for index, article in enumerate(articles, start=1):
+        single_message = build_breaking_news_message(article).strip()
+        blocks.append(f"{index}.\n{single_message}")
+
+    message = f"{title}\n\n" + "\n\n━━━━━━━━━━━━━━━━━━\n\n".join(blocks)
+    if len(message) > 3900:
+        message = message[:3890].rstrip() + "..."
+    return message
+
+
 def get_today_news_stats() -> dict:
     return {
         "public": {
@@ -139,7 +158,7 @@ def get_today_news_stats() -> dict:
         },
         "vip": {
             "sent_today": count_sent_today("daily_news", "vip"),
-            "limit": "unlimited",
+            "limit": NEWS_LIMITS["vip"],
         },
     }
 
@@ -176,7 +195,7 @@ def send_daily_news(slot: str = "morning") -> dict:
             intro=NEWS_INTROS[tier],
         )
 
-        dedup_key = news_digest_key(tier, today_str, slot, version="v1")
+        dedup_key = news_digest_key(tier, today_str, slot, version="v2")
 
         results[tier] = _send_news_message(
             tier=tier,
@@ -191,11 +210,7 @@ def send_daily_news(slot: str = "morning") -> dict:
 
 def send_breaking_news(article: dict) -> dict:
     """
-    Breaking news :
-    - public : oui, mais une news très importante seulement si tu appelles cette fonction
-    - basic : oui
-    - premium : oui
-    - vip : oui
+    Breaking news unitaire.
     """
     if not article:
         _log_warning("[news_dispatcher] Breaking news vide.")
@@ -218,6 +233,39 @@ def send_breaking_news(article: dict) -> dict:
             content_ref=article_url or article_id,
             content_hash=article_hash,
             content_type="breaking_news",
+        )
+
+    return results
+
+
+def send_breaking_news_batch(articles: List[dict]) -> dict:
+    """
+    Regroupe plusieurs breaking news en un seul message par tier.
+    """
+    cleaned_articles = [article for article in (articles or []) if article]
+    if not cleaned_articles:
+        _log_warning("[news_dispatcher] Aucun article breaking news à envoyer en batch.")
+        return {}
+
+    results = {}
+    batch_ref = datetime.utcnow().strftime("%Y-%m-%d-%H")
+
+    for tier in ["public", "basic", "premium", "vip"]:
+        message = _format_breaking_news_batch_message(cleaned_articles, tier)
+        first_article = cleaned_articles[0]
+        first_article_id = str(first_article.get("id", "")).strip() or "batch"
+        dedup_key = breaking_news_key(
+            tier,
+            article_id=f"batch:{first_article_id}:{batch_ref}",
+            article_url=None,
+        )
+
+        results[tier] = _send_news_message(
+            tier=tier,
+            message=message,
+            dedup_key=dedup_key,
+            content_ref=f"breaking_batch:{batch_ref}",
+            content_type="breaking_news_batch",
         )
 
     return results

@@ -19,7 +19,44 @@ let lastFetchAt = 0;
 let currentTab = "price";
 let lastAnalysisData = null;
 
-const FETCH_COOLDOWN_MS = 4000;
+const FETCH_COOLDOWN_MS = 3000;
+
+const shellRoot = document.querySelector(".ta-shell");
+
+const accessState = {
+  plan: shellRoot?.dataset.userPlan || "free",
+  isPremium: shellRoot?.dataset.isPremium === "true",
+  isVip: shellRoot?.dataset.isVip === "true",
+  telegramLinked: shellRoot?.dataset.telegramLinked === "true",
+  upgradeUrl: shellRoot?.dataset.upgradeUrl || "#"
+};
+
+function ensureSectionLocked(section) {
+  if (!section) return;
+  if (accessState.isPremium || accessState.isVip) return;
+  if (section.querySelector(".ta-section-lock")) return;
+  if (section.querySelector(".ta-card-lock")) return;
+
+  const overlay = document.createElement("div");
+  overlay.className = "ta-section-lock";
+  overlay.innerHTML = `
+    <div class="ta-section-lock-inner">
+      <span class="ta-membership-badge ta-membership-badge-premium">PREMIUM</span>
+      <strong>Réservé Premium</strong>
+      <p>Débloque cette section pour accéder à la lecture avancée.</p>
+      <a href="${accessState.upgradeUrl}" class="ta-btn ta-btn-primary ta-lock-cta">Passer Premium</a>
+    </div>
+  `;
+
+  section.classList.add("ta-force-locked");
+  section.appendChild(overlay);
+}
+
+function applyMembershipLocks() {
+  document.querySelectorAll(".ta-gated-card, [data-required-plan='premium']").forEach((section) => {
+    ensureSectionLocked(section);
+  });
+}
 
 function formatMoney(value) {
   if (value === null || value === undefined || Number.isNaN(Number(value))) return "--";
@@ -56,6 +93,11 @@ function formatNumber(value, digits = 2) {
   return Number(value).toFixed(digits);
 }
 
+function formatRatio(value, digits = 2) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) return "--";
+  return Number(value).toFixed(digits);
+}
+
 function formatText(value, fallback = "--") {
   if (value === null || value === undefined || value === "") return fallback;
   return String(value);
@@ -70,6 +112,42 @@ function capitalize(value) {
     .filter(Boolean)
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+function prettifyMarketStructure(value) {
+  const map = {
+    bullish_trend_structure: "Structure haussière",
+    bearish_trend_structure: "Structure baissière",
+    neutral_range_structure: "Structure neutre",
+    bullish: "Haussier",
+    bearish: "Baissier",
+    mixed: "Mixte",
+    neutral: "Neutre",
+    inside_balance: "Équilibre interne",
+    seller_absorption: "Absorption vendeuse",
+    buyer_absorption: "Absorption acheteuse",
+    strong_bullish_momentum: "Momentum haussier fort",
+    strong_bearish_momentum: "Momentum baissier fort",
+    bullish_continuation: "Continuation haussière",
+    bearish_continuation: "Continuation baissière",
+    reversal_risk: "Risque de retournement",
+    supported: "Soutenu",
+    positive_cross: "Croisement positif",
+    negative_cross: "Croisement négatif",
+    normal: "Normal",
+    selective: "Sélectif",
+    balanced: "Équilibré",
+    aggressive: "Agressif",
+    defensive: "Défensif",
+    weak: "Faible",
+    medium: "Moyen",
+    strong: "Fort",
+    ranging: "En range",
+    trending: "Tendance en cours"
+  };
+
+  const key = String(value || "").toLowerCase().trim();
+  return map[key] || capitalize(value);
 }
 
 function showToast(message, success = true) {
@@ -94,7 +172,7 @@ function showToast(message, success = true) {
   });
 
   document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
+  setTimeout(() => toast.remove(), 2800);
 }
 
 function setText(id, value, fallback = "--") {
@@ -103,37 +181,127 @@ function setText(id, value, fallback = "--") {
   el.textContent = value ?? fallback;
 }
 
+function setHTML(id, value, fallback = "") {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = value ?? fallback;
+}
+
 function setSignalPill(el, signal) {
   if (!el) return;
 
   const map = {
-    buy: ["Bullish", "ta-signal-buy"],
-    sell: ["Bearish", "ta-signal-sell"],
-    neutral: ["Neutral", "ta-signal-neutral"],
+    buy: ["Achat", "ta-signal-pill ta-signal-buy"],
+    sell: ["Vente", "ta-signal-pill ta-signal-sell"],
+    neutral: ["Neutre", "ta-signal-pill ta-signal-neutral"]
   };
 
   const key = String(signal || "").toLowerCase();
   const [label, cls] = map[key] || map.neutral;
 
   el.textContent = label;
-  el.className = `ta-signal-pill ${cls}`;
+  el.className = cls;
 }
 
 function setBiasBadge(el, bias) {
   if (!el) return;
 
   const map = {
-    bullish: ["Bullish Bias", "ta-bias-bullish"],
-    bearish: ["Bearish Bias", "ta-bias-bearish"],
-    mixed: ["Mixed Bias", "ta-bias-neutral"],
-    neutral: ["Neutral Bias", "ta-bias-neutral"],
+    bullish: ["Biais haussier", "ta-bias-pill ta-bias-bullish"],
+    bearish: ["Biais baissier", "ta-bias-pill ta-bias-bearish"],
+    mixed: ["Biais mixte", "ta-bias-pill ta-bias-neutral"],
+    neutral: ["Biais neutre", "ta-bias-pill ta-bias-neutral"]
   };
 
   const key = String(bias || "").toLowerCase();
   const [label, cls] = map[key] || map.mixed;
 
   el.textContent = label;
-  el.className = `ta-bias-pill ${cls}`;
+  el.className = cls;
+}
+
+function getScoreTone(score) {
+  const num = Number(score);
+
+  if (Number.isNaN(num)) {
+    return {
+      label: "Neutre",
+      color: "var(--ta-gold)",
+      className: "ta-neutral-text"
+    };
+  }
+
+  if (num >= 70) {
+    return {
+      label: "Haussier",
+      color: "var(--ta-green)",
+      className: "ta-bullish-text"
+    };
+  }
+
+  if (num <= 40) {
+    return {
+      label: "Baissier",
+      color: "var(--ta-red)",
+      className: "ta-bearish-text"
+    };
+  }
+
+  return {
+    label: "Neutre",
+    color: "var(--ta-gold)",
+    className: "ta-neutral-text"
+  };
+}
+
+function updateScoreGauge(score) {
+  const gauge = document.getElementById("scoreGauge");
+  const progress = document.getElementById("scoreGaugeProgress");
+  const valueEl = document.getElementById("heroConfidence");
+  const labelEl = document.getElementById("heroConfidenceLabel");
+
+  if (!gauge || !progress || !valueEl || !labelEl) return;
+
+  const num = Number(score);
+  const safeScore = Number.isNaN(num) ? 0 : Math.max(0, Math.min(100, num));
+  const tone = getScoreTone(safeScore);
+
+  gauge.dataset.score = safeScore;
+  valueEl.textContent = `${safeScore}`;
+  labelEl.textContent = tone.label;
+
+  progress.style.stroke = tone.color;
+  progress.style.strokeDashoffset = `${100 - safeScore}`;
+
+  valueEl.classList.remove("ta-bullish-text", "ta-bearish-text", "ta-neutral-text");
+  labelEl.classList.remove("ta-bullish-text", "ta-bearish-text", "ta-neutral-text");
+
+  valueEl.classList.add(tone.className);
+  labelEl.classList.add(tone.className);
+}
+
+function applyDirectionalCardState(elementId, value) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+
+  const text = String(value || "").toLowerCase();
+  const card = el.closest(".ta-tv-mini-stat, .ta-tv-confluence-box, .ta-mtf-card, .ta-orderflow-box, .ta-mini-box, .ta-level-box");
+
+  el.classList.remove("ta-bullish-text", "ta-bearish-text", "ta-neutral-text");
+  if (card) {
+    card.classList.remove("ta-bullish-card", "ta-bearish-card", "ta-neutral-card");
+  }
+
+  if (text.includes("bull") || text.includes("hauss")) {
+    el.classList.add("ta-bullish-text");
+    if (card) card.classList.add("ta-bullish-card");
+  } else if (text.includes("bear") || text.includes("baiss")) {
+    el.classList.add("ta-bearish-text");
+    if (card) card.classList.add("ta-bearish-card");
+  } else {
+    el.classList.add("ta-neutral-text");
+    if (card) card.classList.add("ta-neutral-card");
+  }
 }
 
 function buildSummaryTags(data) {
@@ -144,10 +312,10 @@ function buildSummaryTags(data) {
 
   if (data.signal) tags.push(String(data.signal).toUpperCase());
   if (data.indicator) tags.push(String(data.indicator).toUpperCase());
-  if (data.summary_context?.trend) tags.push(String(data.summary_context.trend).toUpperCase());
-  if (data.summary_context?.volume_trend) tags.push(`VOL ${String(data.summary_context.volume_trend).toUpperCase()}`);
-  if (confluenceScore !== undefined) tags.push(`CONF ${confluenceScore}`);
-  if (orderflowState) tags.push(capitalize(orderflowState));
+  if (data.summary_context?.trend) tags.push(prettifyMarketStructure(data.summary_context.trend));
+  if (data.summary_context?.volume_trend) tags.push(`VOL ${capitalize(data.summary_context.volume_trend)}`);
+  if (confluenceScore !== undefined && confluenceScore !== null) tags.push(`CONF ${confluenceScore}`);
+  if (orderflowState) tags.push(prettifyMarketStructure(orderflowState));
   if (replayCount !== undefined && replayCount !== null) tags.push(`REPLAY ${replayCount}`);
 
   return tags.slice(0, 6);
@@ -159,7 +327,7 @@ function renderWatchlist(items) {
 
   container.innerHTML = "";
 
-  (items || []).forEach((item) => {
+  (items || []).slice(0, 8).forEach((item) => {
     const row = document.createElement("div");
     row.className = "ta-watch-item";
     row.innerHTML = `
@@ -179,8 +347,8 @@ function renderWatchlist(items) {
     container.innerHTML = `
       <div class="ta-watch-item">
         <div>
-          <strong>Data limited</strong>
-          <small>Watchlist temporarily unavailable</small>
+          <strong>Données limitées</strong>
+          <small>Watchlist temporairement indisponible</small>
         </div>
       </div>
     `;
@@ -202,7 +370,7 @@ function renderTrending(items) {
         <p>Prix: ${formatPrice(item.price)} · 24H: ${formatPct(item.change_24h)} · Rank: ${item.market_cap_rank ?? "--"}</p>
       </div>
       <span class="ta-status-chip ${Number(item.change_24h) >= 0 ? "green" : "gold"}">
-        ${Number(item.change_24h) >= 0 ? "Positive" : "Watch"}
+        ${Number(item.change_24h) >= 0 ? "Positive" : "Surveille"}
       </span>
     `;
     container.appendChild(row);
@@ -212,10 +380,10 @@ function renderTrending(items) {
     container.innerHTML = `
       <div class="ta-indicator-row">
         <div>
-          <strong>Trending unavailable</strong>
-          <p>Market list temporarily limited by provider rate limits.</p>
+          <strong>Tendance marché indisponible</strong>
+          <p>Liste temporairement limitée.</p>
         </div>
-        <span class="ta-status-chip gold">Limited</span>
+        <span class="ta-status-chip gold">Limité</span>
       </div>
     `;
   }
@@ -239,10 +407,10 @@ function normalizeSeries(series, minTarget = 90, maxTarget = 300) {
   });
 }
 
-function buildSvgPathFromSeries(series, width = 900) {
+function buildSvgPathFromSeries(series, width = 900, minY = 90, maxY = 300) {
   if (!series || series.length < 2) return "";
 
-  const normalized = normalizeSeries(series);
+  const normalized = normalizeSeries(series, minY, maxY);
   if (normalized.length < 2) return "";
 
   const stepX = width / (normalized.length - 1);
@@ -267,7 +435,7 @@ function renderBigChartByTab(data, tabName) {
   const bigFillPath = document.getElementById("bigFillPath");
   if (!bigMainPath || !bigFillPath) return;
 
-  const series = data.chart_series || {};
+  const series = data?.chart_series || {};
   let selectedSeries = [];
 
   if (tabName === "rsi") {
@@ -278,7 +446,7 @@ function renderBigChartByTab(data, tabName) {
     selectedSeries = series.price || [];
   }
 
-  const path = buildSvgPathFromSeries(selectedSeries, 900);
+  const path = buildSvgPathFromSeries(selectedSeries, 900, 90, 300);
   if (!path) return;
 
   bigMainPath.setAttribute("d", path);
@@ -297,10 +465,10 @@ function setActiveTab(tabName) {
 }
 
 function openInsightModal({ tier, title, subtitle, html }) {
-  if (!insightModal || !insightContent) return;
+  if (!insightModal || !insightContent || !insightBadge || !insightTitle || !insightSubtitle) return;
 
   insightBadge.textContent = tier.toUpperCase();
-  insightBadge.className = `ta-insight-badge ${tier === "vip" ? "ta-membership-badge-vip" : "ta-membership-badge-premium"}`;
+  insightBadge.className = "ta-insight-badge ta-membership-badge-premium";
   insightTitle.textContent = title;
   insightSubtitle.textContent = subtitle;
   insightContent.innerHTML = html;
@@ -325,7 +493,7 @@ function buildTfBox(label, tfData) {
   return `
     <div class="ta-insight-box">
       <span>${label}</span>
-      <strong>${capitalize(tfData.bias || tfData.trend || "unknown")}</strong>
+      <strong>${prettifyMarketStructure(tfData.bias || tfData.trend || "unknown")}</strong>
       <small>RSI ${tfData.rsi ?? "--"} · Conf ${tfData.confidence ?? "--"}</small>
     </div>
   `;
@@ -334,7 +502,7 @@ function buildTfBox(label, tfData) {
 function buildReplayRows(replay) {
   const rows = replay?.last_setups || [];
   if (!rows.length) {
-    return "<p>No replay history available yet.</p>";
+    return "<p>Aucun replay disponible pour le moment.</p>";
   }
 
   return `
@@ -342,7 +510,7 @@ function buildReplayRows(replay) {
       ${rows.map((row) => `
         <div class="ta-insight-box">
           <span>${formatText(row.interval).toUpperCase()} • ${formatText(row.signal).toUpperCase()}</span>
-          <strong>${capitalize(row.bias)}</strong>
+          <strong>${prettifyMarketStructure(row.bias)}</strong>
           <small>Conf ${row.confidence ?? "--"} · Outcome ${row.simulated_outcome_pct ?? "--"}%</small>
         </div>
       `).join("")}
@@ -356,14 +524,9 @@ function buildInsightContent(type, data) {
   const macd = data?.indicators?.macd ?? "--";
   const confidence = data?.confidence ?? "--";
   const trend = data?.summary_context?.trend ?? "--";
-  const volumeTrend = data?.summary_context?.volume_trend ?? "--";
-  const pivot = data?.levels?.pivot ?? "--";
-  const r1 = data?.levels?.resistance_1 ?? "--";
-  const s1 = data?.levels?.support_1 ?? "--";
   const orderflow = data?.orderflow || {};
   const confluence = data?.multi_timeframe?.confluence || {};
   const premium = data?.premium || {};
-  const vip = data?.vip || {};
   const replay = data?.setup_replay || {};
 
   const tf15m = getTf(data, "15m");
@@ -374,10 +537,10 @@ function buildInsightContent(type, data) {
   const map = {
     "premium-alignment": {
       tier: "premium",
-      title: "Multi-Timeframe Alignment",
-      subtitle: "Premium directional framework",
+      title: "Confluence multi-timeframe",
+      subtitle: "Lecture alignée des horizons de temps",
       html: `
-        <p>Confluence score: <strong>${confluence.score ?? "--"}</strong> · Dominant bias: <strong>${capitalize(confluence.dominant_bias)}</strong></p>
+        <p>Score de confluence: <strong>${confluence.score ?? "--"}</strong> · Biais dominant: <strong>${prettifyMarketStructure(confluence.dominant_bias)}</strong></p>
         <div class="ta-insight-grid">
           ${buildTfBox("15M", tf15m)}
           ${buildTfBox("1H", tf1h)}
@@ -385,125 +548,51 @@ function buildInsightContent(type, data) {
           ${buildTfBox("1D", tf1d)}
         </div>
         <ul class="ta-insight-list">
-          <li>Alignment: ${capitalize(confluence.alignment)}</li>
-          <li>Entry quality: ${capitalize(confluence.entry_quality)}</li>
-          <li>Orderflow: ${capitalize(orderflow.state)}</li>
+          <li>Alignement: ${prettifyMarketStructure(confluence.alignment)}</li>
+          <li>Qualité d'entrée: ${prettifyMarketStructure(confluence.entry_quality)}</li>
+          <li>Orderflow: ${prettifyMarketStructure(orderflow.state)}</li>
         </ul>
       `
     },
     "premium-breakdown": {
       tier: "premium",
-      title: "Indicator Breakdown",
-      subtitle: "Momentum and structure detail",
+      title: "Breakdown indicateurs",
+      subtitle: "Lecture détaillée du momentum et des signaux",
       html: `
         <div class="ta-insight-grid">
           <div class="ta-insight-box"><span>RSI</span><strong>${rsi}</strong></div>
           <div class="ta-insight-box"><span>MFI</span><strong>${mfi}</strong></div>
           <div class="ta-insight-box"><span>MACD</span><strong>${macd}</strong></div>
-          <div class="ta-insight-box"><span>Confidence</span><strong>${confidence}%</strong></div>
-          <div class="ta-insight-box"><span>RSI State</span><strong>${capitalize(premium?.indicator_breakdown?.rsi_state)}</strong></div>
-          <div class="ta-insight-box"><span>MFI State</span><strong>${capitalize(premium?.indicator_breakdown?.mfi_state)}</strong></div>
-          <div class="ta-insight-box"><span>MACD Regime</span><strong>${capitalize(premium?.indicator_breakdown?.macd_regime)}</strong></div>
-          <div class="ta-insight-box"><span>Volume Quality</span><strong>${capitalize(premium?.indicator_breakdown?.volume_quality)}</strong></div>
+          <div class="ta-insight-box"><span>Confiance</span><strong>${confidence}%</strong></div>
+          <div class="ta-insight-box"><span>État RSI</span><strong>${prettifyMarketStructure(premium?.indicator_breakdown?.rsi_state)}</strong></div>
+          <div class="ta-insight-box"><span>État MFI</span><strong>${prettifyMarketStructure(premium?.indicator_breakdown?.mfi_state)}</strong></div>
+          <div class="ta-insight-box"><span>Régime MACD</span><strong>${prettifyMarketStructure(premium?.indicator_breakdown?.macd_regime)}</strong></div>
+          <div class="ta-insight-box"><span>Qualité volume</span><strong>${prettifyMarketStructure(premium?.indicator_breakdown?.volume_quality)}</strong></div>
         </div>
       `
     },
     "premium-ai": {
       tier: "premium",
-      title: "Premium AI Context",
-      subtitle: "Extended AI interpretation",
+      title: "Contexte IA premium",
+      subtitle: "Lecture enrichie du desk",
       html: `
-        <p>${data?.ai_summary || "No AI context available."}</p>
-        <p><strong>Premium Context:</strong> ${premium?.premium_ai_context || "No premium context available."}</p>
+        <p>${premium?.premium_ai_context || data?.ai_summary || "Aucun contexte IA disponible."}</p>
         <ul class="ta-insight-list">
-          <li>Trend regime: ${capitalize(trend)}</li>
-          <li>Bias: ${capitalize(data?.bias)}</li>
-          <li>Execution confidence: ${confidence}%</li>
-          <li>Orderflow strength: ${orderflow?.strength ?? "--"}</li>
+          <li>Régime de tendance: ${prettifyMarketStructure(trend)}</li>
+          <li>Biais: ${prettifyMarketStructure(data?.bias)}</li>
+          <li>Confiance exécution: ${confidence}%</li>
+          <li>Force orderflow: ${orderflow?.strength ?? "--"}</li>
         </ul>
-      `
-    },
-    "premium-read": {
-      tier: "premium",
-      title: "Advanced Market Read",
-      subtitle: "Contextual market interpretation",
-      html: `
-        <p>The market remains <strong>${capitalize(data?.bias)}</strong> with a <strong>${capitalize(trend)}</strong> structure and <strong>${capitalize(volumeTrend)}</strong> participation.</p>
-        <div class="ta-insight-grid">
-          <div class="ta-insight-box"><span>Pivot</span><strong>${pivot}</strong></div>
-          <div class="ta-insight-box"><span>R1</span><strong>${r1}</strong></div>
-          <div class="ta-insight-box"><span>S1</span><strong>${s1}</strong></div>
-          <div class="ta-insight-box"><span>Orderflow</span><strong>${capitalize(orderflow.state)}</strong></div>
-          <div class="ta-insight-box"><span>Absorption</span><strong>${capitalize(orderflow.absorption)}</strong></div>
-          <div class="ta-insight-box"><span>Confluence</span><strong>${confluence.score ?? "--"}</strong></div>
-        </div>
-        <h4>Replay</h4>
         ${buildReplayRows(replay)}
-      `
-    },
-    "vip-score": {
-      tier: "vip",
-      title: "VIP Confluence Score",
-      subtitle: "Institutional quality filter",
-      html: `
-        <div class="ta-insight-grid">
-          <div class="ta-insight-box"><span>VIP Score</span><strong>${vip?.score ?? "--"} / 100</strong></div>
-          <div class="ta-insight-box"><span>Trend</span><strong>${capitalize(trend)}</strong></div>
-          <div class="ta-insight-box"><span>Momentum</span><strong>${Number(rsi) >= 50 ? "Supportive" : "Weak"}</strong></div>
-          <div class="ta-insight-box"><span>Flow</span><strong>${capitalize(orderflow.imbalance)}</strong></div>
-          <div class="ta-insight-box"><span>Execution</span><strong>${capitalize(vip?.execution_mode)}</strong></div>
-          <div class="ta-insight-box"><span>Risk</span><strong>${capitalize(vip?.risk_profile)}</strong></div>
-        </div>
-      `
-    },
-    "vip-scenarios": {
-      tier: "vip",
-      title: "VIP Scenarios",
-      subtitle: "Bull / Bear / Neutral framework",
-      html: `
-        <ul class="ta-insight-list">
-          <li><strong>Bullish:</strong> ${vip?.bullish_scenario || "No bullish scenario available."}</li>
-          <li><strong>Bearish:</strong> ${vip?.bearish_scenario || "No bearish scenario available."}</li>
-          <li><strong>Neutral:</strong> ${vip?.neutral_scenario || "No neutral scenario available."}</li>
-        </ul>
-      `
-    },
-    "vip-notes": {
-      tier: "vip",
-      title: "VIP Desk Notes",
-      subtitle: "Institutional interpretation",
-      html: `
-        <p>${vip?.desk_notes || "No desk notes available."}</p>
-        <ul class="ta-insight-list">
-          <li>Telegram candidate: ${vip?.telegram_alert_candidate ? "YES" : "NO"}</li>
-          <li>Confluence score: ${confluence?.score ?? "--"}</li>
-          <li>Orderflow strength: ${orderflow?.strength ?? "--"}</li>
-          <li>Replay winrate: ${replay?.winrate ?? "--"}%</li>
-        </ul>
-      `
-    },
-    "vip-execution": {
-      tier: "vip",
-      title: "Institutional Execution Layer",
-      subtitle: "Scenario-based tactical framework",
-      html: `
-        <div class="ta-insight-grid">
-          <div class="ta-insight-box"><span>Pivot</span><strong>${pivot}</strong></div>
-          <div class="ta-insight-box"><span>Resistance</span><strong>${r1}</strong></div>
-          <div class="ta-insight-box"><span>Support</span><strong>${s1}</strong></div>
-          <div class="ta-insight-box"><span>Mode</span><strong>${capitalize(vip?.execution_mode)}</strong></div>
-          <div class="ta-insight-box"><span>Alert Ready</span><strong>${vip?.telegram_alert_candidate ? "YES" : "NO"}</strong></div>
-          <div class="ta-insight-box"><span>Flow</span><strong>${capitalize(orderflow.state)}</strong></div>
-        </div>
       `
     }
   };
 
   return map[type] || {
     tier: "premium",
-    title: "Advanced Insight",
-    subtitle: "Desk interpretation",
-    html: "<p>No insight available.</p>"
+    title: "Insight avancé",
+    subtitle: "Lecture du desk",
+    html: "<p>Aucun insight disponible.</p>"
   };
 }
 
@@ -511,17 +600,17 @@ function renderConfluencePanel(data) {
   const confluence = data?.multi_timeframe?.confluence || {};
 
   setText("confluenceScore", confluence.score ?? "--");
-  setText("confluenceBias", capitalize(confluence.dominant_bias));
-  setText("confluenceAlignment", capitalize(confluence.alignment));
-  setText("confluenceEntryQuality", capitalize(confluence.entry_quality));
+  setText("confluenceBias", prettifyMarketStructure(confluence.dominant_bias));
+  setText("confluenceAlignment", prettifyMarketStructure(confluence.alignment));
+  setText("confluenceEntryQuality", prettifyMarketStructure(confluence.entry_quality));
 
   setText("sideConfluenceScore", confluence.score ?? "--");
-  setText("sideConfluenceLabel", capitalize(confluence.entry_quality || "No data"));
+  setText("sideConfluenceLabel", prettifyMarketStructure(confluence.entry_quality || "Pas de donnée"));
 }
 
 function renderTimeframeCard(tfName, biasId, metaId, data) {
   const tf = getTf(data, tfName);
-  setText(biasId, capitalize(tf.bias || tf.trend || "unknown"));
+  setText(biasId, prettifyMarketStructure(tf.bias || tf.trend || "unknown"));
   setText(metaId, `RSI ${tf.rsi ?? "--"} · Conf ${tf.confidence ?? "--"}`);
 }
 
@@ -536,24 +625,33 @@ function renderMultiTimeframeSummary(data) {
   const tf4h = getTf(data, "4h");
   const tf1d = getTf(data, "1d");
 
-  setText("premiumBias15m", capitalize(tf15m.bias || tf15m.trend || "unknown"));
-  setText("premiumBias1h", capitalize(tf1h.bias || tf1h.trend || "unknown"));
-  setText("premiumBias4h", capitalize(tf4h.bias || tf4h.trend || "unknown"));
-  setText("premiumBias1d", capitalize(tf1d.bias || tf1d.trend || "unknown"));
+  setText("premiumBias15m", prettifyMarketStructure(tf15m.bias || tf15m.trend || "unknown"));
+  setText("premiumBias1h", prettifyMarketStructure(tf1h.bias || tf1h.trend || "unknown"));
+  setText("premiumBias4h", prettifyMarketStructure(tf4h.bias || tf4h.trend || "unknown"));
+  setText("premiumBias1d", prettifyMarketStructure(tf1d.bias || tf1d.trend || "unknown"));
 }
 
 function renderOrderflowPanel(data) {
   const orderflow = data?.orderflow || {};
 
-  setText("orderflowState", capitalize(orderflow.state));
+  setText("orderflowState", prettifyMarketStructure(orderflow.state));
   setText("orderflowStrength", orderflow.strength ?? "--");
-  setText("orderflowImbalance", capitalize(orderflow.imbalance));
-  setText("orderflowAbsorption", capitalize(orderflow.absorption));
+  setText("orderflowImbalance", prettifyMarketStructure(orderflow.imbalance));
+  setText("orderflowAbsorption", prettifyMarketStructure(orderflow.absorption));
   setText("buyPressureValue", formatNumber(orderflow.buy_pressure, 2));
   setText("sellPressureValue", formatNumber(orderflow.sell_pressure, 2));
 
-  setText("sideOrderflowState", capitalize(orderflow.state));
-  setText("sideOrderflowStrength", `Strength ${orderflow.strength ?? "--"}`);
+  setText("buyerAggression", `${formatNumber(orderflow.buyer_aggression, 2)} / 100`);
+  setText("sellerAggression", `${formatNumber(orderflow.seller_aggression, 2)} / 100`);
+  setText("bodyRatio", formatRatio(orderflow.body_ratio, 3));
+  setText("closePosition", formatRatio(orderflow.close_position, 3));
+  setText("upperWickRatio", formatRatio(orderflow.upper_wick_ratio, 3));
+  setText("lowerWickRatio", formatRatio(orderflow.lower_wick_ratio, 3));
+  setText("volumeAcceleration", `${formatRatio(orderflow.volume_acceleration, 2)}x`);
+  setText("orderflowExhaustion", orderflow.exhaustion ? "Oui" : "Non");
+
+  setText("sideOrderflowState", prettifyMarketStructure(orderflow.state));
+  setText("sideOrderflowStrength", `Force ${orderflow.strength ?? "--"}`);
 }
 
 function renderReplayPanel(data) {
@@ -563,16 +661,16 @@ function renderReplayPanel(data) {
   setText("replayCount", replay.count ?? "--");
   setText("replayWinrate", replay.winrate !== null && replay.winrate !== undefined ? `${replay.winrate}%` : "--");
   setText("replayAvgConfidence", replay.avg_confidence !== null && replay.avg_confidence !== undefined ? `${replay.avg_confidence}%` : "--");
-  setText("replayBestBias", capitalize(replay.best_bias));
+  setText("replayBestBias", prettifyMarketStructure(replay.best_bias));
 
   setText("sideReplayWinrate", replay.winrate !== null && replay.winrate !== undefined ? `${replay.winrate}%` : "--");
-  setText("sideReplayCount", `${replay.count ?? 0} setups`);
+  setText("sideReplayCount", `${replay.count ?? 0} setup${Number(replay.count) > 1 ? "s" : ""}`);
 
   if (!historyEl) return;
 
   const rows = replay?.last_setups || [];
   if (!rows.length) {
-    historyEl.innerHTML = "<p>No replay history loaded.</p>";
+    historyEl.innerHTML = "<p>Aucun replay chargé.</p>";
     return;
   }
 
@@ -580,53 +678,117 @@ function renderReplayPanel(data) {
     <div class="ta-indicator-row">
       <div>
         <strong>${formatText(row.signal).toUpperCase()} • ${formatText(row.interval).toUpperCase()}</strong>
-        <p>Bias: ${capitalize(row.bias)} · Conf: ${row.confidence ?? "--"} · Outcome: ${row.simulated_outcome_pct ?? "--"}%</p>
+        <p>Biais: ${prettifyMarketStructure(row.bias)} · Conf: ${row.confidence ?? "--"} · Outcome: ${row.simulated_outcome_pct ?? "--"}%</p>
       </div>
       <span class="ta-status-chip ${Number(row.simulated_outcome_pct) >= 0 ? "green" : "gold"}">
-        ${Number(row.simulated_outcome_pct) >= 0 ? "Positive" : "Watch"}
+        ${Number(row.simulated_outcome_pct) >= 0 ? "Positif" : "Surveille"}
       </span>
     </div>
   `).join("");
 }
 
 function renderTelegramPanel(data) {
-  const vip = data?.vip || {};
+  const premium = data?.premium || {};
 
-  setText("telegramReady", vip.telegram_alert_candidate ? "YES" : "NO");
-  setText("telegramExecutionMode", capitalize(vip.execution_mode));
-  setText("telegramRiskProfile", capitalize(vip.risk_profile));
+  setText("telegramLinked", accessState.telegramLinked ? "Oui" : "Non");
+  setText("telegramReady", premium.telegram_alert_candidate ? "Oui" : "Non");
+  setText("telegramExecutionMode", prettifyMarketStructure(premium.execution_mode || "selective"));
+  setText("telegramRiskProfile", prettifyMarketStructure(premium.risk_profile || "balanced"));
   setText(
     "telegramNote",
-    vip.telegram_alert_candidate
-      ? "VIP alert conditions are met. Setup is eligible for Telegram automation."
-      : "VIP alert conditions are not fully aligned yet."
+    premium.telegram_alert_candidate
+      ? "Les conditions d’alerte premium sont alignées. Le setup est prêt pour l’automation."
+      : "Les conditions de l’alerte premium ne sont pas encore totalement alignées."
   );
 }
 
-function renderPremiumVipBlocks(data) {
+function renderPremiumBlocks(data) {
   const premium = data?.premium || {};
-  const vip = data?.vip || {};
   const replay = data?.setup_replay || {};
   const orderflow = data?.orderflow || {};
   const confluence = data?.multi_timeframe?.confluence || {};
 
-  setText("premiumRsiState", capitalize(premium?.indicator_breakdown?.rsi_state || "unknown"));
-  setText("premiumMfiState", capitalize(premium?.indicator_breakdown?.mfi_state || "unknown"));
-  setText("premiumMacdState", capitalize(premium?.indicator_breakdown?.macd_regime || "unknown"));
-  setText("premiumVolumeState", capitalize(premium?.indicator_breakdown?.volume_quality || data?.summary_context?.volume_trend || "unknown"));
-  setText("premiumAiSummary", premium?.premium_ai_context || data?.ai_summary || "No premium context available.");
+  setText("premiumRsiState", prettifyMarketStructure(premium?.indicator_breakdown?.rsi_state || "unknown"));
+  setText("premiumMfiState", prettifyMarketStructure(premium?.indicator_breakdown?.mfi_state || "unknown"));
+  setText("premiumMacdState", prettifyMarketStructure(premium?.indicator_breakdown?.macd_regime || "unknown"));
+  setText(
+    "premiumVolumeState",
+    prettifyMarketStructure(premium?.indicator_breakdown?.volume_quality || data?.summary_context?.volume_trend || "unknown")
+  );
+  setText("premiumAiSummary", premium?.premium_ai_context || data?.ai_summary || "Aucun contexte premium disponible.");
 
-  setText("vipConfluenceScore", `${vip?.score ?? confluence?.score ?? "--"} / 100`);
-  setText("vipExecutionMode", capitalize(vip?.execution_mode || "selective"));
-  setText("vipRiskProfile", capitalize(vip?.risk_profile || "balanced"));
-  setText("vipBullScenario", vip?.bullish_scenario || `Bullish continuation above pivot ${data?.levels?.pivot ?? "--"} with improving orderflow.`);
-  setText("vipBearScenario", vip?.bearish_scenario || `Bearish pressure remains valid below ${data?.levels?.resistance_1 ?? "--"} if support weakens.`);
-  setText("vipNeutralScenario", vip?.neutral_scenario || "Neutral regime remains active while confluence stays mixed.");
+  setText("vipConfluenceScore", `${confluence?.score ?? "--"} / 100`);
+  setText("vipExecutionMode", prettifyMarketStructure(premium?.execution_mode || "selective"));
+  setText("vipRiskProfile", prettifyMarketStructure(premium?.risk_profile || "balanced"));
+  setText(
+    "vipBullScenario",
+    premium?.bullish_scenario || `Continuation haussière au-dessus du pivot ${data?.levels?.pivot ?? "--"} avec amélioration du flux.`
+  );
+  setText(
+    "vipBearScenario",
+    premium?.bearish_scenario || `Pression vendeuse valide sous ${data?.levels?.resistance_1 ?? "--"} si le support cède.`
+  );
+  setText(
+    "vipNeutralScenario",
+    premium?.neutral_scenario || "Régime neutre tant que la confluence reste mixte et que le marché manque d’impulsion."
+  );
   setText(
     "vipDeskNotes",
-    vip?.desk_notes ||
-      `Institutional note: bias ${data?.bias || "mixed"}, confluence ${confluence?.score ?? "--"}, replay winrate ${replay?.winrate ?? "--"}%, flow ${capitalize(orderflow.state)}.`
+    premium?.desk_notes ||
+      `Lecture desk : biais ${prettifyMarketStructure(data?.bias || "mixed")}, confluence ${confluence?.score ?? "--"}, replay ${replay?.winrate ?? "--"}%, flux ${prettifyMarketStructure(orderflow.state)}.`
   );
+}
+
+function renderAdvancedAI(data) {
+  const adv = data?.ai_advanced_analysis || {};
+  const simulated = adv?.simulated_orderflow || {};
+  const tradePlan = adv?.trade_plan || {};
+  const advancedAiBias = document.getElementById("advancedAiBias");
+
+  setBiasBadge(advancedAiBias, tradePlan.bias || data?.bias || "mixed");
+
+  const structure = adv.market_structure || data?.summary_context?.market_structure || data?.summary_context?.trend || "unknown";
+  const momentum = adv.momentum || data?.summary_context?.momentum_regime || "neutral";
+  const location = adv.location_score ?? adv.location ?? null;
+  const score = adv.score ?? null;
+  const momentumScore = adv.momentum_score ?? score ?? null;
+
+  setHTML(
+    "aiMarketStructure",
+    `
+      <span class="ta-adv-main">${prettifyMarketStructure(structure)}</span>
+      ${location !== null ? `<span class="ta-adv-meta">Location: ${Number(location).toFixed(3)}</span>` : ""}
+      ${score !== null ? `<span class="ta-adv-score ${score >= 70 ? "good" : score >= 50 ? "mid" : "bad"}">Score ${score}</span>` : ""}
+    `
+  );
+
+  setHTML(
+    "aiMomentum",
+    `
+      <span class="ta-adv-main">${prettifyMarketStructure(momentum)}</span>
+      ${momentumScore !== null ? `<span class="ta-adv-score ${momentumScore >= 70 ? "good" : momentumScore >= 50 ? "mid" : "bad"}">Momentum ${momentumScore}</span>` : ""}
+    `
+  );
+
+  setHTML(
+    "aiDeltaPressure",
+    `<span class="ta-adv-main">${prettifyMarketStructure(simulated.delta_pressure || data?.orderflow?.delta_pressure || "balanced_pressure")}</span>`
+  );
+
+  setHTML(
+    "aiImbalanceZone",
+    `<span class="ta-adv-main">${prettifyMarketStructure(simulated.imbalance_zone || data?.orderflow?.imbalance_zone || "inside_balance")}</span>`
+  );
+
+  setText(
+    "aiExecutionNote",
+    adv.execution_note ||
+      data?.premium?.premium_ai_context ||
+      data?.ai_summary ||
+      "Aucune note d’exécution avancée chargée."
+  );
+
+  setText("aiInvalidation", adv.invalidation || "Aucune invalidation chargée.");
 }
 
 function renderExecutionPlan(data) {
@@ -636,20 +798,23 @@ function renderExecutionPlan(data) {
   const confluence = data?.multi_timeframe?.confluence || {};
   const orderflow = data?.orderflow || {};
   const replay = data?.setup_replay || {};
-  const vip = data?.vip || {};
+  const premium = data?.premium || {};
+  const adv = data?.ai_advanced_analysis || {};
+  const tradePlan = adv?.trade_plan || {};
 
   executionPlan.innerHTML = `
-    <p><strong>Asset:</strong> ${data.token || "--"}</p>
-    <p><strong>Timeframe:</strong> ${String(data.interval || "--").toUpperCase()}</p>
-    <p><strong>Indicator:</strong> ${data.indicator || "--"}</p>
-    <p><strong>Live Price:</strong> ${formatPrice(data.current_price)}</p>
-    <p><strong>24H Change:</strong> ${formatPct(data.price_change_24h)}</p>
-    <p><strong>Bias:</strong> ${capitalize(data.bias)}</p>
-    <p><strong>Confluence Score:</strong> ${confluence.score ?? "--"}</p>
-    <p><strong>Entry Quality:</strong> ${capitalize(confluence.entry_quality)}</p>
-    <p><strong>Orderflow:</strong> ${capitalize(orderflow.state)} (${orderflow.strength ?? "--"})</p>
-    <p><strong>Replay Winrate:</strong> ${replay.winrate ?? "--"}%</p>
-    <p><strong>Execution Mode:</strong> ${capitalize(vip.execution_mode)}</p>
+    <p><strong>Actif :</strong> ${data.token || "--"}</p>
+    <p><strong>Timeframe :</strong> ${String(data.interval || "--").toUpperCase()}</p>
+    <p><strong>Indicateur :</strong> ${data.indicator || "--"}</p>
+    <p><strong>Prix live :</strong> ${formatPrice(data.current_price)}</p>
+    <p><strong>Variation 24H :</strong> ${formatPct(data.price_change_24h)}</p>
+    <p><strong>Biais :</strong> ${prettifyMarketStructure(data.bias)}</p>
+    <p><strong>Score confluence :</strong> ${confluence.score ?? "--"}</p>
+    <p><strong>Qualité d'entrée :</strong> ${prettifyMarketStructure(confluence.entry_quality)}</p>
+    <p><strong>Orderflow :</strong> ${prettifyMarketStructure(orderflow.state)} (${orderflow.strength ?? "--"})</p>
+    <p><strong>Winrate replay :</strong> ${replay.winrate ?? "--"}%</p>
+    <p><strong>Mode d'exécution :</strong> ${prettifyMarketStructure(premium.execution_mode || "selective")}</p>
+    <p><strong>Confiance du plan :</strong> ${tradePlan.confidence ?? data.confidence ?? "--"}%</p>
   `;
 }
 
@@ -657,9 +822,7 @@ function renderAnalysis(data) {
   const heroSignal = document.getElementById("heroSignal");
   const biasBadge = document.getElementById("biasBadge");
   const summaryTags = document.getElementById("summaryTags");
-
-  const vip = data?.vip || {};
-  const orderflow = data?.orderflow || {};
+  const premium = data?.premium || {};
 
   setText("heroAsset", data.token || "--");
   setSignalPill(heroSignal, data.signal);
@@ -668,25 +831,26 @@ function renderAnalysis(data) {
   setText("heroPrice", formatPrice(data.current_price));
   setText("heroMarketCap", formatMoney(data.market_cap));
   setText("heroVolume", formatMoney(data.volume_24h));
-  setText("heroConfidence", `${vip?.score ?? data.confidence ?? "--"}${vip?.score || data.confidence ? " / 100" : ""}`);
 
-  setText("heroTrend", capitalize(data.summary_context?.trend));
+  const deskScore = premium?.score ?? data.confidence ?? 0;
+  updateScoreGauge(deskScore);
+
+  setText("heroTrend", prettifyMarketStructure(data.summary_context?.trend));
   setText("heroRsi", data.indicators?.rsi ?? "--");
   setText("heroMfi", data.indicators?.mfi ?? "--");
-  setText("heroDeskMode", capitalize(vip.execution_mode || "neutral"));
+  setText("heroDeskMode", prettifyMarketStructure(premium.execution_mode || "neutral"));
 
   setText("signalValue", String(data.signal || "--").toUpperCase());
   setText("confidenceValue", `${data.confidence ?? "--"}%`);
-  setText("emaValue", capitalize(data.summary_context?.trend));
-  setText("volumeValue", capitalize(data.summary_context?.volume_trend));
-  setText("summaryText", data.ai_summary || data?.premium?.premium_ai_context || "No summary.");
+  setText("volumeValue", prettifyMarketStructure(data.summary_context?.volume_trend));
+  setText("summaryText", data.ai_summary || data?.premium?.premium_ai_context || "Aucun résumé disponible.");
 
-  setText("trendValue", capitalize(data.summary_context?.trend));
+  setText("trendValue", prettifyMarketStructure(data.summary_context?.trend));
   setText("rsiValue", data.indicators?.rsi ?? "--");
   setText("stochValue", data.indicators?.stochastic_rsi_k ?? "--");
   setText("mfiValue", data.indicators?.mfi ?? "--");
   setText("macdValue", data.indicators?.macd ?? "--");
-  setText("riskValue", capitalize(vip?.risk_profile || "medium"));
+  setText("riskValue", prettifyMarketStructure(premium?.risk_profile || "medium"));
 
   setText("res1", data.levels?.resistance_1 ?? "--");
   setText("res2", data.levels?.resistance_2 ?? "--");
@@ -710,8 +874,22 @@ function renderAnalysis(data) {
   renderOrderflowPanel(data);
   renderReplayPanel(data);
   renderTelegramPanel(data);
-  renderPremiumVipBlocks(data);
+  renderPremiumBlocks(data);
+  renderAdvancedAI(data);
   renderExecutionPlan(data);
+
+  applyDirectionalCardState("heroTrend", data.summary_context?.trend);
+  applyDirectionalCardState("trendValue", data.summary_context?.trend);
+  applyDirectionalCardState("confluenceBias", data.multi_timeframe?.confluence?.dominant_bias);
+  applyDirectionalCardState("mtf15mBias", getTf(data, "15m")?.bias || getTf(data, "15m")?.trend);
+  applyDirectionalCardState("mtf1hBias", getTf(data, "1h")?.bias || getTf(data, "1h")?.trend);
+  applyDirectionalCardState("mtf4hBias", getTf(data, "4h")?.bias || getTf(data, "4h")?.trend);
+  applyDirectionalCardState("mtf1dBias", getTf(data, "1d")?.bias || getTf(data, "1d")?.trend);
+  applyDirectionalCardState("orderflowState", data.orderflow?.state);
+  applyDirectionalCardState("premiumBias15m", getTf(data, "15m")?.bias || getTf(data, "15m")?.trend);
+  applyDirectionalCardState("premiumBias1h", getTf(data, "1h")?.bias || getTf(data, "1h")?.trend);
+  applyDirectionalCardState("premiumBias4h", getTf(data, "4h")?.bias || getTf(data, "4h")?.trend);
+  applyDirectionalCardState("premiumBias1d", getTf(data, "1d")?.bias || getTf(data, "1d")?.trend);
 
   lastAnalysisData = data;
   renderBigChartByTab(data, currentTab);
@@ -722,14 +900,14 @@ function setLoadingState(loading) {
   if (!runAnalysisBtn) return;
 
   runAnalysisBtn.disabled = loading;
-  runAnalysisBtn.textContent = loading ? "Loading..." : "Get Analysis";
+  runAnalysisBtn.textContent = loading ? "Chargement..." : "Lancer l'analyse";
 }
 
 async function fetchAnalysis(force = false) {
   const now = Date.now();
 
   if (!force && now - lastFetchAt < FETCH_COOLDOWN_MS) {
-    showToast("Please wait a few seconds before requesting another analysis.", false);
+    showToast("Attends quelques secondes avant une nouvelle analyse.", false);
     return;
   }
 
@@ -753,7 +931,7 @@ async function fetchAnalysis(force = false) {
     const response = await fetch(url, {
       method: "GET",
       headers: { Accept: "application/json" },
-      signal: currentController.signal,
+      signal: currentController.signal
     });
 
     if (!response.ok) {
@@ -762,13 +940,15 @@ async function fetchAnalysis(force = false) {
 
     const data = await response.json();
     renderAnalysis(data);
-    showToast("Analysis loaded successfully.");
+    showToast("Analyse chargée avec succès.");
   } catch (error) {
     if (error.name === "AbortError") return;
 
     console.error("Technical analysis fetch error:", error);
-    setText("summaryText", "Erreur pendant le chargement des données réelles.");
-    showToast("Error loading real analysis.", false);
+    setText("summaryText", "Erreur pendant le chargement des données.");
+    setText("aiExecutionNote", "La lecture avancée n’a pas pu être chargée.");
+    setText("aiInvalidation", "Aucune invalidation disponible.");
+    showToast("Erreur de chargement de l'analyse.", false);
   } finally {
     setLoadingState(false);
   }
@@ -806,5 +986,7 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// Pas d'auto-fetch sur change
-// Pas d'auto-fetch au chargement
+document.addEventListener("DOMContentLoaded", () => {
+  applyMembershipLocks();
+  setActiveTab(currentTab);
+});

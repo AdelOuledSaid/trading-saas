@@ -422,7 +422,7 @@
 <section class="academy-page-hero academy-section">
     <div class="academy-shell">
         <div class="academy-breadcrumb">
-            <a href="{{ url_for('pages.academy_index') }}">Academy</a>
+            <a href="{{ url_for('academy.academy_index') }}">Academy</a>
             <span>/</span>
             <span>Niveau 1</span>
         </div>
@@ -1731,7 +1731,7 @@
                 <div id="quiz1Result" class="academy-quiz-result"></div>
             </form>
 
-            <form method="POST" action="{{ url_for('pages.academy_complete_level', level='level1') }}" class="academy-complete-form">
+            <form method="POST" action="{{ url_for('academy.academy_complete_level', level='level1') }}" class="academy-complete-form">
                 <button class="academy-btn academy-btn-secondary" type="submit">
                     Marquer le niveau 1 comme terminé
                 </button>

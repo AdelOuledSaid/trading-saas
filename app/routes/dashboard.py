@@ -16,6 +16,7 @@ from app.services.telegram_dedup import count_sent_today
 from app.services.market_service import get_crypto_command_center
 from app.utils.telegram_access import get_user_telegram_link
 from app.utils.telegram_link import build_telegram_bot_link, is_telegram_linked
+
 dashboard_bp = Blueprint("dashboard", __name__)
 
 
@@ -180,9 +181,11 @@ def _build_dashboard_brief_preview(briefing, user_plan: str):
 @dashboard_bp.route("/<lang_code>/dashboard")
 @login_required
 def dashboard(lang_code):
-    #sync_user_premium_status(current_user)
+    # sync_user_premium_status(current_user)
 
-    user_plan = getattr(current_user, "plan", "free")
+    user_plan = (getattr(current_user, "plan", "free") or "free").lower()
+    is_premium_plus = user_plan in ["premium", "vip"]
+    is_vip = user_plan == "vip"
 
     selected_asset = request.args.get("asset", "").strip().upper()
     if selected_asset and selected_asset not in config.ALLOWED_ASSETS:
@@ -255,16 +258,13 @@ def dashboard(lang_code):
     calculated_winrate = round((total_win / closed_trades) * 100, 2) if closed_trades > 0 else 0
     last_signal = all_signals[-1] if all_signals else None
 
-    can_view_stats = has_access(user_plan, "advanced_stats")
-    can_view_replay = has_access(user_plan, "trade_replays")
-    can_view_full_history = has_access(user_plan, "full_history")
+    # Accès centralisés : Premium + VIP
+    can_view_stats = is_premium_plus
+    can_view_replay = is_premium_plus
+    can_view_full_history = is_premium_plus
+    can_view_briefing = is_premium_plus
 
-    can_view_basic_brief = has_access(user_plan, "morning_brief")
-    can_view_premium_brief = has_access(user_plan, "premium_brief_2")
-    can_view_vip_brief = has_access(user_plan, "vip_briefings")
-    can_view_briefing = can_view_basic_brief or can_view_premium_brief or can_view_vip_brief
-
-    if user_plan == "vip":
+    if is_vip:
         daily_signal_limit = "unlimited"
         sent_today_count = count_sent_today("signal_open", "vip")
         signals_remaining_today = "unlimited"
@@ -357,7 +357,7 @@ def dashboard(lang_code):
     asset_leaderboard = build_asset_leaderboard(all_signals)
 
     telegram_user_link = get_user_telegram_link(current_user)
-    telegram_public_link = getattr(config, "TELEGRAM_PUBLIC_LINK", "") or ""
+    telegram_public_link = getattr(config, "TELEGRAM_PUBLIC_INVITE_LINK", "") or ""
     telegram_basic_link = getattr(config, "TELEGRAM_BASIC_INVITE_LINK", "") or ""
     telegram_premium_link = getattr(config, "TELEGRAM_PREMIUM_INVITE_LINK", "") or ""
     telegram_vip_link = getattr(config, "TELEGRAM_VIP_INVITE_LINK", "") or ""
@@ -369,16 +369,15 @@ def dashboard(lang_code):
     telegram_bot_link = ""
 
     if telegram_bot_username and not telegram_linked:
-       # 🔥 force la création du token
-       token = ensure_telegram_link_token(current_user)
+        token = ensure_telegram_link_token(current_user)
+        telegram_bot_link = f"https://t.me/{telegram_bot_username}?start={token}"
 
-       telegram_bot_link = f"https://t.me/{telegram_bot_username}?start={token}"
+        print("TELEGRAM BOT LINK =", telegram_bot_link)
+        print("telegram_linked =", telegram_linked, flush=True)
+        print("telegram_bot_username =", telegram_bot_username, flush=True)
+        print("telegram_bot_link =", telegram_bot_link, flush=True)
+        print("telegram_link_token =", getattr(current_user, "telegram_link_token", None), flush=True)
 
-       print("TELEGRAM BOT LINK =", telegram_bot_link)
-       print("telegram_linked =", telegram_linked, flush=True)
-       print("telegram_bot_username =", telegram_bot_username, flush=True)
-       print("telegram_bot_link =", telegram_bot_link, flush=True)
-       print("telegram_link_token =", getattr(current_user, "telegram_link_token", None), flush=True)
     return render_template(
         "dashboard.html",
         email=current_user.email,
@@ -432,7 +431,7 @@ def dashboard(lang_code):
         telegram_public_link=telegram_public_link,
         telegram_basic_link=telegram_basic_link,
         telegram_premium_link=telegram_premium_link,
-        telegram_vip_link=telegram_vip_link, 
+        telegram_vip_link=telegram_vip_link,
         telegram_linked=telegram_linked,
         telegram_bot_link=telegram_bot_link,
         telegram_bot_username=telegram_bot_username,
@@ -460,14 +459,18 @@ def premium_data(lang_code):
 
 @dashboard_bp.route("/<lang_code>/briefing")
 @login_required
-@plan_required("basic")
 def briefing_page(lang_code):
+    user_plan = (getattr(current_user, "plan", "free") or "free").lower()
+
+    if user_plan not in ["premium", "vip"]:
+        return render_template("briefing.html", briefing=None, briefing_plan_label=None)
+
     briefing = ensure_daily_briefing()
     latest_briefing, briefing_plan_label, can_view_briefing = _build_dashboard_brief_preview(
-        briefing, getattr(current_user, "plan", "free")
+        briefing, user_plan
     )
 
-    if not can_view_briefing or latest_briefing is None:
+    if latest_briefing is None or not can_view_briefing:
         return render_template("briefing.html", briefing=None, briefing_plan_label=None)
 
     return render_template(

@@ -115,6 +115,8 @@ VALID_SLOTS = {"morning", "midday", "evening"}
 PREMIUM_LIQUIDATION_DAILY_LIMIT = 20
 VIP_WHALE_DAILY_LIMIT = 10
 VIP_UNLOCK_DAILY_LIMIT = 3
+PUBLIC_BASIC_WHALE_TEASER_DAILY_LIMIT = 3
+PUBLIC_BASIC_LIQUIDATION_TEASER_DAILY_LIMIT = 3
 
 
 def get_rules(tier: str) -> TierRules:
@@ -356,6 +358,111 @@ def _format_unlock_message(unlock: dict) -> str:
 
 💎 <b>VIP Intelligence</b>
 """.strip()
+
+
+def _format_liquidation_batch_message(events: list, tier: str = "premium") -> str:
+    tier_label = "VIP" if (tier or "").strip().lower() == "vip" else "Premium"
+    footer = "💎 <b>VIP Intelligence</b>" if tier_label == "VIP" else "💎 <b>Premium Flow</b>"
+    blocks = []
+    for idx, event in enumerate(events, start=1):
+        blocks.append(
+            f"""{idx}. <b>{event.asset}</b> • {event.side}
+💵 <b>Value</b> : {event.value_usd}
+📍 <b>Price</b> : {event.price}
+⚡ <b>Impact</b> : {event.impact}
+📊 <b>Bias</b> : {event.market_bias}
+🏦 <b>Exchange</b> : {event.exchange}
+⏱ <b>Time</b> : {event.time}"""
+        )
+
+    separator = "\n\n━━━━━━━━━━━━━━━━━━\n\n"
+    return (
+        f"🚨 <b>{tier_label} Liquidation Alert</b>"
+        + "\n\n"
+        + separator.join(blocks)
+        + f"\n\n{footer}"
+    )
+
+
+def _format_whale_batch_message(alerts: list[dict]) -> str:
+    blocks = []
+    for idx, alert in enumerate(alerts, start=1):
+        blocks.append(
+            f"""{idx}. <b>{alert.get("asset", "-")}</b>
+💵 <b>Value</b> : {alert.get("usd_value", "-")}
+🔁 <b>Flow</b> : {alert.get("flow_type", "-")}
+➡️ <b>From</b> : {alert.get("wallet_from", "-")}
+⬅️ <b>To</b> : {alert.get("wallet_to", "-")}
+⚡ <b>Impact</b> : {alert.get("impact", "-")}
+🧠 <b>Bias</b> : {alert.get("bias", "-")}
+🌐 <b>Network</b> : {alert.get("network", "-")}
+⏱ <b>Time</b> : {alert.get("time", "-")}"""
+        )
+
+    separator = "\n\n━━━━━━━━━━━━━━━━━━\n\n"
+    return (
+        "🐋 <b>VIP Whale Flow</b>"
+        + "\n\n"
+        + separator.join(blocks)
+        + "\n\n💎 <b>VIP Intelligence</b>"
+    )
+
+
+def _format_whale_teaser(alert: dict) -> str:
+    return f"""
+🐋 <b>Whale Activity Detected</b>
+
+💰 <b>{alert.get("asset", "-")}</b>
+💵 <b>Value</b> : {alert.get("usd_value", "-")}
+🔁 <b>Flow</b> : {alert.get("flow_type", "-")}
+🧠 <b>Bias</b> : {alert.get("bias", "-")}
+
+⚡ Smart money en mouvement
+
+👉 Full analysis réservé aux membres VIP
+""".strip()
+
+
+def _format_liquidation_teaser(event) -> str:
+    return f"""
+💥 <b>Liquidation Spike</b>
+
+💰 <b>{event.asset}</b>
+💵 <b>Value</b> : {event.value_usd}
+📍 <b>Price</b> : {event.price}
+📊 <b>Bias</b> : {event.market_bias}
+
+⚡ Volatility en hausse
+
+👉 Accès complet Premium & VIP
+""".strip()
+
+
+def _send_public_basic_teasers(*, content_type: str, message: str, dedup_suffix: str, content_ref: str | None = None) -> dict:
+    results = {}
+    daily_limit = (
+        PUBLIC_BASIC_WHALE_TEASER_DAILY_LIMIT
+        if content_type == "whale_teaser"
+        else PUBLIC_BASIC_LIQUIDATION_TEASER_DAILY_LIMIT
+    )
+
+    for tier in ["public", "basic"]:
+        if count_sent_today(content_type, tier) >= daily_limit:
+            _log_info(
+                f"[telegram_dispatcher] Limite quotidienne teaser atteinte | type={content_type} | tier={tier}"
+            )
+            results[tier] = False
+            continue
+
+        results[tier] = _send_text(
+            tier=tier,
+            message=message,
+            content_type=content_type,
+            dedup_key=_dedup_key(content_type, tier, dedup_suffix),
+            content_ref=content_ref,
+        )
+
+    return results
 
 
 def send_morning_briefings() -> dict:
@@ -715,30 +822,30 @@ def send_liquidations_alerts() -> dict:
         _log_warning("[telegram_dispatcher] Aucune liquidation high impact exploitable.")
         return {}
 
-    results = {}
-    sent_count = 0
+    selected = filtered[:3]
+    teaser_event = selected[0]
+    results = _send_public_basic_teasers(
+        content_type="liquidation_teaser",
+        message=_format_liquidation_teaser(teaser_event),
+        dedup_suffix=f"{teaser_event.asset}:{teaser_event.timestamp}",
+        content_ref=f"{teaser_event.asset}:{teaser_event.timestamp}",
+    )
 
-    for event in filtered[:3]:
-        dedup_key = _dedup_key(
-            "liquidation_alert",
-            "premium",
-            event.asset,
-            event.side,
-            event.timestamp,
-            int(event.value_usd_number),
-        )
+    batch_ref = "|".join(f"{event.asset}:{event.timestamp}" for event in selected)
+    batch_dedup_base = _dedup_key(
+        "liquidation_alert_batch",
+        *(f"{event.asset}:{event.side}:{event.timestamp}:{int(event.value_usd_number)}" for event in selected),
+    )
 
-        ok = _send_text(
-            tier="premium",
-            message=_format_liquidation_message(event),
+    for tier in ["premium", "vip"]:
+        results[tier] = _send_text(
+            tier=tier,
+            message=_format_liquidation_batch_message(selected, tier=tier),
             content_type="liquidation_alert",
-            dedup_key=dedup_key,
-            content_ref=f"{event.asset}:{event.timestamp}",
+            dedup_key=f"{batch_dedup_base}:{tier}",
+            content_ref=batch_ref,
         )
-        if ok:
-            sent_count += 1
 
-    results["premium"] = sent_count > 0
     return results
 
 
@@ -764,29 +871,28 @@ def send_whale_alerts() -> dict:
         _log_warning("[telegram_dispatcher] Aucune whale alert smart-money exploitable.")
         return {}
 
-    results = {}
-    sent_count = 0
+    selected = filtered[:3]
+    teaser_alert = selected[0]
+    results = _send_public_basic_teasers(
+        content_type="whale_teaser",
+        message=_format_whale_teaser(teaser_alert),
+        dedup_suffix=f"{teaser_alert.get('asset')}:{teaser_alert.get('timestamp')}",
+        content_ref=f"{teaser_alert.get('asset')}:{teaser_alert.get('timestamp')}",
+    )
 
-    for alert in filtered[:3]:
-        dedup_key = _dedup_key(
-            "whale_alert",
-            "vip",
-            alert.get("asset"),
-            alert.get("timestamp"),
-            int(alert.get("usd_value_number", 0) or 0),
-        )
-
-        ok = _send_text(
-            tier="vip",
-            message=_format_whale_message(alert),
-            content_type="whale_alert",
-            dedup_key=dedup_key,
-            content_ref=f"{alert.get('asset')}:{alert.get('timestamp')}",
-        )
-        if ok:
-            sent_count += 1
-
-    results["vip"] = sent_count > 0
+    results["vip"] = _send_text(
+        tier="vip",
+        message=_format_whale_batch_message(selected),
+        content_type="whale_alert",
+        dedup_key=_dedup_key(
+            "whale_alert_batch",
+            *(
+                f"{alert.get('asset')}:{alert.get('timestamp')}:{int(alert.get('usd_value_number', 0) or 0)}"
+                for alert in selected
+            ),
+        ),
+        content_ref="|".join(f"{alert.get('asset')}:{alert.get('timestamp')}" for alert in selected),
+    )
     return results
 
 
@@ -961,7 +1067,13 @@ def dispatch_event(
     if event == "liquidations":
         return send_liquidations_alerts()
 
+    if event == "liquidation_teaser":
+        return send_liquidations_alerts()
+
     if event == "whales":
+        return send_whale_alerts()
+
+    if event == "whale_teaser":
         return send_whale_alerts()
 
     if event == "unlocks":

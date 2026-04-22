@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <section class="academy-page-hero academy-section">
     <div class="academy-shell">
         <div class="academy-breadcrumb">
-            <a href="{{ url_for('pages.academy_index') }}">Academy</a>
+            <a href="{{ url_for('academy.academy_index') }}">Academy</a>
             <span>/</span>
             <span>Niveau 2</span>
         </div>
@@ -46,8 +46,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <a href="#lesson-1" class="academy-btn academy-btn-secondary">Commencer module 1</a>
                     <a href="#quiz-final" class="academy-btn academy-btn-secondary">Aller au quiz final</a>
                     {% else %}
-                    <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-primary">Débloquer Niveau 2</a>
-                    <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">Passer Premium / VIP</a>
+                    <a href="{{ url_for('academy.academy_upgrade') }}" class="academy-btn academy-btn-primary">Débloquer Niveau 2</a>
+                    <a href="{{ url_for('academy.academy_upgrade') }}" class="academy-btn academy-btn-gold">Passer Premium / VIP</a>
                     {% endif %}
                 </div>
 
@@ -272,7 +272,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         Le niveau 2 débloque la vraie lecture d’exécution :
                         structure, confluence, liquidité, journal de trading, quiz avancé et progression complète.
                     </p>
-                    <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold academy-btn-full" style="margin-top:16px;">
+                    <a href="{{ url_for('academy.academy_upgrade') }}" class="academy-btn academy-btn-gold academy-btn-full" style="margin-top:16px;">
                         Débloquer le Niveau 2
                     </a>
                 </div>
@@ -1010,7 +1010,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div id="quiz2Result" class="academy-quiz-result"></div>
             </form>
 
-            <form method="POST" action="{{ url_for('pages.academy_complete_level', level='level2') }}" class="academy-complete-form">
+            <form method="POST" action="{{ url_for('academy.academy_complete_level', level='level2') }}" class="academy-complete-form">
                 <button class="academy-btn academy-btn-secondary" type="submit">
                     Marquer le niveau 2 comme terminé
                 </button>
@@ -1023,7 +1023,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     Débloquez le niveau 2 pour accéder au quiz final, à la progression réelle
                     et au parcours Academy avancé.
                 </p>
-                <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
+                <a href="{{ url_for('academy.academy_upgrade') }}" class="academy-btn academy-btn-gold">
                     Débloquer le niveau 2
                 </a>
             </div>

@@ -8,42 +8,207 @@
 
 {% block content %}
 
-<section class="academy-upgrade-hero academy-section">
+<section class="academy-section academy-page-hero">
     <div class="academy-shell">
-        <div class="academy-upgrade-box academy-upgrade-box-xl">
+        <div class="academy-breadcrumb">
+            <a href="{{ url_for('academy.academy_index') }}">Academy</a>
+            <span>/</span>
+            <span>Upgrade</span>
+        </div>
 
-            <div class="academy-upgrade-topline">
-                <span class="academy-kicker">VelWolf Academy Access</span>
-                <span class="academy-upgrade-live">🔥 Upgrade Premium / VIP</span>
+        <div class="academy-upgrade-hero-grid">
+            <div>
+                <span class="academy-kicker">Upgrade Academy</span>
+                <h1>Débloquez les niveaux avancés du parcours Academy</h1>
+                <p class="academy-lead">
+                    Le parcours VelWolf Academy a été pensé comme une progression logique.
+                    Le niveau 1 pose les fondations. Les niveaux supérieurs ajoutent une vraie montée
+                    en gamme : structure, exécution, planification, vision opérateur
+                    et logique desk pour le niveau Pro.
+                </p>
+                <p class="academy-lead">
+                    Cette page ne promet pas de contenu fictif. Vous débloquez uniquement
+                    ce qui existe réellement dans la plateforme : niveaux avancés, modules,
+                    quiz, progression, logique premium et architecture de formation plus poussée.
+                </p>
+
+                <div class="academy-actions">
+                    <a href="#plans" class="academy-btn academy-btn-primary">Voir les plans</a>
+                    <a href="{{ url_for('academy.academy_index') }}" class="academy-btn academy-btn-secondary">Retour à l’Academy</a>
+                </div>
+
+                <div class="academy-proof-inline">
+                    <span>✔ Niveaux progressifs</span>
+                    <span>✔ Quiz et validation</span>
+                    <span>✔ Logique premium réelle</span>
+                    <span>✔ Aucun faux contenu</span>
+                </div>
             </div>
 
-            <h1>Le niveau 1 est déjà inclus. Passez à Premium ou VIP pour débloquer toute l’Academy avancée.</h1>
+            <div class="academy-upgrade-box academy-upgrade-box-xl">
+                <div class="academy-upgrade-topline">
+                    <span class="academy-kicker">Accès actuel</span>
 
-            <p class="academy-lead academy-upgrade-lead">
-                Votre plan Basic inclut déjà le niveau 1 de la VelWolf Academy.
-                Il permet de poser les bases, de comprendre la logique du trading
-                et d’entrer dans l’environnement pédagogique de la plateforme.
+                    {% if is_vip %}
+                        <span class="academy-upgrade-live">VIP actif</span>
+                    {% elif is_premium %}
+                        <span class="academy-upgrade-live">Premium actif</span>
+                    {% else %}
+                        <span class="academy-upgrade-live">Accès Basic</span>
+                    {% endif %}
+                </div>
+
+                <h2>Votre niveau d’accès Academy</h2>
+                <p class="academy-upgrade-lead">
+                    {% if is_vip %}
+                        Vous avez déjà accès à l’ensemble du parcours Academy, y compris le Niveau 4 Pro.
+                    {% elif is_premium %}
+                        Vous avez accès aux niveaux 1, 2 et 3. Le Niveau 4 Pro reste réservé au plan VIP.
+                    {% else %}
+                        Vous avez accès au Niveau 1. Les niveaux 2, 3 et 4 Pro sont réservés aux plans supérieurs.
+                    {% endif %}
+                </p>
+
+                <div class="academy-upgrade-points">
+                    <div class="academy-upgrade-point">Level 1 : Foundations</div>
+                    <div class="academy-upgrade-point">Level 2 : Structure & Execution</div>
+                    <div class="academy-upgrade-point">Level 3 : Operator Vision</div>
+                    <div class="academy-upgrade-point">Level 4 Pro : Desk / Institutionnel</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="academy-section academy-dark-band" id="plans">
+    <div class="academy-shell">
+        <div class="academy-section-title">
+            <span class="academy-kicker">Plans Academy</span>
+            <h2>Choisissez le niveau d’accès adapté</h2>
+            <p class="academy-lead academy-section-lead">
+                Chaque plan débloque un degré différent de profondeur pédagogique.
+                L’objectif est de faire évoluer la posture du trader, pas seulement d’ajouter des pages.
             </p>
+        </div>
 
-            <p class="academy-lead academy-upgrade-lead">
-                Le plan Premium débloque les niveaux 2 et 3, les quiz,
-                la progression complète, les graphes pédagogiques, les cas réels,
-                les frameworks avancés et la certification finale.
-                Le plan VIP inclut naturellement tout cet accès Academy
-                dans l’expérience complète VelWolf.
-            </p>
+        <div class="academy-grid-3">
 
-            <div class="academy-proof-inline">
-                Basic = Niveau 1 inclus • Premium = Academy complète • VIP = Academy + expérience maximale
+            <!-- BASIC -->
+            <div class="academy-upgrade-price-card">
+                <div class="academy-course-top">
+                    <span class="academy-level-pill">Basic</span>
+                    {% if user_plan == "basic" or user_plan == "free" %}
+                        <span class="academy-mini-badge">Plan actuel</span>
+                    {% endif %}
+                </div>
+
+                <h3>Fondations essentielles</h3>
+                <p>
+                    Le plan Basic donne accès au Niveau 1, qui construit la base mentale
+                    et technique : structure minimale d’un trade, risque, invalidation
+                    et discipline débutante.
+                </p>
+
+                <div class="academy-upgrade-value-list academy-mt-24">
+                    <div class="academy-upgrade-value-item">Accès au Niveau 1</div>
+                    <div class="academy-upgrade-value-item">Fondations du trading</div>
+                    <div class="academy-upgrade-value-item">Quiz de validation</div>
+                    <div class="academy-upgrade-value-item">Progression de base</div>
+                </div>
+
+                <div class="academy-certificate-locked academy-mt-24">
+                    Idéal pour commencer proprement.
+                </div>
             </div>
 
-            <div class="academy-upgrade-cta">
-                <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
-                    <input type="hidden" name="plan" value="premium">
-                    <button type="submit" class="academy-btn academy-btn-gold academy-btn-large">
-                        🚀 Débloquer l’Academy avec Premium
-                    </button>
-                </form>
+            <!-- PREMIUM -->
+            <div class="academy-upgrade-price-card academy-course-card-featured">
+                <div class="academy-course-top">
+                    <span class="academy-level-pill">Premium</span>
+                    {% if is_premium and not is_vip %}
+                        <span class="academy-mini-badge">Plan actuel</span>
+                    {% else %}
+                        <span class="academy-mini-badge">Le plus équilibré</span>
+                    {% endif %}
+                </div>
+
+                <h3>Lecture + exécution + vision opérateur</h3>
+                <p>
+                    Le plan Premium débloque les niveaux 2 et 3. Vous passez d’une base théorique
+                    à une vraie logique d’exécution, de structure, de planification et de préparation de marché.
+                </p>
+
+                <div class="academy-upgrade-value-list academy-mt-24">
+                    <div class="academy-upgrade-value-item">Tout le Basic</div>
+                    <div class="academy-upgrade-value-item">Niveau 2 : Structure & Execution</div>
+                    <div class="academy-upgrade-value-item">Niveau 3 : Operator Vision</div>
+                    <div class="academy-upgrade-value-item">Confluence, timing, multi-timeframe</div>
+                    <div class="academy-upgrade-value-item">Progression premium complète</div>
+                </div>
+
+                {% if not is_premium %}
+                    {% if current_user.is_authenticated %}
+                    <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST" class="academy-mt-24">
+                        <input type="hidden" name="plan" value="premium">
+                        <button type="submit" class="academy-btn academy-btn-primary academy-btn-full">
+                            Passer Premium
+                        </button>
+                    </form>
+                    {% else %}
+                    <a href="{{ url_for('auth.login', lang_code=current_lang) }}" class="academy-btn academy-btn-primary academy-btn-full academy-mt-24">
+                        Se connecter pour upgrader
+                    </a>
+                    {% endif %}
+                {% else %}
+                    <div class="academy-certificate-ready academy-mt-24">
+                        Premium déjà actif.
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- VIP -->
+            <div class="academy-upgrade-price-card">
+                <div class="academy-course-top">
+                    <span class="academy-level-pill">VIP</span>
+                    {% if is_vip %}
+                        <span class="academy-mini-badge">Plan actuel</span>
+                    {% else %}
+                        <span class="academy-mini-badge">Pro</span>
+                    {% endif %}
+                </div>
+
+                <h3>Desk / Institutionnel / Niveau 4 Pro</h3>
+                <p>
+                    Le plan VIP débloque l’intégralité de l’Academy, y compris le Niveau 4 Pro :
+                    régime macro, intermarket, allocation, exposition globale et logique desk.
+                </p>
+
+                <div class="academy-upgrade-value-list academy-mt-24">
+                    <div class="academy-upgrade-value-item">Tout le Premium</div>
+                    <div class="academy-upgrade-value-item">Niveau 4 Pro complet</div>
+                    <div class="academy-upgrade-value-item">Approche desk / institutionnelle</div>
+                    <div class="academy-upgrade-value-item">Portefeuille d’idées et allocation</div>
+                    <div class="academy-upgrade-value-item">Certification du parcours complet</div>
+                </div>
+
+                {% if not is_vip %}
+                    {% if current_user.is_authenticated %}
+                    <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST" class="academy-mt-24">
+                        <input type="hidden" name="plan" value="vip">
+                        <button type="submit" class="academy-btn academy-btn-gold academy-btn-full">
+                            Passer VIP
+                        </button>
+                    </form>
+                    {% else %}
+                    <a href="{{ url_for('auth.login', lang_code=current_lang) }}" class="academy-btn academy-btn-gold academy-btn-full academy-mt-24">
+                        Se connecter pour upgrader
+                    </a>
+                    {% endif %}
+                {% else %}
+                    <div class="academy-certificate-ready academy-mt-24">
+                        VIP déjà actif.
+                    </div>
+                {% endif %}
             </div>
 
         </div>
@@ -53,168 +218,46 @@
 <section class="academy-section">
     <div class="academy-shell">
         <div class="academy-section-title">
-            <span class="academy-kicker">Votre situation actuelle</span>
-            <h2>Pourquoi le niveau 1 seul ne suffit pas pour progresser à fond</h2>
-            <p class="academy-lead academy-section-lead">
-                Le niveau 1 donne une excellente base. Mais les vraies améliorations opérationnelles
-                arrivent lorsque l’utilisateur apprend à lire la structure du marché,
-                la confluence, le timing, la gestion active, les corrélations
-                et la construction de scénarios plus professionnels.
-            </p>
+            <span class="academy-kicker">Ce que vous débloquez vraiment</span>
+            <h2>Une progression réelle, pas une promesse marketing vide</h2>
         </div>
 
         <div class="academy-grid-3">
-            <div class="academy-info-card">
-                <h3>✅ Niveau 1 déjà inclus</h3>
+            <div class="academy-upgrade-proof-card">
+                <div class="academy-feature-icon">📘</div>
+                <h3>Niveaux structurés</h3>
                 <p>
-                    Vous avez déjà accès aux fondations :
-                    vocabulaire, logique du risque, stop loss, take profit,
-                    lecture simple du marché et discipline de base.
+                    Chaque niveau a un vrai rôle dans la progression : foundations, exécution,
+                    vision opérateur puis logique desk.
                 </p>
             </div>
 
-            <div class="academy-info-card">
-                <h3>🔒 Niveau 2 verrouillé</h3>
-                <p>
-                    Le niveau 2 apporte la structure, les faux breakout,
-                    la liquidité, la confluence, le timing et la gestion active.
-                </p>
-            </div>
-
-            <div class="academy-info-card">
-                <h3>🔒 Niveau 3 verrouillé</h3>
-                <p>
-                    Le niveau 3 apporte la lecture multi-timeframe,
-                    les plans A/B/C, les corrélations, la sélection d’actifs
-                    et la gestion globale du risque.
-                </p>
-            </div>
-        </div>
-
-        <div class="academy-academic-block" style="margin-top: 28px;">
-            <span class="academy-box-label">Constat</span>
-            <h3>Le vrai saut de niveau commence après les bases</h3>
-            <p>
-                Beaucoup d’utilisateurs restent bloqués à un niveau intermédiaire
-                parce qu’ils comprennent les notions de base sans encore savoir les articuler
-                dans une vraie logique de marché. C’est exactement ce que Premium et VIP débloquent :
-                une montée en qualité, pas seulement une accumulation de contenu.
-            </p>
-            <p>
-                L’objectif n’est pas de voir plus d’informations.
-                L’objectif est de mieux lire, mieux filtrer, mieux exécuter
-                et mieux progresser.
-            </p>
-        </div>
-    </div>
-</section>
-
-<section class="academy-section academy-dark-band">
-    <div class="academy-shell">
-        <div class="academy-section-title">
-            <span class="academy-kicker">Ce que Premium / VIP débloquent</span>
-            <h2>La partie avancée de la VelWolf Academy</h2>
-            <p class="academy-lead academy-section-lead">
-                L’Academy avancée n’est pas un bonus décoratif.
-                C’est la partie qui transforme un utilisateur qui découvre
-                en utilisateur qui comprend, structure et améliore réellement ses décisions.
-            </p>
-        </div>
-
-        <div class="academy-grid-3">
-            <div class="academy-info-card academy-upgrade-feature-card">
-                <div class="academy-feature-icon">🎥</div>
-                <h3>Vidéos complètes</h3>
-                <p>
-                    Accès aux niveaux 2 et 3 avec un vrai parcours pédagogique,
-                    pensé pour amener l’utilisateur vers une lecture plus mature du marché.
-                </p>
-            </div>
-
-            <div class="academy-info-card academy-upgrade-feature-card">
-                <div class="academy-feature-icon">📊</div>
-                <h3>Graphes & lecture visuelle</h3>
-                <p>
-                    Graphiques pédagogiques, supports TradingView, visualisation du risque,
-                    de la structure et des scénarios avancés.
-                </p>
-            </div>
-
-            <div class="academy-info-card academy-upgrade-feature-card">
+            <div class="academy-upgrade-proof-card">
                 <div class="academy-feature-icon">🧠</div>
-                <h3>Frameworks avancés</h3>
+                <h3>Montée en gamme cohérente</h3>
                 <p>
-                    Structure, confluence, liquidité, multi-timeframe,
-                    plans A/B/C, corrélations, sélection d’actifs et routine pro.
+                    Vous ne lisez pas simplement plus de contenu.
+                    Vous changez de manière de penser le marché.
+                </p>
+            </div>
+
+            <div class="academy-upgrade-proof-card">
+                <div class="academy-feature-icon">🎯</div>
+                <h3>Validation & progression</h3>
+                <p>
+                    Quiz, progression visuelle, badges et architecture Academy cohérente
+                    avec les niveaux déjà présents sur ton site.
                 </p>
             </div>
         </div>
 
-        <div class="academy-cards" style="margin-top: 24px;">
-            <div class="academy-info-card">
-                <h3>Niveau 2</h3>
-                <p>
-                    Structure de marché, tendance, range, transition,
-                    faux breakout, liquidité, timing,
-                    journal de trading et psychologie avancée.
-                </p>
-            </div>
-            <div class="academy-info-card">
-                <h3>Niveau 3</h3>
-                <p>
-                    Analyse multi-timeframe, top-down analysis,
-                    scénarios A/B/C, corrélations,
-                    sélection d’actifs, sessions de marché et risk management avancé.
-                </p>
-            </div>
-            <div class="academy-info-card">
-                <h3>Validation complète</h3>
-                <p>
-                    Quiz, progression, validation des niveaux,
-                    parcours structuré et certification finale
-                    pour rendre la progression visible et motivante.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="academy-section">
-    <div class="academy-shell">
-        <div class="academy-section-title">
-            <span class="academy-kicker">Tout ce qui est débloqué</span>
-            <h2>Une vraie expérience Academy avancée</h2>
-        </div>
-
-        <div class="academy-upgrade-price-card">
-            <span class="academy-card-label">Inclus avec Premium et VIP</span>
-
-            <div class="academy-upgrade-value-list">
-                <div class="academy-upgrade-value-item">✅ Niveau 1 déjà inclus dans Basic</div>
-                <div class="academy-upgrade-value-item">🔓 Niveau 2 complet débloqué</div>
-                <div class="academy-upgrade-value-item">🔓 Niveau 3 complet débloqué</div>
-                <div class="academy-upgrade-value-item">🎥 Vidéos pédagogiques avancées</div>
-                <div class="academy-upgrade-value-item">📊 Graphiques pédagogiques intégrés</div>
-                <div class="academy-upgrade-value-item">🧠 Frameworks avancés de décision</div>
-                <div class="academy-upgrade-value-item">📋 Checklists avant trade et validation</div>
-                <div class="academy-upgrade-value-item">📚 Cas réels et exemples de marché</div>
-                <div class="academy-upgrade-value-item">🧪 Quiz de validation avancés</div>
-                <div class="academy-upgrade-value-item">🏆 Certification finale</div>
-                <div class="academy-upgrade-value-item">📈 Meilleure exploitation des signaux VelWolf</div>
-                <div class="academy-upgrade-value-item">🌍 Corrélations, sessions et logique plus professionnelle</div>
-            </div>
-
-            <div class="academy-upgrade-cta-stack">
-                <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
-                    <input type="hidden" name="plan" value="premium">
-                    <button type="submit" class="academy-btn academy-btn-gold academy-btn-large academy-btn-full">
-                        🔓 Passer Premium maintenant
-                    </button>
-                </form>
-            </div>
-
-            <p class="academy-upgrade-microcopy">
-                Premium débloque toute l’Academy avancée. VIP inclut déjà cet accès dans l’expérience complète.
+        <div class="academy-academic-block">
+            <span class="academy-box-label">Transparence</span>
+            <h3>Aucune promesse de vidéos si elles n’existent pas</h3>
+            <p>
+                Cette version de la page upgrade a été nettoyée pour ne pas promettre
+                de vidéos ou d’éléments absents de la plateforme.
+                Le message commercial reste aligné avec ce que ton site propose réellement.
             </p>
         </div>
     </div>
@@ -222,274 +265,40 @@
 
 <section class="academy-section academy-dark-band">
     <div class="academy-shell">
-        <div class="academy-section-title">
-            <span class="academy-kicker">Transformation</span>
-            <h2>Ce qui change après l’upgrade</h2>
-        </div>
-
-        <div class="academy-summary-grid">
-            <div class="academy-info-card">
-                <h3>Avec Basic</h3>
-                <ul class="academy-reflection-list">
-                    <li>Accès au niveau 1.</li>
-                    <li>Compréhension des fondations.</li>
-                    <li>Découverte de la logique du trading.</li>
-                    <li>Première structure mentale.</li>
-                    <li>Accès limité au parcours Academy.</li>
-                </ul>
-            </div>
-
-            <div class="academy-info-card">
-                <h3>Avec Premium / VIP</h3>
-                <ul class="academy-reflection-list">
-                    <li>Accès complet aux niveaux 2 et 3.</li>
-                    <li>Lecture plus avancée de la structure du marché.</li>
-                    <li>Meilleure gestion des entrées et du risque.</li>
-                    <li>Utilisation de frameworks et checklists pro.</li>
-                    <li>Progression réelle avec validation et certification.</li>
-                    <li>Vision plus mature et plus professionnelle.</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="academy-academic-block" style="margin-top: 26px;">
-            <span class="academy-box-label">Valeur réelle</span>
-            <h3>Premium et VIP ne donnent pas seulement plus de contenu. Ils donnent plus de profondeur.</h3>
+        <div class="academy-upgrade-final">
+            <h2>Montez de niveau au bon moment</h2>
             <p>
-                Une vraie offre premium ne doit pas juste ajouter des modules.
-                Elle doit améliorer la manière dont l’utilisateur pense,
-                filtre, exécute et apprend de ses décisions.
-            </p>
-            <p>
-                C’est exactement le rôle de l’Academy avancée VelWolf.
-            </p>
-        </div>
-    </div>
-</section>
-
-<section class="academy-section">
-    <div class="academy-shell">
-        <div class="academy-section-title">
-            <span class="academy-kicker">Comparaison claire</span>
-            <h2>Basic vs Premium / VIP</h2>
-            <p class="academy-lead academy-section-lead">
-                Basic donne les bases. Premium et VIP donnent la partie avancée complète.
-            </p>
-        </div>
-
-        <div class="academy-comparison-table academy-comparison-table-pro">
-            <div class="academy-comparison-row academy-comparison-head">
-                <div>Fonctionnalité</div>
-                <div>Basic</div>
-                <div>Premium / VIP</div>
-            </div>
-
-            <div class="academy-comparison-row">
-                <div>Niveau 1 complet</div>
-                <div>✅</div>
-                <div>✅</div>
-            </div>
-
-            <div class="academy-comparison-row">
-                <div>Niveau 2 complet</div>
-                <div>🔒</div>
-                <div>✅</div>
-            </div>
-
-            <div class="academy-comparison-row">
-                <div>Niveau 3 complet</div>
-                <div>🔒</div>
-                <div>✅</div>
-            </div>
-
-            <div class="academy-comparison-row">
-                <div>Accès vidéo avancé</div>
-                <div>❌</div>
-                <div>✅</div>
-            </div>
-
-            <div class="academy-comparison-row">
-                <div>Graphes pédagogiques avancés</div>
-                <div>❌</div>
-                <div>✅</div>
-            </div>
-
-            <div class="academy-comparison-row">
-                <div>Frameworks & checklists avancés</div>
-                <div>❌</div>
-                <div>✅</div>
-            </div>
-
-            <div class="academy-comparison-row">
-                <div>Cas réels et contenu enrichi</div>
-                <div>❌</div>
-                <div>✅</div>
-            </div>
-
-            <div class="academy-comparison-row">
-                <div>Quiz et validation complète</div>
-                <div>🔒</div>
-                <div>✅</div>
-            </div>
-
-            <div class="academy-comparison-row">
-                <div>Certification finale</div>
-                <div>🔒</div>
-                <div>✅</div>
-            </div>
-
-            <div class="academy-comparison-row">
-                <div>Progression membre avancée</div>
-                <div>Limitée</div>
-                <div>✅</div>
-            </div>
-
-            <div class="academy-comparison-row">
-                <div>Lecture multi-timeframe & plans de marché</div>
-                <div>❌</div>
-                <div>✅</div>
-            </div>
-
-            <div class="academy-comparison-row">
-                <div>Expérience Academy</div>
-                <div>Fondations</div>
-                <div>Complète</div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="academy-section academy-dark-band">
-    <div class="academy-shell">
-        <div class="academy-section-title">
-            <span class="academy-kicker">Pourquoi c’est stratégique</span>
-            <h2>Pourquoi Premium / VIP valent vraiment l’upgrade</h2>
-        </div>
-
-        <div class="academy-grid-3">
-            <div class="academy-info-card">
-                <h3>Progression plus forte</h3>
-                <p>
-                    L’utilisateur ne reste pas bloqué aux notions de base.
-                    Il monte vers une compréhension plus complète et plus exploitable.
-                </p>
-            </div>
-
-            <div class="academy-info-card">
-                <h3>Lecture plus professionnelle</h3>
-                <p>
-                    L’upgrade donne accès aux éléments qui changent vraiment la qualité
-                    d’un trader : structure, timing, corrélations, scénarios et gestion globale.
-                </p>
-            </div>
-
-            <div class="academy-info-card">
-                <h3>Expérience plus premium</h3>
-                <p>
-                    L’Academy avancée renforce la valeur perçue de VelWolf
-                    et transforme la plateforme en environnement plus sérieux et plus complet.
-                </p>
-            </div>
-        </div>
-
-        <div class="academy-cards" style="margin-top: 24px;">
-            <div class="academy-info-card">
-                <h3>Basic</h3>
-                <p>
-                    Idéal pour découvrir la plateforme et suivre le niveau 1.
-                    Une bonne entrée pour poser les fondations.
-                </p>
-            </div>
-
-            <div class="academy-info-card">
-                <h3>Premium</h3>
-                <p>
-                    Débloque l’Academy complète, les validations, les graphes pédagogiques,
-                    les niveaux avancés et une expérience d’apprentissage beaucoup plus forte.
-                </p>
-            </div>
-
-            <div class="academy-info-card">
-                <h3>VIP</h3>
-                <p>
-                    Inclut déjà toute l’Academy Premium,
-                    en plus de l’expérience complète VelWolf et des avantages VIP.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="academy-section">
-    <div class="academy-shell">
-        <div class="academy-section-title">
-            <span class="academy-kicker">Objections fréquentes</span>
-            <h2>Pourquoi l’Academy avancée vaut l’upgrade</h2>
-        </div>
-
-        <div class="academy-upgrade-objection-grid">
-            <div class="academy-upgrade-objection-card">
-                <h3>“J’ai déjà le niveau 1”</h3>
-                <p>
-                    C’est une bonne base. Mais les niveaux 2 et 3 apportent justement
-                    la partie qui fait passer d’une compréhension simple
-                    à une vraie lecture plus avancée du marché.
-                </p>
-            </div>
-
-            <div class="academy-upgrade-objection-card">
-                <h3>“Je veux juste les signaux”</h3>
-                <p>
-                    Les signaux peuvent aider, mais l’Academy avancée améliore la manière
-                    de les comprendre, de les filtrer et de les exécuter intelligemment.
-                </p>
-            </div>
-
-            <div class="academy-upgrade-objection-card">
-                <h3>“Je manque de temps”</h3>
-                <p>
-                    Justement : une meilleure structure mentale fait gagner du temps,
-                    réduit les erreurs répétées et améliore la qualité des décisions.
-                </p>
-            </div>
-
-            <div class="academy-upgrade-objection-card">
-                <h3>“Je connais déjà quelques bases”</h3>
-                <p>
-                    Les bases seules ne suffisent pas.
-                    Ce qui fait la différence, c’est la capacité à les articuler
-                    dans une vraie logique de marché plus avancée.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="academy-section academy-dark-band">
-    <div class="academy-shell">
-        <div class="academy-upgrade-final academy-upgrade-final-business">
-
-            <span class="academy-kicker">Dernière étape</span>
-
-            <h2>Le niveau 1 pose les bases. Premium et VIP débloquent le vrai parcours avancé.</h2>
-
-            <p>
-                Vous avez déjà accès au niveau 1 avec votre plan Basic.
-                Passez à Premium ou VIP pour débloquer les niveaux 2 et 3,
-                les quiz, les graphes, les cas avancés, la progression complète
-                et la certification finale.
+                Le bon plan dépend de votre stade actuel.
+                Si vous construisez encore vos bases, le Niveau 1 suffit pour démarrer proprement.
+                Si vous voulez une vraie lecture du marché, le Premium devient la suite logique.
+                Si vous voulez une logique de desk complète, le VIP débloque la couche supérieure.
             </p>
 
-            <div class="academy-upgrade-cta">
-                <form action="{{ url_for('billing.create_checkout_session') }}" method="POST">
-                    <input type="hidden" name="plan" value="premium">
-                    <button type="submit" class="academy-btn academy-btn-gold academy-btn-large">
-                        🚀 Passer Premium maintenant
-                    </button>
-                </form>
+            <div class="academy-actions" style="justify-content:center;">
+                {% if is_vip %}
+                    <a href="{{ url_for('academy.academy_level_4') }}" class="academy-btn academy-btn-gold">Ouvrir le Niveau 4 Pro</a>
+                {% elif is_premium %}
+                    <a href="{{ url_for('academy.academy_index') }}" class="academy-btn academy-btn-primary">Retour à l’Academy</a>
+                    {% if current_user.is_authenticated %}
+                    <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
+                        <input type="hidden" name="plan" value="vip">
+                        <button type="submit" class="academy-btn academy-btn-gold">Passer VIP</button>
+                    </form>
+                    {% endif %}
+                {% else %}
+                    <a href="{{ url_for('academy.academy_level_1') }}" class="academy-btn academy-btn-secondary">Voir le Niveau 1</a>
+                    {% if current_user.is_authenticated %}
+                    <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
+                        <input type="hidden" name="plan" value="premium">
+                        <button type="submit" class="academy-btn academy-btn-primary">Passer Premium</button>
+                    </form>
+                    {% else %}
+                    <a href="{{ url_for('auth.login', lang_code=current_lang) }}" class="academy-btn academy-btn-primary">Se connecter</a>
+                    {% endif %}
+                {% endif %}
             </div>
-
         </div>
     </div>
 </section>
+
 {% endblock %}

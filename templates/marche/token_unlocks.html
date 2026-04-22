@@ -212,7 +212,7 @@
                             </div>
                             {% endfor %}
                         {% else %}
-                            {% for item in top_unlocks[:3] %}
+                            {% for item in top_unlocks %}
                             <div class="tu-unlock-item">
                                 <div class="tu-unlock-left">
                                     <div class="tu-token-line">
@@ -230,19 +230,13 @@
                                     <strong>${{ "{:,.0f}".format(item.value or 0) }}</strong>
                                     <span>{{ "%.2f"|format(item.market_cap_ratio or 0) }}% mcap</span>
                                     <div class="risk risk-{{ item.risk_level }}">{{ item.risk_label }}</div>
-                                    <div class="tu-score">Score {{ item.score }}/100</div>
-                                    <div class="signal-badge signal-{{ item.signal_level }}">{{ item.signal }}</div>
-                                </div>
-
-                                <div class="tu-signal-note">
-                                    {{ item.signal_note }}
                                 </div>
                             </div>
                             {% endfor %}
 
                             <div class="premium-lock-box">
                                 <strong>🔒 Accès Premium requis</strong>
-                                <p>Débloque tous les unlocks, les signaux complets et le calendrier détaillé.</p>
+                                <p>Débloque tous les unlocks, les signaux complets, les scores détaillés et le calendrier avancé.</p>
                                 <div class="premium-lock-actions">
                                     <a href="{{ url_for('billing.pricing') }}" class="premium-upgrade-btn">Passer Premium</a>
                                     <a href="{{ url_for('billing.pricing') }}" class="premium-telegram-btn">Débloquer Telegram Premium</a>
@@ -257,6 +251,7 @@
                         <h2>📡 Market Intelligence</h2>
                     </div>
 
+                    {% if is_unlocks_premium %}
                     <div class="tu-insights-grid">
                         <div class="tu-insight-box">
                             <span class="tu-insight-label">Bias marché</span>
@@ -291,13 +286,20 @@
                             <strong>{{ unlock_insights.action_type }}</strong>
                         </div>
                     </div>
+                    {% else %}
+                    <div class="tu-insights-grid">
+                        <div class="tu-insight-box">
+                            <span class="tu-insight-label">Bias marché</span>
+                            <strong>{{ unlock_insights.bias_title }}</strong>
+                            <p>{{ unlock_insights.bias_text }}</p>
+                        </div>
+                    </div>
 
-                    {% if not is_unlocks_premium %}
                     <div class="premium-lock-box tu-insights-lock">
                         <strong>🔒 Insights avancés réservés aux abonnés</strong>
                         <p>
-                            Débloque les analyses détaillées, les signaux unlock complets
-                            et les alertes prioritaires.
+                            Débloque le signal dominant, le focus 7 jours, le setup type
+                            et le plan d’action complet.
                         </p>
                         <div class="premium-lock-actions">
                             <a href="{{ url_for('billing.pricing') }}" class="premium-upgrade-btn">Passer Premium</a>

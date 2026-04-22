@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <section class="academy-page-hero academy-section">
     <div class="academy-shell">
         <div class="academy-breadcrumb">
-            <a href="{{ url_for('pages.academy_index') }}">Academy</a>
+            <a href="{{ url_for('academy.academy_index') }}">Academy</a>
             <span>/</span>
             <span>Niveau 3</span>
         </div>
@@ -51,8 +51,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <a href="#lesson-1" class="academy-btn academy-btn-secondary">Commencer module 1</a>
                     <a href="#quiz-final" class="academy-btn academy-btn-secondary">Aller à l’examen</a>
                     {% else %}
-                    <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-primary">Débloquer le Niveau 3</a>
-                    <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">Passer Premium / VIP</a>
+                    <a href="{{ url_for('academy.academy_upgrade') }}" class="academy-btn academy-btn-primary">Débloquer le Niveau 3</a>
+                    <a href="{{ url_for('academy.academy_upgrade') }}" class="academy-btn academy-btn-gold">Passer Premium / VIP</a>
                     {% endif %}
                 </div>
 
@@ -320,7 +320,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         multi-timeframe, plans de marché, corrélations, sélection d’actifs
                         et gestion d’exposition plus professionnelle.
                     </p>
-                    <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold academy-btn-full" style="margin-top:16px;">
+                    <a href="{{ url_for('academy.academy_upgrade') }}" class="academy-btn academy-btn-gold academy-btn-full" style="margin-top:16px;">
                         Débloquer le niveau 3
                     </a>
                 </div>
@@ -1117,7 +1117,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div id="quiz3Result" class="academy-quiz-result"></div>
             </form>
 
-            <form method="POST" action="{{ url_for('pages.academy_complete_level', level='level3') }}" class="academy-complete-form">
+            <form method="POST" action="{{ url_for('academy.academy_complete_level', level='level3') }}" class="academy-complete-form">
                 <button class="academy-btn academy-btn-secondary" type="submit">
                     Valider le niveau 3
                 </button>
@@ -1130,7 +1130,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     Débloquez le quiz, les cas avancés, les plans de marché,
                     la progression réelle et l’expérience Academy complète.
                 </p>
-                <a href="{{ url_for('pages.academy_upgrade') }}" class="academy-btn academy-btn-gold">
+                <a href="{{ url_for('academy.academy_upgrade') }}" class="academy-btn academy-btn-gold">
                     Débloquer le niveau 3
                 </a>
             </div>

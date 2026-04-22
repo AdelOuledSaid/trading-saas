@@ -48,7 +48,15 @@
     {% block extra_css %}{% endblock %}
 </head>
 
-<body class="{% block body_class %}{% endblock %}">
+<body
+    class="{% block body_class %}{% endblock %}"
+    data-academy-level="{{ academy_level | default('') }}"
+    data-academy-level-name="{{ academy_level_name | default('') }}"
+    data-academy-total-lessons="{{ academy_total_lessons | default('10') }}"
+    data-user-plan="{{ user_plan | default('free') }}"
+    data-is-premium="{{ is_premium | default(false) }}"
+    data-is-vip="{{ is_vip | default(false) }}"
+>
 
     <!-- NAVBAR -->
     {% include "partials/navbar.html" %}
@@ -71,7 +79,7 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- 🔥 FOOTER GLOBAL PRO -->
+    <!-- FOOTER GLOBAL -->
     {% include "partials/footer.html" %}
 
     <!-- UPGRADE POPUP -->

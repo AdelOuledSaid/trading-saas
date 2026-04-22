@@ -2860,3 +2860,100 @@ body.ultra-dashboard-body main.dashboard-main-shell {
     border-color: rgba(34,197,94,0.22);
     background: rgba(34,197,94,0.08);
 }
+
+/* ===== FIX FINAL CLICK TELEGRAM / BOUTONS DASHBOARD ===== */
+
+.dashboard-hero,
+.ultra-hero,
+.dashboard-hero-content,
+.dashboard-hero-side,
+.hero-actions,
+.hero-actions a,
+.hero-primary-btn,
+.hero-secondary-btn,
+.hero-utility-btn,
+.hero-utility-btn-vip,
+.telegram-panel,
+.telegram-access-card,
+.telegram-panel-actions,
+.telegram-panel-actions a,
+.telegram-btn,
+.telegram-outline-btn,
+.signal-card-actions,
+.signal-card-actions a,
+.locked-signal-actions,
+.locked-signal-actions a,
+.trade-card,
+.premium-panel,
+.bottom-cta-box {
+    position: relative;
+}
+
+.dashboard-hero,
+.ultra-hero,
+.telegram-panel,
+.telegram-access-card,
+.trade-card,
+.premium-panel,
+.bottom-cta-box {
+    z-index: 1;
+}
+
+.dashboard-hero-content,
+.dashboard-hero-side,
+.hero-actions,
+.telegram-panel-actions,
+.signal-card-actions,
+.locked-signal-actions {
+    z-index: 20;
+}
+
+.hero-actions a,
+.hero-primary-btn,
+.hero-secondary-btn,
+.hero-utility-btn,
+.hero-utility-btn-vip,
+.telegram-panel-actions a,
+.telegram-btn,
+.telegram-outline-btn,
+.signal-card-actions a,
+.locked-signal-actions a {
+    z-index: 50;
+    pointer-events: auto !important;
+}
+
+.dashboard-hero::before,
+.dashboard-hero::after,
+.ultra-hero::before,
+.ultra-hero::after,
+.telegram-panel::before,
+.telegram-panel::after,
+.telegram-access-card::before,
+.telegram-access-card::after,
+.premium-panel::before,
+.premium-panel::after,
+.trade-card::before,
+.trade-card::after,
+.bottom-cta-box::before,
+.bottom-cta-box::after {
+    pointer-events: none !important;
+}
+
+.dashboard-hero *,
+.ultra-hero *,
+.telegram-panel *,
+.telegram-access-card *,
+.hero-actions *,
+.telegram-panel-actions *,
+.signal-card-actions *,
+.locked-signal-actions * {
+    pointer-events: auto;
+}
+
+.hero-actions a,
+.telegram-panel-actions a,
+.signal-card-actions a,
+.locked-signal-actions a {
+    display: inline-flex;
+    text-decoration: none;
+}

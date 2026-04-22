@@ -47,8 +47,10 @@
 {% endif %}
 
 {% set leaderboard_score = (total_win * 12) - (total_loss * 4) + (safe_winrate | int) %}
-{% set telegram_public_link = telegram_public_link|default('https://t.me/velwolfsignals') %}
-{% set telegram_vip_link = telegram_vip_link|default('https://t.me/velwolfvip') %}
+{% set telegram_public_link = telegram_public_link|default('https://t.me/+8hgkkM9KJmBkMzg0', true) %}
+{% set telegram_basic_link = telegram_basic_link|default('https://t.me/+TMeepvbjpXoyMjA8', true) %}
+{% set telegram_premium_link = telegram_premium_link|default('https://t.me/+HKFQU36JfS0wZmE0', true) %}
+{% set telegram_vip_link = telegram_vip_link|default('https://t.me/+ZziJo_X7nBVhY2M0', true) %}
 {% set level_progress = 22 if performance_badge_tone == 'starter' else 52 if performance_badge_tone == 'rising' else 78 if performance_badge_tone == 'pro' else 96 %}
 {% set ai_confidence = live_ai_confidence if live_ai_confidence is defined else 50 %}
 {% set market_bias = live_market_bias if live_market_bias is defined else 'NEUTRAL' %}
@@ -113,7 +115,7 @@
                     {{ t("upgrade_premium_briefing_desc", "Votre plan Basic ouvre la porte. Le niveau supérieur débloque les métriques sensibles, le replay et une lecture marché plus complète.") }}
                 {% endif %}
             </p>
-            <a href="{{ url_for('pages.academy_upgrade', lang_code=current_lang) }}" class="sidebar-upgrade-btn">{{ t("see_pro_upgrade", "Voir l’upgrade Pro") }}</a>
+            <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="sidebar-upgrade-btn">{{ t("see_pro_upgrade", "Voir l’upgrade Pro") }}</a>
         </div>
         {% endif %}
 
@@ -130,7 +132,7 @@
                 <span>🏆</span>{% if signal_limit > 0 %}{{ t("results", "Résultats") }}{% else %}{{ t("premium_results", "Résultats premium") }}{% endif %}
             </a>
 
-            <a href="{{ url_for('pages.academy_index', lang_code=current_lang) if is_premium_plus else url_for('pages.academy_upgrade', lang_code=current_lang) }}"
+            <a href="{{ url_for('academy.academy_index', lang_code=current_lang) if is_premium_plus else url_for('academy.academy_upgrade', lang_code=current_lang) }}"
                class="sidebar-link {% if not is_premium_plus %}locked-link{% endif %}">
                 <span>🎓</span>{% if is_premium_plus %}{{ t("academy_pro", "Academy Pro") }}{% else %}{{ t("academy_locked", "Academy verrouillée") }}{% endif %}
             </a>
@@ -201,11 +203,21 @@
                         {{ t("unlock_briefing", "Débloquer briefing") }}
                     </a>
                     <a href="{{ url_for('dashboard.briefing_page', lang_code=current_lang) if can_view_briefing else url_for('billing.pricing', lang_code=current_lang) }}#market-news" class="hero-utility-btn">{{ t("news", "News") }}</a>
-                    <a href="{{ url_for('pages.academy_index', lang_code=current_lang) if is_premium_plus else url_for('pages.academy_upgrade', lang_code=current_lang) }}" class="hero-utility-btn">{{ t("academy", "Academy") }}</a>
-                     <a href="{{ telegram_user_link if telegram_user_link else telegram_public_link }}"
-                        target="_blank"
-                        rel="noopener"
-                        class="hero-utility-btn hero-utility-btn-vip">
+                    <a href="{{ url_for('academy.academy_index', lang_code=current_lang) if is_premium_plus else url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="hero-utility-btn">{{ t("academy", "Academy") }}</a>
+                    <a href="
+                    {% if user_plan == 'vip' %}
+                        {{ telegram_vip_link }}
+                    {% elif user_plan == 'premium' %}
+                        {{ telegram_premium_link }}
+                    {% elif user_plan == 'basic' %}
+                        {{ telegram_basic_link }}
+                    {% else %}
+                        {{ telegram_public_link }}
+                    {% endif %}
+                    "
+                    target="_blank"
+                    rel="noopener"
+                    class="hero-utility-btn hero-utility-btn-vip">
                         {% if user_plan == "vip" %}
                             Telegram VIP
                         {% elif user_plan == "premium" %}
@@ -364,48 +376,6 @@
                   <span>• {{ t("confidence", "Confidence") }}: {{ ai_confidence }}%</span>
              </div>
         </section>
-
-        {% if is_upgrade_target %}
-        <section class="premium-panel upgrade-banner-panel">
-            <div class="panel-heading">
-                <div>
-                    <span class="panel-mini-title">{{ t("upgrade_member", "Upgrade member") }}</span>
-                    <h2>
-                        {% if is_free %}
-                            {{ t("free_discovery_mode", "Vous utilisez la version découverte") }}
-                        {% else %}
-                            {{ t("basic_shows_potential", "Votre plan Basic montre le potentiel") }}
-                        {% endif %}
-                    </h2>
-                </div>
-                <span class="stat-chip">{{ t("conversion_zone", "Conversion zone") }}</span>
-            </div>
-
-            <div class="bottom-cta-box premium-upgrade-box">
-                <div>
-                    <span class="bottom-cta-kicker">{{ t("academy_pro", "Academy Pro") }}</span>
-                    <h2>
-                        {% if is_free %}
-                            {{ t("unlock_training_progression", "Débloquez la formation complète, les vidéos premium et la vraie progression.") }}
-                        {% else %}
-                            {{ t("unlock_stats_briefing_replay", "Passez au niveau supérieur pour accéder aux stats avancées, au briefing et au replay.") }}
-                        {% endif %}
-                    </h2>
-                    <p>
-                        {% if is_free %}
-                            {{ t("free_plan_environment", "Le plan gratuit montre l’environnement. Le plan Pro débloque l’Academy complète, les quiz, la certification, le replay et la logique premium derrière les signaux.") }}
-                        {% else %}
-                            {{ t("basic_good_entry", "Le plan Basic est une bonne entrée. Premium et VIP transforment l’expérience en vrai terminal de progression avec plus de profondeur, d’analyse et de rétention.") }}
-                        {% endif %}
-                    </p>
-                </div>
-                <div class="bottom-cta-actions">
-                    <a href="{{ url_for('pages.academy_upgrade', lang_code=current_lang) }}" class="hero-primary-btn">{{ t("see_pro_upgrade", "Voir l’upgrade Pro") }}</a>
-                    <a href="{{ url_for('pages.academy_upgrade', lang_code=current_lang) }}" class="hero-secondary-btn">{{ t("unlock_academy", "Débloquer Academy") }}</a>
-                </div>
-            </div>
-        </section>
-        {% endif %}
 
         <section class="premium-panel quota-panel">
             <div class="panel-heading">
@@ -677,7 +647,7 @@
 
                     <div class="signal-actions-row">
                         {% if is_premium_plus and last_signal.id %}
-                            <a href="{{ url_for('pages.learn_signal', signal_id=last_signal.id, lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course", "Mini cours") }}</a>
+                            <a href="{{url_for('replay.open_signal_replay', signal_id=last_signal.id, lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course", "Mini cours") }}</a>
                         {% else %}
                             <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course_premium", "Mini cours Premium") }}</a>
                         {% endif %}
@@ -708,7 +678,7 @@
                     </div>
 
                     <div class="trade-feed-list">
-                        {% for s in signals %}
+                        {% for s in signals[:5] %}
                         <article class="trade-card signal-trade-card">
                             <div class="trade-top">
                                 <div>
@@ -733,7 +703,7 @@
 
                             <div class="signal-card-actions">
                                 {% if is_premium_plus and s.id %}
-                                    <a href="{{ url_for('pages.learn_signal', signal_id=s.id, lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course", "Mini cours") }}</a>
+                                    <a href="{{url_for('replay.open_signal_replay', signal_id=last_signal.id, lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course", "Mini cours") }}</a>
                                 {% else %}
                                     <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course_locked", "Mini cours réservé") }}</a>
                                 {% endif %}
@@ -756,17 +726,26 @@
                                     <strong>{{ t("extra_signals", "Signaux supplémentaires") }}</strong>
                                     <span>{{ t("reserved_higher_subscribers", "Réservés aux abonnés supérieurs") }}</span>
                                 </div>
-                                
                             </div>
                             <div class="trade-analysis">
                                 {{ t("locked_signals_desc", "Vous voyez") }} {{ displayed_signals }} {{ t("signals_on", "signaux sur") }} {{ total_signals }}. {{ t("unlock_full_history_desc", "Débloquez l’historique complet, les statistiques premium, les briefs journaliers et l’expérience membre avancée.") }}
                             </div>
                             <div class="signal-card-actions locked-signal-actions">
                                 <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="hero-primary-btn compact-btn">{{ t("unlock_all_signals", "Débloquer tous les signaux") }}</a>
-                                <a href="{{ telegram_user_link if telegram_user_link else telegram_public_link }}"
+                                <a href="
+                                {% if user_plan == 'vip' %}
+                                    {{ telegram_vip_link }}
+                                {% elif user_plan == 'premium' %}
+                                    {{ telegram_premium_link }}
+                                {% elif user_plan == 'basic' %}
+                                    {{ telegram_basic_link }}
+                                {% else %}
+                                    {{ telegram_public_link }}
+                                {% endif %}
+                                "
                                    target="_blank"
-                                    rel="noopener"
-                                    class="panel-link-btn vip-lock-btn">
+                                   rel="noopener"
+                                   class="panel-link-btn vip-lock-btn">
                                     {% if user_plan == "vip" %}
                                        Telegram VIP
                                     {% elif user_plan == "premium" %}
@@ -808,7 +787,7 @@
                             </div>
                             <div class="signal-card-actions compact-actions">
                                 {% if is_premium_plus and s.id %}
-                                    <a href="{{ url_for('pages.learn_signal', signal_id=s.id, lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course", "Mini cours") }}</a>
+                                    <a href="{{ url_for('replay.open_signal_replay', signal_id=last_signal.id, lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course", "Mini cours") }}</a>
                                 {% endif %}
                                 {% if can_view_replay and latest_replay and latest_replay.signal_id == s.id %}
                                     <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id, lang_code=current_lang) }}" class="replay-btn">{{ t("replay", "Replay") }}</a>
@@ -1013,9 +992,7 @@
                             <span class="telegram-hint">{% if is_vip %}{{ t("priority_alerts", "Alertes prioritaires") }}{% else %}{{ t("upgrade_path", "Montée en gamme") }}{% endif %}</span>
                         </div>
                         <h3>{% if is_vip %}{{ t("vip_desk_open", "Votre desk Telegram VIP est ouvert") }}{% else %}{{ t("telegram_vip_locked", "Le vrai flux Telegram reste réservé aux VIP") }}{% endif %}</h3>
-                        
 
-                         
                         <p>
                             {% if is_vip %}
                                 {{ t("vip_telegram_desc", "Accède à ton canal privé pour recevoir les signaux, les updates rapides et les annonces stratégiques.") }}
@@ -1027,6 +1004,7 @@
                                 {{ t("free_telegram_desc", "Commence par le canal public, puis débloque Premium et VIP pour accéder à la distribution complète.") }}
                             {% endif %}
                         </p>
+
 {% if user_plan == "free" %}
 <div class="telegram-link-box">
     <strong>🔒 Accès Telegram</strong>
@@ -1080,7 +1058,17 @@
 
     </button>
     {% else %}
-    <a href="{{ telegram_user_link if telegram_user_link else telegram_public_link }}"
+    <a href="
+    {% if user_plan == 'vip' %}
+        {{ telegram_vip_link }}
+    {% elif user_plan == 'premium' %}
+        {{ telegram_premium_link }}
+    {% elif user_plan == 'basic' %}
+        {{ telegram_basic_link }}
+    {% else %}
+        {{ telegram_public_link }}
+    {% endif %}
+    "
        target="_blank"
        rel="noopener"
        class="telegram-btn">
@@ -1177,34 +1165,6 @@
                     </div>
                 </section>
 
-                <section class="premium-panel replay-panel">
-                    <div class="panel-heading">
-                        <div>
-                            <span class="panel-mini-title">{{ t("replay", "Replay") }}</span>
-                            <h2>{{ t("review_session", "Session de relecture") }}</h2>
-                        </div>
-                    </div>
-
-                    {% if latest_replay and can_view_replay %}
-                    <div class="replay-highlight-card">
-                        <span>{{ t("latest_replay", "Dernier replay") }}</span>
-                        <strong>{{ latest_replay.symbol }} • {{ latest_replay.direction }}</strong>
-                        <p>{{ t("replay_desc", "Travaille la décision, la gestion et l’exécution avec un replay de trade structuré.") }}</p>
-                        <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id, lang_code=current_lang) }}" class="replay-btn">{{ t("launch_replay", "Lancer le replay") }}</a>
-                    </div>
-                    {% elif not can_view_replay %}
-                    <div class="locked-preview-card">
-                        <strong>{{ t("replay_premium_vip", "Replay réservé Premium / VIP") }}</strong>
-                        <p>{{ t("replay_locked_desc_2", "Accède aux relectures de trades pour comprendre l’entrée, la gestion et la sortie.") }}</p>
-                        <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="hero-primary-btn compact-btn">{{ t("unlock_replay", "Débloquer le replay") }}</a>
-                    </div>
-                    {% else %}
-                    <div class="empty-state-box compact-empty">
-                        <h3>{{ t("no_replay_published", "Aucun replay publié") }}</h3>
-                        <p>{{ t("add_replay_desc", "Ajoutez un replay à un trade pour enrichir la zone d’apprentissage.") }}</p>
-                    </div>
-                    {% endif %}
-                </section>
             </div>
         </section>
 
@@ -1229,7 +1189,7 @@
                 </div>
                 <div class="bottom-cta-actions">
                     <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="hero-primary-btn">{{ t("see_offers", "Voir les offres") }}</a>
-                    <a href="{{ url_for('pages.academy_upgrade', lang_code=current_lang) if is_upgrade_target else url_for('pages.academy_index', lang_code=current_lang) }}" class="hero-secondary-btn">
+                    <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) if is_upgrade_target else url_for('academy.academy_index', lang_code=current_lang) }}" class="hero-secondary-btn">
                         {% if is_upgrade_target %}{{ t("unlock_academy", "Débloquer Academy") }}{% else %}{{ t("open_academy", "Ouvrir Academy") }}{% endif %}
                     </a>
                 </div>

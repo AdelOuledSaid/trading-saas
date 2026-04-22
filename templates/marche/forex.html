@@ -3,362 +3,305 @@
 {% block title %}Forex Market | VelWolf{% endblock %}
 
 {% block extra_css %}
+
 <link rel="stylesheet" href="{{ url_for('static', filename='marche.css') }}">
 {% endblock %}
 
 {% block content %}
+
 <div class="market-page forex-ultra-page">
 
-    <!-- HERO ULTRA -->
-    <section class="market-hero forex-hero-ultra">
-        <div class="market-shell">
-            <div class="hero-topline">
-                <span class="market-badge glow-badge">Macro Intelligence • Forex Command Center</span>
-                <span class="hero-live-pill">● Live Global Flow</span>
-            </div>
+```
+<!-- HERO ULTRA -->
+<section class="market-hero forex-hero-ultra">
+    <div class="market-shell">
+        <div class="hero-topline">
+            <span class="market-badge glow-badge">Macro Intelligence • Forex Command Center</span>
+            <span class="hero-live-pill">● Live Global Flow</span>
+        </div>
 
-            <div class="forex-hero-grid">
-                <div class="forex-hero-left">
-                    <h1>
-                        Forex <span>& Macro Flow</span>
-                    </h1>
+        <div class="forex-hero-grid">
+            <div class="forex-hero-left">
+                <h1>
+                    Forex <span>& Macro Flow</span>
+                </h1>
 
-                    <p class="hero-lead">
-                        Une salle de contrôle premium dédiée au dollar, aux majors et aux flux
-                        intermarket. Cette page ne montre pas seulement des paires Forex :
-                        elle donne une lecture stratégique du risque global avant son impact
-                        sur crypto, indices et métaux.
-                    </p>
+                <p class="hero-lead">
+                    Interface d’analyse macro dédiée au dollar et aux principales paires Forex, conçue pour identifier les flux dominants et leur impact sur les autres marchés.
+                </p>
 
-                    <div class="hero-actions">
-                        <a href="#forex-command-center" class="hero-btn hero-btn-primary">Explorer le marché</a>
-                        <a href="#macro-intelligence" class="hero-btn hero-btn-secondary">Voir la lecture macro</a>
-                    </div>
-
-                    <div class="market-kpi-row hero-kpi-premium">
-                        <div class="market-kpi floating-card">
-                            <span class="label">Pilote macro</span>
-                            <span class="value">DXY</span>
-                            <span class="meta">Boussole du dollar</span>
-                        </div>
-                        <div class="market-kpi positive floating-card">
-                            <span class="label">Majors</span>
-                            <span class="value">EUR / GBP</span>
-                            <span class="meta">Flux principaux</span>
-                        </div>
-                        <div class="market-kpi floating-card">
-                            <span class="label">Asie</span>
-                            <span class="value">USDJPY</span>
-                            <span class="meta">Thermomètre du risque</span>
-                        </div>
-                        <div class="market-kpi warning floating-card">
-                            <span class="label">Catalyseurs</span>
-                            <span class="value">Fed / CPI</span>
-                            <span class="meta">Événements de rupture</span>
-                        </div>
-                    </div>
+                <div class="hero-actions">
+                    <a href="#forex-command-center" class="hero-btn hero-btn-primary">Explorer le marché</a>
+                    <a href="#macro-intelligence" class="hero-btn hero-btn-secondary">Voir la lecture macro</a>
                 </div>
 
-                <div class="forex-hero-right">
-                    <div class="macro-orb-card">
-                        <div class="macro-orb-header">
-                            <span class="orb-label">Global Macro Pulse</span>
-                            <span class="orb-status">Institutional View</span>
-                        </div>
-
-                        <div class="macro-orb-wrap">
-                            <div class="macro-orb"></div>
-                            <div class="orb-ring ring-1"></div>
-                            <div class="orb-ring ring-2"></div>
-                            <div class="orb-ring ring-3"></div>
-                        </div>
-
-                        <div class="macro-mini-grid">
-                            <div class="macro-mini-box">
-                                <span class="mini-label">USD</span>
-                                <span class="mini-value">Liquidity Driver</span>
-                            </div>
-                            <div class="macro-mini-box">
-                                <span class="mini-label">JPY</span>
-                                <span class="mini-value">Risk Proxy</span>
-                            </div>
-                            <div class="macro-mini-box">
-                                <span class="mini-label">EUR</span>
-                                <span class="mini-value">Policy Flow</span>
-                            </div>
-                            <div class="macro-mini-box">
-                                <span class="mini-label">GBP</span>
-                                <span class="mini-value">Volatility Edge</span>
-                            </div>
-                        </div>
+                <div class="market-kpi-row hero-kpi-premium">
+                    <div class="market-kpi floating-card">
+                        <span class="label">Pilote macro</span>
+                        <span class="value">DXY</span>
+                        <span class="meta">Boussole du dollar</span>
+                    </div>
+                    <div class="market-kpi positive floating-card">
+                        <span class="label">Majors</span>
+                        <span class="value">EUR / GBP</span>
+                        <span class="meta">Flux principaux</span>
+                    </div>
+                    <div class="market-kpi floating-card">
+                        <span class="label">Asie</span>
+                        <span class="value">USDJPY</span>
+                        <span class="meta">Thermomètre du risque</span>
+                    </div>
+                    <div class="market-kpi warning floating-card">
+                        <span class="label">Catalyseurs</span>
+                        <span class="value">Fed / CPI</span>
+                        <span class="meta">Événements de rupture</span>
                     </div>
                 </div>
             </div>
 
-            <!-- TAPE -->
-            <div class="tv-card tv-card-tape premium-tape-card">
+            <div class="forex-hero-right">
+                <div class="macro-orb-card">
+                    <div class="macro-orb-header">
+                        <span class="orb-label">Global Macro Pulse</span>
+                        <span class="orb-status">Institutional View</span>
+                    </div>
+
+                    <div class="macro-orb-wrap">
+                        <div class="macro-orb"></div>
+                        <div class="orb-ring ring-1"></div>
+                        <div class="orb-ring ring-2"></div>
+                        <div class="orb-ring ring-3"></div>
+                    </div>
+
+                    <div class="macro-mini-grid">
+                        <div class="macro-mini-box">
+                            <span class="mini-label">USD</span>
+                            <span class="mini-value">Liquidity Driver</span>
+                        </div>
+                        <div class="macro-mini-box">
+                            <span class="mini-label">JPY</span>
+                            <span class="mini-value">Risk Proxy</span>
+                        </div>
+                        <div class="macro-mini-box">
+                            <span class="mini-label">EUR</span>
+                            <span class="mini-value">Policy Flow</span>
+                        </div>
+                        <div class="macro-mini-box">
+                            <span class="mini-label">GBP</span>
+                            <span class="mini-value">Volatility Edge</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAPE -->
+        <div class="tv-card tv-card-tape premium-tape-card">
+            <div class="tv-card-head">
+                <h2>Majors en direct</h2>
+                <p>Lecture instantanée des devises influençant les conditions monétaires globales.</p>
+            </div>
+
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+                {
+                    "symbols": [
+                        { "proName": "TVC:DXY", "title": "DXY" },
+                        { "proName": "FX:EURUSD", "title": "EURUSD" },
+                        { "proName": "FX:GBPUSD", "title": "GBPUSD" },
+                        { "proName": "FX:USDJPY", "title": "USDJPY" },
+                        { "proName": "FX:USDCHF", "title": "USDCHF" },
+                        { "proName": "FX:AUDUSD", "title": "AUDUSD" },
+                        { "proName": "FX:USDCAD", "title": "USDCAD" },
+                        { "proName": "FX:NZDUSD", "title": "NZDUSD" }
+                    ],
+                    "showSymbolLogo": true,
+                    "colorTheme": "dark",
+                    "isTransparent": true,
+                    "displayMode": "adaptive",
+                    "locale": "fr"
+                }
+                </script>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMMAND CENTER -->
+<section class="market-section" id="forex-command-center">
+    <div class="market-shell">
+
+        <div class="section-heading-ultra">
+            <span class="section-kicker">Forex Command Center</span>
+            <h2>Le centre de lecture des flux monétaires</h2>
+            <p>
+                Lecture structurée du dollar et des majors pour identifier les déséquilibres macro et anticiper les mouvements intermarket.
+            </p>
+        </div>
+
+        <div class="market-grid-2 ultra-chart-grid">
+
+            <article class="market-card-chart ultra-chart-card dominant-chart">
                 <div class="tv-card-head">
-                    <h2>Majors en direct</h2>
-                    <p>Lecture instantanée des devises qui pilotent la pression monétaire mondiale.</p>
+                    <div>
+                        <span class="chart-tag">Primary Macro Driver</span>
+                        <h2>DXY — graphique principal</h2>
+                        <p>Le DXY agit comme indicateur central de liquidité et de pression globale sur les actifs risqués.</p>
+                    </div>
+                    <span class="chart-side-badge">Core Signal</span>
                 </div>
 
-                <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container chart-widget">
                     <div class="tradingview-widget-container__widget"></div>
-                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
                     {
-                        "symbols": [
-                            { "proName": "TVC:DXY", "title": "DXY" },
-                            { "proName": "FX:EURUSD", "title": "EURUSD" },
-                            { "proName": "FX:GBPUSD", "title": "GBPUSD" },
-                            { "proName": "FX:USDJPY", "title": "USDJPY" },
-                            { "proName": "FX:USDCHF", "title": "USDCHF" },
-                            { "proName": "FX:AUDUSD", "title": "AUDUSD" },
-                            { "proName": "FX:USDCAD", "title": "USDCAD" },
-                            { "proName": "FX:NZDUSD", "title": "NZDUSD" }
-                        ],
-                        "showSymbolLogo": true,
-                        "colorTheme": "dark",
-                        "isTransparent": true,
-                        "displayMode": "adaptive",
-                        "locale": "fr"
+                        "autosize": true,
+                        "symbol": "TVC:DXY",
+                        "interval": "D",
+                        "timezone": "Europe/Paris",
+                        "theme": "dark",
+                        "style": "1",
+                        "locale": "fr",
+                        "allow_symbol_change": true,
+                        "calendar": true,
+                        "withdateranges": true,
+                        "details": true,
+                        "support_host": "https://www.tradingview.com"
                     }
                     </script>
                 </div>
-            </div>
+            </article>
+
+            <article class="market-card-chart ultra-chart-card">
+                <div class="tv-card-head">
+                    <div>
+                        <span class="chart-tag">Majors Dashboard</span>
+                        <h2>Vue Forex globale</h2>
+                        <p>Vue consolidée des principales paires pour analyser les flux internationaux et la rotation des capitaux.</p>
+                    </div>
+                    <span class="chart-side-badge">Live Matrix</span>
+                </div>
+
+                <div class="tradingview-widget-container market-overview-widget">
+                    <div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+                    {
+                        "colorTheme": "dark",
+                        "dateRange": "12M",
+                        "showChart": true,
+                        "locale": "fr",
+                        "isTransparent": true,
+                        "showSymbolLogo": true,
+                        "width": "100%",
+                        "height": "540",
+                        "tabs": [
+                            {
+                                "title": "Forex",
+                                "symbols": [
+                                    { "s": "FX:EURUSD", "d": "EUR/USD" },
+                                    { "s": "FX:GBPUSD", "d": "GBP/USD" },
+                                    { "s": "FX:USDJPY", "d": "USD/JPY" },
+                                    { "s": "FX:USDCHF", "d": "USD/CHF" },
+                                    { "s": "FX:AUDUSD", "d": "AUD/USD" },
+                                    { "s": "FX:USDCAD", "d": "USD/CAD" },
+                                    { "s": "FX:NZDUSD", "d": "NZD/USD" }
+                                ]
+                            }
+                        ],
+                        "support_host": "https://www.tradingview.com"
+                    }
+                    </script>
+                </div>
+            </article>
+
         </div>
-    </section>
 
-    <!-- COMMAND CENTER -->
-    <section class="market-section" id="forex-command-center">
-        <div class="market-shell">
+        <!-- MACRO CARDS -->
+        <div class="market-grid forex-insight-grid" id="macro-intelligence">
 
-            <div class="section-heading-ultra">
-                <span class="section-kicker">Forex Command Center</span>
-                <h2>Le centre de lecture des flux monétaires</h2>
+            <article class="market-card ultra-info-card">
+                <span class="eyebrow">Dollar Structure</span>
+                <h2>Le vrai filtre macro</h2>
                 <p>
-                    Une vision haut niveau du dollar, des majors et des dynamiques intermarket
-                    pour anticiper les mouvements avant qu’ils explosent sur les autres classes d’actifs.
+                    Une hausse du dollar renforce les conditions restrictives, tandis qu’un affaiblissement soutient les actifs à risque.
+                </p>
+                <div class="card-stat">
+                    <span class="name">Effet</span>
+                    <span class="num">Cross-Asset Pressure</span>
+                </div>
+            </article>
+
+            <article class="market-card ultra-info-card">
+                <span class="eyebrow">Macro Catalysts</span>
+                <h2>Fed, inflation et données</h2>
+                <p>
+                    Le Forex intègre rapidement les annonces macro : inflation, emploi, politique monétaire et décisions des banques centrales.
+                </p>
+                <div class="card-stat">
+                    <span class="name">Utilité</span>
+                    <span class="num">Confluence Engine</span>
+                </div>
+            </article>
+
+            <article class="market-card ultra-info-card">
+                <span class="eyebrow">Execution Edge</span>
+                <h2>Lire avant d’agir</h2>
+                <p>
+                    Le Forex fournit un contexte préalable pour structurer des scénarios d’exécution sur les autres marchés.
+                </p>
+                <div class="card-stat">
+                    <span class="name">Objectif</span>
+                    <span class="num">Timing Premium</span>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- HIGHLIGHT -->
+        <div class="market-highlight ultra-highlight-block">
+            <div class="highlight-left">
+                <span class="section-kicker">Pourquoi cette page devient puissante</span>
+                <h3>Avantage analytique basé sur la lecture des flux macro</h3>
+                <p>
+                    L’analyse ne se limite pas à l’actif traité. Le Forex permet d’identifier les sources de pression macro et d’anticiper les réactions sur l’ensemble des classes d’actifs.
                 </p>
             </div>
 
-            <div class="market-grid-2 ultra-chart-grid">
-
-                <article class="market-card-chart ultra-chart-card dominant-chart">
-                    <div class="tv-card-head">
-                        <div>
-                            <span class="chart-tag">Primary Macro Driver</span>
-                            <h2>DXY — graphique principal</h2>
-                            <p>Le dollar reste l’un des filtres les plus puissants du risque global.</p>
-                        </div>
-                        <span class="chart-side-badge">Core Signal</span>
-                    </div>
-
-                    <div class="tradingview-widget-container chart-widget">
-                        <div class="tradingview-widget-container__widget"></div>
-                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-                        {
-                            "autosize": true,
-                            "symbol": "TVC:DXY",
-                            "interval": "D",
-                            "timezone": "Europe/Paris",
-                            "theme": "dark",
-                            "style": "1",
-                            "locale": "fr",
-                            "allow_symbol_change": true,
-                            "calendar": true,
-                            "withdateranges": true,
-                            "details": true,
-                            "support_host": "https://www.tradingview.com"
-                        }
-                        </script>
-                    </div>
-                </article>
-
-                <article class="market-card-chart ultra-chart-card">
-                    <div class="tv-card-head">
-                        <div>
-                            <span class="chart-tag">Majors Dashboard</span>
-                            <h2>Vue Forex globale</h2>
-                            <p>Les grandes paires pour une lecture rapide des flux internationaux.</p>
-                        </div>
-                        <span class="chart-side-badge">Live Matrix</span>
-                    </div>
-
-                    <div class="tradingview-widget-container market-overview-widget">
-                        <div class="tradingview-widget-container__widget"></div>
-                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
-                        {
-                            "colorTheme": "dark",
-                            "dateRange": "12M",
-                            "showChart": true,
-                            "locale": "fr",
-                            "isTransparent": true,
-                            "showSymbolLogo": true,
-                            "width": "100%",
-                            "height": "540",
-                            "tabs": [
-                                {
-                                    "title": "Forex",
-                                    "symbols": [
-                                        { "s": "FX:EURUSD", "d": "EUR/USD" },
-                                        { "s": "FX:GBPUSD", "d": "GBP/USD" },
-                                        { "s": "FX:USDJPY", "d": "USD/JPY" },
-                                        { "s": "FX:USDCHF", "d": "USD/CHF" },
-                                        { "s": "FX:AUDUSD", "d": "AUD/USD" },
-                                        { "s": "FX:USDCAD", "d": "USD/CAD" },
-                                        { "s": "FX:NZDUSD", "d": "NZD/USD" }
-                                    ]
-                                }
-                            ],
-                            "support_host": "https://www.tradingview.com"
-                        }
-                        </script>
-                    </div>
-                </article>
-
-            </div>
-
-            <!-- MACRO INTELLIGENCE CARDS -->
-            <div class="market-grid forex-insight-grid" id="macro-intelligence">
-                <article class="market-card ultra-info-card">
-                    <span class="eyebrow">Dollar Structure</span>
-                    <h2>Le vrai filtre macro</h2>
-                    <p>
-                        Une accélération du dollar peut peser sur les actifs risqués,
-                        alors qu’un reflux du billet vert favorise souvent la prise de risque.
-                    </p>
-                    <div class="card-stat">
-                        <span class="name">Effet</span>
-                        <span class="num">Cross-Asset Pressure</span>
-                    </div>
-                </article>
-
-                <article class="market-card ultra-info-card">
-                    <span class="eyebrow">Macro Catalysts</span>
-                    <h2>Fed, inflation et données</h2>
-                    <p>
-                        Le Forex réagit souvent avant le reste du marché aux annonces macro :
-                        CPI, NFP, FOMC, PMI ou décisions de banques centrales.
-                    </p>
-                    <div class="card-stat">
-                        <span class="name">Utilité</span>
-                        <span class="num">Confluence Engine</span>
-                    </div>
-                </article>
-
-                <article class="market-card ultra-info-card">
-                    <span class="eyebrow">Execution Edge</span>
-                    <h2>Lire avant d’agir</h2>
-                    <p>
-                        Observer le Forex permet de préparer un scénario avant d’entrer
-                        sur crypto, indices ou métaux avec plus de précision.
-                    </p>
-                    <div class="card-stat">
-                        <span class="name">Objectif</span>
-                        <span class="num">Timing Premium</span>
-                    </div>
-                </article>
-            </div>
-
-            <!-- SIGNAL MAP -->
-            <div class="market-table-card ultra-table-card" style="margin-top: 28px;">
-                <div class="market-table-head">
-                    <span>Paire / Indice</span>
-                    <span>Rôle</span>
-                    <span>Lecture</span>
-                    <span>Priorité</span>
+            <div class="market-mini-list premium-mini-list">
+                <div class="market-mini-item">
+                    <span class="label">Pilier</span>
+                    <span class="value">DXY</span>
                 </div>
-
-                <div class="market-table-row">
-                    <span><strong>DXY</strong></span>
-                    <span>Pilote central</span>
-                    <span>Force du dollar global</span>
-                    <span class="market-up">Très haute</span>
+                <div class="market-mini-item">
+                    <span class="label">Majors</span>
+                    <span class="value">EUR / GBP / JPY</span>
                 </div>
-
-                <div class="market-table-row">
-                    <span><strong>EUR/USD</strong></span>
-                    <span>Major principale</span>
-                    <span>Flux Europe / USD</span>
-                    <span>Haute</span>
+                <div class="market-mini-item">
+                    <span class="label">Lecture</span>
+                    <span class="value">Macro + Flux</span>
                 </div>
-
-                <div class="market-table-row">
-                    <span><strong>GBP/USD</strong></span>
-                    <span>Volatilité utile</span>
-                    <span>Accélérations courtes</span>
-                    <span>Moyenne</span>
-                </div>
-
-                <div class="market-table-row">
-                    <span><strong>USD/JPY</strong></span>
-                    <span>Risk Gauge</span>
-                    <span>Sentiment global / yen flow</span>
-                    <span class="market-up">Très haute</span>
-                </div>
-
-                <div class="market-table-row">
-                    <span><strong>USD/CHF</strong></span>
-                    <span>Refuge</span>
-                    <span>Stress ou défense</span>
-                    <span>Moyenne</span>
-                </div>
-
-                <div class="market-table-row">
-                    <span><strong>AUD/USD</strong></span>
-                    <span>Growth Proxy</span>
-                    <span>Sensibilité au risk-on</span>
-                    <span>Moyenne</span>
+                <div class="market-mini-item">
+                    <span class="label">But</span>
+                    <span class="value">Confluence premium</span>
                 </div>
             </div>
-
-            <!-- ULTRA HIGHLIGHT -->
-            <div class="market-highlight ultra-highlight-block">
-                <div class="highlight-left">
-                    <span class="section-kicker">Pourquoi cette page devient puissante</span>
-                    <h3>Un vrai avantage premium pour lire le marché avant les autres</h3>
-                    <p>
-                        Un site haut de gamme ne regarde pas uniquement l’actif qu’il trade.
-                        Il observe ce qui crée le mouvement. Le Forex apporte un filtre macro
-                        avancé qui peut donner un temps d’avance avant la réaction complète
-                        sur crypto, indices ou matières premières.
-                    </p>
-                </div>
-
-                <div class="market-mini-list premium-mini-list">
-                    <div class="market-mini-item">
-                        <span class="label">Pilier</span>
-                        <span class="value">DXY</span>
-                    </div>
-                    <div class="market-mini-item">
-                        <span class="label">Majors</span>
-                        <span class="value">EUR / GBP / JPY</span>
-                    </div>
-                    <div class="market-mini-item">
-                        <span class="label">Lecture</span>
-                        <span class="value">Macro + Flux</span>
-                    </div>
-                    <div class="market-mini-item">
-                        <span class="label">But</span>
-                        <span class="value">Confluence premium</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- FINAL STRIP -->
-            <div class="forex-bottom-banner">
-                <div class="bottom-banner-text">
-                    <span class="section-kicker">VelWolf Intelligence Layer</span>
-                    <h3>Forex n’est plus une simple page. C’est un radar de pression mondiale.</h3>
-                    <p>
-                        Plus visuel, plus institutionnel, plus premium : exactement le type de section
-                        qui donne à ton site un niveau supérieur.
-                    </p>
-                </div>
-            </div>
-
         </div>
-    </section>
+
+        <!-- FINAL -->
+        <div class="forex-bottom-banner">
+            <div class="bottom-banner-text">
+                <span class="section-kicker">VelWolf Intelligence Layer</span>
+                <h3>Le Forex devient un outil de lecture des flux globaux et de validation des scénarios de marché.</h3>
+                <p>
+                    Interface conçue pour analyser la pression macro globale et améliorer la prise de décision.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</section>
+```
 
 </div>
 {% endblock %}

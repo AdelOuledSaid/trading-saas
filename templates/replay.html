@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Replay {{ replay.symbol }} - VelWolf</title>
-    <meta name="description" content="Replay trading premium VelWolf avec simulation, prise de décision, score, analyse et apprentissage utilisateur.">
+    <meta name="description" content="Replay trading premium VelWolf sans TradingView, avec simulation professionnelle, prise de décision, score et apprentissage avancé.">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='replay.css') }}">
-    
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 <body class="replay-body">
@@ -16,35 +16,24 @@
     {% include "partials/navbar.html" %}
 
     <div class="replay-shell">
-
         <section class="replay-hero">
             <div class="section-container">
                 <div class="replay-hero-inner">
-
                     <div class="replay-topline">
-                        <span class="replay-kicker">VelWolf Training Replay</span>
+                        <span class="replay-kicker">VelWolf Professional Replay Engine</span>
 
                         <div class="hero-badges">
-                            <span class="replay-status
-                                {% if replay.result == 'WIN' %}
-                                    status-win
-                                {% elif replay.result == 'LOSS' %}
-                                    status-loss
-                                {% else %}
-                                    status-open
-                                {% endif %}
-                            ">
+                            <span id="result-badge" class="replay-status status-open">
                                 {{ replay.result or "OPEN" }}
                             </span>
-
-                            <span id="setup-grade-badge" class="badge-quality badge-b">Setup B</span>
-                            <span id="difficulty-badge" class="badge-difficulty">Difficulté</span>
+                            <span id="setup-grade-badge" class="badge-quality">Setup -</span>
+                            <span id="difficulty-badge" class="badge-difficulty">Difficulty -</span>
                         </div>
                     </div>
 
                     <div class="replay-hero-grid">
                         <div class="replay-hero-copy">
-                            <h1>Replay interactif du trade {{ replay.symbol }}</h1>
+                            <h1>Replay immersif {{ replay.symbol }}</h1>
 
                             <p class="subtitle">
                                 {{ replay.symbol }} • {{ replay.timeframe }} • {{ replay.direction }}
@@ -54,16 +43,15 @@
                             </p>
 
                             <p class="replay-hero-text">
-                                Observe le contexte, prends une vraie décision au moment critique,
-                                compare ta lecture à celle du plan initial et transforme chaque replay
-                                en progression concrète.
+                                Ce replay n’est pas une simple lecture de bougies. Il simule la pression réelle du marché,
+                                force la décision au moment critique, puis compare ton jugement à une logique d’exécution disciplinée.
                             </p>
 
                             <div class="hero-learning-points">
-                                <div class="learning-pill">Lecture du setup</div>
-                                <div class="learning-pill">Gestion en temps réel</div>
-                                <div class="learning-pill">Feedback immédiat</div>
-                                <div class="learning-pill">Score de discipline</div>
+                                <div class="learning-pill">Replay sans TradingView</div>
+                                <div class="learning-pill">Decision point réel</div>
+                                <div class="learning-pill">Benchmark trader</div>
+                                <div class="learning-pill">Lecture tactique</div>
                             </div>
 
                             <div class="replay-hero-actions">
@@ -82,32 +70,31 @@
                             <div class="hero-card-metrics">
                                 <div class="hero-mini-stat">
                                     <span>Actif</span>
-                                    <strong>{{ replay.symbol }}</strong>
+                                    <strong id="hero-symbol">{{ replay.symbol }}</strong>
                                 </div>
 
                                 <div class="hero-mini-stat">
                                     <span>Direction</span>
-                                    <strong class="{{ replay.direction }}">{{ replay.direction }}</strong>
+                                    <strong id="hero-direction">{{ replay.direction }}</strong>
                                 </div>
 
                                 <div class="hero-mini-stat">
                                     <span>Confiance</span>
-                                    <strong>{{ replay.confidence or 0 }}%</strong>
+                                    <strong id="hero-confidence">0%</strong>
                                 </div>
 
                                 <div class="hero-mini-stat">
                                     <span>R/R</span>
-                                    <strong>{{ replay.risk_reward or "-" }}</strong>
+                                    <strong id="hero-rr">-</strong>
                                 </div>
                             </div>
 
                             <div class="hero-card-note">
-                                Ce replay est conçu comme une séance d’entraînement :
-                                tu ne regardes pas seulement un trade, tu apprends à le gérer.
+                                Le replay stoppe au point critique, puis mesure la qualité de ta décision.
+                                Le but n’est pas de regarder un gain, mais d’entraîner ton exécution.
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </section>
@@ -115,7 +102,6 @@
         <main class="replay-main">
             <div class="section-container">
                 <div class="replay-container">
-
                     <div class="replay-grid">
 
                         <div class="replay-main-column">
@@ -124,7 +110,7 @@
                                 <div class="panel-head">
                                     <div>
                                         <span class="panel-kicker">Simulation</span>
-                                        <h2>📊 Replay du marché</h2>
+                                        <h2>Replay du marché</h2>
                                     </div>
 
                                     <div class="panel-badge" id="chart-badge">
@@ -153,6 +139,12 @@
 
                                 <div id="chart"></div>
 
+                                <div class="price-legend">
+                                    <div class="legend-item"><span class="legend-line entry-line"></span>Entrée</div>
+                                    <div class="legend-item"><span class="legend-line sl-line"></span>Stop Loss</div>
+                                    <div class="legend-item"><span class="legend-line tp-line"></span>Take Profit</div>
+                                </div>
+
                                 <div class="replay-progress">
                                     <div class="replay-progress-bar" id="progress-bar"></div>
                                 </div>
@@ -160,6 +152,7 @@
                                 <div class="controls">
                                     <button type="button" onclick="startReplay()">▶ Play</button>
                                     <button type="button" onclick="pauseReplay()">⏸ Pause</button>
+                                    <button type="button" onclick="stepReplay()">⏭ Step</button>
                                     <button type="button" onclick="resetReplay()">🔄 Reset</button>
                                     <button type="button" onclick="setSpeed(1)">x1</button>
                                     <button type="button" onclick="setSpeed(2)">x2</button>
@@ -171,35 +164,35 @@
                                 <div class="panel-head">
                                     <div>
                                         <span class="panel-kicker">Plan de trade</span>
-                                        <h3>🎯 Ce qu’il fallait surveiller</h3>
+                                        <h3>Exécution à surveiller</h3>
                                     </div>
                                 </div>
 
                                 <div class="training-grid">
                                     <div class="training-box">
                                         <span>Entrée</span>
-                                        <strong>{{ replay.entry_price }}</strong>
+                                        <strong id="entry-price-box">-</strong>
                                     </div>
 
                                     <div class="training-box">
                                         <span>Stop Loss</span>
-                                        <strong>{{ replay.stop_loss or "-" }}</strong>
+                                        <strong id="stop-loss-box">-</strong>
                                     </div>
 
                                     <div class="training-box">
                                         <span>Take Profit</span>
-                                        <strong>{{ replay.take_profit or "-" }}</strong>
+                                        <strong id="take-profit-box">-</strong>
                                     </div>
 
                                     <div class="training-box">
                                         <span>Résultat final</span>
-                                        <strong>{{ replay.result or "N/A" }}</strong>
+                                        <strong id="result-box">-</strong>
                                     </div>
                                 </div>
 
                                 <div class="training-note">
-                                    Le but n’est pas de deviner le résultat, mais de juger la qualité de gestion
-                                    lorsque le prix revient tester la conviction du trader.
+                                    Le replay doit t’apprendre à gérer un plan sous pression.
+                                    La qualité ne se mesure pas seulement au résultat final, mais à la cohérence de la décision.
                                 </div>
                             </section>
 
@@ -207,19 +200,19 @@
                                 <div class="panel-head">
                                     <div>
                                         <span class="panel-kicker">Analyse</span>
-                                        <h3>🧠 Lecture du setup</h3>
+                                        <h3>Lecture du setup</h3>
                                     </div>
                                 </div>
 
                                 <div class="analysis-split">
                                     <div class="analysis-box">
                                         <h4>Avant le trade</h4>
-                                        <p>{{ replay.market_context or "Aucune analyse de contexte disponible." }}</p>
+                                        <p id="market-context">Chargement...</p>
                                     </div>
 
                                     <div class="analysis-box">
                                         <h4>Après le trade</h4>
-                                        <p>{{ replay.post_analysis or "Aucune analyse post-trade disponible." }}</p>
+                                        <p id="post-analysis">Chargement...</p>
                                     </div>
                                 </div>
                             </section>
@@ -228,7 +221,7 @@
                                 <div class="panel-head">
                                     <div>
                                         <span class="panel-kicker">Apprentissage</span>
-                                        <h3>📘 Leçon du replay</h3>
+                                        <h3>Leçons du replay</h3>
                                     </div>
                                 </div>
 
@@ -241,11 +234,11 @@
                                 <div class="panel-head">
                                     <div>
                                         <span class="panel-kicker">Timeline</span>
-                                        <h3>📍 Événements du trade</h3>
+                                        <h3>Événements du trade</h3>
                                     </div>
                                 </div>
 
-                                <div id="events"></div>
+                                <div id="events" class="events-list"></div>
                             </section>
 
                         </div>
@@ -256,63 +249,63 @@
                                 <div class="panel-head">
                                     <div>
                                         <span class="panel-kicker">Trade card</span>
-                                        <h3>📌 Détails du trade</h3>
+                                        <h3>Détails du trade</h3>
                                     </div>
                                 </div>
 
                                 <div class="info-item">
                                     <span>Actif</span>
-                                    <strong>{{ replay.symbol }}</strong>
+                                    <strong id="side-symbol">{{ replay.symbol }}</strong>
                                 </div>
 
                                 <div class="info-item">
                                     <span>Direction</span>
-                                    <strong class="{{ replay.direction }}">{{ replay.direction }}</strong>
+                                    <strong id="side-direction">{{ replay.direction }}</strong>
                                 </div>
 
                                 <div class="info-item">
                                     <span>Entrée</span>
-                                    <strong>{{ replay.entry_price }}</strong>
+                                    <strong id="side-entry">-</strong>
                                 </div>
 
                                 <div class="info-item">
                                     <span>Stop Loss</span>
-                                    <strong>{{ replay.stop_loss or "-" }}</strong>
+                                    <strong id="side-sl">-</strong>
                                 </div>
 
                                 <div class="info-item">
                                     <span>Take Profit</span>
-                                    <strong>{{ replay.take_profit or "-" }}</strong>
+                                    <strong id="side-tp">-</strong>
                                 </div>
 
                                 <div class="info-item">
                                     <span>Confiance</span>
-                                    <strong>{{ replay.confidence or 0 }}%</strong>
+                                    <strong id="side-confidence">0%</strong>
                                 </div>
 
                                 <div class="info-item">
                                     <span>Tendance</span>
-                                    <strong>{{ replay.trend or "-" }}</strong>
+                                    <strong id="side-trend">-</strong>
                                 </div>
 
                                 <div class="info-item">
                                     <span>R/R</span>
-                                    <strong>{{ replay.risk_reward or "-" }}</strong>
+                                    <strong id="side-rr">-</strong>
                                 </div>
 
                                 <div class="info-item">
                                     <span>Timeframe</span>
-                                    <strong>{{ replay.timeframe }}</strong>
+                                    <strong id="side-timeframe">{{ replay.timeframe }}</strong>
                                 </div>
 
                                 <div class="info-item">
                                     <span>Résultat</span>
-                                    <strong class="result {{ replay.result }}">{{ replay.result or "N/A" }}</strong>
+                                    <strong id="side-result">{{ replay.result or "N/A" }}</strong>
                                 </div>
 
                                 <div class="score-card">
                                     <div class="score-head">
-                                        <span>🎯 Score replay</span>
+                                        <span>Score replay</span>
                                         <strong id="trader-score">0</strong>
                                     </div>
 
@@ -329,6 +322,7 @@
                                             <span>Discipline</span>
                                             <strong id="discipline-score">0/10</strong>
                                         </div>
+
                                         <div class="mini-score-box">
                                             <span>Timing</span>
                                             <strong id="timing-score">0/10</strong>
@@ -339,10 +333,10 @@
 
                             <section class="side-note-card">
                                 <span class="panel-kicker">Valeur utilisateur</span>
-                                <h3>Pourquoi ce replay sert vraiment</h3>
+                                <h3>Pourquoi ce replay est utile</h3>
                                 <p>
-                                    Un bon replay n’est pas juste beau : il aide l’utilisateur à reconnaître
-                                    un contexte, à gérer une hésitation, puis à renforcer sa discipline.
+                                    Le replay doit t’apprendre à lire la structure, tenir un plan
+                                    et renforcer une exécution froide quand le marché devient inconfortable.
                                 </p>
                             </section>
 
@@ -350,8 +344,8 @@
                                 <span class="panel-kicker">Premium desk</span>
                                 <h3>Débloquer plus de replays</h3>
                                 <p>
-                                    Accède à la bibliothèque complète, aux stats de progression et à des replays
-                                    classés par difficulté, setup et qualité d’exécution.
+                                    Accède à la bibliothèque complète, aux statistiques de progression,
+                                    aux classements et aux replays plus avancés.
                                 </p>
                                 <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="upgrade-btn">
                                     Voir les offres premium
@@ -359,7 +353,6 @@
                             </section>
 
                         </aside>
-
                     </div>
                 </div>
             </div>
@@ -369,17 +362,17 @@
     <div id="decision-box" class="decision-box hidden">
         <div class="decision-box-head">
             <span class="decision-badge">Moment critique</span>
-            <h3>🤔 Que fais-tu maintenant ?</h3>
+            <h3>Que fais-tu maintenant ?</h3>
         </div>
 
         <p id="decision-question">
-            Le marché revient sur une zone sensible. Ta gestion du trade compte plus que ton ego.
+            Le marché revient dans une zone sensible. C’est ici que l’exécution distingue le trader discipliné du trader émotionnel.
         </p>
 
         <div class="decision-buttons">
-            <button type="button" class="decision-close" onclick="makeDecision('close')">❌ Fermer</button>
-            <button type="button" class="decision-hold" onclick="makeDecision('hold')">✅ Conserver</button>
-            <button type="button" class="decision-partial" onclick="makeDecision('partial')">📉 Alléger</button>
+            <button type="button" class="decision-close" onclick="makeDecision('close')">Fermer</button>
+            <button type="button" class="decision-hold" onclick="makeDecision('hold')">Conserver</button>
+            <button type="button" class="decision-partial" onclick="makeDecision('partial')">Alléger</button>
         </div>
     </div>
 
@@ -389,7 +382,7 @@
         const replayApiBase = `/${currentLang}/api/replay/${replayId}`;
     </script>
 
-    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
-    <script src="{{ url_for('static', filename='replay.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    <script src="{{ url_for('static', filename='replay.js') }}?v=20260421-final-4"></script>
 </body>
 </html>

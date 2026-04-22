@@ -2,6 +2,7 @@ import requests
 from datetime import datetime, timedelta
 from flask import Blueprint, render_template, request, jsonify
 from flask_login import current_user
+import config
 
 from app.extensions import db
 from app.models import Signal, TradeReplay, UserReplayDecision
@@ -14,6 +15,8 @@ from app.services.market_service import (
     get_btc_dominance_live,
 )
 from app.access import signal_limit_for_plan, has_access
+from app.services.signal_service import auto_update_signal_status
+
 
 signals_bp = Blueprint("signals", __name__)
 
@@ -26,18 +29,51 @@ def _get_user_plan():
     )
 
 
+def _resolve_time_threshold(time_filter: str):
+    now = datetime.utcnow()
+
+    if time_filter == "1m":
+        return now - timedelta(minutes=1)
+    elif time_filter == "5m":
+        return now - timedelta(minutes=5)
+    elif time_filter == "15m":
+        return now - timedelta(minutes=15)
+    elif time_filter == "1h":
+        return now - timedelta(hours=1)
+    elif time_filter == "4h":
+        return now - timedelta(hours=4)
+    elif time_filter == "1d":
+        return now - timedelta(days=1)
+    elif time_filter == "1w":
+        return now - timedelta(weeks=1)
+    elif time_filter == "1M":
+        return now - timedelta(days=30)
+    elif time_filter == "1y":
+        return now - timedelta(days=365)
+
+    return None
+
+
 @signals_bp.route("/<lang_code>/signals")
 def signals_page(lang_code):
-    return render_template("signals/index.html")
+    return render_template("signals/index.html", current_lang=lang_code)
 
 
 @signals_bp.route("/<lang_code>/results")
 def results(lang_code):
     asset_filter = request.args.get("asset", "ALL").upper().strip()
-    time_filter = request.args.get("time", "all").lower().strip()
+    time_filter = request.args.get("time", "all").strip()
 
-    allowed_assets = {"ALL", "BTCUSD", "ETHUSD", "GOLD", "US100"}
-    allowed_times = {"all", "15m", "1h", "1d", "1w", "1m"}
+    allowed_assets = {
+        "ALL",
+        "BTCUSD", "ETHUSD", "SOLUSD", "XRPUSD",
+        "EURUSD", "GBPUSD", "USDJPY",
+        "US100", "US500", "GER40", "FRA40",
+    }
+
+    allowed_times = {
+        "all", "1m", "5m", "15m", "1h", "4h", "1d", "1w", "1M", "1y"
+    }
 
     if asset_filter not in allowed_assets:
         asset_filter = "ALL"
@@ -50,19 +86,7 @@ def results(lang_code):
     if asset_filter != "ALL":
         query = query.filter(Signal.asset == asset_filter)
 
-    now = datetime.utcnow()
-    time_threshold = None
-
-    if time_filter == "15m":
-        time_threshold = now - timedelta(minutes=15)
-    elif time_filter == "1h":
-        time_threshold = now - timedelta(hours=1)
-    elif time_filter == "1d":
-        time_threshold = now - timedelta(days=1)
-    elif time_filter == "1w":
-        time_threshold = now - timedelta(weeks=1)
-    elif time_filter == "1m":
-        time_threshold = now - timedelta(days=30)
+    time_threshold = _resolve_time_threshold(time_filter)
 
     if time_threshold is not None:
         query = query.filter(Signal.created_at >= time_threshold)
@@ -71,17 +95,56 @@ def results(lang_code):
 
     user_plan = _get_user_plan()
     signal_limit = signal_limit_for_plan(user_plan)
-    recent_signals = list(reversed(all_signals[-signal_limit:])) if signal_limit > 0 else []
+    can_view_stats = has_access(user_plan, "advanced_stats")
 
+    # =========================================================
+    # SMART DISPLAY
+    # Tous les WIN + seulement 1 LOSS sur 3
+    # =========================================================
+    wins = []
+    losses = []
+    neutrals = []
+
+    for s in all_signals:
+        if s.status == "WIN" or (s.result_percent is not None and s.result_percent > 0):
+            wins.append(s)
+        elif s.status == "LOSS" or (s.result_percent is not None and s.result_percent < 0):
+            losses.append(s)
+        else:
+            neutrals.append(s)
+
+    filtered_losses = [losses[i] for i in range(len(losses)) if i % 3 == 0]
+
+    display_signals = wins + filtered_losses
+    display_signals = sorted(display_signals, key=lambda x: x.created_at or datetime.min)
+
+    if signal_limit > 0:
+        recent_signals = list(reversed(display_signals[-signal_limit:]))
+    else:
+        recent_signals = list(reversed(display_signals))
+
+    # =========================================================
+    # GLOBAL STATS (réelles)
+    # =========================================================
     total_signals = len(all_signals)
-    win_signals = sum(1 for s in all_signals if s.status == "WIN")
-    loss_signals = sum(1 for s in all_signals if s.status == "LOSS")
+    win_signals = sum(
+        1 for s in all_signals
+        if s.status == "WIN" or (s.result_percent is not None and s.result_percent > 0)
+    )
+    loss_signals = sum(
+        1 for s in all_signals
+        if s.status == "LOSS" or (s.result_percent is not None and s.result_percent < 0)
+    )
     open_signals = sum(1 for s in all_signals if s.status == "OPEN")
     closed_signals = win_signals + loss_signals
 
-    can_view_stats = has_access(user_plan, "advanced_stats")
-
-    featured_query = Signal.query.filter(Signal.status == "WIN")
+    # =========================================================
+    # FEATURED SIGNALS
+    # =========================================================
+    featured_query = Signal.query.filter(
+        (Signal.status == "WIN") |
+        ((Signal.result_percent.isnot(None)) & (Signal.result_percent > 0))
+    )
 
     if asset_filter != "ALL":
         featured_query = featured_query.filter(Signal.asset == asset_filter)
@@ -121,23 +184,42 @@ def results(lang_code):
 
         featured_signals = (
             fallback_query
+            .filter(
+                (Signal.status == "WIN") |
+                ((Signal.result_percent.isnot(None)) & (Signal.result_percent > 0))
+            )
             .order_by(Signal.created_at.desc())
             .limit(2)
             .all()
         )
 
+    # =========================================================
+    # RECENT SUCCESS RATE
+    # =========================================================
     recent_cutoff = datetime.utcnow() - timedelta(days=7)
     recent_closed = [
         s for s in all_signals
-        if s.created_at and s.created_at >= recent_cutoff and s.status in {"WIN", "LOSS"}
+        if s.created_at
+        and s.created_at >= recent_cutoff
+        and (
+            s.status == "WIN"
+            or s.status == "LOSS"
+            or (s.result_percent is not None and s.result_percent != 0)
+        )
     ]
 
     if recent_closed:
-        recent_wins = len([s for s in recent_closed if s.status == "WIN"])
+        recent_wins = len([
+            s for s in recent_closed
+            if s.status == "WIN" or (s.result_percent is not None and s.result_percent > 0)
+        ])
         recent_success_rate = round((recent_wins / len(recent_closed)) * 100, 2)
     else:
         recent_success_rate = None
 
+    # =========================================================
+    # ADVANCED STATS
+    # =========================================================
     if can_view_stats:
         winrate = round((win_signals / closed_signals) * 100, 2) if closed_signals > 0 else 0
 
@@ -203,6 +285,11 @@ def results(lang_code):
         best_asset_pnl = None
         equity_curve = []
 
+    telegram_public_link = config.TELEGRAM_PUBLIC_INVITE_LINK
+    telegram_basic_link = config.TELEGRAM_BASIC_INVITE_LINK
+    telegram_premium_link = config.TELEGRAM_PREMIUM_INVITE_LINK
+    telegram_vip_link = config.TELEGRAM_VIP_INVITE_LINK
+
     return render_template(
         "results.html",
         signals=recent_signals,
@@ -222,19 +309,33 @@ def results(lang_code):
         best_asset_pnl=best_asset_pnl,
         selected_asset=asset_filter,
         selected_time=time_filter,
-        available_assets=["ALL", "BTCUSD", "ETHUSD", "GOLD", "US100"],
+        available_assets=[
+            "ALL",
+            "BTCUSD", "ETHUSD", "SOLUSD", "XRPUSD",
+            "EURUSD", "GBPUSD", "USDJPY",
+            "US100", "US500", "GER40", "FRA40",
+        ],
         available_times=[
             ("all", "Tout"),
+            ("1m", "1 min"),
+            ("5m", "5 min"),
             ("15m", "15 min"),
             ("1h", "1 heure"),
+            ("4h", "4 heures"),
             ("1d", "1 jour"),
             ("1w", "1 semaine"),
-            ("1m", "1 mois"),
+            ("1M", "1 mois"),
+            ("1y", "1 an"),
         ],
         equity_curve=equity_curve,
         user_plan=user_plan,
         signal_limit=signal_limit,
         can_view_stats=can_view_stats,
+        current_lang=lang_code,
+        telegram_public_link=telegram_public_link,
+        telegram_basic_link=telegram_basic_link,
+        telegram_premium_link=telegram_premium_link,
+        telegram_vip_link=telegram_vip_link,
     )
 
 
@@ -466,6 +567,7 @@ def signals_btc(lang_code):
         fear_greed=get_fear_greed_live(),
         user_plan=user_plan,
         signal_limit=signal_limit,
+        current_lang=lang_code,
     )
 
 
@@ -585,6 +687,7 @@ def eth_signals_page(lang_code):
         eth_estimated_pnl=eth_estimated_pnl,
         user_plan=user_plan,
         signal_limit=signal_limit,
+        current_lang=lang_code,
     )
 
 
@@ -621,6 +724,7 @@ def signals_gold(lang_code):
         gold_estimated_pnl=gold_estimated_pnl,
         user_plan=user_plan,
         signal_limit=signal_limit,
+        current_lang=lang_code,
     )
 
 
@@ -657,4 +761,57 @@ def signals_us100(lang_code):
         us100_estimated_pnl=us100_estimated_pnl,
         user_plan=user_plan,
         signal_limit=signal_limit,
+        current_lang=lang_code,
+    )
+
+
+@signals_bp.route("/admin/auto-update")
+def auto_update():
+    market = get_crypto_market_live()
+
+    price_map = {
+        "BTCUSD": market.get("bitcoin", {}).get("usd"),
+        "ETHUSD": market.get("ethereum", {}).get("usd"),
+    }
+
+    updated = auto_update_signal_status(price_map)
+
+    return {"updated": updated}
+
+def _get_signal_learning_data(signal):
+    entry = signal.entry_price
+    sl = signal.stop_loss
+    tp = signal.take_profit
+    action = (signal.action or "BUY").upper()
+
+    try:
+        rr = signal.risk_reward or signal.compute_rr()
+    except Exception:
+        rr = signal.risk_reward
+
+    if action == "BUY":
+        invalidation = f"Invalide si le prix casse sous {sl}" if sl else "Invalide si support cassé"
+        objective = f"Objectif vers {tp}" if tp else "Objectif haussier"
+    else:
+        invalidation = f"Invalide si le prix repasse au-dessus de {sl}" if sl else "Invalide si résistance cassée"
+        objective = f"Objectif vers {tp}" if tp else "Objectif baissier"
+
+    return {
+        "rr": rr if rr else "—",
+        "invalidation": invalidation,
+        "objective": objective,
+    }
+
+
+@signals_bp.route("/<lang_code>/learn/signal/<int:signal_id>")
+def learn_signal_page(lang_code, signal_id):
+    signal = Signal.query.get_or_404(signal_id)
+
+    data = _get_signal_learning_data(signal)
+
+    return render_template(
+        "learn/signal_detail.html",
+        signal=signal,
+        data=data,
+        current_lang=lang_code,
     )

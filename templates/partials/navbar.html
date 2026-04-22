@@ -73,20 +73,21 @@
             </div>
 
             <!-- ACADEMY -->
-            <div class="nav-dropdown nav-pro">
-                <button class="nav-drop-btn" type="button">
-                    {{ t("academy") }}
-                    <span class="nav-pro-badge">PRO</span>
-                    <span>▾</span>
-                </button>
-                <div class="nav-dropdown-menu">
-                    <a href="{{ url_for('pages.academy_index', lang_code=current_lang) }}">🎓 {{ t("academy_overview") }}</a>
-                    <a href="{{ url_for('pages.academy_level_1', lang_code=current_lang) }}">📘 {{ t("academy_level_1") }}</a>
-                    <a href="{{ url_for('pages.academy_level_2', lang_code=current_lang) }}">🚀 {{ t("academy_level_2") }}</a>
-                    <a href="{{ url_for('pages.academy_level_3', lang_code=current_lang) }}">🚀 {{ t("academy_level_3") }}</a>
-                    <a href="{{ url_for('pages.academy_upgrade', lang_code=current_lang) }}">💎 {{ t("academy_upgrade") }}</a>
-                </div>
-            </div>
+<div class="nav-dropdown nav-pro">
+    <button class="nav-drop-btn" type="button">
+        {{ t("academy") }}
+        <span class="nav-pro-badge">PRO</span>
+        <span>▾</span>
+    </button>
+    <div class="nav-dropdown-menu">
+        <a href="{{ url_for('academy.academy_index') }}">🎓 {{ t("academy_overview") }}</a>
+        <a href="{{ url_for('academy.academy_level_1') }}">📘 {{ t("academy_level_1") }}</a>
+        <a href="{{ url_for('academy.academy_level_2') }}">🚀 {{ t("academy_level_2") }}</a>
+        <a href="{{ url_for('academy.academy_level_3') }}">🧭 {{ t("academy_level_3") }}</a>
+        <a href="{{ url_for('academy.academy_level_4') }}">🏛️ Niveau 4 Pro</a>
+        <a href="{{ url_for('academy.academy_upgrade') }}">💎 {{ t("academy_upgrade") }}</a>
+    </div>
+</div>
 
             <!-- PERFORMANCE -->
             <div class="nav-dropdown">
@@ -96,15 +97,15 @@
                 <div class="nav-dropdown-menu">
                     <a href="{{ url_for('signals.results', lang_code=current_lang) }}">{{ t("results") }}</a>
 
-                    {% if latest_replay %}
-                    <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id, lang_code=current_lang) }}">
-                        🎬 {{ t("replay") }}
-                    </a>
-                    {% endif %}
+                    {% if last_signal %}
+<a href="{{ url_for('replay.open_signal_replay', signal_id=last_signal.id, lang_code=current_lang) }}">
+    🎬 {{ t("replay") }}
+</a>
+{% endif %}
 
-                    <a href="{{ url_for('replay.my_performance', lang_code=current_lang) }}">
-                        🎯 {{ t("my_space") }}
-                    </a>
+<a href="{{ url_for('replay.my_performance', lang_code=current_lang) }}">
+    🎯 My performance
+</a>
                 </div>
             </div>
 

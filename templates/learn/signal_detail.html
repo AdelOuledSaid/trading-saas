@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Comprendre le signal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        .card {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 18px;
+        }
+        .vip {
+            border: 1px solid #d4af37;
+            background: linear-gradient(180deg, #161616 0%, #111827 100%);
+        }
+        .badge {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            background: #1d4ed8;
+            color: white;
+            margin-bottom: 16px;
+        }
+        .vip-badge {
+            background: #d4af37;
+            color: #111827;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+        .metric {
+            background: #0b1220;
+            border: 1px solid #1f2937;
+            border-radius: 14px;
+            padding: 14px;
+        }
+        .label {
+            font-size: 12px;
+            opacity: 0.75;
+            margin-bottom: 8px;
+        }
+        .value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        ul {
+            line-height: 1.8;
+        }
+        p {
+            line-height: 1.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="card">
+            <div class="badge">SIGNAL COURSE</div>
+            <h1>🎓 Comprendre le signal</h1>
+            <p>
+                Ce signal représente un plan de marché avec entrée, invalidation et objectif.
+                Le but est de comprendre la logique, pas seulement de copier le trade.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>Vue rapide</h2>
+            <div class="grid">
+                <div class="metric">
+                    <div class="label">Actif</div>
+                    <div class="value">{{ signal.asset or "—" }}</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Direction</div>
+                    <div class="value">{{ signal.action or "—" }}</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Timeframe</div>
+                    <div class="value">{{ signal.timeframe or "—" }}</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Entry</div>
+                    <div class="value">{{ signal.entry_price or "—" }}</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Stop Loss</div>
+                    <div class="value">{{ signal.stop_loss or "—" }}</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Take Profit</div>
+                    <div class="value">{{ signal.take_profit or "—" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Mini cours commun</h2>
+            <p><strong>Objectif :</strong> {{ data.objective }}</p>
+            <p><strong>Invalidation :</strong> {{ data.invalidation }}</p>
+            <p><strong>Risk / Reward :</strong> {{ data.rr }}</p>
+            <p><strong>Plan d'exécution :</strong> {{ data.execution_plan }}</p>
+        </div>
+
+        {% if can_view_vip_ai %}
+        <div class="card vip">
+            <div class="badge vip-badge">VIP AI ANALYSIS</div>
+            <h2>Analyse automatique AI</h2>
+            <p><strong>Confiance AI :</strong> {{ data.confidence_label }}</p>
+            <p><strong>Résumé AI :</strong> {{ data.ai_summary }}</p>
+            <p><strong>Lecture du setup :</strong> {{ data.reason }}</p>
+
+            <h3>Forces du setup</h3>
+            <ul>
+                {% for item in data.strengths %}
+                <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Risques du setup</h3>
+            <ul>
+                {% for item in data.risks %}
+                <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Erreur à éviter</h3>
+            <p>{{ data.mistake_to_avoid }}</p>
+        </div>
+        {% else %}
+        <div class="card">
+            <h2>Analyse AI VIP</h2>
+            <p>
+                Débloque l'analyse AI VIP pour voir :
+                confiance du setup, lecture automatique, forces, risques et plan d'exécution avancé.
+            </p>
+        </div>
+        {% endif %}
+
+    </div>
+</body>
+</html>

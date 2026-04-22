@@ -27,6 +27,7 @@ def user_has_unlocks_premium():
     try:
         if not current_user.is_authenticated:
             return False
+
         plan = str(getattr(current_user, "plan", "free") or "free").lower()
         return plan in ["premium", "vip"]
     except Exception:
@@ -54,49 +55,53 @@ def build_unlock_insights(top_unlocks):
 
     biggest = max(top_unlocks, key=lambda x: x.get("value", 0))
     nearest = min(top_unlocks, key=lambda x: x.get("days_until", 999))
-
     total_value = sum(x.get("value", 0) for x in top_unlocks[:5])
 
     if high_count >= 2 or biggest.get("market_cap_ratio", 0) >= 5:
         bias_title = "Unlock Pressure Elevated"
         bias_text = (
             f"Plusieurs unlocks à risque élevé sont détectés. "
-            f"Le plus lourd reste {biggest['token']} avec {biggest['market_cap_ratio']:.2f}% de market cap."
+            f"Le plus lourd reste {biggest.get('token', 'N/A')} avec "
+            f"{biggest.get('market_cap_ratio', 0):.2f}% de market cap."
         )
     elif medium_count >= 2:
         bias_title = "Moderate Unlock Pressure"
         bias_text = (
-            f"Le marché présente une pression d’offre modérée avec plusieurs tokens en zone sensible. "
-            f"Surveillance renforcée recommandée."
+            "Le marché présente une pression d’offre modérée avec plusieurs "
+            "tokens en zone sensible. Surveillance renforcée recommandée."
         )
     else:
         bias_title = "Contained Unlock Risk"
         bias_text = (
-            f"Les unlocks suivis restent contenus. L’impact potentiel semble concentré sur quelques actifs seulement."
+            "Les unlocks suivis restent contenus. L’impact potentiel semble "
+            "concentré sur quelques actifs seulement."
         )
 
     if sell_count >= 1:
         signal_title = "Sell Bias Dominant"
         signal_text = (
             f"Le moteur détecte au moins un setup de réduction de risque. "
-            f"{nearest['token']} reste le token le plus proche avec un unlock à J-{nearest['days_until']}."
+            f"{nearest.get('token', 'N/A')} reste le token le plus proche avec "
+            f"un unlock à J-{nearest.get('days_until', '?')}."
         )
     elif caution_count >= 1:
         signal_title = "Caution Bias Dominant"
         signal_text = (
-            f"La volatilité peut monter avant certains unlocks. "
-            f"Attendre confirmation avant exposition agressive."
+            "La volatilité peut monter avant certains unlocks. "
+            "Attendre confirmation avant exposition agressive."
         )
     else:
         signal_title = "Watch Bias Dominant"
         signal_text = (
-            f"Pas de signal vendeur extrême détecté, mais les tokens proches doivent rester sous surveillance."
+            "Pas de signal vendeur extrême détecté, mais les tokens proches "
+            "doivent rester sous surveillance."
         )
 
     focus_title = "Focus 7 Days"
     focus_text = (
         f"Les principaux unlocks proches représentent environ ${total_value:,.0f}. "
-        f"Le prochain événement clé concerne {nearest['token']} à J-{nearest['days_until']}."
+        f"Le prochain événement clé concerne {nearest.get('token', 'N/A')} "
+        f"à J-{nearest.get('days_until', '?')}."
     )
 
     if sell_count >= 1:
@@ -125,6 +130,13 @@ def build_unlock_insights(top_unlocks):
     }
 
 
+def build_free_unlock_insights(full_insights):
+    return {
+        "bias_title": full_insights.get("bias_title", "Neutral Unlock Pressure"),
+        "bias_text": "Résumé gratuit disponible. Passe Premium pour débloquer l’analyse complète.",
+    }
+
+
 @token_unlocks_bp.route("/token-unlocks")
 def token_unlocks_page():
     market_service = MarketDataService()
@@ -141,18 +153,28 @@ def token_unlocks_page():
     month = request.args.get("month", type=int)
     calendar_data = unlocks_service.get_calendar_month(year=year, month=month)
 
-    max_unlock_value = max((item["value"] for item in unlock_chart), default=1)
-    unlock_insights = build_unlock_insights(top_unlocks)
+    max_unlock_value = max((item.get("value", 0) for item in unlock_chart), default=1)
+
+    is_unlocks_premium = user_has_unlocks_premium()
+
+    full_unlock_insights = build_unlock_insights(top_unlocks)
+
+    if is_unlocks_premium:
+        visible_top_unlocks = top_unlocks
+        unlock_insights = full_unlock_insights
+    else:
+        visible_top_unlocks = top_unlocks[:3]
+        unlock_insights = build_free_unlock_insights(full_unlock_insights)
 
     return render_template(
         "marche/token_unlocks.html",
         snapshot=snapshot,
         watchlist=watchlist,
         unlock_chart=unlock_chart,
-        top_unlocks=top_unlocks,
+        top_unlocks=visible_top_unlocks,
         max_unlock_value=max_unlock_value,
         alert_summary=alert_summary,
         calendar_data=calendar_data,
-        is_unlocks_premium=user_has_unlocks_premium(),
+        is_unlocks_premium=is_unlocks_premium,
         unlock_insights=unlock_insights,
     )
