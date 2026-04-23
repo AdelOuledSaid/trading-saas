@@ -27,8 +27,8 @@ RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
 # DOMAIN
 # =========================
 DOMAIN = os.getenv("DOMAIN", "http://127.0.0.1:5000").rstrip("/")
-SITE_URL = os.getenv("SITE_URL", "https://trading-saas-1.onrender.com")
 
+SITE_URL = os.getenv("SITE_URL", "https://www.velwolef.com")
 # =========================
 # TELEGRAM
 # =========================

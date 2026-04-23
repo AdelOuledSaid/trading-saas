@@ -882,3 +882,7 @@ def learn_signal_page(lang_code, signal_id):
         data=data,
         current_lang=lang_code,
     )
+
+@signals_bp.route("/mini-course/signal/<int:signal_id>")
+def learn_signal_page_no_lang(signal_id):
+    return learn_signal_page("fr", signal_id)
