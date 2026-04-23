@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini cours</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            margin: 0;
+            padding: 30px;
+            font-family: Arial, sans-serif;
+            background: #07111f;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: linear-gradient(180deg, #0d1b2f 0%, #101b31 100%);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        }
+
+        h1, h2, h3 {
+            margin-top: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            background: #4da3ff;
+            color: white;
+            margin-bottom: 14px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        .metric {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        .label {
+            font-size: 12px;
+            color: #9db0cc;
+            margin-bottom: 8px;
+        }
+
+        .value {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .green { color: #35e08a; }
+        .red { color: #ff6b6b; }
+        .blue { color: #69a8ff; }
+        .gold { color: #f2c66d; }
+
+        p, li {
+            line-height: 1.7;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        .small {
+            color: #9db0cc;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="card">
+        <div class="badge">MINI COURS AI</div>
+        <h1>🎓 Comprendre le trade</h1>
+        <p class="small">
+            Cette page explique le setup, l’objectif, l’invalidation
+            et la logique AI du trade.
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>Vue rapide</h2>
+        <div class="grid">
+            <div class="metric">
+                <div class="label">Actif</div>
+                <div class="value">{{ signal.asset or "-" }}</div>
+            </div>
+            <div class="metric">
+                <div class="label">Direction</div>
+                <div class="value">{{ signal.action or "-" }}</div>
+            </div>
+            <div class="metric">
+                <div class="label">Entry</div>
+                <div class="value blue">{{ signal.entry_price or "-" }}</div>
+            </div>
+            <div class="metric">
+                <div class="label">Stop Loss</div>
+                <div class="value red">{{ signal.stop_loss or "-" }}</div>
+            </div>
+            <div class="metric">
+                <div class="label">Take Profit</div>
+                <div class="value green">{{ signal.take_profit or "-" }}</div>
+            </div>
+            <div class="metric">
+                <div class="label">Risk / Reward</div>
+                <div class="value gold">{{ data.rr }}</div>
+            </div>
+            <div class="metric">
+                <div class="label">Confiance AI</div>
+                <div class="value">{{ signal.confidence or "-" }}%</div>
+            </div>
+            <div class="metric">
+                <div class="label">Timeframe</div>
+                <div class="value">{{ signal.timeframe or "-" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Résumé AI</h2>
+        <p>{{ data.ai_summary }}</p>
+    </div>
+
+    <div class="card">
+        <h2>Pourquoi ce trade existe</h2>
+        <p>{{ data.reason }}</p>
+    </div>
+
+    <div class="card">
+        <h2>Objectif et invalidation</h2>
+        <p><strong>Objectif :</strong> {{ data.objective }}</p>
+        <p><strong>Invalidation :</strong> {{ data.invalidation }}</p>
+    </div>
+
+    <div class="card">
+        <h2>Plan d’exécution conseillé</h2>
+        <p>{{ data.execution_plan }}</p>
+    </div>
+
+    <div class="card">
+        <h2>Forces du setup</h2>
+        <ul>
+            {% for item in data.strengths %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>Risques du setup</h2>
+        <ul>
+            {% for item in data.risks %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>Erreur à éviter</h2>
+        <p>{{ data.mistake_to_avoid }}</p>
+    </div>
+
+</div>
+</body>
+</html>

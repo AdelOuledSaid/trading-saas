@@ -21,6 +21,7 @@
 {% set has_locked_signals = total_signals > displayed_signals %}
 {% set visible_win_signals = signals | selectattr('status', 'equalto', 'WIN') | list %}
 {% set total_closed_trades = total_win + total_loss %}
+{% set last_signal_closed = last_signal and (last_signal.status in ['WIN', 'LOSS', 'CLOSED'] or last_signal.result_percent is not none) %}
 
 {% set safe_winrate = winrate if winrate is not none else 0 %}
 {% set safe_estimated_pnl = estimated_pnl if estimated_pnl is not none else 0 %}
@@ -639,22 +640,22 @@
                     <div class="signal-card-grid last-signal-grid">
                         <div class="signal-info-card"><span>{{ t("asset", "Actif") }}</span><strong>{{ last_signal.asset }}</strong></div>
                         <div class="signal-info-card"><span>{{ t("direction", "Direction") }}</span><strong>{{ last_signal.action }}</strong></div>
-                        <div class="signal-info-card"><span>{{ t("entry", "Entrée") }}</span><strong>{{ last_signal.entry_price }}</strong></div>
-                        <div class="signal-info-card"><span>{{ t("stop_loss", "Stop loss") }}</span><strong>{{ last_signal.stop_loss }}</strong></div>
-                        <div class="signal-info-card"><span>{{ t("take_profit", "Take profit") }}</span><strong>{{ last_signal.take_profit }}</strong></div>
+                        <div class="signal-info-card"><span>{{ t("entry", "Entrée") }}</span><strong>{{ last_signal.entry_price | format_price }}</strong></div>
+                        <div class="signal-info-card"><span>{{ t("stop_loss", "Stop loss") }}</span><strong>{{ last_signal.stop_loss | format_price }}</strong></div>
+                        <div class="signal-info-card"><span>{{ t("take_profit", "Take profit") }}</span><strong>{{ last_signal.take_profit | format_price }}</strong></div>
                         <div class="signal-info-card"><span>{{ t("status", "Statut") }}</span><strong>{{ last_signal.status }}</strong></div>
                     </div>
 
                     <div class="signal-actions-row">
-                        {% if is_premium_plus and last_signal.id %}
-                            <a href="{{url_for('replay.open_signal_replay', signal_id=last_signal.id, lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course", "Mini cours") }}</a>
+                        {% if is_premium_plus and last_signal.id and last_signal_closed %}
+                            <a href="{{ url_for('replay.open_signal_replay', signal_id=s.id, lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course", "Mini cours") }}</a>
                         {% else %}
                             <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course_premium", "Mini cours Premium") }}</a>
                         {% endif %}
 
-                        {% if can_view_replay and latest_replay and latest_replay.signal_id == last_signal.id %}
+                        {% if can_view_replay and last_signal_closed and latest_replay and latest_replay.signal_id == last_signal.id %}
                             <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id, lang_code=current_lang) }}" class="replay-btn">{{ t("replay", "Replay") }}</a>
-                        {% elif can_view_replay %}
+                        {% elif can_view_replay and last_signal_closed %}
                             <a href="{{ url_for('replay.my_performance', lang_code=current_lang) }}" class="panel-link-btn">{{ t("replay_zone", "Zone replay") }}</a>
                         {% else %}
                             <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="panel-link-btn">{{ t("premium_replay", "Replay premium") }}</a>
@@ -679,6 +680,7 @@
 
                     <div class="trade-feed-list">
                         {% for s in signals[:5] %}
+                        {% set is_closed_trade = s.status in ['WIN', 'LOSS', 'CLOSED'] or s.result_percent is not none %}
                         <article class="trade-card signal-trade-card">
                             <div class="trade-top">
                                 <div>
@@ -689,9 +691,9 @@
                             </div>
 
                             <div class="trade-grid">
-                                <div><span>{{ t("entry", "Entrée") }}</span><strong>{{ s.entry_price }}</strong></div>
-                                <div><span>SL</span><strong>{{ s.stop_loss }}</strong></div>
-                                <div><span>TP</span><strong>{{ s.take_profit }}</strong></div>
+                                <div><span>{{ t("entry", "Entrée") }}</span><strong>{{ s.entry_price | format_price }}</strong></div>
+                                <div><span>SL</span><strong>{{ s.stop_loss | format_price }}</strong></div>
+                                <div><span>TP</span><strong>{{ s.take_profit | format_price }}</strong></div>
                                 <div><span>{{ t("timeframe", "Timeframe") }}</span><strong>{{ s.timeframe or '-' }}</strong></div>
                                 <div><span>{{ t("trend", "Tendance") }}</span><strong>{{ s.market_trend or '-' }}</strong></div>
                                 <div><span>{{ t("source", "Source") }}</span><strong>{{ s.source or 'tradingview' }}</strong></div>
@@ -702,15 +704,15 @@
                             </div>
 
                             <div class="signal-card-actions">
-                                {% if is_premium_plus and s.id %}
-                                    <a href="{{url_for('replay.open_signal_replay', signal_id=last_signal.id, lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course", "Mini cours") }}</a>
+                                {% if is_premium_plus and s.id and is_closed_trade %}
+                                    <a href="{{ url_for('replay.open_signal_replay', signal_id=s.id, lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course", "Mini cours") }}</a>
                                 {% else %}
                                     <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="panel-link-btn">{{ t("mini_course_locked", "Mini cours réservé") }}</a>
                                 {% endif %}
 
-                                {% if can_view_replay and latest_replay and latest_replay.signal_id == s.id %}
+                                {% if can_view_replay and is_closed_trade and latest_replay and latest_replay.signal_id == s.id %}
                                     <a href="{{ url_for('replay.replay_page', replay_id=latest_replay.id, lang_code=current_lang) }}" class="replay-btn">{{ t("replay", "Replay") }}</a>
-                                {% elif can_view_replay %}
+                                {% elif can_view_replay and is_closed_trade %}
                                     <a href="{{ url_for('replay.my_performance', lang_code=current_lang) }}" class="panel-link-btn">{{ t("replay_training", "Replay training") }}</a>
                                 {% else %}
                                     <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="panel-link-btn">{{ t("replay_locked", "Replay réservé") }}</a>
@@ -781,8 +783,8 @@
                             </div>
                             <div class="winning-metrics">
                                 <div><span>{{ t("direction", "Direction") }}</span><strong>{{ s.action }}</strong></div>
-                                <div><span>{{ t("entry", "Entrée") }}</span><strong>{{ s.entry_price }}</strong></div>
-                                <div><span>TP</span><strong>{{ s.take_profit }}</strong></div>
+                                <div><span>{{ t("entry", "Entrée") }}</span><strong>{{ s.entry_price | format_price }}</strong></div>
+                                <div><span>TP</span><strong>{{ s.take_profit | format_price }}</strong></div>
                                 <div><span>{{ t("exit", "Sortie") }}</span><strong>{{ t("target_hit", "Objectif touché") }}</strong></div>
                             </div>
                             <div class="signal-card-actions compact-actions">

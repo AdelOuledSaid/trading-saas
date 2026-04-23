@@ -110,7 +110,7 @@ def build_learn_link(signal) -> str | None:
     signal_id = getattr(signal, "id", None)
     if not signal_id:
         return None
-    return f"{get_site_url()}/learn/signal/{signal_id}"
+    return f"{get_site_url()}/mini-course/signal/{signal_id}"
 
 
 def get_telegram_channels() -> dict:

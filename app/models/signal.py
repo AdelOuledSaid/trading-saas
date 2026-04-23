@@ -24,7 +24,7 @@ class Signal(db.Model):
     reason = db.Column(db.Text, nullable=True)
 
     timeframe = db.Column(db.String(20), nullable=True)   # M5, M15, H1, H4...
-    signal_type = db.Column(db.String(20), default="intraday", nullable=False)
+    signal_type = db.Column(db.String(100), default="intraday", nullable=False)
 
     market_trend = db.Column(db.String(20), nullable=True)  # bullish / bearish / neutral
 

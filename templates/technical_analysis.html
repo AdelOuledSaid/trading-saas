@@ -649,113 +649,113 @@
   </div>
 
   <section
-    id="premiumDeskSection"
-    class="ta-glass-card ta-membership-card ta-tv-premium-desk ta-gated-card"
-    data-required-plan="premium"
-  >
-    <div class="ta-tv-premium-head">
-      <div>
-        <span class="ta-tv-premium-kicker">Modules Premium</span>
-        <h2>Premium Desk</h2>
-        <p>Contexte enrichi, breakdown indicateurs, scénarios du desk et notes d'exécution.</p>
-      </div>
-
-      {% if not is_premium %}
-      <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ta-btn ta-btn-primary">
-        Débloquer Premium
-      </a>
-      {% endif %}
-    </div>
-
-    <div class="ta-tv-premium-bias-grid">
-      <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" type="button">
-        <span>Biais 15M</span>
-        <strong id="premiumBias15m">--</strong>
-        <small>Structure rapide</small>
-      </button>
-
-      <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" type="button">
-        <span>Biais 1H</span>
-        <strong id="premiumBias1h">--</strong>
-        <small>Exécution principale</small>
-      </button>
-
-      <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" type="button">
-        <span>Biais 4H</span>
-        <strong id="premiumBias4h">--</strong>
-        <small>Contexte supérieur</small>
-      </button>
-
-      <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" type="button">
-        <span>Biais 1D</span>
-        <strong id="premiumBias1d">--</strong>
-        <small>Cadre macro</small>
-      </button>
-    </div>
-
-    <div class="ta-tv-premium-grid">
-      <button class="ta-premium-panel ta-interactive-card" data-insight="premium-breakdown" type="button">
-        <h3>Breakdown indicateurs</h3>
-        <ul class="ta-breakdown-list">
-          <li><span>État RSI</span><strong id="premiumRsiState">--</strong></li>
-          <li><span>État MFI</span><strong id="premiumMfiState">--</strong></li>
-          <li><span>Régime MACD</span><strong id="premiumMacdState">--</strong></li>
-          <li><span>Qualité volume</span><strong id="premiumVolumeState">--</strong></li>
-        </ul>
-      </button>
-
-      <button class="ta-premium-panel ta-interactive-card" data-insight="premium-ai" type="button">
-        <h3>Contexte IA premium</h3>
-        <p id="premiumAiSummary" class="ta-membership-text">Chargement du contexte premium...</p>
-      </button>
-    </div>
-
-    <div class="ta-tv-scenarios-grid">
-      <div class="ta-vip-panel">
-        <h3>Scénario haussier</h3>
-        <div class="ta-scenario-box">
-          <span>Continuation</span>
-          <p id="vipBullScenario">En attente du scénario haussier...</p>
-        </div>
-      </div>
-
-      <div class="ta-vip-panel">
-        <h3>Scénario baissier</h3>
-        <div class="ta-scenario-box">
-          <span>Pression vendeuse</span>
-          <p id="vipBearScenario">En attente du scénario baissier...</p>
-        </div>
-      </div>
-
-      <div class="ta-vip-panel">
-        <h3>Scénario neutre</h3>
-        <div class="ta-scenario-box">
-          <span>Range / attente</span>
-          <p id="vipNeutralScenario">En attente du scénario neutre...</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="ta-tv-desk-notes">
-      <div class="ta-vip-panel">
-        <h3>Notes du desk</h3>
-        <p id="vipDeskNotes" class="ta-membership-text">Chargement des notes du desk...</p>
-      </div>
+  id="premiumDeskSection"
+  class="ta-glass-card ta-membership-card ta-tv-premium-desk ta-gated-card"
+  data-required-plan="premium"
+>
+  <div class="ta-tv-premium-head">
+    <div>
+      <span class="ta-tv-premium-kicker">Desk Pro</span>
+      <h2>Analyse Desk Avancée</h2>
+      <p>Contexte enrichi, breakdown indicateurs, scénarios du desk et notes d'exécution.</p>
     </div>
 
     {% if not is_premium %}
-    <div class="ta-card-lock" data-lock="premium">
-      <div class="ta-card-lock-content">
-        <span class="ta-membership-badge ta-membership-badge-premium">PREMIUM</span>
-        <strong>Débloquer Premium</strong>
-        <p>Accès au contexte enrichi, replay, modules avancés et automation.</p>
-        <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ta-btn ta-btn-primary ta-lock-cta">
-          Débloquer Premium
-        </a>
+    <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ta-btn ta-btn-primary">
+      Débloquer l'accès
+    </a>
+    {% endif %}
+  </div>
+
+  <div class="ta-tv-premium-bias-grid">
+    <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" type="button">
+      <span>Biais 15M</span>
+      <strong id="premiumBias15m">--</strong>
+      <small>Structure rapide</small>
+    </button>
+
+    <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" type="button">
+      <span>Biais 1H</span>
+      <strong id="premiumBias1h">--</strong>
+      <small>Exécution principale</small>
+    </button>
+
+    <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" type="button">
+      <span>Biais 4H</span>
+      <strong id="premiumBias4h">--</strong>
+      <small>Contexte supérieur</small>
+    </button>
+
+    <button class="ta-premium-box ta-interactive-card" data-insight="premium-alignment" type="button">
+      <span>Biais 1D</span>
+      <strong id="premiumBias1d">--</strong>
+      <small>Cadre macro</small>
+    </button>
+  </div>
+
+  <div class="ta-tv-premium-grid">
+    <button class="ta-premium-panel ta-interactive-card" data-insight="premium-breakdown" type="button">
+      <h3>Breakdown indicateurs</h3>
+      <ul class="ta-breakdown-list">
+        <li><span>État RSI</span><strong id="premiumRsiState">--</strong></li>
+        <li><span>État MFI</span><strong id="premiumMfiState">--</strong></li>
+        <li><span>Régime MACD</span><strong id="premiumMacdState">--</strong></li>
+        <li><span>Qualité volume</span><strong id="premiumVolumeState">--</strong></li>
+      </ul>
+    </button>
+
+    <button class="ta-premium-panel ta-interactive-card" data-insight="premium-ai" type="button">
+      <h3>Contexte IA avancé</h3>
+      <p id="premiumAiSummary" class="ta-membership-text">Chargement du contexte avancé...</p>
+    </button>
+  </div>
+
+  <div class="ta-tv-scenarios-grid">
+    <div class="ta-vip-panel">
+      <h3>Scénario haussier</h3>
+      <div class="ta-scenario-box">
+        <span>Continuation</span>
+        <p id="vipBullScenario">En attente du scénario haussier...</p>
       </div>
     </div>
-    {% endif %}
-  </section>
+
+    <div class="ta-vip-panel">
+      <h3>Scénario baissier</h3>
+      <div class="ta-scenario-box">
+        <span>Pression vendeuse</span>
+        <p id="vipBearScenario">En attente du scénario baissier...</p>
+      </div>
+    </div>
+
+    <div class="ta-vip-panel">
+      <h3>Scénario neutre</h3>
+      <div class="ta-scenario-box">
+        <span>Range / attente</span>
+        <p id="vipNeutralScenario">En attente du scénario neutre...</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ta-tv-desk-notes">
+    <div class="ta-vip-panel">
+      <h3>Notes du desk</h3>
+      <p id="vipDeskNotes" class="ta-membership-text">Chargement des notes du desk...</p>
+    </div>
+  </div>
+
+  {% if not is_premium %}
+  <div class="ta-card-lock" data-lock="premium">
+    <div class="ta-card-lock-content">
+      <span class="ta-membership-badge ta-membership-badge-premium">🔒 PREMIUM / VIP</span>
+      <strong>Accès réservé</strong>
+      <p>Cette section est disponible pour les abonnés Premium et VIP.</p>
+      <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ta-btn ta-btn-primary ta-lock-cta">
+        Voir les offres
+      </a>
+    </div>
+  </div>
+  {% endif %}
+</section>
 
   <section class="ta-market-footer">
     <div class="ta-tv-card-head">

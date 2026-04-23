@@ -512,9 +512,11 @@
                             </div>
 
                             <div class="rs-card-actions rs-card-actions-row">
-                                <a href="{{ url_for('replay.open_signal_replay', signal_id=signal.id, lang_code=current_lang) }}" class="learn-btn">
-                                    ▶ Voir le replay
-                                </a>
+                                {% if signal.status in ['WIN', 'LOSS', 'CLOSED'] or signal.result_percent is not none %}
+                                    <a href="{{ url_for('replay.open_signal_replay', signal_id=signal.id, lang_code=current_lang) }}" class="learn-btn">
+                                        ▶ Voir le replay
+                                    </a>
+                                {% endif %}
 
                                 {% if is_premium_plus %}
                                     <button class="learn-btn rs-secondary-btn" onclick="toggleLearn(this)">
@@ -637,11 +639,13 @@
                                 <p>💡 {{ signal.reason or "Analyse technique disponible dans le replay détaillé." }}</p>
                             </div>
 
+                            {% if signal.status in ['WIN', 'LOSS', 'CLOSED'] or signal.result_percent is not none %}
                             <div class="rs-card-actions">
                                 <a href="{{ url_for('replay.open_signal_replay', signal_id=signal.id, lang_code=current_lang) }}" class="learn-btn">
                                     ▶ Voir le replay
                                 </a>
                             </div>
+                            {% endif %}
                         </article>
                         {% endfor %}
                     </div>

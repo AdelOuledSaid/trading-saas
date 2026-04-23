@@ -49,6 +49,10 @@ def webhook():
             current_app.logger.warning("Webhook OPEN: données invalides")
             return {"error": "Données invalides"}, 400
 
+        # Normalisation simple pour l'or
+        if asset == "XAUUSD":
+            asset = "GOLD"
+
         if asset not in config.ALLOWED_ASSETS:
             current_app.logger.warning("Webhook OPEN: actif non autorisé -> %s", asset)
             return {"error": f"Actif non autorisé: {asset}"}, 400
@@ -154,9 +158,12 @@ def webhook():
             "reason": signal.reason,
         }, 200
 
-    if event_type in ["TP", "SL"]:
+    if event_type in ["TP", "SL", "CLOSE"]:
         trade_id = str(data.get("trade_id", "")).strip()
         asset = str(data.get("asset", "")).strip().upper()
+
+        if asset == "XAUUSD":
+            asset = "GOLD"
 
         current_app.logger.info(
             "CLOSE EVENT reçu | event=%s | trade_id=%s | asset=%s",
@@ -180,7 +187,11 @@ def webhook():
             signal.status,
         )
 
-        close_signal_as_result(signal, event_type)
+        if event_type == "CLOSE":
+            signal.status = "CLOSED"
+            db.session.commit()
+        else:
+            close_signal_as_result(signal, event_type)
 
         current_app.logger.info(
             "Signal fermé | trade_id=%s | asset=%s | nouveau_status=%s",
@@ -197,12 +208,17 @@ def webhook():
                     signal.trade_id,
                     dispatch_results,
                 )
-            else:
+            elif event_type == "SL":
                 dispatch_results = send_signal_sl(signal)
                 current_app.logger.info(
                     "Telegram SL dispatch | trade_id=%s | results=%s",
                     signal.trade_id,
                     dispatch_results,
+                )
+            elif event_type == "CLOSE":
+                current_app.logger.info(
+                    "Manual CLOSE received | trade_id=%s",
+                    signal.trade_id,
                 )
         except Exception as e:
             current_app.logger.warning("Erreur Telegram %s: %s", event_type, e)

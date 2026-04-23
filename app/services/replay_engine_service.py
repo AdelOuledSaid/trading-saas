@@ -55,14 +55,6 @@ def _safe_float(value: Any, default: float | None = 0.0) -> float | None:
         return default
 
 
-def _safe_iso(dt: Any) -> str | None:
-    if dt is None:
-        return None
-    if isinstance(dt, datetime):
-        return dt.isoformat()
-    return str(dt)
-
-
 def _safe_timestamp(value: Any) -> float | None:
     if value is None:
         return None
@@ -71,7 +63,8 @@ def _safe_timestamp(value: Any) -> float | None:
         return value.timestamp()
 
     try:
-        return datetime.fromisoformat(str(value)).timestamp()
+        raw = str(value).replace("Z", "+00:00")
+        return datetime.fromisoformat(raw).timestamp()
     except Exception:
         return None
 
@@ -84,11 +77,11 @@ def _candle_ts(candle: dict[str, Any]) -> float | None:
     return _safe_timestamp(_candle_time(candle))
 
 
-def _percent_distance(a: float | None, b: float | None) -> float | None:
-    if a in [None, 0] or b is None:
+def _percent_distance(last_price: float | None, target_price: float | None) -> float | None:
+    if last_price in [None, 0] or target_price is None:
         return None
     try:
-        return round(((b - a) / a) * 100, 2)
+        return round(((target_price - last_price) / last_price) * 100, 2)
     except Exception:
         return None
 
@@ -103,7 +96,7 @@ def _infer_market_structure(candles: list[dict[str, Any]]) -> str:
     highs = [_safe_float(c["high"], 0.0) for c in candles[-8:]]
     lows = [_safe_float(c["low"], 0.0) for c in candles[-8:]]
 
-    if len(highs) < 4 or len(lows) < 4:
+    if len(highs) < 5 or len(lows) < 5:
         return "neutral"
 
     recent_highs_up = highs[-1] > highs[-3] > highs[-5]
@@ -209,13 +202,23 @@ def _detect_level_hits(
     stop_loss: float | None,
     take_profit: float | None,
 ) -> tuple[ReplayLevelHit, ReplayLevelHit]:
+    """
+    Important:
+    - On ne valide PAS TP/SL sur la bougie d'entrée.
+    - Sinon entry/decision/exit peuvent tomber sur le même index.
+    """
     sl_hit = ReplayLevelHit(index=None, time=None, price=stop_loss, reason=None)
     tp_hit = ReplayLevelHit(index=None, time=None, price=take_profit, reason=None)
 
     if not candles:
         return sl_hit, tp_hit
 
-    for candle in candles[entry_index:]:
+    if len(candles) <= 1:
+        return sl_hit, tp_hit
+
+    start_idx = min(len(candles) - 1, entry_index + 1)
+
+    for candle in candles[start_idx:]:
         idx = int(candle.get("index", 0))
         low = _safe_float(candle.get("low"), None)
         high = _safe_float(candle.get("high"), None)
@@ -223,35 +226,17 @@ def _detect_level_hits(
 
         if direction == "BUY":
             if tp_hit.index is None and take_profit is not None and high is not None and high >= take_profit:
-                tp_hit = ReplayLevelHit(
-                    index=idx,
-                    time=c_time,
-                    price=take_profit,
-                    reason="TP"
-                )
+                tp_hit = ReplayLevelHit(index=idx, time=c_time, price=take_profit, reason="TP")
+
             if sl_hit.index is None and stop_loss is not None and low is not None and low <= stop_loss:
-                sl_hit = ReplayLevelHit(
-                    index=idx,
-                    time=c_time,
-                    price=stop_loss,
-                    reason="SL"
-                )
+                sl_hit = ReplayLevelHit(index=idx, time=c_time, price=stop_loss, reason="SL")
 
         elif direction == "SELL":
             if tp_hit.index is None and take_profit is not None and low is not None and low <= take_profit:
-                tp_hit = ReplayLevelHit(
-                    index=idx,
-                    time=c_time,
-                    price=take_profit,
-                    reason="TP"
-                )
+                tp_hit = ReplayLevelHit(index=idx, time=c_time, price=take_profit, reason="TP")
+
             if sl_hit.index is None and stop_loss is not None and high is not None and high >= stop_loss:
-                sl_hit = ReplayLevelHit(
-                    index=idx,
-                    time=c_time,
-                    price=stop_loss,
-                    reason="SL"
-                )
+                sl_hit = ReplayLevelHit(index=idx, time=c_time, price=stop_loss, reason="SL")
 
         if tp_hit.index is not None and sl_hit.index is not None:
             break
@@ -265,6 +250,7 @@ def _resolve_exit_from_hits(
     tp_hit: ReplayLevelHit,
     fallback_result: str,
     candles: list[dict[str, Any]],
+    entry_index: int,
 ) -> tuple[int, str, float | None, str]:
     fallback_result = (fallback_result or "OPEN").upper()
 
@@ -274,8 +260,7 @@ def _resolve_exit_from_hits(
         if sl_hit.index < tp_hit.index:
             return sl_hit.index, "SL", sl_hit.price, "LOSS"
 
-        if direction == "BUY":
-            return sl_hit.index, "SL", sl_hit.price, "LOSS"
+        # même bougie après l'entrée: on garde le pire cas conservateur
         return sl_hit.index, "SL", sl_hit.price, "LOSS"
 
     if tp_hit.index is not None:
@@ -289,6 +274,9 @@ def _resolve_exit_from_hits(
 
     final_idx = int(candles[-1].get("index", 0))
     final_close = _safe_float(candles[-1].get("close"), None)
+
+    # On évite une sortie avant ou égale à l'entrée quand aucun hit n'a été détecté
+    final_idx = max(final_idx, min(len(candles) - 1, entry_index + 2))
     return final_idx, "OPEN", final_close, fallback_result
 
 
@@ -336,11 +324,11 @@ def _compute_decision_context(
     distance_to_sl_percent: float | None,
     distance_to_tp_percent: float | None,
 ) -> str:
-    parts = []
-
-    parts.append(f"Direction {direction}.")
-    parts.append(f"Structure locale {market_structure}.")
-    parts.append(f"Biais HTF {htf_bias}.")
+    parts = [
+        f"Direction {direction}.",
+        f"Structure locale {market_structure}.",
+        f"Biais HTF {htf_bias}.",
+    ]
 
     if trade_health == "healthy":
         parts.append("Le trade reste sain.")
@@ -374,18 +362,25 @@ def _choose_decision_index(
     if not candles:
         return 0
 
-    if exit_index <= entry_index:
-        return min(len(candles) - 1, entry_index + 1)
+    last_idx = len(candles) - 1
 
-    max_index = min(exit_index - 1, len(candles) - 1)
-    if max_index <= entry_index:
-        return min(len(candles) - 1, entry_index + 1)
+    # Il faut au moins une vraie bougie après l'entrée
+    min_decision = min(last_idx, entry_index + 1)
+
+    if exit_index <= min_decision:
+        return min_decision
+
+    max_decision = min(last_idx, exit_index - 1)
+    if max_decision <= min_decision:
+        return min_decision
 
     risk = abs((_safe_float(entry_price, 0.0) or 0.0) - (_safe_float(stop_loss, 0.0) or 0.0))
     if risk <= 0:
-        return min(max_index, entry_index + 8)
+        return min(max_decision, entry_index + 2)
 
-    for candle in candles[entry_index + 1:max_index + 1]:
+    scan_section = candles[min_decision:max_decision + 1]
+
+    for candle in scan_section:
         idx = int(candle.get("index", 0))
         close_p = _safe_float(candle.get("close"), None)
         low = _safe_float(candle.get("low"), None)
@@ -395,19 +390,19 @@ def _choose_decision_index(
             continue
 
         if direction == "BUY":
-            pullback_to_entry = abs(close_p - float(entry_price)) <= risk * 0.35 if entry_price is not None else False
+            pullback_to_entry = entry_price is not None and abs(close_p - float(entry_price)) <= risk * 0.35
             near_sl = low is not None and stop_loss is not None and low <= stop_loss + (risk * 0.35)
             near_tp = high is not None and take_profit is not None and high >= take_profit - (risk * 0.35)
         else:
-            pullback_to_entry = abs(close_p - float(entry_price)) <= risk * 0.35 if entry_price is not None else False
+            pullback_to_entry = entry_price is not None and abs(close_p - float(entry_price)) <= risk * 0.35
             near_sl = high is not None and stop_loss is not None and high >= stop_loss - (risk * 0.35)
             near_tp = low is not None and take_profit is not None and low <= take_profit + (risk * 0.35)
 
         if pullback_to_entry or near_sl or near_tp:
-            return idx
+            return max(min_decision, min(idx, max_decision))
 
-    span = max_index - entry_index
-    return min(max_index, entry_index + max(6, int(span * 0.4)))
+    span = max_decision - min_decision
+    return min(max_decision, min_decision + max(1, int(span * 0.4)))
 
 
 # =========================
@@ -501,24 +496,22 @@ def _build_events_and_timeline(
         exit_title = "Break-even"
         exit_description = "Sortie neutre, capital protégé."
 
-    events.append({
-        "id": 3,
-        "type": exit_type,
-        "title": exit_title,
-        "description": exit_description,
-        "price_level": exit_price,
-        "index": exit_index,
-        "time": exit_time,
-    })
+    events.append(
+        {
+            "id": 3,
+            "type": exit_type,
+            "title": exit_title,
+            "description": exit_description,
+            "price_level": exit_price,
+            "index": exit_index,
+            "time": exit_time,
+        }
+    )
 
     timeline = [
         {"type": "entry", "label": "Entrée", "index": entry_index},
         {"type": "decision", "label": "Décision", "index": decision_index},
-        {
-            "type": "outcome",
-            "label": "Trade actif" if exit_type == "open" else exit_title,
-            "index": exit_index,
-        },
+        {"type": "outcome", "label": "Trade actif" if exit_type == "open" else exit_title, "index": exit_index},
     ]
 
     timeline.sort(key=lambda x: x["index"])
@@ -570,8 +563,10 @@ def build_replay_engine_result(
             timeline=[],
         )
 
+    last_idx = len(candles) - 1
+
     entry_index = _resolve_entry_index(candles, entry_time, entry_price)
-    entry_index = max(0, min(entry_index, len(candles) - 1))
+    entry_index = max(0, min(entry_index, last_idx))
 
     sl_hit, tp_hit = _detect_level_hits(
         candles=candles,
@@ -587,10 +582,10 @@ def build_replay_engine_result(
         tp_hit=tp_hit,
         fallback_result=base_result,
         candles=candles,
+        entry_index=entry_index,
     )
 
-    exit_index = max(entry_index, min(exit_index, len(candles) - 1))
-    exit_time = _candle_time(candles[exit_index])
+    exit_index = max(entry_index + 2 if last_idx >= entry_index + 2 else entry_index, min(exit_index, last_idx))
 
     decision_index = _choose_decision_index(
         candles=candles,
@@ -601,9 +596,21 @@ def build_replay_engine_result(
         stop_loss=stop_loss,
         take_profit=take_profit,
     )
-    decision_index = max(entry_index + 1 if entry_index < len(candles) - 1 else entry_index, decision_index)
-    decision_index = min(decision_index, max(exit_index - 1, entry_index))
+
+    # Séparation minimale garantie : entry < decision < exit, si possible
+    min_decision = min(last_idx, entry_index + 1)
+    if decision_index < min_decision:
+        decision_index = min_decision
+
+    if exit_index <= decision_index and last_idx >= decision_index + 1:
+        exit_index = decision_index + 1
+
+    if decision_index >= exit_index:
+        decision_index = max(min_decision, exit_index - 1)
+
+    entry_time_out = _candle_time(candles[entry_index])
     decision_time = _candle_time(candles[decision_index])
+    exit_time = _candle_time(candles[exit_index])
 
     last_price_before_decision = _safe_float(candles[decision_index].get("close"), None)
     distance_to_sl_percent = _percent_distance(last_price_before_decision, stop_loss)
@@ -637,7 +644,7 @@ def build_replay_engine_result(
 
     events, timeline = _build_events_and_timeline(
         entry_index=entry_index,
-        entry_time=_candle_time(candles[entry_index]),
+        entry_time=entry_time_out,
         entry_price=entry_price,
         decision_index=decision_index,
         decision_time=decision_time,
@@ -652,7 +659,7 @@ def build_replay_engine_result(
 
     return ReplayEngineResult(
         entry_index=entry_index,
-        entry_time=_candle_time(candles[entry_index]),
+        entry_time=entry_time_out,
         decision_index=decision_index,
         decision_time=decision_time,
         exit_index=exit_index,

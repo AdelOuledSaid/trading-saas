@@ -478,3 +478,5 @@ def briefing_page(lang_code):
         briefing=latest_briefing,
         briefing_plan_label=briefing_plan_label,
     )
+
+

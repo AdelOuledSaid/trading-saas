@@ -292,5 +292,3 @@ def whales(lang_code=None):
         active_filters=active_filters,
     )
 #---------------------------------------------------
-
-

@@ -779,38 +779,105 @@ def auto_update():
     return {"updated": updated}
 
 def _get_signal_learning_data(signal):
-    entry = signal.entry_price
     sl = signal.stop_loss
     tp = signal.take_profit
     action = (signal.action or "BUY").upper()
+    trend = (getattr(signal, "market_trend", None) or "").strip().lower()
+    reason = getattr(signal, "reason", None) or "Analyse technique automatique."
+    confidence = getattr(signal, "confidence", None)
 
     try:
         rr = signal.risk_reward or signal.compute_rr()
     except Exception:
         rr = signal.risk_reward
 
+    rr_display = rr if rr else "—"
+
     if action == "BUY":
         invalidation = f"Invalide si le prix casse sous {sl}" if sl else "Invalide si support cassé"
         objective = f"Objectif vers {tp}" if tp else "Objectif haussier"
+        execution_plan = (
+            "Attendre une entrée propre proche de la zone prévue, "
+            "éviter de poursuivre une impulsion déjà étendue et respecter strictement le stop loss."
+        )
     else:
         invalidation = f"Invalide si le prix repasse au-dessus de {sl}" if sl else "Invalide si résistance cassée"
         objective = f"Objectif vers {tp}" if tp else "Objectif baissier"
+        execution_plan = (
+            "Privilégier une entrée disciplinée proche de la zone prévue, "
+            "éviter de vendre trop tard après extension et garder une invalidation claire."
+        )
+
+    strengths = []
+    risks = []
+
+    try:
+        rr_num = float(rr)
+    except Exception:
+        rr_num = None
+
+    if rr_num is not None:
+        if rr_num >= 2:
+            strengths.append("Le ratio risque / rendement est intéressant.")
+        elif rr_num < 1:
+            risks.append("Le ratio risque / rendement est faible.")
+
+    if trend in {"bullish", "haussier", "uptrend", "bull"} and action == "BUY":
+        strengths.append("Le trade est aligné avec un biais haussier.")
+    elif trend in {"bearish", "baissier", "downtrend", "bear"} and action == "SELL":
+        strengths.append("Le trade est aligné avec un biais baissier.")
+    elif trend:
+        risks.append("Le trade semble moins aligné avec le biais de marché déclaré.")
+    else:
+        risks.append("Le biais de marché n’est pas clairement renseigné.")
+
+    if not signal.stop_loss:
+        risks.append("Le niveau d’invalidation est incomplet.")
+    if not signal.take_profit:
+        risks.append("L’objectif de sortie est incomplet.")
+
+    if not strengths:
+        strengths.append("Le plan reste exploitable si l’exécution est disciplinée.")
+
+    if not risks:
+        risks.append("Le principal risque vient d’une entrée tardive ou émotionnelle.")
+
+    if confidence is None:
+        ai_summary = (
+            "L’AI n’a pas fourni de score précis. "
+            "Le setup doit être interprété avec discipline et confirmation."
+        )
+    else:
+        ai_summary = (
+            f"L’AI estime ce setup à {confidence}% de confiance. "
+            f"La logique principale détectée est : {reason}"
+        )
+
+    mistake_to_avoid = (
+        "Ne pas entrer après une bougie déjà trop étendue, "
+        "et ne pas déplacer le stop loss sous l’effet de l’émotion."
+    )
 
     return {
-        "rr": rr if rr else "—",
-        "invalidation": invalidation,
+        "rr": rr_display,
         "objective": objective,
+        "invalidation": invalidation,
+        "execution_plan": execution_plan,
+        "reason": reason,
+        "ai_summary": ai_summary,
+        "strengths": strengths,
+        "risks": risks,
+        "mistake_to_avoid": mistake_to_avoid,
     }
 
-
-@signals_bp.route("/<lang_code>/learn/signal/<int:signal_id>")
+@signals_bp.route("/<lang_code>/mini-course/signal/<int:signal_id>")
 def learn_signal_page(lang_code, signal_id):
     signal = Signal.query.get_or_404(signal_id)
 
     data = _get_signal_learning_data(signal)
 
     return render_template(
-        "learn/signal_course.html",
+        "learn/mini_course.html",
         signal=signal,
         data=data,
         current_lang=lang_code,

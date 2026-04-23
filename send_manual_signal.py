@@ -1,7 +1,6 @@
 import json
 import sys
 from datetime import datetime
-
 import requests
 import os
 from dotenv import load_dotenv
@@ -9,32 +8,19 @@ from dotenv import load_dotenv
 load_dotenv()
 
 SECRET = os.getenv("MANUAL_SIGNAL_SECRET")
-# =========================
-# CONFIG
-# =========================
+
 API_BASE_URL = "http://127.0.0.1:5000"
 API_ENDPOINT = f"{API_BASE_URL}/api/manual-signal"
-
-
 DEFAULT_TIMEOUT = 20
 
 ALLOWED_ASSETS = {
-    "BTCUSD",
-    "ETHUSD",
-    "SOLUSD",
-    "XRPUSD",
-    "GOLD",
-    "US100",
-    "US500",
-    "FRA40",
+    "BTCUSD", "ETHUSD", "SOLUSD", "XRPUSD",
+    "GOLD", "US100", "US500", "FRA40",
 }
-
 ALLOWED_ACTIONS = {"BUY", "SELL"}
+ALLOWED_TIMEFRAMES = {"1m", "5m", "15m", "1h", "4h"}
 
 
-# =========================
-# HELPERS
-# =========================
 def print_header():
     print("=" * 72)
     print("VELWOLF IA SIGNAL")
@@ -76,27 +62,28 @@ def ask_action() -> str:
         print("Action invalide.")
 
 
-def validate_prices(action: str, entry: float, sl: float, tp: float) -> tuple[bool, str | None]:
+def ask_timeframe() -> str:
+    while True:
+        tf = input("Timeframe (1m,5m,15m,1h,4h) [15m]: ").strip() or "15m"
+        if tf in ALLOWED_TIMEFRAMES:
+            return tf
+        print("Timeframe invalide.")
+
+
+def validate_prices(action: str, entry: float, sl: float, tp: float):
     if action == "BUY":
-        if not (sl < entry < tp):
-            return False, "Pour un BUY, il faut: stop_loss < entry_price < take_profit"
-    elif action == "SELL":
-        if not (tp < entry < sl):
-            return False, "Pour un SELL, il faut: take_profit < entry_price < stop_loss"
-    else:
-        return False, "Action invalide"
-    return True, None
+        return sl < entry < tp, "Pour un BUY, il faut: stop_loss < entry_price < take_profit"
+    if action == "SELL":
+        return tp < entry < sl, "Pour un SELL, il faut: take_profit < entry_price < stop_loss"
+    return False, "Action invalide"
 
 
-def compute_rr(entry: float, sl: float, tp: float) -> float | None:
-    try:
-        risk = abs(entry - sl)
-        reward = abs(tp - entry)
-        if risk <= 0:
-            return None
-        return round(reward / risk, 2)
-    except Exception:
+def compute_rr(entry: float, sl: float, tp: float):
+    risk = abs(entry - sl)
+    reward = abs(tp - entry)
+    if risk <= 0:
         return None
+    return round(reward / risk, 2)
 
 
 def build_payload() -> dict:
@@ -105,23 +92,15 @@ def build_payload() -> dict:
     entry_price = safe_float_input("Entry price")
     stop_loss = safe_float_input("Stop loss")
     take_profit = safe_float_input("Take profit")
+    timeframe = ask_timeframe()
+    trend = safe_str_input("Trend", "bullish" if action == "BUY" else "bearish")
+    setup_note = safe_str_input("Setup note", "IA signal")
+    confidence_raw = safe_str_input("Confidence (optionnel)", "")
 
     is_valid, error = validate_prices(action, entry_price, stop_loss, take_profit)
     if not is_valid:
         print(f"\nErreur validation: {error}")
         sys.exit(1)
-def ask_timeframe():
-    allowed = {"1m", "5m", "15m", "1h", "4h"}
-    while True:
-        tf = input("Timeframe (1m,5m,15m,1h,4h) [15m]: ").strip() or "15m"
-        if tf in allowed:
-            return tf
-        print("Timeframe invalide.")
-
-    timeframe =ask_timeframe() 
-    trend = safe_str_input("Trend", "bullish" if action == "BUY" else "bearish")
-    setup_note = safe_str_input("Setup note", "IA signal")
-    confidence_raw = safe_str_input("Confidence (optionnel)", "")
 
     confidence = None
     if confidence_raw:
@@ -129,7 +108,6 @@ def ask_timeframe():
             confidence = float(confidence_raw.replace(",", "."))
         except ValueError:
             print("Confidence invalide, ignorée.")
-            confidence = None
 
     rr = compute_rr(entry_price, stop_loss, take_profit)
 
@@ -144,6 +122,7 @@ def ask_timeframe():
     print(f"Trend      : {trend}")
     print(f"RR         : {rr if rr is not None else 'N/A'}")
     print(f"Note       : {setup_note}")
+    print(f"Secret     : {repr(SECRET)}")
     print("-" * 72)
 
     confirm = input("Confirmer envoi ? (y/n): ").strip().lower()
@@ -159,7 +138,7 @@ def ask_timeframe():
         "stop_loss": stop_loss,
         "take_profit": take_profit,
         "timeframe": timeframe,
-        "signal_type": "manual",
+        "signal_type": "auto",
         "trend": trend,
         "setup_note": setup_note,
     }
@@ -174,11 +153,7 @@ def send_signal(payload: dict):
     started_at = datetime.utcnow()
 
     try:
-        response = requests.post(
-            API_ENDPOINT,
-            json=payload,
-            timeout=DEFAULT_TIMEOUT,
-        )
+        response = requests.post(API_ENDPOINT, json=payload, timeout=DEFAULT_TIMEOUT)
     except requests.RequestException as exc:
         print(f"\nErreur réseau: {exc}")
         sys.exit(1)

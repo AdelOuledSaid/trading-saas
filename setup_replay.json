@@ -425,5 +425,50 @@
     "delta_pressure": "balanced_pressure",
     "confluence_score": 100,
     "simulated_outcome_pct": 4.5
+  },
+  {
+    "timestamp": 1776937583,
+    "token": "BTC",
+    "interval": "1h",
+    "signal": "sell",
+    "bias": "bearish",
+    "confidence": 35,
+    "price": 77589.74,
+    "orderflow_state": "balanced",
+    "orderflow_strength": 77,
+    "orderflow_signal": "balanced_orderflow",
+    "delta_pressure": "balanced_pressure",
+    "confluence_score": 80,
+    "simulated_outcome_pct": -1.25
+  },
+  {
+    "timestamp": 1776939250,
+    "token": "BTC",
+    "interval": "1h",
+    "signal": "sell",
+    "bias": "bearish",
+    "confidence": 35,
+    "price": 77265.18,
+    "orderflow_state": "balanced",
+    "orderflow_strength": 72,
+    "orderflow_signal": "balanced_orderflow",
+    "delta_pressure": "balanced_pressure",
+    "confluence_score": 80,
+    "simulated_outcome_pct": -1.25
+  },
+  {
+    "timestamp": 1776968835,
+    "token": "BTC",
+    "interval": "1h",
+    "signal": "sell",
+    "bias": "bearish",
+    "confidence": 35,
+    "price": 77906.06,
+    "orderflow_state": "absorption_active",
+    "orderflow_strength": 53,
+    "orderflow_signal": "seller_absorption",
+    "delta_pressure": "balanced_pressure",
+    "confluence_score": 80,
+    "simulated_outcome_pct": -1.25
   }
 ]

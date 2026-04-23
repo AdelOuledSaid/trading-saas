@@ -1,4 +1,4 @@
-console.log("REPLAY JS FINAL BACKEND-ALIGNED LOADED");
+console.log("REPLAY JS FINAL TIMELINE-ALIGNED LOADED");
 
 let chart = null;
 let replayTimer = null;
@@ -11,14 +11,13 @@ let events = [];
 let trade = null;
 
 let currentIndex = 0;
-let decisionIndex = null;
-let exitIndex = null;
 let entryIndex = 0;
+let decisionIndex = 0;
+let exitIndex = 0;
 
 let decisionMade = false;
 let replayFinished = false;
 let replayStoppedByOutcome = false;
-
 let revealedEvents = new Set();
 let activeHintTimeout = null;
 
@@ -35,13 +34,13 @@ async function initReplay() {
         }
 
         rawData = data;
-        candles = Array.isArray(data.candles) ? data.candles : [];
-        htfCandles = Array.isArray(data.higher_timeframe_candles) ? data.higher_timeframe_candles : [];
+        candles = sanitizeCandles(Array.isArray(data.candles) ? data.candles : []);
+        htfCandles = sanitizeCandles(Array.isArray(data.higher_timeframe_candles) ? data.higher_timeframe_candles : []);
         events = Array.isArray(data.events) ? data.events : [];
         trade = data.trade || {};
 
         if (!candles.length) {
-            throw new Error("Aucune bougie disponible pour ce replay");
+            throw new Error(buildEmptyReplayMessage(data.debug || {}));
         }
 
         normalizeReplayFlow();
@@ -51,16 +50,9 @@ async function initReplay() {
 
         currentIndex = computeInitialIndex();
 
-        console.log("ENTRY INDEX =", entryIndex);
-        console.log("DECISION INDEX =", decisionIndex);
-        console.log("EXIT INDEX =", exitIndex);
-        console.log("INITIAL INDEX =", currentIndex);
-        console.log("RESULT =", trade?.result);
-        console.log("VISIBLE TOTAL CANDLES =", candles.length);
-
         renderChart(currentIndex);
         renderEvents(events);
-        renderLessons(trade.lessons || []);
+        renderLessons(Array.isArray(trade.lessons) ? trade.lessons : []);
         renderTimeline();
         updateMeta(currentIndex);
         updateScoreWaiting();
@@ -80,61 +72,83 @@ async function initReplay() {
 }
 
 // =========================
+// DATA SANITIZE
+// =========================
+function sanitizeCandles(input) {
+    const list = (input || [])
+        .map((c) => ({
+            time: normalizeIsoTime(c.time),
+            open: Number(c.open),
+            high: Number(c.high),
+            low: Number(c.low),
+            close: Number(c.close),
+            volume: c.volume == null ? null : Number(c.volume),
+        }))
+        .filter((c) => c.time && [c.open, c.high, c.low, c.close].every(Number.isFinite))
+        .sort((a, b) => safeTimestamp(a.time) - safeTimestamp(b.time));
+
+    const unique = [];
+    const seen = new Set();
+
+    list.forEach((candle) => {
+        if (seen.has(candle.time)) return;
+        seen.add(candle.time);
+
+        unique.push({
+            ...candle,
+            high: Math.max(candle.high, candle.open, candle.close, candle.low),
+            low: Math.min(candle.low, candle.open, candle.close, candle.high),
+            index: unique.length,
+        });
+    });
+
+    return unique;
+}
+
+function clampIndex(value, fallback = 0) {
+    const num = Number(value);
+    if (!Number.isFinite(num)) {
+        return Math.max(0, Math.min(fallback, Math.max(0, candles.length - 1)));
+    }
+    return Math.max(0, Math.min(Math.round(num), Math.max(0, candles.length - 1)));
+}
+
+// =========================
 // FLOW NORMALIZATION
 // =========================
 function normalizeReplayFlow() {
-    entryIndex = typeof trade?.entry_index === "number" ? trade.entry_index : 0;
-    decisionIndex = typeof trade?.decision_index === "number" ? trade.decision_index : null;
-    exitIndex = typeof trade?.exit_index === "number" ? trade.exit_index : null;
+    entryIndex = clampIndex(trade?.entry_index, 0);
+    decisionIndex = clampIndex(trade?.decision_index, entryIndex + 1);
+    exitIndex = clampIndex(trade?.exit_index, Math.min(candles.length - 1, entryIndex + 2));
 
-    if (entryIndex < 0) entryIndex = 0;
-    if (entryIndex >= candles.length) entryIndex = Math.max(0, candles.length - 1);
-
-    if (decisionIndex === null || decisionIndex === undefined) {
-        decisionIndex = Math.min(candles.length - 1, entryIndex + 8);
+    if (decisionIndex < entryIndex) {
+        decisionIndex = entryIndex;
     }
 
-    if (exitIndex === null || exitIndex === undefined) {
-        exitIndex = candles.length - 1;
+    if (exitIndex < decisionIndex) {
+        exitIndex = decisionIndex;
     }
 
-    // sécurité backend : entry < decision < exit
-    if (decisionIndex <= entryIndex) {
-        decisionIndex = Math.min(candles.length - 1, entryIndex + 8);
-    }
-
-    if (exitIndex <= decisionIndex) {
-        exitIndex = Math.min(candles.length - 1, decisionIndex + 8);
-    }
-
-    if (exitIndex <= entryIndex) {
-        exitIndex = Math.min(candles.length - 1, entryIndex + 12);
-    }
-
-    // recaler les events si besoin
-    events = events.map((evt) => {
-        const t = String(evt.type || "").toLowerCase();
-
-        if (t === "entry") {
-            return { ...evt, index: entryIndex };
-        }
-
-        if (t === "decision") {
-            return { ...evt, index: decisionIndex };
-        }
-
-        if (["tp_hit", "sl_hit", "breakeven", "open"].includes(t)) {
-            return { ...evt, index: exitIndex };
-        }
-
-        return evt;
-    });
+    events = (events || []).map((evt, idx) => ({
+        ...evt,
+        id: evt.id || `${evt.type || "event"}-${idx}`,
+        index: clampIndex(evt.index, inferEventIndex(evt.type)),
+    }));
 
     replayStoppedByOutcome = false;
 }
 
+function inferEventIndex(type) {
+    const t = String(type || "").toLowerCase();
+    if (t === "entry") return entryIndex;
+    if (t === "decision") return decisionIndex;
+    if (["tp_hit", "sl_hit", "breakeven", "open"].includes(t)) return exitIndex;
+    return entryIndex;
+}
+
 function computeInitialIndex() {
-    return Math.max(1, entryIndex - 12);
+    if (!candles.length) return 0;
+    return Math.max(1, entryIndex - Math.min(20, entryIndex));
 }
 
 // =========================
@@ -322,12 +336,12 @@ function hydrateStaticUI() {
     setText("side-trend", formatTrendText(trade.trend || inferTrendFromData()));
     setText("side-rr", trade.risk_reward || trade.computed_rr || "-");
     setText("side-timeframe", trade.timeframe || "-");
-    setText("side-result", formatResultLabel(trade.result));
+    setText("side-result", formatResultLabel(trade.result || trade.derived_result));
 
     setText("entry-price-box", formatPrice(trade.entry_price));
     setText("stop-loss-box", formatPrice(trade.stop_loss));
     setText("take-profit-box", formatPrice(trade.take_profit));
-    setText("result-box", formatResultLabel(trade.result));
+    setText("result-box", formatResultLabel(trade.result || trade.derived_result));
 
     setText("market-context", trade.market_context || "Aucune analyse de contexte disponible.");
     setText("post-analysis", trade.post_analysis || "Aucune analyse post-trade disponible.");
@@ -338,7 +352,7 @@ function hydrateStaticUI() {
 
     const resultBadge = document.getElementById("result-badge");
     if (resultBadge) {
-        const resultUpper = (trade.result || "OPEN").toUpperCase();
+        const resultUpper = String(trade.result || trade.derived_result || "OPEN").toUpperCase();
         resultBadge.textContent = formatResultLabel(resultUpper);
         resultBadge.classList.remove("status-open", "status-win", "status-loss");
         if (resultUpper === "WIN") {
@@ -358,7 +372,7 @@ function hydrateStaticUI() {
     directionEls.forEach((el) => {
         if (!el) return;
         el.classList.remove("BUY", "SELL", "buy", "sell");
-        const dir = (trade.direction || "").toUpperCase();
+        const dir = String(trade.direction || "").toUpperCase();
         if (dir === "BUY") {
             el.classList.add("buy");
         } else if (dir === "SELL") {
@@ -368,10 +382,10 @@ function hydrateStaticUI() {
 }
 
 function updateHTFDesk() {
-    setText("htf-primary-tf", (trade.timeframe || "-").toUpperCase());
-    setText("htf-higher-tf", (trade.higher_timeframe || "-").toUpperCase());
+    setText("htf-primary-tf", String(trade.timeframe || "-").toUpperCase());
+    setText("htf-higher-tf", String(trade.higher_timeframe || "-").toUpperCase());
 
-    const bias = (trade.htf_bias || "NEUTRAL").toUpperCase();
+    const bias = String(trade.htf_bias || "NEUTRAL").toUpperCase();
     setText("htf-bias-badge", `HTF ${bias}`);
     setText("htf-bias-text", bias);
     setText(
@@ -385,31 +399,26 @@ function updateHTFDesk() {
 
     const zones = Array.isArray(trade?.htf_zones) ? trade.htf_zones : [];
     setText("htf-zone-count", String(zones.length));
-    setText("htf-zone-subtext", zones.length ? zones.map(z => z.label).join(" • ") : "Aucune zone détectée");
+    setText("htf-zone-subtext", zones.length ? zones.map((z) => z.label).join(" • ") : "Aucune zone détectée");
 }
 
 function updateDecisionAssistant(index) {
-    const context = trade?.decision_context || "Aucun contexte de décision disponible.";
-    setText("decision-context-text", context);
+    setText("decision-context-text", trade?.decision_context || "Aucun contexte de décision disponible.");
 
     const health = String(trade?.trade_health || "unknown").toLowerCase();
     const structure = String(trade?.market_structure || "neutral").toLowerCase();
-    const dsl = trade?.distance_to_sl_percent;
-    const dtp = trade?.distance_to_tp_percent;
-    const mfe = trade?.max_favorable_excursion_percent;
-    const mae = trade?.max_adverse_excursion_percent;
 
-    const riskText = [
+    const parts = [
         `Santé du trade : ${formatHealthLabel(health)}.`,
         `Structure : ${structure}.`,
-        dsl != null ? `Distance SL : ${dsl}%.` : null,
-        dtp != null ? `Distance TP : ${dtp}%.` : null,
-        mfe != null ? `MFE : ${mfe}%.` : null,
-        mae != null ? `MAE : ${mae}%.` : null,
+        trade?.distance_to_sl_percent != null ? `Distance SL : ${trade.distance_to_sl_percent}%.` : null,
+        trade?.distance_to_tp_percent != null ? `Distance TP : ${trade.distance_to_tp_percent}%.` : null,
+        trade?.max_favorable_excursion_percent != null ? `MFE : ${trade.max_favorable_excursion_percent}%.` : null,
+        trade?.max_adverse_excursion_percent != null ? `MAE : ${trade.max_adverse_excursion_percent}%.` : null,
         index < decisionIndex ? "Le moment critique n’est pas encore atteint." : "Le moment critique est atteint ou dépassé."
-    ].filter(Boolean).join(" ");
+    ].filter(Boolean);
 
-    setText("decision-risk-text", riskText);
+    setText("decision-risk-text", parts.join(" "));
 }
 
 // =========================
@@ -420,8 +429,8 @@ function initChart() {
     if (!chartDom) return;
 
     chartDom.style.width = "100%";
-    chartDom.style.height = "500px";
-    chartDom.style.minHeight = "500px";
+    chartDom.style.height = "540px";
+    chartDom.style.minHeight = "540px";
 
     chart = echarts.init(chartDom, null, { renderer: "canvas" });
 
@@ -440,160 +449,174 @@ function renderChart(lastIndex) {
     const safeEnd = Math.max(1, Math.min(lastIndex, candles.length));
     const visibleCandles = candles.slice(0, safeEnd);
 
+    if (!visibleCandles.length) return;
+
     const categoryData = visibleCandles.map((_, i) => i);
-    const klineData = visibleCandles.map(c => [c.open, c.close, c.low, c.high]);
-
-    const zones = computeZones(visibleCandles);
-    const htfAreas = buildHTFZoneAreas(visibleCandles);
-    const priceLines = buildPriceLines();
+    const klineData = visibleCandles.map((c) => [c.open, c.close, c.low, c.high]);
     const eventPoints = buildEventPoints(visibleCandles);
-    const latestClose = visibleCandles[visibleCandles.length - 1]?.close ?? null;
+    const priceLines = buildPriceLines();
+    const zones = computeZones(visibleCandles).concat(buildHTFZoneAreas(visibleCandles));
     const htfOverlayLine = buildHTFOverlayLine(visibleCandles);
+    const latestClose = visibleCandles[visibleCandles.length - 1]?.close ?? null;
 
-    const option = {
-        backgroundColor: "#081121",
-        animation: false,
-        grid: {
-            left: 18,
-            right: 18,
-            top: 20,
-            bottom: 70,
-            containLabel: true
-        },
-        tooltip: {
-            trigger: "axis",
-            axisPointer: { type: "cross" },
-            backgroundColor: "#0f172a",
-            borderColor: "#243042",
-            textStyle: { color: "#e5e7eb" },
-            formatter: function (params) {
-                if (!params || !params.length) return "";
-                const candle = params.find(p => p.seriesName === "Price") || params[0];
-                const idx = candle.dataIndex;
-                const row = visibleCandles[idx];
-                if (!row) return "";
+    const lows = visibleCandles.map((c) => c.low).filter(Number.isFinite);
+    const highs = visibleCandles.map((c) => c.high).filter(Number.isFinite);
+    const minPrice = lows.length ? Math.min(...lows) : 0;
+    const maxPrice = highs.length ? Math.max(...highs) : 1;
+    const padding = (maxPrice - minPrice) * 0.08 || 1;
 
-                const livePrice = latestClose !== null ? `<div>Last: ${formatPrice(latestClose)}</div>` : "";
-                const htfText = trade?.higher_timeframe
-                    ? `<div>HTF: ${String(trade.higher_timeframe).toUpperCase()} ${trade?.htf_bias || "NEUTRAL"}</div>`
-                    : "";
-                const helperText = trade?.trade_health
-                    ? `<div>Health: ${formatHealthLabel(trade.trade_health)}</div>`
-                    : "";
-
-                return `
-                    <div style="min-width:220px;">
-                        <div style="font-weight:700;margin-bottom:8px;">${formatTime(row.time)}</div>
-                        <div>Open: ${formatPrice(row.open)}</div>
-                        <div>Close: ${formatPrice(row.close)}</div>
-                        <div>Low: ${formatPrice(row.low)}</div>
-                        <div>High: ${formatPrice(row.high)}</div>
-                        ${livePrice}
-                        ${htfText}
-                        ${helperText}
-                    </div>
-                `;
-            }
-        },
-        xAxis: {
-            type: "category",
-            data: categoryData,
-            boundaryGap: true,
-            axisLine: { lineStyle: { color: "#243042" } },
-            axisLabel: {
-                color: "#94a3b8",
-                formatter: function (value) {
-                    const candle = visibleCandles[value];
-                    return candle ? formatTime(candle.time) : "";
-                }
+    chart.setOption(
+        {
+            backgroundColor: "#07111f",
+            animation: false,
+            grid: {
+                left: 16,
+                right: 16,
+                top: 20,
+                bottom: 45,
+                containLabel: true
             },
-            splitLine: { show: false }
-        },
-        yAxis: {
-            scale: true,
-            position: "right",
-            axisLine: { lineStyle: { color: "#243042" } },
-            axisLabel: {
-                color: "#94a3b8",
-                formatter: (value) => formatAxisPrice(value)
-            },
-            splitLine: { lineStyle: { color: "rgba(148,163,184,0.08)" } }
-        },
-        dataZoom: [
-            {
-                type: "inside",
-                start: 0,
-                end: 100
-            },
-            {
-                type: "slider",
-                start: 0,
-                end: 100,
-                bottom: 10,
-                height: 18
-            }
-        ],
-        series: [
-            {
-                name: "HTF Overlay",
-                type: "line",
-                data: htfOverlayLine,
-                smooth: true,
-                symbol: "none",
-                lineStyle: {
-                    width: 1.2,
-                    opacity: 0.45,
-                    color: "#8b5cf6"
-                },
-                z: 1
-            },
-            {
-                name: "Price",
-                type: "candlestick",
-                data: klineData,
-                barWidth: 10,
-                itemStyle: {
-                    color: "#22c55e",
-                    color0: "#ef4444",
-                    borderColor: "#22c55e",
-                    borderColor0: "#ef4444"
-                },
-                markLine: {
-                    symbol: ["none", "none"],
-                    silent: true,
-                    data: priceLines,
-                    label: {
-                        color: "#dbe4f1",
-                        backgroundColor: "rgba(8,18,33,0.82)",
-                        padding: [4, 8],
-                        borderRadius: 6,
-                        formatter: function (param) {
-                            if (!param || !param.name) return "";
-                            if (param.name === "Entry") return `Entry ${formatPrice(trade.entry_price)}`;
-                            if (param.name === "SL") return `SL ${formatPrice(trade.stop_loss)}`;
-                            if (param.name === "TP") return `TP ${formatPrice(trade.take_profit)}`;
-                            return param.name;
-                        }
+            tooltip: {
+                trigger: "axis",
+                axisPointer: {
+                    type: "cross",
+                    lineStyle: {
+                        color: "rgba(148,163,184,0.25)",
+                        width: 1,
+                        type: "dashed"
                     }
                 },
-                markPoint: {
-                    symbol: "circle",
-                    symbolSize: 11,
-                    data: eventPoints
+                backgroundColor: "rgba(8,18,33,0.96)",
+                borderColor: "rgba(59,130,246,0.18)",
+                borderWidth: 1,
+                textStyle: {
+                    color: "#e5edf7",
+                    fontSize: 12
                 },
-                markArea: {
-                    silent: true,
-                    itemStyle: {
-                        color: "rgba(59,130,246,0.06)"
-                    },
-                    data: zones.concat(htfAreas)
-                },
-                z: 3
-            }
-        ]
-    };
+                extraCssText: "box-shadow: 0 16px 40px rgba(0,0,0,0.35); border-radius: 12px;",
+                formatter(params) {
+                    const candleParam = params.find((p) => p.seriesName === "Price") || params[0];
+                    const row = visibleCandles[candleParam?.dataIndex];
+                    if (!row) return "";
 
-    chart.setOption(option, true);
+                    return `
+                        <div style="min-width:220px;">
+                            <div style="font-weight:700;margin-bottom:10px;color:#dbe8ff;">${formatTime(row.time)}</div>
+                            <div style="display:flex;justify-content:space-between;gap:16px;"><span>Open</span><strong>${formatPrice(row.open)}</strong></div>
+                            <div style="display:flex;justify-content:space-between;gap:16px;"><span>High</span><strong>${formatPrice(row.high)}</strong></div>
+                            <div style="display:flex;justify-content:space-between;gap:16px;"><span>Low</span><strong>${formatPrice(row.low)}</strong></div>
+                            <div style="display:flex;justify-content:space-between;gap:16px;"><span>Close</span><strong>${formatPrice(row.close)}</strong></div>
+                            ${latestClose !== null ? `<div style="display:flex;justify-content:space-between;gap:16px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);"><span>Last</span><strong>${formatPrice(latestClose)}</strong></div>` : ""}
+                        </div>
+                    `;
+                }
+            },
+            xAxis: {
+                type: "category",
+                data: categoryData,
+                boundaryGap: true,
+                axisLine: {
+                    lineStyle: { color: "rgba(148,163,184,0.14)" }
+                },
+                axisTick: { show: false },
+                axisLabel: {
+                    color: "#94a3b8",
+                    fontSize: 11,
+                    margin: 12,
+                    formatter: (value) => formatTimeCompact(visibleCandles[value]?.time)
+                },
+                splitLine: { show: false }
+            },
+            yAxis: {
+                scale: true,
+                min: minPrice - padding,
+                max: maxPrice + padding,
+                position: "right",
+                axisLine: {
+                    lineStyle: { color: "rgba(148,163,184,0.14)" }
+                },
+                axisTick: { show: false },
+                axisLabel: {
+                    color: "#94a3b8",
+                    fontSize: 11,
+                    formatter: (value) => formatAxisPrice(value)
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: "rgba(148,163,184,0.06)",
+                        type: "solid"
+                    }
+                }
+            },
+            dataZoom: [
+                {
+                    type: "inside",
+                    start: 0,
+                    end: 100
+                }
+            ],
+            series: [
+                {
+                    name: "HTF Overlay",
+                    type: "line",
+                    data: htfOverlayLine,
+                    smooth: true,
+                    symbol: "none",
+                    lineStyle: {
+                        width: 1,
+                        opacity: 0.18,
+                        color: "#8b5cf6"
+                    },
+                    z: 1
+                },
+                {
+                    name: "Price",
+                    type: "candlestick",
+                    data: klineData,
+                    barWidth: 6,
+                    itemStyle: {
+                        color: "#22c55e",
+                        color0: "#ef4444",
+                        borderColor: "#22c55e",
+                        borderColor0: "#ef4444",
+                        borderWidth: 1
+                    },
+                    markLine: {
+                        symbol: ["none", "none"],
+                        silent: true,
+                        data: priceLines,
+                        label: {
+                            color: "#dbe4f1",
+                            backgroundColor: "rgba(8,18,33,0.84)",
+                            padding: [4, 8],
+                            borderRadius: 6,
+                            formatter(param) {
+                                if (!param || !param.name) return "";
+                                if (param.name === "Entry") return `Entry ${formatPrice(trade.entry_price)}`;
+                                if (param.name === "SL") return `SL ${formatPrice(trade.stop_loss)}`;
+                                if (param.name === "TP") return `TP ${formatPrice(trade.take_profit)}`;
+                                return param.name;
+                            }
+                        }
+                    },
+                    markPoint: {
+                        symbol: "circle",
+                        symbolSize: 10,
+                        data: eventPoints
+                    },
+                    markArea: {
+                        silent: true,
+                        itemStyle: {
+                            color: "rgba(59,130,246,0.03)"
+                        },
+                        data: zones
+                    },
+                    z: 3
+                }
+            ]
+        },
+        true
+    );
 
     setTimeout(() => {
         if (chart) chart.resize();
@@ -603,29 +626,44 @@ function renderChart(lastIndex) {
 function buildPriceLines() {
     const lines = [];
 
-    if (trade.entry_price !== null && trade.entry_price !== undefined) {
+    if (trade.entry_price != null) {
         lines.push({
             name: "Entry",
             yAxis: trade.entry_price,
-            lineStyle: { width: 1.6, type: "solid", color: "#22c55e" },
+            lineStyle: {
+                width: 1.2,
+                type: "solid",
+                opacity: 0.75,
+                color: "#22c55e"
+            },
             label: { position: "end" }
         });
     }
 
-    if (trade.stop_loss !== null && trade.stop_loss !== undefined) {
+    if (trade.stop_loss != null) {
         lines.push({
             name: "SL",
             yAxis: trade.stop_loss,
-            lineStyle: { width: 1.6, type: "dashed", color: "#ef4444" },
+            lineStyle: {
+                width: 1,
+                type: "dashed",
+                opacity: 0.58,
+                color: "#ef4444"
+            },
             label: { position: "end" }
         });
     }
 
-    if (trade.take_profit !== null && trade.take_profit !== undefined) {
+    if (trade.take_profit != null) {
         lines.push({
             name: "TP",
             yAxis: trade.take_profit,
-            lineStyle: { width: 1.6, type: "dashed", color: "#3b82f6" },
+            lineStyle: {
+                width: 1,
+                type: "dashed",
+                opacity: 0.58,
+                color: "#3b82f6"
+            },
             label: { position: "end" }
         });
     }
@@ -634,53 +672,50 @@ function buildPriceLines() {
 }
 
 function buildEventPoints(visibleCandles) {
-    return events
-        .filter(e => typeof e.index === "number" && e.index < visibleCandles.length)
-        .map(e => ({
-            coord: [
-                e.index,
-                e.price_level ?? candles[e.index].close
-            ],
+    return (events || [])
+        .filter((e) => typeof e.index === "number" && e.index >= 0 && e.index < visibleCandles.length)
+        .map((e) => ({
+            coord: [e.index, e.price_level ?? visibleCandles[e.index]?.close ?? null],
             value: e.title,
-            itemStyle: { color: eventColor(e.type) },
+            itemStyle: {
+                color: eventColor(e.type),
+                borderColor: "#07111f",
+                borderWidth: 2
+            },
             label: { show: false }
-        }));
+        }))
+        .filter((p) => Array.isArray(p.coord) && p.coord[1] != null && Number.isFinite(Number(p.coord[1])));
 }
 
 function buildHTFOverlayLine(visibleCandles) {
-    if (!Array.isArray(htfCandles) || !htfCandles.length || !visibleCandles.length) {
+    if (!htfCandles.length || !visibleCandles.length) {
         return visibleCandles.map(() => null);
     }
 
-    const result = [];
-    for (let i = 0; i < visibleCandles.length; i += 1) {
-        const current = visibleCandles[i];
+    return visibleCandles.map((current) => {
         const currentTs = safeTimestamp(current.time);
-
         let nearest = null;
         let bestDiff = null;
 
-        for (const htf of htfCandles) {
-            const htfTs = safeTimestamp(htf.time);
-            const diff = Math.abs(htfTs - currentTs);
-
+        htfCandles.forEach((htf) => {
+            const diff = Math.abs(safeTimestamp(htf.time) - currentTs);
             if (bestDiff === null || diff < bestDiff) {
                 bestDiff = diff;
                 nearest = htf;
             }
-        }
+        });
 
-        result.push(nearest ? nearest.close : null);
-    }
-
-    return result;
+        return nearest ? nearest.close : null;
+    });
 }
 
 function computeZones(visibleCandles) {
     if (visibleCandles.length < 8) return [];
 
-    const highs = visibleCandles.map(c => c.high);
-    const lows = visibleCandles.map(c => c.low);
+    const highs = visibleCandles.map((c) => c.high).filter(Number.isFinite);
+    const lows = visibleCandles.map((c) => c.low).filter(Number.isFinite);
+
+    if (!highs.length || !lows.length) return [];
 
     const high = Math.max(...highs);
     const low = Math.min(...lows);
@@ -688,23 +723,14 @@ function computeZones(visibleCandles) {
 
     if (range <= 0) return [];
 
-    const premiumZoneTop = high;
-    const premiumZoneBottom = high - range * 0.18;
-    const discountZoneTop = low + range * 0.18;
-    const discountZoneBottom = low;
-
+    const premiumBottom = high - range * 0.12;
+    const discountTop = low + range * 0.12;
     const start = 0;
     const end = visibleCandles.length - 1;
 
     return [
-        [
-            { xAxis: start, yAxis: premiumZoneBottom },
-            { xAxis: end, yAxis: premiumZoneTop }
-        ],
-        [
-            { xAxis: start, yAxis: discountZoneBottom },
-            { xAxis: end, yAxis: discountZoneTop }
-        ]
+        [{ xAxis: start, yAxis: premiumBottom }, { xAxis: end, yAxis: high }],
+        [{ xAxis: start, yAxis: low }, { xAxis: end, yAxis: discountTop }]
     ];
 }
 
@@ -716,11 +742,11 @@ function buildHTFZoneAreas(visibleCandles) {
     const end = visibleCandles.length - 1;
 
     return zones
-        .filter(z => z.low != null && z.high != null)
-        .map(z => ([
+        .filter((z) => z.low != null && z.high != null)
+        .map((z) => [
             { xAxis: start, yAxis: z.low },
             { xAxis: end, yAxis: z.high }
-        ]));
+        ]);
 }
 
 // =========================
@@ -738,7 +764,7 @@ function replayStep() {
     currentIndex += 1;
 
     if (
-        typeof exitIndex === "number" &&
+        Number.isFinite(exitIndex) &&
         trade?.should_stop_replay_at_exit &&
         currentIndex >= exitIndex &&
         currentIndex > decisionIndex
@@ -846,7 +872,7 @@ function updateLiveStats(index) {
     const current = candles[Math.max(0, index - 1)];
     const prev = candles[Math.max(0, index - 2)] || current;
 
-    if (!current) return;
+    if (!current || !prev) return;
 
     const delta = current.close - prev.close;
     const deltaPct = prev.close ? ((delta / prev.close) * 100) : 0;
@@ -870,11 +896,10 @@ function updateMarketState(index) {
 }
 
 // =========================
-// DECISION SYSTEM
+// DECISION
 // =========================
 function checkDecisionMoment(index) {
-    if (decisionMade) return;
-    if (decisionIndex === null || decisionIndex === undefined) return;
+    if (decisionMade || decisionIndex == null) return;
 
     if (index === Math.max(0, decisionIndex - 2)) {
         showHint("Zone de décision à venir. Prépare ton jugement avant que le prix ne te force à réagir.", "warning");
@@ -945,7 +970,7 @@ function displayScore(data) {
     }
 
     setText("discipline-score", `${score}/10`);
-    setText("timing-score", `${Math.max(0, score - 2)}/10`);
+    setText("timing-score", `${Number(data.timing_score ?? Math.max(0, score - 2))}/10`);
 
     updateBenchmark(score);
 }
@@ -955,7 +980,7 @@ function updateScoreWaiting() {
     setText("trader-status", "En attente de décision");
     setText(
         "decision-feedback",
-        trade?.result === "OPEN"
+        String(trade?.result || "").toUpperCase() === "OPEN"
             ? "Trade actif : la décision porte sur la gestion d’un scénario encore ouvert."
             : "Le score apparaîtra après ton choix."
     );
@@ -964,7 +989,9 @@ function updateScoreWaiting() {
     updateBenchmark(0);
 
     const statusEl = document.getElementById("trader-status");
-    if (statusEl) statusEl.classList.remove("score-good", "score-medium", "score-bad");
+    if (statusEl) {
+        statusEl.classList.remove("score-good", "score-medium", "score-bad");
+    }
 }
 
 function updateBenchmark(score) {
@@ -1018,10 +1045,22 @@ function renderTimeline() {
 
     const timelinePoints = buildOrderedTimelinePoints();
 
-    timelineWrap.innerHTML = timelinePoints.map((point) => {
-        const pct = candles.length > 1 ? (point.index / (candles.length - 1)) * 100 : 0;
+    let lastLeft = -999;
+
+    timelineWrap.innerHTML = timelinePoints.map((point, idx) => {
+        let pct = candles.length > 1 ? (point.index / (candles.length - 1)) * 100 : 0;
+
+        if (pct - lastLeft < 8) {
+            pct = lastLeft + 8;
+        }
+
+        if (pct > 100) pct = 100;
+        lastLeft = pct;
+
+        const extraClass = idx % 2 === 0 ? "label-top" : "label-bottom";
+
         return `
-            <div class="timeline-node ${point.type}" data-index="${point.index}" style="left:${pct}%;">
+            <div class="timeline-node ${point.type} ${extraClass}" data-index="${point.index}" style="left:${pct}%;">
                 <span class="timeline-dot"></span>
                 <small>${escapeHtml(point.label)}</small>
             </div>
@@ -1050,7 +1089,7 @@ function buildOrderedTimelinePoints() {
 }
 
 function formatOutcomeTimelineLabel() {
-    const result = String(trade?.result || "OPEN").toUpperCase();
+    const result = String(trade?.result || trade?.derived_result || "OPEN").toUpperCase();
     if (result === "WIN") return "TP atteint";
     if (result === "LOSS") return "SL atteint";
     if (result === "BREAKEVEN") return "Break-even";
@@ -1061,36 +1100,30 @@ function renderEvents(eventsList) {
     const container = document.getElementById("events");
     if (!container) return;
 
-    container.innerHTML = "";
-
     if (!eventsList.length) {
         container.innerHTML = `<div class="event-card"><strong>Aucun événement</strong><p>Ce replay ne contient pas encore de timeline enrichie.</p></div>`;
         return;
     }
 
-    eventsList.forEach((e) => {
-        const div = document.createElement("div");
-        div.className = "event-card";
-        div.dataset.index = e.index;
-
-        div.innerHTML = `
+    container.innerHTML = eventsList.map((e) => `
+        <div class="event-card" data-index="${e.index ?? ""}">
             <div class="event-top">
                 <span class="event-type ${eventClass(e.type)}">${formatEventType(e.type)}</span>
                 <span class="event-index">#${e.index ?? "-"}</span>
             </div>
             <strong>${escapeHtml(e.title || "Événement")}</strong>
             <p>${escapeHtml(e.description || "")}</p>
-        `;
-
-        container.appendChild(div);
-    });
+        </div>
+    `).join("");
 }
 
 function revealEventsUpTo(index) {
-    events.forEach((e) => {
+    (events || []).forEach((e) => {
         if (typeof e.index !== "number") return;
-        if (e.index <= index && !revealedEvents.has(e.id || `${e.type}-${e.index}`)) {
-            revealedEvents.add(e.id || `${e.type}-${e.index}`);
+
+        const key = e.id || `${e.type}-${e.index}`;
+        if (e.index <= index && !revealedEvents.has(key)) {
+            revealedEvents.add(key);
             showHint(`${formatEventType(e.type)} : ${e.title}`, eventHintTone(e.type));
         }
     });
@@ -1121,19 +1154,14 @@ function renderLessons(lessons) {
     const container = document.getElementById("lessons-list");
     if (!container) return;
 
-    container.innerHTML = "";
-
     if (!lessons.length) {
         container.innerHTML = `<div class="lesson-item">Aucune leçon disponible.</div>`;
         return;
     }
 
-    lessons.forEach((lesson) => {
-        const div = document.createElement("div");
-        div.className = "lesson-item";
-        div.textContent = lesson;
-        container.appendChild(div);
-    });
+    container.innerHTML = lessons.map((lesson) => `
+        <div class="lesson-item">${escapeHtml(lesson)}</div>
+    `).join("");
 }
 
 // =========================
@@ -1165,7 +1193,7 @@ function maybeEmitAdaptiveHints(index) {
         showHint("Le prix s’approche de l’objectif. Observe si l’impulsion garde sa qualité.", "good");
     }
 
-    if ((trade.result || "").toUpperCase() === "OPEN" && index >= candles.length - 3) {
+    if (String(trade.result || "").toUpperCase() === "OPEN" && index >= candles.length - 3) {
         showHint("Le trade reste ouvert. Le replay est ici un exercice de gestion, pas une conclusion finale.", "neutral");
     }
 }
@@ -1195,7 +1223,8 @@ function showHint(message, tone = "neutral") {
 }
 
 function finalizeReplay() {
-    const result = (trade.result || "").toUpperCase();
+    const result = String(trade.result || trade.derived_result || "").toUpperCase();
+
     if (result === "WIN") {
         showHint("Issue finale : scénario gagnant. Le replay confirme la qualité du plan et de la gestion.", "good");
     } else if (result === "LOSS") {
@@ -1243,7 +1272,7 @@ function inferReplayState(index) {
 
     if (latest && trade.entry_price != null) {
         const isAboveEntry = latest.close >= trade.entry_price;
-        if ((trade.direction || "").toUpperCase() === "BUY") {
+        if (String(trade.direction || "").toUpperCase() === "BUY") {
             planTitle = isAboveEntry ? "Plan défendable" : "Plan sous pression";
             planSubtitle = isAboveEntry
                 ? "Le prix reste au-dessus ou proche de la zone d’exécution"
@@ -1267,7 +1296,7 @@ function inferReplayState(index) {
         subtitle = "L’objectif devient visible";
     }
 
-    if ((trade.result || "").toUpperCase() === "OPEN" && index >= candles.length - 3) {
+    if (String(trade.result || "").toUpperCase() === "OPEN" && index >= candles.length - 3) {
         phase = "Live management";
     }
 
@@ -1288,12 +1317,12 @@ function inferTrendFromData() {
 // =========================
 function touchesLevel(candle, level, toleranceRatio = 0.001) {
     if (level == null || !candle) return false;
-    const tolerance = Math.max(Math.abs(level) * toleranceRatio, 0.5);
+    const tolerance = Math.max(Math.abs(level) * toleranceRatio, 0.0000001);
     return candle.low <= level + tolerance && candle.high >= level - tolerance;
 }
 
 function eventColor(type) {
-    const t = (type || "").toLowerCase();
+    const t = String(type || "").toLowerCase();
     if (t.includes("tp")) return "#3b82f6";
     if (t.includes("sl")) return "#ef4444";
     if (t.includes("entry")) return "#22c55e";
@@ -1303,17 +1332,16 @@ function eventColor(type) {
 }
 
 function eventClass(type) {
-    const t = (type || "").toLowerCase();
+    const t = String(type || "").toLowerCase();
     if (t.includes("tp")) return "event-tp";
     if (t.includes("sl")) return "event-sl";
     if (t.includes("entry")) return "event-entry";
     if (t.includes("decision")) return "event-decision";
-    if (t.includes("open")) return "event-context";
     return "event-context";
 }
 
 function eventHintTone(type) {
-    const t = (type || "").toLowerCase();
+    const t = String(type || "").toLowerCase();
     if (t.includes("tp")) return "good";
     if (t.includes("sl")) return "bad";
     if (t.includes("decision")) return "warning";
@@ -1321,7 +1349,7 @@ function eventHintTone(type) {
 }
 
 function formatEventType(type) {
-    const t = (type || "").toLowerCase();
+    const t = String(type || "").toLowerCase();
     if (t === "entry") return "Entrée";
     if (t === "context") return "Contexte";
     if (t === "decision") return "Décision";
@@ -1341,10 +1369,7 @@ function labelDecision(choice) {
 
 function formatResultLabel(value) {
     const result = String(value || "OPEN").toUpperCase();
-    if (result === "WIN") return "WIN";
-    if (result === "LOSS") return "LOSS";
     if (result === "BREAKEVEN") return "BE";
-    if (result === "OPEN") return "OPEN";
     return result;
 }
 
@@ -1366,10 +1391,9 @@ function formatHealthLabel(value) {
 }
 
 function formatPrice(value) {
-    if (value === null || value === undefined || value === "") return "-";
+    if (value == null || value === "") return "-";
     const num = Number(value);
-    if (Number.isNaN(num)) return String(value);
-
+    if (!Number.isFinite(num)) return String(value);
     if (Math.abs(num) >= 1000) return num.toFixed(2);
     if (Math.abs(num) >= 1) return num.toFixed(4);
     return num.toFixed(6);
@@ -1377,7 +1401,7 @@ function formatPrice(value) {
 
 function formatAxisPrice(value) {
     const num = Number(value);
-    if (Number.isNaN(num)) return value;
+    if (!Number.isFinite(num)) return value;
     if (Math.abs(num) >= 1000) return num.toLocaleString("en-US", { maximumFractionDigits: 0 });
     if (Math.abs(num) >= 1) return num.toLocaleString("en-US", { maximumFractionDigits: 2 });
     return num.toLocaleString("en-US", { maximumFractionDigits: 5 });
@@ -1393,6 +1417,25 @@ function formatTime(value) {
     const hours = String(date.getUTCHours()).padStart(2, "0");
     const minutes = String(date.getUTCMinutes()).padStart(2, "0");
     return `${day}/${month} ${hours}:${minutes}`;
+}
+
+function formatTimeCompact(value) {
+    if (!value) return "";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const hours = String(date.getUTCHours()).padStart(2, "0");
+    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+    return `${day}/${month} ${hours}:${minutes}`;
+}
+
+function normalizeIsoTime(value) {
+    if (!value) return null;
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return null;
+    return date.toISOString();
 }
 
 function safeTimestamp(value) {
@@ -1412,6 +1455,13 @@ function escapeHtml(text) {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+}
+
+function buildEmptyReplayMessage(debug) {
+    const source = debug.source ? `Source: ${debug.source}. ` : "";
+    const stored = debug.stored_len != null ? `Stored candles: ${debug.stored_len}. ` : "";
+    const market = debug.market_raw_len != null ? `Market candles: ${debug.market_raw_len}. ` : "";
+    return `${source}${stored}${market}Aucune bougie exploitable pour ce replay.`.trim();
 }
 
 window.addEventListener("load", initReplay);

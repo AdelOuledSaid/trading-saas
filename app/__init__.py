@@ -89,7 +89,21 @@ def create_app():
     stripe.api_key = config.STRIPE_SECRET_KEY
 
     app.jinja_env.filters["explain_reason"] = explain_reason
+    
 
+    def format_price(price):
+        try:
+            price = float(price)
+            if price >= 1000:
+                return f"{price:.2f}"
+            elif price >= 1:
+                return f"{price:.4f}"
+            else:
+                return f"{price:.6f}"
+        except:
+            return price
+
+    app.jinja_env.filters["format_price"] = format_price
     @app.before_request
     def set_language():
         lang = None
@@ -236,5 +250,5 @@ def create_app():
             print("[Liquidations] Auto-start enabled")
         except Exception as e:
             print(f"[Liquidations] Auto-start skipped: {e}")
-
+    
     return app

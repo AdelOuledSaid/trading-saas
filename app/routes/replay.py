@@ -6,7 +6,7 @@ from sqlalchemy import func
 
 from app.extensions import db
 from app.models import Signal
-from app.models.replay import TradeReplay, UserReplayDecision
+from app.models.replay import TradeReplay, UserReplayDecision, ReplayCandle
 from app.services.replay_recorder_service import ensure_trade_replay_for_signal
 from app.services.universal_candles_service import fetch_candles
 from app.services.replay_engine_service import build_replay_engine_result
@@ -169,56 +169,113 @@ def _next_higher_timeframe(timeframe):
     return mapping.get(tf, "1h")
 
 
+def _parse_dt(value):
+    if not value:
+        return None
+
+    if isinstance(value, datetime):
+        dt = value
+    else:
+        raw = str(value).replace("Z", "+00:00")
+        try:
+            dt = datetime.fromisoformat(raw)
+        except Exception:
+            return None
+
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+
+    return dt
+
+
+def _clean_candles(candles):
+    cleaned = []
+    seen = set()
+    sortable = []
+
+    for candle in candles or []:
+        dt = _parse_dt(candle.get("time"))
+        if dt is None:
+            continue
+
+        open_p = _safe_float(candle.get("open"), None)
+        high_p = _safe_float(candle.get("high"), None)
+        low_p = _safe_float(candle.get("low"), None)
+        close_p = _safe_float(candle.get("close"), None)
+
+        if None in [open_p, high_p, low_p, close_p]:
+            continue
+
+        sortable.append(
+            (
+                dt,
+                {
+                    "time": dt.isoformat(),
+                    "open": open_p,
+                    "high": max(high_p, open_p, close_p, low_p),
+                    "low": min(low_p, open_p, close_p, high_p),
+                    "close": close_p,
+                    "volume": _safe_float(candle.get("volume"), None),
+                },
+            )
+        )
+
+    sortable.sort(key=lambda x: x[0])
+
+    for _, candle in sortable:
+        if candle["time"] in seen:
+            continue
+        seen.add(candle["time"])
+        candle["index"] = len(cleaned)
+        cleaned.append(candle)
+
+    return cleaned
+
+
 def _normalize_candles(raw_candles):
     normalized = []
-    for idx, candle in enumerate(raw_candles or []):
-        normalized.append({
-            "time": candle.get("time"),
-            "open": _safe_float(candle.get("open")),
-            "high": _safe_float(candle.get("high")),
-            "low": _safe_float(candle.get("low")),
-            "close": _safe_float(candle.get("close")),
-            "volume": _safe_float(candle.get("volume"), None) if candle.get("volume") is not None else None,
-            "index": idx,
-        })
-    return normalized
+    for candle in raw_candles or []:
+        normalized.append(
+            {
+                "time": candle.get("time"),
+                "open": _safe_float(candle.get("open"), None),
+                "high": _safe_float(candle.get("high"), None),
+                "low": _safe_float(candle.get("low"), None),
+                "close": _safe_float(candle.get("close"), None),
+                "volume": _safe_float(candle.get("volume"), None)
+                if candle.get("volume") is not None
+                else None,
+            }
+        )
+    return _clean_candles(normalized)
 
 
 def _find_index_by_time(candles, target_time):
     if not candles or not target_time:
         return 0
 
-    if isinstance(target_time, str):
-        try:
-            target_time = datetime.fromisoformat(target_time)
-        except Exception:
-            return 0
+    target_dt = _parse_dt(target_time)
+    if target_dt is None:
+        return 0
 
-    if target_time.tzinfo is None:
-        target_time = target_time.replace(tzinfo=timezone.utc)
-
-    target_ts = target_time.timestamp()
-
+    target_ts = target_dt.timestamp()
     best_idx = 0
     best_diff = None
 
     for candle in candles:
-        try:
-            candle_dt = datetime.fromisoformat(str(candle.get("time")))
-            if candle_dt.tzinfo is None:
-                candle_dt = candle_dt.replace(tzinfo=timezone.utc)
-
-            diff = abs(candle_dt.timestamp() - target_ts)
-            if best_diff is None or diff < best_diff:
-                best_diff = diff
-                best_idx = candle["index"]
-        except Exception:
+        candle_dt = _parse_dt(candle.get("time"))
+        if candle_dt is None:
             continue
+
+        diff = abs(candle_dt.timestamp() - target_ts)
+        if best_diff is None or diff < best_diff:
+            best_diff = diff
+            best_idx = candle["index"]
 
     return best_idx
 
 
-def _trim_centered_on_entry(candles, entry_time, max_count=140, pre_bars=20):
+def _trim_centered_on_entry(candles, entry_time, max_count=180, pre_bars=40):
     if not candles:
         return []
 
@@ -239,7 +296,6 @@ def _trim_centered_on_entry(candles, entry_time, max_count=140, pre_bars=20):
         start = max(0, end - max_count)
 
     trimmed = candles[start:end]
-
     out = []
     for idx, candle in enumerate(trimmed):
         copy = dict(candle)
@@ -266,19 +322,18 @@ def _build_htf_zones(htf_candles):
     if zone_size <= 0:
         return []
 
-    supply = {
-        "label": "HTF Supply",
-        "low": round(recent_high - zone_size, 6),
-        "high": round(recent_high, 6),
-    }
-
-    demand = {
-        "label": "HTF Demand",
-        "low": round(recent_low, 6),
-        "high": round(recent_low + zone_size, 6),
-    }
-
-    return [supply, demand]
+    return [
+        {
+            "label": "HTF Supply",
+            "low": round(recent_high - zone_size, 6),
+            "high": round(recent_high, 6),
+        },
+        {
+            "label": "HTF Demand",
+            "low": round(recent_low, 6),
+            "high": round(recent_low + zone_size, 6),
+        },
+    ]
 
 
 def _build_lessons_from_engine(engine):
@@ -307,32 +362,93 @@ def _history_window_for_replay(replay):
     if replay_end.tzinfo is None:
         replay_end = replay_end.replace(tzinfo=timezone.utc)
 
-    start_dt = entry_dt - timedelta(hours=8)
-    end_dt = replay_end + timedelta(hours=8)
+    start_dt = entry_dt - timedelta(hours=16)
+    end_dt = replay_end + timedelta(hours=16)
 
     return start_dt, end_dt
+
+
+def _stored_candles_for_replay(replay):
+    rows = (
+        ReplayCandle.query.filter_by(trade_replay_id=replay.id)
+        .order_by(ReplayCandle.position_index.asc(), ReplayCandle.candle_time.asc())
+        .all()
+    )
+
+    candles = []
+    for row in rows:
+        candles.append(
+            {
+                "time": row.candle_time.isoformat() if row.candle_time else None,
+                "open": _safe_float(row.open, None),
+                "high": _safe_float(row.high, None),
+                "low": _safe_float(row.low, None),
+                "close": _safe_float(row.close, None),
+                "volume": _safe_float(row.volume, None),
+            }
+        )
+
+    return _clean_candles(candles)
 
 
 def _load_primary_candles_for_replay(replay, timeframe):
     start_dt, end_dt = _history_window_for_replay(replay)
 
-    raw = fetch_candles(
-        asset=replay.symbol,
-        timeframe=timeframe,
-        limit=800,
-        start_time=start_dt,
-        end_time=end_dt,
-    )
-
-    candles = _normalize_candles(raw)
-    candles = _trim_centered_on_entry(
-        candles,
+    stored_candles = _stored_candles_for_replay(replay)
+    stored_trimmed = _trim_centered_on_entry(
+        stored_candles,
         entry_time=replay.entry_time,
-        max_count=140,
-        pre_bars=24,
+        max_count=180,
+        pre_bars=40,
     )
 
-    return raw, candles, start_dt, end_dt
+    market_raw = []
+    market_candles = []
+    market_error = None
+
+    try:
+        market_raw = fetch_candles(
+            asset=replay.symbol,
+            timeframe=timeframe,
+            limit=1000,
+            start_time=start_dt,
+            end_time=end_dt,
+        )
+
+        market_candles = _trim_centered_on_entry(
+            _normalize_candles(market_raw),
+            entry_time=replay.entry_time,
+            max_count=180,
+            pre_bars=40,
+        )
+    except Exception as exc:
+        market_error = str(exc)
+
+    source = "market"
+    final_raw = market_raw
+    final_candles = market_candles
+
+    # priorité aux bougies stockées si elles sont plus stables ou plus complètes
+    if stored_trimmed and (not market_candles or len(stored_trimmed) >= len(market_candles)):
+        source = "stored"
+        final_raw = stored_candles
+        final_candles = stored_trimmed
+
+    if not final_candles and stored_trimmed:
+        source = "stored"
+        final_raw = stored_candles
+        final_candles = stored_trimmed
+
+    debug = {
+        "source": source,
+        "stored_len": len(stored_candles),
+        "stored_trimmed_len": len(stored_trimmed),
+        "market_len": len(market_candles),
+        "market_raw_len": len(market_raw or []),
+        "market_error": market_error,
+    }
+
+    return final_raw, final_candles, start_dt, end_dt, debug
 
 
 def _load_htf_candles_for_replay(replay, higher_tf):
@@ -341,7 +457,7 @@ def _load_htf_candles_for_replay(replay, higher_tf):
     raw = fetch_candles(
         asset=replay.symbol,
         timeframe=higher_tf,
-        limit=300,
+        limit=400,
         start_time=start_dt - timedelta(hours=24),
         end_time=end_dt + timedelta(hours=24),
     )
@@ -357,7 +473,6 @@ def _load_htf_candles_for_replay(replay, higher_tf):
 @login_required
 def open_signal_replay(signal_id, lang_code="fr"):
     signal = Signal.query.get_or_404(signal_id)
-
     replay = ensure_trade_replay_for_signal(signal)
 
     if not replay:
@@ -401,34 +516,50 @@ def replay_data(replay_id, lang_code="fr"):
     higher_tf = _next_higher_timeframe(primary_tf)
 
     try:
-        primary_raw, primary_candles, start_dt, end_dt = _load_primary_candles_for_replay(replay, primary_tf)
-        htf_candles = _load_htf_candles_for_replay(replay, higher_tf)
+        primary_raw, primary_candles, start_dt, end_dt, primary_debug = _load_primary_candles_for_replay(
+            replay, primary_tf
+        )
     except Exception as e:
-        return jsonify({"error": f"Erreur données marché: {str(e)}"}), 500
+        return jsonify({"error": f"Erreur données replay: {str(e)}"}), 500
+
+    try:
+        htf_candles = _load_htf_candles_for_replay(replay, higher_tf)
+        htf_error = None
+    except Exception as e:
+        htf_candles = []
+        htf_error = str(e)
 
     if primary_raw is None or not isinstance(primary_raw, list) or len(primary_raw) == 0:
-        return jsonify({
-            "error": "Aucune donnée marché disponible",
-            "debug": {
-                "symbol": replay.symbol,
-                "timeframe": primary_tf,
-            }
-        }), 404
+        return (
+            jsonify(
+                {
+                    "error": "Aucune donnée replay disponible",
+                    "debug": {
+                        "symbol": replay.symbol,
+                        "timeframe": primary_tf,
+                        **primary_debug,
+                    },
+                }
+            ),
+            404,
+        )
 
     if not primary_candles:
-        return jsonify({
-            "error": "Impossible de construire le replay: aucune bougie exploitable.",
-            "debug": {
-                "symbol": replay.symbol,
-                "timeframe": primary_tf,
-                "raw_len": len(primary_raw),
-                "window_start": start_dt.isoformat(),
-                "window_end": end_dt.isoformat(),
-            }
-        }), 400
-
-    first_candle_time = primary_candles[0]["time"]
-    last_candle_time = primary_candles[-1]["time"]
+        return (
+            jsonify(
+                {
+                    "error": "Impossible de construire le replay: aucune bougie exploitable.",
+                    "debug": {
+                        "symbol": replay.symbol,
+                        "timeframe": primary_tf,
+                        "window_start": start_dt.isoformat(),
+                        "window_end": end_dt.isoformat(),
+                        **primary_debug,
+                    },
+                }
+            ),
+            400,
+        )
 
     engine = build_replay_engine_result(
         candles=primary_candles,
@@ -441,98 +572,101 @@ def replay_data(replay_id, lang_code="fr"):
         htf_candles=htf_candles,
     )
 
-    events = engine.events
-    timeline = engine.timeline
-
     rr_value = _compute_rr(replay.entry_price, replay.stop_loss, replay.take_profit)
     confidence_value = getattr(replay, "confidence", 0) or 0
     risk_reward_value = getattr(replay, "risk_reward", None) or rr_value or 0
     setup_grade = _compute_setup_grade(confidence_value, risk_reward_value)
-    difficulty = _compute_difficulty(confidence_value, risk_reward_value, len(events))
+    difficulty = _compute_difficulty(confidence_value, risk_reward_value, len(engine.events))
     ideal_decision = _ideal_decision_from_result(engine.derived_result)
     htf_zones = _build_htf_zones(htf_candles)
     lessons = _build_lessons_from_engine(engine)
 
-    return jsonify({
-        "trade": {
-            "id": replay.id,
-            "signal_id": replay.signal_id,
-            "symbol": replay.symbol,
-            "timeframe": primary_tf,
-            "higher_timeframe": higher_tf,
-            "direction": replay.direction,
-            "replay_start": replay.replay_start.isoformat() if replay.replay_start else None,
-            "replay_end": replay.replay_end.isoformat() if replay.replay_end else None,
-            "entry_time": replay.entry_time.isoformat() if replay.entry_time else None,
-            "exit_time": replay.exit_time.isoformat() if replay.exit_time else None,
-            "entry_price": _safe_float(replay.entry_price, 0),
-            "stop_loss": _safe_float(replay.stop_loss, 0),
-            "take_profit": _safe_float(replay.take_profit, 0),
-            "result": engine.derived_result,
-            "derived_result": engine.derived_result,
-            "result_percent": replay.result_percent,
-            "market_context": replay.market_context,
-            "post_analysis": replay.post_analysis,
-            "confidence": confidence_value,
-            "trend": getattr(replay, "trend", None),
-            "risk_reward": risk_reward_value,
-            "computed_rr": rr_value,
-            "setup_grade": setup_grade,
-            "difficulty": difficulty,
-            "ideal_decision": ideal_decision,
-            "ideal_decision_label": _decision_label(ideal_decision),
-            "decision_index": engine.decision_index,
-            "entry_index": engine.entry_index,
-            "exit_index": engine.exit_index,
-            "entry_time_engine": engine.entry_time,
-            "decision_time": engine.decision_time,
-            "exit_time_engine": engine.exit_time,
-            "exit_reason": engine.exit_reason,
-            "exit_price": engine.exit_price,
-            "trade_health": engine.trade_health,
-            "market_structure": engine.market_structure,
-            "distance_to_sl_percent": engine.distance_to_sl_percent,
-            "distance_to_tp_percent": engine.distance_to_tp_percent,
-            "max_favorable_excursion_percent": engine.max_favorable_excursion_percent,
-            "max_adverse_excursion_percent": engine.max_adverse_excursion_percent,
-            "live_outcome_if_hold": engine.live_outcome_if_hold,
-            "decision_context": engine.decision_context,
-            "should_stop_replay_at_exit": engine.should_stop_replay_at_exit,
-            "sl_hit": {
-                "index": engine.sl_hit.index,
-                "time": engine.sl_hit.time,
-                "price": engine.sl_hit.price,
-                "reason": engine.sl_hit.reason,
+    return jsonify(
+        {
+            "trade": {
+                "id": replay.id,
+                "signal_id": replay.signal_id,
+                "symbol": replay.symbol,
+                "timeframe": primary_tf,
+                "higher_timeframe": higher_tf,
+                "direction": replay.direction,
+                "simulation_mode": "auto_guided",
+                "decision_mode": "manual_decision_only",
+                "replay_start": replay.replay_start.isoformat() if replay.replay_start else None,
+                "replay_end": replay.replay_end.isoformat() if replay.replay_end else None,
+                "entry_time": replay.entry_time.isoformat() if replay.entry_time else None,
+                "exit_time": replay.exit_time.isoformat() if replay.exit_time else None,
+                "entry_price": _safe_float(replay.entry_price, 0),
+                "stop_loss": _safe_float(replay.stop_loss, 0),
+                "take_profit": _safe_float(replay.take_profit, 0),
+                "result": engine.derived_result,
+                "derived_result": engine.derived_result,
+                "result_percent": replay.result_percent,
+                "market_context": replay.market_context,
+                "post_analysis": replay.post_analysis,
+                "confidence": confidence_value,
+                "trend": getattr(replay, "trend", None),
+                "risk_reward": risk_reward_value,
+                "computed_rr": rr_value,
+                "setup_grade": setup_grade,
+                "difficulty": difficulty,
+                "ideal_decision": ideal_decision,
+                "ideal_decision_label": _decision_label(ideal_decision),
+                "decision_index": engine.decision_index,
+                "entry_index": engine.entry_index,
+                "exit_index": engine.exit_index,
+                "entry_time_engine": engine.entry_time,
+                "decision_time": engine.decision_time,
+                "exit_time_engine": engine.exit_time,
+                "exit_reason": engine.exit_reason,
+                "exit_price": engine.exit_price,
+                "trade_health": engine.trade_health,
+                "market_structure": engine.market_structure,
+                "distance_to_sl_percent": engine.distance_to_sl_percent,
+                "distance_to_tp_percent": engine.distance_to_tp_percent,
+                "max_favorable_excursion_percent": engine.max_favorable_excursion_percent,
+                "max_adverse_excursion_percent": engine.max_adverse_excursion_percent,
+                "live_outcome_if_hold": engine.live_outcome_if_hold,
+                "decision_context": engine.decision_context,
+                "should_stop_replay_at_exit": engine.should_stop_replay_at_exit,
+                "sl_hit": {
+                    "index": engine.sl_hit.index,
+                    "time": engine.sl_hit.time,
+                    "price": engine.sl_hit.price,
+                    "reason": engine.sl_hit.reason,
+                },
+                "tp_hit": {
+                    "index": engine.tp_hit.index,
+                    "time": engine.tp_hit.time,
+                    "price": engine.tp_hit.price,
+                    "reason": engine.tp_hit.reason,
+                },
+                "is_premium": True,
+                "lessons": lessons,
+                "timeline": engine.timeline,
+                "user_hint_before_decision": engine.decision_context,
+                "desk_note": "Ce replay utilise un scénario auto-guidé stable avec une décision manuelle au moment critique.",
+                "htf_bias": engine.htf_bias,
+                "htf_zones": htf_zones,
             },
-            "tp_hit": {
-                "index": engine.tp_hit.index,
-                "time": engine.tp_hit.time,
-                "price": engine.tp_hit.price,
-                "reason": engine.tp_hit.reason,
+            "debug": {
+                "raw_len": len(primary_raw),
+                "final_len": len(primary_candles),
+                "symbol": replay.symbol,
+                "timeframe": primary_tf,
+                "window_start": start_dt.isoformat(),
+                "window_end": end_dt.isoformat(),
+                "first_candle_time": primary_candles[0]["time"] if primary_candles else None,
+                "last_candle_time": primary_candles[-1]["time"] if primary_candles else None,
+                "entry_time": replay.entry_time.isoformat() if replay.entry_time else None,
+                "htf_error": htf_error,
+                **primary_debug,
             },
-            "is_premium": True,
-            "lessons": lessons,
-            "timeline": timeline,
-            "user_hint_before_decision": engine.decision_context,
-            "desk_note": "Respect du plan, gestion du risque et lecture du contexte priment sur l’émotion.",
-            "htf_bias": engine.htf_bias,
-            "htf_zones": htf_zones,
-        },
-        "debug": {
-            "raw_len": len(primary_raw),
-            "final_len": len(primary_candles),
-            "symbol": replay.symbol,
-            "timeframe": primary_tf,
-            "window_start": start_dt.isoformat(),
-            "window_end": end_dt.isoformat(),
-            "first_candle_time": first_candle_time,
-            "last_candle_time": last_candle_time,
-            "entry_time": replay.entry_time.isoformat() if replay.entry_time else None,
-        },
-        "candles": primary_candles,
-        "higher_timeframe_candles": htf_candles,
-        "events": events,
-    })
+            "candles": primary_candles,
+            "higher_timeframe_candles": htf_candles,
+            "events": engine.events,
+        }
+    )
 
 
 @replay_bp.route("/api/replay/<int:replay_id>/decision", methods=["POST"])
@@ -550,19 +684,27 @@ def save_replay_decision(replay_id, lang_code="fr"):
     if decision not in ["close", "hold", "partial"]:
         return jsonify({"error": "Décision invalide"}), 400
 
-    existing = UserReplayDecision.query.filter_by(
-        user_id=current_user.id,
-        trade_replay_id=replay.id,
-    ).order_by(UserReplayDecision.created_at.desc()).first()
+    existing = (
+        UserReplayDecision.query.filter_by(
+            user_id=current_user.id,
+            trade_replay_id=replay.id,
+        )
+        .order_by(UserReplayDecision.created_at.desc())
+        .first()
+    )
 
     primary_tf = (replay.timeframe or "15m").lower()
     higher_tf = _next_higher_timeframe(primary_tf)
 
     try:
-        _, primary_candles, _, _ = _load_primary_candles_for_replay(replay, primary_tf)
-        htf_candles = _load_htf_candles_for_replay(replay, higher_tf)
+        _, primary_candles, _, _, _ = _load_primary_candles_for_replay(replay, primary_tf)
     except Exception as e:
-        return jsonify({"error": f"Erreur données marché: {str(e)}"}), 500
+        return jsonify({"error": f"Erreur données replay: {str(e)}"}), 500
+
+    try:
+        htf_candles = _load_htf_candles_for_replay(replay, higher_tf)
+    except Exception:
+        htf_candles = []
 
     engine = build_replay_engine_result(
         candles=primary_candles,
@@ -575,12 +717,9 @@ def save_replay_decision(replay_id, lang_code="fr"):
         htf_candles=htf_candles,
     )
 
-    rr_value = _compute_rr(
-        replay.entry_price,
-        replay.stop_loss,
-        replay.take_profit,
-    ) or getattr(replay, "risk_reward", 1)
-
+    rr_value = _compute_rr(replay.entry_price, replay.stop_loss, replay.take_profit) or getattr(
+        replay, "risk_reward", 1
+    )
     ideal_decision = _ideal_decision_from_result(engine.derived_result)
 
     score, status, status_text = _score_decision(
@@ -599,85 +738,71 @@ def save_replay_decision(replay_id, lang_code="fr"):
             existing.status = status
             existing.feedback = feedback
         else:
-            new_decision = UserReplayDecision(
-                user_id=current_user.id,
-                trade_replay_id=replay.id,
-                decision=decision,
-                score=int(score),
-                status=status,
-                feedback=feedback,
+            db.session.add(
+                UserReplayDecision(
+                    user_id=current_user.id,
+                    trade_replay_id=replay.id,
+                    decision=decision,
+                    score=int(score),
+                    status=status,
+                    feedback=feedback,
+                )
             )
-            db.session.add(new_decision)
 
         db.session.commit()
 
-        user_avg_score = db.session.query(
-            func.avg(UserReplayDecision.score)
-        ).filter(
+        user_avg_score = db.session.query(func.avg(UserReplayDecision.score)).filter(
             UserReplayDecision.user_id == current_user.id
         ).scalar()
-
         user_avg_score = round(float(user_avg_score), 1) if user_avg_score is not None else 0.0
         estimated_percentile = min(99, max(1, int((score / 10) * 100) - 8))
 
-        return jsonify({
-            "success": True,
-            "message": "Décision sauvegardée",
-            "score": int(score),
-            "status": status,
-            "status_text": status_text,
-            "status_label": _status_label(status),
-            "feedback": feedback,
-            "ideal_decision": ideal_decision,
-            "ideal_decision_label": _decision_label(ideal_decision),
-            "discipline_score": int(score),
-            "timing_score": int(timing_score),
-            "user_avg_score": user_avg_score,
-            "estimated_percentile": estimated_percentile,
-            "comparison_text": f"Tu fais mieux que {estimated_percentile}% des traders sur cette décision.",
-        }), 201
-
+        return (
+            jsonify(
+                {
+                    "success": True,
+                    "message": "Décision sauvegardée",
+                    "score": int(score),
+                    "status": status,
+                    "status_text": status_text,
+                    "status_label": _status_label(status),
+                    "feedback": feedback,
+                    "ideal_decision": ideal_decision,
+                    "ideal_decision_label": _decision_label(ideal_decision),
+                    "discipline_score": int(score),
+                    "timing_score": int(timing_score),
+                    "user_avg_score": user_avg_score,
+                    "estimated_percentile": estimated_percentile,
+                    "comparison_text": f"Tu fais mieux que {estimated_percentile}% des traders sur cette décision.",
+                }
+            ),
+            201,
+        )
     except Exception as e:
         db.session.rollback()
-        return jsonify({
-            "error": "Erreur sauvegarde",
-            "details": str(e),
-        }), 500
+        return jsonify({"error": "Erreur sauvegarde", "details": str(e)}), 500
 
 
 @replay_bp.route("/my-performance")
 @replay_bp.route("/<lang_code>/my-performance")
 @login_required
 def my_performance(lang_code="fr"):
-    decisions = UserReplayDecision.query.filter_by(
-        user_id=current_user.id
-    ).order_by(UserReplayDecision.created_at.desc()).all()
+    decisions = (
+        UserReplayDecision.query.filter_by(user_id=current_user.id)
+        .order_by(UserReplayDecision.created_at.desc())
+        .all()
+    )
 
     total_decisions = len(decisions)
 
-    avg_score = db.session.query(
-        func.avg(UserReplayDecision.score)
-    ).filter(
+    avg_score = db.session.query(func.avg(UserReplayDecision.score)).filter(
         UserReplayDecision.user_id == current_user.id
     ).scalar()
-
     avg_score = round(float(avg_score), 1) if avg_score is not None else 0
 
-    good_count = UserReplayDecision.query.filter_by(
-        user_id=current_user.id,
-        status="good",
-    ).count()
-
-    medium_count = UserReplayDecision.query.filter_by(
-        user_id=current_user.id,
-        status="medium",
-    ).count()
-
-    bad_count = UserReplayDecision.query.filter_by(
-        user_id=current_user.id,
-        status="bad",
-    ).count()
-
+    good_count = UserReplayDecision.query.filter_by(user_id=current_user.id, status="good").count()
+    medium_count = UserReplayDecision.query.filter_by(user_id=current_user.id, status="medium").count()
+    bad_count = UserReplayDecision.query.filter_by(user_id=current_user.id, status="bad").count()
     success_rate = round((good_count / total_decisions) * 100, 1) if total_decisions > 0 else 0
 
     if avg_score >= 8:

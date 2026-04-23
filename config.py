@@ -16,10 +16,10 @@ if DATABASE_URL.startswith("postgres://"):
 # SECURITY
 # =========================
 SECRET_KEY = os.getenv("SECRET_KEY", "change-moi-plus-tard")
-
 MANUAL_SIGNAL_SECRET = os.getenv("MANUAL_SIGNAL_SECRET")
+
 # =========================
-# RESEND EMAIL 🔥
+# RESEND EMAIL
 # =========================
 RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
 
@@ -35,7 +35,6 @@ SITE_URL = os.getenv("SITE_URL", "https://trading-saas-1.onrender.com")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 
 TELEGRAM_PUBLIC_CHAT_ID = os.getenv("TELEGRAM_PUBLIC_CHAT_ID", "")
-
 TELEGRAM_BASIC_CHAT_ID = os.getenv("TELEGRAM_BASIC_CHAT_ID", "")
 TELEGRAM_PREMIUM_CHAT_ID = os.getenv("TELEGRAM_PREMIUM_CHAT_ID", "")
 TELEGRAM_VIP_CHAT_ID = os.getenv("TELEGRAM_VIP_CHAT_ID", "")
@@ -46,6 +45,7 @@ TELEGRAM_BASIC_INVITE_LINK = os.getenv("TELEGRAM_BASIC_INVITE_LINK", "")
 TELEGRAM_PUBLIC_INVITE_LINK = os.getenv("TELEGRAM_PUBLIC_INVITE_LINK", "")
 
 TELEGRAM_BOT_USERNAME = os.getenv("TELEGRAM_BOT_USERNAME", "")
+
 # =========================
 # STRIPE
 # =========================
@@ -56,16 +56,12 @@ STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 # =========================
 # STRIPE PRICING (MULTI DEVISE)
 # =========================
-
-# BASIC
 STRIPE_PRICE_BASIC_EUR = os.getenv("STRIPE_PRICE_BASIC_EUR", "")
 STRIPE_PRICE_BASIC_USD = os.getenv("STRIPE_PRICE_BASIC_USD", "")
 
-# PREMIUM
 STRIPE_PRICE_PREMIUM_EUR = os.getenv("STRIPE_PRICE_PREMIUM_EUR", "")
 STRIPE_PRICE_PREMIUM_USD = os.getenv("STRIPE_PRICE_PREMIUM_USD", "")
 
-# VIP
 STRIPE_PRICE_VIP_EUR = os.getenv("STRIPE_PRICE_VIP_EUR", "")
 STRIPE_PRICE_VIP_USD = os.getenv("STRIPE_PRICE_VIP_USD", "")
 
@@ -85,10 +81,11 @@ ALLOWED_ASSETS = [
     "SOLUSD",
     "XRPUSD",
     "GOLD",
+    "XAUUSD",
     "US100",
     "US500",
-    "FRA40"
+    "FRA40",
 ]
 
 ALLOWED_ACTIONS = ["BUY", "SELL"]
-ALLOWED_EVENTS = ["OPEN", "TP", "SL"]
+ALLOWED_EVENTS = ["OPEN", "TP", "SL", "CLOSE"]

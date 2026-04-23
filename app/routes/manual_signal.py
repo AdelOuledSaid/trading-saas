@@ -46,7 +46,7 @@ def _safe_str(value, default=""):
 
 
 def _build_trade_id(asset: str, action: str) -> str:
-    return f"MANUAL-{asset}-{action}-{datetime.utcnow().strftime('%Y%m%d%H%M%S%f')}"
+    return f"Auto-{asset}-{action}-{datetime.utcnow().strftime('%Y%m%d%H%M%S%f')}"
 
 
 def _validate_prices(action: str, entry: float, sl: float, tp: float):
@@ -71,12 +71,13 @@ def _compute_risk_reward(entry_price: float, stop_loss: float, take_profit: floa
 @manual_signal_bp.route("/api/manual-signal", methods=["POST"])
 def create_manual_signal():
     data = request.get_json(silent=True) or {}
-
+    print("SECRET REÇU =", repr(data.get("secret")))
+    print("SECRET CONFIG =", repr(config.MANUAL_SIGNAL_SECRET))
     # Security
     if not getattr(config, "MANUAL_SIGNAL_SECRET", None):
         current_app.logger.warning("MANUAL_SIGNAL_SECRET manquant dans config.py")
         return jsonify({"error": "Server configuration error"}), 500
-
+    
     if data.get("secret") != config.MANUAL_SIGNAL_SECRET:
         current_app.logger.warning("Manual signal secret invalide")
         return jsonify({"error": "Unauthorized"}), 403
