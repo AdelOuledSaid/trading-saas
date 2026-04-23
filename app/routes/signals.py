@@ -810,7 +810,7 @@ def learn_signal_page(lang_code, signal_id):
     data = _get_signal_learning_data(signal)
 
     return render_template(
-        "learn/signal_detail.html",
+        "learn/signal_course.html",
         signal=signal,
         data=data,
         current_lang=lang_code,
