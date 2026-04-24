@@ -18,12 +18,38 @@ TRADING_KEYWORDS = [
     "nfp", "payrolls", "fomc", "treasury", "bond yields", "yield",
     "etf", "blackrock", "institutional", "inflow", "outflow", "sec", "regulation",
     "market", "trading", "risk-on", "risk-off", "recession", "macro", "liquidity",
+    "volatility", "liquidation", "open interest", "funding rate", "central bank",
+    "hawkish", "dovish", "rate cut", "rate hike", "pmi",
 ]
 
 EXCLUDED_KEYWORDS = [
     "wrestling", "cricket", "football", "soccer", "tennis", "basketball", "nba", "nfl",
     "baseball", "olympics", "championship", "match", "tournament", "medals", "player",
     "celebrity", "movie", "music", "festival", "fashion", "recipe", "travel", "weather",
+]
+
+HARD_BLACKLIST_KEYWORDS = [
+    "law firm",
+    "class action",
+    "shareholder",
+    "investor alert",
+    "deadline",
+    "lawsuit",
+    "attorney",
+    "complaint",
+    "legal",
+    "rosen",
+    "glancy",
+    "pomerantz",
+    "investigation",
+    "press release",
+    "securities class action",
+    "investor counsel",
+    "reminds investors",
+    "encourages investors",
+    "lead plaintiff",
+    "announces investigation",
+    "levi & korsinsky",
 ]
 
 
@@ -129,9 +155,16 @@ def filter_recent_articles(articles: list[dict], max_age_hours: int = 72) -> lis
 def is_relevant_trading_article(article: dict) -> bool:
     text = f"{article.get('title', '')} {article.get('description', '')} {article.get('source', '')}".lower()
 
+    # blacklist forte anti news poubelle
+    for word in HARD_BLACKLIST_KEYWORDS:
+        if word in text:
+            return False
+
+    # blacklist sport / divertissement / hors sujet
     if any(word in text for word in EXCLUDED_KEYWORDS):
         return False
 
+    # whitelist trading réel
     return any(word in text for word in TRADING_KEYWORDS)
 
 
@@ -150,24 +183,41 @@ def score_article(article: dict) -> int:
     text = f"{article.get('title', '')} {article.get('description', '')}".lower()
     score = 0
 
+    # pénalité forte pour news juridiques / bruit corporate
+    if any(word in text for word in HARD_BLACKLIST_KEYWORDS):
+        return -50
+
     important_keywords = [
         "bitcoin", "btc", "ethereum", "eth", "solana", "sol", "xrp",
         "gold", "nasdaq", "us100", "sp500", "s&p 500", "crypto",
-        "etf", "sec", "regulation", "hack", "fraud", "lawsuit",
+        "etf", "sec", "regulation",
         "upgrade", "launch", "mainnet", "inflow", "outflow",
         "fed", "interest rate", "rates", "inflation", "cpi", "fomc",
         "institutional", "blackrock", "recession", "macro", "liquidity",
-        "oil", "forex", "usd", "eur",
+        "oil", "forex", "usd", "eur", "volatility", "liquidation",
+        "open interest", "funding rate", "central bank", "hawkish", "dovish",
+        "rate cut", "rate hike", "pmi", "bond yields",
     ]
 
     high_impact_keywords = [
         "breaking", "urgent", "sec", "fed", "fomc", "cpi", "inflation",
         "rate cut", "rate hike", "bitcoin etf", "approval", "ban",
-        "lawsuit", "hack", "exploit", "outflow", "inflow",
+        "hack", "exploit", "outflow", "inflow", "liquidation",
+        "blackrock", "recession", "payrolls", "nfp", "treasury yields",
     ]
 
-    positive_words = ["surge", "rally", "jump", "gain", "rise", "approval", "bullish"]
-    negative_words = ["crash", "drop", "fall", "selloff", "decline", "bearish"]
+    positive_words = ["surge", "rally", "jump", "gain", "rise", "approval", "bullish", "breakout"]
+    negative_words = ["crash", "drop", "fall", "selloff", "decline", "bearish", "dump"]
+
+    low_value_keywords = [
+        "partnership",
+        "conference",
+        "webinar",
+        "award",
+        "ranked",
+        "brand campaign",
+        "sponsored",
+    ]
 
     for keyword in important_keywords:
         if keyword in text:
@@ -176,6 +226,10 @@ def score_article(article: dict) -> int:
     for keyword in high_impact_keywords:
         if keyword in text:
             score += 4
+
+    for keyword in low_value_keywords:
+        if keyword in text:
+            score -= 2
 
     if any(word in text for word in positive_words):
         score += 2
@@ -241,6 +295,12 @@ def prepare_digest_articles(limit: int = 6, max_age_hours: int = 72) -> list[dic
     normalized = deduplicate_articles(normalized)
     normalized = filter_recent_articles(normalized, max_age_hours=max_age_hours)
     normalized = filter_relevant_trading_articles(normalized)
+
+    # filtre qualité supplémentaire : on enlève les articles trop faibles
+    scored_filtered = [article for article in normalized if score_article(article) >= 2]
+    if scored_filtered:
+        normalized = scored_filtered
+
     normalized = sort_articles_for_digest(normalized)
 
     prepared: list[dict] = []

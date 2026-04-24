@@ -39,16 +39,18 @@ async function initReplay() {
         events = Array.isArray(data.events) ? data.events : [];
         trade = data.trade || {};
 
-        if (!candles.length) {
-            throw new Error(buildEmptyReplayMessage(data.debug || {}));
-        }
-
         normalizeReplayFlow();
         hydrateStaticUI();
         ensureAdvancedPanels();
         initChart();
 
-        currentIndex = computeInitialIndex();
+        if (!candles.length) {
+            throw new Error(buildEmptyReplayMessage(data.debug || {}));
+        }
+
+        
+
+        currentIndex = entryIndex || 1;
 
         renderChart(currentIndex);
         renderEvents(events);
@@ -792,16 +794,21 @@ function replayStep() {
 
 function startReplay() {
     if (!candles.length) return;
-
-    if (replayFinished) {
-        resetReplay();
-    }
-
     if (replayTimer) return;
 
     replayTimer = setInterval(() => {
-        replayStep();
-    }, speed);
+
+        if (currentIndex >= candles.length) {
+            pauseReplay();
+            return;
+        }
+
+        currentIndex++;
+
+        renderChart(currentIndex);
+        updateMeta(currentIndex);
+
+    }, 400); // vitesse
 }
 
 function pauseReplay() {

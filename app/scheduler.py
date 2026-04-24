@@ -129,23 +129,26 @@ def run_scheduler():
         replace_existing=True,
     )
 
+    # Breaking news réduites
     scheduler.add_job(
         job_breaking_news,
-        CronTrigger(minute="0"),
+        CronTrigger(hour="9,12,15,18", minute=0),
         id="breaking_news",
         replace_existing=True,
     )
 
+    # Liquidations max 4 fois / jour
     scheduler.add_job(
         job_liquidations,
-        CronTrigger(minute="*/15"),
+        CronTrigger(hour="9,12,16,20", minute=0),
         id="liquidations",
         replace_existing=True,
     )
 
+    # Whale max 4 fois / jour
     scheduler.add_job(
         job_whales,
-        CronTrigger(minute="10,40"),
+        CronTrigger(hour="10,14,18,21", minute=10),
         id="whales",
         replace_existing=True,
     )

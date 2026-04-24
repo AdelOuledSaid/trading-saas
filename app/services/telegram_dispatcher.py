@@ -62,7 +62,7 @@ TIER_RULES = {
         allow_tp_sl_updates=False,
         allow_morning_brief=True,
         allow_second_brief=False,
-        daily_news_count=24,
+        daily_news_count=2,
         allow_breaking_news=True,
         include_learn_link=False,
         news_title="Velwolf Public Market News",
@@ -75,7 +75,7 @@ TIER_RULES = {
         allow_tp_sl_updates=True,
         allow_morning_brief=True,
         allow_second_brief=False,
-        daily_news_count=24,
+        daily_news_count=3,
         allow_breaking_news=True,
         include_learn_link=False,
         news_title="Velwolf Basic Daily News",
@@ -88,7 +88,7 @@ TIER_RULES = {
         allow_tp_sl_updates=True,
         allow_morning_brief=True,
         allow_second_brief=True,
-        daily_news_count=24,
+        daily_news_count=5,
         allow_breaking_news=True,
         include_learn_link=True,
         news_title="Velwolf Premium Market News",
@@ -101,7 +101,7 @@ TIER_RULES = {
         allow_tp_sl_updates=True,
         allow_morning_brief=True,
         allow_second_brief=True,
-        daily_news_count=24,
+        daily_news_count=5,
         allow_breaking_news=True,
         include_learn_link=True,
         news_title="Velwolf VIP Market Intelligence",
@@ -112,8 +112,8 @@ TIER_RULES = {
 
 VALID_SLOTS = {"morning", "midday", "evening"}
 
-PREMIUM_LIQUIDATION_DAILY_LIMIT = 20
-VIP_WHALE_DAILY_LIMIT = 10
+PREMIUM_LIQUIDATION_DAILY_LIMIT = 5
+VIP_WHALE_DAILY_LIMIT = 5
 VIP_UNLOCK_DAILY_LIMIT = 3
 PUBLIC_BASIC_WHALE_TEASER_DAILY_LIMIT = 3
 PUBLIC_BASIC_LIQUIDATION_TEASER_DAILY_LIMIT = 3
@@ -724,7 +724,7 @@ def _slice_news_for_tier(articles: list[dict], tier: str) -> list[dict]:
 
 def send_daily_news(slot: str = "morning") -> dict:
     slot = _normalize_slot(slot)
-    articles = prepare_digest_articles(limit=10, max_age_hours=72)
+    articles = prepare_digest_articles(limit=4, max_age_hours=48)
 
     if not articles:
         _log_warning("[telegram_dispatcher] Aucune news disponible.")
@@ -764,7 +764,7 @@ def send_daily_news(slot: str = "morning") -> dict:
 
 
 def send_hourly_news() -> dict:
-    articles = prepare_digest_articles(limit=12, max_age_hours=6)
+    articles = prepare_digest_articles(limit=1, max_age_hours=3)
 
     if not articles:
         _log_warning("[telegram_dispatcher] Aucune news horaire disponible.")

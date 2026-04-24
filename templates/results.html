@@ -68,8 +68,8 @@
             </h1>
 
             <p class="rs-subtitle">
-                Suivez la performance des signaux publiés, identifiez les actifs les plus performants
-                et accédez aux prochains setups en direct via l’écosystème VelWolf.
+                Suivi des performances, lecture des résultats et identification des actifs dominants
+                à partir du flux de signaux publié.
             </p>
 
             <div class="rs-hero-actions" style="display:flex;gap:14px;flex-wrap:wrap;margin-top:22px;">
@@ -248,8 +248,8 @@
                             <span class="rs-panel-kicker">Vue globale</span>
                             <h2>Performance</h2>
                             <p class="rs-panel-desc">
-                                Une vue d’ensemble sur les résultats, la régularité, le rendement moyen
-                                et la qualité globale des setups publiés.
+                                Lecture synthétique des performances, du rendement moyen
+                                et de la qualité des setups exécutés.
                             </p>
                         </div>
                     </div>
@@ -305,7 +305,7 @@
 
                             <p>
                                 {% if can_view_stats %}
-                                    Ce score donne une lecture rapide de la qualité d’exécution et de la discipline globale du flux publié.
+                                    Indicateur synthétique de la qualité d’exécution du flux.
                                 {% else %}
                                     Les statistiques avancées restent réservées aux membres Premium et VIP.
                                 {% endif %}
@@ -316,8 +316,8 @@
                             <span class="rs-panel-kicker">Pourquoi suivre VelWolf</span>
                             <h3>Des setups, pas du bruit</h3>
                             <p>
-                                Les résultats ne servent pas seulement à montrer des gains :
-                                ils servent à prouver la régularité, la structure et la qualité d’exécution.
+                                Les résultats reflètent la régularité du flux, la gestion du risque
+                                et la qualité d’exécution des setups publiés.
                             </p>
                             {% if not is_premium_plus %}
                             <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="rs-upgrade-btn">
@@ -334,7 +334,7 @@
                                     <span class="rs-panel-kicker">Courbe</span>
                                     <h2 style="margin:0;color:#fff;">Courbe d’équité</h2>
                                     <p class="rs-panel-desc" style="margin-top:10px;">
-                                        Progression cumulée des trades clôturés.
+                                        Évolution cumulée de la performance sur les trades clôturés.
                                     </p>
                                 </div>
 
@@ -383,7 +383,7 @@
                     <div class="rs-panel-head rs-panel-head-split">
                         <div>
                             <span class="rs-panel-kicker">Accès live</span>
-                            <h2>Les prochains setups ne restent pas ici</h2>
+                            <h2>Les setups en cours sont diffusés en environnement Premium / VIP</h2>
                             <p class="rs-panel-desc">
                                 Les signaux, suivis de trade, réactions marché et alertes Telegram sont diffusés en direct
                                 dans l’environnement Premium / VIP.
@@ -397,8 +397,8 @@
                     </div>
 
                     <div class="rs-upgrade-note">
-                        <strong>Ce que vous débloquez :</strong> signaux en temps réel, suivi d’exécution,
-                        lecture détaillée, environnement Telegram et profondeur d’analyse supérieure.
+                        <strong>Accès :</strong> signaux en temps réel, suivi d’exécution
+                        et lectures détaillées du flux.
                     </div>
 
                     <div class="rs-card-actions" style="margin-top:20px;">
@@ -420,7 +420,8 @@
                                 {% endif %}
                             </h2>
                             <p class="rs-panel-desc">
-                                Les setups les plus propres du flux publié : lisibilité, asymétrie et rendement.
+                                Sélection des setups présentant les meilleures caractéristiques
+                                de structure, d’asymétrie et de rendement.
                             </p>
                         </div>
 
@@ -548,7 +549,7 @@
                             <span class="rs-panel-kicker">Historique récent</span>
                             <h2>Historique récent</h2>
                             <p class="rs-panel-desc">
-                                Tous les gains, avec une partie des pertes, pour garder une lecture claire et crédible.
+                                Historique partiel du flux, incluant les gains et une sélection de pertes.
                             </p>
                         </div>
 
@@ -681,8 +682,8 @@
                     <span class="rs-panel-kicker">Méthode</span>
                     <h3>Méthode</h3>
                     <p>
-                        Cette page met en avant les résultats, mais aussi la cohérence,
-                        le contrôle du risque et la structure des publications.
+                        Présentation des résultats, du contrôle du risque
+                        et de la cohérence du flux publié.
                     </p>
                 </section>
 
@@ -695,7 +696,9 @@
                         {% elif is_basic %}
                             Vous avez accès à une vitrine limitée des meilleurs setups. Les métriques approfondies restent réservées au Premium et au VIP.
                         {% else %}
-                            Le mode découverte affiche une sélection réduite pour présenter la qualité de la plateforme sans exposer toute sa profondeur analytique.
+                            Accès limité à une sélection de résultats représentatifs du flux publié.
+                            Les données complètes, les métriques avancées et la lecture approfondie
+                            sont réservées aux environnements Premium et VIP.
                         {% endif %}
                     </p>
 
@@ -753,10 +756,10 @@
     <div class="section-container">
         <div class="final-cta-box">
             <span class="final-cta-badge">Résultats & performance</span>
-            <h2>Accédez aux prochains trades au lieu de regarder les anciens.</h2>
+            <h2>Accès au flux de trading en cours et aux prochains setups.</h2>
             <p>
-                Les résultats prouvent la qualité du flux. L’accès Premium / VIP permet ensuite
-                de suivre les prochains setups, les lectures détaillées et l’environnement live.
+                Les résultats reflètent la performance passée.
+                L’environnement Premium / VIP permet de suivre le flux en temps réel.
             </p>
 
             <div class="final-cta-actions">
