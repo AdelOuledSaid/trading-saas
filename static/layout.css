@@ -52,33 +52,34 @@ canvas {
 
 .navbar {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 14px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
     z-index: 1200;
 
     height: var(--nav-h);
+    width: calc(100% - 28px);
+    max-width: var(--page-max);
 
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
 
-    padding-left: max(var(--page-gutter), calc((100vw - var(--page-max)) / 2));
-    padding-right: max(var(--page-gutter), calc((100vw - var(--page-max)) / 2));
+    padding-left: 20px;
+    padding-right: 20px;
 
     background: rgba(10, 14, 22, 0.88);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
 
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-
-    margin: 0;
-    width: 100%;
-    max-width: none;
-    border-radius: 0;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
 }
-  
+body {
+    padding-top: calc(var(--nav-h) + 14px);
+}  
 
 .nav-left {
     display: flex;
@@ -1255,4 +1256,470 @@ canvas {
         min-height: 44px !important;
         font-size: 13.5px !important;
     }
+}
+
+
+
+/* =========================================================
+   NAVBAR PRO CLEAN — DESKTOP + MOBILE SAFE OVERRIDE
+   Add this at the VERY END of layout.css
+========================================================= */
+
+:root {
+    --nav-h: 72px;
+}
+
+/* Desktop */
+@media (min-width: 981px) {
+    body {
+        padding-top: calc(var(--nav-h) + 34px) !important;
+    }
+
+    .navbar {
+        position: fixed !important;
+        top: 18px !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+
+        width: min(96%, 1480px) !important;
+        max-width: 1480px !important;
+        height: var(--nav-h) !important;
+
+        padding: 0 28px !important;
+        margin: 0 !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 28px !important;
+
+        border-radius: 24px !important;
+        border: 1px solid rgba(255,255,255,0.10) !important;
+        background: rgba(8, 12, 20, 0.86) !important;
+        backdrop-filter: blur(18px) !important;
+        -webkit-backdrop-filter: blur(18px) !important;
+        box-shadow: 0 18px 50px rgba(0,0,0,0.32) !important;
+
+        overflow: visible !important;
+        z-index: 1400 !important;
+    }
+
+    .nav-left {
+        flex: 0 0 auto !important;
+    }
+
+    .nav-center {
+        flex: 1 1 auto !important;
+        display: flex !important;
+        justify-content: center !important;
+        min-width: 0 !important;
+    }
+
+    .nav-right {
+        flex: 0 0 auto !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 14px !important;
+    }
+
+    .nav-links {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: clamp(18px, 1.6vw, 34px) !important;
+        min-width: 0 !important;
+    }
+
+    .nav-links > a,
+    .nav-drop-btn,
+    .nav-inline-link {
+        font-size: clamp(13px, 0.9vw, 15px) !important;
+        padding: 12px 2px !important;
+        white-space: nowrap !important;
+    }
+
+    .logo img,
+    .logo-pro img {
+        height: 52px !important;
+        max-width: 120px !important;
+    }
+
+    .account-btn,
+    .navbar .cta-btn,
+    .nav-right .cta-btn {
+        min-height: 48px !important;
+        padding: 0 20px !important;
+        border-radius: 16px !important;
+        white-space: nowrap !important;
+    }
+
+    .logout-btn {
+        min-height: 48px !important;
+        white-space: nowrap !important;
+    }
+}
+
+/* Tablet / mobile */
+@media (max-width: 980px) {
+    :root {
+        --nav-h: 64px;
+    }
+
+    body {
+        padding-top: calc(var(--nav-h) + 12px) !important;
+    }
+
+    .navbar {
+        position: fixed !important;
+        top: 8px !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+
+        width: calc(100% - 20px) !important;
+        height: var(--nav-h) !important;
+        max-width: 100% !important;
+
+        padding: 10px 14px !important;
+        margin: 0 !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+
+        border-radius: 18px !important;
+        border: 1px solid rgba(255,255,255,0.10) !important;
+        background: rgba(8, 12, 20, 0.94) !important;
+        backdrop-filter: blur(18px) !important;
+        -webkit-backdrop-filter: blur(18px) !important;
+        box-shadow: 0 14px 36px rgba(0,0,0,0.34) !important;
+
+        overflow: visible !important;
+        z-index: 1400 !important;
+    }
+
+    .navbar.mobile-open {
+        height: auto !important;
+        align-items: stretch !important;
+    }
+
+    .nav-left {
+        flex: 1 1 auto !important;
+        width: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        min-width: 0 !important;
+    }
+
+    .logo img,
+    .logo-pro img {
+        height: 34px !important;
+        max-width: 112px !important;
+    }
+
+    .burger {
+        display: inline-flex !important;
+        flex: 0 0 40px !important;
+        width: 40px !important;
+        height: 40px !important;
+        margin-left: auto !important;
+    }
+
+    .nav-center,
+    .nav-right {
+        display: none !important;
+        flex: 0 0 100% !important;
+        width: 100% !important;
+    }
+
+    .navbar.mobile-open .nav-center,
+    .navbar.mobile-open .nav-right {
+        display: flex !important;
+        flex-direction: column !important;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 10px 0 0 !important;
+        margin: 0 !important;
+    }
+
+    .nav-links {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+    .nav-links > a,
+    .nav-drop-btn,
+    .nav-inline-link,
+    .nav-right a,
+    .account-btn,
+    .navbar .cta-btn,
+    .nav-right .cta-btn,
+    .logout-btn {
+        width: 100% !important;
+        min-height: 46px !important;
+        padding: 12px 14px !important;
+        border-radius: 14px !important;
+        justify-content: space-between !important;
+        text-align: left !important;
+        background: rgba(255,255,255,0.04) !important;
+    }
+
+    .account-btn,
+    .navbar .cta-btn,
+    .nav-right .cta-btn,
+    .logout-btn {
+        justify-content: center !important;
+        text-align: center !important;
+    }
+
+    .nav-dropdown {
+        width: 100% !important;
+        padding-bottom: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    .nav-dropdown-menu,
+    .lang-dropdown-menu {
+        position: static !important;
+        display: none !important;
+        transform: none !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        margin-top: 6px !important;
+        box-shadow: none !important;
+    }
+
+    .nav-dropdown.active .nav-dropdown-menu,
+    .lang-dropdown.open .lang-dropdown-menu {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+}
+
+/* Small phones */
+@media (max-width: 640px) {
+    :root {
+        --nav-h: 60px;
+    }
+
+    body {
+        padding-top: calc(var(--nav-h) + 10px) !important;
+    }
+
+    .navbar {
+        top: 6px !important;
+        width: calc(100% - 12px) !important;
+        padding: 8px 10px !important;
+        border-radius: 16px !important;
+    }
+
+    .logo img,
+    .logo-pro img {
+        height: 30px !important;
+        max-width: 98px !important;
+    }
+
+    .burger {
+        width: 38px !important;
+        height: 38px !important;
+        flex-basis: 38px !important;
+    }
+
+    .nav-links > a,
+    .nav-drop-btn,
+    .nav-inline-link,
+    .account-btn,
+    .navbar .cta-btn,
+    .nav-right .cta-btn,
+    .logout-btn {
+        min-height: 44px !important;
+        font-size: 13.5px !important;
+    }
+}
+
+
+
+/* FIX DRAPEAU LANGUE */
+.lang-dropdown-toggle {
+    font-size: 20px !important;
+    line-height: 1;
+}
+
+
+/* FIX VRAIS DRAPEAUX LANGUE */
+.flag-icon {
+    width: 22px;
+    height: 16px;
+    object-fit: cover;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.lang-dropdown-toggle {
+    min-width: 48px;
+    height: 44px;
+    justify-content: center;
+}
+
+.lang-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+
+
+
+
+/* NAVBAR I18N COMPACT FIX */
+.navbar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+a
+.nav-left,
+.nav-right {
+    flex: 0 0 auto;
+}
+
+.nav-center {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 0.75vw, 16px);
+    flex-wrap: nowrap;
+    min-width: 0;
+}
+
+.nav-links > a,
+.nav-drop-btn {
+    white-space: nowrap;
+    font-size: clamp(12px, 0.82vw, 15px);
+    line-height: 1;
+}
+
+.nav-ai-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.nav-ai-badge {
+    flex: 0 0 auto;
+    font-size: 11px;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 0.8vw, 16px);
+}
+
+.account-btn,
+.logout-btn,
+.cta-btn,
+.nav-login-link {
+    white-space: nowrap;
+}
+
+/* Langues longues: on garde la navbar propre */
+@media (min-width: 1181px) and (max-width: 1500px) {
+    .nav-links {
+        gap: 8px;
+    }
+
+    .nav-links > a,
+    .nav-drop-btn {
+        font-size: 12px;
+    }
+
+    .account-btn,
+    .logout-btn,
+    .cta-btn,
+    .nav-login-link {
+        padding-left: 14px;
+        padding-right: 14px;
+        font-size: 13px;
+    }
+}
+
+/* Si l'écran n'a pas assez de largeur, on passe en burger */
+@media (max-width: 1180px) {
+    .nav-center {
+        display: none;
+    }
+
+    .burger {
+        display: flex;
+    }
+}
+
+
+
+
+/* =========================================================
+   NAVBAR LINKS UPGRADE (VISIBILITÉ + PRO STYLE)
+========================================================= */
+
+.nav-links > a,
+.nav-drop-btn,
+.nav-inline-link {
+    position: relative;
+    color: rgba(255,255,255,0.75) !important;
+    font-weight: 700;
+    transition: all 0.25s ease;
+}
+
+/* HOVER */
+.nav-links > a:hover,
+.nav-drop-btn:hover,
+.nav-inline-link:hover {
+    color: #ffffff !important;
+}
+
+/* UNDERLINE EFFECT */
+.nav-links > a::after,
+.nav-drop-btn::after,
+.nav-inline-link::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    width: 0%;
+    height: 2px;
+    background: linear-gradient(90deg, #00ff99, #00ccff);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-links > a:hover::after,
+.nav-drop-btn:hover::after,
+.nav-inline-link:hover::after {
+    width: 70%;
+}
+
+/* ACTIVE LINK */
+.nav-links > a.active {
+    color: #ffffff !important;
+}
+
+.nav-links > a.active::after {
+    width: 80%;
 }

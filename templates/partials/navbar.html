@@ -1,117 +1,100 @@
 <nav class="navbar" id="siteNavbar">
 
+    {% set lang = g.current_lang %}
+
+    <!-- LEFT -->
     <div class="nav-left">
-        <a href="{{ url_for('main.home', lang_code=current_lang) }}" class="logo logo-pro">
+        <a href="{{ url_for('main.home', lang_code=lang) }}" class="logo logo-pro">
             <img src="{{ url_for('static', filename='logo.png') }}" alt="VelWolef">
         </a>
     </div>
 
+    <!-- CENTER -->
     <div class="nav-center" id="mobileNav">
         <div class="nav-links">
 
-            <a href="{{ url_for('main.home', lang_code=current_lang) }}">
-                {{ t("home", "Accueil") }}
+            <a href="{{ url_for('main.home', lang_code=lang) }}">
+                {{ t("home", "Home") }}
             </a>
-
+             <!-- AI -->
+            
+            <a href="{{ url_for('technical_analysis.technical_analysis_page', lang_code=lang) }}">{{ t("Analyse IA") }}</a>
             <!-- SIGNALS -->
             <div class="nav-dropdown">
                 <button class="nav-drop-btn" type="button">
-                    {{ t("signals", "Signaux") }} <span>▾</span>
+                    {{ t("signals", "Signals") }} ▾
                 </button>
                 <div class="nav-dropdown-menu">
-                    <a href="{{ url_for('signals.signals_page', lang_code=current_lang) }}">{{ t("global_view", "Vue globale") }}</a>
-                    <a href="{{ url_for('signals.signals_btc', lang_code=current_lang) }}">Bitcoin</a>
-                    <a href="{{ url_for('signals.eth_signals_page', lang_code=current_lang) }}">Ethereum</a>
-                    <a href="{{ url_for('signals.signals_gold', lang_code=current_lang) }}">Gold</a>
-                    <a href="{{ url_for('signals.signals_us100', lang_code=current_lang) }}">US100</a>
-                    <a href="{{ url_for('signals.results', lang_code=current_lang) }}">{{ t("history", "Historique") }}</a>
+                    <a href="{{ url_for('signals.signals_page', lang_code=lang) }}">{{ t("global_view") }}</a>
+                    <a href="{{ url_for('signals.signals_btc', lang_code=lang) }}">Bitcoin</a>
+                    <a href="{{ url_for('signals.eth_signals_page', lang_code=lang) }}">Ethereum</a>
+                    <a href="{{ url_for('signals.signals_gold', lang_code=lang) }}">Gold</a>
+                    <a href="{{ url_for('signals.signals_us100', lang_code=lang) }}">US100</a>
+                    <a href="{{ url_for('signals.results', lang_code=lang) }}">{{ t("history") }}</a>
                 </div>
             </div>
-
-            <!-- TECHNICAL ANALYSIS -->
-            <a href="{{ url_for('technical_analysis.technical_analysis_page', lang_code=current_lang) }}" class="nav-ai-link">
-                🧠 {{ t("technical_analysis", "Analyse IA") }}
-                <span class="nav-ai-badge">AI</span>
-            </a>
 
             <!-- MARKETS -->
             <div class="nav-dropdown">
                 <button class="nav-drop-btn" type="button">
-                    {{ t("market", "Marchés") }} <span>▾</span>
+                    {{ t("market", "Markets") }} ▾
                 </button>
                 <div class="nav-dropdown-menu">
-                    <a href="{{ url_for('pages.market_crypto', lang_code=current_lang) }}">{{ t("crypto") }}</a>
-                    <a href="{{ url_for('pages.market_forex', lang_code=current_lang) }}">{{ t("forex") }}</a>
-                    <a href="{{ url_for('pages.market_opportunities', lang_code=current_lang) }}">{{ t("opportunities") }}</a>
-                    <a href="{{ url_for('pages.market_sentiment', lang_code=current_lang) }}">{{ t("sentiment") }}</a>
-                    <a href="{{ url_for('economic_calendar.economic_calendar', lang_code=current_lang) }}">{{ t("economic_calendar") }}</a>
-                    <a href="{{ url_for('pages.whales', lang_code=current_lang) }}">🐋 {{ t("whales") }}</a>
-
-                    <a href="{{ url_for('token_unlocks.token_unlocks_page', lang_code=current_lang) }}" class="nav-unlock-link">
-                        💎 {{ t("token_unlocks") }}
-                        {% if unlock_menu_alert %}
-                        <span class="nav-alert-dot"></span>
-                        {% endif %}
-                    </a>
-
-                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang) }}">{{ t("liquidations") }}</a>
-                    <a href="{{ url_for('open_interest.open_interest_page', lang_code=current_lang) }}">{{ t("open_interest") }}</a>
+                    <a href="{{ url_for('pages.market_crypto', lang_code=lang) }}">{{ t("crypto") }}</a>
+                    <a href="{{ url_for('pages.market_forex', lang_code=lang) }}">{{ t("forex") }}</a>
+                    <a href="{{ url_for('pages.market_opportunities', lang_code=lang) }}">{{ t("opportunities") }}</a>
+                    <a href="{{ url_for('pages.market_sentiment', lang_code=lang) }}">{{ t("sentiment") }}</a>
+                    <a href="{{ url_for('economic_calendar.economic_calendar', lang_code=lang) }}">{{ t("economic_calendar") }}</a>
+                    <a href="{{ url_for('pages.whales', lang_code=lang) }}">🐋 {{ t("whales") }}</a>
+                    <a href="{{ url_for('token_unlocks.token_unlocks_page', lang_code=lang) }}">{{ t("token_unlocks") }}</a>
+                    <a href="{{ url_for('news_feed.news_feed', lang_code=lang) }}">📰 {{ t("news") }}</a>
+                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=lang) }}">{{ t("liquidations") }}</a>
+                    <a href="{{ url_for('open_interest.open_interest_page', lang_code=lang) }}">{{ t("open_interest") }}</a>
                 </div>
             </div>
 
             <!-- TRADING LAB -->
             <div class="nav-dropdown">
                 <button class="nav-drop-btn" type="button">
-                    {{ t("trading_lab") }} <span>▾</span>
+                    {{ t("trading_lab", "Trading Lab") }} ▾
                 </button>
                 <div class="nav-dropdown-menu">
-                    <a href="{{ url_for('pages.trading_lab', lang_code=current_lang) }}">{{ t("global_view") }}</a>
-                    <a href="{{ url_for('pages.lab_structure', lang_code=current_lang) }}">{{ t("structure") }}</a>
-                    <a href="{{ url_for('pages.lab_risk', lang_code=current_lang) }}">{{ t("risk") }}</a>
-                    <a href="{{ url_for('pages.lab_psychology', lang_code=current_lang) }}">{{ t("psychology") }}</a>
+                    <a href="{{ url_for('pages.trading_lab', lang_code=lang) }}">{{ t("global_view") }}</a>
+                    <a href="{{ url_for('pages.lab_structure', lang_code=lang) }}">{{ t("structure") }}</a>
+                    <a href="{{ url_for('pages.lab_risk', lang_code=lang) }}">{{ t("risk") }}</a>
+                    <a href="{{ url_for('pages.lab_psychology', lang_code=lang) }}">{{ t("psychology") }}</a>
                 </div>
             </div>
 
             <!-- ACADEMY -->
-<div class="nav-dropdown nav-pro">
-    <button class="nav-drop-btn" type="button">
-        {{ t("academy") }}
-        <span class="nav-pro-badge">PRO</span>
-        <span>▾</span>
-    </button>
-    <div class="nav-dropdown-menu">
-        <a href="{{ url_for('academy.academy_index') }}">🎓 {{ t("academy_overview") }}</a>
-        <a href="{{ url_for('academy.academy_level_1') }}">📘 {{ t("academy_level_1") }}</a>
-        <a href="{{ url_for('academy.academy_level_2') }}">🚀 {{ t("academy_level_2") }}</a>
-        <a href="{{ url_for('academy.academy_level_3') }}">🧭 {{ t("academy_level_3") }}</a>
-        <a href="{{ url_for('academy.academy_level_4') }}">🏛️ Niveau 4 Pro</a>
-        <a href="{{ url_for('academy.academy_upgrade') }}">💎 {{ t("academy_upgrade") }}</a>
-    </div>
-</div>
+            <div class="nav-dropdown">
+                <button class="nav-drop-btn" type="button">
+                    {{ t("academy", "Academy") }} ▾
+                </button>
+                <div class="nav-dropdown-menu">
+                    <a href="{{ url_for('academy.academy_index', lang_code=lang) }}">🎓 {{ t("academy_overview") }}</a>
+                    <a href="{{ url_for('academy.academy_level_1', lang_code=lang) }}">📘 {{ t("academy_level_1") }}</a>
+                    <a href="{{ url_for('academy.academy_level_2', lang_code=lang) }}">🚀 {{ t("academy_level_2") }}</a>
+                    <a href="{{ url_for('academy.academy_level_3', lang_code=lang) }}">🧭 {{ t("academy_level_3") }}</a>
+                    <a href="{{ url_for('academy.academy_level_4', lang_code=lang) }}">🏛️ {{ t("academy_pro") }}</a>
+                    <a href="{{ url_for('academy.academy_upgrade', lang_code=lang) }}">💎 {{ t("academy_upgrade") }}</a>
+                </div>
+            </div>
 
             <!-- PERFORMANCE -->
             <div class="nav-dropdown">
                 <button class="nav-drop-btn" type="button">
-                    {{ t("performance") }} <span>▾</span>
+                    {{ t("performance", "Performance") }} ▾
                 </button>
                 <div class="nav-dropdown-menu">
-                    <a href="{{ url_for('signals.results', lang_code=current_lang) }}">{{ t("results") }}</a>
-
-                    {% if last_signal %}
-<a href="{{ url_for('replay.open_signal_replay', signal_id=last_signal.id, lang_code=current_lang) }}">
-    🎬 {{ t("replay") }}
-</a>
-{% endif %}
-
-<a href="{{ url_for('replay.my_performance', lang_code=current_lang) }}">
-    🎯 My performance
-</a>
+                    <a href="{{ url_for('signals.results', lang_code=lang) }}">{{ t("results") }}</a>
+                    <a href="{{ url_for('replay.my_performance', lang_code=lang) }}">🎯 {{ t("performance") }}</a>
                 </div>
             </div>
 
             <!-- PRICING -->
-            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}">
-                {{ t("pricing") }}
+            <a href="{{ url_for('billing.pricing', lang_code=lang) }}">
+                {{ t("pricing", "Pricing") }}
             </a>
 
         </div>
@@ -120,35 +103,57 @@
     <!-- RIGHT -->
     <div class="nav-right">
 
-        <!-- LANG -->
+        <!-- 🌍 LANGUAGE -->
         <div class="lang-dropdown" id="langDropdown">
-            <button class="lang-dropdown-toggle" type="button" id="langToggle">
-                {% if current_lang == "en" %}🇬🇧{% elif current_lang == "es" %}🇪🇸{% else %}🇫🇷{% endif %}
-                {{ current_lang|upper }}
+
+            <button class="lang-dropdown-toggle" id="langToggle" type="button">
+
+                {% if lang == "fr" %}
+                    <img class="flag-icon" src="https://flagcdn.com/w40/fr.png">
+                {% elif lang == "en" %}
+                    <img class="flag-icon" src="https://flagcdn.com/w40/gb.png">
+                {% elif lang == "ru" %}
+                    <img class="flag-icon" src="https://flagcdn.com/w40/ru.png">
+                {% elif lang == "it" %}
+                    <img class="flag-icon" src="https://flagcdn.com/w40/it.png">
+                {% elif lang == "es" %}
+                    <img class="flag-icon" src="https://flagcdn.com/w40/es.png">
+                {% elif lang == "de" %}
+                    <img class="flag-icon" src="https://flagcdn.com/w40/de.png">
+                {% elif lang == "pt" %}
+                    <img class="flag-icon" src="https://flagcdn.com/w40/pt.png">
+                {% endif %}
+
             </button>
 
             <div class="lang-dropdown-menu">
-                <a href="{{ switch_lang_url('fr') }}">🇫🇷 Français</a>
-                <a href="{{ switch_lang_url('en') }}">🇬🇧 English</a>
-                <a href="{{ switch_lang_url('es') }}">🇪🇸 Español</a>
+                {% for l in supported_langs %}
+                    <a class="lang-option" href="{{ switch_lang_url(l) }}">
+                        <img class="flag-icon" src="https://flagcdn.com/w40/{{ 'gb' if l=='en' else l }}.png">
+                        {{ l|upper }}
+                    </a>
+                {% endfor %}
             </div>
+
         </div>
 
+        <!-- USER -->
         {% if current_user.is_authenticated %}
-            <a href="{{ url_for('dashboard.dashboard', lang_code=current_lang) }}" class="account-btn">
+            <a href="{{ url_for('dashboard.dashboard', lang_code=lang) }}">
                 {{ t("dashboard") }}
             </a>
 
-            <a href="{{ url_for('auth.logout', lang_code=current_lang) }}" class="logout-btn">
+            <a href="{{ url_for('auth.logout', lang_code=lang) }}">
                 {{ t("logout") }}
             </a>
         {% else %}
-            <a href="{{ url_for('auth.login', lang_code=current_lang) }}">
+            <a href="{{ url_for('auth.login', lang_code=lang) }}">
                 {{ t("login") }}
             </a>
-            <a href="{{ url_for('auth.register', lang_code=current_lang) }}" class="cta-btn">
-                {{ t("signup") }}
-            </a>
+
+           <a href="{{ url_for('auth.register', lang_code=lang) }}" class="cta-btn">
+    {{ t("signup") }}
+</a>
         {% endif %}
 
     </div>

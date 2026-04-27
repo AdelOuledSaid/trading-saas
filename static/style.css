@@ -746,3 +746,109 @@ select:focus {
         grid-template-columns: 1fr;
     }
 }
+
+
+
+
+
+/* ===== LANG SWITCHER PREMIUM ===== */
+.lang-switcher {
+    position: relative;
+}
+
+.lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.lang-btn:hover {
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-1px);
+}
+
+.lang-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    width: 190px;
+    background: rgba(15,20,35,0.75);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+    padding: 8px;
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: all 0.25s ease;
+}
+
+.lang-switcher:hover .lang-menu {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.lang-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    color: #dbe3f5;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.lang-item:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+
+.arrow {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+/* ===== FIX NAVBAR VISIBILITY (FORCE) ===== */
+
+.navbar a,
+.navbar button {
+    color: #ffffff !important;
+    opacity: 1 !important;
+    font-weight: 800;
+    transition: all 0.25s ease;
+}
+
+/* HOVER */
+.navbar a:hover,
+.navbar button:hover {
+    color: #00e5ff !important;
+}
+
+/* UNDERLINE EFFECT */
+.navbar a::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    width: 0%;
+    height: 2px;
+    background: linear-gradient(90deg, #22c55e, #00ccff);
+    transform: translateX(-50%);
+    transition: 0.3s;
+}
+
+.navbar a:hover::after {
+    width: 70%;
+}

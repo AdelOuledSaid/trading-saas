@@ -1,124 +1,14 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VelWolf - FAQ</title>
-    <meta name="description" content="Questions fréquentes sur VelWolf, la plateforme premium de signaux, résultats, dashboard et academy.">
+{% extends "base.html" %}
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-</head>
-
-<body class="home-body">
-
-{% include "partials/navbar.html" %}
-
-<section class="inner-hero">
-    <div class="section-container">
-        <span class="hero-badge">FAQ VelWolf</span>
-        <h1 class="inner-page-title">Questions fréquentes sur la plateforme</h1>
-        <p class="inner-page-text">
-            Retrouvez les réponses essentielles sur les signaux, les abonnements,
-            le dashboard, l’Academy et l’expérience membre VelWolf.
-        </p>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>Support & informations</span>
-            <h2>Tout ce qu’il faut savoir avant de rejoindre la plateforme</h2>
-            <p>
-                Cette FAQ a été pensée pour répondre rapidement aux questions les plus fréquentes
-                et renforcer la clarté de l’expérience utilisateur.
-            </p>
-        </div>
-
-        <div class="faq-container">
-
-            {% for question, answer in [
-                ("Que propose VelWolf ?", "VelWolf propose une plateforme premium avec signaux de trading, résultats, dashboard, replay, academy et contenus éducatifs avancés."),
-                ("Quels actifs sont suivis ?", "La plateforme suit principalement Bitcoin, Ethereum, Gold, US100 et d'autres actifs stratégiques selon les opportunités de marché."),
-                ("À quoi sert le Trading Lab ?", "Le Trading Lab aide à mieux comprendre la structure d’un setup, la gestion du risque, la psychologie et la logique d’exécution."),
-                ("Les résultats sont-ils visibles ?", "Oui. La plateforme met en avant les résultats, l’historique, les performances et différents niveaux de lecture selon votre abonnement."),
-                ("Y a-t-il un espace membre ?", "Oui. Le dashboard regroupe les signaux, la performance, l’Academy, le briefing et les outils de progression membre."),
-                ("L’Academy est-elle incluse dans tous les plans ?", "Non. L’Academy complète est réservée aux plans Premium et VIP selon la logique d’accès définie sur la plateforme."),
-                ("Puis-je annuler mon abonnement ?", "Oui, l’abonnement peut être interrompu selon les modalités définies dans les conditions générales et votre espace de facturation."),
-                ("VelWolf est-il un conseil financier ?", "Non. Les contenus, analyses et signaux sont fournis à titre informatif et éducatif. Le trading comporte des risques et reste sous votre responsabilité.")
-            ] %}
-            <div class="faq-item">
-                <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>{{ question }}</span>
-                    <div class="faq-icon">+</div>
-                </div>
-                <div class="faq-content">
-                    <p>{{ answer }}</p>
-                </div>
-            </div>
-            {% endfor %}
-
-        </div>
-    </div>
-</section>
-
-<section class="final-cta-section">
-    <div class="section-container">
-        <div class="final-cta-box">
-            <span class="final-cta-badge">VelWolf Premium</span>
-            <h2>Accédez à une plateforme pensée pour exécuter avec plus de clarté et plus de structure</h2>
-            <p>
-                Rejoignez VelWolf pour retrouver une expérience premium avec signaux,
-                dashboard, résultats, academy et environnement de progression complet.
-            </p>
-            <div class="final-cta-actions">
-                <a href="{{ url_for('billing.pricing') }}" class="hero-btn-primary">Voir les offres</a>
-                {% if not current_user.is_authenticated %}
-                <a href="{{ url_for('auth.register') }}" class="hero-btn-secondary">Créer un compte</a>
+{% block title %}{{ t("faq_page_title", "VelWolef - FAQ") }}{% endblock %} {% block meta_description %}Frequently asked questions about VelWolef, signals, subscriptions, dashboard and academy.{% endblock %} {% block body_class %}home-body{% endblock %} {% block content %} <section class="inner-hero"> <div class="section-container"> <span class="hero-badge">VelWolef FAQ</span> <h1 class="inner-page-title">Frequently asked questions about the platform</h1> <p class="inner-page-text">Find essential answers about signals, subscriptions, the dashboard, the Academy and the VelWolef member experience.</p> </div> </section> <section class="section-standard"> <div class="section-container"> <div class="section-title"> <span>Support & information</span> <h2>Everything you need to know before joining the platform</h2> <p>This FAQ is designed to answer the most common questions quickly and make the user experience clearer.</p> </div> <div class="faq-container"> {% set faqs = [ (t("faq_q1", "What does VelWolef offer?"), t("faq_a1", "VelWolef offers a premium platform with trading signals, results, dashboard, replay, academy and advanced educational content.")), (t("faq_q2", "Which assets are tracked?"), t("faq_a2", "The platform mainly tracks Bitcoin, Ethereum, Gold, US100 and other strategic assets depending on market opportunities.")), (t("faq_q3", "What is the Trading Lab for?"), t("faq_a3", "The Trading Lab helps you better understand setup structure, risk management, psychology and execution logic.")), (t("faq_q4", "Are results visible?"), t("faq_a4", "Yes. The platform highlights results, history, performance and different reading levels depending on your subscription.")), (t("faq_q5", "Is there a member area?"), t("faq_a5", "Yes. The dashboard brings together signals, performance, Academy, briefing and member progression tools.")), (t("faq_q6", "Is the Academy included in every plan?"), t("faq_a6", "No. The full Academy is reserved for Premium and VIP plans according to the access logic defined on the platform.")), (t("faq_q7", "Can I cancel my subscription?"), t("faq_a7", "Yes, the subscription can be cancelled according to the terms defined in the general conditions and your billing area.")), (t("faq_q8", "Is VelWolef financial advice?"), t("faq_a8", "No. Content, analysis and signals are provided for informational and educational purposes. Trading involves risk and remains your responsibility.")) ] %} {% for question, answer in faqs %} <div class="faq-item"> <div class="faq-header" onclick="toggleFAQ(this)"> <span>{{ question }}</span> <div class="faq-icon">+</div> </div> <div class="faq-content"> <p>{{ answer }}</p> </div> </div> {% endfor %} </div> </div> </section> <section class="final-cta-section"> <div class="section-container"> <div class="final-cta-box"> <span class="final-cta-badge">VelWolef Premium</span> <h2>Access a platform designed to execute with more clarity and structure</h2> <p>Join VelWolef for a premium experience with signals, dashboard, results, academy and a complete progression environment.</p> <div class="final-cta-actions"> <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="hero-btn-primary">See plans</a> {% if not current_user.is_authenticated %} <a href="{{ url_for('auth.register', lang_code=current_lang) }}" class="hero-btn-secondary">{{ t("create_account", "Create account") }}</a>
                 {% endif %}
             </div>
         </div>
     </div>
 </section>
+{% endblock %}
 
-<footer class="site-footer">
-    <div class="section-container footer-pro">
-        <div class="footer-brand">
-            <h3>VelWolf</h3>
-            <p>
-                Plateforme premium de signaux, résultats, dashboard et academy
-                dans une interface claire, moderne et orientée exécution.
-            </p>
-        </div>
-
-        <div class="footer-columns">
-            <div class="footer-col">
-                <h4>Plateforme</h4>
-                <div class="footer-links">
-                    <a href="{{ url_for('main.home') }}">Accueil</a>
-                    <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
-                    <a href="{{ url_for('signals.results') }}">Résultats</a>
-                    <a href="{{ url_for('billing.pricing') }}">Offres</a>
-                </div>
-            </div>
-
-            <div class="footer-col">
-                <h4>Informations</h4>
-                <div class="footer-links">
-                    <a href="{{ url_for('pages.faq_page') }}">FAQ</a>
-                    <a href="{{ url_for('pages.cgu') }}">CGU</a>
-                    <a href="{{ url_for('pages.mentions_legales') }}">Mentions légales</a>
-                    <a href="{{ url_for('pages.contact') }}">Contact</a>
-                    <a href="{{ url_for('pages.about') }}">À propos</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
-
+{% block extra_js %}
 <script>
 function toggleFAQ(el) {
     const item = el.parentElement;
@@ -136,6 +26,4 @@ function toggleFAQ(el) {
     }
 }
 </script>
-
-</body>
-</html>
+{% endblock %}

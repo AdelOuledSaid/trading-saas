@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ current_lang|default('en') }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VelWolef - Psychologie du Trading</title>
-    <meta name="description" content="Psychologie du trading avec VelWolef : discipline, contrôle émotionnel, gestion des pertes, constance d'exécution et cadre mental professionnel.">
+    <title>{{ t("psychology_page_title", "VelWolef - Psychologie du Trading") }}</title>
+    <meta name="description" content="{{ t('psychology_meta_description', 'Psychologie du trading avec VelWolef : discipline, contrôle émotionnel, gestion des pertes, constance d\'exécution et cadre mental professionnel.') }}">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
@@ -19,23 +19,19 @@
 
 <section class="tl-hero tl-hero-psychology">
     <div class="section-container tl-hero-inner">
-        <span class="tl-kicker">VelWolef Lab • Psychologie</span>
+        <span class="tl-kicker">{{ t("psychology_kicker", "VelWolef Lab • Psychologie") }}</span>
         <h1 class="tl-title">
-            Le marché ne juge pas seulement la qualité d’une analyse,
-            il révèle surtout la qualité de l’exécution
+            {{ t("psychology_hero_title", "Le marché ne juge pas seulement la qualité d’une analyse, il révèle surtout la qualité de l’exécution") }}
         </h1>
         <p class="tl-subtitle">
-            En trading, beaucoup d’erreurs ne viennent pas d’un manque d’information, mais d’un manque
-            de maîtrise émotionnelle. Une bonne psychologie permet de respecter un plan, d’accepter
-            l’invalidation, de protéger le capital et de rester cohérent même pendant les phases
-            de pression, d’attente ou de volatilité.
+            {{ t("psychology_hero_desc", "En trading, beaucoup d’erreurs ne viennent pas d’un manque d’information, mais d’un manque de maîtrise émotionnelle. Une bonne psychologie permet de respecter un plan, d’accepter l’invalidation, de protéger le capital et de rester cohérent même pendant les phases de pression, d’attente ou de volatilité.") }}
         </p>
 
         <div class="tl-badges">
-            <span>Discipline</span>
-            <span>Contrôle émotionnel</span>
-            <span>Patience opérationnelle</span>
-            <span>Exécution professionnelle</span>
+            <span>{{ t("discipline", "Discipline") }}</span>
+            <span>{{ t("emotional_control", "Contrôle émotionnel") }}</span>
+            <span>{{ t("operational_patience", "Patience opérationnelle") }}</span>
+            <span>{{ t("professional_execution", "Exécution professionnelle") }}</span>
         </div>
     </div>
 </section>
@@ -43,32 +39,29 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Fondation mentale</span>
-            <h2>Un bon signal perd sa valeur si le mental déforme son exécution</h2>
+            <span>{{ t("mental_foundation", "Fondation mentale") }}</span>
+            <h2>{{ t("psychology_section_1_title", "Un bon signal perd sa valeur si le mental déforme son exécution") }}</h2>
             <p>
-                Un trader peut disposer d’un setup propre, d’un bon contexte technique et d’un bon niveau
-                d’entrée, puis perdre malgré tout parce qu’il anticipe trop tôt, coupe trop vite, refuse
-                une perte normale ou sur-réagit après une série de résultats. La psychologie ne remplace
-                pas la méthode, elle permet de l’appliquer correctement.
+                {{ t("lab_psychology_un_trader_peut_disposer_d_un_setup_propre_d_un_bon_contexte_technique_et", "Un trader peut disposer d’un setup propre, d’un bon contexte technique et d’un bon niveau                 d’entrée, puis perdre malgré tout parce qu’il anticipe trop tôt, coupe trop vite, refuse                 une perte normale ou sur-réagit après une série de résultats. La psychologie ne remplace                 pas la méthode, elle permet de l’appliquer correctement.") }}
             </p>
         </div>
 
         <div class="tl-metrics-grid">
             <div class="tl-metric-card">
-                <strong>FOMO</strong>
-                <span>Entrer trop tard ou trop loin du plan par peur de rater le mouvement</span>
+                <strong>{{ t("fomo", "FOMO") }}</strong>
+                <span>{{ t("lab_psychology_entrer_trop_tard_ou_trop_loin_du_plan_par_peur_de_rater_le_mouvement", "Entrer trop tard ou trop loin du plan par peur de rater le mouvement") }}</span>
             </div>
             <div class="tl-metric-card">
-                <strong>Panique</strong>
-                <span>Sortir trop vite alors que le scénario reste techniquement valide</span>
+                <strong>{{ t("panic", "Panique") }}</strong>
+                <span>{{ t("lab_psychology_sortir_trop_vite_alors_que_le_scenario_reste_techniquement_valide", "Sortir trop vite alors que le scénario reste techniquement valide") }}</span>
             </div>
             <div class="tl-metric-card">
-                <strong>Ego</strong>
-                <span>Refuser l’invalidation et transformer une petite perte en erreur lourde</span>
+                <strong>{{ t("ego", "Ego") }}</strong>
+                <span>{{ t("lab_psychology_refuser_l_invalidation_et_transformer_une_petite_perte_en_erreur_lourde", "Refuser l’invalidation et transformer une petite perte en erreur lourde") }}</span>
             </div>
             <div class="tl-metric-card">
-                <strong>Overtrade</strong>
-                <span>Multiplier les positions pour compenser l’ennui, la perte ou l’impatience</span>
+                <strong>{{ t("overtrade", "Overtrade") }}</strong>
+                <span>{{ t("lab_psychology_multiplier_les_positions_pour_compenser_l_ennui_la_perte_ou_l_impatience", "Multiplier les positions pour compenser l’ennui, la perte ou l’impatience") }}</span>
             </div>
         </div>
     </div>
@@ -78,34 +71,28 @@
     <div class="section-container">
         <div class="tl-grid-two">
             <div class="tl-card tl-card-large">
-                <span class="tl-card-kicker">Pourquoi la psychologie compte réellement</span>
-                <h2>Le marché récompense davantage la stabilité que l’intensité</h2>
+                <span class="tl-card-kicker">{{ t("why_psychology_matters", "Pourquoi la psychologie compte réellement") }}</span>
+                <h2>{{ t("market_rewards_stability", "Le marché récompense davantage la stabilité que l’intensité") }}</h2>
                 <p>
-                    L’erreur classique consiste à croire que la performance dépend uniquement de la précision
-                    d’entrée. En pratique, la différence se joue souvent dans la capacité à rester constant
-                    sur une série de décisions. Un trader discipliné ne cherche pas à gagner chaque mouvement ;
-                    il cherche à conserver une qualité d’exécution stable sur des dizaines de trades.
+                    {{ t("lab_psychology_l_erreur_classique_consiste_a_croire_que_la_performance_depend_uniquemen", "L’erreur classique consiste à croire que la performance dépend uniquement de la précision                     d’entrée. En pratique, la différence se joue souvent dans la capacité à rester constant                     sur une série de décisions. Un trader discipliné ne cherche pas à gagner chaque mouvement ;                     il cherche à conserver une qualité d’exécution stable sur des dizaines de trades.") }}
                 </p>
                 <p>
-                    La psychologie ne consiste pas à “être motivé”. Elle consiste à rester lucide quand
-                    le prix accélère, à accepter une perte normale sans la personnaliser, à ne pas
-                    transformer un gain en euphorie, et à suivre le plan même lorsque l’émotion pousse
-                    à improviser.
+                    {{ t("lab_psychology_la_psychologie_ne_consiste_pas_a_etre_motive_elle_consiste_a_rester_luci", "La psychologie ne consiste pas à “être motivé”. Elle consiste à rester lucide quand                     le prix accélère, à accepter une perte normale sans la personnaliser, à ne pas                     transformer un gain en euphorie, et à suivre le plan même lorsque l’émotion pousse                     à improviser.") }}
                 </p>
             </div>
 
             <div class="tl-stack">
                 <div class="tl-mini-card">
-                    <strong>Lucidité</strong>
-                    <span>Lire le signal tel qu’il est, sans le déformer par la peur, l’espoir ou l’impatience.</span>
+                    <strong>{{ t("lucidity", "Lucidité") }}</strong>
+                    <span>{{ t("lab_psychology_lire_le_signal_tel_qu_il_est_sans_le_deformer_par_la_peur_l_espoir_ou_l", "Lire le signal tel qu’il est, sans le déformer par la peur, l’espoir ou l’impatience.") }}</span>
                 </div>
                 <div class="tl-mini-card">
-                    <strong>Régularité</strong>
-                    <span>La constance d’exécution produit plus de solidité qu’une succession de réactions émotionnelles.</span>
+                    <strong>{{ t("consistency", "Régularité") }}</strong>
+                    <span>{{ t("lab_psychology_la_constance_d_execution_produit_plus_de_solidite_qu_une_succession_de_r", "La constance d’exécution produit plus de solidité qu’une succession de réactions émotionnelles.") }}</span>
                 </div>
                 <div class="tl-mini-card">
-                    <strong>Professionnalisme</strong>
-                    <span>Un trader sérieux suit un cadre précis et ne renégocie pas son plan sous pression.</span>
+                    <strong>{{ t("professionalism", "Professionnalisme") }}</strong>
+                    <span>{{ t("lab_psychology_un_trader_serieux_suit_un_cadre_precis_et_ne_renegocie_pas_son_plan_sous", "Un trader sérieux suit un cadre précis et ne renégocie pas son plan sous pression.") }}</span>
                 </div>
             </div>
         </div>
@@ -115,49 +102,39 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Les pièges psychologiques</span>
-            <h2>Les erreurs mentales les plus fréquentes pendant l’exécution</h2>
+            <span>{{ t("psychological_traps", "Les pièges psychologiques") }}</span>
+            <h2>{{ t("common_mental_errors_execution", "Les erreurs mentales les plus fréquentes pendant l’exécution") }}</h2>
             <p>
-                Certaines erreurs sont récurrentes chez presque tous les traders. Elles ne viennent pas d’un
-                manque de connaissances de base, mais d’une mauvaise gestion de l’émotion face au risque,
-                à l’attente ou au résultat immédiat.
+                {{ t("lab_psychology_certaines_erreurs_sont_recurrentes_chez_presque_tous_les_traders_elles_n", "Certaines erreurs sont récurrentes chez presque tous les traders. Elles ne viennent pas d’un                 manque de connaissances de base, mais d’une mauvaise gestion de l’émotion face au risque,                 à l’attente ou au résultat immédiat.") }}
             </p>
         </div>
 
         <div class="tl-faq-grid">
             <div class="tl-faq-card">
-                <h3>FOMO</h3>
+                <h3>{{ t("fomo", "FOMO") }}</h3>
                 <p>
-                    Le prix part sans toi, tu poursuis le mouvement, tu entres loin de la zone prévue
-                    et tu fragilises immédiatement le ratio du trade. Le setup reste parfois bon,
-                    mais l’exécution devient mauvaise.
+                    {{ t("lab_psychology_le_prix_part_sans_toi_tu_poursuis_le_mouvement_tu_entres_loin_de_la_zone", "Le prix part sans toi, tu poursuis le mouvement, tu entres loin de la zone prévue                     et tu fragilises immédiatement le ratio du trade. Le setup reste parfois bon,                     mais l’exécution devient mauvaise.") }}
                 </p>
             </div>
 
             <div class="tl-faq-card">
-                <h3>Revenge trading</h3>
+                <h3>{{ t("revenge_trading", "Revenge trading") }}</h3>
                 <p>
-                    Après une perte, tu veux récupérer vite. Le problème est que ce besoin émotionnel
-                    remplace le filtre technique. La décision n’est plus prise parce que le signal est bon,
-                    mais parce que la frustration pousse à agir.
+                    {{ t("lab_psychology_apres_une_perte_tu_veux_recuperer_vite_le_probleme_est_que_ce_besoin_emo", "Après une perte, tu veux récupérer vite. Le problème est que ce besoin émotionnel                     remplace le filtre technique. La décision n’est plus prise parce que le signal est bon,                     mais parce que la frustration pousse à agir.") }}
                 </p>
             </div>
 
             <div class="tl-faq-card">
-                <h3>Sortie par peur</h3>
+                <h3>{{ t("fear_exit", "Sortie par peur") }}</h3>
                 <p>
-                    Le trade respire normalement, mais tu sors dès la première pression adverse.
-                    Cette habitude détruit la logique du plan, coupe les gagnants trop tôt
-                    et rend les résultats incohérents.
+                    {{ t("lab_psychology_le_trade_respire_normalement_mais_tu_sors_des_la_premiere_pression_adver", "Le trade respire normalement, mais tu sors dès la première pression adverse.                     Cette habitude détruit la logique du plan, coupe les gagnants trop tôt                     et rend les résultats incohérents.") }}
                 </p>
             </div>
 
             <div class="tl-faq-card">
-                <h3>Excès de confiance</h3>
+                <h3>{{ t("overconfidence", "Excès de confiance") }}</h3>
                 <p>
-                    Après plusieurs gains, certains traders relâchent leur discipline, augmentent
-                    trop vite l’exposition et cessent de respecter leurs critères. Le marché sanctionne
-                    souvent ce relâchement plus vite qu’il ne le récompense.
+                    {{ t("lab_psychology_apres_plusieurs_gains_certains_traders_relachent_leur_discipline_augment", "Après plusieurs gains, certains traders relâchent leur discipline, augmentent                     trop vite l’exposition et cessent de respecter leurs critères. Le marché sanctionne                     souvent ce relâchement plus vite qu’il ne le récompense.") }}
                 </p>
             </div>
         </div>
@@ -167,52 +144,43 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Erreurs concrètes</span>
-            <h2>Comment un bon scénario peut être détruit par une mauvaise réaction</h2>
+            <span>{{ t("concrete_mistakes", "Erreurs concrètes") }}</span>
+            <h2>{{ t("good_scenario_bad_reaction", "Comment un bon scénario peut être détruit par une mauvaise réaction") }}</h2>
             <p>
-                Ces exemples montrent que le problème n’est pas toujours le signal lui-même, mais la manière
-                dont il est exécuté, géré ou abandonné.
+                {{ t("lab_psychology_ces_exemples_montrent_que_le_probleme_n_est_pas_toujours_le_signal_lui_m", "Ces exemples montrent que le problème n’est pas toujours le signal lui-même, mais la manière                 dont il est exécuté, géré ou abandonné.") }}
             </p>
         </div>
 
         <div class="tl-steps-grid">
             <div class="tl-step-card">
                 <div class="tl-step-number">01</div>
-                <h3>Entrer avant confirmation</h3>
+                <h3>{{ t("enter_before_confirmation", "Entrer avant confirmation") }}</h3>
                 <p>
-                    Le marché n’a pas encore validé la zone d’entrée, mais tu anticipes. Résultat :
-                    tu entres trop tôt, tu subis une phase de bruit inutile et tu perds rapidement
-                    en confiance sur un plan qui n’était pas encore activé.
+                    {{ t("lab_psychology_le_marche_n_a_pas_encore_valide_la_zone_d_entree_mais_tu_anticipes_resul", "Le marché n’a pas encore validé la zone d’entrée, mais tu anticipes. Résultat :                     tu entres trop tôt, tu subis une phase de bruit inutile et tu perds rapidement                     en confiance sur un plan qui n’était pas encore activé.") }}
                 </p>
             </div>
 
             <div class="tl-step-card">
                 <div class="tl-step-number">02</div>
-                <h3>Déplacer le stop loss</h3>
+                <h3>{{ t("move_stop_loss", "Déplacer le stop loss") }}</h3>
                 <p>
-                    Au lieu d’accepter que le scénario soit invalidé, tu repousses la limite.
-                    Une perte contrôlée devient alors une erreur d’exécution. Ce n’est plus le marché
-                    qui décide du dommage, c’est le refus de respecter le plan.
+                    {{ t("lab_psychology_au_lieu_d_accepter_que_le_scenario_soit_invalide_tu_repousses_la_limite", "Au lieu d’accepter que le scénario soit invalidé, tu repousses la limite.                     Une perte contrôlée devient alors une erreur d’exécution. Ce n’est plus le marché                     qui décide du dommage, c’est le refus de respecter le plan.") }}
                 </p>
             </div>
 
             <div class="tl-step-card">
                 <div class="tl-step-number">03</div>
-                <h3>Couper un gagnant trop tôt</h3>
+                <h3>{{ t("cut_winner_too_early", "Couper un gagnant trop tôt") }}</h3>
                 <p>
-                    Tu sors par peur de perdre un profit latent alors que la structure reste saine.
-                    À long terme, cette habitude casse le rendement global, car les pertes restent entières
-                    alors que les bons trades sont raccourcis.
+                    {{ t("lab_psychology_tu_sors_par_peur_de_perdre_un_profit_latent_alors_que_la_structure_reste", "Tu sors par peur de perdre un profit latent alors que la structure reste saine.                     À long terme, cette habitude casse le rendement global, car les pertes restent entières                     alors que les bons trades sont raccourcis.") }}
                 </p>
             </div>
 
             <div class="tl-step-card">
                 <div class="tl-step-number">04</div>
-                <h3>Trader pour compenser</h3>
+                <h3>{{ t("trade_to_compensate", "Trader pour compenser") }}</h3>
                 <p>
-                    Après une perte, tu cherches immédiatement une nouvelle position sans attendre
-                    un setup propre. Le but devient émotionnel : annuler la douleur, pas exécuter
-                    une opportunité de qualité.
+                    {{ t("lab_psychology_apres_une_perte_tu_cherches_immediatement_une_nouvelle_position_sans_att", "Après une perte, tu cherches immédiatement une nouvelle position sans attendre                     un setup propre. Le but devient émotionnel : annuler la douleur, pas exécuter                     une opportunité de qualité.") }}
                 </p>
             </div>
         </div>
@@ -222,42 +190,36 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Cadre mental professionnel</span>
-            <h2>Les habitudes qui améliorent réellement la qualité d’exécution</h2>
+            <span>{{ t("professional_mental_framework", "Cadre mental professionnel") }}</span>
+            <h2>{{ t("habits_improve_execution_quality", "Les habitudes qui améliorent réellement la qualité d’exécution") }}</h2>
         </div>
 
         <div class="tl-feature-grid">
             <div class="tl-feature-card">
-                <h3>Observer avant d’agir</h3>
+                <h3>{{ t("observe_before_acting", "Observer avant d’agir") }}</h3>
                 <p>
-                    La priorité n’est pas de participer à chaque mouvement, mais de comprendre si le contexte,
-                    le timing et la structure justifient réellement une prise de position.
+                    {{ t("lab_psychology_la_priorite_n_est_pas_de_participer_a_chaque_mouvement_mais_de_comprendr", "La priorité n’est pas de participer à chaque mouvement, mais de comprendre si le contexte,                     le timing et la structure justifient réellement une prise de position.") }}
                 </p>
             </div>
 
             <div class="tl-feature-card">
-                <h3>Accepter l’absence de trade</h3>
+                <h3>{{ t("accept_no_trade", "Accepter l’absence de trade") }}</h3>
                 <p>
-                    Toutes les séances ne donnent pas une opportunité exploitable. Ne rien faire peut être
-                    une décision disciplinée, surtout lorsque le marché n’offre pas de scénario propre.
+                    {{ t("lab_psychology_toutes_les_seances_ne_donnent_pas_une_opportunite_exploitable_ne_rien_fa", "Toutes les séances ne donnent pas une opportunité exploitable. Ne rien faire peut être                     une décision disciplinée, surtout lorsque le marché n’offre pas de scénario propre.") }}
                 </p>
             </div>
 
             <div class="tl-feature-card">
-                <h3>Respecter le plan initial</h3>
+                <h3>{{ t("respect_initial_plan", "Respecter le plan initial") }}</h3>
                 <p>
-                    Une fois le scénario validé, l’exécution doit suivre la structure définie :
-                    entrée, invalidation, objectif et gestion. Modifier ce cadre sous émotion
-                    détruit la cohérence du trade.
+                    {{ t("lab_psychology_une_fois_le_scenario_valide_l_execution_doit_suivre_la_structure_definie", "Une fois le scénario validé, l’exécution doit suivre la structure définie :                     entrée, invalidation, objectif et gestion. Modifier ce cadre sous émotion                     détruit la cohérence du trade.") }}
                 </p>
             </div>
 
             <div class="tl-feature-card">
-                <h3>Revoir à froid</h3>
+                <h3>{{ t("review_cold", "Revoir à froid") }}</h3>
                 <p>
-                    L’amélioration vient d’une analyse calme après l’exécution. Il faut distinguer
-                    un mauvais trade d’une bonne exécution perdante, et un bon résultat d’une mauvaise
-                    exécution chanceuse.
+                    {{ t("lab_psychology_l_amelioration_vient_d_une_analyse_calme_apres_l_execution_il_faut_disti", "L’amélioration vient d’une analyse calme après l’exécution. Il faut distinguer                     un mauvais trade d’une bonne exécution perdante, et un bon résultat d’une mauvaise                     exécution chanceuse.") }}
                 </p>
             </div>
         </div>
@@ -268,41 +230,39 @@
     <div class="section-container">
         <div class="tl-card tl-card-large tl-premium-locked">
             <div class="tl-locked-top">
-                <span class="tl-card-kicker">Module avancé</span>
-                <span class="tl-locked-badge">Réservé aux membres</span>
+                <span class="tl-card-kicker">{{ t("advanced_module", "Module avancé") }}</span>
+                <span class="tl-locked-badge">{{ t("members_only", "Réservé aux membres") }}</span>
             </div>
 
-            <h2>Psychologie d’exécution avancée : garder la même qualité de décision sous pression</h2>
+            <h2>{{ t("advanced_execution_psychology_title", "Psychologie d’exécution avancée : garder la même qualité de décision sous pression") }}</h2>
             <p>
-                Le niveau avancé approfondit la préparation mentale avant entrée, la gestion du stress
-                en position, l’analyse post-trade et la stabilité émotionnelle pendant les séries
-                de gains ou de pertes.
+                {{ t("lab_psychology_le_niveau_avance_approfondit_la_preparation_mentale_avant_entree_la_gest", "Le niveau avancé approfondit la préparation mentale avant entrée, la gestion du stress                 en position, l’analyse post-trade et la stabilité émotionnelle pendant les séries                 de gains ou de pertes.") }}
             </p>
 
             <div class="tl-locked-grid">
                 <div class="tl-locked-item">
-                    <strong>Routine pré-trade</strong>
-                    <span>Valider objectivement le contexte, le setup et l’état mental avant chaque décision</span>
+                    <strong>{{ t("pre_trade_routine", "Routine pré-trade") }}</strong>
+                    <span>{{ t("lab_psychology_valider_objectivement_le_contexte_le_setup_et_l_etat_mental_avant_chaque", "Valider objectivement le contexte, le setup et l’état mental avant chaque décision") }}</span>
                 </div>
                 <div class="tl-locked-item">
-                    <strong>Gestion du stress</strong>
-                    <span>Rester discipliné pendant le trade sans déformer le plan sous pression</span>
+                    <strong>{{ t("stress_management", "Gestion du stress") }}</strong>
+                    <span>{{ t("lab_psychology_rester_discipline_pendant_le_trade_sans_deformer_le_plan_sous_pression", "Rester discipliné pendant le trade sans déformer le plan sous pression") }}</span>
                 </div>
                 <div class="tl-locked-item">
-                    <strong>Post-trade review</strong>
-                    <span>Évaluer la qualité d’exécution sans biais émotionnel ni auto-justification</span>
+                    <strong>{{ t("post_trade_review", "Post-trade review") }}</strong>
+                    <span>{{ t("lab_psychology_evaluer_la_qualite_d_execution_sans_biais_emotionnel_ni_auto_justificati", "Évaluer la qualité d’exécution sans biais émotionnel ni auto-justification") }}</span>
                 </div>
                 <div class="tl-locked-item">
-                    <strong>Psychologie des séries</strong>
-                    <span>Garder le même niveau de rigueur après plusieurs gains ou plusieurs pertes</span>
+                    <strong>{{ t("series_psychology", "Psychologie des séries") }}</strong>
+                    <span>{{ t("lab_psychology_garder_le_meme_niveau_de_rigueur_apres_plusieurs_gains_ou_plusieurs_pert", "Garder le même niveau de rigueur après plusieurs gains ou plusieurs pertes") }}</span>
                 </div>
             </div>
 
             <div class="tl-locked-overlay">
                 <div class="tl-lock-icon">🔒</div>
-                <h3>Contenu premium VelWolef</h3>
-                <p>Débloquez les modules avancés de psychologie, de risque et d’exécution professionnelle.</p>
-                <a href="{{ url_for('billing.pricing') }}" class="cta-btn">Débloquer l’accès premium</a>
+                <h3>{{ t("premium_content_velwolef", "Contenu premium VelWolef") }}</h3>
+                <p>{{ t("lab_psychology_debloquez_les_modules_avances_de_psychologie_de_risque_et_d_execution_pr", "Débloquez les modules avancés de psychologie, de risque et d’exécution professionnelle.") }}</p>
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="cta-btn">{{ t("unlock_premium_access", "Débloquer l’accès premium") }}</a>
             </div>
         </div>
     </div>
@@ -311,16 +271,14 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-final-box">
-            <span class="tl-final-badge">Psychologie VelWolef</span>
-            <h2>Le trading devient plus solide quand l’émotion cesse de prendre le contrôle du plan</h2>
+            <span class="tl-final-badge">{{ t("psychology_velwolef", "Psychologie VelWolef") }}</span>
+            <h2>{{ t("emotion_stops_controlling_plan", "Le trading devient plus solide quand l’émotion cesse de prendre le contrôle du plan") }}</h2>
             <p>
-                Une stratégie donne une direction. La psychologie permet de respecter cette direction
-                avec calme, rigueur et constance. C’est cette maîtrise qui transforme un signal
-                en exécution durable et professionnelle.
+                {{ t("lab_psychology_une_strategie_donne_une_direction_la_psychologie_permet_de_respecter_cet", "Une stratégie donne une direction. La psychologie permet de respecter cette direction                 avec calme, rigueur et constance. C’est cette maîtrise qui transforme un signal                 en exécution durable et professionnelle.") }}
             </p>
             <div class="tl-final-actions">
-                <a href="{{ url_for('pages.lab_risk') }}" class="cta-btn">Voir le Risk</a>
-                <a href="{{ url_for('pages.lab_structure') }}" class="secondary-btn">Voir la Structure</a>
+                <a href="{{ url_for('pages.lab_risk', lang_code=current_lang) }}" class="cta-btn">{{ t("see_risk", "Voir le Risk") }}</a>
+                <a href="{{ url_for('pages.lab_structure', lang_code=current_lang) }}" class="secondary-btn">{{ t("see_structure", "Voir la Structure") }}</a>
             </div>
         </div>
     </div>
@@ -330,14 +288,14 @@
     <div class="section-container footer-inner">
         <div class="footer-brand">
             <h3>VelWolef</h3>
-            <p>Trading Lab premium, discipline d’exécution et lecture plus professionnelle du marché.</p>
+            <p>{{ t("psychology_footer_desc", "Trading Lab premium, discipline d’exécution et lecture plus professionnelle du marché.") }}</p>
         </div>
 
         <div class="footer-links">
-            <a href="{{ url_for('pages.trading_lab') }}">Lab</a>
-            <a href="{{ url_for('pages.lab_structure') }}">Structure</a>
-            <a href="{{ url_for('pages.lab_risk') }}">Risk</a>
-            <a href="{{ url_for('billing.pricing') }}">Premium</a>
+            <a href="{{ url_for('pages.trading_lab', lang_code=current_lang) }}">Lab</a>
+            <a href="{{ url_for('pages.lab_structure', lang_code=current_lang) }}">Structure</a>
+            <a href="{{ url_for('pages.lab_risk', lang_code=current_lang) }}">Risk</a>
+            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}">Premium</a>
         </div>
     </div>
 </footer>

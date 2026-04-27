@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Crypto Market | VelWolf{% endblock %}
+{% block title %}{{ t("crypto_page_title", "Crypto Market | VelWolef") }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='marche_crypto_prime.css') }}">
@@ -42,69 +42,67 @@
         <div class="market-shell">
             <div class="market-hero-layout reveal-up">
                 <div class="market-hero-copy">
-                    <span class="market-badge">VelWolf Prime • Crypto Command Center</span>
-                    <h1>Lis le marché avant que la foule ne réagisse.</h1>
+                    <span class="market-badge">{{ t("crypto_badge", "VelWolef Prime • Crypto Command Center") }}</span>
+                    <h1>{{ t("crypto_hero_title", "Lis le marché avant que la foule ne réagisse.") }}</h1>
                     <p>
-                        Structure, momentum, dominance, rotation du capital et pression macro
-                        réunis dans un desk premium pensé pour les traders qui veulent une lecture
-                        claire, rapide et redoutable du marché crypto.
+                        {{ t("crypto_hero_desc", "Structure, momentum, dominance, rotation du capital et pression macro réunis dans un desk premium pensé pour les traders qui veulent une lecture claire, rapide et redoutable du marché crypto.") }}
                     </p>
 
                     <div class="market-hero-actions">
-                        <a href="#prime-desk" class="market-btn">Entrer dans le desk</a>
-                        <a href="#regime-engine" class="market-btn secondary">Voir le régime marché</a>
+                        <a href="#prime-desk" class="market-btn">{{ t("enter_desk", "Entrer dans le desk") }}</a>
+                        <a href="#regime-engine" class="market-btn secondary">{{ t("see_market_regime", "Voir le régime marché") }}</a>
                     </div>
 
                     <div class="hero-trust-bar reveal-up delay-1">
                         <div class="trust-item">
-                            <span class="trust-label">Mode</span>
-                            <strong>Institutional Read</strong>
+                            <span class="trust-label">{{ t("mode", "Mode") }}</span>
+                            <strong>{{ t("institutional_read", "Institutional Read") }}</strong>
                         </div>
                         <div class="trust-item">
-                            <span class="trust-label">Signal</span>
-                            <strong>Context Driven</strong>
+                            <span class="trust-label">{{ t("signal", "Signal") }}</span>
+                            <strong>{{ t("context_driven", "Context Driven") }}</strong>
                         </div>
                         <div class="trust-item">
-                            <span class="trust-label">Focus</span>
-                            <strong>BTC • ETH • TOTAL</strong>
+                            <span class="trust-label">{{ t("focus", "Focus") }}</span>
+                            <strong>{{ t("markets_crypto_btc_eth_total", "BTC • ETH • TOTAL") }}</strong>
                         </div>
                     </div>
 
                     <div class="market-kpi-row reveal-up delay-1">
                         <div class="market-kpi positive">
                             <div class="market-kpi-top">
-                                <span class="label">BTC Price</span>
+                                <span class="label">{{ t("btc_price", "BTC Price") }}</span>
                                 <span class="live-dot"></span>
                             </div>
                             <span class="value">{{ market_snapshot.btc_price }}</span>
-                            <span class="meta">Actif directeur • lecture structurelle</span>
+                            <span class="meta">{{ t("crypto_btc_meta", "Actif directeur • lecture structurelle") }}</span>
                         </div>
 
                         <div class="market-kpi positive">
                             <div class="market-kpi-top">
-                                <span class="label">Dominance</span>
+                                <span class="label">{{ t("dominance", "Dominance") }}</span>
                                 <span class="live-dot"></span>
                             </div>
                             <span class="value">{{ market_snapshot.btc_dominance }}%</span>
-                            <span class="meta">Flux de capital • rotation marché</span>
+                            <span class="meta">{{ t("crypto_dominance_meta", "Flux de capital • rotation marché") }}</span>
                         </div>
 
                         <div class="market-kpi">
                             <div class="market-kpi-top">
-                                <span class="label">Market Cap</span>
+                                <span class="label">{{ t("market_cap", "Market Cap") }}</span>
                                 <span class="live-dot soft"></span>
                             </div>
                             <span class="value">{{ market_snapshot.total_market_cap }}</span>
-                            <span class="meta">Force globale • validation macro</span>
+                            <span class="meta">{{ t("crypto_market_cap_meta", "Force globale • validation macro") }}</span>
                         </div>
 
                         <div class="market-kpi warning">
                             <div class="market-kpi-top">
-                                <span class="label">Risk Mode</span>
+                                <span class="label">{{ t("risk_mode", "Risk Mode") }}</span>
                                 <span class="live-dot amber"></span>
                             </div>
                             <span class="value">{{ market_snapshot.risk_mode }}</span>
-                            <span class="meta">Appétit spéculatif • session active</span>
+                            <span class="meta">{{ t("crypto_risk_mode_meta", "Appétit spéculatif • session active") }}</span>
                         </div>
                     </div>
                 </div>
@@ -112,37 +110,36 @@
                 <div class="market-hero-panel reveal-up delay-2">
                     <div class="hero-panel-card">
                         <div class="hero-panel-head">
-                            <span class="eyebrow">Live Desk Status</span>
-                            <span class="status-pill">Realtime</span>
+                            <span class="eyebrow">{{ t("live_desk_status", "Live Desk Status") }}</span>
+                            <span class="status-pill">{{ t("realtime", "Realtime") }}</span>
                         </div>
 
                         <div class="hero-panel-list">
                             <div class="hero-panel-item">
-                                <span>Market Regime</span>
+                                <span>{{ t("market_regime", "Market Regime") }}</span>
                                 <strong>{{ market_snapshot.market_regime }}</strong>
                             </div>
                             <div class="hero-panel-item">
-                                <span>BTC Dominance</span>
+                                <span>{{ t("btc_dominance", "BTC Dominance") }}</span>
                                 <strong>{{ market_snapshot.dominance_label }}</strong>
                             </div>
                             <div class="hero-panel-item">
-                                <span>Altcoin Appetite</span>
+                                <span>{{ t("altcoin_appetite", "Altcoin Appetite") }}</span>
                                 <strong>{{ market_snapshot.altcoin_appetite }}</strong>
                             </div>
                             <div class="hero-panel-item">
-                                <span>Macro Pressure</span>
+                                <span>{{ t("macro_pressure", "Macro Pressure") }}</span>
                                 <strong>{{ market_snapshot.macro_pressure }}</strong>
                             </div>
                             <div class="hero-panel-item">
-                                <span>Execution Mode</span>
+                                <span>{{ t("execution_mode", "Execution Mode") }}</span>
                                 <strong>{{ market_snapshot.execution_mode }}</strong>
                             </div>
                         </div>
 
                         <div class="hero-panel-footer">
                             <p>
-                                Un cockpit premium pour filtrer le bruit, confirmer le contexte,
-                                et éviter les entrées isolées sans structure.
+                                {{ t("crypto_panel_footer", "Un cockpit premium pour filtrer le bruit, confirmer le contexte et éviter les entrées isolées sans structure.") }}
                             </p>
                             <div class="hero-panel-signalbar">
                                 <span></span>
@@ -161,7 +158,7 @@
         <div class="market-shell">
             <div class="status-strip-inner">
                 <div class="status-chip">
-                    <span class="chip-label">Regime</span>
+                    <span class="chip-label">{{ t("regime", "Regime") }}</span>
                     <strong>{{ market_snapshot.market_regime }}</strong>
                 </div>
                 <div class="status-chip">
@@ -173,11 +170,11 @@
                     <strong>{{ market_snapshot.altcoin_appetite }}</strong>
                 </div>
                 <div class="status-chip">
-                    <span class="chip-label">TOTAL</span>
+                    <span class="chip-label">{{ t("markets_crypto_total", "TOTAL") }}</span>
                     <strong>{{ market_snapshot.total_market_cap }}</strong>
                 </div>
                 <div class="status-chip">
-                    <span class="chip-label">Volatility</span>
+                    <span class="chip-label">{{ t("volatility", "Volatility") }}</span>
                     <strong>{{ market_snapshot.macro_pressure }}</strong>
                 </div>
             </div>
@@ -190,11 +187,11 @@
             <div class="tv-card tv-card-tape reveal-up">
                 <div class="tv-card-head tv-card-head-row">
                     <div>
-                        <span class="eyebrow">Realtime Feed</span>
-                        <h2>Live Tape</h2>
-                        <p>Repères instantanés des actifs majeurs et des corrélations macro utiles à la lecture du marché crypto.</p>
+                        <span class="eyebrow">{{ t("realtime_feed", "Realtime Feed") }}</span>
+                        <h2>{{ t("live_tape", "Live Tape") }}</h2>
+                        <p>{{ t("crypto_live_tape_desc", "Repères instantanés des actifs majeurs et des corrélations macro utiles à la lecture du marché crypto.") }}</p>
                     </div>
-                    <span class="desk-label">Prime Desk Feed</span>
+                    <span class="desk-label">{{ t("prime_desk_feed", "Prime Desk Feed") }}</span>
                 </div>
 
                 <div class="tradingview-widget-container">
@@ -213,7 +210,7 @@
                         "colorTheme": "dark",
                         "isTransparent": true,
                         "displayMode": "adaptive",
-                        "locale": "fr"
+                        "locale": "{{ current_lang|default('en') }}"
                     }
                     </script>
                 </div>
@@ -223,9 +220,9 @@
 
                 <article class="market-card-chart feature-chart">
                     <div class="tv-card-head">
-                        <span class="eyebrow">Lead Asset</span>
-                        <h2>Bitcoin — graphique principal</h2>
-                        <p>Le pivot central pour lire la tendance dominante, les impulsions et la structure du marché global.</p>
+                        <span class="eyebrow">{{ t("lead_asset", "Lead Asset") }}</span>
+                        <h2>{{ t("bitcoin_main_chart", "Bitcoin — graphique principal") }}</h2>
+                        <p>{{ t("bitcoin_main_chart_desc", "Le pivot central pour lire la tendance dominante, les impulsions et la structure du marché global.") }}</p>
                     </div>
 
                     <div class="tradingview-widget-container chart-widget">
@@ -238,7 +235,7 @@
                             "timezone": "Europe/Paris",
                             "theme": "dark",
                             "style": "1",
-                            "locale": "fr",
+                            "locale": "{{ current_lang|default('en') }}",
                             "allow_symbol_change": true,
                             "calendar": false,
                             "hide_side_toolbar": false,
@@ -252,45 +249,45 @@
 
                 <aside class="market-intel-panel">
                     <div class="market-intel-head">
-                        <span class="eyebrow">Desk Intelligence</span>
-                        <h2>Lecture instantanée</h2>
-                        <p>Une synthèse premium pour cadrer rapidement le contexte avant l’exécution.</p>
+                        <span class="eyebrow">{{ t("desk_intelligence", "Desk Intelligence") }}</span>
+                        <h2>{{ t("instant_reading", "Lecture instantanée") }}</h2>
+                        <p>{{ t("instant_reading_desc", "Une synthèse premium pour cadrer rapidement le contexte avant l’exécution.") }}</p>
                     </div>
 
                     <div class="intel-stack">
                         <div class="intel-card">
-                            <span class="intel-label">Bias principal</span>
+                            <span class="intel-label">{{ t("main_bias", "Bias principal") }}</span>
                             <strong>{{ market_snapshot.bias_principal }}</strong>
-                            <p>BTC reste le pivot de lecture tant que la structure principale tient.</p>
+                            <p>{{ t("main_bias_desc", "BTC reste le pivot de lecture tant que la structure principale tient.") }}</p>
                         </div>
 
                         <div class="intel-card">
-                            <span class="intel-label">Rotation du capital</span>
+                            <span class="intel-label">{{ t("capital_rotation", "Rotation du capital") }}</span>
                             <strong>{{ market_snapshot.rotation_text }}</strong>
-                            <p>La qualité des rotations dépend de la stabilité de la dominance et du contexte macro.</p>
+                            <p>{{ t("capital_rotation_desc", "La qualité des rotations dépend de la stabilité de la dominance et du contexte macro.") }}</p>
                         </div>
 
                         <div class="intel-card">
-                            <span class="intel-label">Priorité du desk</span>
+                            <span class="intel-label">{{ t("desk_priority", "Priorité du desk") }}</span>
                             <strong>{{ market_snapshot.desk_priority }}</strong>
-                            <p>Pas d’entrée isolée sans validation structurelle, dominance et liquidité.</p>
+                            <p>{{ t("desk_priority_desc", "Pas d’entrée isolée sans validation structurelle, dominance et liquidité.") }}</p>
                         </div>
 
                         <div class="intel-mini-grid">
                             <div class="intel-mini-item">
-                                <span>Momentum</span>
+                                <span>{{ t("momentum", "Momentum") }}</span>
                                 <strong>{{ market_snapshot.momentum_label }}</strong>
                             </div>
                             <div class="intel-mini-item">
-                                <span>Dominance</span>
+                                <span>{{ t("dominance", "Dominance") }}</span>
                                 <strong>{{ market_snapshot.dominance_state }}</strong>
                             </div>
                             <div class="intel-mini-item">
-                                <span>Macro</span>
+                                <span>{{ t("macro", "Macro") }}</span>
                                 <strong>{{ market_snapshot.macro_state }}</strong>
                             </div>
                             <div class="intel-mini-item">
-                                <span>Execution</span>
+                                <span>{{ t("execution", "Execution") }}</span>
                                 <strong>{{ market_snapshot.execution_state }}</strong>
                             </div>
                         </div>
@@ -302,9 +299,9 @@
             <div class="market-grid-2 secondary-overview-grid reveal-up delay-2">
                 <article class="market-card-chart">
                     <div class="tv-card-head">
-                        <span class="eyebrow">Global View</span>
-                        <h2>Vue marché crypto</h2>
-                        <p>Les grands actifs et indicateurs pour une lecture rapide de l’environnement global et des rotations potentielles.</p>
+                        <span class="eyebrow">{{ t("global_view", "Global View") }}</span>
+                        <h2>{{ t("crypto_market_view", "Vue marché crypto") }}</h2>
+                        <p>{{ t("crypto_market_view_desc", "Les grands actifs et indicateurs pour une lecture rapide de l’environnement global et des rotations potentielles.") }}</p>
                     </div>
 
                     <div class="tradingview-widget-container market-overview-widget">
@@ -314,7 +311,7 @@
                             "colorTheme": "dark",
                             "dateRange": "12M",
                             "showChart": true,
-                            "locale": "fr",
+                            "locale": "{{ current_lang|default('en') }}",
                             "isTransparent": true,
                             "showSymbolLogo": true,
                             "width": "100%",
@@ -328,7 +325,7 @@
                                         { "s": "BINANCE:SOLUSDT", "d": "Solana" },
                                         { "s": "BINANCE:BNBUSDT", "d": "BNB" },
                                         { "s": "BINANCE:XRPUSDT", "d": "XRP" },
-                                        { "s": "CRYPTOCAP:TOTAL", "d": "Market Cap" }
+                                        { "s": "CRYPTOCAP:TOTAL", "d": "{{ t("market_cap", "Market Cap") }}" }
                                     ]
                                 }
                             ],
@@ -340,26 +337,26 @@
 
                 <article class="market-edge-box">
                     <div class="market-edge-head">
-                        <span class="eyebrow">Today’s Edge</span>
-                        <h2>Ce qui compte maintenant</h2>
-                        <p>Un bloc conçu pour donner l’impression d’un vrai desk premium orienté décision, pas seulement des graphiques.</p>
+                        <span class="eyebrow">{{ t("todays_edge", "Today’s Edge") }}</span>
+                        <h2>{{ t("what_matters_now", "Ce qui compte maintenant") }}</h2>
+                        <p>{{ t("todays_edge_desc", "Un bloc conçu pour donner l’impression d’un vrai desk premium orienté décision, pas seulement des graphiques.") }}</p>
                     </div>
 
                     <div class="edge-list">
                         <div class="edge-item">
-                            <span>Main scenario</span>
+                            <span>{{ t("main_scenario", "Main scenario") }}</span>
                             <strong>{{ market_snapshot.main_scenario }}</strong>
                         </div>
                         <div class="edge-item">
-                            <span>Invalidation</span>
+                            <span>{{ t("invalidation", "Invalidation") }}</span>
                             <strong>{{ market_snapshot.invalidation }}</strong>
                         </div>
                         <div class="edge-item">
-                            <span>Assets focus</span>
+                            <span>{{ t("assets_focus", "Assets focus") }}</span>
                             <strong>{{ market_snapshot.assets_focus }}</strong>
                         </div>
                         <div class="edge-item">
-                            <span>Desk mode</span>
+                            <span>{{ t("desk_mode", "Desk mode") }}</span>
                             <strong>{{ market_snapshot.desk_mode }}</strong>
                         </div>
                     </div>
@@ -372,34 +369,34 @@
     <section class="market-section regime-engine" id="regime-engine">
         <div class="market-shell">
             <div class="section-head centered">
-                <span class="eyebrow">Exclusive Engine</span>
-                <h2>Market Regime Engine</h2>
-                <p>Une lecture instantanée du contexte pour éviter les entrées sans structure et comprendre où se situe le marché.</p>
+                <span class="eyebrow">{{ t("exclusive_engine", "Exclusive Engine") }}</span>
+                <h2>{{ t("market_regime_engine", "Market Regime Engine") }}</h2>
+                <p>{{ t("market_regime_engine_desc", "Une lecture instantanée du contexte pour éviter les entrées sans structure et comprendre où se situe le marché.") }}</p>
             </div>
 
             <div class="regime-grid reveal-up">
-                <article class="regime-card {% if market_snapshot.market_regime == 'Expansion' %}active{% endif %}">
+                <article class="regime-card {% if market_snapshot.market_regime == "Expansion" %}active{% endif %}">
                     <span class="state">01</span>
-                    <h3>Expansion</h3>
-                    <p>Flux haussiers, impulsion dominante, suivi de tendance et structure nette.</p>
+                    <h3>{{ t("expansion", "Expansion") }}</h3>
+                    <p>{{ t("expansion_desc", "Flux haussiers, impulsion dominante, suivi de tendance et structure nette.") }}</p>
                 </article>
 
-                <article class="regime-card {% if market_snapshot.market_regime == 'Compression' %}active{% endif %}">
+                <article class="regime-card {% if market_snapshot.market_regime == "Compression" %}active{% endif %}">
                     <span class="state">02</span>
-                    <h3>Compression</h3>
-                    <p>Range, volume contracté, marché en attente d’un déclencheur directionnel clair.</p>
+                    <h3>{{ t("compression", "Compression") }}</h3>
+                    <p>{{ t("compression_desc", "Range, volume contracté, marché en attente d’un déclencheur directionnel clair.") }}</p>
                 </article>
 
-                <article class="regime-card {% if market_snapshot.market_regime == 'Rotation' %}active{% endif %}">
+                <article class="regime-card {% if market_snapshot.market_regime == "Rotation" %}active{% endif %}">
                     <span class="state">03</span>
-                    <h3>Rotation</h3>
-                    <p>Déplacement du capital de BTC vers ETH puis vers certaines poches altcoins.</p>
+                    <h3>{{ t("rotation", "Rotation") }}</h3>
+                    <p>{{ t("rotation_desc", "Déplacement du capital de BTC vers ETH puis vers certaines poches altcoins.") }}</p>
                 </article>
 
-                <article class="regime-card danger {% if market_snapshot.market_regime == 'Breakdown Risk' %}active{% endif %}">
+                <article class="regime-card danger {% if market_snapshot.market_regime == "Breakdown Risk" %}active{% endif %}">
                     <span class="state">04</span>
-                    <h3>Breakdown Risk</h3>
-                    <p>Affaiblissement structurel, risque d’invalidation et sensibilité macro accrue.</p>
+                    <h3>{{ t("breakdown_risk", "Breakdown Risk") }}</h3>
+                    <p>{{ t("breakdown_risk_desc", "Affaiblissement structurel, risque d’invalidation et sensibilité macro accrue.") }}</p>
                 </article>
             </div>
         </div>
@@ -408,9 +405,9 @@
     <section class="market-section">
         <div class="market-shell">
             <div class="section-head">
-                <span class="eyebrow">Priority Board</span>
-                <h2>Watchlist premium</h2>
-                <p>Une présentation plus exclusive qu’un tableau simple, avec un positionnement plus desk institutionnel.</p>
+                <span class="eyebrow">{{ t("priority_board", "Priority Board") }}</span>
+                <h2>{{ t("premium_watchlist", "Watchlist premium") }}</h2>
+                <p>{{ t("premium_watchlist_desc", "Une présentation plus exclusive qu’un tableau simple, avec un positionnement plus desk institutionnel.") }}</p>
             </div>
 
             <div class="watchlist-grid reveal-up delay-1">
@@ -435,37 +432,35 @@
         <div class="market-shell">
             <div class="market-highlight market-highlight-premium reveal-up delay-2">
                 <div class="highlight-copy">
-                    <span class="eyebrow">Mission du desk</span>
-                    <h3>Un cockpit premium avant chaque prise de décision</h3>
+                    <span class="eyebrow">{{ t("desk_mission", "Mission du desk") }}</span>
+                    <h3>{{ t("premium_cockpit_title", "Un cockpit premium avant chaque prise de décision") }}</h3>
                     <p>
-                        Ici, tu ne regardes pas seulement le prix. Tu lis la structure,
-                        les flux, la dominance, les rotations et l’environnement global
-                        pour transformer l’information en avantage réel.
+                        {{ t("premium_cockpit_desc", "Ici, tu ne regardes pas seulement le prix. Tu lis la structure, les flux, la dominance, les rotations et l’environnement global pour transformer l’information en avantage réel.") }}
                     </p>
                 </div>
 
                 <div class="market-mini-list">
                     <div class="market-mini-item">
-                        <span class="label">Pilier</span>
+                        <span class="label">{{ t("pillar", "Pilier") }}</span>
                         <span class="value">BTC</span>
                     </div>
                     <div class="market-mini-item">
-                        <span class="label">Rotation</span>
+                        <span class="label">{{ t("rotation", "Rotation") }}</span>
                         <span class="value">{{ market_snapshot.altcoin_appetite }}</span>
                     </div>
                     <div class="market-mini-item">
-                        <span class="label">Vue</span>
-                        <span class="value">Globale</span>
+                        <span class="label">{{ t("view", "Vue") }}</span>
+                        <span class="value">{{ t("global", "Globale") }}</span>
                     </div>
                     <div class="market-mini-item">
-                        <span class="label">Style</span>
-                        <span class="value">Prime Desk</span>
+                        <span class="label">{{ t("style", "Style") }}</span>
+                        <span class="value">{{ t("markets_crypto_prime_desk", "Prime Desk") }}</span>
                     </div>
                 </div>
 
                 <div class="market-cta-row">
-                    <a href="{{ url_for('signals.signals_btc') }}" class="market-btn">Voir les signaux BTC</a>
-                    <a href="{{ url_for('signals.eth_signals_page') }}" class="market-btn secondary">Voir Ethereum</a>
+                    <a href="{{ url_for('signals.signals_btc', lang_code=current_lang) }}" class="market-btn">{{ t("see_btc_signals", "Voir les signaux BTC") }}</a>
+                    <a href="{{ url_for('signals.eth_signals_page', lang_code=current_lang) }}" class="market-btn secondary">{{ t("see_ethereum", "Voir Ethereum") }}</a>
                 </div>
             </div>
         </div>

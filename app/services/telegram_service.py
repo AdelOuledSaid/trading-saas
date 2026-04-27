@@ -1,4 +1,5 @@
 import html
+import os
 import requests
 from flask import current_app
 import config
@@ -104,6 +105,53 @@ def get_site_url() -> str:
     if site_url:
         return site_url.rstrip("/")
     return "https://trading-saas-1.onrender.com"
+
+
+def get_affiliate_link(name: str, fallback: str = "") -> str:
+    """
+    Lit un lien affiliation depuis config.py ou .env.
+    Exemples .env :
+    AFFILIATE_KRAKEN_LINK=https://...
+    AFFILIATE_BYBIT_LINK=https://...
+    """
+    key = f"AFFILIATE_{name.upper()}_LINK"
+    link = getattr(config, key, None) or os.getenv(key) or fallback
+    return str(link).strip()
+
+
+def build_execution_affiliate_block() -> str:
+    kraken_link = get_affiliate_link("KRAKEN")
+    bybit_link = get_affiliate_link("BYBIT")
+
+    lines = [
+        "",
+        "━━━━━━━━━━━━━━━━━━",
+        "⚡ <b>EXECUTION DU SIGNAL</b>",
+        "",
+    ]
+
+    if kraken_link:
+        lines.extend([
+            '🔐 <b>Mode standard</b> : plateforme régulée',
+            f'👉 <a href="{html.escape(kraken_link, quote=True)}">Trader sur Kraken</a>',
+            "",
+        ])
+
+    if bybit_link:
+        lines.extend([
+            '🚀 <b>Mode avancé</b> : levier / exécution rapide',
+            f'👉 <a href="{html.escape(bybit_link, quote=True)}">Trader sur Bybit</a>',
+            "",
+        ])
+
+    if not kraken_link and not bybit_link:
+        return ""
+
+    lines.extend([
+        "⚠️ <i>Vérifie toujours la disponibilité et la conformité selon ton pays. Le trading comporte des risques.</i>",
+    ])
+
+    return "\n".join(lines)
 
 
 def build_learn_link(signal) -> str | None:
@@ -314,6 +362,8 @@ def build_signal_telegram_message(signal) -> str:
         if learn_link else ""
     )
 
+    execution_block = build_execution_affiliate_block()
+
     message = f"""
 {setup_badge}
 
@@ -340,6 +390,7 @@ def build_signal_telegram_message(signal) -> str:
 ━━━━━━━━━━━━━━━━━━
 📌 <b>Status</b> : OPEN
 🕒 <b>Time</b> : {signal.created_at.strftime('%Y-%m-%d %H:%M:%S')} UTC{learn_block}
+{execution_block}
 
 💎 <b>Velwolf Private Desk</b>
 """.strip()
@@ -662,58 +713,224 @@ def build_news_digest_message(
     return message
 
 
+
+def build_breaking_context(title: str, description: str = "") -> dict:
+    """
+    Moteur léger de contexte pour news Telegram.
+    Ne dépend d'aucun service externe afin de ne pas casser l'envoi.
+    """
+    raw_text = f"{title} {description}".lower()
+
+    context = {
+        "event": "MARKET EVENT",
+        "assets": ["BTC", "GOLD"],
+        "impact": [
+            "Market sentiment may shift quickly",
+            "Volatility can increase around confirmation",
+        ],
+        "desk": "Markets may react quickly if the headline is confirmed by follow-through.",
+        "execution": [
+            "Avoid chasing the first reaction",
+            "Wait for confirmation on key levels",
+        ],
+        "bias": "⚖️ Neutral / Mixed",
+    }
+
+    if any(k in raw_text for k in ["war", "strike", "airstrike", "attack", "israel", "lebanon", "iran", "gaza", "ceasefire", "missile"]):
+        context.update({
+            "event": "GEO RISK",
+            "assets": ["XAUUSD", "OIL", "BTC"],
+            "impact": [
+                "Risk-off sentiment can increase",
+                "Safe-haven demand may support Gold",
+                "Oil volatility can expand if tensions spread",
+            ],
+            "desk": "Geopolitical escalation can trigger rapid repricing across safe-havens, energy and high-beta assets.",
+            "execution": [
+                "Favor defensive positioning",
+                "Monitor Gold and Oil reaction",
+                "Avoid aggressive leverage during headline risk",
+            ],
+            "bias": "🔻 Risk-Off",
+        })
+        return context
+
+    if any(k in raw_text for k in ["fed", "fomc", "rate", "rates", "inflation", "cpi", "ppi", "nfp", "payrolls", "treasury", "yield", "dollar"]):
+        context.update({
+            "event": "MACRO EVENT",
+            "assets": ["USD", "NAS100", "BTC", "GOLD"],
+            "impact": [
+                "Macro volatility likely around repricing",
+                "Rate expectations can move risk assets",
+                "Dollar and yields remain key drivers",
+            ],
+            "desk": "Macro headlines can move liquidity expectations quickly, especially across indices, crypto and Gold.",
+            "execution": [
+                "Trade the confirmed reaction, not the first spike",
+                "Watch USD and yields before entry",
+                "Reduce size during high-impact releases",
+            ],
+            "bias": "⚖️ Macro Sensitive",
+        })
+        return context
+
+    if any(k in raw_text for k in ["bitcoin", "btc", "ethereum", "eth", "crypto", "solana", "sol", "xrp", "etf", "blackrock", "sec"]):
+        context.update({
+            "event": "CRYPTO EVENT",
+            "assets": ["BTC", "ETH", "TOTAL"],
+            "impact": [
+                "Crypto volatility can expand",
+                "Sentiment may shift across majors",
+                "Liquidity zones become high priority",
+            ],
+            "desk": "Crypto headlines can quickly affect momentum, liquidations and positioning across major assets.",
+            "execution": [
+                "Watch BTC reaction first",
+                "Avoid chasing thin liquidity moves",
+                "Confirm with volume and market structure",
+            ],
+            "bias": "⚖️ Crypto Volatility",
+        })
+        return context
+
+    if any(k in raw_text for k in ["gold", "xauusd", "oil", "wti", "brent", "silver"]):
+        context.update({
+            "event": "COMMODITY EVENT",
+            "assets": ["XAUUSD", "OIL", "USD"],
+            "impact": [
+                "Commodity volatility can increase",
+                "Safe-haven and energy flows may rotate",
+                "USD reaction remains important",
+            ],
+            "desk": "Commodity headlines can create fast repricing, especially when linked to macro or geopolitical risk.",
+            "execution": [
+                "Monitor breakout levels",
+                "Avoid entries without confirmation",
+                "Respect volatility expansion",
+            ],
+            "bias": "⚖️ Commodity Volatility",
+        })
+
+    return context
+
+
 def build_breaking_news_message(article: dict) -> str:
-    title = html.escape(truncate_text(str(article.get("title", "Sans titre")), 220))
-    description = html.escape(truncate_text(str(article.get("description", "")), 160))
+    title_raw = truncate_text(str(article.get("title", "Sans titre")), 190)
+    description_raw = truncate_text(str(article.get("description", "")), 170)
     source = html.escape(str(article.get("source", "Source inconnue")))
     url = str(article.get("url", "")).strip()
 
+    context = build_breaking_context(title_raw, description_raw)
+
+    title = html.escape(title_raw)
+    description = html.escape(description_raw)
+
     lines = [
-        "🚨 <b>Market Alert</b>",
+        f"🚨 <b>BREAKING — {html.escape(context['event'])}</b>",
         "",
         f"<b>{title}</b>",
     ]
 
     if description:
-        lines.append("")
-        lines.append(description)
+        lines.extend(["", f"📰 {description}"])
 
-    lines.append("")
-    lines.append(f"🗞 <i>Source : {source}</i>")
+    lines.extend([
+        "",
+        "━━━━━━━━━━━━━━━━━━",
+        "",
+        "⚠️ <b>Market Impact</b>",
+    ])
+
+    for item in context["impact"][:3]:
+        lines.append(f"• {html.escape(item)}")
+
+    lines.extend([
+        "",
+        "📊 <b>Assets in Focus</b>",
+        "• " + html.escape(" / ".join(context["assets"][:4])),
+        "",
+        "━━━━━━━━━━━━━━━━━━",
+        "",
+        "🧠 <b>Desk View</b>",
+        html.escape(context["desk"]),
+        "",
+        f"📌 <b>Bias</b> : {html.escape(context['bias'])}",
+    ])
+
+    if context.get("execution"):
+        lines.extend(["", "🎯 <b>Execution Notes</b>"])
+        for item in context["execution"][:3]:
+            lines.append(f"• {html.escape(item)}")
+
+    lines.extend([
+        "",
+        "━━━━━━━━━━━━━━━━━━",
+        "",
+        f"🗞 <i>Source : {source}</i>",
+    ])
 
     if url:
-        lines.append(f'🔗 <a href="{html.escape(url)}">Lire plus</a>')
+        lines.append(f'🔗 <a href="{html.escape(url, quote=True)}">Read more</a>')
 
-    lines.append("")
-    lines.append("💎 <b>Velwolf Intelligence</b>")
+    lines.extend([
+        "",
+        "🔒 <b>VIP Desk</b> : full positioning, levels & risk model.",
+        "",
+        "💎 <b>Velwolf Intelligence</b>",
+    ])
 
     message = "\n".join(lines).strip()
 
-    if len(message) > 1000:
-        message = message[:990].rstrip() + "..."
+    if len(message) > 3900:
+        message = message[:3890].rstrip() + "..."
 
     return message
 
 
-def build_watcher_style_caption(article: dict) -> str:
-    title = truncate_text(str(article.get("title", "Sans titre")), 240)
-    title = html.escape(title)
 
-    description = truncate_text(str(article.get("description", "")), 110)
-    description = html.escape(description)
+def build_watcher_style_caption(article: dict) -> str:
+    """
+    Caption ultra pro pour les breaking news avec image.
+    Limite Telegram sendPhoto caption : 1024 caractères.
+    """
+    title_raw = truncate_text(str(article.get("title", "Sans titre")), 135)
+    description_raw = truncate_text(str(article.get("description", "")), 95)
+
+    context = build_breaking_context(title_raw, description_raw)
+
+    title = html.escape(title_raw)
+    description = html.escape(description_raw)
 
     lines = [
-        "📰 <b>Market Flash</b>",
+        f"🚨 <b>BREAKING — {html.escape(context['event'])}</b>",
         "",
-        title,
+        f"<b>{title}</b>",
     ]
 
     if description:
-        lines.append("")
-        lines.append(description)
+        lines.extend(["", f"📰 {description}"])
 
-    lines.append("")
-    lines.append("💎 <b>@Velwolf</b>")
+    lines.extend([
+        "",
+        "━━━━━━━━━━━━━━━━━━",
+        "",
+        "⚠️ <b>Impact</b>",
+    ])
+
+    for item in context["impact"][:2]:
+        lines.append(f"• {html.escape(item)}")
+
+    lines.extend([
+        "",
+        "📊 <b>Focus</b>",
+        "• " + html.escape(" / ".join(context["assets"][:3])),
+        "",
+        "🧠 <b>Desk</b>",
+        html.escape(context["desk"]),
+        "",
+        "🔒 <b>VIP → Full strategy</b>",
+        "💎 <b>@Velwolf</b>",
+    ])
 
     caption = "\n".join(lines).strip()
 
@@ -721,6 +938,7 @@ def build_watcher_style_caption(article: dict) -> str:
         caption = caption[:1014].rstrip() + "..."
 
     return caption
+
 
 
 def send_breaking_news_to_tier(tier: str, article: dict) -> bool:

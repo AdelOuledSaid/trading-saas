@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Liquidations | VelWolf{% endblock %}
+{% block title %}{{ t("liquidations_page_title", "Liquidations | VelWolef") }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='liquidations.css') }}">
@@ -15,42 +15,39 @@
 <section class="inner-hero liquidations-hero">
     <div class="section-container">
         <div class="liq-hero-top">
-            <span class="section-badge">Derivatives Pressure Monitor</span>
+            <span class="section-badge">{{ t("markets_liquidations_derivatives_pressure_monitor", "Derivatives Pressure Monitor") }}</span>
             <span class="live-badge">
                 <span class="live-dot"></span>
-                LIVE FLOW
+                {{ t("markets_liquidations_live_flow", "LIVE FLOW") }}
             </span>
         </div>
 
-        <h1 class="inner-page-title">Liquidations</h1>
+        <h1 class="inner-page-title">{{ t("liquidations", "Liquidations") }}</h1>
         <p class="inner-page-text">
-            Cette page suit les liquidations importantes sur les principaux actifs afin d’identifier
-            les phases de purge, les short squeezes, les flushs de longs et les zones où le marché
-            force massivement des sorties de position. L’objectif n’est pas seulement de voir les chiffres,
-            mais de comprendre la pression réelle qui agit sur le prix.
+            {{ t("markets_liquidations_cette_page_suit_les_liquidations_importantes_sur_les_principaux_actifs_a", "Cette page suit les liquidations importantes sur les principaux actifs afin d’identifier             les phases de purge, les short squeezes, les flushs de longs et les zones où le marché             force massivement des sorties de position. L’objectif n’est pas seulement de voir les chiffres,             mais de comprendre la pression réelle qui agit sur le prix.") }}
         </p>
 
         <div class="liq-hero-stats">
             <div class="liq-hero-stat">
-                <span>Total Events</span>
+                <span>{{ t("markets_liquidations_total_events", "Total Events") }}</span>
                 <strong id="heroTotalEvents">{{ summary.total_events or 0 }}</strong>
             </div>
             <div class="liq-hero-stat">
-                <span>Total Liquidated</span>
+                <span>{{ t("markets_liquidations_total_liquidated", "Total Liquidated") }}</span>
                 <strong id="heroTotalValue">{{ summary.total_value or "$0.0M" }}</strong>
             </div>
             <div class="liq-hero-stat">
-                <span>Dominant Bias</span>
+                <span>{{ t("markets_liquidations_dominant_bias", "Dominant Bias") }}</span>
                 <strong id="heroBias">{{ summary.dominant_bias or "Neutral" }}</strong>
             </div>
             <div class="liq-hero-stat">
-                <span>High Impact</span>
+                <span>{{ t("markets_liquidations_high_impact", "High Impact") }}</span>
                 <strong id="heroHighImpact">{{ summary.high_impact_count or 0 }}</strong>
             </div>
         </div>
 
         <div id="liveStatus" class="live-status live-status-waiting">
-            Waiting live data...
+            {{ t('waiting_live_data', 'Waiting live data...') }}
         </div>
     </div>
 </section>
@@ -59,43 +56,40 @@
     <div class="section-container">
         <div class="results-proof-box liq-summary-box">
             <div class="results-proof-left">
-                <span class="proof-badge">Résumé du marché</span>
-                <h2>Vue d’ensemble des liquidations détectées</h2>
+                <span class="proof-badge">{{ t("markets_liquidations_resume_du_marche", "Résumé du marché") }}</span>
+                <h2>{{ t("markets_liquidations_vue_d_ensemble_des_liquidations_detectees", "Vue d’ensemble des liquidations détectées") }}</h2>
                 <p>
-                    Les liquidations ne constituent pas un signal autonome, mais elles offrent un contexte
-                    institutionnel précieux. Une vague de shorts liquidés peut alimenter une extension haussière.
-                    Une série de longs liquidés peut au contraire confirmer une phase de panique ou une cassure
-                    structurelle du marché.
+                    {{ t("markets_liquidations_les_liquidations_ne_constituent_pas_un_signal_autonome_mais_elles_offren", "Les liquidations ne constituent pas un signal autonome, mais elles offrent un contexte                     institutionnel précieux. Une vague de shorts liquidés peut alimenter une extension haussière.                     Une série de longs liquidés peut au contraire confirmer une phase de panique ou une cassure                     structurelle du marché.") }}
                 </p>
 
                 <div class="results-mini-grid">
                     <div class="results-mini-card">
                         <strong id="miniTotalEvents">{{ summary.total_events or 0 }}</strong>
-                        <span>Événements détectés</span>
+                        <span>{{ t("markets_liquidations_evenements_detectes", "Événements détectés") }}</span>
                     </div>
                     <div class="results-mini-card">
                         <strong id="miniTotalValue">{{ summary.total_value or "$0.0M" }}</strong>
-                        <span>Valeur liquidée</span>
+                        <span>{{ t("markets_liquidations_valeur_liquidee", "Valeur liquidée") }}</span>
                     </div>
                     <div class="results-mini-card">
                         <strong id="miniBias">{{ summary.dominant_bias or "Neutral" }}</strong>
-                        <span>Lecture dominante</span>
+                        <span>{{ t("markets_liquidations_lecture_dominante", "Lecture dominante") }}</span>
                     </div>
                 </div>
             </div>
 
             <div class="results-proof-right">
                 <div class="proof-card metric-glow">
-                    <strong>Longs liquidés</strong>
-                    <span id="longsBox">{{ summary.long_value or "$0.0M" }} • {{ summary.long_count or 0 }} événements</span>
+                    <strong>{{ t('liquidated_longs', 'Longs liquidés') }}</strong>
+                    <span id="longsBox">{{ summary.long_value or "$0.0M" }} • {{ summary.long_count or 0 }} {{ t("markets_liquidations_evenements", "événements") }}</span>
                 </div>
                 <div class="proof-card metric-glow blue-glow">
-                    <strong>Shorts liquidés</strong>
-                    <span id="shortsBox">{{ summary.short_value or "$0.0M" }} • {{ summary.short_count or 0 }} événements</span>
+                    <strong>{{ t('liquidated_shorts', 'Shorts liquidés') }}</strong>
+                    <span id="shortsBox">{{ summary.short_value or "$0.0M" }} • {{ summary.short_count or 0 }} {{ t("markets_liquidations_evenements", "événements") }}</span>
                 </div>
                 <div class="proof-card metric-glow">
-                    <strong>High Impact</strong>
-                    <span id="highImpactBox">{{ summary.high_impact_count or 0 }} alertes à fort impact</span>
+                    <strong>{{ t("markets_liquidations_high_impact", "High Impact") }}</strong>
+                    <span id="highImpactBox">{{ summary.high_impact_count or 0 }} {{ t("markets_liquidations_alertes_a_fort_impact", "alertes à fort impact") }}</span>
                 </div>
             </div>
         </div>
@@ -107,38 +101,34 @@
         <div class="liq-dual-grid">
             <div class="glass-panel">
                 <div class="section-title align-left">
-                    <span>Market Pressure</span>
-                    <h2>Ratio Long / Short Liquidations</h2>
+                    <span>{{ t("markets_liquidations_market_pressure", "Market Pressure") }}</span>
+                    <h2>{{ t("markets_liquidations_ratio_long_short_liquidations", "Ratio Long / Short Liquidations") }}</h2>
                     <p>
-                        Cette lecture permet d’identifier quel côté du marché souffre réellement.
-                        Lorsqu’un camp est massivement liquidé, cela crée souvent une asymétrie exploitable.
+                        {{ t("markets_liquidations_cette_lecture_permet_d_identifier_quel_cote_du_marche_souffre_reellement", "Cette lecture permet d’identifier quel côté du marché souffre réellement.                         Lorsqu’un camp est massivement liquidé, cela crée souvent une asymétrie exploitable.") }}
                     </p>
                 </div>
 
                 <div class="why-grid">
                     <div class="why-card">
-                        <strong>Ratio Long / Short</strong>
+                        <strong>{{ t("markets_liquidations_ratio_long_short", "Ratio Long / Short") }}</strong>
                         <h2 id="ratioText">{{ summary.long_count or 0 }} / {{ summary.short_count or 0 }}</h2>
                         <p>
-                            Si les longs dominent, le marché peut être en phase de fragilité baissière.
-                            Si les shorts dominent, un squeeze haussier peut être en cours.
+                            {{ t("markets_liquidations_si_les_longs_dominent_le_marche_peut_etre_en_phase_de_fragilite_baissier", "Si les longs dominent, le marché peut être en phase de fragilité baissière.                             Si les shorts dominent, un squeeze haussier peut être en cours.") }}
                         </p>
                     </div>
 
                     <div class="why-card">
-                        <strong>Lecture Pro</strong>
+                        <strong>{{ t("markets_liquidations_lecture_pro", "Lecture Pro") }}</strong>
                         <p>
-                            Les professionnels regardent la concentration temporelle, l’intensité et
-                            la réaction immédiate du prix après la purge.
+                            {{ t("markets_liquidations_les_professionnels_regardent_la_concentration_temporelle_l_intensite_et", "Les professionnels regardent la concentration temporelle, l’intensité et                             la réaction immédiate du prix après la purge.") }}
                         </p>
                     </div>
 
                     <div class="why-card">
-                        <strong>Signal Brut</strong>
+                        <strong>{{ t("markets_liquidations_signal_brut", "Signal Brut") }}</strong>
                         <p>
-                            Biais actuel :
-                            <strong id="signalBias">{{ summary.dominant_bias or "Neutral" }}</strong>.
-                            À lire avec la structure et le momentum.
+                            {{ t("markets_liquidations_biais_actuel", "Biais actuel :") }}
+                            <strong id="signalBias">{{ summary.dominant_bias or "Neutral" }}</strong>{{ t("markets_liquidations_a_lire_avec_la_structure_et_le_momentum", ".                             À lire avec la structure et le momentum.") }}
                         </p>
                     </div>
                 </div>
@@ -146,10 +136,10 @@
 
             <div class="glass-panel pressure-panel">
                 <div class="section-title align-left">
-                    <span>Pressure Gauge</span>
-                    <h2>Balance du stress</h2>
+                    <span>{{ t("markets_liquidations_pressure_gauge", "Pressure Gauge") }}</span>
+                    <h2>{{ t("markets_liquidations_balance_du_stress", "Balance du stress") }}</h2>
                     <p>
-                        Vue synthétique pour repérer en un coup d’œil le côté du marché sous pression.
+                        {{ t("markets_liquidations_vue_synthetique_pour_reperer_en_un_coup_d_oeil_le_cote_du_marche_sous_pr", "Vue synthétique pour repérer en un coup d’œil le côté du marché sous pression.") }}
                     </p>
                 </div>
 
@@ -167,7 +157,7 @@
 
                 <div class="pressure-meter-card">
                     <div class="pressure-meter-header">
-                        <span>Bull / Bear Pressure</span>
+                        <span>{{ t("markets_liquidations_bull_bear_pressure", "Bull / Bear Pressure") }}</span>
                         <strong id="pressureBias">{{ summary.dominant_bias or "Neutral" }}</strong>
                     </div>
 
@@ -181,18 +171,18 @@
                     </div>
 
                     <div class="pressure-legend">
-                        <div><span class="legend-dot green"></span> Shorts liquidés</div>
-                        <div><span class="legend-dot red"></span> Longs liquidés</div>
+                        <div><span class="legend-dot green"></span> {{ t('liquidated_shorts', 'Shorts liquidés') }}</div>
+                        <div><span class="legend-dot red"></span> {{ t('liquidated_longs', 'Longs liquidés') }}</div>
                     </div>
 
                     <div class="pressure-notes">
                         <div class="mini-note">
-                            <strong>Lecture</strong>
-                            <p>Plus la barre est déséquilibrée, plus la pression est concentrée sur un seul camp.</p>
+                            <strong>{{ t("markets_forex_lecture", "Lecture") }}</strong>
+                            <p>{{ t("markets_liquidations_plus_la_barre_est_desequilibree_plus_la_pression_est_concentree_sur_un_s", "Plus la barre est déséquilibrée, plus la pression est concentrée sur un seul camp.") }}</p>
                         </div>
                         <div class="mini-note">
-                            <strong>Usage</strong>
-                            <p>Utile pour détecter les squeezes et les capitulations avant extension ou rebond.</p>
+                            <strong>{{ t("markets_liquidations_usage", "Usage") }}</strong>
+                            <p>{{ t("markets_liquidations_utile_pour_detecter_les_squeezes_et_les_capitulations_avant_extension_ou", "Utile pour détecter les squeezes et les capitulations avant extension ou rebond.") }}</p>
                         </div>
                     </div>
                 </div>
@@ -204,12 +194,10 @@
 <section class="section-standard">
     <div class="section-container">
         <div class="section-title">
-            <span>Visualisation</span>
-            <h2>Distribution des liquidations</h2>
+            <span>{{ t("markets_liquidations_visualisation", "Visualisation") }}</span>
+            <h2>{{ t("markets_liquidations_distribution_des_liquidations", "Distribution des liquidations") }}</h2>
             <p>
-                Ce graphique donne une lecture immédiate de la pression dominante.
-                Il permet de voir rapidement si le marché a surtout nettoyé les acheteurs
-                ou les vendeurs sur la période observée.
+                {{ t("markets_liquidations_ce_graphique_donne_une_lecture_immediate_de_la_pression_dominante_il_per", "Ce graphique donne une lecture immédiate de la pression dominante.                 Il permet de voir rapidement si le marché a surtout nettoyé les acheteurs                 ou les vendeurs sur la période observée.") }}
             </p>
         </div>
 
@@ -221,23 +209,21 @@
             </div>
             <div class="proof-right">
                 <div class="proof-card">
-                    <strong>Lecture rapide</strong>
+                    <strong>{{ t("quick_reading", "Lecture rapide") }}</strong>
                     <span>
-                        Une domination des shorts liquidés favorise souvent une poursuite haussière
-                        à court terme. Une domination des longs liquidés reflète davantage une faiblesse
-                        ou une purge du marché.
+                        {{ t("markets_liquidations_une_domination_des_shorts_liquides_favorise_souvent_une_poursuite_haussi", "Une domination des shorts liquidés favorise souvent une poursuite haussière                         à court terme. Une domination des longs liquidés reflète davantage une faiblesse                         ou une purge du marché.") }}
                     </span>
                 </div>
                 <div class="proof-card">
-                    <strong>Utilité</strong>
+                    <strong>{{ t("markets_forex_utilite", "Utilité") }}</strong>
                     <span>
-                        Ce visuel sert à localiser immédiatement où se concentre le stress de marché.
+                        {{ t("markets_liquidations_ce_visuel_sert_a_localiser_immediatement_ou_se_concentre_le_stress_de_ma", "Ce visuel sert à localiser immédiatement où se concentre le stress de marché.") }}
                     </span>
                 </div>
                 <div class="proof-card">
-                    <strong>Contexte</strong>
+                    <strong>{{ t("context", "Contexte") }}</strong>
                     <span>
-                        À combiner avec volume, structure, funding et open interest pour une lecture pro.
+                        {{ t("markets_liquidations_a_combiner_avec_volume_structure_funding_et_open_interest_pour_une_lectu", "À combiner avec volume, structure, funding et open interest pour une lecture pro.") }}
                     </span>
                 </div>
             </div>
@@ -248,37 +234,32 @@
 <section class="section-standard">
     <div class="section-container">
         <div class="section-title">
-            <span>Lecture du flux</span>
-            <h2>Comment lire les liquidations</h2>
+            <span>{{ t("markets_liquidations_lecture_du_flux", "Lecture du flux") }}</span>
+            <h2>{{ t("markets_liquidations_comment_lire_les_liquidations", "Comment lire les liquidations") }}</h2>
             <p>
-                Une liquidation représente une sortie forcée de position. Elle devient particulièrement
-                intéressante lorsqu’elle apparaît en série, sur plusieurs exchanges, ou lorsqu’elle
-                confirme une extension de prix déjà visible sur le marché.
+                {{ t("markets_liquidations_une_liquidation_represente_une_sortie_forcee_de_position_elle_devient_pa", "Une liquidation représente une sortie forcée de position. Elle devient particulièrement                 intéressante lorsqu’elle apparaît en série, sur plusieurs exchanges, ou lorsqu’elle                 confirme une extension de prix déjà visible sur le marché.") }}
             </p>
         </div>
 
         <div class="why-grid">
             <div class="why-card">
-                <strong>Short squeeze</strong>
+                <strong>{{ t("markets_liquidations_short_squeeze", "Short squeeze") }}</strong>
                 <p>
-                    Lorsque de nombreux shorts sont liquidés sur une courte période, cela peut alimenter
-                    une accélération haussière provoquée par le rachat forcé des positions vendeuses.
+                    {{ t("markets_liquidations_lorsque_de_nombreux_shorts_sont_liquides_sur_une_courte_periode_cela_peu", "Lorsque de nombreux shorts sont liquidés sur une courte période, cela peut alimenter                     une accélération haussière provoquée par le rachat forcé des positions vendeuses.") }}
                 </p>
             </div>
 
             <div class="why-card">
-                <strong>Long flush</strong>
+                <strong>{{ t("markets_liquidations_long_flush", "Long flush") }}</strong>
                 <p>
-                    Lorsque de nombreux longs sont liquidés, cela peut signaler une purge baissière,
-                    souvent liée à un excès de levier ou à une cassure brutale de support.
+                    {{ t("markets_liquidations_lorsque_de_nombreux_longs_sont_liquides_cela_peut_signaler_une_purge_bai", "Lorsque de nombreux longs sont liquidés, cela peut signaler une purge baissière,                     souvent liée à un excès de levier ou à une cassure brutale de support.") }}
                 </p>
             </div>
 
             <div class="why-card">
-                <strong>Lecture tactique</strong>
+                <strong>{{ t("markets_liquidations_lecture_tactique", "Lecture tactique") }}</strong>
                 <p>
-                    Une vague de liquidations devient beaucoup plus utile lorsqu’elle est croisée
-                    avec les niveaux techniques clés, l’open interest, le volume et la réaction du prix.
+                    {{ t("markets_liquidations_une_vague_de_liquidations_devient_beaucoup_plus_utile_lorsqu_elle_est_cr", "Une vague de liquidations devient beaucoup plus utile lorsqu’elle est croisée                     avec les niveaux techniques clés, l’open interest, le volume et la réaction du prix.") }}
                 </p>
             </div>
         </div>
@@ -289,12 +270,10 @@
     <div class="section-container">
         <div class="proof-box">
             <div class="proof-left">
-                <span class="proof-badge">Top liquidations</span>
-                <h2>Événements à surveiller en priorité</h2>
+                <span class="proof-badge">{{ t("markets_liquidations_top_liquidations", "Top liquidations") }}</span>
+                <h2>{{ t("markets_liquidations_evenements_a_surveiller_en_priorite", "Événements à surveiller en priorité") }}</h2>
                 <p>
-                    Les liquidations ci-dessous correspondent aux événements les plus importants détectés
-                    sur la période. Elles révèlent souvent les zones où le marché a forcé la sortie
-                    de positions massivement exposées.
+                    {{ t("markets_liquidations_les_liquidations_ci_dessous_correspondent_aux_evenements_les_plus_import", "Les liquidations ci-dessous correspondent aux événements les plus importants détectés                     sur la période. Elles révèlent souvent les zones où le marché a forcé la sortie                     de positions massivement exposées.") }}
                 </p>
             </div>
 
@@ -302,17 +281,17 @@
                 {% if top_events %}
                     {% for item in top_events %}
                     <div class="proof-card top-event-card">
-                        <strong>{{ item.asset }} — {{ item.side }} liquidation</strong>
+                        <strong>{{ item.asset }} — {{ item.side }} {{ t("markets_liquidations_liquidation", "liquidation") }}</strong>
                         <span>
                             {{ item.value_usd }} • {{ item.exchange }} • {{ item.price }}
-                            • {{ item.time }} • biais {{ item.market_bias }}
+                            • {{ item.time }} {{ t("markets_liquidations_biais", "• biais") }} {{ item.market_bias }}
                         </span>
                     </div>
                     {% endfor %}
                 {% else %}
                     <div class="proof-card">
-                        <strong>Aucune liquidation majeure</strong>
-                        <span>Les prochains événements importants apparaîtront ici.</span>
+                        <strong>{{ t("markets_liquidations_aucune_liquidation_majeure", "Aucune liquidation majeure") }}</strong>
+                        <span>{{ t("markets_liquidations_les_prochains_evenements_importants_apparaitront_ici", "Les prochains événements importants apparaîtront ici.") }}</span>
                     </div>
                 {% endif %}
             </div>
@@ -324,45 +303,43 @@
     <div class="section-container">
         <div class="proof-box">
             <div class="proof-left">
-                <span class="proof-badge">Smart Alerts</span>
-                <h2>Détection automatique du stress de marché</h2>
+                <span class="proof-badge">{{ t("markets_liquidations_smart_alerts", "Smart Alerts") }}</span>
+                <h2>{{ t("markets_liquidations_detection_automatique_du_stress_de_marche", "Détection automatique du stress de marché") }}</h2>
                 <p>
-                    Cette zone transforme les données brutes en lecture exploitable.
-                    Elle aide à distinguer un simple bruit de marché d’un vrai déséquilibre
-                    de liquidité pouvant produire un mouvement violent.
+                    {{ t("markets_liquidations_cette_zone_transforme_les_donnees_brutes_en_lecture_exploitable_elle_aid", "Cette zone transforme les données brutes en lecture exploitable.                     Elle aide à distinguer un simple bruit de marché d’un vrai déséquilibre                     de liquidité pouvant produire un mouvement violent.") }}
                 </p>
             </div>
 
             <div class="proof-right">
                 <div class="proof-card">
-                    <strong>Squeeze potentiel</strong>
+                    <strong>{{ t("markets_liquidations_squeeze_potentiel", "Squeeze potentiel") }}</strong>
                     <span id="smartSqueeze">
                         {% if (summary.short_count or 0) > (summary.long_count or 0) %}
-                            Forte pression sur les shorts → potentiel de continuation haussière.
+                            {{ t("markets_liquidations_forte_pression_sur_les_shorts_potentiel_de_continuation_haussiere", "Forte pression sur les shorts → potentiel de continuation haussière.") }}
                         {% else %}
-                            Pas de squeeze majeur détecté pour le moment.
+                            {{ t("markets_liquidations_pas_de_squeeze_majeur_detecte_pour_le_moment", "Pas de squeeze majeur détecté pour le moment.") }}
                         {% endif %}
                     </span>
                 </div>
 
                 <div class="proof-card">
-                    <strong>Capitulation potentielle</strong>
+                    <strong>{{ t("markets_liquidations_capitulation_potentielle", "Capitulation potentielle") }}</strong>
                     <span id="smartCapitulation">
                         {% if (summary.long_count or 0) > (summary.short_count or 0) %}
-                            Pression dominante sur les longs → risque de panic sell ou flush.
+                            {{ t("markets_liquidations_pression_dominante_sur_les_longs_risque_de_panic_sell_ou_flush", "Pression dominante sur les longs → risque de panic sell ou flush.") }}
                         {% else %}
-                            Pas de capitulation longue dominante détectée.
+                            {{ t("markets_liquidations_pas_de_capitulation_longue_dominante_detectee", "Pas de capitulation longue dominante détectée.") }}
                         {% endif %}
                     </span>
                 </div>
 
                 <div class="proof-card">
-                    <strong>Lecture de régime</strong>
+                    <strong>{{ t("markets_liquidations_lecture_de_regime", "Lecture de régime") }}</strong>
                     <span id="smartRegime">
                         {% if summary.dominant_bias %}
-                            Régime détecté : {{ summary.dominant_bias }}.
+                            {{ t("markets_liquidations_regime_detecte", "Régime détecté :") }} {{ summary.dominant_bias }}.
                         {% else %}
-                            Régime de marché non dominant ou neutre.
+                            {{ t("markets_liquidations_regime_de_marche_non_dominant_ou_neutre", "Régime de marché non dominant ou neutre.") }}
                         {% endif %}
                     </span>
                 </div>
@@ -374,68 +351,67 @@
 <section class="section-standard">
     <div class="section-container">
         <div class="section-title">
-            <span>Filtres</span>
-            <h2>Filtrer les événements</h2>
+            <span>{{ t("markets_liquidations_filtres", "Filtres") }}</span>
+            <h2>{{ t("markets_liquidations_filtrer_les_evenements", "Filtrer les événements") }}</h2>
             <p>
-                Les filtres permettent d’isoler rapidement un actif, un côté du marché,
-                un niveau d’impact ou un nombre d’événements plus adapté à ton analyse.
+                {{ t("markets_liquidations_les_filtres_permettent_d_isoler_rapidement_un_actif_un_cote_du_marche_un", "Les filtres permettent d’isoler rapidement un actif, un côté du marché,                 un niveau d’impact ou un nombre d’événements plus adapté à ton analyse.") }}
             </p>
         </div>
 
         <div class="proof-box">
             <div class="proof-left">
-                <strong class="liq-block-title">Actifs</strong>
+                <strong class="liq-block-title">{{ t("markets_liquidations_actifs", "Actifs") }}</strong>
                 <div class="liq-filters">
-                    <a href="{{ url_for('liquidations.liquidations_page', limit=active_filters.limit) }}"
-                       class="filter-chip {% if not active_filters.asset %}active{% endif %}">Tous</a>
-                    <a href="{{ url_for('liquidations.liquidations_page', asset='BTC', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
+                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, limit=active_filters.limit) }}"
+                       class="filter-chip {% if not active_filters.asset %}active{% endif %}">{{ t("markets_liquidations_tous", "Tous") }}</a>
+                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset='BTC', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
                        class="filter-chip {% if active_filters.asset == 'BTC' %}active{% endif %}">BTC</a>
-                    <a href="{{ url_for('liquidations.liquidations_page', asset='ETH', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
+                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset='ETH', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
                        class="filter-chip {% if active_filters.asset == 'ETH' %}active{% endif %}">ETH</a>
-                    <a href="{{ url_for('liquidations.liquidations_page', asset='SOL', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
+                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset='SOL', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
                        class="filter-chip {% if active_filters.asset == 'SOL' %}active{% endif %}">SOL</a>
-                    <a href="{{ url_for('liquidations.liquidations_page', asset='BNB', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
+                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset='BNB', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
                        class="filter-chip {% if active_filters.asset == 'BNB' %}active{% endif %}">BNB</a>
-                    <a href="{{ url_for('liquidations.liquidations_page', asset='XRP', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
+                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset='XRP', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
                        class="filter-chip {% if active_filters.asset == 'XRP' %}active{% endif %}">XRP</a>
                 </div>
 
-                <strong class="liq-block-title">Côté liquidé</strong>
+                <strong class="liq-block-title">{{ t("markets_liquidations_cote_liquide", "Côté liquidé") }}</strong>
                 <div class="liq-filters">
-                    <a href="{{ url_for('liquidations.liquidations_page', asset=active_filters.asset, impact=active_filters.impact, limit=active_filters.limit) }}"
-                       class="filter-chip {% if not active_filters.side %}active{% endif %}">Tous</a>
-                    <a href="{{ url_for('liquidations.liquidations_page', asset=active_filters.asset, side='long', impact=active_filters.impact, limit=active_filters.limit) }}"
+                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, impact=active_filters.impact, limit=active_filters.limit) }}"
+                       class="filter-chip {% if not active_filters.side %}active{% endif %}">{{ t("markets_liquidations_tous", "Tous") }}</a>
+                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, side='long', impact=active_filters.impact, limit=active_filters.limit) }}"
                        class="filter-chip {% if active_filters.side == 'long' %}active{% endif %}">Longs</a>
-                    <a href="{{ url_for('liquidations.liquidations_page', asset=active_filters.asset, side='short', impact=active_filters.impact, limit=active_filters.limit) }}"
+                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, side='short', impact=active_filters.impact, limit=active_filters.limit) }}"
                        class="filter-chip {% if active_filters.side == 'short' %}active{% endif %}">Shorts</a>
                 </div>
             </div>
 
             <div class="proof-right">
                 <div>
-                    <strong class="liq-block-title">Impact</strong>
+                    <strong class="liq-block-title">{{ t("markets_liquidations_impact", "Impact") }}</strong>
                     <div class="liq-filters">
-                        <a href="{{ url_for('liquidations.liquidations_page', asset=active_filters.asset, side=active_filters.side, limit=active_filters.limit) }}"
-                           class="filter-chip {% if not active_filters.impact %}active{% endif %}">Tous niveaux</a>
-                        <a href="{{ url_for('liquidations.liquidations_page', asset=active_filters.asset, side=active_filters.side, impact='high', limit=active_filters.limit) }}"
-                           class="filter-chip {% if active_filters.impact == 'high' %}active{% endif %}">High Impact</a>
+                        <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, side=active_filters.side, limit=active_filters.limit) }}"
+                           class="filter-chip {% if not active_filters.impact %}active{% endif %}">{{ t("markets_liquidations_tous_niveaux", "Tous niveaux") }}</a>
+                        <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, side=active_filters.side, impact='high', limit=active_filters.limit) }}"
+                           class="filter-chip {% if active_filters.impact == 'high' %}active{% endif %}">{{ t("markets_liquidations_high_impact", "High Impact") }}</a>
                     </div>
                 </div>
 
                 <div style="margin-top:22px;">
-                    <strong class="liq-block-title">Nombre d’événements</strong>
+                    <strong class="liq-block-title">{{ t("markets_liquidations_nombre_d_evenements", "Nombre d’événements") }}</strong>
                     <div class="liq-filters">
-                        <a href="{{ url_for('liquidations.liquidations_page', asset=active_filters.asset, side=active_filters.side, impact=active_filters.impact, limit=6) }}"
+                        <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, side=active_filters.side, impact=active_filters.impact, limit=6) }}"
                            class="filter-chip {% if active_filters.limit == 6 %}active{% endif %}">6</a>
-                        <a href="{{ url_for('liquidations.liquidations_page', asset=active_filters.asset, side=active_filters.side, impact=active_filters.impact, limit=12) }}"
+                        <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, side=active_filters.side, impact=active_filters.impact, limit=12) }}"
                            class="filter-chip {% if active_filters.limit == 12 %}active{% endif %}">12</a>
-                        <a href="{{ url_for('liquidations.liquidations_page', asset=active_filters.asset, side=active_filters.side, impact=active_filters.impact, limit=24) }}"
+                        <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, side=active_filters.side, impact=active_filters.impact, limit=24) }}"
                            class="filter-chip {% if active_filters.limit == 24 %}active{% endif %}">24</a>
                     </div>
                 </div>
 
                 <div style="margin-top:22px;">
-                    <a href="{{ url_for('liquidations.liquidations_page') }}" class="primary-link-btn">Réinitialiser les filtres</a>
+                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang) }}" class="primary-link-btn">{{ t("markets_liquidations_reinitialiser_les_filtres", "Réinitialiser les filtres") }}</a>
                 </div>
             </div>
         </div>
@@ -445,11 +421,10 @@
 <section class="section-standard">
     <div class="section-container">
         <div class="section-title">
-            <span>Flux principal</span>
-            <h2>Tableau des liquidations</h2>
+            <span>{{ t("markets_liquidations_flux_principal", "Flux principal") }}</span>
+            <h2>{{ t("markets_liquidations_tableau_des_liquidations", "Tableau des liquidations") }}</h2>
             <p>
-                Tableau détaillé des événements détectés sur les actifs suivis, avec le côté liquidé,
-                la valeur, l’exchange concerné, la timeframe et le biais de lecture associé.
+                {{ t("markets_liquidations_tableau_detaille_des_evenements_detectes_sur_les_actifs_suivis_avec_le_c", "Tableau détaillé des événements détectés sur les actifs suivis, avec le côté liquidé,                 la valeur, l’exchange concerné, la timeframe et le biais de lecture associé.") }}
             </p>
         </div>
 
@@ -457,16 +432,16 @@
             <table class="btc-signals-table premium-table">
                 <thead>
                     <tr>
-                        <th>Actif</th>
-                        <th>Côté</th>
-                        <th>Exchange</th>
-                        <th>Prix</th>
-                        <th>Valeur USD</th>
-                        <th>Quantité</th>
-                        <th>Timeframe</th>
-                        <th>Impact</th>
-                        <th>Biais</th>
-                        <th>Heure</th>
+                        <th>{{ t("status_active", "Actif") }}</th>
+                        <th>{{ t("markets_liquidations_cote", "Côté") }}</th>
+                        <th>{{ t("markets_liquidations_exchange", "Exchange") }}</th>
+                        <th>{{ t("markets_liquidations_prix", "Prix") }}</th>
+                        <th>{{ t("markets_liquidations_valeur_usd", "Valeur USD") }}</th>
+                        <th>{{ t("markets_liquidations_quantite", "Quantité") }}</th>
+                        <th>{{ t("markets_liquidations_timeframe", "Timeframe") }}</th>
+                        <th>{{ t("markets_liquidations_impact", "Impact") }}</th>
+                        <th>{{ t("bias", "Biais") }}</th>
+                        <th>{{ t("markets_liquidations_heure", "Heure") }}</th>
                     </tr>
                 </thead>
                 <tbody id="liquidationsTableBody">
@@ -502,7 +477,7 @@
                     {% else %}
                         <tr>
                             <td colspan="10" class="empty-live-row">
-                                Aucun événement live pour le moment.
+                                {{ t('no_live_event_now', 'Aucun événement live pour le moment.') }}
                             </td>
                         </tr>
                     {% endif %}
@@ -515,36 +490,32 @@
 <section class="section-standard">
     <div class="section-container">
         <div class="section-title">
-            <span>Lecture pratique</span>
-            <h2>Exemples d’interprétation</h2>
+            <span>{{ t("markets_liquidations_lecture_pratique", "Lecture pratique") }}</span>
+            <h2>{{ t("markets_liquidations_exemples_d_interpretation", "Exemples d’interprétation") }}</h2>
             <p>
-                Voici quelques cas concrets pour mieux exploiter les informations affichées sur cette page.
-                L’intérêt des liquidations réside surtout dans leur lecture combinée avec le comportement du prix.
+                {{ t("markets_liquidations_voici_quelques_cas_concrets_pour_mieux_exploiter_les_informations_affich", "Voici quelques cas concrets pour mieux exploiter les informations affichées sur cette page.                 L’intérêt des liquidations réside surtout dans leur lecture combinée avec le comportement du prix.") }}
             </p>
         </div>
 
         <div class="why-grid">
             <div class="why-card">
-                <strong>Purge haussière</strong>
+                <strong>{{ t("markets_liquidations_purge_haussiere", "Purge haussière") }}</strong>
                 <p>
-                    Une forte vague de shorts liquidés suivie d’une accélération rapide du prix
-                    peut signaler un squeeze. Ce type de mouvement peut prolonger l’impulsion.
+                    {{ t("markets_liquidations_une_forte_vague_de_shorts_liquides_suivie_d_une_acceleration_rapide_du_p", "Une forte vague de shorts liquidés suivie d’une accélération rapide du prix                     peut signaler un squeeze. Ce type de mouvement peut prolonger l’impulsion.") }}
                 </p>
             </div>
 
             <div class="why-card">
-                <strong>Purge baissière</strong>
+                <strong>{{ t("markets_liquidations_purge_baissiere", "Purge baissière") }}</strong>
                 <p>
-                    Une forte vague de longs liquidés peut indiquer un flush brutal.
-                    La réaction du prix après la purge aide à distinguer capitulation et continuation.
+                    {{ t("markets_liquidations_une_forte_vague_de_longs_liquides_peut_indiquer_un_flush_brutal_la_react", "Une forte vague de longs liquidés peut indiquer un flush brutal.                     La réaction du prix après la purge aide à distinguer capitulation et continuation.") }}
                 </p>
             </div>
 
             <div class="why-card">
-                <strong>Réaction du prix</strong>
+                <strong>{{ t("markets_liquidations_reaction_du_prix", "Réaction du prix") }}</strong>
                 <p>
-                    Après une vague de liquidations, observe si le marché rebondit,
-                    consolide ou continue dans le même sens. C’est souvent là que se trouve la vraie info.
+                    {{ t("markets_liquidations_apres_une_vague_de_liquidations_observe_si_le_marche_rebondit_consolide", "Après une vague de liquidations, observe si le marché rebondit,                     consolide ou continue dans le même sens. C’est souvent là que se trouve la vraie info.") }}
                 </p>
             </div>
         </div>
@@ -554,36 +525,32 @@
 <section class="section-standard">
     <div class="section-container">
         <div class="section-title">
-            <span>Strategy</span>
-            <h2>Comment trader les liquidations</h2>
+            <span>{{ t("markets_liquidations_strategy", "Strategy") }}</span>
+            <h2>{{ t("markets_liquidations_comment_trader_les_liquidations", "Comment trader les liquidations") }}</h2>
             <p>
-                Les liquidations sont utiles pour repérer les zones de stress où le marché nettoie les positions
-                trop exposées. Elles peuvent être utilisées en continuation ou en contrarien selon le contexte.
+                {{ t("markets_liquidations_les_liquidations_sont_utiles_pour_reperer_les_zones_de_stress_ou_le_marc", "Les liquidations sont utiles pour repérer les zones de stress où le marché nettoie les positions                 trop exposées. Elles peuvent être utilisées en continuation ou en contrarien selon le contexte.") }}
             </p>
         </div>
 
         <div class="why-grid">
             <div class="why-card">
-                <strong>Entrée contrarienne</strong>
+                <strong>{{ t("markets_liquidations_entree_contrarienne", "Entrée contrarienne") }}</strong>
                 <p>
-                    Après une grosse vague de liquidations et une stabilisation du prix,
-                    le marché peut produire un rebond violent lorsque l’excès de levier a été nettoyé.
+                    {{ t("markets_liquidations_apres_une_grosse_vague_de_liquidations_et_une_stabilisation_du_prix_le_m", "Après une grosse vague de liquidations et une stabilisation du prix,                     le marché peut produire un rebond violent lorsque l’excès de levier a été nettoyé.") }}
                 </p>
             </div>
 
             <div class="why-card">
-                <strong>Confirmation de tendance</strong>
+                <strong>{{ t("markets_liquidations_confirmation_de_tendance", "Confirmation de tendance") }}</strong>
                 <p>
-                    Si les liquidations accompagnent un mouvement déjà engagé et que le prix
-                    ne réintègre pas rapidement, cela peut confirmer une continuation directionnelle.
+                    {{ t("markets_liquidations_si_les_liquidations_accompagnent_un_mouvement_deja_engage_et_que_le_prix", "Si les liquidations accompagnent un mouvement déjà engagé et que le prix                     ne réintègre pas rapidement, cela peut confirmer une continuation directionnelle.") }}
                 </p>
             </div>
 
             <div class="why-card">
-                <strong>Timing institutionnel</strong>
+                <strong>{{ t("markets_liquidations_timing_institutionnel", "Timing institutionnel") }}</strong>
                 <p>
-                    Les meilleures opportunités apparaissent souvent juste après une purge,
-                    lorsque la liquidité est nettoyée et que le marché révèle sa vraie direction.
+                    {{ t("markets_liquidations_les_meilleures_opportunites_apparaissent_souvent_juste_apres_une_purge_l", "Les meilleures opportunités apparaissent souvent juste après une purge,                     lorsque la liquidité est nettoyée et que le marché révèle sa vraie direction.") }}
                 </p>
             </div>
         </div>
@@ -627,7 +594,7 @@ document.addEventListener("DOMContentLoaded", function () {
             liqChart = new Chart(ctx, {
                 type: "bar",
                 data: {
-                    labels: ["Longs liquidés", "Shorts liquidés"],
+                    labels: ["{{ t('liquidated_longs', 'Longs liquidés') }}", "{{ t('liquidated_shorts', 'Shorts liquidés') }}"],
                     datasets: [{
                         label: "Liquidations ($)",
                         data: [longValue, shortValue],
@@ -777,7 +744,7 @@ document.addEventListener("DOMContentLoaded", function () {
             tbody.innerHTML = `
                 <tr>
                     <td colspan="10" class="empty-live-row">
-                        Aucun événement live pour le moment.
+                        {{ t('no_live_event_now', 'Aucun événement live pour le moment.') }}
                     </td>
                 </tr>
             `;
@@ -847,7 +814,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!events || !events.length || !summary.total_events) {
             status.className = "live-status live-status-waiting";
-            status.textContent = "Waiting live data...";
+            status.textContent = "{{ t('waiting_live_data', 'Waiting live data...') }}";
             return;
         }
 
@@ -877,7 +844,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const status = document.getElementById("liveStatus");
             if (status) {
                 status.className = "live-status live-status-error";
-                status.textContent = "Live feed unavailable";
+                status.textContent = "{{ t('live_feed_unavailable', 'Live feed unavailable') }}";
             }
         }
     }

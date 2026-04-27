@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t("news_feed_title", "News Feed & Sentiment Analysis") }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='news_feed.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="oz-news-page">
+
+  <section class="oz-grid">
+
+    <!-- COIN ACTIVITY -->
+    <div class="oz-card oz-chart-card">
+      <div class="oz-card-head">
+        <div>
+          <h2>{{ t("coin_activity", "Coin Activity") }}</h2>
+          <p>{{ t("top_assets_by_market_cap", "Top actifs par capitalisation") }}</p>
+        </div>
+        <span class="oz-pill">{{ t("site_news_feed_live_api", "Live API") }}</span>
+      </div>
+
+      <div class="oz-bars">
+        {% if not markets %}
+          <div class="oz-empty">
+            {{ t("coingecko_unavailable", "Données CoinGecko temporairement indisponibles.") }}
+          </div>
+        {% endif %}
+
+        {% for coin in markets %}
+        <div class="oz-bar-row">
+          <div class="oz-bar-label">
+            <img src="{{ coin.image }}" alt="{{ coin.symbol }}">
+            <span>{{ coin.symbol }}</span>
+          </div>
+
+          <div class="oz-bar-track">
+            <div class="oz-bar-fill {% if coin.change_24h >= 0 %}up{% else %}down{% endif %}"
+                 style="width: {{ coin.bar_width }}%;">
+            </div>
+          </div>
+
+          <strong class="{% if coin.change_24h >= 0 %}txt-up{% else %}txt-down{% endif %}">
+            {{ "%.2f"|format(coin.change_24h) }}%
+          </strong>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- MARKET SENTIMENT -->
+    <div class="oz-card oz-chart-card">
+      <div class="oz-card-head">
+        <div>
+          <h2>{{ t("market_sentiment", "Market Sentiment") }}</h2>
+          <p>{{ t("news_sentiment_distribution", "Répartition des news analysées") }}</p>
+        </div>
+        <span class="oz-pill">{{ t("sentiment", "Sentiment") }}</span>
+      </div>
+
+      <div class="oz-sentiment-box">
+        <div class="oz-score-ring"
+             style="background:
+               radial-gradient(circle, #0f172a 54%, transparent 56%),
+               conic-gradient(
+                 #22c55e 0 {{ summary.positive_percent }}%,
+                 #64748b {{ summary.positive_percent }}% {{ summary.positive_percent + summary.neutral_percent }}%,
+                 #ef4444 {{ summary.positive_percent + summary.neutral_percent }}% 100%
+               );">
+          <div>
+            <strong>{{ summary.bias|upper }}</strong>
+            <span>{{ t("market_bias", "Biais marché") }}</span>
+          </div>
+        </div>
+
+        <div class="oz-sentiment-list">
+          <div>
+            <span>{{ t("positive", "Positif") }}</span>
+            <strong class="txt-up">{{ summary.positive }}</strong>
+          </div>
+
+          <div>
+            <span>{{ t("neutral", "Neutre") }}</span>
+            <strong>{{ summary.neutral }}</strong>
+          </div>
+
+          <div>
+            <span>{{ t("negative", "Négatif") }}</span>
+            <strong class="txt-down">{{ summary.negative }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDE PANEL -->
+    <div class="oz-side">
+
+      <div class="oz-mini-grid">
+        <div class="oz-mini-card">
+          <span>Market Cap</span>
+          <strong>{{ global_market.market_cap }}</strong>
+          <small>{{ t("site_news_feed_btc_dominance", "BTC dominance") }} {{ global_market.btc_dominance }}</small>
+        </div>
+
+        <div class="oz-mini-card">
+          <span>{{ t("volume_24h", "Volume 24H") }}</span>
+          <strong>{{ global_market.volume }}</strong>
+          <small>{{ t("site_news_feed_eth_dominance", "ETH dominance") }} {{ global_market.eth_dominance }}</small>
+        </div>
+      </div>
+
+      <!-- SMART WATCHLIST AUTO -->
+      {% if watchlist_access or is_premium or is_vip %}
+      <div class="oz-card oz-watch">
+        <div class="oz-card-head">
+          <div>
+            <h2>{{ t("smart_watchlist", "Smart Watchlist") }}</h2>
+            <p>{{ t("priority_assets_auto", "Actifs prioritaires détectés automatiquement") }}</p>
+          </div>
+          <span class="oz-pill">AUTO</span>
+        </div>
+
+        {% if smart_watchlist %}
+          {% for coin in smart_watchlist %}
+          <div class="oz-watch-row smart-watch-row">
+            <div>
+              {% if coin.image %}
+              <img src="{{ coin.image }}" alt="{{ coin.symbol }}">
+              {% endif %}
+              <div>
+                <strong>{{ coin.symbol }}</strong>
+                <span>{{ coin.name }}</span>
+                <small class="smart-reason">{{ coin.reason }}</small>
+              </div>
+            </div>
+
+            <div class="smart-watch-meta">
+              <strong class="{% if coin.change_24h >= 0 %}txt-up{% else %}txt-down{% endif %}">
+                {{ "%.2f"|format(coin.change_24h) }}%
+              </strong>
+              <span>{{ coin.price_display }}</span>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <p class="oz-empty">
+            {{ t("smart_watchlist_unavailable", "Smart Watchlist temporairement indisponible.") }}
+          </p>
+        {% endif %}
+      </div>
+      {% else %}
+      <div class="oz-card oz-watch oz-watch-locked">
+        <div class="lock-icon">🔒</div>
+        <h2>{{ t("smart_watchlist", "Smart Watchlist") }}</h2>
+        <p>
+          {{ t("site_news_feed_detection_automatique_des_actifs_a_surveiller_btc_eth_momentum_24h_press", "Détection automatique des actifs à surveiller : BTC, ETH, momentum 24H,           pression vendeuse et coins cités dans les news.") }}
+        </p>
+        <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="watch-upgrade-btn">
+          {{ t("unlock_premium", "Débloquer Premium") }}
+        </a>
+      </div>
+      {% endif %}
+
+      <!-- MARKET SUMMARY -->
+      <div class="oz-card oz-summary">
+        <div class="oz-card-head">
+          <div>
+            <h2>{{ t("market_summary", "Market Summary") }}</h2>
+            <p>{{ t("auto_market_reading", "Lecture automatique du marché") }}</p>
+          </div>
+        </div>
+
+        {% if summary.strongest and summary.weakest %}
+        <p>
+          {{ t("site_news_feed_le_marche_affiche_actuellement_un_biais", "Le marché affiche actuellement un biais") }}
+          <strong>{{ summary.bias }}</strong>{{ t("site_news_feed_l_actif_le_plus_fort_sur_24h_est", ".           L’actif le plus fort sur 24H est") }}
+          <strong>{{ summary.strongest.symbol }}</strong>
+          {{ t("site_news_feed_avec", "avec") }}
+          <strong class="{% if summary.strongest.change_24h >= 0 %}txt-up{% else %}txt-down{% endif %}">
+            {{ "%.2f"|format(summary.strongest.change_24h) }}%
+          </strong>{{ t("site_news_feed_l_actif_le_plus_faible_est", ".           L’actif le plus faible est") }}
+          <strong>{{ summary.weakest.symbol }}</strong>
+          {{ t("site_news_feed_avec", "avec") }}
+          <strong class="{% if summary.weakest.change_24h >= 0 %}txt-up{% else %}txt-down{% endif %}">
+            {{ "%.2f"|format(summary.weakest.change_24h) }}%
+          </strong>.
+        </p>
+        {% else %}
+        <p>{{ t("market_data_unavailable", "Données marché temporairement indisponibles.") }}</p>
+        {% endif %}
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- MARKET TABLE -->
+  <section class="oz-market-table oz-card">
+    <div class="oz-card-head">
+      <div>
+        <h2>{{ t("market_overview", "Market Overview") }}</h2>
+        <p>{{ t("market_overview_desc", "Prix, volume, capitalisation et variation 24H / 7D") }}</p>
+      </div>
+      <span class="oz-pill">{{ t("site_news_feed_updated", "Updated") }} {{ updated_at }}</span>
+    </div>
+
+    <div class="oz-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ t("site_news_feed_asset", "Asset") }}</th>
+            <th>{{ t("site_news_feed_price", "Price") }}</th>
+            <th>Market Cap</th>
+            <th>{{ t("site_dashboard_volume", "Volume") }}</th>
+            <th>{{ t("site_news_feed_24h", "24H") }}</th>
+            <th>{{ t("site_news_feed_7d", "7D") }}</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for coin in markets %}
+          <tr>
+            <td>
+              <div class="oz-asset">
+                <img src="{{ coin.image }}" alt="{{ coin.symbol }}">
+                <div>
+                  <strong>{{ coin.symbol }}</strong>
+                  <span>{{ coin.name }}</span>
+                </div>
+              </div>
+            </td>
+
+            <td>${{ "%.4f"|format(coin.price) }}</td>
+            <td>{{ coin.market_cap_display }}</td>
+            <td>{{ coin.volume_display }}</td>
+
+            <td class="{% if coin.change_24h >= 0 %}txt-up{% else %}txt-down{% endif %}">
+              {{ "%.2f"|format(coin.change_24h) }}%
+            </td>
+
+            <td class="{% if coin.change_7d >= 0 %}txt-up{% else %}txt-down{% endif %}">
+              {{ "%.2f"|format(coin.change_7d) }}%
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- NEWS HEAD -->
+  <section class="oz-news-head">
+    <div>
+      <h2>{{ t("all_news", "All News") }}</h2>
+      <p>{{ t("crypto_rss_flow_desc", "Flux crypto réel depuis RSS publics : CoinDesk, Cointelegraph, Decrypt.") }}</p>
+    </div>
+
+    <div class="oz-filters">
+      <select id="filterSentiment">
+        <option value="all">{{ t("sentiment", "Sentiment") }}</option>
+        <option value="positive">{{ t("positive", "Positif") }}</option>
+        <option value="neutral">{{ t("neutral", "Neutre") }}</option>
+        <option value="negative">{{ t("negative", "Négatif") }}</option>
+      </select>
+
+      <select id="filterCoin">
+        <option value="all">{{ t("site_news_feed_coin", "Coin") }}</option>
+        <option value="BTC">BTC</option>
+        <option value="ETH">ETH</option>
+        <option value="SOL">SOL</option>
+        <option value="XRP">XRP</option>
+        <option value="BNB">BNB</option>
+        <option value="DOGE">DOGE</option>
+        <option value="MARKET">{{ t("site_news_feed_market", "MARKET") }}</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- NEWS LIST -->
+  <section class="oz-news-list" id="newsList">
+    {% if news %}
+      {% for item in news[:6] %}
+      <article class="oz-news-item"
+               data-sentiment="{{ item.sentiment }}"
+               data-coin="{{ item.coin }}">
+
+        <div class="oz-news-meta">
+          <span>{{ item.coin }}</span>
+          <span class="{{ item.sentiment }}">
+            {% if item.sentiment == "positive" %}
+              {{ t("positive", "Positif") }}
+            {% elif item.sentiment == "negative" %}
+              {{ t("negative", "Négatif") }}
+            {% else %}
+              {{ t("neutral", "Neutre") }}
+            {% endif %}
+          </span>
+          <span>{{ item.source }}</span>
+        </div>
+
+        <h3>
+          <a href="{{ item.url }}" target="_blank" rel="noopener">
+            {{ item.title }}
+          </a>
+        </h3>
+
+        <p>{{ item.published_at }}</p>
+      </article>
+      {% endfor %}
+    {% else %}
+      <div class="oz-card oz-empty-card">
+        {{ t("no_news_available", "Aucune actualité disponible pour le moment.") }}
+      </div>
+    {% endif %}
+  </section>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='news_feed.js') }}"></script>
+{% endblock %}

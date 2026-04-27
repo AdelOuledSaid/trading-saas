@@ -11,11 +11,19 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    function closeLangDropdown() {
+        const langDropdown = document.getElementById("langDropdown");
+        if (langDropdown) {
+            langDropdown.classList.remove("open");
+        }
+    }
+
     function closeMobileMenu() {
         navbar.classList.remove("mobile-open");
         if (burger) burger.classList.remove("active");
         document.body.classList.remove("menu-open");
         closeAllDropdowns();
+        closeLangDropdown();
     }
 
     if (burger) {
@@ -37,7 +45,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (!parent) return;
 
                 const isActive = parent.classList.contains("active");
+
                 closeAllDropdowns();
+                closeLangDropdown();
 
                 if (!isActive) {
                     parent.classList.add("active");
@@ -46,9 +56,25 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    // LANGUAGE DROPDOWN
+    const langToggle = document.getElementById("langToggle");
+    const langDropdown = document.getElementById("langDropdown");
+
+    if (langToggle && langDropdown) {
+        langToggle.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            closeAllDropdowns();
+            langDropdown.classList.toggle("open");
+        });
+    }
+
     document.addEventListener("click", function (e) {
         if (!navbar.contains(e.target)) {
             closeMobileMenu();
+        } else if (langDropdown && !langDropdown.contains(e.target)) {
+            closeLangDropdown();
         }
     });
 

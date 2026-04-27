@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Alpha Console | VelWolf{% endblock %}
+{% block title %}{{ t("alpha_console_page_title", "Alpha Console | VelWolef") }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='opportunites.css') }}">
@@ -23,58 +23,56 @@
             <div class="ac-topline">
                 <div class="ac-brand">
                     <span class="ac-dot"></span>
-                    <span>VelWolf / Alpha Console</span>
+                    <span>{{ t("markets_opportunites_velwolef_alpha_console", "VelWolef / Alpha Console") }}</span>
                 </div>
 
                 <div class="ac-ticker-wrap">
                     <div class="ac-ticker">
-                        <span>SIGNAL ENGINE ACTIVE</span>
-                        <span>SOL / HIGH CONVICTION</span>
-                        <span>LINK / ARMING</span>
-                        <span>AVAX / PRESSURE BUILDING</span>
-                        <span>NEAR / WATCH MODE</span>
-                        <span>EXECUTION WINDOW / OPEN</span>
+                        <span>{{ t("markets_opportunites_signal_engine_active", "SIGNAL ENGINE ACTIVE") }}</span>
+                        <span>{{ t("markets_opportunites_sol_high_conviction", "SOL / HIGH CONVICTION") }}</span>
+                        <span>{{ t("markets_opportunites_link_arming", "LINK / ARMING") }}</span>
+                        <span>{{ t("markets_opportunites_avax_pressure_building", "AVAX / PRESSURE BUILDING") }}</span>
+                        <span>{{ t("markets_opportunites_near_watch_mode", "NEAR / WATCH MODE") }}</span>
+                        <span>{{ t("markets_opportunites_execution_window_open", "EXECUTION WINDOW / OPEN") }}</span>
                     </div>
                 </div>
             </div>
 
             <div class="ac-hero-grid">
                 <div class="ac-copy">
-                    <div class="ac-chip">Market Domination Interface</div>
+                    <div class="ac-chip">{{ t("markets_opportunites_market_domination_interface", "Market Domination Interface") }}</div>
 
                     <h1>
-                        Le marché
-                        <span>hurle partout.</span>
-                        Nous écoutons
-                        <span>ce qui compte.</span>
+                        {{ t("markets_opportunites_le_marche", "Le marché") }}
+                        <span>{{ t("markets_opportunites_hurle_partout", "hurle partout.") }}</span>
+                        {{ t("markets_opportunites_nous_ecoutons", "Nous écoutons") }}
+                        <span>{{ t("markets_opportunites_ce_qui_compte", "ce qui compte.") }}</span>
                     </h1>
 
                     <p class="ac-lead">
-                        Alpha Console transforme le chaos en hiérarchie visuelle.
-                        Elle détecte, comprime, priorise et met sous projecteur les actifs
-                        qui peuvent réellement imposer le rythme du marché.
+                        {{ t("markets_opportunites_alpha_console_transforme_le_chaos_en_hierarchie_visuelle_elle_detecte_co", "Alpha Console transforme le chaos en hiérarchie visuelle.                         Elle détecte, comprime, priorise et met sous projecteur les actifs                         qui peuvent réellement imposer le rythme du marché.") }}
                     </p>
 
                     <div class="ac-cta-row">
-                        <a href="#core" class="ac-btn ac-btn-primary">Entrer dans la console</a>
-                        <a href="#board" class="ac-btn ac-btn-ghost">Voir les cibles actives</a>
+                        <a href="#core" class="ac-btn ac-btn-primary">{{ t("markets_opportunites_entrer_dans_la_console", "Entrer dans la console") }}</a>
+                        <a href="#board" class="ac-btn ac-btn-ghost">{{ t("markets_opportunites_voir_les_cibles_actives", "Voir les cibles actives") }}</a>
                     </div>
 
                     <div class="ac-stat-band">
                         <div class="ac-stat-card">
-                            <span>Engine</span>
-                            <strong>Signal Core</strong>
-                            <small>Tri agressif</small>
+                            <span>{{ t("markets_opportunites_engine", "Engine") }}</span>
+                            <strong>{{ t("markets_opportunites_signal_core", "Signal Core") }}</strong>
+                            <small>{{ t("markets_opportunites_tri_agressif", "Tri agressif") }}</small>
                         </div>
                         <div class="ac-stat-card">
-                            <span>Layer</span>
-                            <strong>Conviction Matrix</strong>
-                            <small>Lecture premium</small>
+                            <span>{{ t("markets_opportunites_layer", "Layer") }}</span>
+                            <strong>{{ t("markets_opportunites_conviction_matrix", "Conviction Matrix") }}</strong>
+                            <small>{{ t("markets_opportunites_lecture_premium", "Lecture premium") }}</small>
                         </div>
                         <div class="ac-stat-card">
-                            <span>Mode</span>
-                            <strong>Execution First</strong>
-                            <small>Timing décisif</small>
+                            <span>{{ t("markets_opportunites_mode", "Mode") }}</span>
+                            <strong>{{ t("markets_opportunites_execution_first", "Execution First") }}</strong>
+                            <small>{{ t("markets_opportunites_timing_decisif", "Timing décisif") }}</small>
                         </div>
                     </div>
                 </div>
@@ -85,7 +83,7 @@
 
                         <div class="ac-core-panel">
                             <div class="ac-core-header">
-                                <span class="ac-core-badge">Dominant Asset</span>
+                                <span class="ac-core-badge">{{ t("markets_opportunites_dominant_asset", "Dominant Asset") }}</span>
                                 <span class="ac-core-live">LIVE</span>
                             </div>
 
@@ -95,41 +93,41 @@
                                 <div class="ac-core-ring ring-c"></div>
 
                                 <div class="ac-core-center">
-                                    <small>PRIMARY FOCUS</small>
+                                    <small>{{ t("markets_opportunites_primary_focus", "PRIMARY FOCUS") }}</small>
                                     <strong>SOL</strong>
-                                    <span>Conviction 92</span>
+                                    <span>{{ t("markets_opportunites_conviction_92", "Conviction 92") }}</span>
                                 </div>
 
                                 <div class="ac-node n1">
-                                    <b>LINK</b>
-                                    <small>ARMING</small>
+                                    <b>{{ t("markets_opportunites_link", "LINK") }}</b>
+                                    <small>{{ t("markets_opportunites_arming", "ARMING") }}</small>
                                 </div>
                                 <div class="ac-node n2">
-                                    <b>AVAX</b>
-                                    <small>PRESSURE</small>
+                                    <b>{{ t("markets_opportunites_avax", "AVAX") }}</b>
+                                    <small>{{ t("markets_opportunites_pressure", "PRESSURE") }}</small>
                                 </div>
                                 <div class="ac-node n3">
-                                    <b>SUI</b>
-                                    <small>ACCEL</small>
+                                    <b>{{ t("markets_opportunites_sui", "SUI") }}</b>
+                                    <small>{{ t("markets_opportunites_accel", "ACCEL") }}</small>
                                 </div>
                                 <div class="ac-node n4">
-                                    <b>NEAR</b>
-                                    <small>WATCH</small>
+                                    <b>{{ t("markets_opportunites_near", "NEAR") }}</b>
+                                    <small>{{ t("markets_opportunites_watch", "WATCH") }}</small>
                                 </div>
                             </div>
 
                             <div class="ac-core-footer">
                                 <div>
-                                    <span>Tier</span>
-                                    <strong>A+</strong>
+                                    <span>{{ t("markets_opportunites_tier", "Tier") }}</span>
+                                    <strong>{{ t("markets_opportunites_a", "A+") }}</strong>
                                 </div>
                                 <div>
-                                    <span>Bias</span>
-                                    <strong>Bullish Expansion</strong>
+                                    <span>{{ t("markets_opportunites_bias", "Bias") }}</span>
+                                    <strong>{{ t("markets_opportunites_bullish_expansion", "Bullish Expansion") }}</strong>
                                 </div>
                                 <div>
-                                    <span>Window</span>
-                                    <strong>Active</strong>
+                                    <span>{{ t("markets_opportunites_window", "Window") }}</span>
+                                    <strong>{{ t("markets_opportunites_active", "Active") }}</strong>
                                 </div>
                             </div>
                         </div>
@@ -144,12 +142,11 @@
         <div class="ac-shell">
             <div class="ac-section-head">
                 <div>
-                    <span class="ac-overline">Core Engine</span>
-                    <h2>Le centre de pression</h2>
+                    <span class="ac-overline">{{ t("markets_opportunites_core_engine", "Core Engine") }}</span>
+                    <h2>{{ t("markets_opportunites_le_centre_de_pression", "Le centre de pression") }}</h2>
                 </div>
                 <p>
-                    Cette zone n’affiche pas juste un graphique. Elle met en scène l’actif
-                    qui concentre l’attention, la liquidité et le potentiel d’exécution.
+                    {{ t("markets_opportunites_cette_zone_n_affiche_pas_juste_un_graphique_elle_met_en_scene_l_actif_qu", "Cette zone n’affiche pas juste un graphique. Elle met en scène l’actif                     qui concentre l’attention, la liquidité et le potentiel d’exécution.") }}
                 </p>
             </div>
 
@@ -157,12 +154,12 @@
                 <article class="ac-panel ac-chart-panel">
                     <div class="ac-panel-head">
                         <div>
-                            <span class="ac-mini-chip">Focus Chart</span>
-                            <h3>SOLUSDT / dominant structure</h3>
+                            <span class="ac-mini-chip">{{ t("markets_opportunites_focus_chart", "Focus Chart") }}</span>
+                            <h3>{{ t("markets_opportunites_solusdt_dominant_structure", "SOLUSDT / dominant structure") }}</h3>
                         </div>
                         <div class="ac-panel-signal">
                             <span class="pulse"></span>
-                            Tracking en direct
+                            {{ t("markets_opportunites_tracking_en_direct", "Tracking en direct") }}
                         </div>
                     </div>
 
@@ -176,7 +173,7 @@
                             "timezone": "Europe/Paris",
                             "theme": "dark",
                             "style": "1",
-                            "locale": "fr",
+                            "locale": "{{ current_lang|default('en') }}",
                             "allow_symbol_change": true,
                             "calendar": false,
                             "withdateranges": true,
@@ -189,25 +186,23 @@
 
                 <div class="ac-side-column">
                     <article class="ac-panel ac-signal-panel tilt-card">
-                        <span class="ac-mini-chip">High Conviction Signal</span>
-                        <h3>Le leader ne demande pas l’autorisation au marché</h3>
+                        <span class="ac-mini-chip">{{ t("markets_opportunites_high_conviction_signal", "High Conviction Signal") }}</span>
+                        <h3>{{ t("markets_opportunites_le_leader_ne_demande_pas_l_autorisation_au_marche", "Le leader ne demande pas l’autorisation au marché") }}</h3>
                         <p>
-                            Quand un actif surperforme, récupère proprement et attire la rotation
-                            avant les autres, il ne suit plus le flux. Il devient le flux.
+                            {{ t("markets_opportunites_quand_un_actif_surperforme_recupere_proprement_et_attire_la_rotation_ava", "Quand un actif surperforme, récupère proprement et attire la rotation                             avant les autres, il ne suit plus le flux. Il devient le flux.") }}
                         </p>
 
                         <div class="ac-feature-list">
-                            <div><span>State</span><strong>Triggering</strong></div>
-                            <div><span>Heat</span><strong>Elevated</strong></div>
-                            <div><span>Tier</span><strong>Execution A+</strong></div>
+                            <div><span>{{ t("markets_opportunites_state", "State") }}</span><strong>{{ t("markets_opportunites_triggering", "Triggering") }}</strong></div>
+                            <div><span>{{ t("markets_opportunites_heat", "Heat") }}</span><strong>{{ t("markets_opportunites_elevated", "Elevated") }}</strong></div>
+                            <div><span>{{ t("markets_opportunites_tier", "Tier") }}</span><strong>{{ t("markets_opportunites_execution_a", "Execution A+") }}</strong></div>
                         </div>
                     </article>
 
                     <article class="ac-panel ac-quote-panel tilt-card">
-                        <span class="ac-mini-chip">Manifesto</span>
+                        <span class="ac-mini-chip">{{ t("markets_opportunites_manifesto", "Manifesto") }}</span>
                         <blockquote>
-                            Nous ne filtrons pas le marché pour voir plus de choses.
-                            Nous le filtrons pour voir plus clair.
+                            {{ t("markets_opportunites_nous_ne_filtrons_pas_le_marche_pour_voir_plus_de_choses_nous_le_filtrons", "Nous ne filtrons pas le marché pour voir plus de choses.                             Nous le filtrons pour voir plus clair.") }}
                         </blockquote>
                     </article>
                 </div>
@@ -219,11 +214,11 @@
         <div class="ac-shell">
             <div class="ac-section-head">
                 <div>
-                    <span class="ac-overline">Conviction Board</span>
-                    <h2>Les cibles qui sortent du bruit</h2>
+                    <span class="ac-overline">{{ t("markets_opportunites_conviction_board", "Conviction Board") }}</span>
+                    <h2>{{ t("markets_opportunites_les_cibles_qui_sortent_du_bruit", "Les cibles qui sortent du bruit") }}</h2>
                 </div>
                 <p>
-                    Chaque carte agit comme une capsule d’exécution : score, état, fenêtre et pression.
+                    {{ t("markets_opportunites_chaque_carte_agit_comme_une_capsule_d_execution_score_etat_fenetre_et_pr", "Chaque carte agit comme une capsule d’exécution : score, état, fenêtre et pression.") }}
                 </p>
             </div>
 
@@ -231,92 +226,92 @@
                 <article class="ac-asset featured tilt-card">
                     <div class="ac-asset-top">
                         <span class="ticker">SOL</span>
-                        <span class="state live">TRIGGERING</span>
+                        <span class="state live">{{ t("markets_opportunites_triggering_2", "TRIGGERING") }}</span>
                     </div>
-                    <h3>Solana</h3>
-                    <p>Structure dominante. Leadership visible. Moteur principal du board.</p>
+                    <h3>{{ t("markets_opportunites_solana", "Solana") }}</h3>
+                    <p>{{ t("markets_opportunites_structure_dominante_leadership_visible_moteur_principal_du_board", "Structure dominante. Leadership visible. Moteur principal du board.") }}</p>
 
                     <div class="ac-meter">
                         <div class="ac-meter-top">
-                            <span>Conviction Score</span>
+                            <span>{{ t("markets_opportunites_conviction_score", "Conviction Score") }}</span>
                             <strong>92</strong>
                         </div>
                         <div class="ac-meter-bar"><span style="width:92%"></span></div>
                     </div>
 
                     <div class="ac-asset-grid">
-                        <div><span>Bias</span><strong>Expansion</strong></div>
-                        <div><span>Tier</span><strong>A+</strong></div>
-                        <div><span>Window</span><strong>Open</strong></div>
+                        <div><span>{{ t("markets_opportunites_bias", "Bias") }}</span><strong>{{ t("markets_opportunites_expansion", "Expansion") }}</strong></div>
+                        <div><span>{{ t("markets_opportunites_tier", "Tier") }}</span><strong>{{ t("markets_opportunites_a", "A+") }}</strong></div>
+                        <div><span>{{ t("markets_opportunites_window", "Window") }}</span><strong>{{ t("markets_opportunites_open", "Open") }}</strong></div>
                     </div>
                 </article>
 
                 <article class="ac-asset tilt-card">
                     <div class="ac-asset-top">
-                        <span class="ticker">LINK</span>
-                        <span class="state arming">ARMING</span>
+                        <span class="ticker">{{ t("markets_opportunites_link", "LINK") }}</span>
+                        <span class="state arming">{{ t("markets_opportunites_arming", "ARMING") }}</span>
                     </div>
-                    <h3>Chainlink</h3>
-                    <p>Compression nette et énergie sous la surface. À surveiller de très près.</p>
+                    <h3>{{ t("markets_opportunites_chainlink", "Chainlink") }}</h3>
+                    <p>{{ t("markets_opportunites_compression_nette_et_energie_sous_la_surface_a_surveiller_de_tres_pres", "Compression nette et énergie sous la surface. À surveiller de très près.") }}</p>
 
                     <div class="ac-meter">
                         <div class="ac-meter-top">
-                            <span>Conviction Score</span>
+                            <span>{{ t("markets_opportunites_conviction_score", "Conviction Score") }}</span>
                             <strong>87</strong>
                         </div>
                         <div class="ac-meter-bar"><span style="width:87%"></span></div>
                     </div>
 
                     <div class="ac-asset-grid">
-                        <div><span>Bias</span><strong>Breakout</strong></div>
-                        <div><span>Tier</span><strong>A</strong></div>
-                        <div><span>Window</span><strong>Watching</strong></div>
+                        <div><span>{{ t("markets_opportunites_bias", "Bias") }}</span><strong>{{ t("markets_opportunites_breakout", "Breakout") }}</strong></div>
+                        <div><span>{{ t("markets_opportunites_tier", "Tier") }}</span><strong>A</strong></div>
+                        <div><span>{{ t("markets_opportunites_window", "Window") }}</span><strong>{{ t("markets_opportunites_watching", "Watching") }}</strong></div>
                     </div>
                 </article>
 
                 <article class="ac-asset tilt-card">
                     <div class="ac-asset-top">
-                        <span class="ticker">AVAX</span>
-                        <span class="state pressure">PRESSURE</span>
+                        <span class="ticker">{{ t("markets_opportunites_avax", "AVAX") }}</span>
+                        <span class="state pressure">{{ t("markets_opportunites_pressure", "PRESSURE") }}</span>
                     </div>
-                    <h3>Avalanche</h3>
-                    <p>Reprise intéressante mais validation encore nécessaire sur la hiérarchie globale.</p>
+                    <h3>{{ t("markets_opportunites_avalanche", "Avalanche") }}</h3>
+                    <p>{{ t("markets_opportunites_reprise_interessante_mais_validation_encore_necessaire_sur_la_hierarchie", "Reprise intéressante mais validation encore nécessaire sur la hiérarchie globale.") }}</p>
 
                     <div class="ac-meter">
                         <div class="ac-meter-top">
-                            <span>Conviction Score</span>
+                            <span>{{ t("markets_opportunites_conviction_score", "Conviction Score") }}</span>
                             <strong>76</strong>
                         </div>
                         <div class="ac-meter-bar"><span style="width:76%"></span></div>
                     </div>
 
                     <div class="ac-asset-grid">
-                        <div><span>Bias</span><strong>Rebound</strong></div>
-                        <div><span>Tier</span><strong>B+</strong></div>
-                        <div><span>Window</span><strong>Monitor</strong></div>
+                        <div><span>{{ t("markets_opportunites_bias", "Bias") }}</span><strong>{{ t("markets_opportunites_rebound", "Rebound") }}</strong></div>
+                        <div><span>{{ t("markets_opportunites_tier", "Tier") }}</span><strong>{{ t("markets_opportunites_b", "B+") }}</strong></div>
+                        <div><span>{{ t("markets_opportunites_window", "Window") }}</span><strong>{{ t("markets_opportunites_monitor", "Monitor") }}</strong></div>
                     </div>
                 </article>
 
                 <article class="ac-asset tilt-card">
                     <div class="ac-asset-top">
-                        <span class="ticker">NEAR</span>
-                        <span class="state watch">WATCH</span>
+                        <span class="ticker">{{ t("markets_opportunites_near", "NEAR") }}</span>
+                        <span class="state watch">{{ t("markets_opportunites_watch", "WATCH") }}</span>
                     </div>
-                    <h3>NEAR</h3>
-                    <p>Veille active. Actif secondaire capable de monter dans la hiérarchie sur confirmation.</p>
+                    <h3>{{ t("markets_opportunites_near", "NEAR") }}</h3>
+                    <p>{{ t("markets_opportunites_veille_active_actif_secondaire_capable_de_monter_dans_la_hierarchie_sur", "Veille active. Actif secondaire capable de monter dans la hiérarchie sur confirmation.") }}</p>
 
                     <div class="ac-meter">
                         <div class="ac-meter-top">
-                            <span>Conviction Score</span>
+                            <span>{{ t("markets_opportunites_conviction_score", "Conviction Score") }}</span>
                             <strong>68</strong>
                         </div>
                         <div class="ac-meter-bar"><span style="width:68%"></span></div>
                     </div>
 
                     <div class="ac-asset-grid">
-                        <div><span>Bias</span><strong>Pending</strong></div>
-                        <div><span>Tier</span><strong>B</strong></div>
-                        <div><span>Window</span><strong>Standby</strong></div>
+                        <div><span>{{ t("markets_opportunites_bias", "Bias") }}</span><strong>{{ t("markets_opportunites_pending", "Pending") }}</strong></div>
+                        <div><span>{{ t("markets_opportunites_tier", "Tier") }}</span><strong>B</strong></div>
+                        <div><span>{{ t("markets_opportunites_window", "Window") }}</span><strong>{{ t("markets_opportunites_standby", "Standby") }}</strong></div>
                     </div>
                 </article>
             </div>
@@ -327,11 +322,11 @@
         <div class="ac-shell">
             <div class="ac-section-head">
                 <div>
-                    <span class="ac-overline">Execution Sequence</span>
-                    <h2>Le marché en 5 états</h2>
+                    <span class="ac-overline">{{ t("markets_opportunites_execution_sequence", "Execution Sequence") }}</span>
+                    <h2>{{ t("markets_opportunites_le_marche_en_5_etats", "Le marché en 5 états") }}</h2>
                 </div>
                 <p>
-                    Une opportunité sérieuse n’apparaît pas d’un coup. Elle traverse une séquence.
+                    {{ t("markets_opportunites_une_opportunite_serieuse_n_apparait_pas_d_un_coup_elle_traverse_une_sequ", "Une opportunité sérieuse n’apparaît pas d’un coup. Elle traverse une séquence.") }}
                 </p>
             </div>
 
@@ -340,28 +335,28 @@
 
                 <div class="ac-step done">
                     <span>01</span>
-                    <h4>Scan</h4>
-                    <p>Tri, lecture, suppression du bruit.</p>
+                    <h4>{{ t("markets_opportunites_scan", "Scan") }}</h4>
+                    <p>{{ t("markets_opportunites_tri_lecture_suppression_du_bruit", "Tri, lecture, suppression du bruit.") }}</p>
                 </div>
                 <div class="ac-step done">
                     <span>02</span>
-                    <h4>Structure</h4>
-                    <p>Détection des leaders et des anomalies.</p>
+                    <h4>{{ t("structure", "Structure") }}</h4>
+                    <p>{{ t("markets_opportunites_detection_des_leaders_et_des_anomalies", "Détection des leaders et des anomalies.") }}</p>
                 </div>
                 <div class="ac-step current">
                     <span>03</span>
-                    <h4>Pressure</h4>
-                    <p>Concentration d’énergie et préparation du move.</p>
+                    <h4>{{ t("markets_open_interest_pressure", "Pressure") }}</h4>
+                    <p>{{ t("markets_opportunites_concentration_d_energie_et_preparation_du_move", "Concentration d’énergie et préparation du move.") }}</p>
                 </div>
                 <div class="ac-step">
                     <span>04</span>
-                    <h4>Trigger</h4>
-                    <p>Timing lisible, exécution propre.</p>
+                    <h4>{{ t("markets_opportunites_trigger", "Trigger") }}</h4>
+                    <p>{{ t("markets_opportunites_timing_lisible_execution_propre", "Timing lisible, exécution propre.") }}</p>
                 </div>
                 <div class="ac-step">
                     <span>05</span>
-                    <h4>Management</h4>
-                    <p>Protection de la qualité et gestion du momentum.</p>
+                    <h4>{{ t("markets_opportunites_management", "Management") }}</h4>
+                    <p>{{ t("markets_opportunites_protection_de_la_qualite_et_gestion_du_momentum", "Protection de la qualité et gestion du momentum.") }}</p>
                 </div>
             </div>
         </div>
@@ -371,19 +366,19 @@
         <div class="ac-shell">
             <div class="ac-section-head">
                 <div>
-                    <span class="ac-overline">Velocity Scan</span>
-                    <h2>Vue multi-actifs</h2>
+                    <span class="ac-overline">{{ t("markets_opportunites_velocity_scan", "Velocity Scan") }}</span>
+                    <h2>{{ t("markets_opportunites_vue_multi_actifs", "Vue multi-actifs") }}</h2>
                 </div>
                 <p>
-                    Une lecture globale pour voir qui accélère, qui compresse, et qui prend vraiment le lead.
+                    {{ t("markets_opportunites_une_lecture_globale_pour_voir_qui_accelere_qui_compresse_et_qui_prend_vr", "Une lecture globale pour voir qui accélère, qui compresse, et qui prend vraiment le lead.") }}
                 </p>
             </div>
 
             <article class="ac-panel ac-overview">
                 <div class="ac-panel-head">
                     <div>
-                        <span class="ac-mini-chip">Watch Surface</span>
-                        <h3>Multi-asset overview</h3>
+                        <span class="ac-mini-chip">{{ t("markets_opportunites_watch_surface", "Watch Surface") }}</span>
+                        <h3>{{ t("markets_opportunites_multi_asset_overview", "Multi-asset overview") }}</h3>
                     </div>
                 </div>
 
@@ -394,7 +389,7 @@
                         "colorTheme": "dark",
                         "dateRange": "12M",
                         "showChart": true,
-                        "locale": "fr",
+                        "locale": "{{ current_lang|default('en') }}",
                         "isTransparent": true,
                         "showSymbolLogo": true,
                         "width": "100%",
@@ -423,19 +418,18 @@
     <section class="ac-final">
         <div class="ac-shell">
             <div class="ac-final-box">
-                <span class="ac-overline">VelWolf Edge</span>
+                <span class="ac-overline">{{ t("markets_opportunites_velwolef_edge", "VelWolef Edge") }}</span>
                 <h2>
-                    Les autres regardent le marché.
-                    <span>Toi, tu regardes la hiérarchie cachée.</span>
+                    {{ t("markets_opportunites_les_autres_regardent_le_marche", "Les autres regardent le marché.") }}
+                    <span>{{ t("markets_opportunites_toi_tu_regardes_la_hierarchie_cachee", "Toi, tu regardes la hiérarchie cachée.") }}</span>
                 </h2>
                 <p>
-                    Cette page ne cherche pas à être jolie. Elle cherche à marquer, imposer, dominer
-                    et faire comprendre immédiatement que ton produit n’est pas un outil de plus.
+                    {{ t("markets_opportunites_cette_page_ne_cherche_pas_a_etre_jolie_elle_cherche_a_marquer_imposer_do", "Cette page ne cherche pas à être jolie. Elle cherche à marquer, imposer, dominer                     et faire comprendre immédiatement que ton produit n’est pas un outil de plus.") }}
                 </p>
 
                 <div class="ac-cta-row center">
-                    <a href="{{ url_for('signals.signals_page') }}" class="ac-btn ac-btn-primary">Ouvrir la vue globale</a>
-                    <a href="{{ url_for('signals.results') }}" class="ac-btn ac-btn-ghost">Voir l’historique</a>
+                    <a href="{{ url_for('signals.signals_page', lang_code=current_lang) }}" class="ac-btn ac-btn-primary">{{ t('open_global_view', 'Ouvrir la vue globale') }}</a>
+                    <a href="{{ url_for('signals.results', lang_code=current_lang) }}" class="ac-btn ac-btn-ghost">{{ t('see_history', 'Voir l’historique') }}</a>
                 </div>
             </div>
         </div>

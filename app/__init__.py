@@ -22,13 +22,14 @@ from app.routes.technical_analysis import technical_analysis_bp
 from app.routes.telegram_webhook import telegram_webhook_bp
 
 from app.routes.academy_routes import academy_bp
-
 from app.routes.manual_signal import manual_signal_bp
+from app.routes.news_feed import news_feed_bp
 
 migrate = Migrate()
 
-SUPPORTED_LANGS = ["fr", "en", "es"]
-DEFAULT_LANG = "fr"
+# ✅ LANGUES SUPPORTÉES
+SUPPORTED_LANGS = ["en", "fr", "es", "it", "de", "pt", "ru"]
+DEFAULT_LANG = "en"
 
 
 def _is_true(value):
@@ -89,8 +90,8 @@ def create_app():
     stripe.api_key = config.STRIPE_SECRET_KEY
 
     app.jinja_env.filters["explain_reason"] = explain_reason
-    
 
+    # ✅ FORMAT PRIX
     def format_price(price):
         try:
             price = float(price)
@@ -104,34 +105,50 @@ def create_app():
             return price
 
     app.jinja_env.filters["format_price"] = format_price
+
+    # ✅ LANGUE (100% MANUELLE - PAS DE GEO / BROWSER)
     @app.before_request
     def set_language():
+        """
+        Détection langue robuste.
+
+        Priorité:
+        1. /<lang_code>/ dans les routes Flask
+        2. ?lang_code=de ou ?lang=de dans l'URL
+        3. cookie user_lang
+        4. session["lang"]
+        5. DEFAULT_LANG
+        """
         lang = None
 
+        # 1) Langue depuis route /<lang_code>/...
         if request.view_args:
             lang = request.view_args.get("lang_code")
 
-        if lang in SUPPORTED_LANGS:
-            session["lang"] = lang
+        # 2) Langue depuis query string
+        if not lang:
+            lang = request.args.get("lang_code") or request.args.get("lang")
 
-        if "lang" not in session:
+        # 3) Langue depuis cookie
+        if not lang:
             cookie_lang = request.cookies.get("user_lang")
             if cookie_lang in SUPPORTED_LANGS:
-                session["lang"] = cookie_lang
+                lang = cookie_lang
 
-        if "lang" not in session:
-            browser_lang = request.accept_languages.best_match(SUPPORTED_LANGS)
-            session["lang"] = browser_lang or DEFAULT_LANG
+        # 4) Langue depuis session
+        if not lang:
+            lang = session.get("lang")
 
-        current_lang = session.get("lang", DEFAULT_LANG)
+        # 5) Sécurité / défaut
+        if lang not in SUPPORTED_LANGS:
+            lang = DEFAULT_LANG
 
-        if current_lang not in SUPPORTED_LANGS:
-            current_lang = DEFAULT_LANG
-            session["lang"] = DEFAULT_LANG
+        # Stockage unifié
+        session["lang"] = lang
+        g.current_lang = lang
+        g.translations = load_translations(lang)
 
-        g.current_lang = current_lang
-        g.translations = load_translations(current_lang)
-
+    # ✅ COOKIE LANGUE
     @app.after_request
     def persist_language_cookie(response):
         lang = session.get("lang", DEFAULT_LANG)
@@ -139,12 +156,13 @@ def create_app():
             "user_lang",
             lang,
             max_age=60 * 60 * 24 * 365,
-            secure=True,
+            secure=not app.debug,  # FIX localhost
             httponly=False,
             samesite="Lax",
         )
         return response
 
+    # ✅ AJOUT AUTOMATIQUE DU LANG_CODE DANS LES URLS
     @app.url_defaults
     def add_language_code(endpoint, values):
         if values is None:
@@ -163,7 +181,14 @@ def create_app():
         except Exception:
             pass
 
+    # ✅ SWITCH LANGUE
     def switch_lang_url(lang: str) -> str:
+        """
+        Génère l'URL de changement de langue pour la page actuelle.
+
+        Si la route actuelle possède <lang_code>, on remplace lang_code.
+        Si la route actuelle n'a pas <lang_code>, on garde la même page avec ?lang_code=xx.
+        """
         if lang not in SUPPORTED_LANGS:
             lang = DEFAULT_LANG
 
@@ -171,13 +196,24 @@ def create_app():
             return url_for("main.home", lang_code=lang)
 
         view_args = dict(request.view_args or {})
-        view_args["lang_code"] = lang
 
         try:
-            return url_for(request.endpoint, **view_args)
+            rules = app.url_map._rules_by_endpoint.get(request.endpoint, [])
+            has_lang_code = any("<lang_code>" in rule.rule for rule in rules)
+
+            if has_lang_code:
+                view_args["lang_code"] = lang
+                return url_for(request.endpoint, **view_args)
+
+            # Route sans <lang_code> : on garde endpoint + query param.
+            query_args = dict(request.args)
+            query_args["lang_code"] = lang
+            return url_for(request.endpoint, **view_args, **query_args)
+
         except Exception:
             return url_for("main.home", lang_code=lang)
 
+    # ✅ VARIABLES GLOBALES JINJA
     @app.context_processor
     def inject_globals():
         from flask_login import current_user
@@ -211,6 +247,7 @@ def create_app():
             "pricing": get_pricing_data(current_lang),
         }
 
+    # ✅ BLUEPRINTS
     from app.routes.main import main_bp
     from app.routes.auth import auth_bp
     from app.routes.dashboard import dashboard_bp
@@ -241,8 +278,10 @@ def create_app():
     app.register_blueprint(telegram_bp)
     app.register_blueprint(technical_analysis_bp)
     app.register_blueprint(telegram_webhook_bp)
-    
+    app.register_blueprint(news_feed_bp)
     app.register_blueprint(academy_bp)
+
+    # ✅ AUTO START LIQUIDATIONS
     if _should_autostart_liquidations(app):
         try:
             from app.services.liquidations_service import get_liquidations_service
@@ -250,5 +289,5 @@ def create_app():
             print("[Liquidations] Auto-start enabled")
         except Exception as e:
             print(f"[Liquidations] Auto-start skipped: {e}")
-    
+
     return app

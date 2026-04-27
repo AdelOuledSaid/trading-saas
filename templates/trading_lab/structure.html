@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ current_lang|default('en') }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VelWolef - Structure d’un signal</title>
-    <meta name="description" content="Comprendre la structure d’un signal avec VelWolef : direction, zone d'entrée, invalidation, take profit et logique d'exécution premium.">
+    <title>{{ t("structure_page_title", "VelWolef - Structure d’un signal") }}</title>
+    <meta name="description" content="{{ t('structure_meta_description', 'Comprendre la structure d’un signal avec VelWolef : direction, zone d\'entrée, invalidation, take profit et logique d\'exécution premium.') }}">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
@@ -19,22 +19,19 @@
 
 <section class="tl-hero tl-hero-structure-premium">
     <div class="section-container tl-hero-inner">
-        <span class="tl-kicker">VelWolef Lab • Structure</span>
+        <span class="tl-kicker">{{ t("structure_kicker", "VelWolef Lab • Structure") }}</span>
         <h1 class="tl-title">
-            Un signal premium commence toujours
-            par une structure claire, hiérarchisée et exploitable
+            {{ t("structure_hero_title", "Un signal premium commence toujours par une structure claire, hiérarchisée et exploitable") }}
         </h1>
         <p class="tl-subtitle">
-            Un trade sérieux ne se résume pas à un simple point d’entrée. Il repose sur une lecture complète :
-            direction, niveau d’activation, invalidation, objectif et contexte. C’est cette structure qui donne
-            de la cohérence au signal et de la crédibilité à l’exécution.
+            {{ t("structure_hero_desc", "Un trade sérieux ne se résume pas à un simple point d’entrée. Il repose sur une lecture complète : direction, niveau d’activation, invalidation, objectif et contexte. C’est cette structure qui donne de la cohérence au signal et de la crédibilité à l’exécution.") }}
         </p>
 
         <div class="tl-badges">
-            <span>Direction claire</span>
-            <span>Entrée logique</span>
-            <span>Stop structuré</span>
-            <span>Objectif cohérent</span>
+            <span>{{ t("clear_direction", "Direction claire") }}</span>
+            <span>{{ t("logical_entry", "Entrée logique") }}</span>
+            <span>{{ t("structured_stop", "Stop structuré") }}</span>
+            <span>{{ t("coherent_objective", "Objectif cohérent") }}</span>
         </div>
     </div>
 </section>
@@ -42,30 +39,29 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Fondation du signal</span>
-            <h2>Une bonne structure transforme une idée de marché en scénario professionnel</h2>
+            <span>{{ t("signal_foundation", "Fondation du signal") }}</span>
+            <h2>{{ t("good_structure_transforms_idea", "Une bonne structure transforme une idée de marché en scénario professionnel") }}</h2>
             <p>
-                La qualité perçue d’un site de signaux dépend fortement de la manière dont les setups sont présentés.
-                Une structure claire rend l’analyse plus lisible, plus premium et beaucoup plus rassurante.
+                {{ t("lab_structure_la_qualite_percue_d_un_site_de_signaux_depend_fortement_de_la_maniere_do", "La qualité perçue d’un site de signaux dépend fortement de la manière dont les setups sont présentés.                 Une structure claire rend l’analyse plus lisible, plus premium et beaucoup plus rassurante.") }}
             </p>
         </div>
 
         <div class="tl-metrics-grid">
             <div class="tl-metric-card">
                 <strong>BUY / SELL</strong>
-                <span>La direction donne le sens du scénario</span>
+                <span>{{ t("direction_gives_scenario_meaning", "La direction donne le sens du scénario") }}</span>
             </div>
             <div class="tl-metric-card">
-                <strong>Entrée</strong>
-                <span>Le niveau central où le setup devient actif</span>
+                <strong>{{ t("entry", "Entrée") }}</strong>
+                <span>{{ t("entry_level_setup_active", "Le niveau central où le setup devient actif") }}</span>
             </div>
             <div class="tl-metric-card">
-                <strong>Stop Loss</strong>
-                <span>L’invalidation protège la logique du trade</span>
+                <strong>{{ t("stop_loss", "Stop Loss") }}</strong>
+                <span>{{ t("invalidation_protects_logic", "L’invalidation protège la logique du trade") }}</span>
             </div>
             <div class="tl-metric-card">
-                <strong>Take Profit</strong>
-                <span>L’objectif matérialise le potentiel du mouvement</span>
+                <strong>{{ t("take_profit", "Take Profit") }}</strong>
+                <span>{{ t("objective_materializes_potential", "L’objectif matérialise le potentiel du mouvement") }}</span>
             </div>
         </div>
     </div>
@@ -75,32 +71,28 @@
     <div class="section-container">
         <div class="tl-grid-two">
             <div class="tl-card tl-card-large">
-                <span class="tl-card-kicker">Pourquoi la structure est essentielle</span>
-                <h2>Sans hiérarchie claire, un signal perd une grande partie de sa valeur</h2>
+                <span class="tl-card-kicker">{{ t("why_structure_essential", "Pourquoi la structure est essentielle") }}</span>
+                <h2>{{ t("without_hierarchy_signal_loses_value", "Sans hiérarchie claire, un signal perd une grande partie de sa valeur") }}</h2>
                 <p>
-                    Un signal mal structuré ressemble à une simple indication. Un signal bien structuré,
-                    lui, ressemble à une décision construite. Il permet au trader de comprendre non seulement
-                    quoi faire, mais aussi pourquoi le scénario existe et dans quelles conditions il reste valide.
+                    {{ t("lab_structure_un_signal_mal_structure_ressemble_a_une_simple_indication_un_signal_bien", "Un signal mal structuré ressemble à une simple indication. Un signal bien structuré,                     lui, ressemble à une décision construite. Il permet au trader de comprendre non seulement                     quoi faire, mais aussi pourquoi le scénario existe et dans quelles conditions il reste valide.") }}
                 </p>
                 <p>
-                    Une page structure forte renforce immédiatement l’image premium de VelWolef. Elle montre que
-                    chaque setup suit une logique réelle, avec un cadre précis, une lecture disciplinée et un
-                    positionnement beaucoup plus professionnel.
+                    {{ t("lab_structure_une_page_structure_forte_renforce_immediatement_l_image_premium_de_velwo", "Une page structure forte renforce immédiatement l’image premium de VelWolef. Elle montre que                     chaque setup suit une logique réelle, avec un cadre précis, une lecture disciplinée et un                     positionnement beaucoup plus professionnel.") }}
                 </p>
             </div>
 
             <div class="tl-stack">
                 <div class="tl-mini-card">
-                    <strong>Clarté</strong>
-                    <span>Le visiteur comprend rapidement la logique du trade sans surcharge inutile.</span>
+                    <strong>{{ t("clarity", "Clarté") }}</strong>
+                    <span>{{ t("lab_structure_le_visiteur_comprend_rapidement_la_logique_du_trade_sans_surcharge_inuti", "Le visiteur comprend rapidement la logique du trade sans surcharge inutile.") }}</span>
                 </div>
                 <div class="tl-mini-card">
-                    <strong>Cohérence</strong>
-                    <span>Chaque niveau a une fonction et n’est jamais affiché au hasard.</span>
+                    <strong>{{ t("coherence", "Cohérence") }}</strong>
+                    <span>{{ t("lab_structure_chaque_niveau_a_une_fonction_et_n_est_jamais_affiche_au_hasard", "Chaque niveau a une fonction et n’est jamais affiché au hasard.") }}</span>
                 </div>
                 <div class="tl-mini-card">
-                    <strong>Crédibilité</strong>
-                    <span>Une structure propre donne une vraie impression d’expertise et de sérieux.</span>
+                    <strong>{{ t("credibility", "Crédibilité") }}</strong>
+                    <span>{{ t("lab_structure_une_structure_propre_donne_une_vraie_impression_d_expertise_et_de_serieu", "Une structure propre donne une vraie impression d’expertise et de sérieux.") }}</span>
                 </div>
             </div>
         </div>
@@ -110,40 +102,36 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Les composants du signal</span>
-            <h2>Les 4 éléments qui donnent sa forme à un setup premium</h2>
+            <span>{{ t("signal_components", "Les composants du signal") }}</span>
+            <h2>{{ t("four_elements_premium_setup", "Les 4 éléments qui donnent sa forme à un setup premium") }}</h2>
         </div>
 
         <div class="tl-feature-grid">
             <div class="tl-feature-card">
-                <h3>Direction</h3>
+                <h3>{{ t("direction", "Direction") }}</h3>
                 <p>
-                    C’est le point de départ du scénario. Un signal sérieux indique si l’idée repose sur
-                    une poursuite haussière ou sur une opportunité de vente.
+                    {{ t("lab_structure_c_est_le_point_de_depart_du_scenario_un_signal_serieux_indique_si_l_idee", "C’est le point de départ du scénario. Un signal sérieux indique si l’idée repose sur                     une poursuite haussière ou sur une opportunité de vente.") }}
                 </p>
             </div>
 
             <div class="tl-feature-card">
-                <h3>Zone d’entrée</h3>
+                <h3>{{ t("entry_zone", "Zone d’entrée") }}</h3>
                 <p>
-                    L’entrée n’est pas juste un chiffre. C’est le niveau à partir duquel la lecture du marché
-                    devient exploitable selon la logique définie.
+                    {{ t("lab_structure_l_entree_n_est_pas_juste_un_chiffre_c_est_le_niveau_a_partir_duquel_la_l", "L’entrée n’est pas juste un chiffre. C’est le niveau à partir duquel la lecture du marché                     devient exploitable selon la logique définie.") }}
                 </p>
             </div>
 
             <div class="tl-feature-card">
-                <h3>Stop Loss</h3>
+                <h3>{{ t("stop_loss", "Stop Loss") }}</h3>
                 <p>
-                    Il marque la zone où le scénario n’est plus valide. Il protège le capital et donne une
-                    limite claire à la lecture.
+                    {{ t("lab_structure_il_marque_la_zone_ou_le_scenario_n_est_plus_valide_il_protege_le_capital", "Il marque la zone où le scénario n’est plus valide. Il protège le capital et donne une                     limite claire à la lecture.") }}
                 </p>
             </div>
 
             <div class="tl-feature-card">
-                <h3>Take Profit</h3>
+                <h3>{{ t("take_profit", "Take Profit") }}</h3>
                 <p>
-                    L’objectif représente la projection du mouvement attendu si la structure se développe
-                    dans le sens anticipé.
+                    {{ t("lab_structure_l_objectif_represente_la_projection_du_mouvement_attendu_si_la_structure", "L’objectif représente la projection du mouvement attendu si la structure se développe                     dans le sens anticipé.") }}
                 </p>
             </div>
         </div>
@@ -153,44 +141,40 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Lecture professionnelle</span>
-            <h2>Comment lire un signal comme un trader plus structuré</h2>
+            <span>{{ t("professional_reading", "Lecture professionnelle") }}</span>
+            <h2>{{ t("read_signal_structured_trader", "Comment lire un signal comme un trader plus structuré") }}</h2>
         </div>
 
         <div class="tl-pillars-grid">
             <div class="tl-pillar-card">
                 <div class="tl-pillar-icon">1</div>
-                <h3>Identifier le sens du setup</h3>
+                <h3>{{ t("identify_setup_direction", "Identifier le sens du setup") }}</h3>
                 <p>
-                    Avant tout, il faut comprendre si le marché est traité comme continuation,
-                    breakout ou réaction technique.
+                    {{ t("lab_structure_avant_tout_il_faut_comprendre_si_le_marche_est_traite_comme_continuation", "Avant tout, il faut comprendre si le marché est traité comme continuation,                     breakout ou réaction technique.") }}
                 </p>
             </div>
 
             <div class="tl-pillar-card">
                 <div class="tl-pillar-icon">2</div>
-                <h3>Repérer le niveau d’activation</h3>
+                <h3>{{ t("spot_activation_level", "Repérer le niveau d’activation") }}</h3>
                 <p>
-                    Le scénario ne devient réellement intéressant que lorsqu’il atteint une zone
-                    d’entrée cohérente avec la structure.
+                    {{ t("lab_structure_le_scenario_ne_devient_reellement_interessant_que_lorsqu_il_atteint_une", "Le scénario ne devient réellement intéressant que lorsqu’il atteint une zone                     d’entrée cohérente avec la structure.") }}
                 </p>
             </div>
 
             <div class="tl-pillar-card">
                 <div class="tl-pillar-icon">3</div>
-                <h3>Lire l’invalidation</h3>
+                <h3>{{ t("read_invalidation", "Lire l’invalidation") }}</h3>
                 <p>
-                    Un trader sérieux regarde toujours la limite du scénario avant de se focaliser
-                    sur le potentiel du gain.
+                    {{ t("lab_structure_un_trader_serieux_regarde_toujours_la_limite_du_scenario_avant_de_se_foc", "Un trader sérieux regarde toujours la limite du scénario avant de se focaliser                     sur le potentiel du gain.") }}
                 </p>
             </div>
 
             <div class="tl-pillar-card">
                 <div class="tl-pillar-icon">4</div>
-                <h3>Projeter l’objectif</h3>
+                <h3>{{ t("project_objective", "Projeter l’objectif") }}</h3>
                 <p>
-                    La cible doit prolonger la logique du trade et non donner une illusion
-                    de rendement déconnectée du contexte.
+                    {{ t("lab_structure_la_cible_doit_prolonger_la_logique_du_trade_et_non_donner_une_illusion_d", "La cible doit prolonger la logique du trade et non donner une illusion                     de rendement déconnectée du contexte.") }}
                 </p>
             </div>
         </div>
@@ -200,44 +184,43 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Workflow VelWolef</span>
-            <h2>Le processus d’un signal bien construit</h2>
+            <span>{{ t("velwolef_workflow", "Workflow VelWolef") }}</span>
+            <h2>{{ t("well_built_signal_process", "Le processus d’un signal bien construit") }}</h2>
             <p>
-                Cette partie donne une vraie sensation de méthode et fait monter très fort la valeur perçue.
+                {{ t("lab_structure_cette_partie_donne_une_vraie_sensation_de_methode_et_fait_monter_tres_fo", "Cette partie donne une vraie sensation de méthode et fait monter très fort la valeur perçue.") }}
             </p>
         </div>
 
         <div class="tl-steps-grid">
             <div class="tl-step-card">
                 <div class="tl-step-number">01</div>
-                <h3>Analyser le contexte</h3>
+                <h3>{{ t("analyze_context", "Analyser le contexte") }}</h3>
                 <p>
-                    Observer la tendance, la qualité de la structure de prix et l’environnement général avant
-                    de définir un scénario.
+                    {{ t("lab_structure_observer_la_tendance_la_qualite_de_la_structure_de_prix_et_l_environneme", "Observer la tendance, la qualité de la structure de prix et l’environnement général avant                     de définir un scénario.") }}
                 </p>
             </div>
 
             <div class="tl-step-card">
                 <div class="tl-step-number">02</div>
-                <h3>Définir le plan</h3>
+                <h3>{{ t("define_plan", "Définir le plan") }}</h3>
                 <p>
-                    Construire direction, zone d’entrée, invalidation et objectif selon une logique claire.
+                    {{ t("lab_structure_construire_direction_zone_d_entree_invalidation_et_objectif_selon_une_lo", "Construire direction, zone d’entrée, invalidation et objectif selon une logique claire.") }}
                 </p>
             </div>
 
             <div class="tl-step-card">
                 <div class="tl-step-number">03</div>
-                <h3>Filtrer le setup</h3>
+                <h3>{{ t("filter_setup", "Filtrer le setup") }}</h3>
                 <p>
-                    Écarter les scénarios flous pour ne garder que les opportunités vraiment lisibles.
+                    {{ t("lab_structure_ecarter_les_scenarios_flous_pour_ne_garder_que_les_opportunites_vraiment", "Écarter les scénarios flous pour ne garder que les opportunités vraiment lisibles.") }}
                 </p>
             </div>
 
             <div class="tl-step-card">
                 <div class="tl-step-number">04</div>
-                <h3>Exécuter avec discipline</h3>
+                <h3>{{ t("lab_structure_executer_avec_discipline", "Exécuter avec discipline") }}</h3>
                 <p>
-                    Suivre le scénario tel qu’il a été construit, sans improvisation émotionnelle.
+                    {{ t("lab_structure_suivre_le_scenario_tel_qu_il_a_ete_construit_sans_improvisation_emotionn", "Suivre le scénario tel qu’il a été construit, sans improvisation émotionnelle.") }}
                 </p>
             </div>
         </div>
@@ -247,39 +230,36 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Erreurs fréquentes</span>
-            <h2>Ce qui casse la structure d’un bon signal</h2>
+            <span>{{ t("common_mistakes", "Erreurs fréquentes") }}</span>
+            <h2>{{ t("what_breaks_signal_structure", "Ce qui casse la structure d’un bon signal") }}</h2>
         </div>
 
         <div class="tl-faq-grid">
             <div class="tl-faq-card">
-                <h3>Entrée prise trop tôt</h3>
+                <h3>{{ t("entry_taken_too_early", "Entrée prise trop tôt") }}</h3>
                 <p>
-                    Vouloir anticiper avant la zone valide affaiblit immédiatement la qualité du scénario
-                    et augmente le risque d’erreur.
+                    {{ t("lab_structure_vouloir_anticiper_avant_la_zone_valide_affaiblit_immediatement_la_qualit", "Vouloir anticiper avant la zone valide affaiblit immédiatement la qualité du scénario                     et augmente le risque d’erreur.") }}
                 </p>
             </div>
 
             <div class="tl-faq-card">
-                <h3>Absence d’invalidation claire</h3>
+                <h3>{{ t("no_clear_invalidation", "Absence d’invalidation claire") }}</h3>
                 <p>
-                    Sans stop loss cohérent, le trade n’a plus de vraie structure et devient émotionnel.
+                    {{ t("lab_structure_sans_stop_loss_coherent_le_trade_n_a_plus_de_vraie_structure_et_devient", "Sans stop loss cohérent, le trade n’a plus de vraie structure et devient émotionnel.") }}
                 </p>
             </div>
 
             <div class="tl-faq-card">
-                <h3>Objectif irréaliste</h3>
+                <h3>{{ t("unrealistic_objective", "Objectif irréaliste") }}</h3>
                 <p>
-                    Une cible trop optimiste donne une illusion de qualité mais casse souvent la logique globale
-                    du setup.
+                    {{ t("lab_structure_une_cible_trop_optimiste_donne_une_illusion_de_qualite_mais_casse_souven", "Une cible trop optimiste donne une illusion de qualité mais casse souvent la logique globale                     du setup.") }}
                 </p>
             </div>
 
             <div class="tl-faq-card">
-                <h3>Lecture isolée</h3>
+                <h3>{{ t("isolated_reading", "Lecture isolée") }}</h3>
                 <p>
-                    Regarder uniquement l’entrée sans comprendre le contexte réduit fortement la qualité
-                    de décision.
+                    {{ t("lab_structure_regarder_uniquement_l_entree_sans_comprendre_le_contexte_reduit_fortemen", "Regarder uniquement l’entrée sans comprendre le contexte réduit fortement la qualité                     de décision.") }}
                 </p>
             </div>
         </div>
@@ -290,40 +270,39 @@
     <div class="section-container">
         <div class="tl-card tl-card-large tl-premium-locked">
             <div class="tl-locked-top">
-                <span class="tl-card-kicker">Mini cours premium</span>
-                <span class="tl-locked-badge">Réservé aux membres</span>
+                <span class="tl-card-kicker">{{ t("premium_mini_course", "Mini cours premium") }}</span>
+                <span class="tl-locked-badge">{{ t("members_only", "Réservé aux membres") }}</span>
             </div>
 
-            <h2>Module avancé : construire et lire un signal comme un desk professionnel</h2>
+            <h2>{{ t("advanced_structure_module_title", "Module avancé : construire et lire un signal comme un desk professionnel") }}</h2>
             <p>
-                Ce bloc peut te servir à vendre l’abonnement premium en montrant qu’il existe une méthodologie
-                plus poussée derrière les signaux VelWolef.
+                {{ t("lab_structure_ce_bloc_peut_te_servir_a_vendre_l_abonnement_premium_en_montrant_qu_il_e", "Ce bloc peut te servir à vendre l’abonnement premium en montrant qu’il existe une méthodologie                 plus poussée derrière les signaux VelWolef.") }}
             </p>
 
             <div class="tl-locked-grid">
                 <div class="tl-locked-item">
-                    <strong>Lecture de contexte</strong>
-                    <span>Identifier le type exact de structure de marché</span>
+                    <strong>{{ t("context_reading", "Lecture de contexte") }}</strong>
+                    <span>{{ t("lab_structure_identifier_le_type_exact_de_structure_de_marche", "Identifier le type exact de structure de marché") }}</span>
                 </div>
                 <div class="tl-locked-item">
-                    <strong>Validation du setup</strong>
-                    <span>Savoir quand une idée devient un vrai scénario</span>
+                    <strong>{{ t("setup_validation", "Validation du setup") }}</strong>
+                    <span>{{ t("lab_structure_savoir_quand_une_idee_devient_un_vrai_scenario", "Savoir quand une idée devient un vrai scénario") }}</span>
                 </div>
                 <div class="tl-locked-item">
-                    <strong>Hiérarchie des niveaux</strong>
-                    <span>Différencier entrée, invalidation et objectif</span>
+                    <strong>{{ t("level_hierarchy", "Hiérarchie des niveaux") }}</strong>
+                    <span>{{ t("lab_structure_differencier_entree_invalidation_et_objectif", "Différencier entrée, invalidation et objectif") }}</span>
                 </div>
                 <div class="tl-locked-item">
-                    <strong>Exécution disciplinée</strong>
-                    <span>Rester aligné avec le plan initial du signal</span>
+                    <strong>{{ t("disciplined_execution", "Exécution disciplinée") }}</strong>
+                    <span>{{ t("lab_structure_rester_aligne_avec_le_plan_initial_du_signal", "Rester aligné avec le plan initial du signal") }}</span>
                 </div>
             </div>
 
             <div class="tl-locked-overlay">
                 <div class="tl-lock-icon">🔒</div>
-                <h3>Contenu premium VelWolef</h3>
-                <p>Débloquez les modules avancés de structure, de risque et de psychologie pour une exécution plus professionnelle.</p>
-                <a href="{{ url_for('billing.pricing') }}" class="cta-btn">Débloquer l’accès premium</a>
+                <h3>{{ t("premium_content_velwolef", "Contenu premium VelWolef") }}</h3>
+                <p>{{ t("lab_structure_debloquez_les_modules_avances_de_structure_de_risque_et_de_psychologie_p", "Débloquez les modules avancés de structure, de risque et de psychologie pour une exécution plus professionnelle.") }}</p>
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="cta-btn">{{ t("unlock_premium_access", "Débloquer l’accès premium") }}</a>
             </div>
         </div>
     </div>
@@ -332,15 +311,14 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-final-box">
-            <span class="tl-final-badge">Structure VelWolef</span>
-            <h2>Une bonne exécution commence toujours par une structure propre</h2>
+            <span class="tl-final-badge">{{ t("structure_velwolef", "Structure VelWolef") }}</span>
+            <h2>{{ t("good_execution_starts_structure", "Une bonne exécution commence toujours par une structure propre") }}</h2>
             <p>
-                Comprendre comment un signal est construit permet de mieux filtrer les opportunités,
-                de mieux gérer le risque et de donner à chaque trade un cadre beaucoup plus professionnel.
+                {{ t("lab_structure_comprendre_comment_un_signal_est_construit_permet_de_mieux_filtrer_les_o", "Comprendre comment un signal est construit permet de mieux filtrer les opportunités,                 de mieux gérer le risque et de donner à chaque trade un cadre beaucoup plus professionnel.") }}
             </p>
             <div class="tl-final-actions">
-                <a href="{{ url_for('pages.lab_risk') }}" class="cta-btn">Voir le Risk</a>
-                <a href="{{ url_for('pages.lab_psychology') }}" class="secondary-btn">Voir la Psychologie</a>
+                <a href="{{ url_for('pages.lab_risk', lang_code=current_lang) }}" class="cta-btn">{{ t("see_risk", "Voir le Risk") }}</a>
+                <a href="{{ url_for('pages.lab_psychology', lang_code=current_lang) }}" class="secondary-btn">{{ t("see_psychology", "Voir la psychologie") }}</a>
             </div>
         </div>
     </div>
@@ -350,14 +328,14 @@
     <div class="section-container footer-inner">
         <div class="footer-brand">
             <h3>VelWolef</h3>
-            <p>Trading Lab premium, signaux structurés et lecture plus professionnelle du marché.</p>
+            <p>{{ t("structure_footer_desc", "Trading Lab premium, signaux structurés et lecture plus professionnelle du marché.") }}</p>
         </div>
 
         <div class="footer-links">
-            <a href="{{ url_for('pages.trading_lab') }}">Lab</a>
-            <a href="{{ url_for('pages.lab_risk') }}">Risk</a>
-            <a href="{{ url_for('pages.lab_psychology') }}">Psychologie</a>
-            <a href="{{ url_for('billing.pricing') }}">Premium</a>
+            <a href="{{ url_for('pages.trading_lab', lang_code=current_lang) }}">Lab</a>
+            <a href="{{ url_for('pages.lab_risk', lang_code=current_lang) }}">Risk</a>
+            <a href="{{ url_for('pages.lab_psychology', lang_code=current_lang) }}">{{ t("psychology", "Psychologie") }}</a>
+            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}">Premium</a>
         </div>
     </div>
 </footer>

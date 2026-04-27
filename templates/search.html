@@ -1,36 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ current_lang|default('en') }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApexSignals - Recherche</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
-</head>
-<body class="home-body">
-
-{% include "partials/navbar.html" %}
-
-<section class="inner-hero">
-    <div class="section-container">
-        <span class="hero-badge">Recherche</span>
-        <h1 class="inner-page-title">Résultat de recherche</h1>
-        <p class="inner-page-text">
-            Recherche saisie : <strong>{{ query }}</strong>
-        </p>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="feature-home-card solo-card">
-            <h3>Recherche prête à être développée</h3>
-            <p>
-                Cette page sert de base visuelle. Ensuite, tu pourras relier la logique de recherche
-                à des actifs, des pages, des résultats ou des contenus du Trading Lab.
-            </p>
+    <title>{{ t("search_page_title", "VelWolef - Recherche") }}</title> <meta name="description" content="Recherche de contenus, signaux, résultats et pages VelWolef."> <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}"> <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}"> <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}"> <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}"> </head> <body class="home-body"> {% include "partials/navbar.html" %} <section class="inner-hero"> <div class="section-container"> <span class="hero-badge">Recherche</span> <h1 class="inner-page-title">Résultats de recherche</h1> <p class="inner-page-text"> Recherche saisie : <strong>{{ query }}</strong> </p> </div> </section> <section class="section-standard"> <div class="section-container"> <div class="feature-home-card solo-card"> <h3>Recherche intelligente</h3> <p> Affichage des actifs, signaux, résultats et contenus liés à votre requête. Les résultats peuvent être reliés aux pages marché, au Trading Lab et aux données de performance. </p> <div class="final-cta-actions" style="margin-top:18px;"> <a href="{{ url_for('signals.signals_page', lang_code=current_lang) }}" class="hero-btn-primary"> Signaux </a> <a href="{{ url_for('signals.results', lang_code=current_lang) }}" class="hero-btn-secondary"> {{ t("results", "Résultats") }}
+                </a>
+            </div>
         </div>
     </div>
 </section>

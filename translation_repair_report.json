@@ -1,0 +1,131 @@
+{
+  "templates_dir": "templates",
+  "translations_dir": "app\\translations",
+  "template_keys_found": 3531,
+  "fr_added": 0,
+  "languages": {
+    "en": {
+      "added_missing_keys": 0,
+      "keys_still_equal_to_fr": 749,
+      "final_keys": 3854
+    },
+    "es": {
+      "added_missing_keys": 0,
+      "keys_still_equal_to_fr": 76,
+      "final_keys": 3854
+    },
+    "it": {
+      "added_missing_keys": 0,
+      "keys_still_equal_to_fr": 69,
+      "final_keys": 3854
+    },
+    "de": {
+      "added_missing_keys": 0,
+      "keys_still_equal_to_fr": 992,
+      "final_keys": 3854
+    },
+    "pt": {
+      "added_missing_keys": 0,
+      "keys_still_equal_to_fr": 2226,
+      "final_keys": 3854
+    },
+    "ru": {
+      "added_missing_keys": 0,
+      "keys_still_equal_to_fr": 2249,
+      "final_keys": 3854
+    }
+  },
+  "files_scanned": {
+    "templates\\about.html": 61,
+    "templates\\base.html": 7,
+    "templates\\briefing.html": 17,
+    "templates\\cancel.html": 2,
+    "templates\\cgu.html": 2,
+    "templates\\contact.html": 12,
+    "templates\\dashboard.html": 283,
+    "templates\\faq.html": 18,
+    "templates\\forgot_password.html": 2,
+    "templates\\home.html": 115,
+    "templates\\indices.html": 2,
+    "templates\\learn_signal.html": 41,
+    "templates\\login.html": 7,
+    "templates\\mentions_legales.html": 27,
+    "templates\\my_performance.html": 22,
+    "templates\\news_feed.html": 40,
+    "templates\\pricing.html": 49,
+    "templates\\privacy.html": 57,
+    "templates\\register.html": 49,
+    "templates\\replay.html": 44,
+    "templates\\resend_verification.html": 8,
+    "templates\\reset_password.html": 7,
+    "templates\\results.html": 138,
+    "templates\\search.html": 2,
+    "templates\\signals.html": 62,
+    "templates\\success.html": 9,
+    "templates\\technical_analysis.html": 145,
+    "templates\\token_unlocks.html": 28,
+    "templates\\trading_lab.html": 2,
+    "templates\\upgrade.html": 79,
+    "templates\\verify_email.html": 0,
+    "templates\\academy\\index.html": 28,
+    "templates\\academy\\level1.html": 403,
+    "templates\\academy\\level2.html": 287,
+    "templates\\academy\\level3.html": 323,
+    "templates\\academy\\level4.html": 213,
+    "templates\\academy\\upgrade.html": 77,
+    "templates\\learn\\mini_course.html": 48,
+    "templates\\marche\\crypto.html": 84,
+    "templates\\marche\\economic_calendar.html": 47,
+    "templates\\marche\\forex.html": 68,
+    "templates\\marche\\liquidations.html": 117,
+    "templates\\marche\\open_interest.html": 104,
+    "templates\\marche\\opportunites.html": 103,
+    "templates\\marche\\sentiment.html": 56,
+    "templates\\marche\\token_unlocks.html": 44,
+    "templates\\marche\\whales.html": 78,
+    "templates\\partials\\footer.html": 23,
+    "templates\\partials\\navbar.html": 7,
+    "templates\\signals\\btc.html": 47,
+    "templates\\signals\\eth.html": 42,
+    "templates\\signals\\gold.html": 37,
+    "templates\\signals\\history.html": 2,
+    "templates\\signals\\index.html": 19,
+    "templates\\signals\\us100.html": 36,
+    "templates\\trading_lab\\index.html": 52,
+    "templates\\trading_lab\\psychology.html": 82,
+    "templates\\trading_lab\\risk.html": 70,
+    "templates\\trading_lab\\structure.html": 90
+  },
+  "auto_translation": {
+    "en": {
+      "translated": 755,
+      "skipped_existing": 3099,
+      "failed": 0
+    },
+    "es": {
+      "translated": 78,
+      "skipped_existing": 3776,
+      "failed": 0
+    },
+    "it": {
+      "translated": 72,
+      "skipped_existing": 3782,
+      "failed": 0
+    },
+    "de": {
+      "translated": 998,
+      "skipped_existing": 2856,
+      "failed": 0
+    },
+    "pt": {
+      "translated": 2231,
+      "skipped_existing": 1623,
+      "failed": 0
+    },
+    "ru": {
+      "translated": 2270,
+      "skipped_existing": 1584,
+      "failed": 0
+    }
+  }
+}

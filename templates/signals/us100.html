@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ current_lang|default('en') }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VelWolef | US100 Strategic Desk</title>
-    <meta name="description" content="Suivez le US100 avec VelWolef : structure de marché, niveaux techniques, statistiques, signaux récents, lecture du Nasdaq et environnement premium multi-actifs.">
+    <title>{{ t("us100_page_title", "VelWolef | US100 Strategic Desk") }}</title>
+    <meta name="description" content="{{ t('us100_meta_description', 'Suivez le US100 avec VelWolef : structure de marché, niveaux techniques, statistiques, signaux récents, lecture du Nasdaq et environnement premium multi-actifs.') }}">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
@@ -33,38 +33,33 @@
 
                     <div class="us100-launch-badge">
                         <span class="us100-launch-icon">◎</span>
-                        <span>US100 Strategic Desk • Nasdaq Premium View</span>
+                        <span>{{ t("us100_badge", "US100 Strategic Desk • Nasdaq Premium View") }}</span>
                     </div>
 
                     <h1 class="us100-hero-title">
-                        Suivre le US100 avec une lecture
-                        plus claire, plus structurée
-                        et plus professionnelle
+                        {{ t("us100_hero_title", "Suivre le US100 avec une lecture plus claire, plus structurée et plus professionnelle") }}
                     </h1>
 
                     <p class="us100-hero-subtitle">
-                        Le US100 concentre une grande partie de la dynamique du marché technologique américain.
-                        Cette page réunit les données essentielles pour suivre l’indice dans un environnement premium :
-                        statistiques clés, structure active, logique de lecture, historique des signaux et cadre
-                        plus sérieux pour le suivi du Nasdaq.
+                        {{ t("us100_hero_desc", "Le US100 concentre une grande partie de la dynamique du marché technologique américain. Cette page réunit les données essentielles pour suivre l’indice dans un environnement premium : statistiques clés, structure active, logique de lecture, historique des signaux et cadre plus sérieux pour le suivi du Nasdaq.") }}
                     </p>
 
                     <div class="us100-hero-actions">
-                        <a href="#us100-desk" class="us100-btn us100-btn-primary">Voir le desk US100</a>
-                        <a href="#us100-signals-history" class="us100-btn us100-btn-secondary">Voir les signaux US100</a>
+                        <a href="#us100-desk" class="us100-btn us100-btn-primary">{{ t("see_us100_desk", "Voir le desk US100") }}</a>
+                        <a href="#us100-signals-history" class="us100-btn us100-btn-secondary">{{ t("see_us100_signals", "Voir les signaux US100") }}</a>
                     </div>
 
                     <div class="us100-hero-pills">
                         <div class="us100-hero-pill">
-                            <strong>Indice directionnel</strong>
+                            <strong>{{ t("directional_index", "Indice directionnel") }}</strong>
                             <span>Le US100 est suivi pour ses impulsions nettes, sa réactivité et sa sensibilité au sentiment risk-on / risk-off.</span>
                         </div>
                         <div class="us100-hero-pill">
-                            <strong>Lecture enrichie</strong>
+                            <strong>{{ t("enriched_reading", "Lecture enrichie") }}</strong>
                             <span>Une seule page réunit statistiques, structure, historique et logique d’exécution.</span>
                         </div>
                         <div class="us100-hero-pill">
-                            <strong>Valeur stratégique</strong>
+                            <strong>{{ t("strategic_value", "Valeur stratégique") }}</strong>
                             <span>Le suivi du Nasdaq renforce la profondeur multi-actifs de VelWolef et la crédibilité de la plateforme.</span>
                         </div>
                     </div>
@@ -95,7 +90,7 @@
                         <div class="us100-terminal-body">
                             <div class="us100-stat-grid">
                                 <div class="us100-stat-box us100-stat-box-main">
-                                    <div class="us100-stat-label">Signaux totaux</div>
+                                    <div class="us100-stat-label">{{ t("total_signals", "Signaux totaux") }}</div>
                                     <div class="us100-stat-value-row">
                                         <div class="us100-stat-value">{{ us100_total_signals or 0 }}</div>
                                         <div class="us100-delta up">desk</div>
@@ -111,7 +106,7 @@
                                 </div>
 
                                 <div class="us100-stat-box">
-                                    <div class="us100-stat-label">Signaux ouverts</div>
+                                    <div class="us100-stat-label">{{ t("open_signals", "Signaux ouverts") }}</div>
                                     <div class="us100-stat-value-row">
                                         <div class="us100-stat-value">{{ us100_open_signals or 0 }}</div>
                                         <div class="us100-delta up">live</div>
@@ -121,7 +116,7 @@
 
                             <div class="us100-mid-grid">
                                 <div class="us100-panel-card">
-                                    <div class="us100-panel-title">Lecture du Nasdaq</div>
+                                    <div class="us100-panel-title">{{ t("nasdaq_reading", "Lecture du Nasdaq") }}</div>
                                     <div class="us100-gauge-wrap">
                                         <div class="us100-gauge-arc"></div>
                                         <div class="us100-gauge-needle"></div>
@@ -133,23 +128,23 @@
                                 </div>
 
                                 <div class="us100-panel-card">
-                                    <div class="us100-panel-title">Vue rapide</div>
+                                    <div class="us100-panel-title">{{ t("quick_view", "Vue rapide") }}</div>
                                     <div class="us100-legend-list">
                                         <div class="us100-legend-item">
                                             <span class="legend-dot us100-dot-1"></span>
-                                            <span>PnL estimé</span>
+                                            <span>{{ t("estimated_pnl", "PnL estimé") }}</span>
                                             <span>{{ us100_estimated_pnl or 0 }}</span>
                                             <span class="us100-soft">desk</span>
                                         </div>
                                         <div class="us100-legend-item">
                                             <span class="legend-dot us100-dot-2"></span>
-                                            <span>Biais</span>
+                                            <span>{{ t("bias", "Biais") }}</span>
                                             <span>Réactif</span>
                                             <span class="us100-soft">intraday</span>
                                         </div>
                                         <div class="us100-legend-item">
                                             <span class="legend-dot us100-dot-3"></span>
-                                            <span>Rythme</span>
+                                            <span>{{ t("rhythm", "Rythme") }}</span>
                                             <span>Soutenu</span>
                                             <span class="us100-soft">session US</span>
                                         </div>
@@ -166,25 +161,25 @@
                                 <table class="us100-table">
                                     <thead>
                                         <tr>
-                                            <th>Zone</th>
-                                            <th>Lecture</th>
-                                            <th>Biais</th>
+                                            <th>{{ t("zone", "Zone") }}</th>
+                                            <th>{{ t("reading", "Lecture") }}</th>
+                                            <th>{{ t("bias", "Biais") }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <td>Support journalier</td>
-                                            <td>Zone de réaction</td>
+                                            <td>{{ t("zone", "Zone") }} de réaction</td>
                                             <td class="us100-green-text">Buy zone</td>
                                         </tr>
                                         <tr>
                                             <td>Milieu de range</td>
-                                            <td>Zone d’équilibre</td>
+                                            <td>{{ t("zone", "Zone") }} d’équilibre</td>
                                             <td class="us100-soft">Neutral</td>
                                         </tr>
                                         <tr>
                                             <td>Résistance active</td>
-                                            <td>Zone de pression</td>
+                                            <td>{{ t("zone", "Zone") }} de pression</td>
                                             <td class="us100-red-text">Sell zone</td>
                                         </tr>
                                         <tr>
@@ -243,8 +238,8 @@
     <section class="us100-content-section">
         <div class="section-container">
             <div class="us100-section-header">
-                <span class="us100-section-chip">Vue d’ensemble</span>
-                <h2>Les chiffres essentiels du suivi US100</h2>
+                <span class="us100-section-chip">{{ t("overview", "Vue d’ensemble") }}</span>
+                <h2>{{ t("us100_key_numbers", "Les chiffres essentiels du suivi US100") }}</h2>
                 <p>
                     Ces indicateurs donnent une lecture immédiate de l’activité liée au US100 sur la plateforme.
                     Ils permettent de situer le volume de signaux, la qualité des scénarios clôturés
@@ -278,7 +273,7 @@
                 </div>
 
                 <div class="us100-insight-card">
-                    <h3>{{ us100_estimated_pnl or 0 }} de PnL estimé</h3>
+                    <h3>{{ us100_estimated_pnl or 0 }} de {{ t("estimated_pnl", "PnL estimé") }}</h3>
                     <p>
                         Le PnL cumulé estimé offre un repère global sur l’historique US100,
                         à lire avec prudence et toujours avec la logique de discipline.
@@ -291,8 +286,8 @@
     <section class="us100-content-section">
         <div class="section-container">
             <div class="us100-section-header">
-                <span class="us100-section-chip">Lecture marché</span>
-                <h2>Pourquoi le US100 reste un actif majeur à suivre</h2>
+                <span class="us100-section-chip">{{ t("reading", "Lecture") }} marché</span>
+                <h2>{{ t("why_us100_major_asset", "Pourquoi le US100 reste un actif majeur à suivre") }}</h2>
                 <p>
                     Le US100 concentre la dynamique de nombreuses grandes valeurs technologiques américaines.
                     Il offre souvent des séquences directionnelles claires, une volatilité utile
@@ -303,7 +298,7 @@
             <div class="us100-why-box">
                 <div class="us100-why-left">
                     <span class="us100-section-chip">Indice technologique</span>
-                    <h2>Le Nasdaq complète naturellement la crypto, le gold et le forex</h2>
+                    <h2>{{ t("nasdaq_complements_markets", "Le Nasdaq complète naturellement la crypto, le gold et le forex") }}</h2>
                     <p>
                         Là où la crypto reflète souvent l’appétit spéculatif et où le gold peut agir comme actif refuge,
                         le US100 donne une lecture plus directe du marché actions américain, notamment sur le segment tech.
@@ -333,7 +328,7 @@
         <div class="section-container">
             <div class="us100-section-header">
                 <span class="us100-section-chip">Signal desk</span>
-                <h2>Les derniers signaux US100 publiés</h2>
+                <h2>{{ t("latest_us100_signals", "Les derniers signaux US100 publiés") }}</h2>
                 <p>
                     Les setups récents sont affichés dans un format plus premium afin de relier direction,
                     niveaux techniques et statut du scénario dans une lecture plus propre.
@@ -359,7 +354,7 @@
 
                     <div class="us100-signal-prices">
                         <div class="us100-price-box">
-                            <span>Entrée</span>
+                            <span>{{ t("entry", "Entrée") }}</span>
                             <strong>{{ signal.entry_price or "—" }}</strong>
                         </div>
                         <div class="us100-price-box">
@@ -390,7 +385,7 @@
                     </div>
 
                     <div class="us100-signal-reason">
-                        <h4>Lecture du scénario</h4>
+                        <h4>{{ t("reading", "Lecture") }} du scénario</h4>
                         <p>
                             Le setup repose sur une structure directionnelle claire, avec une zone d’entrée,
                             une invalidation et un objectif qui donnent un cadre cohérent à la lecture du Nasdaq.
@@ -401,7 +396,7 @@
             </div>
             {% else %}
             <div class="us100-empty-box">
-                <p>Aucun signal US100 n’est disponible pour le moment.</p>
+                <p>{{ t("no_us100_signal_now", "Aucun signal US100 n’est disponible pour le moment.") }}</p>
             </div>
             {% endif %}
         </div>
@@ -410,8 +405,8 @@
     <section class="us100-content-section">
         <div class="section-container">
             <div class="us100-section-header">
-                <span class="us100-section-chip">Lecture professionnelle</span>
-                <h2>Comment lire un signal US100 dans un cadre plus sérieux</h2>
+                <span class="us100-section-chip">{{ t("reading", "Lecture") }} professionnelle</span>
+                <h2>{{ t("how_to_read_us100_signal", "Comment lire un signal US100 dans un cadre plus sérieux") }}</h2>
                 <p>
                     Un signal propre sur indice ne se résume pas à un sens. Il doit être lu à travers
                     la structure du marché, la qualité de la zone, le timing de session et la logique de risque.
@@ -428,7 +423,7 @@
                 </div>
 
                 <div class="us100-method-card">
-                    <h3>Zone technique</h3>
+                    <h3>{{ t("zone", "Zone") }} technique</h3>
                     <p>
                         Les supports, résistances et zones d’équilibre restent centraux pour filtrer
                         les scénarios et éviter les entrées sans structure.
@@ -458,18 +453,18 @@
         <div class="section-container">
             <div class="us100-cta-box">
                 <span class="us100-cta-chip">US100 • VelWolef</span>
-                <h2>Le Nasdaq mérite une lecture dédiée dans un environnement premium</h2>
+                <h2>{{ t("us100_cta_title", "Le Nasdaq mérite une lecture dédiée dans un environnement premium") }}</h2>
                 <p>
                     Statistiques, structure, historique de signaux, logique marché et approche multi-actifs :
                     cette page US100 renforce la profondeur perçue de VelWolef et donne à l’indice une vraie place stratégique.
                 </p>
 
                 <div class="us100-hero-actions">
-                    <a href="{{ url_for('pages.trading_lab') }}" class="us100-btn us100-btn-primary">Accéder au Trading Lab</a>
+                    <a href="{{ url_for('pages.trading_lab', lang_code=current_lang) }}" class="us100-btn us100-btn-primary">{{ t("open_trading_lab", "Accéder au Trading Lab") }}</a>
                     {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('dashboard.dashboard') }}" class="us100-btn us100-btn-secondary">Accéder au dashboard</a>
+                        <a href="{{ url_for('dashboard.dashboard', lang_code=current_lang) }}" class="us100-btn us100-btn-secondary">{{ t("open_dashboard", "Accéder au dashboard") }}</a>
                     {% else %}
-                        <a href="{{ url_for('auth.register') }}" class="us100-btn us100-btn-secondary">Créer mon compte</a>
+                        <a href="{{ url_for('auth.register', lang_code=current_lang) }}" class="us100-btn us100-btn-secondary">{{ t("create_my_account", "Créer mon compte") }}</a>
                     {% endif %}
                 </div>
             </div>
@@ -482,15 +477,15 @@
     <div class="section-container footer-inner">
         <div class="footer-brand">
             <h3>VelWolef</h3>
-            <p>Une présentation premium des actifs majeurs : indices, crypto, gold et opportunités de marché.</p>
+            <p>{{ t("footer_major_assets_market_desc", "Une présentation premium des actifs majeurs : indices, crypto, gold et opportunités de marché.") }}</p>
         </div>
 
         <div class="footer-links">
-            <a href="{{ url_for('main.home') }}">Accueil</a>
-            <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
-            <a href="{{ url_for('signals.results') }}">Résultats</a>
-            <a href="{{ url_for('billing.pricing') }}">Offres</a>
-            <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
+            <a href="{{ url_for('main.home', lang_code=current_lang) }}">{{ t("home", "Accueil") }}</a>
+            <a href="{{ url_for('signals.signals_page', lang_code=current_lang) }}">{{ t("signals", "Signaux") }}</a>
+            <a href="{{ url_for('signals.results', lang_code=current_lang) }}">{{ t("results", "Résultats") }}</a>
+            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}">{{ t("pricing", "Offres") }}</a>
+            <a href="{{ url_for('pages.trading_lab', lang_code=current_lang) }}">Trading Lab</a>
         </div>
     </div>
 </footer>

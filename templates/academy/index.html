@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}VelWolf Academy | Parcours complet{% endblock %}
+{% block title %}
+{{ t("academy_page_title", "VelWolef Academy | Parcours complet") }}
+{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}">
@@ -10,90 +12,75 @@
 
 <section class="academy-section academy-page-hero">
     <div class="academy-shell">
-
         <div class="academy-page-grid">
+
             <div>
-                <span class="academy-kicker">VelWolf Academy</span>
-                <h1>Un parcours structuré du niveau débutant au niveau desk</h1>
+                <span class="academy-kicker">{{ t('academy_index_velwolef_academy', 'VelWolef Academy') }}</span>
+
+                <h1>
+                    {{ t('academy_index_un_parcours_structure_du_niveau_debutant_au_niveau_desk',
+                    'Un parcours structuré du niveau débutant au niveau desk') }}
+                </h1>
 
                 <p class="academy-lead">
-                    L’Academy VelWolf est conçue comme une progression réelle. 
-                    Vous ne consommez pas simplement du contenu : vous évoluez
-                    dans votre manière de lire le marché.
+                    {{ t('academy_index_l_academy_velwolef_est_concue_comme_une_progression_reelle_vous_ne_con',
+                    'L’Academy VelWolef est conçue comme une progression réelle. Vous ne consommez pas simplement du contenu : vous évoluez dans votre manière de lire le marché.') }}
                 </p>
 
                 <p class="academy-lead">
-                    Chaque niveau apporte une transformation :
-                    comprendre → structurer → planifier → penser comme un desk.
+                    {{ t('academy_index_chaque_niveau_apporte_une_transformation_comprendre_structurer_planifi',
+                    'Chaque niveau apporte une transformation : comprendre → structurer → planifier → penser comme un desk.') }}
                 </p>
 
                 <div class="academy-actions">
-                    <a href="#levels" class="academy-btn academy-btn-primary">Voir les niveaux</a>
+                    <a href="#levels" class="academy-btn academy-btn-primary">
+                        {{ t('academy_index_voir_les_niveaux', 'Voir les niveaux') }}
+                    </a>
                 </div>
 
                 <div class="academy-access-strip">
                     {% if is_vip %}
                         <span class="academy-plan-badge-vip">VIP</span>
-                        <strong>Accès complet aux 4 niveaux</strong>
+                        <strong>{{ t('academy_index_acces_complet_aux_4_niveaux', 'Accès complet aux 4 niveaux') }}</strong>
                     {% elif is_premium %}
                         <span class="academy-plan-badge-premium">Premium</span>
-                        <strong>Accès niveaux 1 à 3</strong>
+                        <strong>{{ t('academy_index_acces_niveaux_1_a_3', 'Accès niveaux 1 à 3') }}</strong>
                     {% else %}
-                        <span class="academy-plan-badge-basic">Basic</span>
-                        <strong>Accès niveau 1</strong>
+                        <span class="academy-plan-badge-basic">{{ t('academy_index_basic', 'Basic') }}</span>
+                        <strong>{{ t('academy_index_acces_niveau_1', 'Accès niveau 1') }}</strong>
                     {% endif %}
                 </div>
             </div>
 
+            {# ✅ FIX SAFE (NE TOUCHE PAS À LA TRADUCTION) #}
+            {% set p1 = academy_progress.get('level1', 0) if academy_progress else 0 %}
+            {% set p2 = academy_progress.get('level2', 0) if academy_progress else 0 %}
+            {% set p3 = academy_progress.get('level3', 0) if academy_progress else 0 %}
+            {% set p4 = academy_progress.get('level4', 0) if academy_progress else 0 %}
+            {% set total_progress = ((p1 + p2 + p3 + p4) // 4) %}
+
             <div class="academy-side-progress">
+
                 <div class="academy-progress-head">
-                    <span>Progression globale</span>
-                    <strong>
-                        {% if academy_progress %}
-                            {{
-                                (
-                                    academy_progress.level1 +
-                                    academy_progress.level2 +
-                                    academy_progress.level3 +
-                                    academy_progress.level4
-                                ) // 4
-                            }}%
-                        {% else %}
-                            0%
-                        {% endif %}
-                    </strong>
+                    <span>{{ t('academy_index_progression_globale', 'Progression globale') }}</span>
+                    <strong>{{ total_progress }}%</strong>
                 </div>
 
                 <div class="academy-progress-bar">
-                    <div class="academy-progress-fill"
-                        style="width:
-                        {% if academy_progress %}
-                            {{
-                                (
-                                    academy_progress.level1 +
-                                    academy_progress.level2 +
-                                    academy_progress.level3 +
-                                    academy_progress.level4
-                                ) // 4
-                            }}%
-                        {% else %}
-                            0%
-                        {% endif %}
-                    ">
-                    </div>
+                    <div class="academy-progress-fill" style="width: {{ total_progress }}%;"></div>
                 </div>
 
                 <div class="academy-info-card" style="margin-top:20px;">
-                    <h3>Objectif final</h3>
+                    <h3>{{ t('academy_index_objectif_final', 'Objectif final') }}</h3>
                     <p>
-                        Construire une logique complète :
-                        lecture du marché, exécution propre,
-                        préparation, allocation et discipline.
+                        {{ t('academy_index_construire_une_logique_complete_lecture_du_marche_execution_propre_pre',
+                        'Construire une logique complète : lecture du marché, exécution propre, préparation, allocation et discipline.') }}
                     </p>
                 </div>
-            </div>
-        </div>
 
+            </div>
+
+        </div>
     </div>
 </section>
 
@@ -101,8 +88,8 @@
     <div class="academy-shell">
 
         <div class="academy-section-title">
-            <span class="academy-kicker">Parcours Academy</span>
-            <h2>Les 4 niveaux</h2>
+            <span class="academy-kicker">{{ t('academy_index_parcours_academy', 'Parcours Academy') }}</span>
+            <h2>{{ t('academy_index_les_4_niveaux', 'Les 4 niveaux') }}</h2>
         </div>
 
         <div class="academy-grid-2">
@@ -110,162 +97,83 @@
             <!-- LEVEL 1 -->
             <div class="academy-course-card academy-course-card-featured">
                 <div class="academy-course-top">
-                    <span class="academy-level-pill">Level 1</span>
-                    <span class="academy-mini-badge">Inclus</span>
+                    <span class="academy-level-pill">{{ t('academy_index_level_1', 'Level 1') }}</span>
+                    <span class="academy-mini-badge">{{ t('academy_index_inclus', 'Inclus') }}</span>
                 </div>
 
-                <h3>Foundations</h3>
+                <h3>{{ t('academy_index_foundations', 'Foundations') }}</h3>
 
                 <p>
-                    Base du trading : structure, risque,
-                    invalidation et discipline.
+                    {{ t('academy_index_base_du_trading_structure_risque_invalidation_et_discipline',
+                    'Base du trading : structure, risque, invalidation et discipline.') }}
                 </p>
 
-                <ul class="academy-reflection-list">
-                    <li>Comprendre le trading</li>
-                    <li>Lire une structure simple</li>
-                    <li>Protéger le capital</li>
-                </ul>
-
-                <a href="{{ url_for('academy.academy_level_1') }}" class="academy-link-btn">
-                    Accéder →
+                <a href="{{ url_for('academy.academy_level_1', lang_code=current_lang) }}" class="academy-link-btn">
+                    {{ t('academy_index_acceder', 'Accéder →') }}
                 </a>
             </div>
 
             <!-- LEVEL 2 -->
             <div class="academy-course-card">
                 <div class="academy-course-top">
-                    <span class="academy-level-pill">Level 2</span>
+                    <span class="academy-level-pill">{{ t('academy_index_level_2', 'Level 2') }}</span>
                     <span class="academy-mini-badge">Premium</span>
                 </div>
 
-                <h3>Structure & Execution</h3>
-
-                <p>
-                    Lecture avancée : confluence, timing,
-                    liquidité et précision d’entrée.
-                </p>
-
-                <ul class="academy-reflection-list">
-                    <li>Structure de marché</li>
-                    <li>Confluence</li>
-                    <li>Execution propre</li>
-                </ul>
+                <h3>{{ t('academy_index_structure_execution', 'Structure & Execution') }}</h3>
 
                 {% if is_premium %}
-                <a href="{{ url_for('academy.academy_level_2') }}" class="academy-link-btn">
-                    Accéder →
-                </a>
+                    <a href="{{ url_for('academy.academy_level_2', lang_code=current_lang) }}" class="academy-link-btn">
+                        {{ t('academy_index_acceder', 'Accéder →') }}
+                    </a>
                 {% else %}
-                <a href="{{ url_for('academy.academy_upgrade') }}" class="academy-link-btn">
-                    Débloquer →
-                </a>
+                    <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-link-btn">
+                        {{ t('academy_index_debloquer', 'Débloquer →') }}
+                    </a>
                 {% endif %}
             </div>
 
             <!-- LEVEL 3 -->
             <div class="academy-course-card">
                 <div class="academy-course-top">
-                    <span class="academy-level-pill">Level 3</span>
+                    <span class="academy-level-pill">{{ t('academy_index_level_3', 'Level 3') }}</span>
                     <span class="academy-mini-badge">Premium</span>
                 </div>
 
-                <h3>Operator Vision</h3>
-
-                <p>
-                    Planification, multi-timeframe,
-                    scénarios et vision globale.
-                </p>
-
-                <ul class="academy-reflection-list">
-                    <li>Analyse top-down</li>
-                    <li>Scénarios A/B/C</li>
-                    <li>Vision opérateur</li>
-                </ul>
+                <h3>{{ t('academy_index_operator_vision', 'Operator Vision') }}</h3>
 
                 {% if is_premium %}
-                <a href="{{ url_for('academy.academy_level_3') }}" class="academy-link-btn">
-                    Accéder →
-                </a>
+                    <a href="{{ url_for('academy.academy_level_3', lang_code=current_lang) }}" class="academy-link-btn">
+                        {{ t('academy_index_acceder', 'Accéder →') }}
+                    </a>
                 {% else %}
-                <a href="{{ url_for('academy.academy_upgrade') }}" class="academy-link-btn">
-                    Débloquer →
-                </a>
+                    <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-link-btn">
+                        {{ t('academy_index_debloquer', 'Débloquer →') }}
+                    </a>
                 {% endif %}
             </div>
 
             <!-- LEVEL 4 -->
             <div class="academy-course-card academy-course-card-featured">
                 <div class="academy-course-top">
-                    <span class="academy-level-pill">Level 4 Pro</span>
+                    <span class="academy-level-pill">{{ t('academy_index_level_4_pro', 'Level 4 Pro') }}</span>
                     <span class="academy-mini-badge">VIP</span>
                 </div>
 
-                <h3>Desk / Institutionnel</h3>
-
-                <p>
-                    Logique professionnelle : régime macro,
-                    intermarket, allocation et process desk.
-                </p>
-
-                <ul class="academy-reflection-list">
-                    <li>Market regime</li>
-                    <li>Intermarket</li>
-                    <li>Allocation du risque</li>
-                    <li>Process institutionnel</li>
-                </ul>
+                <h3>{{ t('academy_index_desk_institutionnel', 'Desk / Institutionnel') }}</h3>
 
                 {% if is_vip %}
-                <a href="{{ url_for('academy.academy_level_4') }}" class="academy-link-btn">
-                    Accéder →
-                </a>
+                    <a href="{{ url_for('academy.academy_level_4', lang_code=current_lang) }}" class="academy-link-btn">
+                        {{ t('academy_index_acceder', 'Accéder →') }}
+                    </a>
                 {% else %}
-                <a href="{{ url_for('academy.academy_upgrade') }}" class="academy-link-btn">
-                    Passer VIP →
-                </a>
+                    <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-link-btn">
+                        {{ t('academy_index_passer_vip', 'Passer VIP →') }}
+                    </a>
                 {% endif %}
             </div>
 
         </div>
-    </div>
-</section>
-
-<section class="academy-section">
-    <div class="academy-shell">
-
-        <div class="academy-section-title">
-            <span class="academy-kicker">Vision</span>
-            <h2>Pourquoi ce parcours est différent</h2>
-        </div>
-
-        <div class="academy-grid-3">
-
-            <div class="academy-info-card">
-                <h3>Progression réelle</h3>
-                <p>
-                    Chaque niveau change votre manière
-                    de penser le marché.
-                </p>
-            </div>
-
-            <div class="academy-info-card">
-                <h3>Pas de bullshit</h3>
-                <p>
-                    Aucun contenu fictif. Seulement
-                    ce qui existe réellement.
-                </p>
-            </div>
-
-            <div class="academy-info-card">
-                <h3>Niveau Pro</h3>
-                <p>
-                    Le Level 4 introduit une logique
-                    proche d’un desk professionnel.
-                </p>
-            </div>
-
-        </div>
-
     </div>
 </section>
 

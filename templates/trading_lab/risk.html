@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ current_lang|default('en') }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApexSignals - Gestion du risque</title>
-    <meta name="description" content="Comprendre la gestion du risque avec ApexSignals : protection du capital, discipline d'exécution, ratio risque/rendement et lecture professionnelle des signaux.">
+    <title>{{ t("risk_page_title", "VelWolef - Gestion du risque") }}</title>
+    <meta name="description" content="{{ t('risk_meta_description', 'Comprendre la gestion du risque avec VelWolef : protection du capital, discipline d\'exécution, ratio risque/rendement et lecture professionnelle des signaux.') }}">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
@@ -19,22 +19,19 @@
 
 <section class="tl-hero tl-hero-risk-premium">
     <div class="section-container tl-hero-inner">
-        <span class="tl-kicker">Trading Lab • Gestion du risque</span>
+        <span class="tl-kicker">{{ t("risk_kicker", "Trading Lab • Gestion du risque") }}</span>
         <h1 class="tl-title">
-            La gestion du risque protège le capital,
-            structure le signal et renforce la crédibilité de l’exécution
+            {{ t("risk_hero_title", "La gestion du risque protège le capital, structure le signal et renforce la crédibilité de l’exécution") }}
         </h1>
         <p class="tl-subtitle">
-            Un signal premium ne vaut pas uniquement par son point d’entrée ou son objectif.
-            Il prend toute sa valeur lorsque le risque est encadré avec rigueur, que l’invalidation
-            est claire et que chaque scénario s’inscrit dans une logique disciplinée.
+            {{ t("risk_hero_desc", "Un signal premium ne vaut pas uniquement par son point d’entrée ou son objectif. Il prend toute sa valeur lorsque le risque est encadré avec rigueur, que l’invalidation est claire et que chaque scénario s’inscrit dans une logique disciplinée.") }}
         </p>
 
         <div class="tl-badges">
-            <span>Protection du capital</span>
-            <span>Invalidation claire</span>
-            <span>Ratio cohérent</span>
-            <span>Discipline premium</span>
+            <span>{{ t("capital_protection", "Protection du capital") }}</span>
+            <span>{{ t("clear_invalidation", "Invalidation claire") }}</span>
+            <span>{{ t("coherent_ratio", "Ratio cohérent") }}</span>
+            <span>{{ t("premium_discipline", "Discipline premium") }}</span>
         </div>
     </div>
 </section>
@@ -42,44 +39,39 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Base du risk management</span>
-            <h2>Le risque n’est pas un détail technique, c’est la fondation d’un trading durable</h2>
+            <span>{{ t("risk_management_basis", "Base du risk management") }}</span>
+            <h2>{{ t("risk_is_foundation_title", "Le risque n’est pas un détail technique, c’est la fondation d’un trading durable") }}</h2>
             <p>
-                La vraie solidité d’une plateforme de signaux se voit dans sa capacité à montrer
-                comment un scénario est protégé, encadré et exécuté avec discipline.
+                {{ t("lab_risk_la_vraie_solidite_d_une_plateforme_de_signaux_se_voit_dans_sa_capacite_a", "La vraie solidité d’une plateforme de signaux se voit dans sa capacité à montrer                 comment un scénario est protégé, encadré et exécuté avec discipline.") }}
             </p>
         </div>
 
         <div class="tl-feature-grid">
             <div class="tl-feature-card">
-                <h3>Capital préservé</h3>
+                <h3>{{ t("capital_preserved", "Capital préservé") }}</h3>
                 <p>
-                    L’objectif premier n’est pas seulement de rechercher un gain, mais de protéger
-                    le capital pour rester capable d’exécuter les prochaines opportunités.
+                    {{ t("lab_risk_l_objectif_premier_n_est_pas_seulement_de_rechercher_un_gain_mais_de_pro", "L’objectif premier n’est pas seulement de rechercher un gain, mais de protéger                     le capital pour rester capable d’exécuter les prochaines opportunités.") }}
                 </p>
             </div>
 
             <div class="tl-feature-card">
-                <h3>Stop loss structuré</h3>
+                <h3>{{ t("structured_stop_loss", "Stop loss structuré") }}</h3>
                 <p>
-                    L’invalidation doit avoir un sens technique. Elle protège le scénario et empêche
-                    l’émotion de prendre le contrôle.
+                    {{ t("lab_risk_l_invalidation_doit_avoir_un_sens_technique_elle_protege_le_scenario_et", "L’invalidation doit avoir un sens technique. Elle protège le scénario et empêche                     l’émotion de prendre le contrôle.") }}
                 </p>
             </div>
 
             <div class="tl-feature-card">
-                <h3>Exposition maîtrisée</h3>
+                <h3>{{ t("controlled_exposure", "Exposition maîtrisée") }}</h3>
                 <p>
-                    Aucun trade ne doit avoir un poids excessif. Une exposition trop forte détruit
-                    la stabilité mentale et la cohérence globale du plan.
+                    {{ t("lab_risk_aucun_trade_ne_doit_avoir_un_poids_excessif_une_exposition_trop_forte_de", "Aucun trade ne doit avoir un poids excessif. Une exposition trop forte détruit                     la stabilité mentale et la cohérence globale du plan.") }}
                 </p>
             </div>
 
             <div class="tl-feature-card">
-                <h3>Vision long terme</h3>
+                <h3>{{ t("long_term_vision", "Vision long terme") }}</h3>
                 <p>
-                    Une bonne gestion du risque permet de survivre aux périodes difficiles et de construire
-                    une performance plus sérieuse sur la durée.
+                    {{ t("lab_risk_une_bonne_gestion_du_risque_permet_de_survivre_aux_periodes_difficiles_e", "Une bonne gestion du risque permet de survivre aux périodes difficiles et de construire                     une performance plus sérieuse sur la durée.") }}
                 </p>
             </div>
         </div>
@@ -90,32 +82,28 @@
     <div class="section-container">
         <div class="tl-grid-two">
             <div class="tl-card tl-card-large">
-                <span class="tl-card-kicker">Pourquoi le risque change tout</span>
-                <h2>Un bon setup sans contrôle du risque reste un scénario fragile</h2>
+                <span class="tl-card-kicker">{{ t("why_risk_changes_everything", "Pourquoi le risque change tout") }}</span>
+                <h2>{{ t("good_setup_without_risk_fragile", "Un bon setup sans contrôle du risque reste un scénario fragile") }}</h2>
                 <p>
-                    Beaucoup de traders regardent d’abord la cible. Pourtant, la solidité d’un trade
-                    commence souvent par la qualité de son invalidation. Sans limite claire, le scénario
-                    perd sa cohérence, l’exécution devient émotionnelle et la lecture du signal se dégrade.
+                    {{ t("lab_risk_beaucoup_de_traders_regardent_d_abord_la_cible_pourtant_la_solidite_d_un", "Beaucoup de traders regardent d’abord la cible. Pourtant, la solidité d’un trade                     commence souvent par la qualité de son invalidation. Sans limite claire, le scénario                     perd sa cohérence, l’exécution devient émotionnelle et la lecture du signal se dégrade.") }}
                 </p>
                 <p>
-                    Une page risque bien construite renforce fortement l’image premium de ton site.
-                    Elle montre que tes signaux ne sont pas présentés comme de simples opportunités,
-                    mais comme des scénarios encadrés par une méthode sérieuse.
+                    {{ t("lab_risk_une_page_risque_bien_construite_renforce_fortement_l_image_premium_de_to", "Une page risque bien construite renforce fortement l’image premium de ton site.                     Elle montre que tes signaux ne sont pas présentés comme de simples opportunités,                     mais comme des scénarios encadrés par une méthode sérieuse.") }}
                 </p>
             </div>
 
             <div class="tl-stack">
                 <div class="tl-mini-card">
-                    <strong>Encadrement</strong>
-                    <span>Chaque signal gagne en sérieux lorsqu’il repose sur une limite claire et assumée.</span>
+                    <strong>{{ t("framework", "Encadrement") }}</strong>
+                    <span>{{ t("lab_risk_chaque_signal_gagne_en_serieux_lorsqu_il_repose_sur_une_limite_claire_et", "Chaque signal gagne en sérieux lorsqu’il repose sur une limite claire et assumée.") }}</span>
                 </div>
                 <div class="tl-mini-card">
-                    <strong>Stabilité</strong>
-                    <span>Un risque contrôlé réduit la pression émotionnelle et améliore la qualité d’exécution.</span>
+                    <strong>{{ t("stability", "Stabilité") }}</strong>
+                    <span>{{ t("lab_risk_un_risque_controle_reduit_la_pression_emotionnelle_et_ameliore_la_qualit", "Un risque contrôlé réduit la pression émotionnelle et améliore la qualité d’exécution.") }}</span>
                 </div>
                 <div class="tl-mini-card">
-                    <strong>Professionnalisme</strong>
-                    <span>Le site paraît plus haut de gamme quand la gestion du risque est visible et intégrée.</span>
+                    <strong>{{ t("lab_risk_professionnalisme", "Professionnalisme") }}</strong>
+                    <span>{{ t("lab_risk_le_site_parait_plus_haut_de_gamme_quand_la_gestion_du_risque_est_visible", "Le site paraît plus haut de gamme quand la gestion du risque est visible et intégrée.") }}</span>
                 </div>
             </div>
         </div>
@@ -125,44 +113,40 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Les réflexes premium</span>
-            <h2>Les principes essentiels pour lire un signal avec plus de recul</h2>
+            <span>{{ t("premium_reflexes", "Les réflexes premium") }}</span>
+            <h2>{{ t("essential_principles_signal_distance", "Les principes essentiels pour lire un signal avec plus de recul") }}</h2>
         </div>
 
         <div class="tl-pillars-grid">
             <div class="tl-pillar-card">
                 <div class="tl-pillar-icon">1</div>
-                <h3>Lire l’invalidation avant la cible</h3>
+                <h3>{{ t("read_invalidation_before_target", "Lire l’invalidation avant la cible") }}</h3>
                 <p>
-                    Un objectif peut être séduisant, mais la vraie cohérence du scénario se mesure d’abord
-                    par la logique du stop loss.
+                    {{ t("lab_risk_un_objectif_peut_etre_seduisant_mais_la_vraie_coherence_du_scenario_se_m", "Un objectif peut être séduisant, mais la vraie cohérence du scénario se mesure d’abord                     par la logique du stop loss.") }}
                 </p>
             </div>
 
             <div class="tl-pillar-card">
                 <div class="tl-pillar-icon">2</div>
-                <h3>Ne jamais surcharger un seul trade</h3>
+                <h3>{{ t("never_overload_one_trade", "Ne jamais surcharger un seul trade") }}</h3>
                 <p>
-                    Une position trop lourde met en danger le capital et fragilise immédiatement
-                    la discipline mentale.
+                    {{ t("lab_risk_une_position_trop_lourde_met_en_danger_le_capital_et_fragilise_immediate", "Une position trop lourde met en danger le capital et fragilise immédiatement                     la discipline mentale.") }}
                 </p>
             </div>
 
             <div class="tl-pillar-card">
                 <div class="tl-pillar-icon">3</div>
-                <h3>Respecter le plan initial</h3>
+                <h3>{{ t("lab_risk_respecter_le_plan_initial", "Respecter le plan initial") }}</h3>
                 <p>
-                    Déplacer un stop sous pression ou improviser en cours de trade affaiblit toute
-                    la logique d’exécution.
+                    {{ t("lab_risk_deplacer_un_stop_sous_pression_ou_improviser_en_cours_de_trade_affaiblit", "Déplacer un stop sous pression ou improviser en cours de trade affaiblit toute                     la logique d’exécution.") }}
                 </p>
             </div>
 
             <div class="tl-pillar-card">
                 <div class="tl-pillar-icon">4</div>
-                <h3>Penser série de trades</h3>
+                <h3>{{ t("think_trade_series", "Penser série de trades") }}</h3>
                 <p>
-                    Un trader solide raisonne en ensemble cohérent, pas en dépendance émotionnelle
-                    à un seul résultat.
+                    {{ t("lab_risk_un_trader_solide_raisonne_en_ensemble_coherent_pas_en_dependance_emotion", "Un trader solide raisonne en ensemble cohérent, pas en dépendance émotionnelle                     à un seul résultat.") }}
                 </p>
             </div>
         </div>
@@ -172,33 +156,33 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Architecture du risque</span>
-            <h2>Les composantes d’un risk management plus professionnel</h2>
+            <span>{{ t("risk_architecture", "Architecture du risque") }}</span>
+            <h2>{{ t("professional_risk_components", "Les composantes d’un risk management plus professionnel") }}</h2>
         </div>
 
         <div class="tl-steps-grid">
             <div class="tl-step-card">
                 <div class="tl-step-number">01</div>
-                <h3>Définir l’invalidation</h3>
-                <p>Le point où le scénario cesse d’être valide doit être clair avant même l’entrée.</p>
+                <h3>{{ t("define_invalidation", "Définir l’invalidation") }}</h3>
+                <p>{{ t("lab_risk_le_point_ou_le_scenario_cesse_d_etre_valide_doit_etre_clair_avant_meme_l", "Le point où le scénario cesse d’être valide doit être clair avant même l’entrée.") }}</p>
             </div>
 
             <div class="tl-step-card">
                 <div class="tl-step-number">02</div>
-                <h3>Mesurer l’exposition</h3>
-                <p>La taille de position doit rester alignée avec la tolérance au risque et le plan global.</p>
+                <h3>{{ t("measure_exposure", "Mesurer l’exposition") }}</h3>
+                <p>{{ t("lab_risk_la_taille_de_position_doit_rester_alignee_avec_la_tolerance_au_risque_et", "La taille de position doit rester alignée avec la tolérance au risque et le plan global.") }}</p>
             </div>
 
             <div class="tl-step-card">
                 <div class="tl-step-number">03</div>
-                <h3>Évaluer le potentiel</h3>
-                <p>Le take profit doit conserver une logique réaliste face au risque engagé.</p>
+                <h3>{{ t("evaluate_potential", "Évaluer le potentiel") }}</h3>
+                <p>{{ t("lab_risk_le_take_profit_doit_conserver_une_logique_realiste_face_au_risque_engage", "Le take profit doit conserver une logique réaliste face au risque engagé.") }}</p>
             </div>
 
             <div class="tl-step-card">
                 <div class="tl-step-number">04</div>
-                <h3>Exécuter avec discipline</h3>
-                <p>Le respect du cadre reste plus important qu’une réaction impulsive aux fluctuations du prix.</p>
+                <h3>{{ t("execute_with_discipline", "Exécuter avec discipline") }}</h3>
+                <p>{{ t("lab_risk_le_respect_du_cadre_reste_plus_important_qu_une_reaction_impulsive_aux_f", "Le respect du cadre reste plus important qu’une réaction impulsive aux fluctuations du prix.") }}</p>
             </div>
         </div>
     </div>
@@ -207,41 +191,39 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-section-head">
-            <span>Erreurs fréquentes</span>
-            <h2>Ce qui détruit la cohérence du risque chez beaucoup de traders</h2>
+            <span>{{ t("common_mistakes", "Erreurs fréquentes") }}</span>
+            <h2>{{ t("what_destroys_risk_consistency", "Ce qui détruit la cohérence du risque chez beaucoup de traders") }}</h2>
             <p>
-                Cette partie renforce le côté expert de la page et donne encore plus de valeur perçue
-                à ton Trading Lab.
+                {{ t("lab_risk_cette_partie_renforce_le_cote_expert_de_la_page_et_donne_encore_plus_de", "Cette partie renforce le côté expert de la page et donne encore plus de valeur perçue                 à ton Trading Lab.") }}
             </p>
         </div>
 
         <div class="tl-faq-grid">
             <div class="tl-faq-card">
-                <h3>Absence de stop réel</h3>
+                <h3>{{ t("no_real_stop", "Absence de stop réel") }}</h3>
                 <p>
-                    Ne pas accepter une invalidation claire transforme le trade en exposition floue
-                    et émotionnelle.
+                    {{ t("lab_risk_ne_pas_accepter_une_invalidation_claire_transforme_le_trade_en_expositio", "Ne pas accepter une invalidation claire transforme le trade en exposition floue                     et émotionnelle.") }}
                 </p>
             </div>
 
             <div class="tl-faq-card">
-                <h3>Position trop grande</h3>
+                <h3>{{ t("position_too_large", "Position trop grande") }}</h3>
                 <p>
-                    Une taille excessive augmente le stress, réduit la lucidité et pousse aux mauvaises décisions.
+                    {{ t("lab_risk_une_taille_excessive_augmente_le_stress_reduit_la_lucidite_et_pousse_aux", "Une taille excessive augmente le stress, réduit la lucidité et pousse aux mauvaises décisions.") }}
                 </p>
             </div>
 
             <div class="tl-faq-card">
-                <h3>Stop déplacé sous pression</h3>
+                <h3>{{ t("stop_moved_under_pressure", "Stop déplacé sous pression") }}</h3>
                 <p>
-                    Modifier le plan pour éviter une perte immédiate abîme la discipline et la logique du setup.
+                    {{ t("lab_risk_modifier_le_plan_pour_eviter_une_perte_immediate_abime_la_discipline_et", "Modifier le plan pour éviter une perte immédiate abîme la discipline et la logique du setup.") }}
                 </p>
             </div>
 
             <div class="tl-faq-card">
-                <h3>Obsession du gain</h3>
+                <h3>{{ t("profit_obsession", "Obsession du gain") }}</h3>
                 <p>
-                    Regarder uniquement le profit potentiel sans lire le risque réel conduit à une vision faussée.
+                    {{ t("lab_risk_regarder_uniquement_le_profit_potentiel_sans_lire_le_risque_reel_conduit", "Regarder uniquement le profit potentiel sans lire le risque réel conduit à une vision faussée.") }}
                 </p>
             </div>
         </div>
@@ -251,15 +233,14 @@
 <section class="tl-section">
     <div class="section-container">
         <div class="tl-final-box">
-            <span class="tl-final-badge">Gestion du risque</span>
-            <h2>La qualité d’un signal se mesure aussi à la qualité du risque qui l’encadre</h2>
+            <span class="tl-final-badge">{{ t("lab_risk_gestion_du_risque", "Gestion du risque") }}</span>
+            <h2>{{ t("signal_quality_measured_by_risk", "La qualité d’un signal se mesure aussi à la qualité du risque qui l’encadre") }}</h2>
             <p>
-                Une lecture premium du marché exige de la structure, de la discipline et un vrai respect
-                du capital. C’est cette logique qui transforme un simple trade en exécution plus professionnelle.
+                {{ t("lab_risk_une_lecture_premium_du_marche_exige_de_la_structure_de_la_discipline_et", "Une lecture premium du marché exige de la structure, de la discipline et un vrai respect                 du capital. C’est cette logique qui transforme un simple trade en exécution plus professionnelle.") }}
             </p>
             <div class="tl-final-actions">
-                <a href="{{ url_for('pages.lab_psychology') }}" class="cta-btn">Voir la psychologie</a>
-                <a href="{{ url_for('pages.lab_structure') }}" class="secondary-btn">Revoir la structure</a>
+                <a href="{{ url_for('pages.lab_psychology', lang_code=current_lang) }}" class="cta-btn">{{ t("see_psychology", "Voir la psychologie") }}</a>
+                <a href="{{ url_for('pages.lab_structure', lang_code=current_lang) }}" class="secondary-btn">{{ t("review_structure", "Revoir la structure") }}</a>
             </div>
         </div>
     </div>
@@ -268,15 +249,15 @@
 <footer class="site-footer">
     <div class="section-container footer-inner">
         <div class="footer-brand">
-            <h3>ApexSignals</h3>
-            <p>Gestion du risque, structure et discipline dans une expérience premium.</p>
+            <h3>VelWolef</h3>
+            <p>{{ t("risk_footer_desc", "Gestion du risque, structure et discipline dans une expérience premium.") }}</p>
         </div>
 
         <div class="footer-links">
-            <a href="{{ url_for('pages.trading_lab') }}">Trading Lab</a>
-            <a href="{{ url_for('pages.lab_structure') }}">Structure</a>
-            <a href="{{ url_for('pages.lab_psychology') }}">Psychologie</a>
-            <a href="{{ url_for('billing.pricing') }}">Offres</a>
+            <a href="{{ url_for('pages.trading_lab', lang_code=current_lang) }}">{{ t("lab_risk_trading_lab", "Trading Lab") }}</a>
+            <a href="{{ url_for('pages.lab_structure', lang_code=current_lang) }}">Structure</a>
+            <a href="{{ url_for('pages.lab_psychology', lang_code=current_lang) }}">{{ t("psychology", "Psychologie") }}</a>
+            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}">{{ t("lab_risk_offres", "Offres") }}</a>
         </div>
     </div>
 </footer>

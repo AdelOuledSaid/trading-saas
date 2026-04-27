@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ current_lang|default('en') }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VelWolf Signals - Vue globale marché</title>
+    <title>{{ t("global_market_page_title", "VelWolef - Vue globale marché") }}</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
@@ -22,57 +22,53 @@
         <div class="btc-hero-grid">
 
             <div class="btc-hero-left">
-                <span class="hero-badge">VelWolf Signals • Global Market View</span>
+                <span class="hero-badge">VelWolef • Global Market View</span>
 
                 <h1 class="inner-page-title">
-                    Vue globale du marché, lecture multi-actifs
-                    et intelligence premium de l’environnement global
+                    {{ t("global_market_hero_title", "Vue globale du marché, lecture multi-actifs et intelligence premium de l’environnement global") }}
                 </h1>
 
                 <p class="inner-page-text">
-                    Cette page sert de centre de lecture du marché. Elle permet de comprendre les régimes
-                    dominants, la rotation du capital, la pression macro, le comportement des actifs leaders
-                    et la manière dont les flux se déplacent entre crypto, indices, forex, matières premières
-                    et secteurs à fort momentum.
+                    {{ t("global_market_hero_desc", "Cette page sert de centre de lecture du marché. Elle permet de comprendre les régimes dominants, la rotation du capital, la pression macro, le comportement des actifs leaders et la manière dont les flux se déplacent entre crypto, indices, forex, matières premières et secteurs à fort momentum.") }}
                 </p>
 
                 <div class="hero-actions">
-                    <a href="#macro" class="hero-btn-primary">Voir le contexte global</a>
-                    <a href="#coverage" class="hero-btn-secondary">Explorer la couverture marchés</a>
+                    <a href="#macro" class="hero-btn-primary">{{ t("see_global_context", "Voir le contexte global") }}</a>
+                    <a href="#coverage" class="hero-btn-secondary">{{ t("explore_market_coverage", "Explorer la couverture marchés") }}</a>
                 </div>
 
                 <div class="hero-proof-bar">
                     <div>
                         <strong>100+</strong>
-                        <span>Actifs surveillés</span>
+                        <span>{{ t("tracked_assets", "Actifs surveillés") }}</span>
                     </div>
                     <div>
-                        <strong>Multi-marchés</strong>
+                        <strong>{{ t("multi_markets", "Multi-marchés") }}</strong>
                         <span>Crypto, indices, forex, commodities</span>
                     </div>
                     <div>
                         <strong>Desk View</strong>
-                        <span>Lecture pensée pour l’exécution</span>
+                        <span>{{ t("execution_focused_reading", "Lecture pensée pour l’exécution") }}</span>
                     </div>
                 </div>
 
                 <div class="hero-trust-row">
                     <div class="trust-mini">
-                        <strong>Lecture macro réelle</strong>
+                        <strong>{{ t("real_macro_reading", "Lecture macro réelle") }}</strong>
                         <span>
                             Comprendre le régime du marché avant de suivre un signal ou d’ouvrir une position.
                         </span>
                     </div>
 
                     <div class="trust-mini">
-                        <strong>Vision multi-actifs</strong>
+                        <strong>{{ t("multi_asset_vision", "Vision multi-actifs") }}</strong>
                         <span>
                             Bitcoin, altcoins, indices US, devises, or, dollar et actifs en rotation.
                         </span>
                     </div>
 
                     <div class="trust-mini">
-                        <strong>Utilité opérationnelle</strong>
+                        <strong>{{ t("operational_utility", "Utilité opérationnelle") }}</strong>
                         <span>
                             Réduire le bruit, hiérarchiser les opportunités et améliorer le timing.
                         </span>
@@ -164,7 +160,7 @@
 
         <div class="section-title">
             <span>Macro & structure</span>
-            <h2>Comprendre le moteur du marché avant de lire les signaux</h2>
+            <h2>{{ t("understand_market_engine_before_signals", "Comprendre le moteur du marché avant de lire les signaux") }}</h2>
             <p>
                 Les mouvements les plus propres naissent rarement du hasard. Ils viennent d’un contexte macro,
                 d’un régime de liquidité, d’un changement de sentiment ou d’une rotation du capital.
@@ -212,9 +208,9 @@
     <div class="section-container">
         <div class="section-title left-title">
             <span>Coverage univers</span>
-            <h2>Une couverture large du marché pour ne pas rester bloqué sur quatre actifs</h2>
+            <h2>{{ t("wide_market_coverage_title", "Une couverture large du marché pour ne pas rester bloqué sur quatre actifs") }}</h2>
             <p>
-                VelWolf suit un univers bien plus large qu’une simple shortlist. L’idée est de lire la hiérarchie
+                VelWolef suit un univers bien plus large qu’une simple shortlist. L’idée est de lire la hiérarchie
                 du marché, les zones de force, les actifs leaders, les transitions de capital et les régimes dominants.
             </p>
         </div>
@@ -310,7 +306,7 @@
 
         <div class="section-title">
             <span>Régimes de marché</span>
-            <h2>Lire les transitions pour mieux filtrer les opportunités</h2>
+            <h2>{{ t("read_transitions_filter_opportunities", "Lire les transitions pour mieux filtrer les opportunités") }}</h2>
             <p>
                 Un bon desk ne regarde pas seulement les prix. Il observe le régime du marché
                 pour savoir quand accélérer, quand ralentir et quand rester sélectif.
@@ -377,7 +373,7 @@
             <div class="results-proof-left">
                 <span class="proof-badge">Plateforme</span>
 
-                <h2>Une vue globale pensée pour guider l’exécution et pas seulement informer</h2>
+                <h2>{{ t("global_view_guides_execution", "Une vue globale pensée pour guider l’exécution et pas seulement informer") }}</h2>
 
                 <p>
                     Cette page n’est pas une simple présentation. Elle sert à poser le décor avant les signaux,
@@ -437,7 +433,7 @@
 
         <div class="section-title">
             <span>Accès rapide</span>
-            <h2>Entrer dans les univers clés suivis par la plateforme</h2>
+            <h2>{{ t("enter_key_market_universes", "Entrer dans les univers clés suivis par la plateforme") }}</h2>
             <p>
                 La vue globale sert d’interface de navigation vers les zones les plus importantes du desk.
             </p>
@@ -445,32 +441,32 @@
 
         <div class="preview-links-grid">
 
-            <a href="{{ url_for('signals.signals_btc') }}" class="preview-link-card">
+            <a href="{{ url_for('signals.signals_btc', lang_code=current_lang) }}" class="preview-link-card">
                 <strong>Bitcoin</strong>
                 <span>Leadership crypto, structure et momentum principal</span>
             </a>
 
-            <a href="{{ url_for('signals.eth_signals_page') }}" class="preview-link-card">
+            <a href="{{ url_for('signals.eth_signals_page', lang_code=current_lang) }}" class="preview-link-card">
                 <strong>Ethereum</strong>
                 <span>Rotation altcoins, flux secondaires et lecture du risque</span>
             </a>
 
-            <a href="{{ url_for('signals.signals_gold') }}" class="preview-link-card">
+            <a href="{{ url_for('signals.signals_gold', lang_code=current_lang) }}" class="preview-link-card">
                 <strong>Gold</strong>
                 <span>Actif refuge, lecture défensive et environnement macro</span>
             </a>
 
-            <a href="{{ url_for('signals.signals_us100') }}" class="preview-link-card">
+            <a href="{{ url_for('signals.signals_us100', lang_code=current_lang) }}" class="preview-link-card">
                 <strong>US100</strong>
                 <span>Baromètre risk-on, croissance et pression sur les actifs</span>
             </a>
 
-            <a href="{{ url_for('pages.market_forex') }}" class="preview-link-card">
+            <a href="{{ url_for('pages.market_forex', lang_code=current_lang) }}" class="preview-link-card">
                 <strong>Forex</strong>
                 <span>Dollar, devises majeures et lecture cross-asset</span>
             </a>
 
-            <a href="{{ url_for('pages.market_sentiment') }}" class="preview-link-card">
+            <a href="{{ url_for('pages.market_sentiment', lang_code=current_lang) }}" class="preview-link-card">
                 <strong>Sentiment</strong>
                 <span>Température du marché, psychologie collective et timing</span>
             </a>
@@ -483,15 +479,15 @@
 <section class="final-cta-section">
     <div class="section-container">
         <div class="final-cta-box">
-            <span class="final-cta-badge">VelWolf Global View</span>
-            <h2>Une page conçue pour comprendre le marché avant d’agir</h2>
+            <span class="final-cta-badge">VelWolef Global View</span>
+            <h2>{{ t("understand_before_acting_title", "Une page conçue pour comprendre le marché avant d’agir") }}</h2>
             <p>
                 La vue globale devient le point d’entrée naturel du desk : elle donne du contexte,
                 montre la profondeur de couverture de la plateforme et renforce la perception premium du produit.
             </p>
             <div class="final-cta-actions">
-                <a href="{{ url_for('signals.signals_page') }}" class="hero-btn-primary">Ouvrir les signaux</a>
-                <a href="{{ url_for('billing.pricing') }}" class="hero-btn-secondary">Voir les offres</a>
+                <a href="{{ url_for('signals.signals_page', lang_code=current_lang) }}" class="hero-btn-primary">{{ t("open_signals", "Ouvrir les signaux") }}</a>
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="hero-btn-secondary">{{ t("see_offers", "Voir les offres") }}</a>
             </div>
         </div>
     </div>

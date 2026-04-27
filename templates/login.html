@@ -1,68 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ t("login", "Connexion") }}{% endblock %}
-
-{% block content %}
-
-<section class="auth-section auth-section-login">
-
-    <div class="section-container">
-        <div class="auth-layout">
-
-            <div class="auth-left auth-card">
-
-                <h1 class="auth-title">
-                    {{ t("login_title", "Connectez-vous à votre espace trading") }}
-                </h1>
-
-                <p class="auth-text">
-                    {{ t("login_desc", "Accédez à votre dashboard et vos signaux") }}
-                </p>
-
-                <!-- 🔥 FIX -->
-                <a href="{{ url_for('main.home', lang_code=current_lang) }}" class="auth-back-link">
-                    ← {{ t("back_home", "Accueil") }}
-                </a>
-
-            </div>
-
-            <div class="auth-right auth-card auth-form-card">
-
-                <h2>{{ t("login", "Connexion") }}</h2>
-
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="flash-message">{{ message }}</div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-
-                <form method="POST">
-
-                    <input type="email" name="email" placeholder="Email" required>
-                    <input type="password" name="password" placeholder="Mot de passe" required>
-                    
-    <!-- 🔥 AJOUT IMPORTANT -->
-    <div style="text-align:right;margin-top:-8px;margin-bottom:15px;">
-        <a href="{{ url_for('auth.forgot_password', lang_code=current_lang) }}"
-           style="color:#00ff99;font-size:13px;text-decoration:none;">
-            Mot de passe oublié ?
-        </a>
-    </div>
-
-                    <button type="submit" class="auth-submit-btn">
-                        {{ t("login", "Connexion") }}
-                    </button>
-
-                </form>
-
-                <p>
-                    {{ t("no_account", "Pas de compte ?") }}
-
-                    <!-- 🔥 FIX -->
-                    <a href="{{ url_for('auth.register', lang_code=current_lang) }}">
-                        {{ t("signup", "Créer un compte") }}
+{% block title %}{{ t("site_login_connexion", "Connexion") }}{% endblock %} {% block content %} <section class="auth-section auth-section-login"> <div class="section-container"> <div class="auth-layout"> <div class="auth-left auth-card"> <h1 class="auth-title"> {{ t("site_login_connectez_vous_a_votre_espace_trading", "Connectez-vous à votre espace trading") }} </h1> <p class="auth-text"> {{ t("site_login_accedez_a_votre_dashboard_et_vos_signaux", "Accédez à votre dashboard et vos signaux") }} </p> <!-- 🔥 FIX --> <a href="{{ url_for('main.home', lang_code=current_lang) }}" class="auth-back-link"> {{ t("site_login_accueil", "← Accueil") }} </a> </div> <div class="auth-right auth-card auth-form-card"> <h2>{{ t("site_login_connexion", "Connexion") }}</h2> {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %} <div class="flash-message">{{ message }}</div> {% endfor %} {% endif %} {% endwith %} <form method="POST"> <input type="email" name="email" placeholder="Email" required> <input type="password" name="password" placeholder="Mot de passe" required> <!-- 🔥 AJOUT IMPORTANT --> <div style="text-align:right;margin-top:-8px;margin-bottom:15px;"> <a href="{{ url_for('auth.forgot_password', lang_code=current_lang) }}" style="color:#00ff99;font-size:13px;text-decoration:none;"> {{ t("site_login_mot_de_passe_oublie", "Mot de passe oublié ?") }} </a> </div> <button type="submit" class="auth-submit-btn"> {{ t("site_login_connexion", "Connexion") }} </button> </form> <p> {{ t("site_login_pas_de_compte", "Pas de compte ?") }} <!-- 🔥 FIX --> <a href="{{ url_for('auth.register', lang_code=current_lang) }}"> {{ t("signup", "Créer un compte") }}
                     </a>
                 </p>
 

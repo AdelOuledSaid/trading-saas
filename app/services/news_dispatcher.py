@@ -18,6 +18,7 @@ from app.services.telegram_dedup import (
 from app.services.telegram_service import (
     build_breaking_news_message,
     build_news_digest_message,
+    send_breaking_news_to_tier,
     send_message_to_tier,
 )
 
@@ -81,6 +82,51 @@ def _slice_articles_for_tier(articles: List[dict], tier: str) -> List[dict]:
     if limit >= 999999:
         return list(articles)
     return list(articles)[:limit]
+
+
+
+def _send_breaking_news_article(
+    *,
+    tier: str,
+    article: dict,
+    dedup_key: str,
+    content_ref: str | None = None,
+    content_hash: str | None = None,
+) -> bool:
+    """
+    Envoie une breaking news en gardant l'image si l'article contient image.
+    Garde le même système anti-doublon + record_dispatch.
+    """
+    if not article:
+        _log_warning(f"[news_dispatcher] Article breaking vide ignoré pour {tier}")
+        return False
+
+    if dispatch_exists(dedup_key):
+        _log_info(f"[news_dispatcher] Doublon ignoré par clé | tier={tier} | key={dedup_key}")
+        return False
+
+    if content_hash and dispatch_exists_by_hash("breaking_news", tier, content_hash):
+        _log_info(f"[news_dispatcher] Doublon ignoré par hash | type=breaking_news | tier={tier}")
+        return False
+
+    ok = send_breaking_news_to_tier(tier, article)
+
+    if ok:
+        preview_text = build_breaking_news_message(article)
+        record_dispatch(
+            content_type="breaking_news",
+            tier=tier,
+            dedup_key=dedup_key,
+            content_text=preview_text,
+            content_ref=content_ref,
+            content_hash=content_hash,
+            status="sent",
+        )
+        _log_info(f"[news_dispatcher] Breaking envoyée avec image si disponible | tier={tier}")
+    else:
+        _log_warning(f"[news_dispatcher] Échec envoi breaking | tier={tier}")
+
+    return ok
 
 
 def _send_news_message(
@@ -211,6 +257,7 @@ def send_daily_news(slot: str = "morning") -> dict:
 def send_breaking_news(article: dict) -> dict:
     """
     Breaking news unitaire.
+    Garde l'image si article["image"] existe, sinon envoie un message texte ultra pro.
     """
     if not article:
         _log_warning("[news_dispatcher] Breaking news vide.")
@@ -223,16 +270,14 @@ def send_breaking_news(article: dict) -> dict:
     results = {}
 
     for tier in ["public", "basic", "premium", "vip"]:
-        message = build_breaking_news_message(article)
         dedup_key = breaking_news_key(tier, article_id=article_id, article_url=article_url)
 
-        results[tier] = _send_news_message(
+        results[tier] = _send_breaking_news_article(
             tier=tier,
-            message=message,
+            article=article,
             dedup_key=dedup_key,
             content_ref=article_url or article_id,
             content_hash=article_hash,
-            content_type="breaking_news",
         )
 
     return results

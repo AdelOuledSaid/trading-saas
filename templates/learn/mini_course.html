@@ -1,183 +1,833 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ current_lang|default('en') }}">
 <head>
     <meta charset="UTF-8">
-    <title>Mini cours</title>
+    <title>{{ t("mini_course_title", "Mini cours") }} | VelWolef</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <style>
+        :root {
+            --bg: #050b16;
+            --panel: rgba(13, 27, 47, 0.82);
+            --panel-2: rgba(16, 30, 54, 0.92);
+            --line: rgba(255, 255, 255, 0.09);
+            --muted: #93a4bf;
+            --text: #f6f8ff;
+            --blue: #62a8ff;
+            --green: #35e08a;
+            --red: #ff6b6b;
+            --gold: #f2c66d;
+            --purple: #a78bfa;
+            --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             margin: 0;
-            padding: 30px;
-            font-family: Arial, sans-serif;
-            background: #07111f;
-            color: #ffffff;
+            min-height: 100vh;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            background:
+                radial-gradient(circle at 18% 12%, rgba(98, 168, 255, 0.18), transparent 28%),
+                radial-gradient(circle at 88% 8%, rgba(167, 139, 250, 0.14), transparent 26%),
+                radial-gradient(circle at 72% 78%, rgba(53, 224, 138, 0.08), transparent 28%),
+                var(--bg);
+            color: var(--text);
+            padding: 24px;
         }
 
-        .container {
-            max-width: 980px;
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent 82%);
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .shell {
+            width: min(1180px, 100%);
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
-        .card {
-            background: linear-gradient(180deg, #0d1b2f 0%, #101b31 100%);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 18px;
-            padding: 22px;
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
             margin-bottom: 18px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
         }
 
-        h1, h2, h3 {
-            margin-top: 0;
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            color: #dbeafe;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            border-radius: 15px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, rgba(98,168,255,0.28), rgba(167,139,250,0.18));
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 16px 42px rgba(98,168,255,0.18);
+        }
+
+        .top-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,0.045);
+            color: #eaf2ff;
+            padding: 10px 14px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 13px;
+            transition: transform .2s ease, background .2s ease, border-color .2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(98,168,255,0.35);
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+            gap: 20px;
+            align-items: stretch;
+            margin-bottom: 20px;
+        }
+
+        .hero-card,
+        .panel {
+            background: linear-gradient(180deg, var(--panel), rgba(7, 16, 31, 0.92));
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+        }
+
+        .hero-card {
+            padding: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero-card::after {
+            content: "";
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            right: -120px;
+            top: -140px;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(98,168,255,0.24), transparent 66%);
         }
 
         .badge {
-            display: inline-block;
-            padding: 8px 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 13px;
             border-radius: 999px;
             font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            background: rgba(98,168,255,0.13);
+            color: #cfe6ff;
+            border: 1px solid rgba(98,168,255,0.26);
+        }
+
+        h1 {
+            margin: 18px 0 12px;
+            font-size: clamp(34px, 5vw, 62px);
+            line-height: 0.95;
+            letter-spacing: -0.06em;
+        }
+
+        .hero-subtitle {
+            max-width: 760px;
+            margin: 0;
+            color: #b8c7dd;
+            font-size: 16px;
+            line-height: 1.75;
+        }
+
+        .trade-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .trade-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.09);
+            background: rgba(255,255,255,0.04);
+            color: #dbeafe;
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        .trade-chip span {
+            color: var(--muted);
             font-weight: 700;
-            background: #4da3ff;
-            color: white;
-            margin-bottom: 14px;
         }
 
-        .grid {
+        .side-card {
+            padding: 24px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 14px;
+            gap: 18px;
         }
 
-        .metric {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 14px;
+        .score-wrap {
+            display: grid;
+            place-items: center;
+            padding: 10px 0 4px;
+        }
+
+        .score-ring {
+            --score: {{ signal.confidence or 0 }};
+            width: 174px;
+            height: 174px;
+            border-radius: 999px;
+            display: grid;
+            place-items: center;
+            background:
+                radial-gradient(circle at center, #08111f 56%, transparent 57%),
+                conic-gradient(var(--green) calc(var(--score) * 1%), rgba(255,255,255,0.09) 0);
+            box-shadow: inset 0 0 34px rgba(0,0,0,0.35), 0 22px 60px rgba(53,224,138,0.12);
+        }
+
+        .score-ring-inner {
+            text-align: center;
+        }
+
+        .score-ring-inner strong {
+            display: block;
+            font-size: 42px;
+            line-height: 1;
+            letter-spacing: -0.05em;
+        }
+
+        .score-ring-inner span {
+            display: block;
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+
+        .risk-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .mini-box {
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.035);
+            border-radius: 18px;
             padding: 14px;
         }
 
-        .label {
+        .mini-box span {
+            display: block;
+            color: var(--muted);
             font-size: 12px;
-            color: #9db0cc;
             margin-bottom: 8px;
         }
 
-        .value {
-            font-size: 22px;
-            font-weight: 700;
+        .mini-box strong {
+            font-size: 18px;
         }
 
-        .green { color: #35e08a; }
-        .red { color: #ff6b6b; }
-        .blue { color: #69a8ff; }
-        .gold { color: #f2c66d; }
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .metric {
+            background: linear-gradient(180deg, var(--panel-2), rgba(6, 14, 27, 0.88));
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            padding: 18px;
+            min-height: 112px;
+            box-shadow: 0 18px 45px rgba(0,0,0,0.22);
+        }
+
+        .metric .label {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            font-weight: 850;
+        }
+
+        .metric .value {
+            font-size: 24px;
+            font-weight: 950;
+            letter-spacing: -0.03em;
+            word-break: break-word;
+        }
+
+        .green { color: var(--green); }
+        .red { color: var(--red); }
+        .blue { color: var(--blue); }
+        .gold { color: var(--gold); }
+        .purple { color: var(--purple); }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(300px, 0.42fr);
+            gap: 20px;
+            align-items: start;
+        }
+
+        .stack {
+            display: grid;
+            gap: 18px;
+        }
+
+        .panel {
+            padding: 24px;
+        }
+
+        .panel-head {
+            display: flex;
+            align-items: start;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .panel-kicker {
+            display: inline-flex;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.045);
+            color: #c7d2fe;
+            border: 1px solid rgba(255,255,255,0.08);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            font-weight: 900;
+        }
+
+        h2 {
+            margin: 8px 0 0;
+            font-size: clamp(22px, 3vw, 32px);
+            line-height: 1.08;
+            letter-spacing: -0.04em;
+        }
+
+        h3 {
+            margin: 0 0 8px;
+            font-size: 18px;
+            letter-spacing: -0.02em;
+        }
 
         p, li {
-            line-height: 1.7;
+            line-height: 1.75;
+            color: #c7d4e8;
+        }
+
+        p {
+            margin: 0;
         }
 
         ul {
             padding-left: 20px;
+            margin: 0;
         }
 
-        .small {
-            color: #9db0cc;
+        .two-col {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .callout {
+            border: 1px solid rgba(98,168,255,0.18);
+            background: rgba(98,168,255,0.07);
+            border-radius: 20px;
+            padding: 18px;
+        }
+
+        .callout.red {
+            border-color: rgba(255,107,107,0.22);
+            background: rgba(255,107,107,0.07);
+        }
+
+        .timeline {
+            display: grid;
+            gap: 12px;
+            counter-reset: step;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: 42px minmax(0, 1fr);
+            gap: 12px;
+            align-items: start;
+        }
+
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: rgba(98,168,255,0.12);
+            border: 1px solid rgba(98,168,255,0.25);
+            color: #cfe6ff;
+            font-weight: 950;
+        }
+
+        .step-card {
+            padding: 14px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.035);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .sticky {
+            position: sticky;
+            top: 18px;
+            display: grid;
+            gap: 18px;
+        }
+
+        .mini-nav {
+            display: grid;
+            gap: 10px;
+        }
+
+        .mini-nav a {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            text-decoration: none;
+            color: #dbeafe;
+            padding: 12px 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.035);
+            border-radius: 16px;
             font-size: 14px;
+            font-weight: 850;
+            transition: transform .2s ease, background .2s ease;
+        }
+
+        .mini-nav a:hover {
+            transform: translateX(2px);
+            background: rgba(98,168,255,0.08);
+        }
+
+        .heatmap {
+            display: grid;
+            gap: 10px;
+        }
+
+        .heat-row {
+            display: grid;
+            grid-template-columns: 96px 1fr 52px;
+            gap: 10px;
+            align-items: center;
+            color: #c7d4e8;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .bar {
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.08);
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--blue), var(--green));
+        }
+
+        .bar-fill.redbar {
+            background: linear-gradient(90deg, var(--gold), var(--red));
+        }
+
+        .warning {
+            display: flex;
+            gap: 12px;
+            align-items: start;
+            padding: 16px;
+            border-radius: 20px;
+            background: rgba(242,198,109,0.08);
+            border: 1px solid rgba(242,198,109,0.20);
+        }
+
+        .warning-icon {
+            width: 34px;
+            height: 34px;
+            flex: 0 0 auto;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: rgba(242,198,109,0.12);
+        }
+
+        @media (max-width: 980px) {
+            body {
+                padding: 16px;
+            }
+
+            .hero,
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sticky {
+                position: static;
+            }
+
+            .metric-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 620px) {
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .hero-card,
+            .panel,
+            .side-card {
+                border-radius: 22px;
+                padding: 20px;
+            }
+
+            .metric-grid,
+            .two-col,
+            .risk-box {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 38px;
+            }
         }
     </style>
 </head>
+
 <body>
-<div class="container">
+<div class="shell">
 
-    <div class="card">
-        <div class="badge">MINI COURS AI</div>
-        <h1>🎓 Comprendre le trade</h1>
-        <p class="small">
-            Cette page explique le setup, l’objectif, l’invalidation
-            et la logique AI du trade.
-        </p>
-    </div>
+    <div class="topbar">
+        <div class="brand">
+            <div class="brand-mark">VW</div>
+            <span>VelWolef {{ t("trade_academy", "Trade Academy") }}</span>
+        </div>
 
-    <div class="card">
-        <h2>Vue rapide</h2>
-        <div class="grid">
-            <div class="metric">
-                <div class="label">Actif</div>
-                <div class="value">{{ signal.asset or "-" }}</div>
-            </div>
-            <div class="metric">
-                <div class="label">Direction</div>
-                <div class="value">{{ signal.action or "-" }}</div>
-            </div>
-            <div class="metric">
-                <div class="label">Entry</div>
-                <div class="value blue">{{ signal.entry_price or "-" }}</div>
-            </div>
-            <div class="metric">
-                <div class="label">Stop Loss</div>
-                <div class="value red">{{ signal.stop_loss or "-" }}</div>
-            </div>
-            <div class="metric">
-                <div class="label">Take Profit</div>
-                <div class="value green">{{ signal.take_profit or "-" }}</div>
-            </div>
-            <div class="metric">
-                <div class="label">Risk / Reward</div>
-                <div class="value gold">{{ data.rr }}</div>
-            </div>
-            <div class="metric">
-                <div class="label">Confiance AI</div>
-                <div class="value">{{ signal.confidence or "-" }}%</div>
-            </div>
-            <div class="metric">
-                <div class="label">Timeframe</div>
-                <div class="value">{{ signal.timeframe or "-" }}</div>
-            </div>
+        <div class="top-actions">
+            {% if current_lang is defined %}
+            <span class="btn">🌍 {{ current_lang|upper }}</span>
+            {% endif %}
+            <a class="btn" href="javascript:history.back()">← {{ t("back", "Retour") }}</a>
         </div>
     </div>
 
-    <div class="card">
-        <h2>Résumé AI</h2>
-        <p>{{ data.ai_summary }}</p>
-    </div>
+    <section class="hero">
+        <div class="hero-card">
+            <div class="badge">✦ {{ t("mini_course_ai", "MINI COURS AI") }}</div>
 
-    <div class="card">
-        <h2>Pourquoi ce trade existe</h2>
-        <p>{{ data.reason }}</p>
-    </div>
+            <h1>{{ t("understand_trade", "Comprendre le trade") }}</h1>
 
-    <div class="card">
-        <h2>Objectif et invalidation</h2>
-        <p><strong>Objectif :</strong> {{ data.objective }}</p>
-        <p><strong>Invalidation :</strong> {{ data.invalidation }}</p>
-    </div>
+            <p class="hero-subtitle">
+                {{ t("mini_course_pro_desc", "Cette page transforme le signal en mini formation : contexte, objectif, invalidation, risque, psychologie et plan d’exécution. L’objectif est de comprendre le trade avant de l’exécuter.") }}
+            </p>
 
-    <div class="card">
-        <h2>Plan d’exécution conseillé</h2>
-        <p>{{ data.execution_plan }}</p>
-    </div>
+            <div class="trade-strip">
+                <div class="trade-chip"><span>{{ t("asset", "Actif") }}</span> {{ signal.asset or "-" }}</div>
+                <div class="trade-chip"><span>{{ t("direction", "Direction") }}</span> {{ signal.action or "-" }}</div>
+                <div class="trade-chip"><span>{{ t("timeframe", "Timeframe") }}</span> {{ signal.timeframe or "-" }}</div>
+                <div class="trade-chip"><span>{{ t("risk_reward", "Risk / Reward") }}</span> {{ data.rr }}</div>
+            </div>
+        </div>
 
-    <div class="card">
-        <h2>Forces du setup</h2>
-        <ul>
-            {% for item in data.strengths %}
-            <li>{{ item }}</li>
-            {% endfor %}
-        </ul>
-    </div>
+        <aside class="side-card">
+            <div>
+                <span class="panel-kicker">{{ t("ai_confidence", "Confiance AI") }}</span>
+                <h2>{{ t("setup_quality_score", "Score qualité du setup") }}</h2>
+            </div>
 
-    <div class="card">
-        <h2>Risques du setup</h2>
-        <ul>
-            {% for item in data.risks %}
-            <li>{{ item }}</li>
-            {% endfor %}
-        </ul>
-    </div>
+            <div class="score-wrap">
+                <div class="score-ring">
+                    <div class="score-ring-inner">
+                        <strong>{{ signal.confidence or 0 }}%</strong>
+                        <span>{{ t("confidence", "Confiance") }}</span>
+                    </div>
+                </div>
+            </div>
 
-    <div class="card">
-        <h2>Erreur à éviter</h2>
-        <p>{{ data.mistake_to_avoid }}</p>
-    </div>
+            <div class="risk-box">
+                <div class="mini-box">
+                    <span>{{ t("entry", "Entry") }}</span>
+                    <strong class="blue">{{ signal.entry_price or "-" }}</strong>
+                </div>
+                <div class="mini-box">
+                    <span>{{ t("stop_loss", "Stop Loss") }}</span>
+                    <strong class="red">{{ signal.stop_loss or "-" }}</strong>
+                </div>
+                <div class="mini-box">
+                    <span>{{ t("take_profit", "Take Profit") }}</span>
+                    <strong class="green">{{ signal.take_profit or "-" }}</strong>
+                </div>
+                <div class="mini-box">
+                    <span>{{ t("risk_reward", "Risk / Reward") }}</span>
+                    <strong class="gold">{{ data.rr }}</strong>
+                </div>
+            </div>
+        </aside>
+    </section>
+
+    <section class="metric-grid" id="quick-view">
+        <div class="metric">
+            <div class="label">{{ t("asset", "Actif") }}</div>
+            <div class="value">{{ signal.asset or "-" }}</div>
+        </div>
+        <div class="metric">
+            <div class="label">{{ t("direction", "Direction") }}</div>
+            <div class="value {% if signal.action == 'BUY' %}green{% elif signal.action == 'SELL' %}red{% else %}blue{% endif %}">
+                {{ signal.action or "-" }}
+            </div>
+        </div>
+        <div class="metric">
+            <div class="label">{{ t("entry", "Entry") }}</div>
+            <div class="value blue">{{ signal.entry_price or "-" }}</div>
+        </div>
+        <div class="metric">
+            <div class="label">{{ t("timeframe", "Timeframe") }}</div>
+            <div class="value">{{ signal.timeframe or "-" }}</div>
+        </div>
+    </section>
+
+    <section class="content-grid">
+        <main class="stack">
+
+            <section class="panel" id="summary">
+                <div class="panel-head">
+                    <div>
+                        <span class="panel-kicker">{{ t("executive_summary", "Résumé exécutif") }}</span>
+                        <h2>{{ t("ai_summary", "Résumé AI") }}</h2>
+                    </div>
+                </div>
+                <p>{{ data.ai_summary }}</p>
+            </section>
+
+            <section class="panel" id="reason">
+                <div class="panel-head">
+                    <div>
+                        <span class="panel-kicker">{{ t("trade_logic", "Logique du trade") }}</span>
+                        <h2>{{ t("why_trade", "Pourquoi ce trade existe") }}</h2>
+                    </div>
+                </div>
+                <p>{{ data.reason }}</p>
+            </section>
+
+            <section class="panel" id="levels">
+                <div class="panel-head">
+                    <div>
+                        <span class="panel-kicker">{{ t("risk_framework", "Cadre de risque") }}</span>
+                        <h2>{{ t("objective_invalidation", "Objectif et invalidation") }}</h2>
+                    </div>
+                </div>
+
+                <div class="two-col">
+                    <div class="callout">
+                        <h3 class="green">{{ t("objective", "Objectif") }}</h3>
+                        <p>{{ data.objective }}</p>
+                    </div>
+
+                    <div class="callout red">
+                        <h3 class="red">{{ t("invalidation", "Invalidation") }}</h3>
+                        <p>{{ data.invalidation }}</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel" id="execution">
+                <div class="panel-head">
+                    <div>
+                        <span class="panel-kicker">{{ t("execution", "Exécution") }}</span>
+                        <h2>{{ t("execution_plan", "Plan d’exécution conseillé") }}</h2>
+                    </div>
+                </div>
+
+                <div class="timeline">
+                    <div class="step">
+                        <div class="step-card">
+                            <h3>{{ t("read_context", "Lire le contexte") }}</h3>
+                            <p>{{ t("read_context_desc", "Vérifier que le signal reste cohérent avec la structure du marché et le timeframe utilisé.") }}</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-card">
+                            <h3>{{ t("respect_entry_zone", "Respecter la zone d’entrée") }}</h3>
+                            <p>{{ data.execution_plan }}</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-card">
+                            <h3>{{ t("protect_capital", "Protéger le capital") }}</h3>
+                            <p>{{ t("protect_capital_desc", "Ne pas déplacer le stop loss sans raison structurelle. Le stop représente l’invalidation du scénario.") }}</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel" id="strengths-risks">
+                <div class="panel-head">
+                    <div>
+                        <span class="panel-kicker">{{ t("setup_diagnosis", "Diagnostic du setup") }}</span>
+                        <h2>{{ t("strengths_and_risks", "Forces et risques du setup") }}</h2>
+                    </div>
+                </div>
+
+                <div class="two-col">
+                    <div class="callout">
+                        <h3 class="green">{{ t("strengths", "Forces du setup") }}</h3>
+                        <ul>
+                            {% for item in data.strengths %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="callout red">
+                        <h3 class="red">{{ t("risks", "Risques du setup") }}</h3>
+                        <ul>
+                            {% for item in data.risks %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel" id="psychology">
+                <div class="panel-head">
+                    <div>
+                        <span class="panel-kicker">{{ t("trader_psychology", "Psychologie trader") }}</span>
+                        <h2>{{ t("mistake_to_avoid", "Erreur à éviter") }}</h2>
+                    </div>
+                </div>
+
+                <div class="warning">
+                    <div class="warning-icon">⚠️</div>
+                    <div>
+                        <h3>{{ t("discipline_alert", "Alerte discipline") }}</h3>
+                        <p>{{ data.mistake_to_avoid }}</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <aside class="sticky">
+            <section class="panel">
+                <span class="panel-kicker">{{ t("navigation", "Navigation") }}</span>
+                <h2>{{ t("course_map", "Plan du cours") }}</h2>
+
+                <div class="mini-nav" style="margin-top: 16px;">
+                    <a href="#quick-view"><span>{{ t("quick_view", "Vue rapide") }}</span><span>01</span></a>
+                    <a href="#summary"><span>{{ t("ai_summary", "Résumé AI") }}</span><span>02</span></a>
+                    <a href="#reason"><span>{{ t("trade_logic", "Logique du trade") }}</span><span>03</span></a>
+                    <a href="#levels"><span>{{ t("objective_invalidation", "Objectif / invalidation") }}</span><span>04</span></a>
+                    <a href="#execution"><span>{{ t("execution_plan", "Plan d’exécution") }}</span><span>05</span></a>
+                    <a href="#psychology"><span>{{ t("trader_psychology", "Psychologie") }}</span><span>06</span></a>
+                </div>
+            </section>
+
+            <section class="panel">
+                <span class="panel-kicker">{{ t("setup_heatmap", "Heatmap setup") }}</span>
+                <h2>{{ t("quality_reading", "Lecture qualité") }}</h2>
+
+                <div class="heatmap" style="margin-top: 16px;">
+                    <div class="heat-row">
+                        <span>{{ t("confidence", "Confiance") }}</span>
+                        <div class="bar"><div class="bar-fill" style="width: {{ signal.confidence or 0 }}%;"></div></div>
+                        <strong>{{ signal.confidence or 0 }}%</strong>
+                    </div>
+
+                    <div class="heat-row">
+                        <span>{{ t("risk_reward", "R/R") }}</span>
+                        <div class="bar"><div class="bar-fill" style="width: 72%;"></div></div>
+                        <strong>{{ data.rr }}</strong>
+                    </div>
+
+                    <div class="heat-row">
+                        <span>{{ t("risk", "Risque") }}</span>
+                        <div class="bar"><div class="bar-fill redbar" style="width: 42%;"></div></div>
+                        <strong>{{ t("controlled", "Contrôlé") }}</strong>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel">
+                <span class="panel-kicker">{{ t("premium_note", "Note premium") }}</span>
+                <h2>{{ t("before_execution", "Avant exécution") }}</h2>
+                <p>
+                    {{ t("before_execution_desc", "Un signal est un scénario, pas une certitude. La qualité vient du respect du plan, de la taille de position et de l’invalidation.") }}
+                </p>
+            </section>
+        </aside>
+    </section>
 
 </div>
 </body>

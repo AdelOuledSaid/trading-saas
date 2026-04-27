@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium - TradingBot</title>
+    <title>{{ t("site_privacy_premium_tradingbot", "Premium - TradingBot") }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
@@ -14,85 +14,85 @@
 <div class="pricing-page">
 
     <div class="pricing-header">
-        <h1>💎 Choisis ton plan</h1>
-        <p>Commence simple, monte en puissance, ou passe en VIP.</p>
+        <h1>{{ t("site_privacy_choisis_ton_plan", "💎 Choisis ton plan") }}</h1>
+        <p>{{ t("site_privacy_commence_simple_monte_en_puissance_ou_passe_en_vip", "Commence simple, monte en puissance, ou passe en VIP.") }}</p>
     </div>
 
     <div class="pricing-grid pricing-grid-3">
 
         <div class="pricing-card">
-            <h2>Basic</h2>
-            <div class="price">9€ <span>/ mois</span></div>
+            <h2>{{ t("site_pricing_basic", "Basic") }}</h2>
+            <div class="price">9€ <span>{{ t("site_pricing_mois", "/ mois") }}</span></div>
             <ul>
-                <li>✔️ Signaux en temps réel</li>
-                <li>✔️ Dashboard basique</li>
-                <li>✔️ Historique limité</li>
-                <li>❌ Briefing IA quotidien</li>
-                <li>❌ Stats avancées</li>
-                <li>❌ Telegram VIP</li>
+                <li>{{ t("site_privacy_signaux_en_temps_reel", "✔️ Signaux en temps réel") }}</li>
+                <li>{{ t("site_privacy_dashboard_basique", "✔️ Dashboard basique") }}</li>
+                <li>{{ t("site_privacy_historique_limite", "✔️ Historique limité") }}</li>
+                <li>{{ t("site_privacy_briefing_ia_quotidien", "❌ Briefing IA quotidien") }}</li>
+                <li>{{ t("site_privacy_stats_avancees", "❌ Stats avancées") }}</li>
+                <li>{{ t("site_privacy_telegram_vip", "❌ Telegram VIP") }}</li>
             </ul>
 
             {% if user_plan == "basic" %}
-                <a href="{{ url_for('dashboard') }}" class="pricing-btn secondary-btn">Plan actuel</a>
+                <a href="{{ url_for('dashboard') }}" class="pricing-btn secondary-btn">{{ t("site_pricing_plan_actuel", "Plan actuel") }}</a>
             {% else %}
                 <form action="{{ url_for('create_checkout_session') }}" method="POST">
                     <input type="hidden" name="plan" value="basic">
-                    <button type="submit" class="pricing-btn secondary-btn">Choisir Basic</button>
+                    <button type="submit" class="pricing-btn secondary-btn">{{ t("site_pricing_choisir_basic", "Choisir Basic") }}</button>
                 </form>
             {% endif %}
         </div>
 
         <div class="pricing-card premium-plan">
-            <div class="badge-top">🔥 POPULAIRE</div>
-            <h2>Premium</h2>
-            <div class="price">19€ <span>/ mois</span></div>
+            <div class="badge-top">{{ t("site_privacy_populaire", "🔥 POPULAIRE") }}</div>
+            <h2>{{ t("site_home_premium", "Premium") }}</h2>
+            <div class="price">19€ <span>{{ t("site_pricing_mois", "/ mois") }}</span></div>
             <ul>
-                <li>✔️ Tous les signaux</li>
-                <li>✔️ Historique complet</li>
-                <li>✔️ Statistiques avancées</li>
-                <li>✔️ PnL cumulatif</li>
-                <li>✔️ Capital simulé</li>
-                <li>✔️ Briefing IA quotidien</li>
-                <li>❌ Telegram VIP</li>
+                <li>{{ t("site_privacy_tous_les_signaux", "✔️ Tous les signaux") }}</li>
+                <li>{{ t("site_privacy_historique_complet", "✔️ Historique complet") }}</li>
+                <li>{{ t("site_privacy_statistiques_avancees", "✔️ Statistiques avancées") }}</li>
+                <li>{{ t("site_privacy_pnl_cumulatif", "✔️ PnL cumulatif") }}</li>
+                <li>{{ t("site_privacy_capital_simule", "✔️ Capital simulé") }}</li>
+                <li>{{ t("site_privacy_briefing_ia_quotidien_2", "✔️ Briefing IA quotidien") }}</li>
+                <li>{{ t("site_privacy_telegram_vip", "❌ Telegram VIP") }}</li>
             </ul>
 
             <div class="offer-persuasion">
-                Le meilleur équilibre entre prix, performance et fonctionnalités.
+                {{ t("site_privacy_le_meilleur_equilibre_entre_prix_performance_et_fonctionnalites", "Le meilleur équilibre entre prix, performance et fonctionnalités.") }}
             </div>
 
             {% if user_plan == "premium" %}
-                <a href="{{ url_for('dashboard') }}" class="pricing-btn primary-btn">Plan actuel</a>
+                <a href="{{ url_for('dashboard') }}" class="pricing-btn primary-btn">{{ t("site_pricing_plan_actuel", "Plan actuel") }}</a>
             {% else %}
                 <form action="{{ url_for('create_checkout_session') }}" method="POST">
                     <input type="hidden" name="plan" value="premium">
-                    <button type="submit" class="pricing-btn primary-btn">Choisir Premium</button>
+                    <button type="submit" class="pricing-btn primary-btn">{{ t("site_pricing_choisir_premium", "Choisir Premium") }}</button>
                 </form>
             {% endif %}
         </div>
 
         <div class="pricing-card">
-            <div class="badge-top">👑 VIP</div>
+            <div class="badge-top">{{ t("site_privacy_vip", "👑 VIP") }}</div>
             <h2>VIP</h2>
-            <div class="price">39€ <span>/ mois</span></div>
+            <div class="price">39€ <span>{{ t("site_pricing_mois", "/ mois") }}</span></div>
             <ul>
-                <li>✔️ Tout le Premium</li>
-                <li>✔️ Telegram VIP privé</li>
-                <li>✔️ Alertes prioritaires</li>
-                <li>✔️ Accès anticipé aux nouveautés</li>
-                <li>✔️ Briefings enrichis</li>
-                <li>✔️ Support prioritaire</li>
+                <li>{{ t("site_privacy_tout_le_premium", "✔️ Tout le Premium") }}</li>
+                <li>{{ t("site_privacy_telegram_vip_prive", "✔️ Telegram VIP privé") }}</li>
+                <li>{{ t("site_privacy_alertes_prioritaires", "✔️ Alertes prioritaires") }}</li>
+                <li>{{ t("site_privacy_acces_anticipe_aux_nouveautes", "✔️ Accès anticipé aux nouveautés") }}</li>
+                <li>{{ t("site_privacy_briefings_enrichis", "✔️ Briefings enrichis") }}</li>
+                <li>{{ t("site_privacy_support_prioritaire", "✔️ Support prioritaire") }}</li>
             </ul>
 
             <div class="offer-persuasion">
-                Pour les utilisateurs qui veulent l’expérience la plus complète.
+                {{ t("site_privacy_pour_les_utilisateurs_qui_veulent_l_experience_la_plus_complete", "Pour les utilisateurs qui veulent l’expérience la plus complète.") }}
             </div>
 
             {% if user_plan == "vip" %}
-                <a href="{{ url_for('dashboard') }}" class="pricing-btn primary-btn">Plan actuel</a>
+                <a href="{{ url_for('dashboard') }}" class="pricing-btn primary-btn">{{ t("site_pricing_plan_actuel", "Plan actuel") }}</a>
             {% else %}
                 <form action="{{ url_for('create_checkout_session') }}" method="POST">
                     <input type="hidden" name="plan" value="vip">
-                    <button type="submit" class="pricing-btn primary-btn">Choisir VIP</button>
+                    <button type="submit" class="pricing-btn primary-btn">{{ t("site_pricing_choisir_vip", "Choisir VIP") }}</button>
                 </form>
             {% endif %}
         </div>
@@ -102,23 +102,23 @@
     <!-- PROOF -->
     <section class="panel" style="margin-top:40px;">
         <div class="panel-header">
-            <h2>📊 Résultats récents</h2>
+            <h2>{{ t("site_privacy_resultats_recents", "📊 Résultats récents") }}</h2>
         </div>
 
         <div class="responsive-three-cols">
             <div class="stat-card conversion-stat" style="text-align:center;">
                 <h3>+327%</h3>
-                <p style="margin-top:10px; color:#9fb0c9;">Performance cumulée</p>
+                <p style="margin-top:10px; color:#9fb0c9;">{{ t("site_privacy_performance_cumulee", "Performance cumulée") }}</p>
             </div>
 
             <div class="stat-card conversion-stat" style="text-align:center;">
                 <h3>73%</h3>
-                <p style="margin-top:10px; color:#9fb0c9;">Winrate moyen</p>
+                <p style="margin-top:10px; color:#9fb0c9;">{{ t("site_privacy_winrate_moyen", "Winrate moyen") }}</p>
             </div>
 
             <div class="stat-card conversion-stat" style="text-align:center;">
-                <h3>+1200 trades</h3>
-                <p style="margin-top:10px; color:#9fb0c9;">Historique analysé</p>
+                <h3>{{ t("site_privacy_1200_trades", "+1200 trades") }}</h3>
+                <p style="margin-top:10px; color:#9fb0c9;">{{ t("site_privacy_historique_analyse", "Historique analysé") }}</p>
             </div>
         </div>
     </section>
@@ -126,78 +126,76 @@
     <!-- WHY -->
     <section class="panel" style="margin-top:40px;">
         <div class="panel-header">
-            <h2>Pourquoi choisir TradingBot ?</h2>
+            <h2>{{ t("site_privacy_pourquoi_choisir_tradingbot", "Pourquoi choisir TradingBot ?") }}</h2>
         </div>
 
         <div class="responsive-three-cols">
             <div class="stat-card">
-                <h3>⚡ Ultra rapide</h3>
-                <p>Signaux envoyés en temps réel avec latence minimale.</p>
+                <h3>{{ t("site_privacy_ultra_rapide", "⚡ Ultra rapide") }}</h3>
+                <p>{{ t("site_privacy_signaux_envoyes_en_temps_reel_avec_latence_minimale", "Signaux envoyés en temps réel avec latence minimale.") }}</p>
             </div>
 
             <div class="stat-card">
-                <h3>📈 Performance</h3>
-                <p>Optimisé pour maximiser le winrate et le rendement.</p>
+                <h3>{{ t("site_privacy_performance", "📈 Performance") }}</h3>
+                <p>{{ t("site_privacy_optimise_pour_maximiser_le_winrate_et_le_rendement", "Optimisé pour maximiser le winrate et le rendement.") }}</p>
             </div>
 
             <div class="stat-card">
-                <h3>🧠 IA intégrée</h3>
-                <p>Briefing quotidien intelligent basé sur le marché réel.</p>
+                <h3>{{ t("site_privacy_ia_integree", "🧠 IA intégrée") }}</h3>
+                <p>{{ t("site_privacy_briefing_quotidien_intelligent_base_sur_le_marche_reel", "Briefing quotidien intelligent basé sur le marché réel.") }}</p>
             </div>
         </div>
     </section>
 
     <!-- URGENCY -->
     <section class="panel fomo-panel" style="margin-top:40px; text-align:center;">
-        <div class="fomo-badge">⚠️ Offre limitée</div>
-        <h2 style="margin:18px 0 10px 0;">Les places VIP restent limitées</h2>
+        <div class="fomo-badge">{{ t("site_privacy_offre_limitee", "⚠️ Offre limitée") }}</div>
+        <h2 style="margin:18px 0 10px 0;">{{ t("site_privacy_les_places_vip_restent_limitees", "Les places VIP restent limitées") }}</h2>
         <p style="color:#9fb0c9; max-width:760px; margin:0 auto; line-height:1.8;">
-            Pour préserver la qualité du service, le nombre d’utilisateurs VIP reste limité.
-            Rejoins maintenant la plateforme avant la prochaine hausse de prix.
+            {{ t("site_privacy_pour_preserver_la_qualite_du_service_le_nombre_d_utilisateurs_vip_reste", "Pour préserver la qualité du service, le nombre d’utilisateurs VIP reste limité.             Rejoins maintenant la plateforme avant la prochaine hausse de prix.") }}
         </p>
     </section>
 
     <!-- FAQ -->
     <section class="panel" style="margin-top:40px;">
         <div class="panel-header">
-            <h2>Questions fréquentes</h2>
+            <h2>{{ t("site_privacy_questions_frequentes", "Questions fréquentes") }}</h2>
         </div>
 
         <div class="faq-container">
 
             <div class="faq-item">
                 <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>Le service est-il automatique ?</span>
+                    <span>{{ t("site_privacy_le_service_est_il_automatique", "Le service est-il automatique ?") }}</span>
                     <div class="faq-icon">+</div>
                 </div>
                 <div class="faq-content">
                     <p>
-                        Oui, les signaux sont générés automatiquement via des stratégies algorithmiques avancées.
+                        {{ t("site_privacy_oui_les_signaux_sont_generes_automatiquement_via_des_strategies_algorith", "Oui, les signaux sont générés automatiquement via des stratégies algorithmiques avancées.") }}
                     </p>
                 </div>
             </div>
 
             <div class="faq-item">
                 <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>Puis-je annuler à tout moment ?</span>
+                    <span>{{ t("site_privacy_puis_je_annuler_a_tout_moment", "Puis-je annuler à tout moment ?") }}</span>
                     <div class="faq-icon">+</div>
                 </div>
                 <div class="faq-content">
                     <p>
-                        Oui, tu peux annuler ton abonnement à tout moment depuis ton dashboard.
+                        {{ t("site_privacy_oui_tu_peux_annuler_ton_abonnement_a_tout_moment_depuis_ton_dashboard", "Oui, tu peux annuler ton abonnement à tout moment depuis ton dashboard.") }}
                     </p>
                 </div>
             </div>
 
             <div class="faq-item">
                 <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>Le briefing IA est-il fiable ?</span>
+                    <span>{{ t("site_privacy_le_briefing_ia_est_il_fiable", "Le briefing IA est-il fiable ?") }}</span>
                     <div class="faq-icon">+</div>
                 </div>
                 <div class="faq-content">
                     <p>
-                        Le briefing utilise des données réelles + IA pour donner une analyse claire,
-                        mais il ne remplace pas une décision de trading personnelle.
+                        {{ t("site_privacy_le_briefing_utilise_des_donnees_reelles_ia_pour_donner_une_analyse_clair", "Le briefing utilise des données réelles + IA pour donner une analyse claire,                         mais il ne remplace pas une décision de trading personnelle.") }}
                     </p>
                 </div>
             </div>
@@ -206,13 +204,13 @@
     </section>
 
     <div style="text-align:center; margin-top:50px;">
-        <h2 style="margin-bottom:10px;">Prêt à passer au niveau pro ?</h2>
+        <h2 style="margin-bottom:10px;">{{ t("site_privacy_pret_a_passer_au_niveau_pro", "Prêt à passer au niveau pro ?") }}</h2>
         <p style="color:#9fb0c9; margin-bottom:20px;">
-            Rejoins les utilisateurs Premium et maximise tes résultats 📈
+            {{ t("site_privacy_rejoins_les_utilisateurs_premium_et_maximise_tes_resultats", "Rejoins les utilisateurs Premium et maximise tes résultats 📈") }}
         </p>
 
         <a href="{{ url_for('register') }}" class="primary-link-btn">
-            🚀 Créer mon compte maintenant
+            {{ t("site_privacy_creer_mon_compte_maintenant", "🚀 Créer mon compte maintenant") }}
         </a>
     </div>
 

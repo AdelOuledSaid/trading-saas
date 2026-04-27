@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Forex Market | VelWolf{% endblock %}
+{% block title %}{{ t("forex_page_title", "Forex Market | VelWolef") }}{% endblock %}
 
 {% block extra_css %}
 
@@ -11,50 +11,50 @@
 
 <div class="market-page forex-ultra-page">
 
-```
+
 <!-- HERO ULTRA -->
 <section class="market-hero forex-hero-ultra">
     <div class="market-shell">
         <div class="hero-topline">
-            <span class="market-badge glow-badge">Macro Intelligence • Forex Command Center</span>
-            <span class="hero-live-pill">● Live Global Flow</span>
+            <span class="market-badge glow-badge">{{ t('forex_badge', 'Macro Intelligence • Forex Command Center') }}</span>
+            <span class="hero-live-pill">● {{ t('live_global_flow', 'Live Global Flow') }}</span>
         </div>
 
         <div class="forex-hero-grid">
             <div class="forex-hero-left">
                 <h1>
-                    Forex <span>& Macro Flow</span>
+                    {{ t('forex_hero_title', 'Forex') }} <span>{{ t('macro_flow', '& Macro Flow') }}</span>
                 </h1>
 
                 <p class="hero-lead">
-                    Interface d’analyse macro dédiée au dollar et aux principales paires Forex, conçue pour identifier les flux dominants et leur impact sur les autres marchés.
+                    {{ t('forex_hero_desc', 'Interface d’analyse macro dédiée au dollar et aux principales paires Forex, conçue pour identifier les flux dominants et leur impact sur les autres marchés.') }}
                 </p>
 
                 <div class="hero-actions">
-                    <a href="#forex-command-center" class="hero-btn hero-btn-primary">Explorer le marché</a>
-                    <a href="#macro-intelligence" class="hero-btn hero-btn-secondary">Voir la lecture macro</a>
+                    <a href="#forex-command-center" class="hero-btn hero-btn-primary">{{ t('explore_market', 'Explorer le marché') }}</a>
+                    <a href="#macro-intelligence" class="hero-btn hero-btn-secondary">{{ t('see_macro_reading', 'Voir la lecture macro') }}</a>
                 </div>
 
                 <div class="market-kpi-row hero-kpi-premium">
                     <div class="market-kpi floating-card">
-                        <span class="label">Pilote macro</span>
+                        <span class="label">{{ t('macro_driver', 'Pilote macro') }}</span>
                         <span class="value">DXY</span>
-                        <span class="meta">Boussole du dollar</span>
+                        <span class="meta">{{ t('dollar_compass', 'Boussole du dollar') }}</span>
                     </div>
                     <div class="market-kpi positive floating-card">
-                        <span class="label">Majors</span>
-                        <span class="value">EUR / GBP</span>
-                        <span class="meta">Flux principaux</span>
+                        <span class="label">{{ t('majors', 'Majors') }}</span>
+                        <span class="value">{{ t("markets_forex_eur_gbp", "EUR / GBP") }}</span>
+                        <span class="meta">{{ t('main_flows', 'Flux principaux') }}</span>
                     </div>
                     <div class="market-kpi floating-card">
-                        <span class="label">Asie</span>
+                        <span class="label">{{ t('asia', 'Asie') }}</span>
                         <span class="value">USDJPY</span>
-                        <span class="meta">Thermomètre du risque</span>
+                        <span class="meta">{{ t('risk_thermometer', 'Thermomètre du risque') }}</span>
                     </div>
                     <div class="market-kpi warning floating-card">
-                        <span class="label">Catalyseurs</span>
-                        <span class="value">Fed / CPI</span>
-                        <span class="meta">Événements de rupture</span>
+                        <span class="label">{{ t('catalysts', 'Catalyseurs') }}</span>
+                        <span class="value">{{ t("markets_forex_fed_cpi", "Fed / CPI") }}</span>
+                        <span class="meta">{{ t('break_events', 'Événements de rupture') }}</span>
                     </div>
                 </div>
             </div>
@@ -62,8 +62,8 @@
             <div class="forex-hero-right">
                 <div class="macro-orb-card">
                     <div class="macro-orb-header">
-                        <span class="orb-label">Global Macro Pulse</span>
-                        <span class="orb-status">Institutional View</span>
+                        <span class="orb-label">{{ t('global_macro_pulse', 'Global Macro Pulse') }}</span>
+                        <span class="orb-status">{{ t('institutional_view', 'Institutional View') }}</span>
                     </div>
 
                     <div class="macro-orb-wrap">
@@ -75,20 +75,20 @@
 
                     <div class="macro-mini-grid">
                         <div class="macro-mini-box">
-                            <span class="mini-label">USD</span>
-                            <span class="mini-value">Liquidity Driver</span>
+                            <span class="mini-label">{{ t("markets_forex_usd", "USD") }}</span>
+                            <span class="mini-value">{{ t("markets_forex_liquidity_driver", "Liquidity Driver") }}</span>
                         </div>
                         <div class="macro-mini-box">
-                            <span class="mini-label">JPY</span>
-                            <span class="mini-value">Risk Proxy</span>
+                            <span class="mini-label">{{ t("markets_forex_jpy", "JPY") }}</span>
+                            <span class="mini-value">{{ t("markets_forex_risk_proxy", "Risk Proxy") }}</span>
                         </div>
                         <div class="macro-mini-box">
-                            <span class="mini-label">EUR</span>
-                            <span class="mini-value">Policy Flow</span>
+                            <span class="mini-label">{{ t("markets_forex_eur", "EUR") }}</span>
+                            <span class="mini-value">{{ t("markets_forex_policy_flow", "Policy Flow") }}</span>
                         </div>
                         <div class="macro-mini-box">
-                            <span class="mini-label">GBP</span>
-                            <span class="mini-value">Volatility Edge</span>
+                            <span class="mini-label">{{ t("markets_forex_gbp", "GBP") }}</span>
+                            <span class="mini-value">{{ t("markets_forex_volatility_edge", "Volatility Edge") }}</span>
                         </div>
                     </div>
                 </div>
@@ -98,8 +98,8 @@
         <!-- TAPE -->
         <div class="tv-card tv-card-tape premium-tape-card">
             <div class="tv-card-head">
-                <h2>Majors en direct</h2>
-                <p>Lecture instantanée des devises influençant les conditions monétaires globales.</p>
+                <h2>{{ t('live_majors', 'Majors en direct') }}</h2>
+                <p>{{ t('live_majors_desc', 'Lecture instantanée des devises influençant les conditions monétaires globales.') }}</p>
             </div>
 
             <div class="tradingview-widget-container">
@@ -120,7 +120,7 @@
                     "colorTheme": "dark",
                     "isTransparent": true,
                     "displayMode": "adaptive",
-                    "locale": "fr"
+                    "locale": "{{ current_lang|default('en') }}"
                 }
                 </script>
             </div>
@@ -133,10 +133,10 @@
     <div class="market-shell">
 
         <div class="section-heading-ultra">
-            <span class="section-kicker">Forex Command Center</span>
-            <h2>Le centre de lecture des flux monétaires</h2>
+            <span class="section-kicker">{{ t('forex_command_center', 'Forex Command Center') }}</span>
+            <h2>{{ t('forex_command_title', 'Le centre de lecture des flux monétaires') }}</h2>
             <p>
-                Lecture structurée du dollar et des majors pour identifier les déséquilibres macro et anticiper les mouvements intermarket.
+                {{ t('forex_command_desc', 'Lecture structurée du dollar et des majors pour identifier les déséquilibres macro et anticiper les mouvements intermarket.') }}
             </p>
         </div>
 
@@ -145,11 +145,11 @@
             <article class="market-card-chart ultra-chart-card dominant-chart">
                 <div class="tv-card-head">
                     <div>
-                        <span class="chart-tag">Primary Macro Driver</span>
-                        <h2>DXY — graphique principal</h2>
-                        <p>Le DXY agit comme indicateur central de liquidité et de pression globale sur les actifs risqués.</p>
+                        <span class="chart-tag">{{ t('primary_macro_driver', 'Primary Macro Driver') }}</span>
+                        <h2>{{ t('dxy_main_chart', 'DXY — graphique principal') }}</h2>
+                        <p>{{ t('dxy_main_chart_desc', 'Le DXY agit comme indicateur central de liquidité et de pression globale sur les actifs risqués.') }}</p>
                     </div>
-                    <span class="chart-side-badge">Core Signal</span>
+                    <span class="chart-side-badge">{{ t("markets_forex_core_signal", "Core Signal") }}</span>
                 </div>
 
                 <div class="tradingview-widget-container chart-widget">
@@ -162,7 +162,7 @@
                         "timezone": "Europe/Paris",
                         "theme": "dark",
                         "style": "1",
-                        "locale": "fr",
+                        "locale": "{{ current_lang|default('en') }}",
                         "allow_symbol_change": true,
                         "calendar": true,
                         "withdateranges": true,
@@ -176,11 +176,11 @@
             <article class="market-card-chart ultra-chart-card">
                 <div class="tv-card-head">
                     <div>
-                        <span class="chart-tag">Majors Dashboard</span>
-                        <h2>Vue Forex globale</h2>
-                        <p>Vue consolidée des principales paires pour analyser les flux internationaux et la rotation des capitaux.</p>
+                        <span class="chart-tag">{{ t('majors', 'Majors') }} {{ t("markets_forex_dashboard", "Dashboard") }}</span>
+                        <h2>{{ t('global_forex_view', 'Vue Forex globale') }}</h2>
+                        <p>{{ t('global_forex_view_desc', 'Vue consolidée des principales paires pour analyser les flux internationaux et la rotation des capitaux.') }}</p>
                     </div>
-                    <span class="chart-side-badge">Live Matrix</span>
+                    <span class="chart-side-badge">{{ t("markets_forex_live_matrix", "Live Matrix") }}</span>
                 </div>
 
                 <div class="tradingview-widget-container market-overview-widget">
@@ -190,7 +190,7 @@
                         "colorTheme": "dark",
                         "dateRange": "12M",
                         "showChart": true,
-                        "locale": "fr",
+                        "locale": "{{ current_lang|default('en') }}",
                         "isTransparent": true,
                         "showSymbolLogo": true,
                         "width": "100%",
@@ -221,38 +221,38 @@
         <div class="market-grid forex-insight-grid" id="macro-intelligence">
 
             <article class="market-card ultra-info-card">
-                <span class="eyebrow">Dollar Structure</span>
-                <h2>Le vrai filtre macro</h2>
+                <span class="eyebrow">{{ t("markets_forex_dollar_structure", "Dollar Structure") }}</span>
+                <h2>{{ t('real_macro_filter', 'Le vrai filtre macro') }}</h2>
                 <p>
-                    Une hausse du dollar renforce les conditions restrictives, tandis qu’un affaiblissement soutient les actifs à risque.
+                    {{ t("markets_forex_une_hausse_du_dollar_renforce_les_conditions_restrictives_tandis_qu_un_a", "Une hausse du dollar renforce les conditions restrictives, tandis qu’un affaiblissement soutient les actifs à risque.") }}
                 </p>
                 <div class="card-stat">
-                    <span class="name">Effet</span>
-                    <span class="num">Cross-Asset Pressure</span>
+                    <span class="name">{{ t("markets_forex_effet", "Effet") }}</span>
+                    <span class="num">{{ t("markets_forex_cross_asset_pressure", "Cross-Asset Pressure") }}</span>
                 </div>
             </article>
 
             <article class="market-card ultra-info-card">
-                <span class="eyebrow">Macro Catalysts</span>
-                <h2>Fed, inflation et données</h2>
+                <span class="eyebrow">{{ t("markets_forex_macro_catalysts", "Macro Catalysts") }}</span>
+                <h2>{{ t('fed_inflation_data', 'Fed, inflation et données') }}</h2>
                 <p>
-                    Le Forex intègre rapidement les annonces macro : inflation, emploi, politique monétaire et décisions des banques centrales.
+                    {{ t("markets_forex_le_forex_integre_rapidement_les_annonces_macro_inflation_emploi_politiqu", "Le Forex intègre rapidement les annonces macro : inflation, emploi, politique monétaire et décisions des banques centrales.") }}
                 </p>
                 <div class="card-stat">
-                    <span class="name">Utilité</span>
-                    <span class="num">Confluence Engine</span>
+                    <span class="name">{{ t("markets_forex_utilite", "Utilité") }}</span>
+                    <span class="num">{{ t("markets_forex_confluence_engine", "Confluence Engine") }}</span>
                 </div>
             </article>
 
             <article class="market-card ultra-info-card">
-                <span class="eyebrow">Execution Edge</span>
-                <h2>Lire avant d’agir</h2>
+                <span class="eyebrow">{{ t("markets_forex_execution_edge", "Execution Edge") }}</span>
+                <h2>{{ t('read_before_acting', 'Lire avant d’agir') }}</h2>
                 <p>
-                    Le Forex fournit un contexte préalable pour structurer des scénarios d’exécution sur les autres marchés.
+                    {{ t("markets_forex_le_forex_fournit_un_contexte_prealable_pour_structurer_des_scenarios_d_e", "Le Forex fournit un contexte préalable pour structurer des scénarios d’exécution sur les autres marchés.") }}
                 </p>
                 <div class="card-stat">
-                    <span class="name">Objectif</span>
-                    <span class="num">Timing Premium</span>
+                    <span class="name">{{ t("markets_forex_objectif", "Objectif") }}</span>
+                    <span class="num">{{ t("markets_forex_timing_premium", "Timing Premium") }}</span>
                 </div>
             </article>
 
@@ -261,29 +261,29 @@
         <!-- HIGHLIGHT -->
         <div class="market-highlight ultra-highlight-block">
             <div class="highlight-left">
-                <span class="section-kicker">Pourquoi cette page devient puissante</span>
-                <h3>Avantage analytique basé sur la lecture des flux macro</h3>
+                <span class="section-kicker">{{ t("markets_forex_pourquoi_cette_page_devient_puissante", "Pourquoi cette page devient puissante") }}</span>
+                <h3>{{ t('forex_advantage_title', 'Avantage analytique basé sur la lecture des flux macro') }}</h3>
                 <p>
-                    L’analyse ne se limite pas à l’actif traité. Le Forex permet d’identifier les sources de pression macro et d’anticiper les réactions sur l’ensemble des classes d’actifs.
+                    {{ t("markets_forex_l_analyse_ne_se_limite_pas_a_l_actif_traite_le_forex_permet_d_identifier", "L’analyse ne se limite pas à l’actif traité. Le Forex permet d’identifier les sources de pression macro et d’anticiper les réactions sur l’ensemble des classes d’actifs.") }}
                 </p>
             </div>
 
             <div class="market-mini-list premium-mini-list">
                 <div class="market-mini-item">
-                    <span class="label">Pilier</span>
+                    <span class="label">{{ t("markets_forex_pilier", "Pilier") }}</span>
                     <span class="value">DXY</span>
                 </div>
                 <div class="market-mini-item">
-                    <span class="label">Majors</span>
-                    <span class="value">EUR / GBP / JPY</span>
+                    <span class="label">{{ t('majors', 'Majors') }}</span>
+                    <span class="value">{{ t("markets_forex_eur_gbp_jpy", "EUR / GBP / JPY") }}</span>
                 </div>
                 <div class="market-mini-item">
-                    <span class="label">Lecture</span>
-                    <span class="value">Macro + Flux</span>
+                    <span class="label">{{ t("markets_forex_lecture", "Lecture") }}</span>
+                    <span class="value">{{ t("markets_forex_macro_flux", "Macro + Flux") }}</span>
                 </div>
                 <div class="market-mini-item">
-                    <span class="label">But</span>
-                    <span class="value">Confluence premium</span>
+                    <span class="label">{{ t("markets_forex_but", "But") }}</span>
+                    <span class="value">{{ t("markets_forex_confluence_premium", "Confluence premium") }}</span>
                 </div>
             </div>
         </div>
@@ -291,17 +291,17 @@
         <!-- FINAL -->
         <div class="forex-bottom-banner">
             <div class="bottom-banner-text">
-                <span class="section-kicker">VelWolf Intelligence Layer</span>
-                <h3>Le Forex devient un outil de lecture des flux globaux et de validation des scénarios de marché.</h3>
+                <span class="section-kicker">{{ t("markets_forex_velwolef_intelligence_layer", "VelWolef Intelligence Layer") }}</span>
+                <h3>{{ t('forex_final_title', 'Le Forex devient un outil de lecture des flux globaux et de validation des scénarios de marché.') }}</h3>
                 <p>
-                    Interface conçue pour analyser la pression macro globale et améliorer la prise de décision.
+                    {{ t("markets_forex_interface_concue_pour_analyser_la_pression_macro_globale_et_ameliorer_la", "Interface conçue pour analyser la pression macro globale et améliorer la prise de décision.") }}
                 </p>
             </div>
         </div>
 
     </div>
 </section>
-```
+
 
 </div>
 {% endblock %}

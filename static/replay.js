@@ -1,1474 +1,1055 @@
-console.log("REPLAY JS FINAL TIMELINE-ALIGNED LOADED");
+console.log("LIGHTWEIGHT ELITE MODE LOADED");
+
+/*
+  ELITE MODE
+  - Lightweight Charts
+  - Replay fluide style TradingView
+  - Zoom/scroll/crosshair natifs
+  - Multi-trades si API renvoie data.trades, sinon trade unique
+  - EMA20 / EMA50 / VWAP / MTF / HH-HL / Volume / RSI avec cases
+  - MFE / MAE live
+  - Feedback décision intelligent simple côté frontend
+*/
 
 let chart = null;
-let replayTimer = null;
-let speed = 900;
+let candleSeries = null;
+let markerApi = null;
 
-let rawData = null;
+let ema20Series = null;
+let ema50Series = null;
+let vwapSeries = null;
+let htfSeries = null;
+let structureSeries = null;
+let volumeSeries = null;
+let rsiSeries = null;
+
+let rawData = {};
+let trades = [];
+let activeTradeIndex = 0;
+let trade = {};
+
 let candles = [];
 let htfCandles = [];
-let events = [];
-let trade = null;
+let replayCandles = [];
 
-let currentIndex = 0;
 let entryIndex = 0;
 let decisionIndex = 0;
 let exitIndex = 0;
+let startIndex = 0;
+let endIndex = 0;
+let currentPos = 1;
 
-let decisionMade = false;
-let replayFinished = false;
-let replayStoppedByOutcome = false;
-let revealedEvents = new Set();
-let activeHintTimeout = null;
+let timer = null;
+let speed = 420;
+let decisionDone = false;
+let decisionShown = false;
 
-// =========================
-// INIT
-// =========================
+let indicatorState = {
+  ema20: true,
+  ema50: true,
+  vwap: true,
+  htf: true,
+  structure: true,
+  volume: true,
+  rsi: true
+};
+
+window.addEventListener("load", initReplay);
+
 async function initReplay() {
-    try {
-        const res = await fetch(replayApiBase);
-        const data = await res.json();
+  const chartEl = document.getElementById("chart");
 
-        if (!res.ok) {
-            throw new Error(data.error || "Erreur de chargement du replay");
-        }
-
-        rawData = data;
-        candles = sanitizeCandles(Array.isArray(data.candles) ? data.candles : []);
-        htfCandles = sanitizeCandles(Array.isArray(data.higher_timeframe_candles) ? data.higher_timeframe_candles : []);
-        events = Array.isArray(data.events) ? data.events : [];
-        trade = data.trade || {};
-
-        normalizeReplayFlow();
-        hydrateStaticUI();
-        ensureAdvancedPanels();
-        initChart();
-
-        if (!candles.length) {
-            throw new Error(buildEmptyReplayMessage(data.debug || {}));
-        }
-
-        
-
-        currentIndex = entryIndex || 1;
-
-        renderChart(currentIndex);
-        renderEvents(events);
-        renderLessons(Array.isArray(trade.lessons) ? trade.lessons : []);
-        renderTimeline();
-        updateMeta(currentIndex);
-        updateScoreWaiting();
-        updateLiveStats(currentIndex);
-        updateMarketState(currentIndex);
-        updateHTFDesk();
-        updateDecisionAssistant(currentIndex);
-        highlightTimeline(currentIndex - 1);
-        revealEventsUpTo(currentIndex - 1);
-    } catch (error) {
-        console.error(error);
-        const chartEl = document.getElementById("chart");
-        if (chartEl) {
-            chartEl.innerHTML = `<div class="chart-error">${escapeHtml(error.message)}</div>`;
-        }
+  try {
+    if (typeof LightweightCharts === "undefined") {
+      throw new Error("LightweightCharts non chargé dans replay.html");
     }
+
+    if (typeof replayApiBase === "undefined" || !replayApiBase) {
+      throw new Error("replayApiBase manquant");
+    }
+
+    const res = await fetch(replayApiBase, { credentials: "same-origin" });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Erreur API replay");
+
+    rawData = data || {};
+    candles = normalizeCandles(data.candles || []);
+    htfCandles = normalizeCandles(data.higher_timeframe_candles || []);
+
+    trades = Array.isArray(data.trades) && data.trades.length
+      ? data.trades
+      : [data.trade || data || {}];
+
+    if (!candles.length) {
+      chartEl.innerHTML = "<div class='chart-error'>Aucune bougie disponible.</div>";
+      return;
+    }
+
+    trade = trades[activeTradeIndex] || {};
+    computeReplayWindow();
+    hydrateUI();
+    initIndicatorPanel();
+    initElitePanels();
+    initDecisionOverlay();
+    initChart();
+    resetReplay();
+
+  } catch (e) {
+    console.error(e);
+    if (chartEl) chartEl.innerHTML = "<div class='chart-error'>" + escapeHtml(e.message) + "</div>";
+  }
 }
 
-// =========================
-// DATA SANITIZE
-// =========================
-function sanitizeCandles(input) {
-    const list = (input || [])
-        .map((c) => ({
-            time: normalizeIsoTime(c.time),
-            open: Number(c.open),
-            high: Number(c.high),
-            low: Number(c.low),
-            close: Number(c.close),
-            volume: c.volume == null ? null : Number(c.volume),
-        }))
-        .filter((c) => c.time && [c.open, c.high, c.low, c.close].every(Number.isFinite))
-        .sort((a, b) => safeTimestamp(a.time) - safeTimestamp(b.time));
+/* ================= DATA ================= */
 
-    const unique = [];
-    const seen = new Set();
-
-    list.forEach((candle) => {
-        if (seen.has(candle.time)) return;
-        seen.add(candle.time);
-
-        unique.push({
-            ...candle,
-            high: Math.max(candle.high, candle.open, candle.close, candle.low),
-            low: Math.min(candle.low, candle.open, candle.close, candle.high),
-            index: unique.length,
-        });
-    });
-
-    return unique;
-}
-
-function clampIndex(value, fallback = 0) {
-    const num = Number(value);
-    if (!Number.isFinite(num)) {
-        return Math.max(0, Math.min(fallback, Math.max(0, candles.length - 1)));
-    }
-    return Math.max(0, Math.min(Math.round(num), Math.max(0, candles.length - 1)));
-}
-
-// =========================
-// FLOW NORMALIZATION
-// =========================
-function normalizeReplayFlow() {
-    entryIndex = clampIndex(trade?.entry_index, 0);
-    decisionIndex = clampIndex(trade?.decision_index, entryIndex + 1);
-    exitIndex = clampIndex(trade?.exit_index, Math.min(candles.length - 1, entryIndex + 2));
-
-    if (decisionIndex < entryIndex) {
-        decisionIndex = entryIndex;
-    }
-
-    if (exitIndex < decisionIndex) {
-        exitIndex = decisionIndex;
-    }
-
-    events = (events || []).map((evt, idx) => ({
-        ...evt,
-        id: evt.id || `${evt.type || "event"}-${idx}`,
-        index: clampIndex(evt.index, inferEventIndex(evt.type)),
+function normalizeCandles(raw) {
+  return (raw || [])
+    .map(c => ({
+      time: toUnixTime(c.time),
+      open: Number(c.open),
+      high: Number(c.high),
+      low: Number(c.low),
+      close: Number(c.close),
+      volume: c.volume == null ? 0 : Number(c.volume)
+    }))
+    .filter(c => c.time && [c.open, c.high, c.low, c.close].every(Number.isFinite))
+    .sort((a, b) => a.time - b.time)
+    .map((c, i) => ({
+      ...c,
+      index: i,
+      high: Math.max(c.high, c.open, c.close, c.low),
+      low: Math.min(c.low, c.open, c.close, c.high)
     }));
-
-    replayStoppedByOutcome = false;
 }
 
-function inferEventIndex(type) {
-    const t = String(type || "").toLowerCase();
-    if (t === "entry") return entryIndex;
-    if (t === "decision") return decisionIndex;
-    if (["tp_hit", "sl_hit", "breakeven", "open"].includes(t)) return exitIndex;
-    return entryIndex;
+function computeReplayWindow() {
+  entryIndex = clampIndex(trade.entry_index, nearestIndexByTime(trade.entry_time, 0));
+  exitIndex = detectExitIndex();
+  decisionIndex = computeProDecisionIndex();
+
+  if (decisionIndex <= entryIndex && exitIndex > entryIndex) {
+    decisionIndex = Math.min(exitIndex, entryIndex + 2);
+  }
+
+  if (decisionIndex >= exitIndex && exitIndex > entryIndex) {
+    decisionIndex = Math.max(entryIndex + 1, exitIndex - 1);
+  }
+
+  // Affichage large : 100 bougies avant entrée
+startIndex = Math.max(0, entryIndex - 100);
+
+// Fin du replay après sortie
+endIndex = Math.min(
+  candles.length - 1,
+  Math.max(exitIndex + 10, entryIndex + 24)
+);
+
+// Toutes les bougies visibles dans le chart
+replayCandles = candles.slice(startIndex, endIndex + 1);
+
+// Mais le PLAY commence seulement 10 bougies avant entrée
+const playStartIndex = Math.max(0, entryIndex - 10);
+currentPos = Math.max(1, playStartIndex - startIndex + 1);
+  decisionDone = false;
+  decisionShown = false;
 }
 
-function computeInitialIndex() {
-    if (!candles.length) return 0;
-    return Math.max(1, entryIndex - Math.min(20, entryIndex));
-}
+function detectExitIndex() {
+  const direction = String(trade.direction || "").toUpperCase();
+  const tp = Number(trade.take_profit);
+  const sl = Number(trade.stop_loss);
 
-// =========================
-// UI BUILDERS
-// =========================
-function ensureAdvancedPanels() {
-    const mainColumn = document.querySelector(".replay-main-column");
-    const sideColumn = document.querySelector(".replay-side-column");
+  for (let i = entryIndex + 1; i < candles.length; i++) {
+    const c = candles[i];
+    const tpTouched = Number.isFinite(tp) && c.low <= tp && c.high >= tp;
+    const slTouched = Number.isFinite(sl) && c.low <= sl && c.high >= sl;
 
-    if (mainColumn && !document.getElementById("replay-intelligence-card")) {
-        const intelligenceCard = document.createElement("section");
-        intelligenceCard.className = "intel-card";
-        intelligenceCard.id = "replay-intelligence-card";
-        intelligenceCard.innerHTML = `
-            <div class="panel-head">
-                <div>
-                    <span class="panel-kicker">Desk intelligence</span>
-                    <h3>Lecture tactique du replay</h3>
-                </div>
-                <div class="panel-badge" id="market-phase-badge">Phase -</div>
-            </div>
-
-            <div class="intel-grid">
-                <div class="intel-box">
-                    <span>État du marché</span>
-                    <strong id="market-state-text">Observation</strong>
-                    <small id="market-state-subtext">Chargement...</small>
-                </div>
-
-                <div class="intel-box">
-                    <span>Pression du prix</span>
-                    <strong id="pressure-text">Neutre</strong>
-                    <small id="pressure-subtext">Structure en lecture</small>
-                </div>
-
-                <div class="intel-box">
-                    <span>Momentum local</span>
-                    <strong id="momentum-text">N/A</strong>
-                    <small id="momentum-subtext">Analyse glissante</small>
-                </div>
-
-                <div class="intel-box">
-                    <span>Statut du plan</span>
-                    <strong id="plan-status-text">En préparation</strong>
-                    <small id="plan-status-subtext">Aucune invalidation détectée</small>
-                </div>
-            </div>
-
-            <div class="hint-stream" id="hint-stream">
-                <div class="hint-item neutral">Le replay analysera la structure au fil des bougies.</div>
-            </div>
-        `;
-        mainColumn.insertBefore(intelligenceCard, document.querySelector(".training-card"));
+    if (direction === "BUY") {
+      if (tpTouched) return i;
+      if (slTouched) return i;
+    } else if (direction === "SELL") {
+      if (tpTouched) return i;
+      if (slTouched) return i;
+    } else if (tpTouched || slTouched) {
+      return i;
     }
+  }
 
-    if (mainColumn && !document.getElementById("replay-htf-card")) {
-        const htfCard = document.createElement("section");
-        htfCard.className = "intel-card";
-        htfCard.id = "replay-htf-card";
-        htfCard.innerHTML = `
-            <div class="panel-head">
-                <div>
-                    <span class="panel-kicker">Multi-timeframe</span>
-                    <h3>Overlay supérieur</h3>
-                </div>
-                <div class="panel-badge" id="htf-bias-badge">HTF -</div>
-            </div>
-
-            <div class="intel-grid">
-                <div class="intel-box">
-                    <span>Timeframe principal</span>
-                    <strong id="htf-primary-tf">-</strong>
-                    <small>Lecture d’exécution</small>
-                </div>
-
-                <div class="intel-box">
-                    <span>Timeframe supérieur</span>
-                    <strong id="htf-higher-tf">-</strong>
-                    <small>Lecture structurelle</small>
-                </div>
-
-                <div class="intel-box">
-                    <span>Biais HTF</span>
-                    <strong id="htf-bias-text">-</strong>
-                    <small id="htf-bias-subtext">Contexte supérieur</small>
-                </div>
-
-                <div class="intel-box">
-                    <span>Zones HTF</span>
-                    <strong id="htf-zone-count">0</strong>
-                    <small id="htf-zone-subtext">Aucune zone</small>
-                </div>
-            </div>
-        `;
-        mainColumn.insertBefore(htfCard, document.querySelector(".training-card"));
-    }
-
-    if (mainColumn && !document.getElementById("decision-assistant-card")) {
-        const decisionCard = document.createElement("section");
-        decisionCard.className = "analysis-card";
-        decisionCard.id = "decision-assistant-card";
-        decisionCard.innerHTML = `
-            <div class="panel-head">
-                <div>
-                    <span class="panel-kicker">Decision assistant</span>
-                    <h3>Aide à la décision</h3>
-                </div>
-            </div>
-
-            <div class="analysis-split">
-                <div class="analysis-box">
-                    <h4>Contexte de décision</h4>
-                    <p id="decision-context-text">Chargement...</p>
-                </div>
-
-                <div class="analysis-box">
-                    <h4>Lecture de risque</h4>
-                    <p id="decision-risk-text">Chargement...</p>
-                </div>
-            </div>
-        `;
-        mainColumn.insertBefore(decisionCard, document.querySelector(".lessons-card"));
-    }
-
-    if (sideColumn && !document.getElementById("trader-benchmark-card")) {
-        const benchCard = document.createElement("section");
-        benchCard.className = "benchmark-card";
-        benchCard.id = "trader-benchmark-card";
-        benchCard.innerHTML = `
-            <div class="panel-head">
-                <div>
-                    <span class="panel-kicker">Benchmark</span>
-                    <h3>Comparatif trader</h3>
-                </div>
-            </div>
-
-            <div class="benchmark-grid">
-                <div class="benchmark-box">
-                    <span>Ton score</span>
-                    <strong id="bench-user-score">0/10</strong>
-                </div>
-
-                <div class="benchmark-box">
-                    <span>Moyenne desk</span>
-                    <strong id="bench-desk-score">6.4/10</strong>
-                </div>
-
-                <div class="benchmark-box">
-                    <span>Position</span>
-                    <strong id="bench-ranking">Top 50%</strong>
-                </div>
-
-                <div class="benchmark-box">
-                    <span>Niveau</span>
-                    <strong id="bench-level">Observer</strong>
-                </div>
-            </div>
-
-            <div class="benchmark-progress-wrap">
-                <div class="benchmark-progress-label">
-                    <span>Progression trader</span>
-                    <strong id="bench-progress-text">0%</strong>
-                </div>
-                <div class="benchmark-progress">
-                    <div class="benchmark-progress-fill" id="bench-progress-fill"></div>
-                </div>
-            </div>
-        `;
-        sideColumn.insertBefore(benchCard, document.querySelector(".side-note-card"));
-    }
+  return clampIndex(trade.exit_index, candles.length - 1);
 }
 
-function hydrateStaticUI() {
-    setText("hero-symbol", trade.symbol || "-");
-    setText("hero-direction", trade.direction || "-");
-    setText("hero-confidence", `${trade.confidence || 0}%`);
-    setText("hero-rr", trade.risk_reward || trade.computed_rr || "-");
+function computeProDecisionIndex() {
+  if (!Number.isFinite(entryIndex) || !Number.isFinite(exitIndex) || exitIndex <= entryIndex) {
+    return Math.min(candles.length - 1, entryIndex + 2);
+  }
 
-    setText("side-symbol", trade.symbol || "-");
-    setText("side-direction", trade.direction || "-");
-    setText("side-entry", formatPrice(trade.entry_price));
-    setText("side-sl", formatPrice(trade.stop_loss));
-    setText("side-tp", formatPrice(trade.take_profit));
-    setText("side-confidence", `${trade.confidence || 0}%`);
-    setText("side-trend", formatTrendText(trade.trend || inferTrendFromData()));
-    setText("side-rr", trade.risk_reward || trade.computed_rr || "-");
-    setText("side-timeframe", trade.timeframe || "-");
-    setText("side-result", formatResultLabel(trade.result || trade.derived_result));
-
-    setText("entry-price-box", formatPrice(trade.entry_price));
-    setText("stop-loss-box", formatPrice(trade.stop_loss));
-    setText("take-profit-box", formatPrice(trade.take_profit));
-    setText("result-box", formatResultLabel(trade.result || trade.derived_result));
-
-    setText("market-context", trade.market_context || "Aucune analyse de contexte disponible.");
-    setText("post-analysis", trade.post_analysis || "Aucune analyse post-trade disponible.");
-
-    setText("setup-grade-badge", `Setup ${trade.setup_grade || "-"}`);
-    setText("difficulty-badge", trade.difficulty || "Difficulty -");
-    setText("chart-badge", `${trade.symbol || "-"} • ${trade.timeframe || "-"}`);
-
-    const resultBadge = document.getElementById("result-badge");
-    if (resultBadge) {
-        const resultUpper = String(trade.result || trade.derived_result || "OPEN").toUpperCase();
-        resultBadge.textContent = formatResultLabel(resultUpper);
-        resultBadge.classList.remove("status-open", "status-win", "status-loss");
-        if (resultUpper === "WIN") {
-            resultBadge.classList.add("status-win");
-        } else if (resultUpper === "LOSS") {
-            resultBadge.classList.add("status-loss");
-        } else {
-            resultBadge.classList.add("status-open");
-        }
-    }
-
-    const directionEls = [
-        document.getElementById("hero-direction"),
-        document.getElementById("side-direction")
-    ];
-
-    directionEls.forEach((el) => {
-        if (!el) return;
-        el.classList.remove("BUY", "SELL", "buy", "sell");
-        const dir = String(trade.direction || "").toUpperCase();
-        if (dir === "BUY") {
-            el.classList.add("buy");
-        } else if (dir === "SELL") {
-            el.classList.add("sell");
-        }
-    });
+  const distance = exitIndex - entryIndex;
+  if (distance < 6) return Math.min(exitIndex, entryIndex + Math.max(1, Math.floor(distance / 2)));
+  return Math.round(entryIndex + distance * 0.5);
 }
 
-function updateHTFDesk() {
-    setText("htf-primary-tf", String(trade.timeframe || "-").toUpperCase());
-    setText("htf-higher-tf", String(trade.higher_timeframe || "-").toUpperCase());
+/* ================= CHART ================= */
 
-    const bias = String(trade.htf_bias || "NEUTRAL").toUpperCase();
-    setText("htf-bias-badge", `HTF ${bias}`);
-    setText("htf-bias-text", bias);
-    setText(
-        "htf-bias-subtext",
-        bias === "BULLISH"
-            ? "Structure supérieure favorable à la hausse"
-            : bias === "BEARISH"
-                ? "Structure supérieure orientée vendeuse"
-                : "Structure supérieure neutre"
-    );
-
-    const zones = Array.isArray(trade?.htf_zones) ? trade.htf_zones : [];
-    setText("htf-zone-count", String(zones.length));
-    setText("htf-zone-subtext", zones.length ? zones.map((z) => z.label).join(" • ") : "Aucune zone détectée");
-}
-
-function updateDecisionAssistant(index) {
-    setText("decision-context-text", trade?.decision_context || "Aucun contexte de décision disponible.");
-
-    const health = String(trade?.trade_health || "unknown").toLowerCase();
-    const structure = String(trade?.market_structure || "neutral").toLowerCase();
-
-    const parts = [
-        `Santé du trade : ${formatHealthLabel(health)}.`,
-        `Structure : ${structure}.`,
-        trade?.distance_to_sl_percent != null ? `Distance SL : ${trade.distance_to_sl_percent}%.` : null,
-        trade?.distance_to_tp_percent != null ? `Distance TP : ${trade.distance_to_tp_percent}%.` : null,
-        trade?.max_favorable_excursion_percent != null ? `MFE : ${trade.max_favorable_excursion_percent}%.` : null,
-        trade?.max_adverse_excursion_percent != null ? `MAE : ${trade.max_adverse_excursion_percent}%.` : null,
-        index < decisionIndex ? "Le moment critique n’est pas encore atteint." : "Le moment critique est atteint ou dépassé."
-    ].filter(Boolean);
-
-    setText("decision-risk-text", parts.join(" "));
-}
-
-// =========================
-// CHART
-// =========================
 function initChart() {
-    const chartDom = document.getElementById("chart");
-    if (!chartDom) return;
+  const el = document.getElementById("chart");
+  el.innerHTML = "";
 
-    chartDom.style.width = "100%";
-    chartDom.style.height = "540px";
-    chartDom.style.minHeight = "540px";
+  chart = LightweightCharts.createChart(el, {
+    width: el.clientWidth,
+    height: el.clientHeight || 540,
+    layout: {
+      background: { color: "#07111f" },
+      textColor: "#94a3b8",
+      fontSize: 12
+    },
+    grid: {
+      vertLines: { color: "rgba(148,163,184,0.07)" },
+      horzLines: { color: "rgba(148,163,184,0.07)" }
+    },
+    rightPriceScale: {
+      borderColor: "rgba(148,163,184,0.16)",
+      scaleMargins: { top: 0.08, bottom: 0.12 }
+    },
+    timeScale: {
+      borderColor: "rgba(148,163,184,0.16)",
+      timeVisible: true,
+      secondsVisible: false,
+      rightOffset: 10,
+      barSpacing: 12,
+      fixLeftEdge: false,
+      fixRightEdge: false,
+      lockVisibleTimeRangeOnResize: false
+    },
+    handleScroll: {
+      mouseWheel: true,
+      pressedMouseMove: true,
+      horzTouchDrag: true,
+      vertTouchDrag: true
+    },
+    handleScale: {
+      axisPressedMouseMove: true,
+      mouseWheel: true,
+      pinch: true
+    },
+    crosshair: {
+      mode: LightweightCharts.CrosshairMode.Normal,
+      vertLine: {
+        color: "rgba(148,163,184,0.35)",
+        style: LightweightCharts.LineStyle.Dashed,
+        labelBackgroundColor: "#334155"
+      },
+      horzLine: {
+        color: "rgba(148,163,184,0.35)",
+        style: LightweightCharts.LineStyle.Dashed,
+        labelBackgroundColor: "#334155"
+      }
+    }
+  });
 
-    chart = echarts.init(chartDom, null, { renderer: "canvas" });
+  candleSeries = addCandlestickSeriesCompat({
+    upColor: "#22c55e",
+    downColor: "#ef4444",
+    borderUpColor: "#22c55e",
+    borderDownColor: "#ef4444",
+    wickUpColor: "#22c55e",
+    wickDownColor: "#ef4444",
+    priceLineVisible: true
+  });
 
-    setTimeout(() => {
-        if (chart) chart.resize();
-    }, 100);
+  ema20Series = addLineSeriesCompat({ color: "#f59e0b", lineWidth: 2, priceLineVisible: false, lastValueVisible: true, title: "EMA 20" });
+  ema50Series = addLineSeriesCompat({ color: "#a78bfa", lineWidth: 2, priceLineVisible: false, lastValueVisible: true, title: "EMA 50" });
+  vwapSeries = addLineSeriesCompat({ color: "#38bdf8", lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dotted, priceLineVisible: false, lastValueVisible: true, title: "VWAP" });
+  htfSeries = addLineSeriesCompat({ color: "#8b5cf6", lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, priceLineVisible: false, lastValueVisible: true, title: "HTF" });
+  structureSeries = addLineSeriesCompat({ color: "#e5e7eb", lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dotted, priceLineVisible: false, lastValueVisible: false, title: "HH/HL" });
 
-    window.addEventListener("resize", () => {
-        if (chart) chart.resize();
+  volumeSeries = addHistogramSeriesCompat({
+    priceFormat: { type: "volume" },
+    priceScaleId: "volume",
+    priceLineVisible: false,
+    lastValueVisible: false
+  });
+
+  try {
+    chart.priceScale("volume").applyOptions({ scaleMargins: { top: 0.82, bottom: 0 }, borderVisible: false });
+  } catch (e) {}
+
+  rsiSeries = addLineSeriesCompat({
+    color: "#eab308",
+    lineWidth: 1,
+    priceScaleId: "rsi",
+    priceLineVisible: false,
+    lastValueVisible: false,
+    title: "RSI 14"
+  });
+
+  try {
+    chart.priceScale("rsi").applyOptions({ scaleMargins: { top: 0.68, bottom: 0.12 }, borderVisible: false });
+  } catch (e) {}
+
+  addPriceLines();
+
+  window.addEventListener("resize", () => {
+    chart.applyOptions({ width: el.clientWidth, height: el.clientHeight || 540 });
+  });
+}
+
+function addCandlestickSeriesCompat(options) {
+  if (chart && typeof chart.addCandlestickSeries === "function") return chart.addCandlestickSeries(options);
+  if (LightweightCharts.CandlestickSeries && typeof chart.addSeries === "function") return chart.addSeries(LightweightCharts.CandlestickSeries, options);
+  throw new Error("CandlestickSeries introuvable");
+}
+
+function addLineSeriesCompat(options) {
+  if (chart && typeof chart.addLineSeries === "function") return chart.addLineSeries(options);
+  if (LightweightCharts.LineSeries && typeof chart.addSeries === "function") return chart.addSeries(LightweightCharts.LineSeries, options);
+  throw new Error("LineSeries introuvable");
+}
+
+function addHistogramSeriesCompat(options) {
+  if (chart && typeof chart.addHistogramSeries === "function") return chart.addHistogramSeries(options);
+  if (LightweightCharts.HistogramSeries && typeof chart.addSeries === "function") return chart.addSeries(LightweightCharts.HistogramSeries, options);
+  throw new Error("HistogramSeries introuvable");
+}
+
+function addPriceLines() {
+  if (trade.entry_price != null) {
+    candleSeries.createPriceLine({ price: Number(trade.entry_price), color: "#22c55e", lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: "Entry" });
+  }
+  if (trade.stop_loss != null) {
+    candleSeries.createPriceLine({ price: Number(trade.stop_loss), color: "#ef4444", lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: "SL" });
+  }
+  if (trade.take_profit != null) {
+    candleSeries.createPriceLine({ price: Number(trade.take_profit), color: "#3b82f6", lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: "TP" });
+  }
+}
+
+function renderChart() {
+  const visible = replayCandles.slice(0, currentPos);
+
+  candleSeries.setData(visible.map(toChartCandle));
+  updateIndicatorSeries(visible);
+
+  const structureMarkers = indicatorState.structure ? buildStructureMarkers(visible) : [];
+  setSeriesMarkers(buildMarkers(visible).concat(structureMarkers));
+
+  renderProgress();
+  updateLiveStats(visible);
+  updateAIFeedbackLive(visible);
+
+  const last = visible[visible.length - 1];
+  if (last) {
+    setText("decision-mode-text", last.index >= exitIndex ? "Replay terminé" : "Lecture");
+  }
+
+  // TradingView feel: follow right edge smoothly while keeping zoom/scroll native.
+  if (visible.length > 1) {
+    chart.timeScale().setVisibleRange({
+      from: visible[Math.max(0, visible.length - 40)].time,
+      to: visible[visible.length - 1].time
     });
+  } else {
+    chart.timeScale().fitContent();
+  }
 }
 
-function renderChart(lastIndex) {
-    if (!chart || !candles.length) return;
-
-    const safeEnd = Math.max(1, Math.min(lastIndex, candles.length));
-    const visibleCandles = candles.slice(0, safeEnd);
-
-    if (!visibleCandles.length) return;
-
-    const categoryData = visibleCandles.map((_, i) => i);
-    const klineData = visibleCandles.map((c) => [c.open, c.close, c.low, c.high]);
-    const eventPoints = buildEventPoints(visibleCandles);
-    const priceLines = buildPriceLines();
-    const zones = computeZones(visibleCandles).concat(buildHTFZoneAreas(visibleCandles));
-    const htfOverlayLine = buildHTFOverlayLine(visibleCandles);
-    const latestClose = visibleCandles[visibleCandles.length - 1]?.close ?? null;
-
-    const lows = visibleCandles.map((c) => c.low).filter(Number.isFinite);
-    const highs = visibleCandles.map((c) => c.high).filter(Number.isFinite);
-    const minPrice = lows.length ? Math.min(...lows) : 0;
-    const maxPrice = highs.length ? Math.max(...highs) : 1;
-    const padding = (maxPrice - minPrice) * 0.08 || 1;
-
-    chart.setOption(
-        {
-            backgroundColor: "#07111f",
-            animation: false,
-            grid: {
-                left: 16,
-                right: 16,
-                top: 20,
-                bottom: 45,
-                containLabel: true
-            },
-            tooltip: {
-                trigger: "axis",
-                axisPointer: {
-                    type: "cross",
-                    lineStyle: {
-                        color: "rgba(148,163,184,0.25)",
-                        width: 1,
-                        type: "dashed"
-                    }
-                },
-                backgroundColor: "rgba(8,18,33,0.96)",
-                borderColor: "rgba(59,130,246,0.18)",
-                borderWidth: 1,
-                textStyle: {
-                    color: "#e5edf7",
-                    fontSize: 12
-                },
-                extraCssText: "box-shadow: 0 16px 40px rgba(0,0,0,0.35); border-radius: 12px;",
-                formatter(params) {
-                    const candleParam = params.find((p) => p.seriesName === "Price") || params[0];
-                    const row = visibleCandles[candleParam?.dataIndex];
-                    if (!row) return "";
-
-                    return `
-                        <div style="min-width:220px;">
-                            <div style="font-weight:700;margin-bottom:10px;color:#dbe8ff;">${formatTime(row.time)}</div>
-                            <div style="display:flex;justify-content:space-between;gap:16px;"><span>Open</span><strong>${formatPrice(row.open)}</strong></div>
-                            <div style="display:flex;justify-content:space-between;gap:16px;"><span>High</span><strong>${formatPrice(row.high)}</strong></div>
-                            <div style="display:flex;justify-content:space-between;gap:16px;"><span>Low</span><strong>${formatPrice(row.low)}</strong></div>
-                            <div style="display:flex;justify-content:space-between;gap:16px;"><span>Close</span><strong>${formatPrice(row.close)}</strong></div>
-                            ${latestClose !== null ? `<div style="display:flex;justify-content:space-between;gap:16px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);"><span>Last</span><strong>${formatPrice(latestClose)}</strong></div>` : ""}
-                        </div>
-                    `;
-                }
-            },
-            xAxis: {
-                type: "category",
-                data: categoryData,
-                boundaryGap: true,
-                axisLine: {
-                    lineStyle: { color: "rgba(148,163,184,0.14)" }
-                },
-                axisTick: { show: false },
-                axisLabel: {
-                    color: "#94a3b8",
-                    fontSize: 11,
-                    margin: 12,
-                    formatter: (value) => formatTimeCompact(visibleCandles[value]?.time)
-                },
-                splitLine: { show: false }
-            },
-            yAxis: {
-                scale: true,
-                min: minPrice - padding,
-                max: maxPrice + padding,
-                position: "right",
-                axisLine: {
-                    lineStyle: { color: "rgba(148,163,184,0.14)" }
-                },
-                axisTick: { show: false },
-                axisLabel: {
-                    color: "#94a3b8",
-                    fontSize: 11,
-                    formatter: (value) => formatAxisPrice(value)
-                },
-                splitLine: {
-                    lineStyle: {
-                        color: "rgba(148,163,184,0.06)",
-                        type: "solid"
-                    }
-                }
-            },
-            dataZoom: [
-                {
-                    type: "inside",
-                    start: 0,
-                    end: 100
-                }
-            ],
-            series: [
-                {
-                    name: "HTF Overlay",
-                    type: "line",
-                    data: htfOverlayLine,
-                    smooth: true,
-                    symbol: "none",
-                    lineStyle: {
-                        width: 1,
-                        opacity: 0.18,
-                        color: "#8b5cf6"
-                    },
-                    z: 1
-                },
-                {
-                    name: "Price",
-                    type: "candlestick",
-                    data: klineData,
-                    barWidth: 6,
-                    itemStyle: {
-                        color: "#22c55e",
-                        color0: "#ef4444",
-                        borderColor: "#22c55e",
-                        borderColor0: "#ef4444",
-                        borderWidth: 1
-                    },
-                    markLine: {
-                        symbol: ["none", "none"],
-                        silent: true,
-                        data: priceLines,
-                        label: {
-                            color: "#dbe4f1",
-                            backgroundColor: "rgba(8,18,33,0.84)",
-                            padding: [4, 8],
-                            borderRadius: 6,
-                            formatter(param) {
-                                if (!param || !param.name) return "";
-                                if (param.name === "Entry") return `Entry ${formatPrice(trade.entry_price)}`;
-                                if (param.name === "SL") return `SL ${formatPrice(trade.stop_loss)}`;
-                                if (param.name === "TP") return `TP ${formatPrice(trade.take_profit)}`;
-                                return param.name;
-                            }
-                        }
-                    },
-                    markPoint: {
-                        symbol: "circle",
-                        symbolSize: 10,
-                        data: eventPoints
-                    },
-                    markArea: {
-                        silent: true,
-                        itemStyle: {
-                            color: "rgba(59,130,246,0.03)"
-                        },
-                        data: zones
-                    },
-                    z: 3
-                }
-            ]
-        },
-        true
-    );
-
-    setTimeout(() => {
-        if (chart) chart.resize();
-    }, 50);
-}
-
-function buildPriceLines() {
-    const lines = [];
-
-    if (trade.entry_price != null) {
-        lines.push({
-            name: "Entry",
-            yAxis: trade.entry_price,
-            lineStyle: {
-                width: 1.2,
-                type: "solid",
-                opacity: 0.75,
-                color: "#22c55e"
-            },
-            label: { position: "end" }
-        });
-    }
-
-    if (trade.stop_loss != null) {
-        lines.push({
-            name: "SL",
-            yAxis: trade.stop_loss,
-            lineStyle: {
-                width: 1,
-                type: "dashed",
-                opacity: 0.58,
-                color: "#ef4444"
-            },
-            label: { position: "end" }
-        });
-    }
-
-    if (trade.take_profit != null) {
-        lines.push({
-            name: "TP",
-            yAxis: trade.take_profit,
-            lineStyle: {
-                width: 1,
-                type: "dashed",
-                opacity: 0.58,
-                color: "#3b82f6"
-            },
-            label: { position: "end" }
-        });
-    }
-
-    return lines;
-}
-
-function buildEventPoints(visibleCandles) {
-    return (events || [])
-        .filter((e) => typeof e.index === "number" && e.index >= 0 && e.index < visibleCandles.length)
-        .map((e) => ({
-            coord: [e.index, e.price_level ?? visibleCandles[e.index]?.close ?? null],
-            value: e.title,
-            itemStyle: {
-                color: eventColor(e.type),
-                borderColor: "#07111f",
-                borderWidth: 2
-            },
-            label: { show: false }
-        }))
-        .filter((p) => Array.isArray(p.coord) && p.coord[1] != null && Number.isFinite(Number(p.coord[1])));
-}
-
-function buildHTFOverlayLine(visibleCandles) {
-    if (!htfCandles.length || !visibleCandles.length) {
-        return visibleCandles.map(() => null);
-    }
-
-    return visibleCandles.map((current) => {
-        const currentTs = safeTimestamp(current.time);
-        let nearest = null;
-        let bestDiff = null;
-
-        htfCandles.forEach((htf) => {
-            const diff = Math.abs(safeTimestamp(htf.time) - currentTs);
-            if (bestDiff === null || diff < bestDiff) {
-                bestDiff = diff;
-                nearest = htf;
-            }
-        });
-
-        return nearest ? nearest.close : null;
-    });
-}
-
-function computeZones(visibleCandles) {
-    if (visibleCandles.length < 8) return [];
-
-    const highs = visibleCandles.map((c) => c.high).filter(Number.isFinite);
-    const lows = visibleCandles.map((c) => c.low).filter(Number.isFinite);
-
-    if (!highs.length || !lows.length) return [];
-
-    const high = Math.max(...highs);
-    const low = Math.min(...lows);
-    const range = high - low;
-
-    if (range <= 0) return [];
-
-    const premiumBottom = high - range * 0.12;
-    const discountTop = low + range * 0.12;
-    const start = 0;
-    const end = visibleCandles.length - 1;
-
-    return [
-        [{ xAxis: start, yAxis: premiumBottom }, { xAxis: end, yAxis: high }],
-        [{ xAxis: start, yAxis: low }, { xAxis: end, yAxis: discountTop }]
-    ];
-}
-
-function buildHTFZoneAreas(visibleCandles) {
-    const zones = Array.isArray(trade?.htf_zones) ? trade.htf_zones : [];
-    if (!zones.length || !visibleCandles.length) return [];
-
-    const start = 0;
-    const end = visibleCandles.length - 1;
-
-    return zones
-        .filter((z) => z.low != null && z.high != null)
-        .map((z) => [
-            { xAxis: start, yAxis: z.low },
-            { xAxis: end, yAxis: z.high }
-        ]);
-}
-
-// =========================
-// REPLAY CONTROL
-// =========================
-function replayStep() {
-    if (currentIndex >= candles.length) {
-        pauseReplay();
-        replayFinished = true;
-        updateMeta(candles.length);
-        finalizeReplay();
-        return;
-    }
-
-    currentIndex += 1;
-
-    if (
-        Number.isFinite(exitIndex) &&
-        trade?.should_stop_replay_at_exit &&
-        currentIndex >= exitIndex &&
-        currentIndex > decisionIndex
-    ) {
-        currentIndex = exitIndex;
-        replayStoppedByOutcome = true;
-    }
-
-    renderChart(currentIndex);
-    updateMeta(currentIndex);
-    updateLiveStats(currentIndex);
-    updateMarketState(currentIndex);
-    updateDecisionAssistant(currentIndex);
-    highlightTimeline(currentIndex - 1);
-    revealEventsUpTo(currentIndex - 1);
-    maybeEmitAdaptiveHints(currentIndex - 1);
-    checkDecisionMoment(currentIndex - 1);
-
-    if (replayStoppedByOutcome) {
-        pauseReplay();
-        replayFinished = true;
-        finalizeReplay();
-    }
-}
+/* ================= REPLAY ENGINE ================= */
 
 function startReplay() {
-    if (!candles.length) return;
-    if (replayTimer) return;
-
-    replayTimer = setInterval(() => {
-
-        if (currentIndex >= candles.length) {
-            pauseReplay();
-            return;
-        }
-
-        currentIndex++;
-
-        renderChart(currentIndex);
-        updateMeta(currentIndex);
-
-    }, 400); // vitesse
+  if (timer) return;
+  if (currentPos >= replayCandles.length) resetReplay();
+  timer = setInterval(stepReplay, speed);
 }
 
 function pauseReplay() {
-    if (replayTimer) {
-        clearInterval(replayTimer);
-        replayTimer = null;
-    }
+  if (timer) clearInterval(timer);
+  timer = null;
+  setText("decision-mode-text", "Pause");
 }
 
 function stepReplay() {
+  if (currentPos >= replayCandles.length) {
     pauseReplay();
-    replayStep();
+    setText("decision-mode-text", "Replay terminé");
+    return;
+  }
+
+  currentPos += 1;
+  const current = replayCandles[currentPos - 1];
+
+  if (current && current.index === decisionIndex && !decisionDone && !decisionShown) {
+    renderChart();
+    decisionShown = true;
+    showDecisionOverlay();
+    pauseReplay();
+    return;
+  }
+
+  renderChart();
 }
 
 function resetReplay() {
-    pauseReplay();
-    decisionMade = false;
-    replayFinished = false;
-    replayStoppedByOutcome = false;
-    revealedEvents = new Set();
+  pauseReplay();
+  const playStartIndex = Math.max(0, entryIndex - 10);
+  currentPos = Math.max(1, playStartIndex - startIndex + 1);
+  decisionDone = false;
+  decisionShown = false;
 
-    currentIndex = computeInitialIndex();
+  hideDecisionOverlay();
+  const box = document.getElementById("decision-box");
+  if (box) box.classList.add("hidden");
 
-    const decisionBox = document.getElementById("decision-box");
-    if (decisionBox) decisionBox.classList.add("hidden");
-
-    setText("decision-mode-text", "En attente");
-    updateScoreWaiting();
-    renderChart(currentIndex);
-    updateMeta(currentIndex);
-    updateLiveStats(currentIndex);
-    updateMarketState(currentIndex);
-    updateDecisionAssistant(currentIndex);
-    renderTimeline();
-    highlightTimeline(currentIndex - 1);
-    revealEventsUpTo(currentIndex - 1);
-
-    const hintStream = document.getElementById("hint-stream");
-    if (hintStream) {
-        hintStream.innerHTML = `<div class="hint-item neutral">Le replay analysera la structure au fil des bougies.</div>`;
-    }
+  setText("decision-mode-text", "En attente");
+  renderChart();
 }
 
 function setSpeed(multiplier) {
-    speed = 900 / multiplier;
-    if (replayTimer) {
-        pauseReplay();
-        startReplay();
-    }
-}
-
-// =========================
-// META / LIVE UI
-// =========================
-function updateMeta(index) {
-    const total = candles.length || 1;
-    const safeIndex = Math.max(1, Math.min(index, total));
-    const progress = Math.round((safeIndex / total) * 100);
-
-    setText("progress-text", `${progress}%`);
-    setText("candle-counter", `${safeIndex} / ${candles.length}`);
-
-    const progressBar = document.getElementById("progress-bar");
-    if (progressBar) progressBar.style.width = `${progress}%`;
-}
-
-function updateLiveStats(index) {
-    const current = candles[Math.max(0, index - 1)];
-    const prev = candles[Math.max(0, index - 2)] || current;
-
-    if (!current || !prev) return;
-
-    const delta = current.close - prev.close;
-    const deltaPct = prev.close ? ((delta / prev.close) * 100) : 0;
-
-    const pressure = delta > 0 ? "Acheteurs" : delta < 0 ? "Vendeurs" : "Neutre";
-    const momentum = Math.abs(deltaPct);
-
-    setText("pressure-text", pressure);
-    setText("pressure-subtext", `${delta >= 0 ? "+" : ""}${deltaPct.toFixed(2)}% sur la bougie active`);
-    setText("momentum-text", momentum >= 0.25 ? "Fort" : momentum >= 0.1 ? "Modéré" : "Faible");
-    setText("momentum-subtext", `Variation ${Math.abs(delta).toFixed(2)} pts`);
-}
-
-function updateMarketState(index) {
-    const state = inferReplayState(index);
-    setText("market-state-text", state.title);
-    setText("market-state-subtext", state.subtitle);
-    setText("market-phase-badge", state.phase);
-    setText("plan-status-text", state.planTitle);
-    setText("plan-status-subtext", state.planSubtitle);
-}
-
-// =========================
-// DECISION
-// =========================
-function checkDecisionMoment(index) {
-    if (decisionMade || decisionIndex == null) return;
-
-    if (index === Math.max(0, decisionIndex - 2)) {
-        showHint("Zone de décision à venir. Prépare ton jugement avant que le prix ne te force à réagir.", "warning");
-    }
-
-    if (index === decisionIndex) {
-        pauseReplay();
-        showDecisionBox();
-        setText("decision-mode-text", "Décision requise");
-        showHint("Moment critique atteint. Maintenant, on évalue ta gestion du trade.", "warning");
-    }
-}
-
-function showDecisionBox() {
-    const el = document.getElementById("decision-box");
-    if (el) el.classList.remove("hidden");
+  const m = Number(multiplier) || 1;
+  speed = Math.max(45, 420 / m);
+  if (timer) {
+    pauseReplay();
+    startReplay();
+  }
 }
 
 async function makeDecision(choice) {
-    try {
-        const res = await fetch(`${replayApiBase}/decision`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ decision: choice })
-        });
+  try {
+    const payload = { decision: choice, trade_index: activeTradeIndex };
 
-        const data = await res.json();
-
-        if (!res.ok) {
-            throw new Error(data.error || "Erreur pendant la sauvegarde");
-        }
-
-        decisionMade = true;
-        displayScore(data);
-
-        const el = document.getElementById("decision-box");
-        if (el) el.classList.add("hidden");
-
-        setText("decision-mode-text", `Choix: ${labelDecision(choice)}`);
-        showHint(`Décision enregistrée: ${labelDecision(choice)}. Le replay reprend pour révéler l’issue du scénario.`, "good");
-        startReplay();
-    } catch (error) {
-        console.error(error);
-        alert(error.message);
-    }
-}
-
-// =========================
-// SCORE / BENCHMARK
-// =========================
-function displayScore(data) {
-    const score = Number(data.score ?? 0);
-
-    setText("trader-score", score);
-    setText("trader-status", data.status_text || "Résultat");
-    setText("decision-feedback", data.feedback || "");
-
-    const statusEl = document.getElementById("trader-status");
-    if (statusEl) {
-        statusEl.classList.remove("score-good", "score-medium", "score-bad");
-        if (data.status === "good") {
-            statusEl.classList.add("score-good");
-        } else if (data.status === "medium") {
-            statusEl.classList.add("score-medium");
-        } else {
-            statusEl.classList.add("score-bad");
-        }
-    }
-
-    setText("discipline-score", `${score}/10`);
-    setText("timing-score", `${Number(data.timing_score ?? Math.max(0, score - 2))}/10`);
-
-    updateBenchmark(score);
-}
-
-function updateScoreWaiting() {
-    setText("trader-score", "0");
-    setText("trader-status", "En attente de décision");
-    setText(
-        "decision-feedback",
-        String(trade?.result || "").toUpperCase() === "OPEN"
-            ? "Trade actif : la décision porte sur la gestion d’un scénario encore ouvert."
-            : "Le score apparaîtra après ton choix."
-    );
-    setText("discipline-score", "0/10");
-    setText("timing-score", "0/10");
-    updateBenchmark(0);
-
-    const statusEl = document.getElementById("trader-status");
-    if (statusEl) {
-        statusEl.classList.remove("score-good", "score-medium", "score-bad");
-    }
-}
-
-function updateBenchmark(score) {
-    setText("bench-user-score", `${score}/10`);
-
-    let ranking = "Top 50%";
-    let level = "Observer";
-    let progress = 18;
-
-    if (score >= 9) {
-        ranking = "Top 8%";
-        level = "Execution Pro";
-        progress = 92;
-    } else if (score >= 7) {
-        ranking = "Top 22%";
-        level = "Disciplined";
-        progress = 74;
-    } else if (score >= 5) {
-        ranking = "Top 40%";
-        level = "Developing";
-        progress = 52;
-    } else if (score >= 3) {
-        ranking = "Top 58%";
-        level = "Reactive";
-        progress = 34;
-    }
-
-    setText("bench-ranking", ranking);
-    setText("bench-level", level);
-    setText("bench-progress-text", `${progress}%`);
-
-    const fill = document.getElementById("bench-progress-fill");
-    if (fill) fill.style.width = `${progress}%`;
-}
-
-// =========================
-// TIMELINE / EVENTS
-// =========================
-function renderTimeline() {
-    let timelineWrap = document.getElementById("replay-timeline");
-    const progressBar = document.querySelector(".replay-progress");
-
-    if (!progressBar) return;
-
-    if (!timelineWrap) {
-        timelineWrap = document.createElement("div");
-        timelineWrap.id = "replay-timeline";
-        timelineWrap.className = "replay-timeline";
-        progressBar.insertAdjacentElement("afterend", timelineWrap);
-    }
-
-    const timelinePoints = buildOrderedTimelinePoints();
-
-    let lastLeft = -999;
-
-    timelineWrap.innerHTML = timelinePoints.map((point, idx) => {
-        let pct = candles.length > 1 ? (point.index / (candles.length - 1)) * 100 : 0;
-
-        if (pct - lastLeft < 8) {
-            pct = lastLeft + 8;
-        }
-
-        if (pct > 100) pct = 100;
-        lastLeft = pct;
-
-        const extraClass = idx % 2 === 0 ? "label-top" : "label-bottom";
-
-        return `
-            <div class="timeline-node ${point.type} ${extraClass}" data-index="${point.index}" style="left:${pct}%;">
-                <span class="timeline-dot"></span>
-                <small>${escapeHtml(point.label)}</small>
-            </div>
-        `;
-    }).join("");
-}
-
-function buildOrderedTimelinePoints() {
-    return [
-        {
-            type: "entry",
-            label: "Entrée",
-            index: entryIndex
-        },
-        {
-            type: "decision",
-            label: "Décision",
-            index: decisionIndex
-        },
-        {
-            type: "outcome",
-            label: formatOutcomeTimelineLabel(),
-            index: exitIndex
-        }
-    ].sort((a, b) => a.index - b.index);
-}
-
-function formatOutcomeTimelineLabel() {
-    const result = String(trade?.result || trade?.derived_result || "OPEN").toUpperCase();
-    if (result === "WIN") return "TP atteint";
-    if (result === "LOSS") return "SL atteint";
-    if (result === "BREAKEVEN") return "Break-even";
-    return "OPEN";
-}
-
-function renderEvents(eventsList) {
-    const container = document.getElementById("events");
-    if (!container) return;
-
-    if (!eventsList.length) {
-        container.innerHTML = `<div class="event-card"><strong>Aucun événement</strong><p>Ce replay ne contient pas encore de timeline enrichie.</p></div>`;
-        return;
-    }
-
-    container.innerHTML = eventsList.map((e) => `
-        <div class="event-card" data-index="${e.index ?? ""}">
-            <div class="event-top">
-                <span class="event-type ${eventClass(e.type)}">${formatEventType(e.type)}</span>
-                <span class="event-index">#${e.index ?? "-"}</span>
-            </div>
-            <strong>${escapeHtml(e.title || "Événement")}</strong>
-            <p>${escapeHtml(e.description || "")}</p>
-        </div>
-    `).join("");
-}
-
-function revealEventsUpTo(index) {
-    (events || []).forEach((e) => {
-        if (typeof e.index !== "number") return;
-
-        const key = e.id || `${e.type}-${e.index}`;
-        if (e.index <= index && !revealedEvents.has(key)) {
-            revealedEvents.add(key);
-            showHint(`${formatEventType(e.type)} : ${e.title}`, eventHintTone(e.type));
-        }
-    });
-}
-
-function highlightTimeline(index) {
-    document.querySelectorAll(".event-card").forEach((card) => {
-        card.classList.remove("active");
-        const eventIndex = Number(card.dataset.index);
-        if (!Number.isNaN(eventIndex) && eventIndex <= index) {
-            card.classList.add("active");
-        }
+    const res = await fetch(`${replayApiBase}/decision`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify(payload)
     });
 
-    document.querySelectorAll(".timeline-node").forEach((node) => {
-        node.classList.remove("active");
-        const nodeIndex = Number(node.dataset.index);
-        if (!Number.isNaN(nodeIndex) && nodeIndex <= index) {
-            node.classList.add("active");
-        }
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Erreur sauvegarde décision");
+
+    decisionDone = true;
+    hideDecisionOverlay();
+
+    const box = document.getElementById("decision-box");
+    if (box) box.classList.add("hidden");
+
+    displayScore(data);
+    updateAIFeedbackAfterDecision(choice, data);
+    startReplay();
+
+  } catch (e) {
+    console.error(e);
+    alert(e.message);
+  }
+}
+
+/* ================= ELITE UI ================= */
+
+function initIndicatorPanel() {
+  const chartCard = document.querySelector(".chart-card");
+  if (!chartCard || document.getElementById("indicator-panel")) return;
+
+  const panel = document.createElement("div");
+  panel.id = "indicator-panel";
+  panel.className = "indicator-panel";
+  panel.innerHTML = `
+    <label><input type="checkbox" data-indicator="ema20" checked> EMA 20</label>
+    <label><input type="checkbox" data-indicator="ema50" checked> EMA 50</label>
+    <label><input type="checkbox" data-indicator="vwap" checked> VWAP</label>
+    <label><input type="checkbox" data-indicator="htf" checked> MTF</label>
+    <label><input type="checkbox" data-indicator="structure" checked> HH/HL</label>
+    <label><input type="checkbox" data-indicator="volume" checked> Volume</label>
+    <label><input type="checkbox" data-indicator="rsi" checked> RSI</label>
+  `;
+
+  const chartEl = document.getElementById("chart");
+  chartCard.insertBefore(panel, chartEl);
+
+  panel.querySelectorAll("input[type='checkbox']").forEach(input => {
+    input.addEventListener("change", () => {
+      indicatorState[input.dataset.indicator] = input.checked;
+      renderChart();
     });
+  });
 }
 
-// =========================
-// LESSONS
-// =========================
-function renderLessons(lessons) {
-    const container = document.getElementById("lessons-list");
-    if (!container) return;
+function initElitePanels() {
+  const side = document.querySelector(".replay-side-column");
+  if (side && !document.getElementById("elite-live-card")) {
+    const card = document.createElement("section");
+    card.className = "card";
+    card.id = "elite-live-card";
+    card.innerHTML = `
+      <h3>Stats live</h3>
+      <div class="metric-list">
+        <div class="metric-row"><span>MFE</span><strong id="live-mfe">0%</strong></div>
+        <div class="metric-row"><span>MAE</span><strong id="live-mae">0%</strong></div>
+        <div class="metric-row"><span>R actuel</span><strong id="live-r">0R</strong></div>
+        <div class="metric-row"><span>Phase</span><strong id="live-phase">Pré-entry</strong></div>
+      </div>
+    `;
+    side.insertBefore(card, side.children[1] || null);
+  }
 
-    if (!lessons.length) {
-        container.innerHTML = `<div class="lesson-item">Aucune leçon disponible.</div>`;
-        return;
+  if (side && !document.getElementById("elite-ai-card")) {
+    const card = document.createElement("section");
+    card.className = "card";
+    card.id = "elite-ai-card";
+    card.innerHTML = `
+      <h3>IA feedback</h3>
+      <p id="ai-feedback" style="color:#b8c4d8;line-height:1.55;">Le feedback apparaîtra pendant le replay.</p>
+    `;
+    side.insertBefore(card, side.children[2] || null);
+  }
+
+  if (trades.length > 1) initTradeSelector();
+
+  const style = document.createElement("style");
+  style.textContent = `
+    .indicator-panel {
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+      margin:0 0 12px; padding:10px 12px; border-radius:14px;
+      background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.07);
     }
-
-    container.innerHTML = lessons.map((lesson) => `
-        <div class="lesson-item">${escapeHtml(lesson)}</div>
-    `).join("");
+    .indicator-panel label {
+      display:inline-flex; align-items:center; gap:7px; color:#c8d4e8;
+      font-size:13px; font-weight:800; cursor:pointer; user-select:none;
+    }
+    .indicator-panel input { accent-color:#3b82f6; cursor:pointer; }
+    .trade-selector {
+      display:flex; gap:8px; flex-wrap:wrap; margin:0 0 12px;
+    }
+    .trade-selector button {
+      border:1px solid rgba(255,255,255,.09); background:#13233d; color:#e5edf7;
+      padding:8px 12px; border-radius:999px; font-weight:800; cursor:pointer;
+    }
+    .trade-selector button.active { background:#2563eb; border-color:#60a5fa; }
+  `;
+  document.head.appendChild(style);
 }
 
-// =========================
-// ADAPTIVE HINTS
-// =========================
-function maybeEmitAdaptiveHints(index) {
-    const current = candles[index];
-    const previous = candles[index - 1];
+function initTradeSelector() {
+  const chartCard = document.querySelector(".chart-card");
+  if (!chartCard || document.getElementById("trade-selector")) return;
 
-    if (!current || !previous) return;
+  const selector = document.createElement("div");
+  selector.id = "trade-selector";
+  selector.className = "trade-selector";
+  selector.innerHTML = trades.map((t, i) => `
+    <button data-trade-index="${i}" class="${i === activeTradeIndex ? "active" : ""}">
+      Trade ${i + 1} ${t.symbol ? "• " + escapeHtml(t.symbol) : ""}
+    </button>
+  `).join("");
 
-    const body = Math.abs(current.close - current.open);
-    const fullRange = current.high - current.low || 1;
-    const bodyRatio = body / fullRange;
+  const indicator = document.getElementById("indicator-panel");
+  chartCard.insertBefore(selector, indicator || document.getElementById("chart"));
 
-    if (bodyRatio > 0.68) {
-        showHint("Impulsion nette détectée. Le marché choisit une direction à court terme.", "good");
-    }
+  selector.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      activeTradeIndex = Number(btn.dataset.tradeIndex);
+      trade = trades[activeTradeIndex] || {};
+      selector.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
 
-    if (trade.stop_loss != null && touchesLevel(current, trade.stop_loss, 0.0008)) {
-        showHint("Le prix teste dangereusement la zone du stop. La discipline devient prioritaire.", "bad");
-    }
-
-    if (trade.entry_price != null && touchesLevel(current, trade.entry_price, 0.0005)) {
-        showHint("Retour sur la zone d’entrée. C’est souvent ici que les traders émotionnels dévient du plan.", "warning");
-    }
-
-    if (trade.take_profit != null && touchesLevel(current, trade.take_profit, 0.0008)) {
-        showHint("Le prix s’approche de l’objectif. Observe si l’impulsion garde sa qualité.", "good");
-    }
-
-    if (String(trade.result || "").toUpperCase() === "OPEN" && index >= candles.length - 3) {
-        showHint("Le trade reste ouvert. Le replay est ici un exercice de gestion, pas une conclusion finale.", "neutral");
-    }
+      if (chart) chart.remove();
+      markerApi = null;
+      computeReplayWindow();
+      hydrateUI();
+      initChart();
+      resetReplay();
+    });
+  });
 }
 
-function showHint(message, tone = "neutral") {
-    const container = document.getElementById("hint-stream");
-    if (!container) return;
+function initDecisionOverlay() {
+  if (document.getElementById("decision-overlay")) return;
 
-    const item = document.createElement("div");
-    item.className = `hint-item ${tone}`;
-    item.textContent = message;
+  const overlay = document.createElement("div");
+  overlay.id = "decision-overlay";
+  overlay.className = "decision-overlay hidden";
+  overlay.innerHTML = `
+    <div class="decision-overlay-card">
+      <div class="decision-overlay-kicker">Moment de décision</div>
+      <h3>Le trade est au milieu de son scénario</h3>
+      <p id="decision-overlay-text">Choisis ton action avant de révéler la suite.</p>
+      <div class="decision-overlay-actions">
+        <button class="btn-close" onclick="makeDecision('close')">Fermer</button>
+        <button class="btn-hold" onclick="makeDecision('hold')">Conserver</button>
+        <button class="btn-partial" onclick="makeDecision('partial')">Alléger</button>
+      </div>
+    </div>
+  `;
 
-    container.prepend(item);
+  document.body.appendChild(overlay);
 
-    const items = container.querySelectorAll(".hint-item");
-    if (items.length > 5) {
-        items[items.length - 1].remove();
-    }
-
-    if (activeHintTimeout) {
-        clearTimeout(activeHintTimeout);
-    }
-
-    activeHintTimeout = setTimeout(() => {
-        item.classList.add("hint-fade");
-    }, 2800);
+  const style = document.createElement("style");
+  style.textContent = `
+    .decision-overlay { position:fixed; inset:0; display:grid; place-items:center; z-index:9999;
+      background:rgba(2,8,23,.56); backdrop-filter:blur(5px); }
+    .decision-overlay.hidden { display:none; }
+    .decision-overlay-card { width:min(520px,calc(100vw - 32px)); border-radius:24px; padding:26px;
+      background:linear-gradient(135deg,#0b1728,#111f35); border:1px solid rgba(245,158,11,.45);
+      box-shadow:0 28px 90px rgba(0,0,0,.55); color:#e5edf7; }
+    .decision-overlay-kicker { display:inline-flex; padding:7px 12px; border-radius:999px;
+      background:rgba(245,158,11,.13); color:#fbbf24; font-size:13px; font-weight:900; margin-bottom:14px; }
+    .decision-overlay-card h3 { margin:0 0 10px; font-size:26px; line-height:1.2; }
+    .decision-overlay-card p { margin:0 0 20px; color:#b8c4d8; line-height:1.55; }
+    .decision-overlay-actions { display:flex; flex-wrap:wrap; gap:12px; }
+    .decision-overlay-actions button { border:0; border-radius:14px; padding:12px 18px; font-weight:900; cursor:pointer; }
+  `;
+  document.head.appendChild(style);
 }
 
-function finalizeReplay() {
-    const result = String(trade.result || trade.derived_result || "").toUpperCase();
+function showDecisionOverlay() {
+  setText("decision-mode-text", "Moment de décision");
+  const overlay = document.getElementById("decision-overlay");
+  const text = document.getElementById("decision-overlay-text");
+  if (text) text.textContent = buildDecisionPrompt();
+  if (overlay) overlay.classList.remove("hidden");
 
-    if (result === "WIN") {
-        showHint("Issue finale : scénario gagnant. Le replay confirme la qualité du plan et de la gestion.", "good");
-    } else if (result === "LOSS") {
-        showHint("Issue finale : invalidation du plan. L’intérêt du replay est de corriger la lecture, pas de cacher l’erreur.", "bad");
-    } else if (result === "OPEN") {
-        showHint("Replay terminé sur un trade encore actif. L’enjeu est la gestion en cours, pas un résultat fermé.", "neutral");
+  const box = document.getElementById("decision-box");
+  if (box) box.classList.remove("hidden");
+}
+
+function hideDecisionOverlay() {
+  const overlay = document.getElementById("decision-overlay");
+  if (overlay) overlay.classList.add("hidden");
+}
+
+function buildDecisionPrompt() {
+  const stats = computeLiveStats(replayCandles.slice(0, currentPos));
+  if (stats.maePct > 0.5) return "Le trade est sous pression. Réduire ou fermer peut être plus discipliné.";
+  if (stats.mfePct > 0.5) return "Le trade a déjà donné du potentiel. Protège le plan avant de révéler la suite.";
+  return "Le trade est encore neutre. Choisis selon la structure, pas selon l’émotion.";
+}
+
+/* ================= INDICATORS ================= */
+
+function updateIndicatorSeries(visible) {
+  setDataSafe(ema20Series, indicatorState.ema20 ? calculateEMA(visible, 20) : []);
+  setDataSafe(ema50Series, indicatorState.ema50 ? calculateEMA(visible, 50) : []);
+  setDataSafe(vwapSeries, indicatorState.vwap ? calculateVWAP(visible) : []);
+  setDataSafe(htfSeries, indicatorState.htf ? calculateHTFOverlay(visible) : []);
+  setDataSafe(structureSeries, indicatorState.structure ? calculateStructureLine(visible) : []);
+  setDataSafe(volumeSeries, indicatorState.volume ? calculateVolume(visible) : []);
+  setDataSafe(rsiSeries, indicatorState.rsi ? calculateRSI(visible, 14) : []);
+}
+
+function setDataSafe(series, data) {
+  if (series && typeof series.setData === "function") series.setData(data || []);
+}
+
+function calculateEMA(data, period) {
+  if (!data.length) return [];
+  const k = 2 / (period + 1);
+  let ema = data[0].close;
+  return data.map((c, index) => {
+    ema = index === 0 ? c.close : c.close * k + ema * (1 - k);
+    return { time: c.time, value: Number(ema.toFixed(6)) };
+  });
+}
+
+function calculateVWAP(data) {
+  let cumulativePV = 0;
+  let cumulativeVolume = 0;
+  return data.map(c => {
+    const typical = (c.high + c.low + c.close) / 3;
+    const volume = Number.isFinite(Number(c.volume)) && Number(c.volume) > 0 ? Number(c.volume) : 1;
+    cumulativePV += typical * volume;
+    cumulativeVolume += volume;
+    return { time: c.time, value: Number((cumulativePV / cumulativeVolume).toFixed(6)) };
+  });
+}
+
+function calculateVolume(data) {
+  return data.map(c => ({
+    time: c.time,
+    value: Number(c.volume || 0),
+    color: c.close >= c.open ? "rgba(34,197,94,0.35)" : "rgba(239,68,68,0.35)"
+  }));
+}
+
+function calculateRSI(data, period) {
+  if (!data || data.length < period + 1) return [];
+  const output = [];
+  let avgGain = 0;
+  let avgLoss = 0;
+
+  for (let i = 1; i <= period; i++) {
+    const change = data[i].close - data[i - 1].close;
+    avgGain += Math.max(change, 0);
+    avgLoss += Math.max(-change, 0);
+  }
+
+  avgGain /= period;
+  avgLoss /= period;
+
+  let rs = avgLoss === 0 ? 100 : avgGain / avgLoss;
+  output.push({ time: data[period].time, value: Number((100 - 100 / (1 + rs)).toFixed(2)) });
+
+  for (let i = period + 1; i < data.length; i++) {
+    const change = data[i].close - data[i - 1].close;
+    const gain = Math.max(change, 0);
+    const loss = Math.max(-change, 0);
+    avgGain = (avgGain * (period - 1) + gain) / period;
+    avgLoss = (avgLoss * (period - 1) + loss) / period;
+    rs = avgLoss === 0 ? 100 : avgGain / avgLoss;
+    output.push({ time: data[i].time, value: Number((100 - 100 / (1 + rs)).toFixed(2)) });
+  }
+
+  return output;
+}
+
+function calculateHTFOverlay(visible) {
+  if (!htfCandles.length || !visible.length) return [];
+  return visible.map(c => {
+    const h = nearestHTFCandle(c.time);
+    return h ? { time: c.time, value: h.close } : null;
+  }).filter(Boolean);
+}
+
+function nearestHTFCandle(time) {
+  let best = null;
+  let bestDiff = Infinity;
+  htfCandles.forEach(h => {
+    const diff = Math.abs(h.time - time);
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      best = h;
+    }
+  });
+  return best;
+}
+
+function detectSwings(data, left = 2, right = 2) {
+  const swings = [];
+  if (!data || data.length < left + right + 1) return swings;
+
+  for (let i = left; i < data.length - right; i++) {
+    const c = data[i];
+    let isHigh = true;
+    let isLow = true;
+
+    for (let j = i - left; j <= i + right; j++) {
+      if (j === i) continue;
+      if (data[j].high >= c.high) isHigh = false;
+      if (data[j].low <= c.low) isLow = false;
+    }
+
+    if (isHigh) swings.push({ type: "H", index: c.index, time: c.time, price: c.high });
+    if (isLow) swings.push({ type: "L", index: c.index, time: c.time, price: c.low });
+  }
+
+  return labelMarketStructure(swings);
+}
+
+function labelMarketStructure(swings) {
+  let lastHigh = null;
+  let lastLow = null;
+
+  return swings.map(s => {
+    let label = s.type;
+    if (s.type === "H") {
+      label = lastHigh == null ? "H" : (s.price > lastHigh ? "HH" : "LH");
+      lastHigh = s.price;
+    }
+    if (s.type === "L") {
+      label = lastLow == null ? "L" : (s.price > lastLow ? "HL" : "LL");
+      lastLow = s.price;
+    }
+    return { ...s, label };
+  });
+}
+
+function calculateStructureLine(visible) {
+  return detectSwings(visible)
+    .filter(s => ["HH", "HL", "LH", "LL"].includes(s.label))
+    .map(s => ({ time: s.time, value: s.price }));
+}
+
+function buildStructureMarkers(visible) {
+  return detectSwings(visible)
+    .filter(s => ["HH", "HL", "LH", "LL"].includes(s.label))
+    .map(s => ({
+      time: s.time,
+      position: s.type === "H" ? "aboveBar" : "belowBar",
+      color: structureColor(s.label),
+      shape: s.type === "H" ? "arrowDown" : "arrowUp",
+      text: s.label
+    }));
+}
+
+function structureColor(label) {
+  if (label === "HH" || label === "HL") return "#22c55e";
+  if (label === "LH" || label === "LL") return "#ef4444";
+  return "#94a3b8";
+}
+
+/* ================= MARKERS ================= */
+
+function buildMarkers(visible) {
+  const visibleIndexes = new Set(visible.map(c => c.index));
+  const markers = [];
+
+  if (visibleIndexes.has(entryIndex)) {
+    markers.push({ time: candles[entryIndex].time, position: "belowBar", color: "#22c55e", shape: "arrowUp", text: "Entry" });
+  }
+
+  if (visibleIndexes.has(decisionIndex)) {
+    markers.push({ time: candles[decisionIndex].time, position: "aboveBar", color: "#f59e0b", shape: "circle", text: "Decision" });
+  }
+
+  if (visibleIndexes.has(exitIndex)) {
+    markers.push({
+      time: candles[exitIndex].time,
+      position: outcomeIsWin() ? "aboveBar" : "belowBar",
+      color: outcomeIsWin() ? "#3b82f6" : "#ef4444",
+      shape: outcomeIsWin() ? "arrowUp" : "arrowDown",
+      text: outcomeIsWin() ? "TP" : "SL"
+    });
+  }
+
+  const last = visible[visible.length - 1];
+  if (last) markers.push({ time: last.time, position: "aboveBar", color: "#60a5fa", shape: "circle", text: "LIVE" });
+
+  return markers;
+}
+
+function setSeriesMarkers(markers) {
+  if (candleSeries && typeof candleSeries.setMarkers === "function") {
+    candleSeries.setMarkers(markers);
+    return;
+  }
+
+  if (typeof LightweightCharts.createSeriesMarkers === "function") {
+    if (!markerApi) markerApi = LightweightCharts.createSeriesMarkers(candleSeries, markers);
+    else if (typeof markerApi.setMarkers === "function") markerApi.setMarkers(markers);
+  }
+}
+
+/* ================= LIVE STATS + AI ================= */
+
+function computeLiveStats(visible) {
+  const entry = Number(trade.entry_price);
+  const sl = Number(trade.stop_loss);
+  const direction = String(trade.direction || "").toUpperCase();
+
+  if (!Number.isFinite(entry) || !visible.length) {
+    return { mfePct: 0, maePct: 0, r: 0, phase: "Pré-entry" };
+  }
+
+  const afterEntry = visible.filter(c => c.index >= entryIndex);
+  if (!afterEntry.length) return { mfePct: 0, maePct: 0, r: 0, phase: "Pré-entry" };
+
+  const risk = Number.isFinite(sl) ? Math.abs(entry - sl) : Math.max(1, entry * 0.001);
+  let best = 0;
+  let worst = 0;
+
+  afterEntry.forEach(c => {
+    if (direction === "BUY") {
+      best = Math.max(best, c.high - entry);
+      worst = Math.min(worst, c.low - entry);
     } else {
-        showHint("Replay clos. Évalue la structure, la gestion, puis compare avec le plan initial.", "neutral");
+      best = Math.max(best, entry - c.low);
+      worst = Math.min(worst, entry - c.high);
     }
+  });
+
+  const last = afterEntry[afterEntry.length - 1];
+  const currentProfit = direction === "BUY" ? last.close - entry : entry - last.close;
+
+  const mfePct = entry ? (best / entry) * 100 : 0;
+  const maePct = entry ? (Math.abs(worst) / entry) * 100 : 0;
+  const r = risk ? currentProfit / risk : 0;
+
+  let phase = "Pré-entry";
+  if (last.index >= exitIndex) phase = "Sortie";
+  else if (last.index >= decisionIndex) phase = "Décision";
+  else if (last.index >= entryIndex) phase = "Trade actif";
+
+  return { mfePct, maePct, r, phase };
 }
 
-// =========================
-// MARKET STATE ENGINE
-// =========================
-function inferReplayState(index) {
-    const slice = candles.slice(0, Math.max(1, index));
-    if (!slice.length) {
-        return {
-            title: "Observation",
-            subtitle: "Chargement de la structure",
-            phase: "Warm-up",
-            planTitle: "En préparation",
-            planSubtitle: "Le replay n’a pas encore démarré"
-        };
+function updateLiveStats(visible) {
+  const stats = computeLiveStats(visible);
+  setText("live-mfe", `${stats.mfePct.toFixed(2)}%`);
+  setText("live-mae", `${stats.maePct.toFixed(2)}%`);
+  setText("live-r", `${stats.r.toFixed(2)}R`);
+  setText("live-phase", stats.phase);
+}
+
+function updateAIFeedbackLive(visible) {
+  const el = document.getElementById("ai-feedback");
+  if (!el) return;
+
+  const stats = computeLiveStats(visible);
+  if (stats.phase === "Pré-entry") {
+    el.textContent = "Observe le contexte avant l’entrée. Le replay n’est pas encore dans le trade actif.";
+  } else if (stats.phase === "Trade actif") {
+    el.textContent = stats.r < -0.5
+      ? "Le trade se dégrade avant la décision. Prépare un plan de réduction du risque."
+      : "Trade actif. Surveille la structure et évite de réagir à une seule bougie.";
+  } else if (stats.phase === "Décision") {
+    el.textContent = stats.maePct > stats.mfePct
+      ? "À la décision, le risque domine le potentiel. Fermer ou alléger est cohérent."
+      : "À la décision, le trade garde du potentiel. Conserver reste défendable si le plan est respecté.";
+  } else {
+    el.textContent = "Replay terminé. Compare ton choix avec l’issue réelle du trade.";
+  }
+}
+
+function updateAIFeedbackAfterDecision(choice, data) {
+  const el = document.getElementById("ai-feedback");
+  if (!el) return;
+
+  const ideal = String(trade.ideal_decision || "").toLowerCase();
+  const label = choice === "close" ? "fermer" : choice === "hold" ? "conserver" : "alléger";
+
+  if (ideal && ideal === choice) {
+    el.textContent = `Bonne décision : ${label}. Ton choix correspond au scénario idéal détecté.`;
+  } else if (data && data.feedback) {
+    el.textContent = data.feedback;
+  } else {
+    el.textContent = `Décision enregistrée : ${label}. Le replay continue pour révéler le résultat.`;
+  }
+}
+
+/* ================= UI/HYDRATION ================= */
+
+function hydrateUI() {
+  setText("hero-symbol", trade.symbol || "-");
+  setText("hero-direction", trade.direction || "-");
+  setText("result-badge", resultLabel(trade.result || trade.derived_result || "OPEN"));
+  setText("chart-badge", `${trade.symbol || "-"} • ${trade.timeframe || "-"}`);
+
+  setText("entry-price-box", formatPrice(trade.entry_price));
+  setText("stop-loss-box", formatPrice(trade.stop_loss));
+  setText("take-profit-box", formatPrice(trade.take_profit));
+  setText("result-box", resultLabel(trade.result || trade.derived_result));
+
+  setText("market-context", (trade.market_context || "Replay Elite TradingView mode.") + (trades.length > 1 ? ` • ${trades.length} trades` : ""));
+  setText("post-analysis", trade.post_analysis || "");
+
+  setText("side-symbol", trade.symbol || "-");
+  setText("side-direction", trade.direction || "-");
+  setText("side-entry", formatPrice(trade.entry_price));
+  setText("side-sl", formatPrice(trade.stop_loss));
+  setText("side-tp", formatPrice(trade.take_profit));
+  setText("side-confidence", `${trade.confidence || 0}%`);
+  setText("side-trend", trade.trend || "-");
+  setText("side-rr", trade.risk_reward || trade.computed_rr || "-");
+  setText("side-timeframe", trade.timeframe || "-");
+  setText("side-result", resultLabel(trade.result || trade.derived_result));
+
+  renderLessons();
+  renderScoreWaiting();
+}
+
+function renderProgress() {
+  const total = replayCandles.length;
+  const played = Math.min(currentPos, total);
+  const percent = Math.round((played / Math.max(1, total)) * 100);
+  setText("progress-text", `${percent}%`);
+  setText("candle-counter", `${played} / ${total}`);
+  const bar = document.getElementById("progress-bar");
+  if (bar) bar.style.width = `${percent}%`;
+}
+
+function renderLessons() {
+  const el = document.getElementById("lessons-list");
+  if (!el) return;
+  const lessons = Array.isArray(trade.lessons) ? trade.lessons : [];
+  el.innerHTML = lessons.length
+    ? lessons.map(l => `<div class="lesson-item">${escapeHtml(l)}</div>`).join("")
+    : `<div class="lesson-item">Aucune leçon disponible.</div>`;
+}
+
+function renderScoreWaiting() {
+  setText("trader-score", "0");
+  setText("trader-status", "En attente de décision");
+  setText("discipline-score", "0/10");
+  setText("timing-score", "0/10");
+  setText("decision-feedback", "Le score apparaîtra après ton choix.");
+}
+
+function displayScore(data) {
+  const score = Number(data.score || 0);
+  setText("trader-score", score);
+  setText("trader-status", data.status_text || data.status_label || "Décision analysée");
+  setText("decision-feedback", data.feedback || "");
+  setText("discipline-score", `${score}/10`);
+  setText("timing-score", `${Number(data.timing_score ?? Math.max(0, score - 2))}/10`);
+}
+
+/* ================= HELPERS ================= */
+
+function toChartCandle(c) {
+  return { time: c.time, open: c.open, high: c.high, low: c.low, close: c.close };
+}
+
+function toUnixTime(value) {
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return null;
+  return Math.floor(d.getTime() / 1000);
+}
+
+function nearestIndexByTime(timeValue, fallback) {
+  if (!timeValue) return fallback;
+  const t = toUnixTime(timeValue);
+  if (!t) return fallback;
+
+  let best = fallback;
+  let diff = Infinity;
+  candles.forEach((c, i) => {
+    const d = Math.abs(c.time - t);
+    if (d < diff) {
+      diff = d;
+      best = i;
     }
-
-    const first = slice[0].close;
-    const last = slice[slice.length - 1].close;
-    const deltaPct = first ? ((last - first) / first) * 100 : 0;
-    const latest = slice[slice.length - 1];
-
-    let title = "Compression";
-    let subtitle = "Le marché prépare un déplacement plus clair";
-    let phase = "Compression";
-    let planTitle = "Plan intact";
-    let planSubtitle = "Aucune invalidation claire";
-
-    if (Math.abs(deltaPct) > 0.45) {
-        title = deltaPct > 0 ? "Expansion haussière" : "Expansion baissière";
-        subtitle = deltaPct > 0
-            ? "Les acheteurs imposent la séquence"
-            : "Les vendeurs prennent le contrôle";
-        phase = "Expansion";
-    }
-
-    if (latest && trade.entry_price != null) {
-        const isAboveEntry = latest.close >= trade.entry_price;
-        if (String(trade.direction || "").toUpperCase() === "BUY") {
-            planTitle = isAboveEntry ? "Plan défendable" : "Plan sous pression";
-            planSubtitle = isAboveEntry
-                ? "Le prix reste au-dessus ou proche de la zone d’exécution"
-                : "Le prix travaille sous la zone d’entrée";
-        } else {
-            planTitle = !isAboveEntry ? "Plan défendable" : "Plan sous pression";
-            planSubtitle = !isAboveEntry
-                ? "Le prix respecte la logique vendeuse"
-                : "Le prix remonte contre la logique initiale";
-        }
-    }
-
-    if (trade.stop_loss != null && latest && touchesLevel(latest, trade.stop_loss, 0.0006)) {
-        planTitle = "Invalidation proche";
-        planSubtitle = "Le stop est directement menacé";
-        phase = "Stress test";
-    }
-
-    if (trade.take_profit != null && latest && touchesLevel(latest, trade.take_profit, 0.0008)) {
-        phase = "Target approach";
-        subtitle = "L’objectif devient visible";
-    }
-
-    if (String(trade.result || "").toUpperCase() === "OPEN" && index >= candles.length - 3) {
-        phase = "Live management";
-    }
-
-    return { title, subtitle, phase, planTitle, planSubtitle };
+  });
+  return best;
 }
 
-function inferTrendFromData() {
-    if (!candles.length) return "-";
-    const first = candles[0].close;
-    const last = candles[candles.length - 1].close;
-    if (last > first) return "Bullish";
-    if (last < first) return "Bearish";
-    return "Range";
+function clampIndex(value, fallback = 0) {
+  const max = Math.max(0, candles.length - 1);
+  const n = Number(value);
+  if (!Number.isFinite(n)) return Math.max(0, Math.min(Number(fallback) || 0, max));
+  return Math.max(0, Math.min(Math.round(n), max));
 }
 
-// =========================
-// HELPERS
-// =========================
-function touchesLevel(candle, level, toleranceRatio = 0.001) {
-    if (level == null || !candle) return false;
-    const tolerance = Math.max(Math.abs(level) * toleranceRatio, 0.0000001);
-    return candle.low <= level + tolerance && candle.high >= level - tolerance;
+function outcomeIsWin() {
+  return String(trade.result || trade.derived_result || "").toUpperCase() === "WIN";
 }
 
-function eventColor(type) {
-    const t = String(type || "").toLowerCase();
-    if (t.includes("tp")) return "#3b82f6";
-    if (t.includes("sl")) return "#ef4444";
-    if (t.includes("entry")) return "#22c55e";
-    if (t.includes("decision")) return "#f59e0b";
-    if (t.includes("open")) return "#60a5fa";
-    return "#a78bfa";
-}
-
-function eventClass(type) {
-    const t = String(type || "").toLowerCase();
-    if (t.includes("tp")) return "event-tp";
-    if (t.includes("sl")) return "event-sl";
-    if (t.includes("entry")) return "event-entry";
-    if (t.includes("decision")) return "event-decision";
-    return "event-context";
-}
-
-function eventHintTone(type) {
-    const t = String(type || "").toLowerCase();
-    if (t.includes("tp")) return "good";
-    if (t.includes("sl")) return "bad";
-    if (t.includes("decision")) return "warning";
-    return "neutral";
-}
-
-function formatEventType(type) {
-    const t = String(type || "").toLowerCase();
-    if (t === "entry") return "Entrée";
-    if (t === "context") return "Contexte";
-    if (t === "decision") return "Décision";
-    if (t === "tp_hit") return "TP atteint";
-    if (t === "sl_hit") return "SL atteint";
-    if (t === "open") return "Trade actif";
-    if (t === "breakeven") return "Break-even";
-    return type || "Event";
-}
-
-function labelDecision(choice) {
-    if (choice === "close") return "Fermer";
-    if (choice === "hold") return "Conserver";
-    if (choice === "partial") return "Alléger";
-    return choice;
-}
-
-function formatResultLabel(value) {
-    const result = String(value || "OPEN").toUpperCase();
-    if (result === "BREAKEVEN") return "BE";
-    return result;
-}
-
-function formatTrendText(value) {
-    const v = String(value || "").toLowerCase();
-    if (v === "bullish") return "Bullish";
-    if (v === "bearish") return "Bearish";
-    if (v === "range") return "Range";
-    return value || "-";
-}
-
-function formatHealthLabel(value) {
-    const v = String(value || "").toLowerCase();
-    if (v === "healthy") return "Healthy";
-    if (v === "under_pressure") return "Under pressure";
-    if (v === "critical") return "Critical";
-    if (v === "invalidated") return "Invalidated";
-    return "Unknown";
+function resultLabel(value) {
+  const v = String(value || "OPEN").toUpperCase();
+  return v === "BREAKEVEN" ? "BE" : v;
 }
 
 function formatPrice(value) {
-    if (value == null || value === "") return "-";
-    const num = Number(value);
-    if (!Number.isFinite(num)) return String(value);
-    if (Math.abs(num) >= 1000) return num.toFixed(2);
-    if (Math.abs(num) >= 1) return num.toFixed(4);
-    return num.toFixed(6);
-}
-
-function formatAxisPrice(value) {
-    const num = Number(value);
-    if (!Number.isFinite(num)) return value;
-    if (Math.abs(num) >= 1000) return num.toLocaleString("en-US", { maximumFractionDigits: 0 });
-    if (Math.abs(num) >= 1) return num.toLocaleString("en-US", { maximumFractionDigits: 2 });
-    return num.toLocaleString("en-US", { maximumFractionDigits: 5 });
-}
-
-function formatTime(value) {
-    if (!value) return "";
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return value;
-
-    const day = String(date.getUTCDate()).padStart(2, "0");
-    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-    const hours = String(date.getUTCHours()).padStart(2, "0");
-    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-    return `${day}/${month} ${hours}:${minutes}`;
-}
-
-function formatTimeCompact(value) {
-    if (!value) return "";
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return "";
-
-    const day = String(date.getUTCDate()).padStart(2, "0");
-    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-    const hours = String(date.getUTCHours()).padStart(2, "0");
-    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-    return `${day}/${month} ${hours}:${minutes}`;
-}
-
-function normalizeIsoTime(value) {
-    if (!value) return null;
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return null;
-    return date.toISOString();
-}
-
-function safeTimestamp(value) {
-    const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? 0 : date.getTime();
+  if (value == null || value === "") return "-";
+  const n = Number(value);
+  if (!Number.isFinite(n)) return String(value);
+  if (Math.abs(n) >= 1000) return n.toFixed(2);
+  if (Math.abs(n) >= 1) return n.toFixed(4);
+  return n.toFixed(6);
 }
 
 function setText(id, value) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = value;
+  const el = document.getElementById(id);
+  if (el) el.textContent = value ?? "-";
 }
 
 function escapeHtml(text) {
-    return String(text)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+  return String(text)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
 
-function buildEmptyReplayMessage(debug) {
-    const source = debug.source ? `Source: ${debug.source}. ` : "";
-    const stored = debug.stored_len != null ? `Stored candles: ${debug.stored_len}. ` : "";
-    const market = debug.market_raw_len != null ? `Market candles: ${debug.market_raw_len}. ` : "";
-    return `${source}${stored}${market}Aucune bougie exploitable pour ce replay.`.trim();
-}
-
-window.addEventListener("load", initReplay);
+window.startReplay = startReplay;
+window.pauseReplay = pauseReplay;
+window.stepReplay = stepReplay;
+window.resetReplay = resetReplay;
+window.setSpeed = setSpeed;
+window.makeDecision = makeDecision;

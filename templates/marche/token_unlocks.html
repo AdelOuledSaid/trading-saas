@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Token Unlocks | VelWolf{% endblock %}
+{% block title %}{{ t("token_unlocks_page_title", "Token Unlocks | VelWolef") }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='token_unlocks.css') }}">
@@ -11,24 +11,24 @@
     <div class="token-unlocks-container">
         <div class="tu-header">
             <div>
-                <p class="tu-breadcrumb">Marchés <span>›</span> Crypto <span>›</span> Token Unlocks</p>
-                <h1>Crypto Token Unlocks</h1>
+                <p class="tu-breadcrumb">{{ t('markets', 'Marchés') }} <span>›</span> Crypto <span>›</span> {{ t("markets_token_unlocks_token_unlocks", "Token Unlocks") }}</p>
+                <h1>{{ t('crypto_token_unlocks', 'Crypto Token Unlocks') }}</h1>
                 <p class="tu-subtitle">
-                    Déblocages de tokens, score de risque automatique, calendrier mensuel et lecture marché.
+                    {{ t('token_unlocks_subtitle', 'Déblocages de tokens, score de risque automatique, calendrier mensuel et lecture marché.') }}
                 </p>
             </div>
         </div>
 
         {% if alert_summary.has_alert %}
         <div class="tu-alert tu-alert-{{ alert_summary.level }}">
-            <div class="tu-alert-badge">ALERTE</div>
+            <div class="tu-alert-badge">{{ t('alert', 'ALERTE') }}</div>
             <div class="tu-alert-content">
                 <strong>{{ alert_summary.title }}</strong>
                 <p>{{ alert_summary.message }}</p>
 
                 {% if not is_unlocks_premium %}
-                <a href="{{ url_for('billing.pricing') }}" class="alert-telegram-link">
-                    🚨 Débloquer les alertes Telegram Premium
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="alert-telegram-link">
+                    🚨 {{ t('unlock_premium_telegram_alerts', 'Débloquer les alertes Telegram Premium') }}
                 </a>
                 {% endif %}
             </div>
@@ -39,7 +39,7 @@
             <div class="tu-main">
                 <div class="tu-card">
                     <div class="tu-card-head">
-                        <h2>Marché crypto global</h2>
+                        <h2>{{ t('global_crypto_market', 'Marché crypto global') }}</h2>
                         <span class="tu-badge {% if snapshot.market_cap_change_24h < 0 %}negative{% else %}positive{% endif %}">
                             {{ "%.2f"|format(snapshot.market_cap_change_24h or 0) }}%
                         </span>
@@ -51,15 +51,15 @@
                             <strong>${{ "{:,.0f}".format(snapshot.market_cap_usd or 0) }}</strong>
                         </div>
                         <div class="tu-stat-box">
-                            <span>Volume 24h</span>
+                            <span>{{ t('volume_24h', 'Volume 24h') }}</span>
                             <strong>${{ "{:,.0f}".format(snapshot.volume_usd or 0) }}</strong>
                         </div>
                         <div class="tu-stat-box">
-                            <span>BTC Dominance</span>
+                            <span>{{ t('btc_dominance', 'BTC Dominance') }}</span>
                             <strong>{{ "%.2f"|format(snapshot.btc_dominance or 0) }}%</strong>
                         </div>
                         <div class="tu-stat-box">
-                            <span>Active Cryptos</span>
+                            <span>{{ t('active_cryptos', 'Active Cryptos') }}</span>
                             <strong>{{ "{:,}".format(snapshot.active_cryptos or 0) }}</strong>
                         </div>
                     </div>
@@ -67,7 +67,7 @@
 
                 <div class="tu-card">
                     <div class="tu-card-head">
-                        <h2>Unlocks sur 30 jours</h2>
+                        <h2>{{ t('unlocks_30_days', 'Unlocks sur 30 jours') }}</h2>
                     </div>
 
                     <div class="tu-chart-wrap">
@@ -92,13 +92,13 @@
                     </div>
 
                     <div class="tu-calendar-grid tu-calendar-head-row">
-                        <div>Sun</div>
-                        <div>Mon</div>
-                        <div>Tue</div>
-                        <div>Wed</div>
-                        <div>Thu</div>
-                        <div>Fri</div>
-                        <div>Sat</div>
+                        <div>{{ t("markets_token_unlocks_sun", "Sun") }}</div>
+                        <div>{{ t("markets_token_unlocks_mon", "Mon") }}</div>
+                        <div>{{ t("markets_token_unlocks_tue", "Tue") }}</div>
+                        <div>{{ t("markets_token_unlocks_wed", "Wed") }}</div>
+                        <div>{{ t("markets_token_unlocks_thu", "Thu") }}</div>
+                        <div>{{ t("markets_token_unlocks_fri", "Fri") }}</div>
+                        <div>{{ t("markets_token_unlocks_sat", "Sat") }}</div>
                     </div>
 
                     <div class="tu-calendar-grid">
@@ -116,8 +116,8 @@
                                         </div>
                                     {% else %}
                                         <div class="tu-calendar-event locked">
-                                            <strong>🔒 Premium</strong>
-                                            <small>Calendrier détaillé réservé</small>
+                                            <strong>{{ t("markets_token_unlocks_premium", "🔒 Premium") }}</strong>
+                                            <small>{{ t('detailed_calendar_reserved', 'Calendrier détaillé réservé') }}</small>
                                         </div>
                                     {% endif %}
                                 {% endif %}
@@ -128,11 +128,11 @@
 
                     {% if not is_unlocks_premium %}
                     <div class="premium-lock-box premium-lock-calendar">
-                        <strong>🔒 Calendrier détaillé réservé aux abonnés</strong>
-                        <p>Débloque les détails des unlocks, le niveau de risque et les signaux complets.</p>
+                        <strong>🔒 {{ t('detailed_calendar_members_only', 'Calendrier détaillé réservé aux abonnés') }}</strong>
+                        <p>{{ t('unlock_calendar_details_desc', 'Débloque les détails des unlocks, le niveau de risque et les signaux complets.') }}</p>
                         <div class="premium-lock-actions">
-                            <a href="{{ url_for('billing.pricing') }}" class="premium-upgrade-btn">Passer Premium</a>
-                            <a href="{{ url_for('billing.pricing') }}" class="premium-telegram-btn">Débloquer Telegram Premium</a>
+                            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="premium-upgrade-btn">{{ t('upgrade_premium', 'Passer Premium') }}</a>
+                            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="premium-telegram-btn">{{ t('unlock_telegram_premium', 'Débloquer Telegram Premium') }}</a>
                         </div>
                     </div>
                     {% endif %}
@@ -140,7 +140,7 @@
 
                 <div class="tu-card">
                     <div class="tu-card-head">
-                        <h2>Watchlist temps réel</h2>
+                        <h2>{{ t('realtime_watchlist', 'Watchlist temps réel') }}</h2>
                     </div>
 
                     <div class="tu-watchlist">
@@ -155,7 +155,7 @@
                             </div>
 
                             <div class="tu-watch-center">
-                                <span>Price</span>
+                                <span>{{ t("markets_open_interest_price", "Price") }}</span>
                                 <strong>${{ "{:,.2f}".format(coin.price or 0) }}</strong>
                             </div>
 
@@ -165,7 +165,7 @@
                             </div>
 
                             <div class="tu-watch-right">
-                                <span>24h</span>
+                                <span>{{ t("markets_open_interest_24h", "24h") }}</span>
                                 <strong class="{% if coin.change_24h < 0 %}negative{% else %}positive{% endif %}">
                                     {{ "%.2f"|format(coin.change_24h or 0) }}%
                                 </strong>
@@ -179,7 +179,7 @@
             <aside class="tu-sidebar">
                 <div class="tu-card">
                     <div class="tu-card-head">
-                        <h2>Top Unlocks suivis</h2>
+                        <h2>{{ t('top_tracked_unlocks', 'Top Unlocks suivis') }}</h2>
                     </div>
 
                     <div class="tu-unlocks-list">
@@ -192,17 +192,17 @@
                                         <strong>{{ item.token }}</strong>
                                     </div>
                                     <p>{{ item.name }}</p>
-                                    <small>{{ item.date_label }} | J-{{ item.days_until }}</small>
+                                    <small>{{ item.date_label }} {{ t("markets_token_unlocks_j", "| J-") }}{{ item.days_until }}</small>
                                     {% if item.is_big %}
-                                    <div class="tu-big-badge">BIG</div>
+                                    <div class="tu-big-badge">{{ t("markets_token_unlocks_big", "BIG") }}</div>
                                     {% endif %}
                                 </div>
 
                                 <div class="tu-unlock-right">
                                     <strong>${{ "{:,.0f}".format(item.value or 0) }}</strong>
-                                    <span>{{ "%.2f"|format(item.market_cap_ratio or 0) }}% mcap</span>
+                                    <span>{{ "%.2f"|format(item.market_cap_ratio or 0) }}{{ t("markets_token_unlocks_mcap", "% mcap") }}</span>
                                     <div class="risk risk-{{ item.risk_level }}">{{ item.risk_label }}</div>
-                                    <div class="tu-score">Score {{ item.score }}/100</div>
+                                    <div class="tu-score">{{ t("markets_open_interest_score", "Score") }} {{ item.score }}/100</div>
                                     <div class="signal-badge signal-{{ item.signal_level }}">{{ item.signal }}</div>
                                 </div>
 
@@ -220,26 +220,26 @@
                                         <strong>{{ item.token }}</strong>
                                     </div>
                                     <p>{{ item.name }}</p>
-                                    <small>{{ item.date_label }} | J-{{ item.days_until }}</small>
+                                    <small>{{ item.date_label }} {{ t("markets_token_unlocks_j", "| J-") }}{{ item.days_until }}</small>
                                     {% if item.is_big %}
-                                    <div class="tu-big-badge">BIG</div>
+                                    <div class="tu-big-badge">{{ t("markets_token_unlocks_big", "BIG") }}</div>
                                     {% endif %}
                                 </div>
 
                                 <div class="tu-unlock-right">
                                     <strong>${{ "{:,.0f}".format(item.value or 0) }}</strong>
-                                    <span>{{ "%.2f"|format(item.market_cap_ratio or 0) }}% mcap</span>
+                                    <span>{{ "%.2f"|format(item.market_cap_ratio or 0) }}{{ t("markets_token_unlocks_mcap", "% mcap") }}</span>
                                     <div class="risk risk-{{ item.risk_level }}">{{ item.risk_label }}</div>
                                 </div>
                             </div>
                             {% endfor %}
 
                             <div class="premium-lock-box">
-                                <strong>🔒 Accès Premium requis</strong>
-                                <p>Débloque tous les unlocks, les signaux complets, les scores détaillés et le calendrier avancé.</p>
+                                <strong>🔒 {{ t('premium_access_required', 'Accès Premium requis') }}</strong>
+                                <p>{{ t('unlock_all_unlocks_desc', 'Débloque tous les unlocks, les signaux complets, les scores détaillés et le calendrier avancé.') }}</p>
                                 <div class="premium-lock-actions">
-                                    <a href="{{ url_for('billing.pricing') }}" class="premium-upgrade-btn">Passer Premium</a>
-                                    <a href="{{ url_for('billing.pricing') }}" class="premium-telegram-btn">Débloquer Telegram Premium</a>
+                                    <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="premium-upgrade-btn">{{ t('upgrade_premium', 'Passer Premium') }}</a>
+                                    <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="premium-telegram-btn">{{ t('unlock_telegram_premium', 'Débloquer Telegram Premium') }}</a>
                                 </div>
                             </div>
                         {% endif %}
@@ -248,25 +248,25 @@
 
                 <div class="tu-card tu-insights-card">
                     <div class="tu-card-head">
-                        <h2>📡 Market Intelligence</h2>
+                        <h2>📡 {{ t('market_intelligence', 'Market Intelligence') }}</h2>
                     </div>
 
                     {% if is_unlocks_premium %}
                     <div class="tu-insights-grid">
                         <div class="tu-insight-box">
-                            <span class="tu-insight-label">Bias marché</span>
+                            <span class="tu-insight-label">{{ t('market_bias', 'Bias marché') }}</span>
                             <strong>{{ unlock_insights.bias_title }}</strong>
                             <p>{{ unlock_insights.bias_text }}</p>
                         </div>
 
                         <div class="tu-insight-box">
-                            <span class="tu-insight-label">Signal dominant</span>
+                            <span class="tu-insight-label">{{ t('dominant_signal', 'Signal dominant') }}</span>
                             <strong>{{ unlock_insights.signal_title }}</strong>
                             <p>{{ unlock_insights.signal_text }}</p>
                         </div>
 
                         <div class="tu-insight-box">
-                            <span class="tu-insight-label">Focus 7 jours</span>
+                            <span class="tu-insight-label">{{ t('seven_day_focus', 'Focus 7 jours') }}</span>
                             <strong>{{ unlock_insights.focus_title }}</strong>
                             <p>{{ unlock_insights.focus_text }}</p>
                         </div>
@@ -274,36 +274,35 @@
 
                     <div class="tu-insights-strip">
                         <div class="tu-insights-mini">
-                            <span>Setup type</span>
+                            <span>{{ t('setup_type', 'Setup type') }}</span>
                             <strong>{{ unlock_insights.setup_type }}</strong>
                         </div>
                         <div class="tu-insights-mini">
-                            <span>Comportement attendu</span>
+                            <span>{{ t('expected_behavior', 'Comportement attendu') }}</span>
                             <strong>{{ unlock_insights.expected_behavior }}</strong>
                         </div>
                         <div class="tu-insights-mini">
-                            <span>Action type</span>
+                            <span>{{ t('action_type', 'Action type') }}</span>
                             <strong>{{ unlock_insights.action_type }}</strong>
                         </div>
                     </div>
                     {% else %}
                     <div class="tu-insights-grid">
                         <div class="tu-insight-box">
-                            <span class="tu-insight-label">Bias marché</span>
+                            <span class="tu-insight-label">{{ t('market_bias', 'Bias marché') }}</span>
                             <strong>{{ unlock_insights.bias_title }}</strong>
                             <p>{{ unlock_insights.bias_text }}</p>
                         </div>
                     </div>
 
                     <div class="premium-lock-box tu-insights-lock">
-                        <strong>🔒 Insights avancés réservés aux abonnés</strong>
+                        <strong>🔒 {{ t('advanced_insights_members_only', 'Insights avancés réservés aux abonnés') }}</strong>
                         <p>
-                            Débloque le signal dominant, le focus 7 jours, le setup type
-                            et le plan d’action complet.
+                            {{ t('advanced_unlock_insights_desc', 'Débloque le signal dominant, le focus 7 jours, le setup type et le plan d’action complet.') }}
                         </p>
                         <div class="premium-lock-actions">
-                            <a href="{{ url_for('billing.pricing') }}" class="premium-upgrade-btn">Passer Premium</a>
-                            <a href="{{ url_for('billing.pricing') }}" class="premium-telegram-btn">Débloquer Telegram Premium</a>
+                            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="premium-upgrade-btn">{{ t('upgrade_premium', 'Passer Premium') }}</a>
+                            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="premium-telegram-btn">{{ t('unlock_telegram_premium', 'Débloquer Telegram Premium') }}</a>
                         </div>
                     </div>
                     {% endif %}

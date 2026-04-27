@@ -2,21 +2,21 @@
 
 {% block title %}
     {% if current_lang == "en" %}
-        Sign Up - VelWolef
+        {{ t("site_register_sign_up_velwolef", "Sign Up - VelWolef") }}
     {% elif current_lang == "es" %}
-        Registro - VelWolef
+        {{ t("site_register_registro_velwolef", "Registro - VelWolef") }}
     {% else %}
-        Inscription - VelWolef
+        {{ t("site_register_inscription_velwolef", "Inscription - VelWolef") }}
     {% endif %}
 {% endblock %}
 
 {% block meta_description %}
     {% if current_lang == "en" %}
-        Create your VelWolef account and access a premium trading experience.
+        {{ t("site_register_create_your_velwolef_account_and_access_a_premium_trading_experience", "Create your VelWolef account and access a premium trading experience.") }}
     {% elif current_lang == "es" %}
-        Crea tu cuenta VelWolef y accede a una experiencia de trading premium.
+        {{ t("site_register_crea_tu_cuenta_velwolef_y_accede_a_una_experiencia_de_trading_premium", "Crea tu cuenta VelWolef y accede a una experiencia de trading premium.") }}
     {% else %}
-        Créez votre compte VelWolef et accédez à une expérience de trading premium.
+        {{ t("site_register_creez_votre_compte_velwolef_et_accedez_a_une_experience_de_trading_premi", "Créez votre compte VelWolef et accédez à une expérience de trading premium.") }}
     {% endif %}
 {% endblock %}
 
@@ -32,34 +32,31 @@
             <div class="auth-left auth-card">
                 <div class="auth-badge auth-badge-purple">
                     {% if current_lang == "en" %}
-                        🚀 New account
+                        {{ t("site_register_new_account", "🚀 New account") }}
                     {% elif current_lang == "es" %}
-                        🚀 Nueva cuenta
+                        {{ t("site_register_nueva_cuenta", "🚀 Nueva cuenta") }}
                     {% else %}
-                        🚀 Nouveau compte
+                        {{ t("site_register_nouveau_compte", "🚀 Nouveau compte") }}
                     {% endif %}
                 </div>
 
                 <h1 class="auth-title">
                     {% if current_lang == "en" %}
-                        Create your trading space in seconds.
+                        {{ t("site_register_create_your_trading_space_in_seconds", "Create your trading space in seconds.") }}
                     {% elif current_lang == "es" %}
-                        Crea tu espacio de trading en segundos.
+                        {{ t("site_register_crea_tu_espacio_de_trading_en_segundos", "Crea tu espacio de trading en segundos.") }}
                     {% else %}
-                        Créez votre espace trading en quelques secondes.
+                        {{ t("site_register_creez_votre_espace_trading_en_quelques_secondes", "Créez votre espace trading en quelques secondes.") }}
                     {% endif %}
                 </h1>
 
                 <p class="auth-text">
                     {% if current_lang == "en" %}
-                        Join a clean and modern interface to follow your signals,
-                        performance, statistics and unlock the Premium experience.
+                        {{ t("site_register_join_a_clean_and_modern_interface_to_follow_your_signals_performance_sta", "Join a clean and modern interface to follow your signals,                         performance, statistics and unlock the Premium experience.") }}
                     {% elif current_lang == "es" %}
-                        Únete a una interfaz limpia y moderna para seguir tus señales,
-                        rendimiento, estadísticas y desbloquear la experiencia Premium.
+                        {{ t("site_register_unete_a_una_interfaz_limpia_y_moderna_para_seguir_tus_se_ales_rendimient", "Únete a una interfaz limpia y moderna para seguir tus señales,                         rendimiento, estadísticas y desbloquear la experiencia Premium.") }}
                     {% else %}
-                        Rejoignez une interface propre et moderne pour suivre vos signaux,
-                        vos performances, vos statistiques et débloquer l’expérience Premium.
+                        {{ t("site_register_rejoignez_une_interface_propre_et_moderne_pour_suivre_vos_signaux_vos_pe", "Rejoignez une interface propre et moderne pour suivre vos signaux,                         vos performances, vos statistiques et débloquer l’expérience Premium.") }}
                     {% endif %}
                 </p>
 
@@ -68,11 +65,11 @@
                         <span class="auth-point-icon">⚡</span>
                         <span>
                             {% if current_lang == "en" %}
-                                Fast and simple account creation
+                                {{ t("site_register_fast_and_simple_account_creation", "Fast and simple account creation") }}
                             {% elif current_lang == "es" %}
-                                Creación de cuenta rápida y sencilla
+                                {{ t("site_register_creacion_de_cuenta_rapida_y_sencilla", "Creación de cuenta rápida y sencilla") }}
                             {% else %}
-                                Création de compte rapide et simple
+                                {{ t("site_register_creation_de_compte_rapide_et_simple", "Création de compte rapide et simple") }}
                             {% endif %}
                         </span>
                     </div>
@@ -80,11 +77,11 @@
                         <span class="auth-point-icon">📊</span>
                         <span>
                             {% if current_lang == "en" %}
-                                Instant access to the dashboard
+                                {{ t("site_register_instant_access_to_the_dashboard", "Instant access to the dashboard") }}
                             {% elif current_lang == "es" %}
-                                Acceso inmediato al dashboard
+                                {{ t("site_register_acceso_inmediato_al_dashboard", "Acceso inmediato al dashboard") }}
                             {% else %}
-                                Accès immédiat au dashboard
+                                {{ t("site_register_acces_immediat_au_dashboard", "Accès immédiat au dashboard") }}
                             {% endif %}
                         </span>
                     </div>
@@ -92,11 +89,11 @@
                         <span class="auth-point-icon">💎</span>
                         <span>
                             {% if current_lang == "en" %}
-                                Upgrade to Premium at any time
+                                {{ t("site_register_upgrade_to_premium_at_any_time", "Upgrade to Premium at any time") }}
                             {% elif current_lang == "es" %}
-                                Posibilidad de pasar a Premium en cualquier momento
+                                {{ t("site_register_posibilidad_de_pasar_a_premium_en_cualquier_momento", "Posibilidad de pasar a Premium en cualquier momento") }}
                             {% else %}
-                                Possibilité de passer Premium à tout moment
+                                {{ t("site_register_possibilite_de_passer_premium_a_tout_moment", "Possibilité de passer Premium à tout moment") }}
                             {% endif %}
                         </span>
                     </div>
@@ -105,11 +102,11 @@
                 <div class="auth-back-link-wrap">
                     <a href="{{ url_for('main.home', lang_code=current_lang) }}" class="auth-back-link">
                         {% if current_lang == "en" %}
-                            ← Back to home
+                            {{ t("site_register_back_to_home", "← Back to home") }}
                         {% elif current_lang == "es" %}
-                            ← Volver al inicio
+                            {{ t("site_register_volver_al_inicio", "← Volver al inicio") }}
                         {% else %}
-                            ← Retour à l’accueil
+                            {{ t("site_register_retour_a_l_accueil", "← Retour à l’accueil") }}
                         {% endif %}
                     </a>
                 </div>
@@ -119,20 +116,20 @@
                 <div class="auth-form-header">
                     <h2>
                         {% if current_lang == "en" %}
-                            Create an account
+                            {{ t("site_register_create_an_account", "Create an account") }}
                         {% elif current_lang == "es" %}
-                            Crear una cuenta
+                            {{ t("site_register_crear_una_cuenta", "Crear una cuenta") }}
                         {% else %}
-                            Créer un compte
+                            {{ t("signup", "Créer un compte") }}
                         {% endif %}
                     </h2>
                     <p>
                         {% if current_lang == "en" %}
-                            Fill in the information below to get started.
+                            {{ t("site_register_fill_in_the_information_below_to_get_started", "Fill in the information below to get started.") }}
                         {% elif current_lang == "es" %}
-                            Completa la información a continuación para empezar.
+                            {{ t("site_register_completa_la_informacion_a_continuacion_para_empezar", "Completa la información a continuación para empezar.") }}
                         {% else %}
-                            Remplissez les informations ci-dessous pour commencer.
+                            {{ t("site_register_remplissez_les_informations_ci_dessous_pour_commencer", "Remplissez les informations ci-dessous pour commencer.") }}
                         {% endif %}
                     </p>
                 </div>
@@ -153,11 +150,11 @@
                     <div class="form-group">
                         <label for="register-email">
                             {% if current_lang == "en" %}
-                                Email address
+                                {{ t("site_register_email_address", "Email address") }}
                             {% elif current_lang == "es" %}
-                                Correo electrónico
+                                {{ t("site_register_correo_electronico", "Correo electrónico") }}
                             {% else %}
-                                Adresse email
+                                {{ t("site_register_adresse_email", "Adresse email") }}
                             {% endif %}
                         </label>
                         <input
@@ -172,11 +169,11 @@
                     <div class="form-group">
                         <label for="register-password">
                             {% if current_lang == "en" %}
-                                Password
+                                {{ t("site_register_password", "Password") }}
                             {% elif current_lang == "es" %}
-                                Contraseña
+                                {{ t("site_register_contrase_a", "Contraseña") }}
                             {% else %}
-                                Mot de passe
+                                {{ t("site_register_mot_de_passe", "Mot de passe") }}
                             {% endif %}
                         </label>
                         <input
@@ -189,7 +186,7 @@
                     </div>
                      <!-- 🔥 AJOUT -->
 <div class="form-group">
-    <label>Confirmer le mot de passe</label>
+    <label>{{ t("site_register_confirmer_le_mot_de_passe", "Confirmer le mot de passe") }}</label>
     <input
         type="password"
         name="confirm_password"
@@ -199,11 +196,11 @@
 </div>
                     <button type="submit" class="auth-submit-btn auth-submit-btn-purple">
                         {% if current_lang == "en" %}
-                            Create my account
+                            {{ t("site_register_create_my_account", "Create my account") }}
                         {% elif current_lang == "es" %}
-                            Crear mi cuenta
+                            {{ t("site_register_crear_mi_cuenta", "Crear mi cuenta") }}
                         {% else %}
-                            Créer mon compte
+                            {{ t("create_my_account", "Créer mon compte") }}
                         {% endif %}
                     </button>
                 </form>
@@ -211,20 +208,20 @@
                 <div class="auth-bottom-link">
                     <p>
                         {% if current_lang == "en" %}
-                            Already have an account?
+                            {{ t("site_register_already_have_an_account", "Already have an account?") }}
                         {% elif current_lang == "es" %}
-                            ¿Ya tienes una cuenta?
+                            {{ t("site_register_ya_tienes_una_cuenta", "¿Ya tienes una cuenta?") }}
                         {% else %}
-                            Déjà un compte ?
+                            {{ t("site_register_deja_un_compte", "Déjà un compte ?") }}
                         {% endif %}
                     </p>
                     <a href="{{ url_for('auth.login', lang_code=current_lang) }}">
                         {% if current_lang == "en" %}
-                            Sign in
+                            {{ t("site_register_sign_in", "Sign in") }}
                         {% elif current_lang == "es" %}
-                            Iniciar sesión
+                            {{ t("site_register_iniciar_sesion", "Iniciar sesión") }}
                         {% else %}
-                            Se connecter
+                            {{ t("login", "Se connecter") }}
                         {% endif %}
                     </a>
                 </div>

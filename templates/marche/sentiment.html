@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Sentiment | VelWolf{% endblock %}
+{% block title %}{{ t("sentiment_page_title", "Sentiment | VelWolef") }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='marche.css') }}">
@@ -11,33 +11,32 @@
 
     <section class="market-hero">
         <div class="market-shell">
-            <span class="market-badge">Marchés • Sentiment</span>
-            <h1>Market Sentiment</h1>
+            <span class="market-badge">{{ t('markets_sentiment', 'Marchés • Sentiment') }}</span>
+            <h1>{{ t('market_sentiment', 'Market Sentiment') }}</h1>
             <p>
-                Une vue multi-actifs pour mesurer la température du marché,
-                détecter les excès émotionnels et améliorer le timing des décisions.
+                {{ t('sentiment_hero_desc', 'Une vue multi-actifs pour mesurer la température du marché, détecter les excès émotionnels et améliorer le timing des décisions.') }}
             </p>
 
             <div class="market-kpi-row">
                 <div class="market-kpi warning">
-                    <span class="label">Émotion</span>
-                    <span class="value">Fear / Greed</span>
-                    <span class="meta">Lecture psychologique</span>
+                    <span class="label">{{ t('emotion', 'Émotion') }}</span>
+                    <span class="value">{{ t("markets_sentiment_fear_greed", "Fear / Greed") }}</span>
+                    <span class="meta">{{ t('psychological_reading', 'Lecture psychologique') }}</span>
                 </div>
                 <div class="market-kpi">
-                    <span class="label">Actifs Risk-On</span>
-                    <span class="value">US100 / BTC</span>
-                    <span class="meta">Appétit du marché</span>
+                    <span class="label">{{ t('risk_on_assets', 'Actifs Risk-On') }}</span>
+                    <span class="value">{{ t("markets_sentiment_us100_btc", "US100 / BTC") }}</span>
+                    <span class="meta">{{ t('market_appetite', 'Appétit du marché') }}</span>
                 </div>
                 <div class="market-kpi">
-                    <span class="label">Défensif</span>
-                    <span class="value">DXY / Gold</span>
-                    <span class="meta">Stress ou prudence</span>
+                    <span class="label">{{ t('defensive', 'Défensif') }}</span>
+                    <span class="value">{{ t("markets_sentiment_dxy_gold", "DXY / Gold") }}</span>
+                    <span class="meta">{{ t('stress_or_caution', 'Stress ou prudence') }}</span>
                 </div>
                 <div class="market-kpi positive">
-                    <span class="label">Usage</span>
-                    <span class="value">Timing</span>
-                    <span class="meta">Lecture contrarienne</span>
+                    <span class="label">{{ t('usage', 'Usage') }}</span>
+                    <span class="value">{{ t('timing', 'Timing') }}</span>
+                    <span class="meta">{{ t('contrarian_reading', 'Lecture contrarienne') }}</span>
                 </div>
             </div>
         </div>
@@ -48,8 +47,8 @@
 
             <div class="tv-card tv-card-tape">
                 <div class="tv-card-head">
-                    <h2>Risk Dashboard</h2>
-                    <p>Les actifs qui donnent le ton au sentiment global et à l’appétit pour le risque.</p>
+                    <h2>{{ t('risk_dashboard', 'Risk Dashboard') }}</h2>
+                    <p>{{ t('risk_dashboard_desc', 'Les actifs qui donnent le ton au sentiment global et à l’appétit pour le risque.') }}</p>
                 </div>
 
                 <div class="tradingview-widget-container">
@@ -68,7 +67,7 @@
                         "colorTheme": "dark",
                         "isTransparent": true,
                         "displayMode": "adaptive",
-                        "locale": "fr"
+                        "locale": "{{ current_lang|default('en') }}"
                     }
                     </script>
                 </div>
@@ -78,8 +77,8 @@
 
                 <article class="market-card-chart">
                     <div class="tv-card-head">
-                        <h2>US100 — baromètre du risque</h2>
-                        <p>Une lecture simple du risque global via l’un des indices les plus sensibles au sentiment.</p>
+                        <h2>{{ t('us100_risk_barometer', 'US100 — baromètre du risque') }}</h2>
+                        <p>{{ t('us100_risk_desc', 'Une lecture simple du risque global via l’un des indices les plus sensibles au sentiment.') }}</p>
                     </div>
 
                     <div class="tradingview-widget-container chart-widget">
@@ -92,7 +91,7 @@
                             "timezone": "Europe/Paris",
                             "theme": "dark",
                             "style": "1",
-                            "locale": "fr",
+                            "locale": "{{ current_lang|default('en') }}",
                             "allow_symbol_change": true,
                             "calendar": true,
                             "withdateranges": true,
@@ -105,8 +104,8 @@
 
                 <article class="market-card-chart">
                     <div class="tv-card-head">
-                        <h2>Vue multi-actifs</h2>
-                        <p>Le mélange actions, crypto, or et dollar pour lire la psychologie du marché.</p>
+                        <h2>{{ t('multi_asset_view', 'Vue multi-actifs') }}</h2>
+                        <p>{{ t('multi_asset_sentiment_desc', 'Le mélange actions, crypto, or et dollar pour lire la psychologie du marché.') }}</p>
                     </div>
 
                     <div class="tradingview-widget-container market-overview-widget">
@@ -116,7 +115,7 @@
                             "colorTheme": "dark",
                             "dateRange": "12M",
                             "showChart": true,
-                            "locale": "fr",
+                            "locale": "{{ current_lang|default('en') }}",
                             "isTransparent": true,
                             "showSymbolLogo": true,
                             "width": "100%",
@@ -144,99 +143,95 @@
 
             <div class="market-grid">
                 <article class="market-card">
-                    <span class="eyebrow">Psychologie</span>
-                    <h2>Peur, euphorie et excès</h2>
+                    <span class="eyebrow">{{ t('psychology', 'Psychologie') }}</span>
+                    <h2>{{ t('fear_greed_excess', 'Peur, euphorie et excès') }}</h2>
                     <p>
-                        Les retournements majeurs apparaissent souvent quand le consensus devient trop confortable
-                        ou trop paniqué. Cette page sert à capter ce déséquilibre.
+                        {{ t("markets_sentiment_les_retournements_majeurs_apparaissent_souvent_quand_le_consensus_devien", "Les retournements majeurs apparaissent souvent quand le consensus devient trop confortable                         ou trop paniqué. Cette page sert à capter ce déséquilibre.") }}
                     </p>
                     <div class="card-stat">
-                        <span class="name">Approche</span>
-                        <span class="num">Contrarienne</span>
+                        <span class="name">{{ t("markets_sentiment_approche", "Approche") }}</span>
+                        <span class="num">{{ t("markets_sentiment_contrarienne", "Contrarienne") }}</span>
                     </div>
                 </article>
 
                 <article class="market-card">
-                    <span class="eyebrow">Timing</span>
-                    <h2>Mieux placer les décisions</h2>
+                    <span class="eyebrow">{{ t('timing', 'Timing') }}</span>
+                    <h2>{{ t('better_decision_timing', 'Mieux placer les décisions') }}</h2>
                     <p>
-                        Le sentiment ne remplace pas la technique, mais il améliore fortement le timing.
-                        Il aide à savoir quand un mouvement devient dangereux ou attractif.
+                        {{ t("markets_sentiment_le_sentiment_ne_remplace_pas_la_technique_mais_il_ameliore_fortement_le", "Le sentiment ne remplace pas la technique, mais il améliore fortement le timing.                         Il aide à savoir quand un mouvement devient dangereux ou attractif.") }}
                     </p>
                     <div class="card-stat">
-                        <span class="name">But</span>
-                        <span class="num">Contexte + Timing</span>
+                        <span class="name">{{ t("markets_forex_but", "But") }}</span>
+                        <span class="num">{{ t("markets_sentiment_contexte", "Contexte +") }} {{ t('timing', 'Timing') }}</span>
                     </div>
                 </article>
             </div>
 
             <div class="market-table-card" style="margin-top: 24px;">
                 <div class="market-table-head">
-                    <span>Indicateur</span>
-                    <span>Type</span>
-                    <span>Lecture</span>
-                    <span>Impact</span>
+                    <span>{{ t('indicator', 'Indicateur') }}</span>
+                    <span>{{ t('type', 'Type') }}</span>
+                    <span>{{ t('reading', 'Lecture') }}</span>
+                    <span>{{ t('impact', 'Impact') }}</span>
                 </div>
 
                 <div class="market-table-row">
                     <span><strong>US100</strong></span>
-                    <span>Risk-On</span>
-                    <span>Appétit actions</span>
-                    <span class="market-up">Fort</span>
+                    <span>{{ t("markets_sentiment_risk_on", "Risk-On") }}</span>
+                    <span>{{ t("markets_sentiment_appetit_actions", "Appétit actions") }}</span>
+                    <span class="market-up">{{ t("markets_sentiment_fort", "Fort") }}</span>
                 </div>
 
                 <div class="market-table-row">
-                    <span><strong>Bitcoin</strong></span>
-                    <span>Risk Asset</span>
-                    <span>Spéculation</span>
-                    <span>Fort</span>
+                    <span><strong>{{ t("markets_sentiment_bitcoin", "Bitcoin") }}</strong></span>
+                    <span>{{ t("markets_sentiment_risk_asset", "Risk Asset") }}</span>
+                    <span>{{ t("markets_sentiment_speculation", "Spéculation") }}</span>
+                    <span>{{ t("markets_sentiment_fort", "Fort") }}</span>
                 </div>
 
                 <div class="market-table-row">
-                    <span><strong>Gold</strong></span>
-                    <span>Refuge</span>
-                    <span>Recherche de sécurité</span>
-                    <span>Moyen</span>
+                    <span><strong>{{ t("markets_sentiment_gold", "Gold") }}</strong></span>
+                    <span>{{ t("markets_sentiment_refuge", "Refuge") }}</span>
+                    <span>{{ t("markets_sentiment_recherche_de_securite", "Recherche de sécurité") }}</span>
+                    <span>{{ t("markets_sentiment_moyen", "Moyen") }}</span>
                 </div>
 
                 <div class="market-table-row">
                     <span><strong>DXY</strong></span>
-                    <span>Stress Macro</span>
-                    <span>Pression dollar</span>
-                    <span class="market-up">Fort</span>
+                    <span>{{ t("markets_sentiment_stress_macro", "Stress Macro") }}</span>
+                    <span>{{ t("markets_sentiment_pression_dollar", "Pression dollar") }}</span>
+                    <span class="market-up">{{ t("markets_sentiment_fort", "Fort") }}</span>
                 </div>
             </div>
 
             <div class="market-highlight">
-                <h3>Pourquoi cette page compte vraiment</h3>
+                <h3>{{ t('why_sentiment_matters', 'Pourquoi cette page compte vraiment') }}</h3>
                 <p>
-                    Le prix montre ce que le marché fait. Le sentiment aide à comprendre quand
-                    il devient vulnérable, euphorique ou sous tension. C’est une couche de lecture
-                    essentielle pour un service premium orienté qualité.
+                    {{ t("markets_sentiment_le_prix_montre_ce_que_le_marche_fait_le_sentiment_aide_a_comprendre_quan", "Le prix montre ce que le marché fait. Le sentiment aide à comprendre quand                     il devient vulnérable, euphorique ou sous tension. C’est une couche de lecture                     essentielle pour un service premium orienté qualité.") }}
                 </p>
 
                 <div class="market-mini-list">
                     <div class="market-mini-item">
-                        <span class="label">Clé</span>
-                        <span class="value">Émotion</span>
+                        <span class="label">{{ t("markets_sentiment_cle", "Clé") }}</span>
+                        <span class="value">{{ t('emotion', 'Émotion') }}</span>
                     </div>
                     <div class="market-mini-item">
-                        <span class="label">Mesure</span>
-                        <span class="value">Excès</span>
+                        <span class="label">{{ t("markets_sentiment_mesure", "Mesure") }}</span>
+                        <span class="value">{{ t("markets_sentiment_exces", "Excès") }}</span>
                     </div>
                     <div class="market-mini-item">
-                        <span class="label">Usage</span>
-                        <span class="value">Timing</span>
+                        <span class="label">{{ t('usage', 'Usage') }}</span>
+                        <span class="value">{{ t('timing', 'Timing') }}</span>
                     </div>
                     <div class="market-mini-item">
-                        <span class="label">Style</span>
-                        <span class="value">Contrarien</span>
+                        <span class="label">{{ t("markets_sentiment_style", "Style") }}</span>
+                        <span class="value">{{ t("markets_sentiment_contrarien", "Contrarien") }}</span>
                     </div>
                 </div>
 
                 <div class="market-cta-row">
-                    <a href="{{ url_for('signals.signals_us100') }}" class="market-btn">Voir US100</a>
-                    <a href="{{ url_for('signals.signals_gold') }}" class="market-btn secondary">Voir Gold</a>
+                    <a href="{{ url_for('signals.signals_us100', lang_code=current_lang) }}" class="market-btn">{{ t('see_us100', 'Voir US100') }}</a>
+                    <a href="{{ url_for('signals.signals_gold', lang_code=current_lang) }}" class="market-btn secondary">{{ t('see_gold', 'Voir Gold') }}</a>
                 </div>
             </div>
 

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ current_lang|default('en') }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VelWolef - Trading Lab</title>
-    <meta name="description" content="Le Trading Lab de VelWolef : structure d’un signal, gestion du risque et psychologie du trader dans un environnement premium.">
+    <title>{{ t("trading_lab_page_title", "VelWolef - Trading Lab") }}</title>
+    <meta name="description" content="{{ t('trading_lab_meta', 'Le Trading Lab de VelWolef : structure d’un signal, gestion du risque et psychologie du trader dans un environnement premium.') }}">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
@@ -54,7 +54,7 @@
                     Comprendre la direction, l’entrée, l’invalidation et l’objectif d’un signal
                     pour lire le scénario avec une logique claire.
                 </p>
-                <a href="{{ url_for('pages.lab_structure') }}" class="tl-card-link">Explorer la structure</a>
+                <a href="{{ url_for('pages.lab_structure', lang_code=current_lang) }}" class="tl-card-link">Explorer la structure</a>
             </div>
 
             <div class="tl-pillar-card">
@@ -64,7 +64,7 @@
                     Encadrer le scénario, protéger le capital et donner une vraie cohérence
                     à la lecture des niveaux affichés.
                 </p>
-                <a href="{{ url_for('pages.lab_risk') }}" class="tl-card-link">Explorer le risque</a>
+                <a href="{{ url_for('pages.lab_risk', lang_code=current_lang) }}" class="tl-card-link">Explorer le risque</a>
             </div>
 
             <div class="tl-pillar-card">
@@ -74,7 +74,7 @@
                     Discipline, patience et stabilité mentale renforcent la capacité à lire
                     le marché de façon plus propre et plus régulière.
                 </p>
-                <a href="{{ url_for('pages.lab_psychology') }}" class="tl-card-link">Explorer la psychologie</a>
+                <a href="{{ url_for('pages.lab_psychology', lang_code=current_lang) }}" class="tl-card-link">Explorer la psychologie</a>
             </div>
         </div>
     </div>
@@ -154,8 +154,8 @@
                 et plus professionnel.
             </p>
             <div class="tl-final-actions">
-                <a href="{{ url_for('signals.signals_page') }}" class="tl-btn tl-btn-light">Voir les signaux</a>
-                <a href="{{ url_for('billing.pricing') }}" class="tl-btn tl-btn-outline">Découvrir les offres</a>
+                <a href="{{ url_for('signals.signals_page', lang_code=current_lang) }}" class="tl-btn tl-btn-light">Voir les signaux</a>
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="tl-btn tl-btn-outline">Découvrir les offres</a>
             </div>
         </div>
     </div>
@@ -169,10 +169,10 @@
         </div>
 
         <div class="footer-links">
-            <a href="{{ url_for('main.home') }}">Accueil</a>
-            <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
-            <a href="{{ url_for('signals.results') }}">Résultats</a>
-            <a href="{{ url_for('billing.pricing') }}">Offres</a>
+            <a href="{{ url_for('main.home', lang_code=current_lang) }}">Accueil</a>
+            <a href="{{ url_for('signals.signals_page', lang_code=current_lang) }}">Signaux</a>
+            <a href="{{ url_for('signals.results', lang_code=current_lang) }}">Résultats</a>
+            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}">Offres</a>
         </div>
     </div>
 </footer>

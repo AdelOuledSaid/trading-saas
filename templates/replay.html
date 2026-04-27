@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Replay Trading</title>
+  <title>{{ t("site_replay_replay_trading", "Replay Trading") }}</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 
   <style>
     body {
@@ -515,31 +515,31 @@
     <div class="replay-main-column">
       <section class="hero-card">
         <div class="hero-top">
-          <span class="pill">Replay premium</span>
+          <span class="pill">{{ t("site_dashboard_replay_premium", "Replay premium") }}</span>
           <span class="pill" id="hero-symbol">-</span>
           <span class="pill" id="hero-direction">-</span>
-          <span class="pill" id="result-badge">OPEN</span>
+          <span class="pill" id="result-badge">{{ t("site_replay_open", "OPEN") }}</span>
           <span class="pill" id="chart-badge">-</span>
         </div>
 
-        <h1>Replay dynamique du trade</h1>
-        <p id="market-context">Chargement du contexte...</p>
+        <h1>{{ t("site_replay_replay_dynamique_du_trade", "Replay dynamique du trade") }}</h1>
+        <p id="market-context">{{ t("site_replay_chargement_du_contexte", "Chargement du contexte...") }}</p>
 
         <div class="hero-grid">
           <div class="hero-box">
-            <span>Entrée</span>
+            <span>{{ t("entry", "Entrée") }}</span>
             <strong id="entry-price-box">-</strong>
           </div>
           <div class="hero-box">
-            <span>Stop Loss</span>
+            <span>{{ t("site_learn_signal_stop_loss", "Stop Loss") }}</span>
             <strong id="stop-loss-box">-</strong>
           </div>
           <div class="hero-box">
-            <span>Take Profit</span>
+            <span>{{ t("site_learn_signal_take_profit", "Take Profit") }}</span>
             <strong id="take-profit-box">-</strong>
           </div>
           <div class="hero-box">
-            <span>Résultat</span>
+            <span>{{ t("result", "Résultat") }}</span>
             <strong id="result-box">-</strong>
           </div>
         </div>
@@ -548,23 +548,23 @@
       <section class="chart-card">
         <div class="chart-head">
           <div>
-            <h2>Chart principal</h2>
-            <p>Les bougies s’affichent progressivement dans le temps.</p>
+            <h2>{{ t("site_replay_chart_principal", "Chart principal") }}</h2>
+            <p>{{ t("site_replay_les_bougies_s_affichent_progressivement_dans_le_temps", "Les bougies s’affichent progressivement dans le temps.") }}</p>
           </div>
-          <div class="pill" id="decision-mode-text">En attente</div>
+          <div class="pill" id="decision-mode-text">{{ t("site_replay_en_attente", "En attente") }}</div>
         </div>
 
         <div id="chart"></div>
 
         <div class="control-row">
-          <button onclick="startReplay()">▶ Play</button>
-          <button class="secondary" onclick="pauseReplay()">⏸ Pause</button>
-          <button class="secondary" onclick="stepReplay()">⏭ Step</button>
-          <button class="secondary" onclick="resetReplay()">⟲ Reset</button>
+          <button onclick="startReplay()">{{ t("site_replay_play", "▶ Play") }}</button>
+          <button class="secondary" onclick="pauseReplay()">{{ t("site_replay_pause", "⏸ Pause") }}</button>
+          <button class="secondary" onclick="stepReplay()">{{ t("site_replay_step", "⏭ Step") }}</button>
+          <button class="secondary" onclick="resetReplay()">{{ t("site_replay_reset", "⟲ Reset") }}</button>
 
-          <button class="secondary speed-btn" onclick="setReplaySpeed(this, 1)">x1</button>
-          <button class="secondary speed-btn" onclick="setReplaySpeed(this, 2)">x2</button>
-          <button class="secondary speed-btn" onclick="setReplaySpeed(this, 4)">x4</button>
+          <button class="secondary speed-btn" onclick="setReplaySpeed(this, 1)">{{ t("site_replay_x1", "x1") }}</button>
+          <button class="secondary speed-btn" onclick="setReplaySpeed(this, 2)">{{ t("site_replay_x2", "x2") }}</button>
+          <button class="secondary speed-btn" onclick="setReplaySpeed(this, 4)">{{ t("site_replay_x4", "x4") }}</button>
         </div>
 
         <div class="replay-progress-wrap">
@@ -580,60 +580,60 @@
         <div id="events"></div>
 
         <div id="decision-box" class="decision-box hidden">
-          <h3>Moment de décision</h3>
-          <p>Que fais-tu à cet instant du trade ?</p>
+          <h3>{{ t("site_replay_moment_de_decision", "Moment de décision") }}</h3>
+          <p>{{ t("site_replay_que_fais_tu_a_cet_instant_du_trade", "Que fais-tu à cet instant du trade ?") }}</p>
           <div class="decision-actions">
-            <button class="btn-close" onclick="makeDecision('close')">Fermer</button>
-            <button class="btn-hold" onclick="makeDecision('hold')">Conserver</button>
-            <button class="btn-partial" onclick="makeDecision('partial')">Alléger</button>
+            <button class="btn-close" onclick="makeDecision('close')">{{ t("close", "Fermer") }}</button>
+            <button class="btn-hold" onclick="makeDecision('hold')">{{ t("site_replay_conserver", "Conserver") }}</button>
+            <button class="btn-partial" onclick="makeDecision('partial')">{{ t("site_replay_alleger", "Alléger") }}</button>
           </div>
         </div>
       </section>
 
       <section class="analysis-card training-card">
-        <h3>Analyse post-trade</h3>
-        <p id="post-analysis">Chargement...</p>
+        <h3>{{ t("site_replay_analyse_post_trade", "Analyse post-trade") }}</h3>
+        <p id="post-analysis">{{ t("site_replay_chargement", "Chargement...") }}</p>
       </section>
 
       <section class="analysis-card lessons-card">
-        <h3>Leçons</h3>
+        <h3>{{ t("site_replay_lecons", "Leçons") }}</h3>
         <div id="lessons-list"></div>
       </section>
     </div>
 
     <aside class="replay-side-column">
       <section class="card">
-        <h3>Résumé du trade</h3>
+        <h3>{{ t("site_replay_resume_du_trade", "Résumé du trade") }}</h3>
         <div class="metric-list">
-          <div class="metric-row"><span>Actif</span><strong id="side-symbol">-</strong></div>
-          <div class="metric-row"><span>Direction</span><strong id="side-direction">-</strong></div>
-          <div class="metric-row"><span>Entrée</span><strong id="side-entry">-</strong></div>
+          <div class="metric-row"><span>{{ t("status_active", "Actif") }}</span><strong id="side-symbol">-</strong></div>
+          <div class="metric-row"><span>{{ t("direction", "Direction") }}</span><strong id="side-direction">-</strong></div>
+          <div class="metric-row"><span>{{ t("entry", "Entrée") }}</span><strong id="side-entry">-</strong></div>
           <div class="metric-row"><span>SL</span><strong id="side-sl">-</strong></div>
           <div class="metric-row"><span>TP</span><strong id="side-tp">-</strong></div>
-          <div class="metric-row"><span>Confiance</span><strong id="side-confidence">-</strong></div>
-          <div class="metric-row"><span>Tendance</span><strong id="side-trend">-</strong></div>
-          <div class="metric-row"><span>R/R</span><strong id="side-rr">-</strong></div>
-          <div class="metric-row"><span>Timeframe</span><strong id="side-timeframe">-</strong></div>
-          <div class="metric-row"><span>Résultat</span><strong id="side-result">-</strong></div>
+          <div class="metric-row"><span>{{ t("confidence", "Confiance") }}</span><strong id="side-confidence">-</strong></div>
+          <div class="metric-row"><span>{{ t("site_dashboard_tendance", "Tendance") }}</span><strong id="side-trend">-</strong></div>
+          <div class="metric-row"><span>{{ t("site_learn_signal_r_r", "R/R") }}</span><strong id="side-rr">-</strong></div>
+          <div class="metric-row"><span>{{ t("site_dashboard_timeframe", "Timeframe") }}</span><strong id="side-timeframe">-</strong></div>
+          <div class="metric-row"><span>{{ t("result", "Résultat") }}</span><strong id="side-result">-</strong></div>
         </div>
       </section>
 
       <section class="card">
-        <h3>Score trader</h3>
+        <h3>{{ t("site_replay_score_trader", "Score trader") }}</h3>
         <div class="metric-list">
-          <div class="metric-row"><span>Score</span><strong id="trader-score">0</strong></div>
-          <div class="metric-row"><span>Statut</span><strong id="trader-status">En attente</strong></div>
-          <div class="metric-row"><span>Discipline</span><strong id="discipline-score">0/10</strong></div>
-          <div class="metric-row"><span>Timing</span><strong id="timing-score">0/10</strong></div>
+          <div class="metric-row"><span>{{ t("site_open_interest_score", "Score") }}</span><strong id="trader-score">0</strong></div>
+          <div class="metric-row"><span>{{ t("status", "Statut") }}</span><strong id="trader-status">{{ t("site_replay_en_attente", "En attente") }}</strong></div>
+          <div class="metric-row"><span>{{ t("site_level1_discipline", "Discipline") }}</span><strong id="discipline-score">0/10</strong></div>
+          <div class="metric-row"><span>{{ t("site_level2_timing", "Timing") }}</span><strong id="timing-score">0/10</strong></div>
         </div>
-        <p id="decision-feedback" style="margin-top:14px;color:#93a4c2;">Le score apparaîtra après ton choix.</p>
+        <p id="decision-feedback" style="margin-top:14px;color:#93a4c2;">{{ t("site_replay_le_score_apparaitra_apres_ton_choix", "Le score apparaîtra après ton choix.") }}</p>
       </section>
 
       <section class="side-note-card">
-        <h3>Badges</h3>
+        <h3>{{ t("site_replay_badges", "Badges") }}</h3>
         <div class="metric-list">
-          <div class="metric-row"><span>Setup</span><strong id="setup-grade-badge">Setup -</strong></div>
-          <div class="metric-row"><span>Difficulté</span><strong id="difficulty-badge">-</strong></div>
+          <div class="metric-row"><span>{{ t("site_replay_setup", "Setup") }}</span><strong id="setup-grade-badge">{{ t("site_replay_setup_2", "Setup -") }}</strong></div>
+          <div class="metric-row"><span>{{ t("site_replay_difficulte", "Difficulté") }}</span><strong id="difficulty-badge">-</strong></div>
         </div>
       </section>
     </aside>

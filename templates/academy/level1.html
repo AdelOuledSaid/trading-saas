@@ -1,1150 +1,53 @@
 {% extends "base.html" %}
 
-{% block title %}Academy Niveau 1 | VelWolf{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}">
-<style>
-    .academy-sticky-nav {
-        position: sticky;
-        top: 96px;
-    }
-
-    .academy-level-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.45fr) minmax(290px, 0.75fr);
-        gap: 26px;
-        align-items: start;
-    }
-
-    .academy-learning-hub {
-        border: 1px solid rgba(255,255,255,0.08);
-        background: linear-gradient(180deg, rgba(15,23,42,0.92), rgba(5,10,20,0.96));
-        box-shadow: 0 20px 55px rgba(0,0,0,0.28);
-    }
-
-    .academy-kpi-row {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 14px;
-        margin-top: 20px;
-    }
-
-    .academy-kpi-card {
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 18px;
-        padding: 18px;
-        background: rgba(255,255,255,0.03);
-    }
-
-    .academy-kpi-card span {
-        display: block;
-        font-size: 0.86rem;
-        color: #94a3b8;
-        margin-bottom: 8px;
-    }
-
-    .academy-kpi-card strong {
-        font-size: 1.35rem;
-        color: #f8fafc;
-    }
-
-    .academy-score-ring-wrap {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 12px 0 0;
-    }
-
-    .academy-score-ring {
-        --score: {{ academy_progress.level1 if academy_progress else 0 }};
-        width: 138px;
-        height: 138px;
-        border-radius: 999px;
-        background:
-            radial-gradient(circle at center, #08111f 54%, transparent 55%),
-            conic-gradient(#8b5cf6 calc(var(--score) * 1%), rgba(255,255,255,0.08) 0);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: inset 0 0 30px rgba(0,0,0,0.25);
-    }
-
-    .academy-score-ring-inner {
-        text-align: center;
-    }
-
-    .academy-score-ring-inner strong {
-        display: block;
-        font-size: 2rem;
-        color: #ffffff;
-        line-height: 1;
-    }
-
-    .academy-score-ring-inner span {
-        display: block;
-        margin-top: 8px;
-        font-size: 0.82rem;
-        color: #94a3b8;
-    }
-
-    .academy-progress-timeline {
-        margin-top: 26px;
-        display: grid;
-        gap: 14px;
-    }
-
-    .academy-timeline-item {
-        display: grid;
-        grid-template-columns: 44px minmax(0, 1fr);
-        gap: 14px;
-        align-items: start;
-    }
-
-    .academy-timeline-dot {
-        width: 44px;
-        height: 44px;
-        border-radius: 999px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        background: rgba(139,92,246,0.18);
-        border: 1px solid rgba(139,92,246,0.35);
-        color: #e9d5ff;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-    }
-
-    .academy-timeline-card {
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 18px;
-        padding: 16px 18px;
-        background: rgba(255,255,255,0.03);
-    }
-
-    .academy-status-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 7px 12px;
-        border-radius: 999px;
-        font-size: 0.82rem;
-        font-weight: 700;
-        letter-spacing: 0.01em;
-    }
-
-    .academy-status-badge.done {
-        background: rgba(34,197,94,0.14);
-        color: #bbf7d0;
-        border: 1px solid rgba(34,197,94,0.28);
-    }
-
-    .academy-status-badge.live {
-        background: rgba(59,130,246,0.14);
-        color: #bfdbfe;
-        border: 1px solid rgba(59,130,246,0.28);
-    }
-
-    .academy-status-badge.locked {
-        background: rgba(148,163,184,0.12);
-        color: #cbd5e1;
-        border: 1px solid rgba(148,163,184,0.25);
-    }
-
-    .academy-sticky-card {
-        position: sticky;
-        top: 96px;
-        display: grid;
-        gap: 18px;
-    }
-
-    .academy-outline-nav {
-        display: grid;
-        gap: 10px;
-    }
-
-    .academy-outline-link {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        text-decoration: none;
-        color: #e2e8f0;
-        border: 1px solid rgba(255,255,255,0.06);
-        background: rgba(255,255,255,0.025);
-        padding: 12px 14px;
-        border-radius: 14px;
-        transition: transform .2s ease, border-color .2s ease, background .2s ease;
-    }
-
-    .academy-outline-link:hover {
-        transform: translateY(-1px);
-        border-color: rgba(139,92,246,0.35);
-        background: rgba(139,92,246,0.08);
-    }
-
-    .academy-outline-link small {
-        color: #94a3b8;
-        font-size: 0.76rem;
-    }
-
-    .academy-module-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 6px 11px;
-        border-radius: 999px;
-        font-size: 0.8rem;
-        font-weight: 700;
-        border: 1px solid rgba(255,255,255,0.08);
-        background: rgba(255,255,255,0.04);
-        color: #e2e8f0;
-    }
-
-    .academy-module-badge.validated {
-        background: rgba(34,197,94,0.14);
-        color: #bbf7d0;
-        border-color: rgba(34,197,94,0.25);
-    }
-
-    .academy-module-badge.current {
-        background: rgba(59,130,246,0.14);
-        color: #bfdbfe;
-        border-color: rgba(59,130,246,0.25);
-    }
-
-    .academy-accordion {
-        display: grid;
-        gap: 18px;
-        margin-top: 24px;
-    }
-
-    .academy-lesson {
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 22px;
-        overflow: hidden;
-        background: linear-gradient(180deg, rgba(15,23,42,0.78), rgba(2,6,23,0.92));
-        box-shadow: 0 18px 50px rgba(0,0,0,0.18);
-    }
-
-    .academy-lesson[open] {
-        border-color: rgba(139,92,246,0.3);
-    }
-
-    .academy-lesson-summary {
-        list-style: none;
-        cursor: pointer;
-        padding: 22px 24px;
-        display: flex;
-        align-items: start;
-        justify-content: space-between;
-        gap: 18px;
-    }
-
-    .academy-lesson-summary::-webkit-details-marker {
-        display: none;
-    }
-
-    .academy-lesson-title-wrap {
-        display: grid;
-        gap: 10px;
-    }
-
-    .academy-lesson-kicker {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .academy-lesson-title {
-        margin: 0;
-        color: #f8fafc;
-        font-size: 1.28rem;
-        line-height: 1.2;
-    }
-
-    .academy-lesson-summary p {
-        margin: 0;
-        color: #94a3b8;
-    }
-
-    .academy-lesson-arrow {
-        flex: 0 0 auto;
-        width: 40px;
-        height: 40px;
-        border-radius: 999px;
-        border: 1px solid rgba(255,255,255,0.08);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #cbd5e1;
-        background: rgba(255,255,255,0.03);
-        transition: transform .2s ease;
-    }
-
-    .academy-lesson[open] .academy-lesson-arrow {
-        transform: rotate(180deg);
-    }
-
-    .academy-lesson-body {
-        padding: 0 24px 24px;
-    }
-
-    .academy-mini-score {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 7px 11px;
-        border-radius: 999px;
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.08);
-        color: #cbd5e1;
-        font-size: 0.8rem;
-        font-weight: 700;
-    }
-
-    .academy-lesson-tools {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 18px;
-    }
-
-    .academy-anchor-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 10px 14px;
-        border-radius: 12px;
-        text-decoration: none;
-        border: 1px solid rgba(255,255,255,0.08);
-        color: #e2e8f0;
-        background: rgba(255,255,255,0.03);
-    }
-
-    .academy-checkline {
-        display: grid;
-        gap: 10px;
-        margin-top: 18px;
-    }
-
-    .academy-checkline-item {
-        display: flex;
-        align-items: start;
-        gap: 10px;
-        color: #dbeafe;
-    }
-
-    .academy-checkline-item span {
-        color: #22c55e;
-        font-weight: 700;
-    }
-
-    .academy-mastery-board {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 16px;
-        margin-top: 20px;
-    }
-
-    .academy-mastery-card {
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 18px;
-        background: rgba(255,255,255,0.03);
-        padding: 18px;
-    }
-
-    .academy-mastery-meter {
-        height: 10px;
-        border-radius: 999px;
-        background: rgba(255,255,255,0.08);
-        overflow: hidden;
-        margin-top: 12px;
-    }
-
-    .academy-mastery-fill {
-        height: 100%;
-        border-radius: 999px;
-        background: linear-gradient(90deg, #8b5cf6, #22c55e);
-    }
-
-    .academy-top-nav-mobile {
-        display: none;
-    }
-
-    .academy-btn.is-completed {
-        background: rgba(34,197,94,0.14);
-        color: #bbf7d0;
-        border-color: rgba(34,197,94,0.25);
-    }
-
-    @media (max-width: 1100px) {
-        .academy-level-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .academy-sticky-card,
-        .academy-sticky-nav {
-            position: static;
-        }
-
-        .academy-kpi-row,
-        .academy-mastery-board {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .academy-top-nav-mobile {
-            display: block;
-            margin-top: 18px;
-        }
-    }
-
-    @media (max-width: 760px) {
-        .academy-kpi-row,
-        .academy-mastery-board {
-            grid-template-columns: 1fr;
-        }
-
-        .academy-lesson-summary {
-            padding: 18px 18px;
-        }
-
-        .academy-lesson-body {
-            padding: 0 18px 18px;
-        }
-    }
-</style>
-{% endblock %}
-
-{% block content %}
-
-<section class="academy-page-hero academy-section">
-    <div class="academy-shell">
-        <div class="academy-breadcrumb">
-            <a href="{{ url_for('academy.academy_index') }}">Academy</a>
-            <span>/</span>
-            <span>Niveau 1</span>
-        </div>
-
-        <div class="academy-page-grid">
-            <div>
-                <span class="academy-kicker">Niveau 1 — Foundations / Trading Academy</span>
-                <h1>Construire une base rationnelle avant toute recherche de performance</h1>
-                <p class="academy-lead">
-                    Ce niveau constitue le socle méthodologique du parcours. L’objectif n’est pas de pousser
-                    l’utilisateur à “prendre des trades”, mais de lui apprendre à penser proprement :
-                    scénario, invalidation, risque, logique de sortie et discipline de lecture.
-                </p>
-                <p class="academy-lead">
-                    Cette version du niveau 1 adopte une logique plus proche d’une plateforme premium
-                    de formation : progression visuelle, sections repliables, timeline pédagogique,
-                    navigation sticky et validation par étapes.
-                </p>
-
-                <div class="academy-actions">
-                    <a href="#learning-hub" class="academy-btn academy-btn-primary">Ouvrir le hub</a>
-                    <a href="#lesson-1" class="academy-btn academy-btn-secondary">Commencer module 1</a>
-                    <a href="#quiz-final" class="academy-btn academy-btn-secondary">Aller au quiz final</a>
-                </div>
-
-                <div class="academy-access-strip">
-                    {% if is_vip %}
-                        <span class="academy-plan-badge-vip">Plan VIP</span>
-                    {% elif is_premium %}
-                        <span class="academy-plan-badge-premium">Plan Premium</span>
-                    {% else %}
-                        <span class="academy-plan-badge-basic">Plan Basic</span>
-                    {% endif %}
-                    <strong>Niveau 1 inclus dans tous les plans</strong>
-                </div>
-
-                <div class="academy-top-nav-mobile">
-                    <div class="academy-info-card" style="margin-top:18px;">
-                        <h3>Navigation rapide</h3>
-                        <div class="academy-outline-nav" style="margin-top: 14px;">
-                            <a class="academy-outline-link" href="#lesson-1"><span>01 — Définir le trading</span><small>Fondation</small></a>
-                            <a class="academy-outline-link" href="#lesson-2"><span>02 — Cartographie des marchés</span><small>Contexte</small></a>
-                            <a class="academy-outline-link" href="#lesson-3"><span>03 — Buy / Sell / hypothèse</span><small>Structure</small></a>
-                            <a class="academy-outline-link" href="#lesson-4"><span>04 — Pip / lot / levier</span><small>Technique</small></a>
-                            <a class="academy-outline-link" href="#lesson-5"><span>05 — Stop / Take Profit</span><small>Sortie</small></a>
-                            <a class="academy-outline-link" href="#lesson-6"><span>06 — Gestion du risque</span><small>Protection</small></a>
-                            <a class="academy-outline-link" href="#lesson-7"><span>07 — Lecture graphique</span><small>Observation</small></a>
-                            <a class="academy-outline-link" href="#lesson-8"><span>08 — Supports / résistances</span><small>Zones</small></a>
-                            <a class="academy-outline-link" href="#lesson-9"><span>09 — Erreurs débutant</span><small>Discipline</small></a>
-                            <a class="academy-outline-link" href="#lesson-10"><span>10 — Synthèse</span><small>Validation</small></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="academy-side-progress">
-                <div class="academy-progress-head">
-                    <span>Progression actuelle</span>
-                    <strong>{{ academy_progress.level1 if academy_progress else 0 }}%</strong>
-                </div>
-                <div class="academy-progress-bar">
-                    <div class="academy-progress-fill" style="width: {{ academy_progress.level1 if academy_progress else 0 }}%;"></div>
-                </div>
-
-                <div class="academy-progress-head academy-progress-head-second">
-                    <span>Accès</span>
-                    <strong>Inclus Basic / Premium / VIP</strong>
-                </div>
-
-                <div class="academy-info-card" style="margin-top: 18px;">
-                    <h3>Résultat attendu</h3>
-                    <p>
-                        À la fin du niveau 1, l’élève doit être capable de définir un trade,
-                        lire une structure simple, penser en scénario et limiter son risque.
-                    </p>
-                </div>
-
-                <div class="academy-info-card" style="margin-top: 18px;">
-                    <h3>Compétences visées</h3>
-                    <ul class="academy-reflection-list">
-                        <li>Comprendre le langage du trading.</li>
-                        <li>Lire une structure simple.</li>
-                        <li>Formuler une hypothèse de marché.</li>
-                        <li>Protéger le capital par le risque.</li>
-                        <li>Éviter les erreurs destructrices.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="academy-section" id="learning-hub">
-    <div class="academy-shell">
-        <div class="academy-level-grid">
-            <div>
-                <div class="academy-academic-block academy-learning-hub">
-                    <span class="academy-box-label">Learning Hub</span>
-                    <h3>Level 1 Dashboard — Foundations Score</h3>
-                    <p>
-                        Cette zone remplace la logique “vidéo passive” par une logique de plateforme :
-                        vous voyez votre progression, les compétences à consolider, la timeline du niveau,
-                        et les modules à valider dans l’ordre.
-                    </p>
-
-                    <div class="academy-kpi-row">
-                        <div class="academy-kpi-card">
-                            <span>Modules</span>
-                            <strong>10</strong>
-                        </div>
-                        <div class="academy-kpi-card">
-                            <span>Quiz final</span>
-                            <strong>1</strong>
-                        </div>
-                        <div class="academy-kpi-card">
-                            <span>Accès</span>
-                            <strong>Inclus</strong>
-                        </div>
-                        <div class="academy-kpi-card">
-                            <span>Niveau</span>
-                            <strong>Foundation</strong>
-                        </div>
-                    </div>
-
-                    <div class="academy-summary-grid" style="margin-top: 22px;">
-                        <div class="academy-info-card">
-                            <h3>Score visuel</h3>
-                            <div class="academy-score-ring-wrap">
-                                <div class="academy-score-ring">
-                                    <div class="academy-score-ring-inner">
-                                        <strong>{{ academy_progress.level1 if academy_progress else 0 }}%</strong>
-                                        <span>Progression</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="academy-checkline">
-                                <div class="academy-checkline-item"><span>✓</span> Structure mentale avant exécution</div>
-                                <div class="academy-checkline-item"><span>✓</span> Compréhension du risque avant rendement</div>
-                                <div class="academy-checkline-item"><span>✓</span> Lecture du prix avant sophistication</div>
-                            </div>
-                        </div>
-
-                        <div class="academy-info-card">
-                            <h3>Timeline de progression</h3>
-                            <div class="academy-progress-timeline">
-                                <div class="academy-timeline-item">
-                                    <div class="academy-timeline-dot">1</div>
-                                    <div class="academy-timeline-card">
-                                        <div class="academy-status-badge done">● Fondations</div>
-                                        <p style="margin-top:10px;">Comprendre ce qu’est vraiment le trading et sortir du mythe de la prédiction.</p>
-                                    </div>
-                                </div>
-                                <div class="academy-timeline-item">
-                                    <div class="academy-timeline-dot">2</div>
-                                    <div class="academy-timeline-card">
-                                        <div class="academy-status-badge live">● En cours</div>
-                                        <p style="margin-top:10px;">Structurer une hypothèse, définir le risque, lire une zone et comprendre l’invalidation.</p>
-                                    </div>
-                                </div>
-                                <div class="academy-timeline-item">
-                                    <div class="academy-timeline-dot">3</div>
-                                    <div class="academy-timeline-card">
-                                        <div class="academy-status-badge locked">● Validation</div>
-                                        <p style="margin-top:10px;">Passer le quiz final et transformer la compréhension en base opérationnelle stable.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="academy-mastery-board">
-                        <div class="academy-mastery-card">
-                            <h3>Maîtrise conceptuelle</h3>
-                            <p>Capacité à nommer correctement les mécanismes du trading.</p>
-                            <div class="academy-mastery-meter">
-                                <div class="academy-mastery-fill" style="width: 78%;"></div>
-                            </div>
-                        </div>
-                        <div class="academy-mastery-card">
-                            <h3>Protection du capital</h3>
-                            <p>Comprendre pourquoi la survie financière précède la performance.</p>
-                            <div class="academy-mastery-meter">
-                                <div class="academy-mastery-fill" style="width: 84%;"></div>
-                            </div>
-                        </div>
-                        <div class="academy-mastery-card">
-                            <h3>Lecture de structure</h3>
-                            <p>Observer le prix simplement avant toute complexification.</p>
-                            <div class="academy-mastery-meter">
-                                <div class="academy-mastery-fill" style="width: 70%;"></div>
-                            </div>
-                        </div>
-                        <div class="academy-mastery-card">
-                            <h3>Discipline décisionnelle</h3>
-                            <p>Passer d’une intuition vague à une logique vérifiable.</p>
-                            <div class="academy-mastery-meter">
-                                <div class="academy-mastery-fill" style="width: 76%;"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="academy-info-card" style="margin-top: 22px;">
-                        <h3>Progression réelle</h3>
-                        <p data-academy-completion-text>0/10 modules validés • 0% complété</p>
-                        <div id="academyCompletionBadge" style="margin-top: 14px;"></div>
-                    </div>
-                </div>
-
-                <div class="academy-academic-block" style="margin-top: 24px;">
-                    <span class="academy-box-label">Validation express</span>
-                    <h3>Quick Check — Lecture initiale du marché</h3>
-                    <p>
-                        Commencez par un mini test pour ancrer les bons réflexes. Un trader sérieux valide
-                        sa compréhension avant de rechercher l’action.
-                    </p>
-
-                    <div class="academy-quiz-card" style="margin-top: 18px;">
-                        <form class="academy-quiz-form" id="academyQuickStartQuiz">
-                            <div class="academy-question">
-                                <h3>1. Un trader discipliné entre en position :</h3>
-                                <label><input type="radio" name="q1" value="a"> dès qu’il ressent une opportunité</label>
-                                <label><input type="radio" name="q1" value="b"> lorsqu’un scénario, un risque et une invalidation sont définis</label>
-                                <label><input type="radio" name="q1" value="c"> uniquement si le marché a déjà beaucoup bougé</label>
-                            </div>
-
-                            <div class="academy-question">
-                                <h3>2. Un support doit être vu comme :</h3>
-                                <label><input type="radio" name="q2" value="a"> une certitude absolue</label>
-                                <label><input type="radio" name="q2" value="b"> une zone de réaction potentielle à confirmer</label>
-                                <label><input type="radio" name="q2" value="c"> un signal de levier élevé</label>
-                            </div>
-
-                            <div class="academy-question">
-                                <h3>3. La priorité absolue d’un débutant sérieux est :</h3>
-                                <label><input type="radio" name="q3" value="a"> protéger son capital</label>
-                                <label><input type="radio" name="q3" value="b"> gagner rapidement</label>
-                                <label><input type="radio" name="q3" value="c"> trader le plus souvent possible</label>
-                            </div>
-
-                            <button
-                                type="button"
-                                class="academy-btn academy-btn-primary"
-                                onclick="submitQuiz('academyQuickStartQuiz', ['b','b','a'], 'academyQuickStartResult')">
-                                Vérifier mon niveau
-                            </button>
-
-                            <div id="academyQuickStartResult" class="academy-quiz-result"></div>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="academy-academic-block" style="margin-top: 24px;">
-                    <span class="academy-box-label">Visualisation marché</span>
-                    <h3>Graphique pédagogique — BTC/USD</h3>
-                    <p>
-                        Ce graphique sert de support réel de lecture. À ce niveau, l’objectif n’est pas
-                        d’interpréter tout, mais d’apprendre à distinguer impulsion, correction, zone visible
-                        et direction générale.
-                    </p>
-                    <div class="academy-chart-box">
-                        <iframe
-                            src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_btc_level1&symbol=BINANCE:BTCUSDT&interval=240&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=F1F3F6&studies=[]&theme=dark&style=1&timezone=Etc%2FUTC&withdateranges=1&hideideas=1"
-                            width="100%"
-                            height="420"
-                            frameborder="0"
-                            allowtransparency="true"
-                            scrolling="no">
-                        </iframe>
-                    </div>
-                </div>
-
-                <div class="academy-accordion">
-
-                    <details class="academy-lesson" id="lesson-1" open>
-                        <summary class="academy-lesson-summary">
-                            <div class="academy-lesson-title-wrap">
-                                <div class="academy-lesson-kicker">
-                                    <span class="academy-module-badge current" data-lesson-badge="lesson-1">Module 01</span>
-                                    <span class="academy-mini-score">Foundation score</span>
-                                </div>
-                                <h2 class="academy-lesson-title">Définir le trading avec rigueur</h2>
-                                <p>Sortir du mythe de la prédiction et entrer dans une logique probabiliste.</p>
-                            </div>
-                            <div class="academy-lesson-arrow">⌄</div>
-                        </summary>
-                        <div class="academy-lesson-body">
-                            <div class="academy-academic-block">
-                                <h3>Du mythe de la prédiction à la logique probabiliste</h3>
-                                <p>
-                                    Le trading est souvent présenté comme l’art de deviner si un actif va monter ou baisser.
-                                    Cette représentation est insuffisante. Plus rigoureusement, il s’agit d’une activité
-                                    de prise de décision sous incertitude, dans laquelle l’opérateur engage un risque limité
-                                    face à un rendement potentiel jugé acceptable.
-                                </p>
-                                <p>
-                                    Le cœur du métier n’est pas la certitude, mais la gestion de l’asymétrie. Un scénario
-                                    peut être cohérent sans être certain. Une bonne décision peut parfois produire une perte,
-                                    tandis qu’une mauvaise décision peut parfois produire un gain accidentel.
-                                </p>
-                                <p>
-                                    Le débutant confond souvent qualité de décision et résultat immédiat. Or une progression
-                                    sérieuse exige un cadre méthodologique plus fort que la simple recherche de gains rapides.
-                                </p>
-
-                                <div class="academy-definition-box">
-                                    <span class="academy-box-label">Définition</span>
+{% block title %}{{ t("academy_level1_page_title", "Academy Niveau 1 | VelWolef") }}{% endblock %} {% block extra_css %} <link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}"> <style> .academy-sticky-nav { position: sticky; top: 96px; } .academy-level-grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(290px, 0.75fr); gap: 26px; align-items: start; } .academy-learning-hub { border: 1px solid rgba(255,255,255,0.08); background: linear-gradient(180deg, rgba(15,23,42,0.92), rgba(5,10,20,0.96)); box-shadow: 0 20px 55px rgba(0,0,0,0.28); } .academy-kpi-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 20px; } .academy-kpi-card { border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 18px; background: rgba(255,255,255,0.03); } .academy-kpi-card span { display: block; font-size: 0.86rem; color: #94a3b8; margin-bottom: 8px; } .academy-kpi-card strong { font-size: 1.35rem; color: #f8fafc; } .academy-score-ring-wrap { display: flex; align-items: center; justify-content: center; padding: 12px 0 0; } .academy-score-ring { --score: {{ academy_progress.level1 if academy_progress else 0 }}; width: 138px; height: 138px; border-radius: 999px; background: radial-gradient(circle at center, #08111f 54%, transparent 55%), conic-gradient(#8b5cf6 calc(var(--score) * 1%), rgba(255,255,255,0.08) 0); display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 30px rgba(0,0,0,0.25); } .academy-score-ring-inner { text-align: center; } .academy-score-ring-inner strong { display: block; font-size: 2rem; color: #ffffff; line-height: 1; } .academy-score-ring-inner span { display: block; margin-top: 8px; font-size: 0.82rem; color: #94a3b8; } .academy-progress-timeline { margin-top: 26px; display: grid; gap: 14px; } .academy-timeline-item { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; align-items: start; } .academy-timeline-dot { width: 44px; height: 44px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 700; background: rgba(139,92,246,0.18); border: 1px solid rgba(139,92,246,0.35); color: #e9d5ff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); } .academy-timeline-card { border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 16px 18px; background: rgba(255,255,255,0.03); } .academy-status-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 999px; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.01em; } .academy-status-badge.done { background: rgba(34,197,94,0.14); color: #bbf7d0; border: 1px solid rgba(34,197,94,0.28); } .academy-status-badge.live { background: rgba(59,130,246,0.14); color: #bfdbfe; border: 1px solid rgba(59,130,246,0.28); } .academy-status-badge.locked { background: rgba(148,163,184,0.12); color: #cbd5e1; border: 1px solid rgba(148,163,184,0.25); } .academy-sticky-card { position: sticky; top: 96px; display: grid; gap: 18px; } .academy-outline-nav { display: grid; gap: 10px; } .academy-outline-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; text-decoration: none; color: #e2e8f0; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.025); padding: 12px 14px; border-radius: 14px; transition: transform .2s ease, border-color .2s ease, background .2s ease; } .academy-outline-link:hover { transform: translateY(-1px); border-color: rgba(139,92,246,0.35); background: rgba(139,92,246,0.08); } .academy-outline-link small { color: #94a3b8; font-size: 0.76rem; } .academy-module-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 11px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); color: #e2e8f0; } .academy-module-badge.validated { background: rgba(34,197,94,0.14); color: #bbf7d0; border-color: rgba(34,197,94,0.25); } .academy-module-badge.current { background: rgba(59,130,246,0.14); color: #bfdbfe; border-color: rgba(59,130,246,0.25); } .academy-accordion { display: grid; gap: 18px; margin-top: 24px; } .academy-lesson { border: 1px solid rgba(255,255,255,0.08); border-radius: 22px; overflow: hidden; background: linear-gradient(180deg, rgba(15,23,42,0.78), rgba(2,6,23,0.92)); box-shadow: 0 18px 50px rgba(0,0,0,0.18); } .academy-lesson[open] { border-color: rgba(139,92,246,0.3); } .academy-lesson-summary { list-style: none; cursor: pointer; padding: 22px 24px; display: flex; align-items: start; justify-content: space-between; gap: 18px; } .academy-lesson-summary::-webkit-details-marker { display: none; } .academy-lesson-title-wrap { display: grid; gap: 10px; } .academy-lesson-kicker { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; } .academy-lesson-title { margin: 0; color: #f8fafc; font-size: 1.28rem; line-height: 1.2; } .academy-lesson-summary p { margin: 0; color: #94a3b8; } .academy-lesson-arrow { flex: 0 0 auto; width: 40px; height: 40px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; color: #cbd5e1; background: rgba(255,255,255,0.03); transition: transform .2s ease; } .academy-lesson[open] .academy-lesson-arrow { transform: rotate(180deg); } .academy-lesson-body { padding: 0 24px 24px; } .academy-mini-score { display: inline-flex; align-items: center; gap: 8px; padding: 7px 11px; border-radius: 999px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #cbd5e1; font-size: 0.8rem; font-weight: 700; } .academy-lesson-tools { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; } .academy-anchor-btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 14px; border-radius: 12px; text-decoration: none; border: 1px solid rgba(255,255,255,0.08); color: #e2e8f0; background: rgba(255,255,255,0.03); } .academy-checkline { display: grid; gap: 10px; margin-top: 18px; } .academy-checkline-item { display: flex; align-items: start; gap: 10px; color: #dbeafe; } .academy-checkline-item span { color: #22c55e; font-weight: 700; } .academy-mastery-board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 20px; } .academy-mastery-card { border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; background: rgba(255,255,255,0.03); padding: 18px; } .academy-mastery-meter { height: 10px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; margin-top: 12px; } .academy-mastery-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #8b5cf6, #22c55e); } .academy-top-nav-mobile { display: none; } .academy-btn.is-completed { background: rgba(34,197,94,0.14); color: #bbf7d0; border-color: rgba(34,197,94,0.25); } @media (max-width: 1100px) { .academy-level-grid { grid-template-columns: 1fr; } .academy-sticky-card, .academy-sticky-nav { position: static; } .academy-kpi-row, .academy-mastery-board { grid-template-columns: repeat(2, minmax(0, 1fr)); } .academy-top-nav-mobile { display: block; margin-top: 18px; } } @media (max-width: 760px) { .academy-kpi-row, .academy-mastery-board { grid-template-columns: 1fr; } .academy-lesson-summary { padding: 18px 18px; } .academy-lesson-body { padding: 0 18px 18px; } } </style> {% endblock %} {% block content %} <section class="academy-page-hero academy-section"> <div class="academy-shell"> <div class="academy-breadcrumb"> <a href="{{ url_for('academy.academy_index', lang_code=current_lang) }}">Academy</a> <span>/</span> <span>{{ t('academy_level_1', 'Niveau 1') }}</span> </div> <div class="academy-page-grid"> <div> <span class="academy-kicker">{{ t('academy_level1_niveau_1_foundations_trading_academy', 'Niveau 1 — Foundations / Trading Academy') }}</span> <h1>{{ t('academy_level1_construire_une_base_rationnelle_avant_toute_recherche_de_performance', 'Construire une base rationnelle avant toute recherche de performance') }}</h1> <p class="academy-lead"> {{ t('academy_level1_ce_niveau_constitue_le_socle_methodologique_du_parcours_l_objectif_n_e', 'Ce niveau constitue le socle méthodologique du parcours. L’objectif n’est pas de pousser l’utilisateur à “prendre des trades”, mais de lui apprendre à penser proprement : scénario, invalidation, risque, logique de sortie et discipline de lecture.') }} </p> <p class="academy-lead"> {{ t('academy_level1_cette_version_du_niveau_1_adopte_une_logique_plus_proche_d_une_platefo', 'Cette version du niveau 1 adopte une logique plus proche d’une plateforme premium de formation : progression visuelle, sections repliables, timeline pédagogique, navigation sticky et validation par étapes.') }} </p> <div class="academy-actions"> <a href="#learning-hub" class="academy-btn academy-btn-primary">{{ t('academy_level1_ouvrir_le_hub', 'Ouvrir le hub') }}</a> <a href="#lesson-1" class="academy-btn academy-btn-secondary">{{ t('academy_level1_commencer_module_1', 'Commencer module 1') }}</a> <a href="#quiz-final" class="academy-btn academy-btn-secondary">{{ t('academy_level1_aller_au_quiz_final', 'Aller au quiz final') }}</a> </div> <div class="academy-access-strip"> {% if is_vip %} <span class="academy-plan-badge-vip">{{ t('academy_level1_plan_vip', 'Plan VIP') }}</span> {% elif is_premium %} <span class="academy-plan-badge-premium">{{ t('academy_level1_plan_premium', 'Plan Premium') }}</span> {% else %} <span class="academy-plan-badge-basic">{{ t('academy_level1_plan_basic', 'Plan Basic') }}</span> {% endif %} <strong>{{ t('academy_level1_niveau_1_inclus_dans_tous_les_plans', 'Niveau 1 inclus dans tous les plans') }}</strong> </div> <div class="academy-top-nav-mobile"> <div class="academy-info-card" style="margin-top:18px;"> <h3>{{ t('academy_level1_navigation_rapide', 'Navigation rapide') }}</h3> <div class="academy-outline-nav" style="margin-top: 14px;"> <a class="academy-outline-link" href="#lesson-1"><span>{{ t('academy_level1_01_definir_le_trading', '01 — Définir le trading') }}</span><small>{{ t('academy_level1_fondation', 'Fondation') }}</small></a> <a class="academy-outline-link" href="#lesson-2"><span>{{ t('academy_level1_02_cartographie_des_marches', '02 — Cartographie des marchés') }}</span><small>{{ t('context', 'Contexte') }}</small></a> <a class="academy-outline-link" href="#lesson-3"><span>{{ t('academy_level1_03_buy_sell_hypothese', '03 — Buy / Sell / hypothèse') }}</span><small>{{ t('structure', 'Structure') }}</small></a> <a class="academy-outline-link" href="#lesson-4"><span>{{ t('academy_level1_04_pip_lot_levier', '04 — Pip / lot / levier') }}</span><small>{{ t('academy_level1_technique', 'Technique') }}</small></a> <a class="academy-outline-link" href="#lesson-5"><span>{{ t('academy_level1_05_stop_take_profit', '05 — Stop / Take Profit') }}</span><small>{{ t('exit', 'Sortie') }}</small></a> <a class="academy-outline-link" href="#lesson-6"><span>{{ t('academy_level1_06_gestion_du_risque', '06 — Gestion du risque') }}</span><small>{{ t('academy_level1_protection', 'Protection') }}</small></a> <a class="academy-outline-link" href="#lesson-7"><span>{{ t('academy_level1_07_lecture_graphique', '07 — Lecture graphique') }}</span><small>{{ t('academy_level1_observation', 'Observation') }}</small></a> <a class="academy-outline-link" href="#lesson-8"><span>{{ t('academy_level1_08_supports_resistances', '08 — Supports / résistances') }}</span><small>{{ t('academy_level1_zones', 'Zones') }}</small></a> <a class="academy-outline-link" href="#lesson-9"><span>{{ t('academy_level1_09_erreurs_debutant', '09 — Erreurs débutant') }}</span><small>{{ t('academy_level1_discipline', 'Discipline') }}</small></a> <a class="academy-outline-link" href="#lesson-10"><span>{{ t('academy_level1_10_synthese', '10 — Synthèse') }}</span><small>{{ t('academy_level1_validation', 'Validation') }}</small></a> </div> </div> </div> </div> <div class="academy-side-progress"> <div class="academy-progress-head"> <span>{{ t('academy_level1_progression_actuelle', 'Progression actuelle') }}</span> <strong>{{ academy_progress.level1 if academy_progress else 0 }}%</strong> </div> <div class="academy-progress-bar"> <div class="academy-progress-fill" style="width: {{ academy_progress.level1 if academy_progress else 0 }}%;"></div> </div> <div class="academy-progress-head academy-progress-head-second"> <span>{{ t('academy_level1_acces', 'Accès') }}</span> <strong>{{ t('academy_level1_inclus_basic_premium_vip', 'Inclus Basic / Premium / VIP') }}</strong> </div> <div class="academy-info-card" style="margin-top: 18px;"> <h3>{{ t('academy_level1_resultat_attendu', 'Résultat attendu') }}</h3> <p> {{ t('academy_level1_a_la_fin_du_niveau_1_l_eleve_doit_etre_capable_de_definir_un_trade_lir', 'À la fin du niveau 1, l’élève doit être capable de définir un trade, lire une structure simple, penser en scénario et limiter son risque.') }} </p> </div> <div class="academy-info-card" style="margin-top: 18px;"> <h3>{{ t('academy_level1_competences_visees', 'Compétences visées') }}</h3> <ul class="academy-reflection-list"> <li>{{ t('academy_level1_comprendre_le_langage_du_trading', 'Comprendre le langage du trading.') }}</li> <li>{{ t('academy_level1_lire_une_structure_simple', 'Lire une structure simple.') }}</li> <li>{{ t('academy_level1_formuler_une_hypothese_de_marche', 'Formuler une hypothèse de marché.') }}</li> <li>{{ t('academy_level1_proteger_le_capital_par_le_risque', 'Protéger le capital par le risque.') }}</li> <li>{{ t('academy_level1_eviter_les_erreurs_destructrices', 'Éviter les erreurs destructrices.') }}</li> </ul> </div> </div> </div> </div> </section> <section class="academy-section" id="learning-hub"> <div class="academy-shell"> <div class="academy-level-grid"> <div> <div class="academy-academic-block academy-learning-hub"> <span class="academy-box-label">{{ t('academy_level1_learning_hub', 'Learning Hub') }}</span> <h3>{{ t('academy_level1_level_1_dashboard_foundations_score', 'Level 1 Dashboard — Foundations Score') }}</h3> <p> {{ t('academy_level1_cette_zone_remplace_la_logique_video_passive_par_une_logique_de_platef', 'Cette zone remplace la logique “vidéo passive” par une logique de plateforme : vous voyez votre progression, les compétences à consolider, la timeline du niveau, et les modules à valider dans l’ordre.') }} </p> <div class="academy-kpi-row"> <div class="academy-kpi-card"> <span>{{ t('academy_level1_modules', 'Modules') }}</span> <strong>10</strong> </div> <div class="academy-kpi-card"> <span>{{ t('academy_level1_quiz_final', 'Quiz final') }}</span> <strong>1</strong> </div> <div class="academy-kpi-card"> <span>{{ t('academy_level1_acces', 'Accès') }}</span> <strong>{{ t('academy_index_inclus', 'Inclus') }}</strong> </div> <div class="academy-kpi-card"> <span>{{ t('academy_level1_niveau', 'Niveau') }}</span> <strong>{{ t('academy_level1_foundation', 'Foundation') }}</strong> </div> </div> <div class="academy-summary-grid" style="margin-top: 22px;"> <div class="academy-info-card"> <h3>{{ t('academy_level1_score_visuel', 'Score visuel') }}</h3> <div class="academy-score-ring-wrap"> <div class="academy-score-ring"> <div class="academy-score-ring-inner"> <strong>{{ academy_progress.level1 if academy_progress else 0 }}%</strong> <span>{{ t('academy_level1_progression', 'Progression') }}</span> </div> </div> </div> <div class="academy-checkline"> <div class="academy-checkline-item"><span>✓</span> {{ t('academy_level1_structure_mentale_avant_execution', 'Structure mentale avant exécution') }}</div> <div class="academy-checkline-item"><span>✓</span> {{ t('academy_level1_comprehension_du_risque_avant_rendement', 'Compréhension du risque avant rendement') }}</div> <div class="academy-checkline-item"><span>✓</span> {{ t('academy_level1_lecture_du_prix_avant_sophistication', 'Lecture du prix avant sophistication') }}</div> </div> </div> <div class="academy-info-card"> <h3>{{ t('academy_level1_timeline_de_progression', 'Timeline de progression') }}</h3> <div class="academy-progress-timeline"> <div class="academy-timeline-item"> <div class="academy-timeline-dot">1</div> <div class="academy-timeline-card"> <div class="academy-status-badge done">{{ t('academy_level1_fondations', '● Fondations') }}</div> <p style="margin-top:10px;">{{ t('academy_level1_comprendre_ce_qu_est_vraiment_le_trading_et_sortir_du_mythe_de_la_pred', 'Comprendre ce qu’est vraiment le trading et sortir du mythe de la prédiction.') }}</p> </div> </div> <div class="academy-timeline-item"> <div class="academy-timeline-dot">2</div> <div class="academy-timeline-card"> <div class="academy-status-badge live">{{ t('academy_level1_en_cours', '● En cours') }}</div> <p style="margin-top:10px;">{{ t('academy_level1_structurer_une_hypothese_definir_le_risque_lire_une_zone_et_comprendre', 'Structurer une hypothèse, définir le risque, lire une zone et comprendre l’invalidation.') }}</p> </div> </div> <div class="academy-timeline-item"> <div class="academy-timeline-dot">3</div> <div class="academy-timeline-card"> <div class="academy-status-badge locked">{{ t('academy_level1_validation_2', '● Validation') }}</div> <p style="margin-top:10px;">{{ t('academy_level1_passer_le_quiz_final_et_transformer_la_comprehension_en_base_operation', 'Passer le quiz final et transformer la compréhension en base opérationnelle stable.') }}</p> </div> </div> </div> </div> </div> <div class="academy-mastery-board"> <div class="academy-mastery-card"> <h3>{{ t('academy_level1_maitrise_conceptuelle', 'Maîtrise conceptuelle') }}</h3> <p>{{ t('academy_level1_capacite_a_nommer_correctement_les_mecanismes_du_trading', 'Capacité à nommer correctement les mécanismes du trading.') }}</p> <div class="academy-mastery-meter"> <div class="academy-mastery-fill" style="width: 78%;"></div> </div> </div> <div class="academy-mastery-card"> <h3>{{ t('academy_level1_protection_du_capital', 'Protection du capital') }}</h3> <p>{{ t('academy_level1_comprendre_pourquoi_la_survie_financiere_precede_la_performance', 'Comprendre pourquoi la survie financière précède la performance.') }}</p> <div class="academy-mastery-meter"> <div class="academy-mastery-fill" style="width: 84%;"></div> </div> </div> <div class="academy-mastery-card"> <h3>{{ t('academy_level1_lecture_de_structure', 'Lecture de structure') }}</h3> <p>{{ t('academy_level1_observer_le_prix_simplement_avant_toute_complexification', 'Observer le prix simplement avant toute complexification.') }}</p> <div class="academy-mastery-meter"> <div class="academy-mastery-fill" style="width: 70%;"></div> </div> </div> <div class="academy-mastery-card"> <h3>{{ t('academy_level1_discipline_decisionnelle', 'Discipline décisionnelle') }}</h3> <p>{{ t('academy_level1_passer_d_une_intuition_vague_a_une_logique_verifiable', 'Passer d’une intuition vague à une logique vérifiable.') }}</p> <div class="academy-mastery-meter"> <div class="academy-mastery-fill" style="width: 76%;"></div> </div> </div> </div> <div class="academy-info-card" style="margin-top: 22px;"> <h3>{{ t('academy_index_progression_reelle', 'Progression réelle') }}</h3> <p data-academy-completion-text>{{ t('academy_level1_0_10_modules_valides_0_complete', '0/10 modules validés • 0% complété') }}</p> <div id="academyCompletionBadge" style="margin-top: 14px;"></div> </div> </div> <div class="academy-academic-block" style="margin-top: 24px;"> <span class="academy-box-label">{{ t('academy_level1_validation_express', 'Validation express') }}</span> <h3>{{ t('academy_level1_quick_check_lecture_initiale_du_marche', 'Quick Check — Lecture initiale du marché') }}</h3> <p> {{ t('academy_level1_commencez_par_un_mini_test_pour_ancrer_les_bons_reflexes_un_trader_ser', 'Commencez par un mini test pour ancrer les bons réflexes. Un trader sérieux valide sa compréhension avant de rechercher l’action.') }} </p> <div class="academy-quiz-card" style="margin-top: 18px;"> <form class="academy-quiz-form" id="academyQuickStartQuiz"> <div class="academy-question"> <h3>{{ t('academy_level1_1_un_trader_discipline_entre_en_position', '1. Un trader discipliné entre en position :') }}</h3> <label><input type="radio" name="q1" value="a"> {{ t('academy_level1_des_qu_il_ressent_une_opportunite', 'dès qu’il ressent une opportunité') }}</label> <label><input type="radio" name="q1" value="b"> {{ t('academy_level1_lorsqu_un_scenario_un_risque_et_une_invalidation_sont_definis', 'lorsqu’un scénario, un risque et une invalidation sont définis') }}</label> <label><input type="radio" name="q1" value="c"> {{ t('academy_level1_uniquement_si_le_marche_a_deja_beaucoup_bouge', 'uniquement si le marché a déjà beaucoup bougé') }}</label> </div> <div class="academy-question"> <h3>{{ t('academy_level1_2_un_support_doit_etre_vu_comme', '2. Un support doit être vu comme :') }}</h3> <label><input type="radio" name="q2" value="a"> {{ t('academy_level1_une_certitude_absolue', 'une certitude absolue') }}</label> <label><input type="radio" name="q2" value="b"> {{ t('academy_level1_une_zone_de_reaction_potentielle_a_confirmer', 'une zone de réaction potentielle à confirmer') }}</label> <label><input type="radio" name="q2" value="c"> {{ t('academy_level1_un_signal_de_levier_eleve', 'un signal de levier élevé') }}</label> </div> <div class="academy-question"> <h3>{{ t('academy_level1_3_la_priorite_absolue_d_un_debutant_serieux_est', '3. La priorité absolue d’un débutant sérieux est :') }}</h3> <label><input type="radio" name="q3" value="a"> {{ t('academy_level1_proteger_son_capital', 'protéger son capital') }}</label> <label><input type="radio" name="q3" value="b"> {{ t('academy_level1_gagner_rapidement', 'gagner rapidement') }}</label> <label><input type="radio" name="q3" value="c"> {{ t('academy_level1_trader_le_plus_souvent_possible', 'trader le plus souvent possible') }}</label> </div> <button type="button" class="academy-btn academy-btn-primary" onclick="submitQuiz('academyQuickStartQuiz', ['b','b','a'], 'academyQuickStartResult')"> {{ t('academy_level1_verifier_mon_niveau', 'Vérifier mon niveau') }} </button> <div id="academyQuickStartResult" class="academy-quiz-result"></div> </form> </div> </div> <div class="academy-academic-block" style="margin-top: 24px;"> <span class="academy-box-label">{{ t('academy_level1_visualisation_marche', 'Visualisation marché') }}</span> <h3>{{ t('academy_level1_graphique_pedagogique_btc_usd', 'Graphique pédagogique — BTC/USD') }}</h3> <p> {{ t('academy_level1_ce_graphique_sert_de_support_reel_de_lecture_a_ce_niveau_l_objectif_n', 'Ce graphique sert de support réel de lecture. À ce niveau, l’objectif n’est pas d’interpréter tout, mais d’apprendre à distinguer impulsion, correction, zone visible et direction générale.') }} </p> <div class="academy-chart-box"> <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_btc_level1&symbol=BINANCE:BTCUSDT&interval=240&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=F1F3F6&studies=[]&theme=dark&style=1&timezone=Etc%2FUTC&withdateranges=1&hideideas=1" width="100%" height="420" frameborder="0" allowtransparency="true" scrolling="no"> </iframe> </div> </div> <div class="academy-accordion"> <details class="academy-lesson" id="lesson-1" open> <summary class="academy-lesson-summary"> <div class="academy-lesson-title-wrap"> <div class="academy-lesson-kicker"> <span class="academy-module-badge current" data-lesson-badge="lesson-1">{{ t('academy_level1_module_01', 'Module 01') }}</span> <span class="academy-mini-score">{{ t('academy_level1_foundation_score', 'Foundation score') }}</span> </div> <h2 class="academy-lesson-title">{{ t('academy_level1_definir_le_trading_avec_rigueur', 'Définir le trading avec rigueur') }}</h2> <p>{{ t('academy_level1_sortir_du_mythe_de_la_prediction_et_entrer_dans_une_logique_probabilis', 'Sortir du mythe de la prédiction et entrer dans une logique probabiliste.') }}</p> </div> <div class="academy-lesson-arrow">⌄</div> </summary> <div class="academy-lesson-body"> <div class="academy-academic-block"> <h3>{{ t('academy_level1_du_mythe_de_la_prediction_a_la_logique_probabiliste', 'Du mythe de la prédiction à la logique probabiliste') }}</h3> <p> {{ t('academy_level1_le_trading_est_souvent_presente_comme_l_art_de_deviner_si_un_actif_va', 'Le trading est souvent présenté comme l’art de deviner si un actif va monter ou baisser. Cette représentation est insuffisante. Plus rigoureusement, il s’agit d’une activité de prise de décision sous incertitude, dans laquelle l’opérateur engage un risque limité face à un rendement potentiel jugé acceptable.') }} </p> <p> {{ t('academy_level1_le_coeur_du_metier_n_est_pas_la_certitude_mais_la_gestion_de_l_asymetr', 'Le cœur du métier n’est pas la certitude, mais la gestion de l’asymétrie. Un scénario peut être cohérent sans être certain. Une bonne décision peut parfois produire une perte, tandis qu’une mauvaise décision peut parfois produire un gain accidentel.') }} </p> <p> {{ t('academy_level1_le_debutant_confond_souvent_qualite_de_decision_et_resultat_immediat_o', 'Le débutant confond souvent qualité de décision et résultat immédiat. Or une progression sérieuse exige un cadre méthodologique plus fort que la simple recherche de gains rapides.') }} </p> <div class="academy-definition-box"> <span class="academy-box-label">{{ t('academy_level1_definition', 'Définition') }}</span> <p> {{ t('academy_level1_le_trading_est_une_activite_d_allocation_tactique_du_risque_visant_a_e', 'Le trading est une activité d’allocation tactique du risque visant à exploiter des variations de prix sur un horizon donné, selon un cadre d’exécution, d’invalidation et de gestion du capital.') }} </p> </div> <div class="academy-example-box"> <span class="academy-box-label">{{ t('academy_level1_exemple_concret', 'Exemple concret') }}</span> <p> {{ t('academy_level1_un_trader_n_achete_pas_bitcoin_simplement_parce_qu_il_pense_que_ca_va', 'Un trader n’achète pas Bitcoin simplement parce qu’il “pense que ça va monter”. Il achète parce qu’il a identifié un contexte, une zone d’entrée, une invalidation et un objectif de sortie compatible avec son risque.') }} </p> </div> <div class="academy-warning-box"> <span class="academy-box-label">{{ t('academy_level1_erreur_frequente', 'Erreur fréquente') }}</span> <p> {{ t('academy_level1_confondre_conviction_personnelle_et_avantage_operationnel_une_forte_op', 'Confondre conviction personnelle et avantage opérationnel. Une forte opinion sur le marché ne remplace jamais un plan.') }} </p> </div> <div class="academy-keytakeaway-box"> <span class="academy-box-label">{{ t('academy_level1_a_retenir', 'À retenir') }}</span> <p> {{ t('academy_level1_le_trader_serieux_ne_cherche_pas_a_avoir_toujours_raison_il_cherche_a', 'Le trader sérieux ne cherche pas à avoir toujours raison. Il cherche à perdre peu quand il a tort et à exploiter proprement les contextes favorables.') }} </p> </div> <div class="academy-academic-block" style="margin-top: 22px;"> <span class="academy-box-label">{{ t('academy_level1_framework_pro', 'Framework pro') }}</span> <h3>{{ t('academy_level1_questionnaire_mental_avant_toute_decision', 'Questionnaire mental avant toute décision') }}</h3> <ul class="academy-reflection-list"> <li>{{ t('academy_level1_qu_est_ce_que_j_observe_reellement_et_non_ce_que_j_espere', 'Qu’est-ce que j’observe réellement, et non ce que j’espère ?') }}</li> <li>{{ t('academy_level1_quel_est_le_scenario_dominant', 'Quel est le scénario dominant ?') }}</li> <li>{{ t('academy_level1_a_quel_endroit_mon_idee_devient_elle_fausse', 'À quel endroit mon idée devient-elle fausse ?') }}</li> <li>{{ t('academy_level1_mon_risque_est_il_clairement_defini', 'Mon risque est-il clairement défini ?') }}</li> <li>{{ t('academy_level1_ma_decision_repose_t_elle_sur_un_plan_ou_sur_une_impulsion', 'Ma décision repose-t-elle sur un plan ou sur une impulsion ?') }}</li> </ul> </div> <div class="academy-lesson-tools"> <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-1"> {{ t('academy_level1_marquer_comme_termine', '✔ Marquer comme terminé') }} </button> <a class="academy-anchor-btn" href="#lesson-2">{{ t('academy_level1_module_suivant', 'Module suivant') }}</a> </div> </div> </div> </details> <details class="academy-lesson" id="lesson-2"> <summary class="academy-lesson-summary"> <div class="academy-lesson-title-wrap"> <div class="academy-lesson-kicker"> <span class="academy-module-badge" data-lesson-badge="lesson-2">{{ t('academy_level1_module_02', 'Module 02') }}</span> </div> <h2 class="academy-lesson-title">{{ t('academy_level1_cartographie_des_marches_financiers', 'Cartographie des marchés financiers') }}</h2> <p>{{ t('academy_level1_distinguer_les_environnements_pour_eviter_les_analogies_simplistes', 'Distinguer les environnements pour éviter les analogies simplistes.') }}</p> </div> <div class="academy-lesson-arrow">⌄</div> </summary> <div class="academy-lesson-body"> <div class="academy-academic-block"> <h3>{{ t('academy_level1_differencier_les_environnements_pour_eviter_les_analogies_simplistes', 'Différencier les environnements pour éviter les analogies simplistes') }}</h3> <p> {{ t('academy_level1_tous_les_marches_ne_se_comportent_pas_de_la_meme_maniere_chaque_univer', 'Tous les marchés ne se comportent pas de la même manière. Chaque univers possède ses propres rythmes, sa structure de liquidité, ses horaires dominants et sa sensibilité au sentiment ou à la macroéconomie.') }} </p> <p> {{ t('academy_level1_le_forex_se_caracterise_par_une_forte_liquidite_sur_les_grandes_paires', 'Le Forex se caractérise par une forte liquidité sur les grandes paires et des réactions fréquentes aux annonces macro. Le marché crypto présente une volatilité plus marquée, une sensibilité accrue au sentiment et parfois des mouvements plus impulsifs.') }} </p> <p> {{ t('academy_level1_les_indices_et_les_matieres_premieres_repondent_souvent_a_des_logiques', 'Les indices et les matières premières répondent souvent à des logiques plus larges : politique monétaire, appétit pour le risque, inflation, stress géopolitique.') }} </p> <div class="academy-case-box"> <span class="academy-box-label">{{ t('academy_level1_etude_de_cas', 'Étude de cas') }}</span> <p> {{ t('academy_level1_un_breakout_sur_bitcoin_peut_etre_plus_brutal_et_plus_emotionnel_qu_un', 'Un breakout sur Bitcoin peut être plus brutal et plus émotionnel qu’un breakout sur une paire Forex majeure. Interpréter ces deux événements avec la même grille psychologique expose à des erreurs d’exécution.') }} </p> </div> <div class="academy-keytakeaway-box"> <span class="academy-box-label">{{ t('academy_level1_a_retenir', 'À retenir') }}</span> <p> {{ t('academy_level1_apprendre_le_trading_c_est_aussi_apprendre_a_respecter_la_personnalite', 'Apprendre le trading, c’est aussi apprendre à respecter la personnalité propre de chaque marché.') }} </p> </div> <div class="academy-summary-grid"> <div class="academy-info-card"> <h3>{{ t('academy_level1_crypto', 'Crypto') }}</h3> <ul class="academy-reflection-list"> <li>{{ t('academy_level1_volatilite_forte', 'Volatilité forte.') }}</li> <li>{{ t('academy_level1_sentiment_tres_influent', 'Sentiment très influent.') }}</li> <li>{{ t('academy_level1_accelerations_parfois_brutales', 'Accélérations parfois brutales.') }}</li> <li>{{ t('academy_level1_pieges_emotionnels_frequents', 'Pièges émotionnels fréquents.') }}</li> </ul> </div> <div class="academy-info-card"> <h3>{{ t('academy_level1_forex_or_indices', 'Forex / Or / Indices') }}</h3> <ul class="academy-reflection-list"> <li>{{ t('academy_level1_reactions_macro_plus_lisibles', 'Réactions macro plus lisibles.') }}</li> <li>{{ t('academy_level1_liquidite_souvent_plus_stable', 'Liquidité souvent plus stable.') }}</li> <li>{{ t('academy_level1_structure_parfois_plus_propre', 'Structure parfois plus propre.') }}</li> <li>{{ t('academy_level1_horaires_et_sessions_tres_importants', 'Horaires et sessions très importants.') }}</li> </ul> </div> </div> <div class="academy-comparison-box"> <span class="academy-box-label">{{ t('academy_level1_tableau_de_lecture', 'Tableau de lecture') }}</span> <div class="academy-comparison-table"> <div class="academy-comparison-row academy-comparison-head"> <div>{{ t('academy_level1_marche', 'Marché') }}</div> <div>{{ t('academy_level1_volatilite', 'Volatilité') }}</div> <div>{{ t('academy_level1_lecture_debutant', 'Lecture débutant') }}</div> </div> <div class="academy-comparison-row"> <div>{{ t('academy_level1_bitcoin_crypto', 'Bitcoin / Crypto') }}</div> <div>{{ t('academy_level1_elevee', 'Élevée') }}</div> <div>{{ t('academy_level1_prudence_emotionnelle', 'Prudence émotionnelle') }}</div> </div> <div class="academy-comparison-row"> <div>{{ t('academy_level1_forex_majeur', 'Forex majeur') }}</div> <div>{{ t('academy_level1_moyenne', 'Moyenne') }}</div> <div>{{ t('academy_level1_lecture_plus_structuree', 'Lecture plus structurée') }}</div> </div> <div class="academy-comparison-row"> <div>{{ t('academy_level1_gold', 'Gold') }}</div> <div>{{ t('academy_level1_moyenne_a_forte', 'Moyenne à forte') }}</div> <div>{{ t('academy_level1_tres_sensible_au_contexte_macro', 'Très sensible au contexte macro') }}</div> </div> <div class="academy-comparison-row"> <div>{{ t('academy_level1_indices', 'Indices') }}</div> <div>{{ t('academy_level1_variable', 'Variable') }}</div> <div>{{ t('academy_level1_attention_aux_horaires_et_news', 'Attention aux horaires et news') }}</div> </div> </div> </div> <div class="academy-lesson-tools"> <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-2"> {{ t('academy_level1_marquer_comme_termine', '✔ Marquer comme terminé') }} </button> <a class="academy-anchor-btn" href="#lesson-3">{{ t('academy_level1_module_suivant', 'Module suivant') }}</a> </div> </div> </div> </details> <details class="academy-lesson" id="lesson-3"> <summary class="academy-lesson-summary"> <div class="academy-lesson-title-wrap"> <div class="academy-lesson-kicker"> <span class="academy-module-badge" data-lesson-badge="lesson-3">{{ t('academy_level1_module_03', 'Module 03') }}</span> </div> <h2 class="academy-lesson-title">{{ t('academy_level1_buy_sell_et_hypothese_de_marche', 'Buy, Sell et hypothèse de marché') }}</h2> <p>{{ t('academy_level1_entrer_en_position_c_est_formuler_une_hypothese_falsifiable', 'Entrer en position, c’est formuler une hypothèse falsifiable.') }}</p> </div> <div class="academy-lesson-arrow">⌄</div> </summary> <div class="academy-lesson-body"> <div class="academy-academic-block"> <h3>{{ t('academy_level1_entrer_en_position_c_est_formuler_une_hypothese_falsifiable_2', 'Entrer en position, c’est formuler une hypothèse falsifiable') }}</h3> <p> {{ t('academy_level1_une_position_d_achat_suppose_que_l_on_anticipe_une_hausse_une_position', 'Une position d’achat suppose que l’on anticipe une hausse. Une position de vente, une baisse. Mais chaque position doit surtout être comprise comme une hypothèse : si le marché conserve ce comportement, le scénario reste valide ; s’il casse un niveau clé, l’hypothèse devient fausse.') }} </p> <p> {{ t('academy_level1_cela_implique_qu_une_position_serieuse_contient_deja_en_elle_sa_propre', 'Cela implique qu’une position sérieuse contient déjà en elle sa propre invalidation. Entrer sans savoir où l’on a tort n’est pas une décision de trading ; c’est une exposition brute au hasard.') }} </p> <div class="academy-definition-box"> <span class="academy-box-label">{{ t('academy_level1_definition', 'Définition') }}</span> <p> {{ t('academy_level1_une_position_de_trading_est_une_hypothese_directionnelle_assortie_d_un', 'Une position de trading est une hypothèse directionnelle assortie d’un point d’entrée, d’un niveau d’invalidation et d’un objectif de sortie.') }} </p> </div> <div class="academy-example-box"> <span class="academy-box-label">{{ t('academy_level1_exemple_concret', 'Exemple concret') }}</span> <p> {{ t('academy_level1_acheter_l_or_sur_une_zone_de_support_n_a_de_sens_que_si_l_on_sait_a_qu', 'Acheter l’or sur une zone de support n’a de sens que si l’on sait à quel niveau le support cesse d’être valide.') }} </p> </div> <div class="academy-warning-box"> <span class="academy-box-label">{{ t('academy_level1_erreur_frequente', 'Erreur fréquente') }}</span> <p> {{ t('academy_level1_entrer_parce_que_le_prix_a_deja_beaucoup_baisse_ou_semble_trop_haut_sa', 'Entrer parce que “le prix a déjà beaucoup baissé” ou “semble trop haut” sans structure claire.') }} </p> </div> <div class="academy-academic-block" style="margin-top: 22px;"> <span class="academy-box-label">{{ t('academy_level1_cas_reel', 'Cas réel') }}</span> <h3>{{ t('academy_level1_exemple_simple_achat_sur_support_btc', 'Exemple simple — Achat sur support BTC') }}</h3> <ul class="academy-reflection-list"> <li>{{ t('academy_level1_contexte_le_prix_revient_sur_une_zone_cle', 'Contexte : le prix revient sur une zone clé.') }}</li> <li>{{ t('academy_level1_hypothese_un_rebond_peut_se_produire_si_la_zone_tient', 'Hypothèse : un rebond peut se produire si la zone tient.') }}</li> <li>{{ t('academy_level1_invalidation_si_la_zone_casse_nettement_l_idee_devient_fausse', 'Invalidation : si la zone casse nettement, l’idée devient fausse.') }}</li> <li>{{ t('academy_level1_objectif_viser_la_prochaine_zone_logique_de_reaction', 'Objectif : viser la prochaine zone logique de réaction.') }}</li> <li>{{ t('academy_level1_conclusion_l_entree_n_est_pas_une_croyance_mais_une_hypothese_testable', 'Conclusion : l’entrée n’est pas une croyance, mais une hypothèse testable.') }}</li> </ul> </div> <div class="academy-lesson-tools"> <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-3"> {{ t('academy_level1_marquer_comme_termine', '✔ Marquer comme terminé') }} </button> <a class="academy-anchor-btn" href="#lesson-4">{{ t('academy_level1_module_suivant', 'Module suivant') }}</a>  </div> </div> </div> </details> <details class="academy-lesson" id="lesson-4"> <summary class="academy-lesson-summary"> <div class="academy-lesson-title-wrap">  <div class="academy-lesson-kicker">  <span class="academy-module-badge" data-lesson-badge="lesson-4">{{ t('academy_level1_module_04', 'Module 04') }}</span>  </div>  <h2 class="academy-lesson-title">{{ t('academy_level1_pip_lot_spread_et_levier', 'Pip, lot, spread et levier') }}</h2>  <p>{{ t('academy_level1_comprendre_les_unites_techniques_avant_de_manipuler_le_risque', 'Comprendre les unités techniques avant de manipuler le risque.') }}</p> </div> <div class="academy-lesson-arrow">⌄</div> </summary> <div class="academy-lesson-body"> <div class="academy-academic-block">  <h3>{{ t('academy_level1_comprendre_les_unites_techniques_avant_de_manipuler_le_risque_2', 'Comprendre les unités techniques avant de manipuler le risque') }}</h3>  <p>  {{ t('academy_level1_le_vocabulaire_technique_du_trading_n_est_pas_decoratif_il_structure_l', 'Le vocabulaire technique du trading n’est pas décoratif. Il structure la manière  dont un trader mesure son exposition. Le pip représente une unité de variation,  le lot la taille de position, le spread l’écart achat/vente, le levier amplifie l’exposition.') }}  </p>  <p>  {{ t('academy_level1_beaucoup_de_debutants_augmentent_leur_lot_ou_leur_levier_pour_aller_pl', 'Beaucoup de débutants augmentent leur lot ou leur levier pour “aller plus vite”  sans comprendre que l’accélération s’applique aussi aux pertes.') }}  </p>  <div class="academy-warning-box">  <span class="academy-box-label">{{ t('academy_level1_attention', 'Attention') }}</span>  <p>  {{ t('academy_level1_le_levier_n_ameliore_pas_une_methode_fragile_il_accelere_simplement_le', 'Le levier n’améliore pas une méthode fragile. Il accélère simplement  les conséquences de cette fragilité.') }}  </p>  </div>  <div class="academy-keytakeaway-box">  <span class="academy-box-label">{{ t('academy_level1_a_retenir', 'À retenir') }}</span>   <p>   {{ t('academy_level1_avant_de_penser_rendement_il_faut_savoir_mesurer_precisement_ce_que_ch', 'Avant de penser rendement, il faut savoir mesurer précisément ce que chaque mouvement   du prix représente pour le capital réel.') }}   </p>   </div>   <div class="academy-summary-grid">   <div class="academy-info-card">   <h3>{{ t('academy_level1_ce_qu_il_faut_savoir', 'Ce qu’il faut savoir') }}</h3>   <ul class="academy-reflection-list">   <li>{{ t('academy_level1_quelle_taille_de_position_j_utilise', 'Quelle taille de position j’utilise.') }}</li>   <li>{{ t('academy_level1_combien_je_perds_si_mon_stop_est_touche', 'Combien je perds si mon stop est touché.') }}</li>   <li>{{ t('academy_level1_quel_impact_a_le_spread_sur_mon_entree', 'Quel impact a le spread sur mon entrée.') }}</li>   <li>{{ t('academy_level1_quel_role_joue_le_levier_dans_mon_exposition_reelle', 'Quel rôle joue le levier dans mon exposition réelle.') }}</li>   </ul>   </div>   <div class="academy-info-card">   <h3>{{ t('academy_level1_ce_qu_il_faut_eviter', 'Ce qu’il faut éviter') }}</h3>   <ul class="academy-reflection-list">   <li>{{ t('academy_level1_monter_le_lot_pour_compenser_une_frustration', 'Monter le lot pour compenser une frustration.') }}</li>   <li>{{ t('academy_level1_utiliser_du_levier_sans_comprendre_l_amplification', 'Utiliser du levier sans comprendre l’amplification.') }}</li>   <li>{{ t('academy_level1_minimiser_l_effet_cumule_des_petites_erreurs', 'Minimiser l’effet cumulé des petites erreurs.') }}</li>   <li>{{ t('academy_level1_entrer_avec_une_taille_incoherente_avec_le_capital', 'Entrer avec une taille incohérente avec le capital.') }}</li>   </ul>   </div>   </div>   <div class="academy-chart-grid" style="margin-top: 24px;">   <div class="academy-chart-card">   <h3>{{ t('academy_level1_effet_pedagogique_du_levier', 'Effet pédagogique du levier') }}</h3>   <p>   {{ t('academy_level1_plus_le_levier_augmente_plus_une_faible_variation_peut_produire_un_imp', 'Plus le levier augmente, plus une faible variation peut produire   un impact disproportionné sur le compte.') }}   </p>   <canvas id="leverageChart" height="120"></canvas>   </div>   <div class="academy-chart-card">   <h3>{{ t('academy_level1_lecture_simple_exposition_risque', 'Lecture simple exposition / risque') }}</h3>   <p>   {{ t('academy_level1_la_comprehension_technique_doit_toujours_preceder_l_augmentation_de_la', 'La compréhension technique doit toujours précéder l’augmentation   de la taille de position.') }}   </p>   <canvas id="exposureChart" height="120"></canvas>   </div>   </div>   <div class="academy-lesson-tools">   <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-4">   {{ t('academy_level1_marquer_comme_termine', '✔ Marquer comme terminé') }}     </button>     <a class="academy-anchor-btn" href="#lesson-5">{{ t('academy_level1_module_suivant', 'Module suivant') }}</a>         </div>        </div>       </div>      </details>      <details class="academy-lesson" id="lesson-5">       <summary class="academy-lesson-summary">        <div class="academy-lesson-title-wrap">         <div class="academy-lesson-kicker">          <span class="academy-module-badge" data-lesson-badge="lesson-5">{{ t('academy_level1_module_05', 'Module 05') }}</span>         </div>         <h2 class="academy-lesson-title">{{ t('academy_level1_stop_loss_et_take_profit', 'Stop Loss et Take Profit') }}</h2>         <p>{{ t('academy_level1_l_architecture_de_sortie_comme_coeur_du_plan', 'L’architecture de sortie comme cœur du plan.') }}</p>        </div>        <div class="academy-lesson-arrow">⌄</div>       </summary>       <div class="academy-lesson-body">        <div class="academy-academic-block">         <h3>{{ t('academy_level1_l_architecture_de_sortie_comme_coeur_du_plan_2', 'L’architecture de sortie comme cœur du plan') }}</h3>         <p>          {{ t('academy_level1_le_stop_loss_materialise_l_invalidation_du_scenario_le_take_profit_mat', 'Le Stop Loss matérialise l’invalidation du scénario. Le Take Profit matérialise          la logique de réalisation du gain. L’un protège, l’autre discipline.') }}         </p>         <p>          {{ t('academy_level1_l_existence_d_un_stop_prouve_que_le_trader_accepte_l_incertitude_l_exi', 'L’existence d’un stop prouve que le trader accepte l’incertitude.          L’existence d’un objectif prouve qu’il sait aussi limiter sa cupidité.') }}         </p>         <div class="academy-example-box">          <span class="academy-box-label">{{ t('academy_level1_exemple_concret', 'Exemple concret') }}</span>                   <p>                     {{ t('academy_level1_sur_eur_usd_un_achat_pris_sur_une_zone_technique_sans_niveau_d_invalid', 'Sur EUR/USD, un achat pris sur une zone technique sans niveau d’invalidation précis                     transforme une idée cohérente en exposition désordonnée.') }}                   </p>                 </div>                 <div class="academy-case-box">                   <span class="academy-box-label">{{ t('academy_level1_cas_reel_btc', 'Cas réel — BTC') }}</span>                   <p>                     {{ t('academy_level1_bitcoin_arrive_sur_une_zone_de_support_visible_le_trader_observe_un_re', 'Bitcoin arrive sur une zone de support visible. Le trader observe un rejet,                     puis une reprise au-dessus d’une bougie de confirmation.                     L’entrée ne devient pertinente que si le stop est placé sous la zone                     et l’objectif sur une résistance cohérente.') }}                   </p>                 </div>                 <div class="academy-keytakeaway-box">                   <span class="academy-box-label">{{ t("key_takeaway", "À retenir") }}</span>
                                     <p>
-                                        Le trading est une activité d’allocation tactique du risque visant à exploiter
-                                        des variations de prix sur un horizon donné, selon un cadre d’exécution,
-                                        d’invalidation et de gestion du capital.
-                                    </p>
-                                </div>
-
-                                <div class="academy-example-box">
-                                    <span class="academy-box-label">Exemple concret</span>
-                                    <p>
-                                        Un trader n’achète pas Bitcoin simplement parce qu’il “pense que ça va monter”.
-                                        Il achète parce qu’il a identifié un contexte, une zone d’entrée,
-                                        une invalidation et un objectif de sortie compatible avec son risque.
-                                    </p>
-                                </div>
-
-                                <div class="academy-warning-box">
-                                    <span class="academy-box-label">Erreur fréquente</span>
-                                    <p>
-                                        Confondre conviction personnelle et avantage opérationnel. Une forte opinion
-                                        sur le marché ne remplace jamais un plan.
-                                    </p>
-                                </div>
-
-                                <div class="academy-keytakeaway-box">
-                                    <span class="academy-box-label">À retenir</span>
-                                    <p>
-                                        Le trader sérieux ne cherche pas à avoir toujours raison. Il cherche à perdre peu
-                                        quand il a tort et à exploiter proprement les contextes favorables.
+                                        {{ t('academy_level1_un_trade_sans_structure_de_sortie_n_est_pas_un_plan_c_est_une_vulnerab', 'Un trade sans structure de sortie n’est pas un plan. C’est une vulnérabilité.') }}
                                     </p>
                                 </div>
 
                                 <div class="academy-academic-block" style="margin-top: 22px;">
-                                    <span class="academy-box-label">Framework pro</span>
-                                    <h3>Questionnaire mental avant toute décision</h3>
+                                    <span class="academy-box-label">{{ t('academy_level1_regle_simple', 'Règle simple') }}</span>
+                                    <h3>{{ t('academy_level1_le_ratio_rendement_risque', 'Le ratio rendement / risque') }}</h3>
                                     <ul class="academy-reflection-list">
-                                        <li>Qu’est-ce que j’observe réellement, et non ce que j’espère ?</li>
-                                        <li>Quel est le scénario dominant ?</li>
-                                        <li>À quel endroit mon idée devient-elle fausse ?</li>
-                                        <li>Mon risque est-il clairement défini ?</li>
-                                        <li>Ma décision repose-t-elle sur un plan ou sur une impulsion ?</li>
-                                    </ul>
-                                </div>
-
-                                <div class="academy-lesson-tools">
-                                    <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-1">
-                                        ✔ Marquer comme terminé
-                                    </button>
-                                    <a class="academy-anchor-btn" href="#lesson-2">Module suivant</a>
-                                </div>
-                            </div>
-                        </div>
-                    </details>
-
-                    <details class="academy-lesson" id="lesson-2">
-                        <summary class="academy-lesson-summary">
-                            <div class="academy-lesson-title-wrap">
-                                <div class="academy-lesson-kicker">
-                                    <span class="academy-module-badge" data-lesson-badge="lesson-2">Module 02</span>
-                                </div>
-                                <h2 class="academy-lesson-title">Cartographie des marchés financiers</h2>
-                                <p>Distinguer les environnements pour éviter les analogies simplistes.</p>
-                            </div>
-                            <div class="academy-lesson-arrow">⌄</div>
-                        </summary>
-                        <div class="academy-lesson-body">
-                            <div class="academy-academic-block">
-                                <h3>Différencier les environnements pour éviter les analogies simplistes</h3>
-                                <p>
-                                    Tous les marchés ne se comportent pas de la même manière. Chaque univers possède
-                                    ses propres rythmes, sa structure de liquidité, ses horaires dominants et sa sensibilité
-                                    au sentiment ou à la macroéconomie.
-                                </p>
-                                <p>
-                                    Le Forex se caractérise par une forte liquidité sur les grandes paires et des réactions
-                                    fréquentes aux annonces macro. Le marché crypto présente une volatilité plus marquée,
-                                    une sensibilité accrue au sentiment et parfois des mouvements plus impulsifs.
-                                </p>
-                                <p>
-                                    Les indices et les matières premières répondent souvent à des logiques plus larges :
-                                    politique monétaire, appétit pour le risque, inflation, stress géopolitique.
-                                </p>
-
-                                <div class="academy-case-box">
-                                    <span class="academy-box-label">Étude de cas</span>
-                                    <p>
-                                        Un breakout sur Bitcoin peut être plus brutal et plus émotionnel qu’un breakout
-                                        sur une paire Forex majeure. Interpréter ces deux événements avec la même grille
-                                        psychologique expose à des erreurs d’exécution.
-                                    </p>
-                                </div>
-
-                                <div class="academy-keytakeaway-box">
-                                    <span class="academy-box-label">À retenir</span>
-                                    <p>
-                                        Apprendre le trading, c’est aussi apprendre à respecter la personnalité propre
-                                        de chaque marché.
-                                    </p>
-                                </div>
-
-                                <div class="academy-summary-grid">
-                                    <div class="academy-info-card">
-                                        <h3>Crypto</h3>
-                                        <ul class="academy-reflection-list">
-                                            <li>Volatilité forte.</li>
-                                            <li>Sentiment très influent.</li>
-                                            <li>Accélérations parfois brutales.</li>
-                                            <li>Pièges émotionnels fréquents.</li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="academy-info-card">
-                                        <h3>Forex / Or / Indices</h3>
-                                        <ul class="academy-reflection-list">
-                                            <li>Réactions macro plus lisibles.</li>
-                                            <li>Liquidité souvent plus stable.</li>
-                                            <li>Structure parfois plus propre.</li>
-                                            <li>Horaires et sessions très importants.</li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <div class="academy-comparison-box">
-                                    <span class="academy-box-label">Tableau de lecture</span>
-                                    <div class="academy-comparison-table">
-                                        <div class="academy-comparison-row academy-comparison-head">
-                                            <div>Marché</div>
-                                            <div>Volatilité</div>
-                                            <div>Lecture débutant</div>
-                                        </div>
-                                        <div class="academy-comparison-row">
-                                            <div>Bitcoin / Crypto</div>
-                                            <div>Élevée</div>
-                                            <div>Prudence émotionnelle</div>
-                                        </div>
-                                        <div class="academy-comparison-row">
-                                            <div>Forex majeur</div>
-                                            <div>Moyenne</div>
-                                            <div>Lecture plus structurée</div>
-                                        </div>
-                                        <div class="academy-comparison-row">
-                                            <div>Gold</div>
-                                            <div>Moyenne à forte</div>
-                                            <div>Très sensible au contexte macro</div>
-                                        </div>
-                                        <div class="academy-comparison-row">
-                                            <div>Indices</div>
-                                            <div>Variable</div>
-                                            <div>Attention aux horaires et news</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="academy-lesson-tools">
-                                    <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-2">
-                                        ✔ Marquer comme terminé
-                                    </button>
-                                    <a class="academy-anchor-btn" href="#lesson-3">Module suivant</a>
-                                </div>
-                            </div>
-                        </div>
-                    </details>
-
-                    <details class="academy-lesson" id="lesson-3">
-                        <summary class="academy-lesson-summary">
-                            <div class="academy-lesson-title-wrap">
-                                <div class="academy-lesson-kicker">
-                                    <span class="academy-module-badge" data-lesson-badge="lesson-3">Module 03</span>
-                                </div>
-                                <h2 class="academy-lesson-title">Buy, Sell et hypothèse de marché</h2>
-                                <p>Entrer en position, c’est formuler une hypothèse falsifiable.</p>
-                            </div>
-                            <div class="academy-lesson-arrow">⌄</div>
-                        </summary>
-                        <div class="academy-lesson-body">
-                            <div class="academy-academic-block">
-                                <h3>Entrer en position, c’est formuler une hypothèse falsifiable</h3>
-                                <p>
-                                    Une position d’achat suppose que l’on anticipe une hausse. Une position de vente,
-                                    une baisse. Mais chaque position doit surtout être comprise comme une hypothèse :
-                                    si le marché conserve ce comportement, le scénario reste valide ; s’il casse un niveau clé,
-                                    l’hypothèse devient fausse.
-                                </p>
-                                <p>
-                                    Cela implique qu’une position sérieuse contient déjà en elle sa propre invalidation.
-                                    Entrer sans savoir où l’on a tort n’est pas une décision de trading ; c’est une exposition brute au hasard.
-                                </p>
-
-                                <div class="academy-definition-box">
-                                    <span class="academy-box-label">Définition</span>
-                                    <p>
-                                        Une position de trading est une hypothèse directionnelle assortie d’un point d’entrée,
-                                        d’un niveau d’invalidation et d’un objectif de sortie.
-                                    </p>
-                                </div>
-
-                                <div class="academy-example-box">
-                                    <span class="academy-box-label">Exemple concret</span>
-                                    <p>
-                                        Acheter l’or sur une zone de support n’a de sens que si l’on sait à quel niveau
-                                        le support cesse d’être valide.
-                                    </p>
-                                </div>
-
-                                <div class="academy-warning-box">
-                                    <span class="academy-box-label">Erreur fréquente</span>
-                                    <p>
-                                        Entrer parce que “le prix a déjà beaucoup baissé” ou “semble trop haut”
-                                        sans structure claire.
-                                    </p>
-                                </div>
-
-                                <div class="academy-academic-block" style="margin-top: 22px;">
-                                    <span class="academy-box-label">Cas réel</span>
-                                    <h3>Exemple simple — Achat sur support BTC</h3>
-                                    <ul class="academy-reflection-list">
-                                        <li>Contexte : le prix revient sur une zone clé.</li>
-                                        <li>Hypothèse : un rebond peut se produire si la zone tient.</li>
-                                        <li>Invalidation : si la zone casse nettement, l’idée devient fausse.</li>
-                                        <li>Objectif : viser la prochaine zone logique de réaction.</li>
-                                        <li>Conclusion : l’entrée n’est pas une croyance, mais une hypothèse testable.</li>
-                                    </ul>
-                                </div>
-
-                                <div class="academy-lesson-tools">
-                                    <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-3">
-                                        ✔ Marquer comme terminé
-                                    </button>
-                                    <a class="academy-anchor-btn" href="#lesson-4">Module suivant</a>
-                                </div>
-                            </div>
-                        </div>
-                    </details>
-
-                    <details class="academy-lesson" id="lesson-4">
-                        <summary class="academy-lesson-summary">
-                            <div class="academy-lesson-title-wrap">
-                                <div class="academy-lesson-kicker">
-                                    <span class="academy-module-badge" data-lesson-badge="lesson-4">Module 04</span>
-                                </div>
-                                <h2 class="academy-lesson-title">Pip, lot, spread et levier</h2>
-                                <p>Comprendre les unités techniques avant de manipuler le risque.</p>
-                            </div>
-                            <div class="academy-lesson-arrow">⌄</div>
-                        </summary>
-                        <div class="academy-lesson-body">
-                            <div class="academy-academic-block">
-                                <h3>Comprendre les unités techniques avant de manipuler le risque</h3>
-                                <p>
-                                    Le vocabulaire technique du trading n’est pas décoratif. Il structure la manière
-                                    dont un trader mesure son exposition. Le pip représente une unité de variation,
-                                    le lot la taille de position, le spread l’écart achat/vente, le levier amplifie l’exposition.
-                                </p>
-                                <p>
-                                    Beaucoup de débutants augmentent leur lot ou leur levier pour “aller plus vite”
-                                    sans comprendre que l’accélération s’applique aussi aux pertes.
-                                </p>
-
-                                <div class="academy-warning-box">
-                                    <span class="academy-box-label">Attention</span>
-                                    <p>
-                                        Le levier n’améliore pas une méthode fragile. Il accélère simplement
-                                        les conséquences de cette fragilité.
-                                    </p>
-                                </div>
-
-                                <div class="academy-keytakeaway-box">
-                                    <span class="academy-box-label">À retenir</span>
-                                    <p>
-                                        Avant de penser rendement, il faut savoir mesurer précisément ce que chaque mouvement
-                                        du prix représente pour le capital réel.
-                                    </p>
-                                </div>
-
-                                <div class="academy-summary-grid">
-                                    <div class="academy-info-card">
-                                        <h3>Ce qu’il faut savoir</h3>
-                                        <ul class="academy-reflection-list">
-                                            <li>Quelle taille de position j’utilise.</li>
-                                            <li>Combien je perds si mon stop est touché.</li>
-                                            <li>Quel impact a le spread sur mon entrée.</li>
-                                            <li>Quel rôle joue le levier dans mon exposition réelle.</li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="academy-info-card">
-                                        <h3>Ce qu’il faut éviter</h3>
-                                        <ul class="academy-reflection-list">
-                                            <li>Monter le lot pour compenser une frustration.</li>
-                                            <li>Utiliser du levier sans comprendre l’amplification.</li>
-                                            <li>Minimiser l’effet cumulé des petites erreurs.</li>
-                                            <li>Entrer avec une taille incohérente avec le capital.</li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <div class="academy-chart-grid" style="margin-top: 24px;">
-                                    <div class="academy-chart-card">
-                                        <h3>Effet pédagogique du levier</h3>
-                                        <p>
-                                            Plus le levier augmente, plus une faible variation peut produire
-                                            un impact disproportionné sur le compte.
-                                        </p>
-                                        <canvas id="leverageChart" height="120"></canvas>
-                                    </div>
-
-                                    <div class="academy-chart-card">
-                                        <h3>Lecture simple exposition / risque</h3>
-                                        <p>
-                                            La compréhension technique doit toujours précéder l’augmentation
-                                            de la taille de position.
-                                        </p>
-                                        <canvas id="exposureChart" height="120"></canvas>
-                                    </div>
-                                </div>
-
-                                <div class="academy-lesson-tools">
-                                    <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-4">
-                                        ✔ Marquer comme terminé
-                                    </button>
-                                    <a class="academy-anchor-btn" href="#lesson-5">Module suivant</a>
-                                </div>
-                            </div>
-                        </div>
-                    </details>
-
-                    <details class="academy-lesson" id="lesson-5">
-                        <summary class="academy-lesson-summary">
-                            <div class="academy-lesson-title-wrap">
-                                <div class="academy-lesson-kicker">
-                                    <span class="academy-module-badge" data-lesson-badge="lesson-5">Module 05</span>
-                                </div>
-                                <h2 class="academy-lesson-title">Stop Loss et Take Profit</h2>
-                                <p>L’architecture de sortie comme cœur du plan.</p>
-                            </div>
-                            <div class="academy-lesson-arrow">⌄</div>
-                        </summary>
-                        <div class="academy-lesson-body">
-                            <div class="academy-academic-block">
-                                <h3>L’architecture de sortie comme cœur du plan</h3>
-                                <p>
-                                    Le Stop Loss matérialise l’invalidation du scénario. Le Take Profit matérialise
-                                    la logique de réalisation du gain. L’un protège, l’autre discipline.
-                                </p>
-                                <p>
-                                    L’existence d’un stop prouve que le trader accepte l’incertitude.
-                                    L’existence d’un objectif prouve qu’il sait aussi limiter sa cupidité.
-                                </p>
-
-                                <div class="academy-example-box">
-                                    <span class="academy-box-label">Exemple concret</span>
-                                    <p>
-                                        Sur EUR/USD, un achat pris sur une zone technique sans niveau d’invalidation précis
-                                        transforme une idée cohérente en exposition désordonnée.
-                                    </p>
-                                </div>
-
-                                <div class="academy-case-box">
-                                    <span class="academy-box-label">Cas réel — BTC</span>
-                                    <p>
-                                        Bitcoin arrive sur une zone de support visible. Le trader observe un rejet,
-                                        puis une reprise au-dessus d’une bougie de confirmation.
-                                        L’entrée ne devient pertinente que si le stop est placé sous la zone
-                                        et l’objectif sur une résistance cohérente.
-                                    </p>
-                                </div>
-
-                                <div class="academy-keytakeaway-box">
-                                    <span class="academy-box-label">À retenir</span>
-                                    <p>
-                                        Un trade sans structure de sortie n’est pas un plan. C’est une vulnérabilité.
-                                    </p>
-                                </div>
-
-                                <div class="academy-academic-block" style="margin-top: 22px;">
-                                    <span class="academy-box-label">Règle simple</span>
-                                    <h3>Le ratio rendement / risque</h3>
-                                    <ul class="academy-reflection-list">
-                                        <li>Risque = distance entre l’entrée et le stop.</li>
-                                        <li>Rendement potentiel = distance entre l’entrée et l’objectif.</li>
-                                        <li>Un scénario trop faible au regard du risque doit être évité.</li>
-                                        <li>Le ratio ne remplace pas l’analyse, mais il discipline la sélection.</li>
+                                        <li>{{ t('academy_level1_risque_distance_entre_l_entree_et_le_stop', 'Risque = distance entre l’entrée et le stop.') }}</li>
+                                        <li>{{ t('academy_level1_rendement_potentiel_distance_entre_l_entree_et_l_objectif', 'Rendement potentiel = distance entre l’entrée et l’objectif.') }}</li>
+                                        <li>{{ t('academy_level1_un_scenario_trop_faible_au_regard_du_risque_doit_etre_evite', 'Un scénario trop faible au regard du risque doit être évité.') }}</li>
+                                        <li>{{ t('academy_level1_le_ratio_ne_remplace_pas_l_analyse_mais_il_discipline_la_selection', 'Le ratio ne remplace pas l’analyse, mais il discipline la sélection.') }}</li>
                                     </ul>
                                 </div>
 
                                 <div class="academy-comparison-box">
-                                    <span class="academy-box-label">Comparaison</span>
+                                    <span class="academy-box-label">{{ t('academy_level1_comparaison', 'Comparaison') }}</span>
                                     <div class="academy-comparison-table">
                                         <div class="academy-comparison-row academy-comparison-head">
-                                            <div>Situation</div>
-                                            <div>Bonne pratique</div>
-                                            <div>Mauvaise pratique</div>
+                                            <div>{{ t('academy_level1_situation', 'Situation') }}</div>
+                                            <div>{{ t('academy_level1_bonne_pratique', 'Bonne pratique') }}</div>
+                                            <div>{{ t('academy_level1_mauvaise_pratique', 'Mauvaise pratique') }}</div>
                                         </div>
                                         <div class="academy-comparison-row">
-                                            <div>Entrée</div>
-                                            <div>Zone + signal</div>
-                                            <div>Impulsion émotionnelle</div>
+                                            <div>{{ t('entry', 'Entrée') }}</div>
+                                            <div>{{ t('academy_level1_zone_signal', 'Zone + signal') }}</div>
+                                            <div>{{ t('academy_level1_impulsion_emotionnelle', 'Impulsion émotionnelle') }}</div>
                                         </div>
                                         <div class="academy-comparison-row">
-                                            <div>Stop</div>
-                                            <div>Invalidation logique</div>
-                                            <div>Stop arbitraire ou absent</div>
+                                            <div>{{ t('academy_level1_stop', 'Stop') }}</div>
+                                            <div>{{ t('academy_level1_invalidation_logique', 'Invalidation logique') }}</div>
+                                            <div>{{ t('academy_level1_stop_arbitraire_ou_absent', 'Stop arbitraire ou absent') }}</div>
                                         </div>
                                         <div class="academy-comparison-row">
-                                            <div>Objectif</div>
-                                            <div>Sortie planifiée</div>
-                                            <div>Espoir non structuré</div>
+                                            <div>{{ t('academy_level1_objectif', 'Objectif') }}</div>
+                                            <div>{{ t('academy_level1_sortie_planifiee', 'Sortie planifiée') }}</div>
+                                            <div>{{ t('academy_level1_espoir_non_structure', 'Espoir non structuré') }}</div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="academy-lesson-tools">
                                     <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-5">
-                                        ✔ Marquer comme terminé
+                                        ✔ {{ t("mark_completed", "Marquer comme terminé") }}
                                     </button>
-                                    <a class="academy-anchor-btn" href="#lesson-6">Module suivant</a>
+                                    <a class="academy-anchor-btn" href="#lesson-6">{{ t("next_module", "Module suivant") }}</a>
                                 </div>
                             </div>
                         </div>
@@ -1154,76 +57,69 @@
                         <summary class="academy-lesson-summary">
                             <div class="academy-lesson-title-wrap">
                                 <div class="academy-lesson-kicker">
-                                    <span class="academy-module-badge" data-lesson-badge="lesson-6">Module 06</span>
+                                    <span class="academy-module-badge" data-lesson-badge="lesson-6">{{ t('academy_level1_module_06', 'Module 06') }}</span>
                                 </div>
-                                <h2 class="academy-lesson-title">Gestion du risque : principe central du métier</h2>
-                                <p>La survie financière précède toute ambition de performance.</p>
+                                <h2 class="academy-lesson-title">{{ t('academy_level1_gestion_du_risque_principe_central_du_metier', 'Gestion du risque : principe central du métier') }}</h2>
+                                <p>{{ t('academy_level1_la_survie_financiere_precede_toute_ambition_de_performance', 'La survie financière précède toute ambition de performance.') }}</p>
                             </div>
                             <div class="academy-lesson-arrow">⌄</div>
                         </summary>
                         <div class="academy-lesson-body">
                             <div class="academy-academic-block">
-                                <h3>La survie financière précède toute ambition de performance</h3>
+                                <h3>{{ t('academy_level1_la_survie_financiere_precede_toute_ambition_de_performance_2', 'La survie financière précède toute ambition de performance') }}</h3>
                                 <p>
-                                    La gestion du risque est le pilier central du trading. Un compte ne disparaît pas
-                                    parce qu’un seul trade est mauvais, mais parce que plusieurs erreurs de taille,
-                                    de levier ou de discipline sont tolérées dans le temps.
+                                    {{ t('academy_level1_la_gestion_du_risque_est_le_pilier_central_du_trading_un_compte_ne_dis', 'La gestion du risque est le pilier central du trading. Un compte ne disparaît pas                                     parce qu’un seul trade est mauvais, mais parce que plusieurs erreurs de taille,                                     de levier ou de discipline sont tolérées dans le temps.') }}
                                 </p>
                                 <p>
-                                    L’objectif initial n’est pas d’extraire un maximum du marché, mais de rester
-                                    suffisamment stable pour apprendre sans s’effondrer.
+                                    {{ t('academy_level1_l_objectif_initial_n_est_pas_d_extraire_un_maximum_du_marche_mais_de_r', 'L’objectif initial n’est pas d’extraire un maximum du marché, mais de rester                                     suffisamment stable pour apprendre sans s’effondrer.') }}
                                 </p>
 
                                 <div class="academy-definition-box">
-                                    <span class="academy-box-label">Définition</span>
+                                    <span class="academy-box-label">{{ t("definition", "Définition") }}</span>
                                     <p>
-                                        La gestion du risque est l’ensemble des règles qui limitent l’impact d’une erreur
-                                        sur le capital, assurent la continuité opérationnelle et stabilisent le comportement.
+                                        {{ t('academy_level1_la_gestion_du_risque_est_l_ensemble_des_regles_qui_limitent_l_impact_d', 'La gestion du risque est l’ensemble des règles qui limitent l’impact d’une erreur                                         sur le capital, assurent la continuité opérationnelle et stabilisent le comportement.') }}
                                     </p>
                                 </div>
 
                                 <div class="academy-warning-box">
-                                    <span class="academy-box-label">Erreur fréquente</span>
+                                    <span class="academy-box-label">{{ t("common_mistake", "Erreur fréquente") }}</span>
                                     <p>
-                                        Augmenter la taille de position après une perte par frustration
-                                        ou volonté de “récupérer”.
+                                        {{ t('academy_level1_augmenter_la_taille_de_position_apres_une_perte_par_frustration_ou_vol', 'Augmenter la taille de position après une perte par frustration                                         ou volonté de “récupérer”.') }}
                                     </p>
                                 </div>
 
                                 <div class="academy-keytakeaway-box">
-                                    <span class="academy-box-label">À retenir</span>
+                                    <span class="academy-box-label">{{ t("key_takeaway", "À retenir") }}</span>
                                     <p>
-                                        Un trader durable n’est pas celui qui gagne vite, mais celui qui reste solvable
-                                        assez longtemps pour devenir compétent.
+                                        {{ t('academy_level1_un_trader_durable_n_est_pas_celui_qui_gagne_vite_mais_celui_qui_reste', 'Un trader durable n’est pas celui qui gagne vite, mais celui qui reste solvable                                         assez longtemps pour devenir compétent.') }}
                                     </p>
                                 </div>
 
                                 <div class="academy-academic-block" style="margin-top: 22px;">
-                                    <span class="academy-box-label">Règles de base</span>
-                                    <h3>Discipline minimale recommandée</h3>
+                                    <span class="academy-box-label">{{ t('academy_level1_regles_de_base', 'Règles de base') }}</span>
+                                    <h3>{{ t('academy_level1_discipline_minimale_recommandee', 'Discipline minimale recommandée') }}</h3>
                                     <ul class="academy-reflection-list">
-                                        <li>Risque maximum par trade : limité et défini à l’avance.</li>
-                                        <li>Pas de trade sans stop clairement pensé.</li>
-                                        <li>Pas d’augmentation émotionnelle de taille.</li>
-                                        <li>Pas de vengeance après une perte.</li>
-                                        <li>Priorité absolue à la survie du capital.</li>
+                                        <li>{{ t('academy_level1_risque_maximum_par_trade_limite_et_defini_a_l_avance', 'Risque maximum par trade : limité et défini à l’avance.') }}</li>
+                                        <li>{{ t('academy_level1_pas_de_trade_sans_stop_clairement_pense', 'Pas de trade sans stop clairement pensé.') }}</li>
+                                        <li>{{ t('academy_level1_pas_d_augmentation_emotionnelle_de_taille', 'Pas d’augmentation émotionnelle de taille.') }}</li>
+                                        <li>{{ t('academy_level1_pas_de_vengeance_apres_une_perte', 'Pas de vengeance après une perte.') }}</li>
+                                        <li>{{ t('academy_level1_priorite_absolue_a_la_survie_du_capital', 'Priorité absolue à la survie du capital.') }}</li>
                                     </ul>
                                 </div>
 
                                 <div class="academy-chart-card" style="margin-top: 24px;">
-                                    <h3>Discipline vs destruction du capital</h3>
+                                    <h3>{{ t('academy_level1_discipline_vs_destruction_du_capital', 'Discipline vs destruction du capital') }}</h3>
                                     <p>
-                                        Une gestion disciplinée produit souvent une progression plus lente,
-                                        mais beaucoup plus stable.
+                                        {{ t('academy_level1_une_gestion_disciplinee_produit_souvent_une_progression_plus_lente_mai', 'Une gestion disciplinée produit souvent une progression plus lente,                                         mais beaucoup plus stable.') }}
                                     </p>
                                     <canvas id="disciplineVsChaosChart" height="120"></canvas>
                                 </div>
 
                                 <div class="academy-lesson-tools">
                                     <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-6">
-                                        ✔ Marquer comme terminé
+                                        ✔ {{ t("mark_completed", "Marquer comme terminé") }}
                                     </button>
-                                    <a class="academy-anchor-btn" href="#lesson-7">Module suivant</a>
+                                    <a class="academy-anchor-btn" href="#lesson-7">{{ t("next_module", "Module suivant") }}</a>
                                 </div>
                             </div>
                         </div>
@@ -1233,51 +129,47 @@
                         <summary class="academy-lesson-summary">
                             <div class="academy-lesson-title-wrap">
                                 <div class="academy-lesson-kicker">
-                                    <span class="academy-module-badge" data-lesson-badge="lesson-7">Module 07</span>
+                                    <span class="academy-module-badge" data-lesson-badge="lesson-7">{{ t('academy_level1_module_07', 'Module 07') }}</span>
                                 </div>
-                                <h2 class="academy-lesson-title">Lecture graphique élémentaire</h2>
-                                <p>Observer le comportement du prix avant d’interpréter.</p>
+                                <h2 class="academy-lesson-title">{{ t('academy_level1_lecture_graphique_elementaire', 'Lecture graphique élémentaire') }}</h2>
+                                <p>{{ t('academy_level1_observer_le_comportement_du_prix_avant_d_interpreter', 'Observer le comportement du prix avant d’interpréter.') }}</p>
                             </div>
                             <div class="academy-lesson-arrow">⌄</div>
                         </summary>
                         <div class="academy-lesson-body">
                             <div class="academy-academic-block">
-                                <h3>Observer le comportement du prix avant d’interpréter</h3>
+                                <h3>{{ t('academy_level1_observer_le_comportement_du_prix_avant_d_interpreter_2', 'Observer le comportement du prix avant d’interpréter') }}</h3>
                                 <p>
-                                    Lire un graphique ne consiste pas à réciter des formes. Il s’agit d’observer
-                                    comment le prix se déplace, ralentit, accélère, rejette ou hésite.
+                                    {{ t('academy_level1_lire_un_graphique_ne_consiste_pas_a_reciter_des_formes_il_s_agit_d_obs', 'Lire un graphique ne consiste pas à réciter des formes. Il s’agit d’observer                                     comment le prix se déplace, ralentit, accélère, rejette ou hésite.') }}
                                 </p>
                                 <p>
-                                    La première compétence n’est pas de tout voir, mais de simplifier correctement :
-                                    le prix monte-t-il, baisse-t-il, consolide-t-il ? Réagit-il sur une zone évidente ?
+                                    {{ t('academy_level1_la_premiere_competence_n_est_pas_de_tout_voir_mais_de_simplifier_corre', 'La première compétence n’est pas de tout voir, mais de simplifier correctement :                                     le prix monte-t-il, baisse-t-il, consolide-t-il ? Réagit-il sur une zone évidente ?') }}
                                 </p>
 
                                 <div class="academy-case-box">
-                                    <span class="academy-box-label">Étude de cas</span>
+                                    <span class="academy-box-label">{{ t('academy_level1_etude_de_cas', 'Étude de cas') }}</span>
                                     <p>
-                                        Une série de bougies haussières fortes avec de petites corrections
-                                        ne signifie pas seulement “ça monte”. Elle indique aussi que les vendeurs
-                                        reprennent peu de terrain à chaque pause.
+                                        {{ t('academy_level1_une_serie_de_bougies_haussieres_fortes_avec_de_petites_corrections_ne', 'Une série de bougies haussières fortes avec de petites corrections                                         ne signifie pas seulement “ça monte”. Elle indique aussi que les vendeurs                                         reprennent peu de terrain à chaque pause.') }}
                                     </p>
                                 </div>
 
                                 <div class="academy-academic-block" style="margin-top: 22px;">
-                                    <span class="academy-box-label">Checklist de lecture</span>
-                                    <h3>Questions simples face à un graphique</h3>
+                                    <span class="academy-box-label">{{ t("checklist", "Checklist") }} {{ t('academy_level1_de_lecture', 'de lecture') }}</span>
+                                    <h3>{{ t('academy_level1_questions_simples_face_a_un_graphique', 'Questions simples face à un graphique') }}</h3>
                                     <ul class="academy-reflection-list">
-                                        <li>Le prix avance-t-il plutôt à la hausse, à la baisse ou latéralement ?</li>
-                                        <li>Les impulsions sont-elles fortes ou faibles ?</li>
-                                        <li>Les corrections sont-elles profondes ou modérées ?</li>
-                                        <li>Le prix réagit-il à une zone visible ?</li>
-                                        <li>Le comportement actuel confirme-t-il ou fragilise-t-il le scénario ?</li>
+                                        <li>{{ t('academy_level1_le_prix_avance_t_il_plutot_a_la_hausse_a_la_baisse_ou_lateralement', 'Le prix avance-t-il plutôt à la hausse, à la baisse ou latéralement ?') }}</li>
+                                        <li>{{ t('academy_level1_les_impulsions_sont_elles_fortes_ou_faibles', 'Les impulsions sont-elles fortes ou faibles ?') }}</li>
+                                        <li>{{ t('academy_level1_les_corrections_sont_elles_profondes_ou_moderees', 'Les corrections sont-elles profondes ou modérées ?') }}</li>
+                                        <li>{{ t('academy_level1_le_prix_reagit_il_a_une_zone_visible', 'Le prix réagit-il à une zone visible ?') }}</li>
+                                        <li>{{ t('academy_level1_le_comportement_actuel_confirme_t_il_ou_fragilise_t_il_le_scenario', 'Le comportement actuel confirme-t-il ou fragilise-t-il le scénario ?') }}</li>
                                     </ul>
                                 </div>
 
                                 <div class="academy-lesson-tools">
                                     <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-7">
-                                        ✔ Marquer comme terminé
+                                        ✔ {{ t("mark_completed", "Marquer comme terminé") }}
                                     </button>
-                                    <a class="academy-anchor-btn" href="#lesson-8">Module suivant</a>
+                                    <a class="academy-anchor-btn" href="#lesson-8">{{ t("next_module", "Module suivant") }}</a>
                                 </div>
                             </div>
                         </div>
@@ -1287,68 +179,62 @@
                         <summary class="academy-lesson-summary">
                             <div class="academy-lesson-title-wrap">
                                 <div class="academy-lesson-kicker">
-                                    <span class="academy-module-badge" data-lesson-badge="lesson-8">Module 08</span>
+                                    <span class="academy-module-badge" data-lesson-badge="lesson-8">{{ t('academy_level1_module_08', 'Module 08') }}</span>
                                 </div>
-                                <h2 class="academy-lesson-title">Supports et résistances</h2>
-                                <p>Les zones de réaction comme espaces de décision.</p>
+                                <h2 class="academy-lesson-title">{{ t('academy_level1_supports_et_resistances', 'Supports et résistances') }}</h2>
+                                <p>{{ t('academy_level1_les_zones_de_reaction_comme_espaces_de_decision', 'Les zones de réaction comme espaces de décision.') }}</p>
                             </div>
                             <div class="academy-lesson-arrow">⌄</div>
                         </summary>
                         <div class="academy-lesson-body">
                             <div class="academy-academic-block">
-                                <h3>Les zones de réaction comme espaces de décision</h3>
+                                <h3>{{ t('academy_level1_les_zones_de_reaction_comme_espaces_de_decision_2', 'Les zones de réaction comme espaces de décision') }}</h3>
                                 <p>
-                                    Les supports et résistances ne doivent pas être traités comme des lignes absolues,
-                                    mais comme des zones de décision potentielles. Leur utilité vient du fait qu’ils
-                                    concentrent l’attention de nombreux opérateurs.
+                                    {{ t('academy_level1_les_supports_et_resistances_ne_doivent_pas_etre_traites_comme_des_lign', 'Les supports et résistances ne doivent pas être traités comme des lignes absolues,                                     mais comme des zones de décision potentielles. Leur utilité vient du fait qu’ils                                     concentrent l’attention de nombreux opérateurs.') }}
                                 </p>
                                 <p>
-                                    L’erreur du débutant consiste à croire qu’un niveau “doit” fonctionner.
-                                    Le trader plus rigoureux considère au contraire qu’un niveau est un endroit où
-                                    le marché peut révéler une information utile.
+                                    {{ t('academy_level1_l_erreur_du_debutant_consiste_a_croire_qu_un_niveau_doit_fonctionner_l', 'L’erreur du débutant consiste à croire qu’un niveau “doit” fonctionner.                                     Le trader plus rigoureux considère au contraire qu’un niveau est un endroit où                                     le marché peut révéler une information utile.') }}
                                 </p>
 
                                 <div class="academy-keytakeaway-box">
-                                    <span class="academy-box-label">À retenir</span>
+                                    <span class="academy-box-label">{{ t("key_takeaway", "À retenir") }}</span>
                                     <p>
-                                        Un support ou une résistance ne donne pas une certitude. Il donne un contexte à surveiller.
+                                        {{ t('academy_level1_un_support_ou_une_resistance_ne_donne_pas_une_certitude_il_donne_un_co', 'Un support ou une résistance ne donne pas une certitude. Il donne un contexte à surveiller.') }}
                                     </p>
                                 </div>
 
                                 <div class="academy-example-box">
-                                    <span class="academy-box-label">Exemple concret</span>
+                                    <span class="academy-box-label">{{ t("concrete_example", "Exemple concret") }}</span>
                                     <p>
-                                        Une résistance travaillée plusieurs fois peut finir par céder, mais elle peut aussi
-                                        produire un faux départ. Ce n’est pas le niveau seul qui compte,
-                                        mais la manière dont le prix s’y comporte.
+                                        {{ t('academy_level1_une_resistance_travaillee_plusieurs_fois_peut_finir_par_ceder_mais_ell', 'Une résistance travaillée plusieurs fois peut finir par céder, mais elle peut aussi                                         produire un faux départ. Ce n’est pas le niveau seul qui compte,                                         mais la manière dont le prix s’y comporte.') }}
                                     </p>
                                 </div>
 
                                 <div class="academy-summary-grid">
                                     <div class="academy-info-card">
-                                        <h3>Lecture immature</h3>
+                                        <h3>{{ t('academy_level1_lecture_immature', 'Lecture immature') }}</h3>
                                         <ul class="academy-reflection-list">
-                                            <li>Le niveau doit obligatoirement tenir.</li>
-                                            <li>La cassure est forcément vraie.</li>
-                                            <li>La réaction est interprétée trop vite.</li>
+                                            <li>{{ t('academy_level1_le_niveau_doit_obligatoirement_tenir', 'Le niveau doit obligatoirement tenir.') }}</li>
+                                            <li>{{ t('academy_level1_la_cassure_est_forcement_vraie', 'La cassure est forcément vraie.') }}</li>
+                                            <li>{{ t('academy_level1_la_reaction_est_interpretee_trop_vite', 'La réaction est interprétée trop vite.') }}</li>
                                         </ul>
                                     </div>
 
                                     <div class="academy-info-card">
-                                        <h3>Lecture plus mature</h3>
+                                        <h3>{{ t('academy_level1_lecture_plus_mature', 'Lecture plus mature') }}</h3>
                                         <ul class="academy-reflection-list">
-                                            <li>Le niveau est une zone d’observation.</li>
-                                            <li>Le comportement du prix confirme ou invalide.</li>
-                                            <li>La patience prime sur la précipitation.</li>
+                                            <li>{{ t('academy_level1_le_niveau_est_une_zone_d_observation', 'Le niveau est une zone d’observation.') }}</li>
+                                            <li>{{ t('academy_level1_le_comportement_du_prix_confirme_ou_invalide', 'Le comportement du prix confirme ou invalide.') }}</li>
+                                            <li>{{ t('academy_level1_la_patience_prime_sur_la_precipitation', 'La patience prime sur la précipitation.') }}</li>
                                         </ul>
                                     </div>
                                 </div>
 
                                 <div class="academy-lesson-tools">
                                     <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-8">
-                                        ✔ Marquer comme terminé
+                                        ✔ {{ t("mark_completed", "Marquer comme terminé") }}
                                     </button>
-                                    <a class="academy-anchor-btn" href="#lesson-9">Module suivant</a>
+                                    <a class="academy-anchor-btn" href="#lesson-9">{{ t("next_module", "Module suivant") }}</a>
                                 </div>
                             </div>
                         </div>
@@ -1358,88 +244,84 @@
                         <summary class="academy-lesson-summary">
                             <div class="academy-lesson-title-wrap">
                                 <div class="academy-lesson-kicker">
-                                    <span class="academy-module-badge" data-lesson-badge="lesson-9">Module 09</span>
+                                    <span class="academy-module-badge" data-lesson-badge="lesson-9">{{ t('academy_level1_module_09', 'Module 09') }}</span>
                                 </div>
-                                <h2 class="academy-lesson-title">Erreurs structurelles du débutant</h2>
-                                <p>Comprendre l’échec comme phénomène structurel.</p>
+                                <h2 class="academy-lesson-title">{{ t('academy_level1_erreurs_structurelles_du_debutant', 'Erreurs structurelles du débutant') }}</h2>
+                                <p>{{ t('academy_level1_comprendre_l_echec_comme_phenomene_structurel', 'Comprendre l’échec comme phénomène structurel.') }}</p>
                             </div>
                             <div class="academy-lesson-arrow">⌄</div>
                         </summary>
                         <div class="academy-lesson-body">
                             <div class="academy-cards">
                                 <div class="academy-info-card">
-                                    <h3>Surtrading</h3>
-                                    <p>Chercher de l’action en permanence conduit à prendre des trades sans avantage clair.</p>
+                                    <h3>{{ t('academy_level1_surtrading', 'Surtrading') }}</h3>
+                                    <p>{{ t('academy_level1_chercher_de_l_action_en_permanence_conduit_a_prendre_des_trades_sans_a', 'Chercher de l’action en permanence conduit à prendre des trades sans avantage clair.') }}</p>
                                 </div>
                                 <div class="academy-info-card">
-                                    <h3>Refus de l’invalidation</h3>
-                                    <p>Déplacer le Stop Loss ou espérer sans plan revient à nier le principe même du scénario.</p>
+                                    <h3>{{ t('academy_level1_refus_de_l_invalidation', 'Refus de l’invalidation') }}</h3>
+                                    <p>{{ t('academy_level1_deplacer_le_stop_loss_ou_esperer_sans_plan_revient_a_nier_le_principe', 'Déplacer le Stop Loss ou espérer sans plan revient à nier le principe même du scénario.') }}</p>
                                 </div>
                                 <div class="academy-info-card">
-                                    <h3>Levier émotionnel</h3>
-                                    <p>Augmenter l’exposition pour compenser l’impatience ou la frustration détruit la stabilité.</p>
+                                    <h3>{{ t('academy_level1_levier_emotionnel', 'Levier émotionnel') }}</h3>
+                                    <p>{{ t('academy_level1_augmenter_l_exposition_pour_compenser_l_impatience_ou_la_frustration_d', 'Augmenter l’exposition pour compenser l’impatience ou la frustration détruit la stabilité.') }}</p>
                                 </div>
                             </div>
 
                             <div class="academy-academic-block" style="margin-top: 24px;">
-                                <h3>Comprendre l’échec comme phénomène structurel</h3>
+                                <h3>{{ t('academy_level1_comprendre_l_echec_comme_phenomene_structurel_2', 'Comprendre l’échec comme phénomène structurel') }}</h3>
                                 <p>
-                                    Les pertes du débutant ne viennent pas uniquement d’un manque de technique.
-                                    Elles viennent aussi d’un mauvais rapport au temps, à l’ego, à la frustration
-                                    et au désir de résultat immédiat.
+                                    {{ t('academy_level1_les_pertes_du_debutant_ne_viennent_pas_uniquement_d_un_manque_de_techn', 'Les pertes du débutant ne viennent pas uniquement d’un manque de technique.                                     Elles viennent aussi d’un mauvais rapport au temps, à l’ego, à la frustration                                     et au désir de résultat immédiat.') }}
                                 </p>
                                 <p>
-                                    Beaucoup d’erreurs destructrices sont comportementales avant d’être techniques.
-                                    L’utilisateur doit apprendre à reconnaître les mauvais setups
-                                    mais aussi les mauvais états mentaux.
+                                    {{ t('academy_level1_beaucoup_d_erreurs_destructrices_sont_comportementales_avant_d_etre_te', 'Beaucoup d’erreurs destructrices sont comportementales avant d’être techniques.                                     L’utilisateur doit apprendre à reconnaître les mauvais setups                                     mais aussi les mauvais états mentaux.') }}
                                 </p>
 
                                 <div class="academy-keytakeaway-box">
-                                    <span class="academy-box-label">À retenir</span>
+                                    <span class="academy-box-label">{{ t("key_takeaway", "À retenir") }}</span>
                                     <p>
-                                        Les plus grandes erreurs ne sont pas techniques. Elles sont souvent comportementales.
+                                        {{ t('academy_level1_les_plus_grandes_erreurs_ne_sont_pas_techniques_elles_sont_souvent_com', 'Les plus grandes erreurs ne sont pas techniques. Elles sont souvent comportementales.') }}
                                     </p>
                                 </div>
 
                                 <div class="academy-summary-grid">
                                     <div class="academy-info-card">
-                                        <h3>Débutant</h3>
+                                        <h3>{{ t('academy_level1_debutant', 'Débutant') }}</h3>
                                         <ul class="academy-reflection-list">
-                                            <li>Veut agir souvent.</li>
-                                            <li>Cherche une certitude impossible.</li>
-                                            <li>Refuse d’avoir tort.</li>
-                                            <li>Confond activité et compétence.</li>
+                                            <li>{{ t('academy_level1_veut_agir_souvent', 'Veut agir souvent.') }}</li>
+                                            <li>{{ t('academy_level1_cherche_une_certitude_impossible', 'Cherche une certitude impossible.') }}</li>
+                                            <li>{{ t('academy_level1_refuse_d_avoir_tort', 'Refuse d’avoir tort.') }}</li>
+                                            <li>{{ t('academy_level1_confond_activite_et_competence', 'Confond activité et compétence.') }}</li>
                                         </ul>
                                     </div>
 
                                     <div class="academy-info-card">
-                                        <h3>Trader plus mature</h3>
+                                        <h3>{{ t('academy_level1_trader_plus_mature', 'Trader plus mature') }}</h3>
                                         <ul class="academy-reflection-list">
-                                            <li>Attend une structure plus cohérente.</li>
-                                            <li>Accepte l’incertitude.</li>
-                                            <li>Limite le risque.</li>
-                                            <li>Privilégie la qualité sur la fréquence.</li>
+                                            <li>{{ t('academy_level1_attend_une_structure_plus_coherente', 'Attend une structure plus cohérente.') }}</li>
+                                            <li>{{ t('academy_level1_accepte_l_incertitude', 'Accepte l’incertitude.') }}</li>
+                                            <li>{{ t('academy_level1_limite_le_risque', 'Limite le risque.') }}</li>
+                                            <li>{{ t('academy_level1_privilegie_la_qualite_sur_la_frequence', 'Privilégie la qualité sur la fréquence.') }}</li>
                                         </ul>
                                     </div>
                                 </div>
 
                                 <div class="academy-checklist">
-                                    <span class="academy-box-label">Auto-diagnostic</span>
-                                    <h3>Questions à se poser après une perte</h3>
+                                    <span class="academy-box-label">{{ t('academy_level1_auto_diagnostic', 'Auto-diagnostic') }}</span>
+                                    <h3>{{ t('academy_level1_questions_a_se_poser_apres_une_perte', 'Questions à se poser après une perte') }}</h3>
                                     <ul class="academy-reflection-list">
-                                        <li>Ai-je respecté mon plan initial ?</li>
-                                        <li>Ai-je déplacé mon stop sans raison ?</li>
-                                        <li>Ai-je pris ce trade par ennui, FOMO ou frustration ?</li>
-                                        <li>Ma taille de position était-elle rationnelle ?</li>
-                                        <li>Ai-je confondu envie d’action et qualité de setup ?</li>
+                                        <li>{{ t('academy_level1_ai_je_respecte_mon_plan_initial', 'Ai-je respecté mon plan initial ?') }}</li>
+                                        <li>{{ t('academy_level1_ai_je_deplace_mon_stop_sans_raison', 'Ai-je déplacé mon stop sans raison ?') }}</li>
+                                        <li>{{ t('academy_level1_ai_je_pris_ce_trade_par_ennui_fomo_ou_frustration', 'Ai-je pris ce trade par ennui, FOMO ou frustration ?') }}</li>
+                                        <li>{{ t('academy_level1_ma_taille_de_position_etait_elle_rationnelle', 'Ma taille de position était-elle rationnelle ?') }}</li>
+                                        <li>{{ t('academy_level1_ai_je_confondu_envie_d_action_et_qualite_de_setup', 'Ai-je confondu envie d’action et qualité de setup ?') }}</li>
                                     </ul>
                                 </div>
 
                                 <div class="academy-lesson-tools">
                                     <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-9">
-                                        ✔ Marquer comme terminé
+                                        ✔ {{ t("mark_completed", "Marquer comme terminé") }}
                                     </button>
-                                    <a class="academy-anchor-btn" href="#lesson-10">Module suivant</a>
+                                    <a class="academy-anchor-btn" href="#lesson-10">{{ t("next_module", "Module suivant") }}</a>
                                 </div>
                             </div>
                         </div>
@@ -1449,69 +331,66 @@
                         <summary class="academy-lesson-summary">
                             <div class="academy-lesson-title-wrap">
                                 <div class="academy-lesson-kicker">
-                                    <span class="academy-module-badge" data-lesson-badge="lesson-10">Module 10</span>
+                                    <span class="academy-module-badge" data-lesson-badge="lesson-10">{{ t('academy_level1_module_10', 'Module 10') }}</span>
                                 </div>
-                                <h2 class="academy-lesson-title">Synthèse et validation intellectuelle du niveau 1</h2>
-                                <p>Transformer la compréhension en base opérationnelle stable.</p>
+                                <h2 class="academy-lesson-title">{{ t('academy_level1_synthese_et_validation_intellectuelle_du_niveau_1', 'Synthèse et validation intellectuelle du niveau 1') }}</h2>
+                                <p>{{ t('academy_level1_transformer_la_comprehension_en_base_operationnelle_stable', 'Transformer la compréhension en base opérationnelle stable.') }}</p>
                             </div>
                             <div class="academy-lesson-arrow">⌄</div>
                         </summary>
                         <div class="academy-lesson-body">
                             <div class="academy-academic-block">
-                                <h3>Ce que le niveau 1 doit transformer</h3>
+                                <h3>{{ t('academy_level1_ce_que_le_niveau_1_doit_transformer', 'Ce que le niveau 1 doit transformer') }}</h3>
                                 <p>
-                                    Le niveau 1 n’a pas pour vocation de faire de l’utilisateur un trader performant immédiatement.
-                                    Il corrige d’abord la manière de penser le marché : hypothèse, invalidation, exposition,
-                                    risque, zone de réaction, logique de sortie, discipline.
+                                    {{ t('academy_level1_le_niveau_1_n_a_pas_pour_vocation_de_faire_de_l_utilisateur_un_trader', 'Le niveau 1 n’a pas pour vocation de faire de l’utilisateur un trader performant immédiatement.                                     Il corrige d’abord la manière de penser le marché : hypothèse, invalidation, exposition,                                     risque, zone de réaction, logique de sortie, discipline.') }}
                                 </p>
                                 <p>
-                                    Cette base n’est pas spectaculaire, mais elle est indispensable.
-                                    Sans elle, les niveaux avancés ne produiraient qu’une sophistication superficielle.
+                                    {{ t('academy_level1_cette_base_n_est_pas_spectaculaire_mais_elle_est_indispensable_sans_el', 'Cette base n’est pas spectaculaire, mais elle est indispensable.                                     Sans elle, les niveaux avancés ne produiraient qu’une sophistication superficielle.') }}
                                 </p>
                             </div>
 
                             <div class="academy-summary-grid">
                                 <div class="academy-info-card">
-                                    <h3>Compétences acquises</h3>
+                                    <h3>{{ t('academy_level1_competences_acquises', 'Compétences acquises') }}</h3>
                                     <ul class="academy-reflection-list">
-                                        <li>Définir le trading avec un vocabulaire rigoureux.</li>
-                                        <li>Distinguer marchés, positions, risque et exposition.</li>
-                                        <li>Comprendre le rôle du Stop Loss et du Take Profit.</li>
-                                        <li>Lire une structure graphique simple.</li>
-                                        <li>Identifier les erreurs les plus destructrices.</li>
+                                        <li>{{ t('academy_level1_definir_le_trading_avec_un_vocabulaire_rigoureux', 'Définir le trading avec un vocabulaire rigoureux.') }}</li>
+                                        <li>{{ t('academy_level1_distinguer_marches_positions_risque_et_exposition', 'Distinguer marchés, positions, risque et exposition.') }}</li>
+                                        <li>{{ t('academy_level1_comprendre_le_role_du_stop_loss_et_du_take_profit', 'Comprendre le rôle du Stop Loss et du Take Profit.') }}</li>
+                                        <li>{{ t('academy_level1_lire_une_structure_graphique_simple', 'Lire une structure graphique simple.') }}</li>
+                                        <li>{{ t('academy_level1_identifier_les_erreurs_les_plus_destructrices', 'Identifier les erreurs les plus destructrices.') }}</li>
                                     </ul>
                                 </div>
 
                                 <div class="academy-info-card">
-                                    <h3>Questions de réflexion</h3>
+                                    <h3>{{ t('academy_level1_questions_de_reflexion', 'Questions de réflexion') }}</h3>
                                     <ul class="academy-reflection-list">
-                                        <li>Ai-je un scénario ou seulement une opinion ?</li>
-                                        <li>Sais-je où mon idée devient fausse ?</li>
-                                        <li>Ma taille de position respecte-t-elle mon capital ?</li>
-                                        <li>Ai-je pris ce trade par logique ou par impulsion ?</li>
-                                        <li>Ai-je confondu activité et compétence ?</li>
+                                        <li>{{ t('academy_level1_ai_je_un_scenario_ou_seulement_une_opinion', 'Ai-je un scénario ou seulement une opinion ?') }}</li>
+                                        <li>{{ t('academy_level1_sais_je_ou_mon_idee_devient_fausse', 'Sais-je où mon idée devient fausse ?') }}</li>
+                                        <li>{{ t('academy_level1_ma_taille_de_position_respecte_t_elle_mon_capital', 'Ma taille de position respecte-t-elle mon capital ?') }}</li>
+                                        <li>{{ t('academy_level1_ai_je_pris_ce_trade_par_logique_ou_par_impulsion', 'Ai-je pris ce trade par logique ou par impulsion ?') }}</li>
+                                        <li>{{ t('academy_level1_ai_je_confondu_activite_et_competence', 'Ai-je confondu activité et compétence ?') }}</li>
                                     </ul>
                                 </div>
                             </div>
 
                             <div class="academy-academic-block" style="margin-top: 24px;">
-                                <span class="academy-box-label">Checklist finale</span>
-                                <h3>Checklist avant tout trade débutant</h3>
+                                <span class="academy-box-label">{{ t("final_checklist", "Checklist finale") }}</span>
+                                <h3>{{ t("checklist", "Checklist") }} {{ t('academy_level1_avant_tout_trade_debutant', 'avant tout trade débutant') }}</h3>
                                 <ul class="academy-reflection-list">
-                                    <li>Ai-je identifié une zone claire ?</li>
-                                    <li>Ai-je compris dans quel sens le marché semble évoluer ?</li>
-                                    <li>Mon scénario a-t-il une invalidation précise ?</li>
-                                    <li>Mon risque est-il supportable pour mon capital ?</li>
-                                    <li>Mon entrée est-elle rationnelle ou émotionnelle ?</li>
-                                    <li>Mon objectif de sortie est-il logique ?</li>
+                                    <li>{{ t('academy_level1_ai_je_identifie_une_zone_claire', 'Ai-je identifié une zone claire ?') }}</li>
+                                    <li>{{ t('academy_level1_ai_je_compris_dans_quel_sens_le_marche_semble_evoluer', 'Ai-je compris dans quel sens le marché semble évoluer ?') }}</li>
+                                    <li>{{ t('academy_level1_mon_scenario_a_t_il_une_invalidation_precise', 'Mon scénario a-t-il une invalidation précise ?') }}</li>
+                                    <li>{{ t('academy_level1_mon_risque_est_il_supportable_pour_mon_capital', 'Mon risque est-il supportable pour mon capital ?') }}</li>
+                                    <li>{{ t('academy_level1_mon_entree_est_elle_rationnelle_ou_emotionnelle', 'Mon entrée est-elle rationnelle ou émotionnelle ?') }}</li>
+                                    <li>{{ t('academy_level1_mon_objectif_de_sortie_est_il_logique', 'Mon objectif de sortie est-il logique ?') }}</li>
                                 </ul>
                             </div>
 
                             <div class="academy-lesson-tools">
                                 <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-10">
-                                    ✔ Marquer comme terminé
+                                    ✔ {{ t("mark_completed", "Marquer comme terminé") }}
                                 </button>
-                                <a class="academy-anchor-btn" href="#quiz-final">Aller au quiz final</a>
+                                <a class="academy-anchor-btn" href="#quiz-final">{{ t("go_to_final_quiz", "Aller au quiz final") }}</a>
                             </div>
                         </div>
                     </details>
@@ -1521,73 +400,72 @@
 
             <aside class="academy-sticky-card">
                 <div class="academy-info-card academy-sticky-nav">
-                    <h3>Navigation sticky</h3>
+                    <h3>{{ t("sticky_navigation", "Navigation sticky") }}</h3>
                     <div class="academy-outline-nav" style="margin-top: 14px;">
                         <a class="academy-outline-link" href="#learning-hub">
-                            <span>Hub & score visuel</span>
-                            <small>Overview</small>
+                            <span>{{ t('academy_level1_hub_score_visuel', 'Hub & score visuel') }}</span>
+                            <small>{{ t('academy_level1_overview', 'Overview') }}</small>
                         </a>
                         <a class="academy-outline-link" href="#lesson-1">
-                            <span>01 — Définir le trading</span>
-                            <small>Foundation</small>
+                            <span>{{ t('academy_level1_01_definir_le_trading', '01 — Définir le trading') }}</span>
+                            <small>{{ t('academy_level1_foundation', 'Foundation') }}</small>
                         </a>
                         <a class="academy-outline-link" href="#lesson-2">
-                            <span>02 — Cartographie marchés</span>
-                            <small>Context</small>
+                            <span>{{ t('academy_level1_02_cartographie_marches', '02 — Cartographie marchés') }}</span>
+                            <small>{{ t('academy_level1_context', 'Context') }}</small>
                         </a>
                         <a class="academy-outline-link" href="#lesson-3">
-                            <span>03 — Buy / Sell / hypothèse</span>
-                            <small>Structure</small>
+                            <span>{{ t('academy_level1_03_buy_sell_hypothese', '03 — Buy / Sell / hypothèse') }}</span>
+                            <small>{{ t('structure', 'Structure') }}</small>
                         </a>
                         <a class="academy-outline-link" href="#lesson-4">
-                            <span>04 — Pip / lot / spread / levier</span>
-                            <small>Technique</small>
+                            <span>{{ t('academy_level1_04_pip_lot_spread_levier', '04 — Pip / lot / spread / levier') }}</span>
+                            <small>{{ t('academy_level1_technique', 'Technique') }}</small>
                         </a>
                         <a class="academy-outline-link" href="#lesson-5">
-                            <span>05 — Stop / Take Profit</span>
-                            <small>Execution</small>
+                            <span>{{ t('academy_level1_05_stop_take_profit', '05 — Stop / Take Profit') }}</span>
+                            <small>{{ t('academy_level1_execution', 'Execution') }}</small>
                         </a>
                         <a class="academy-outline-link" href="#lesson-6">
-                            <span>06 — Gestion du risque</span>
-                            <small>Risk</small>
+                            <span>{{ t('academy_level1_06_gestion_du_risque', '06 — Gestion du risque') }}</span>
+                            <small>{{ t('academy_level1_risk', 'Risk') }}</small>
                         </a>
                         <a class="academy-outline-link" href="#lesson-7">
-                            <span>07 — Lecture graphique</span>
-                            <small>Reading</small>
+                            <span>{{ t('academy_level1_07_lecture_graphique', '07 — Lecture graphique') }}</span>
+                            <small>{{ t('academy_level1_reading', 'Reading') }}</small>
                         </a>
                         <a class="academy-outline-link" href="#lesson-8">
-                            <span>08 — Supports / résistances</span>
-                            <small>Zones</small>
+                            <span>{{ t('academy_level1_08_supports_resistances', '08 — Supports / résistances') }}</span>
+                            <small>{{ t('academy_level1_zones', 'Zones') }}</small>
                         </a>
                         <a class="academy-outline-link" href="#lesson-9">
-                            <span>09 — Erreurs débutant</span>
-                            <small>Discipline</small>
+                            <span>{{ t('academy_level1_09_erreurs_debutant', '09 — Erreurs débutant') }}</span>
+                            <small>{{ t('academy_level1_discipline', 'Discipline') }}</small>
                         </a>
                         <a class="academy-outline-link" href="#lesson-10">
-                            <span>10 — Synthèse</span>
-                            <small>Review</small>
+                            <span>{{ t('academy_level1_10_synthese', '10 — Synthèse') }}</span>
+                            <small>{{ t('academy_level1_review', 'Review') }}</small>
                         </a>
                         <a class="academy-outline-link" href="#quiz-final">
-                            <span>Quiz final</span>
-                            <small>Validation</small>
+                            <span>{{ t("final_quiz", "Quiz final") }}</span>
+                            <small>{{ t('academy_level1_validation', 'Validation') }}</small>
                         </a>
                     </div>
                 </div>
 
                 <div class="academy-info-card">
-                    <h3>Badges du niveau</h3>
+                    <h3>{{ t("level_badges", "Badges du niveau") }}</h3>
                     <div class="academy-lesson-tools" style="margin-top: 14px;">
-                        <span class="academy-module-badge validated">✓ Fondations validées</span>
-                        <span class="academy-module-badge current">En progression</span>
-                        <span class="academy-module-badge">Academy Level 1</span>
+                        <span class="academy-module-badge validated">{{ t('academy_level1_fondations_validees', '✓ Fondations validées') }}</span>
+                        <span class="academy-module-badge current">{{ t('academy_level1_en_progression', 'En progression') }}</span>
+                        <span class="academy-module-badge">{{ t("academy", "Academy") }} Level 1</span>
                     </div>
                 </div>
 
                 <div class="academy-info-card">
-                    <h3>Ce que ce niveau doit changer</h3>
+                    <h3>{{ t('academy_level1_ce_que_ce_niveau_doit_changer', 'Ce que ce niveau doit changer') }}</h3>
                     <p>
-                        Vous faire passer d’une approche émotionnelle, vague ou impulsive
-                        à une approche structurée, disciplinée et compréhensible.
+                        {{ t('academy_level1_vous_faire_passer_d_une_approche_emotionnelle_vague_ou_impulsive_a_une', 'Vous faire passer d’une approche émotionnelle, vague ou impulsive                         à une approche structurée, disciplinée et compréhensible.') }}
                     </p>
                 </div>
             </aside>
@@ -1598,78 +476,73 @@
 <section class="academy-section academy-dark-band">
     <div class="academy-shell">
         <div class="academy-section-title">
-            <span class="academy-kicker">Cadre d’apprentissage</span>
-            <h2>Compétences visées à l’issue du niveau 1</h2>
+            <span class="academy-kicker">{{ t('academy_level1_cadre_d_apprentissage', 'Cadre d’apprentissage') }}</span>
+            <h2>{{ t("level1_target_skills_title", "Compétences visées à l’issue du niveau 1") }}</h2>
             <p class="academy-lead academy-section-lead">
-                Ce niveau doit permettre à l’utilisateur de comprendre le langage de base du trading,
-                de lire une structure simple, de raisonner en termes de scénario et d’invalidation,
-                et d’intégrer la primauté de la gestion du risque.
+                {{ t('academy_level1_ce_niveau_doit_permettre_a_l_utilisateur_de_comprendre_le_langage_de_b', 'Ce niveau doit permettre à l’utilisateur de comprendre le langage de base du trading,                 de lire une structure simple, de raisonner en termes de scénario et d’invalidation,                 et d’intégrer la primauté de la gestion du risque.') }}
             </p>
         </div>
 
         <div class="academy-grid-3">
             <div class="academy-info-card">
-                <h3>Compréhension conceptuelle</h3>
-                <p>Nommer correctement les mécanismes avant de prétendre les utiliser.</p>
+                <h3>{{ t('academy_level1_comprehension_conceptuelle', 'Compréhension conceptuelle') }}</h3>
+                <p>{{ t('academy_level1_nommer_correctement_les_mecanismes_avant_de_pretendre_les_utiliser', 'Nommer correctement les mécanismes avant de prétendre les utiliser.') }}</p>
             </div>
             <div class="academy-info-card">
-                <h3>Protection du capital</h3>
-                <p>Accepter que la survie financière précède toujours la recherche de rendement.</p>
+                <h3>{{ t('academy_level1_protection_du_capital', 'Protection du capital') }}</h3>
+                <p>{{ t('academy_level1_accepter_que_la_survie_financiere_precede_toujours_la_recherche_de_ren', 'Accepter que la survie financière précède toujours la recherche de rendement.') }}</p>
             </div>
             <div class="academy-info-card">
-                <h3>Discipline intellectuelle</h3>
-                <p>Passer d’une intuition floue à un raisonnement structuré et vérifiable.</p>
+                <h3>{{ t('academy_level1_discipline_intellectuelle', 'Discipline intellectuelle') }}</h3>
+                <p>{{ t('academy_level1_passer_d_une_intuition_floue_a_un_raisonnement_structure_et_verifiable', 'Passer d’une intuition floue à un raisonnement structuré et vérifiable.') }}</p>
             </div>
         </div>
 
         <div class="academy-chart-grid" style="margin-top: 28px;">
             <div class="academy-chart-card">
-                <h3>Évolution d’un capital discipliné</h3>
+                <h3>{{ t('academy_level1_evolution_d_un_capital_discipline', 'Évolution d’un capital discipliné') }}</h3>
                 <p>
-                    Ce graphique pédagogique montre qu’une croissance durable repose moins sur l’euphorie
-                    que sur la régularité, la répétition de bonnes décisions et la limitation des pertes.
+                    {{ t('academy_level1_ce_graphique_pedagogique_montre_qu_une_croissance_durable_repose_moins', 'Ce graphique pédagogique montre qu’une croissance durable repose moins sur l’euphorie                     que sur la régularité, la répétition de bonnes décisions et la limitation des pertes.') }}
                 </p>
                 <canvas id="capitalDisciplineChart" height="120"></canvas>
             </div>
 
             <div class="academy-chart-card">
-                <h3>Impact du risque excessif</h3>
+                <h3>{{ t('academy_level1_impact_du_risque_excessif', 'Impact du risque excessif') }}</h3>
                 <p>
-                    Deux trajectoires peuvent partir du même capital initial. Celle qui utilise un risque
-                    mal maîtrisé devient beaucoup plus instable et vulnérable.
+                    {{ t('academy_level1_deux_trajectoires_peuvent_partir_du_meme_capital_initial_celle_qui_uti', 'Deux trajectoires peuvent partir du même capital initial. Celle qui utilise un risque                     mal maîtrisé devient beaucoup plus instable et vulnérable.') }}
                 </p>
                 <canvas id="riskImpactChart" height="120"></canvas>
             </div>
         </div>
 
         <div class="academy-academic-block" style="margin-top: 28px;">
-            <span class="academy-box-label">Framework fondamental</span>
-            <h3>La structure minimale d’un trade sérieux</h3>
+            <span class="academy-box-label">{{ t('academy_level1_framework_fondamental', 'Framework fondamental') }}</span>
+            <h3>{{ t('academy_level1_la_structure_minimale_d_un_trade_serieux', 'La structure minimale d’un trade sérieux') }}</h3>
             <p>
-                Dès le niveau 1, l’utilisateur doit comprendre qu’un trade ne peut pas être réduit
-                à un simple “je pense que ça va monter”. Toute décision sérieuse doit s’appuyer sur une structure minimale.
+                {{ t('academy_level1_des_le_niveau_1_l_utilisateur_doit_comprendre_qu_un_trade_ne_peut_pas', 'Dès le niveau 1, l’utilisateur doit comprendre qu’un trade ne peut pas être réduit                 à un simple “je pense que ça va monter”. Toute décision sérieuse doit s’appuyer sur une structure minimale.') }}
             </p>
 
             <div class="academy-summary-grid">
                 <div class="academy-info-card">
-                    <h3>Les 5 éléments de base</h3>
+                    <h3>{{ t('academy_level1_les_5_elements_de_base', 'Les 5 éléments de base') }}</h3>
                     <ul class="academy-reflection-list">
-                        <li>Le contexte général du marché.</li>
-                        <li>La zone d’intérêt ou de réaction.</li>
-                        <li>Le signal ou comportement du prix.</li>
-                        <li>Le niveau d’invalidation.</li>
-                        <li>L’objectif ou logique de sortie.</li>
+                        <li>{{ t('academy_level1_le_contexte_general_du_marche', 'Le contexte général du marché.') }}</li>
+                        <li>{{ t('academy_level1_la_zone_d_interet_ou_de_reaction', 'La zone d’intérêt ou de réaction.') }}</li>
+                        <li>{{ t('academy_level1_le_signal_ou_comportement_du_prix', 'Le signal ou comportement du prix.') }}</li>
+                        <li>{{ t('academy_level1_le_niveau_d_invalidation', 'Le niveau d’invalidation.') }}</li>
+                        <li>{{ t('academy_level1_l_objectif_ou_logique_de_sortie', 'L’objectif ou logique de sortie.') }}</li>
                     </ul>
                 </div>
 
                 <div class="academy-info-card">
-                    <h3>Ce que cela évite</h3>
+                    <h3>{{ t('academy_level1_ce_que_cela_evite', 'Ce que cela évite') }}</h3>
                     <ul class="academy-reflection-list">
-                        <li>Entrer sans plan précis.</li>
-                        <li>Déplacer le stop sans logique.</li>
-                        <li>Confondre intuition et méthode.</li>
-                        <li>Prendre un risque non mesuré.</li>
-                        <li>Sortir de façon émotionnelle.</li>
+                        <li>{{ t('academy_level1_entrer_sans_plan_precis', 'Entrer sans plan précis.') }}</li>
+                        <li>{{ t('academy_level1_deplacer_le_stop_sans_logique', 'Déplacer le stop sans logique.') }}</li>
+                        <li>{{ t('academy_level1_confondre_intuition_et_methode', 'Confondre intuition et méthode.') }}</li>
+                        <li>{{ t('academy_level1_prendre_un_risque_non_mesure', 'Prendre un risque non mesuré.') }}</li>
+                        <li>{{ t('academy_level1_sortir_de_facon_emotionnelle', 'Sortir de façon émotionnelle.') }}</li>
                     </ul>
                 </div>
             </div>
@@ -1680,60 +553,60 @@
 <section class="academy-section" id="quiz-final">
     <div class="academy-shell">
         <div class="academy-section-title">
-            <span class="academy-kicker">Évaluation</span>
-            <h2>Validation du niveau 1</h2>
+            <span class="academy-kicker">{{ t("evaluation", "Évaluation") }}</span>
+            <h2>{{ t("level1_validation", "Validation du niveau 1") }}</h2>
         </div>
 
         <div class="academy-quiz-card">
             <form class="academy-quiz-form" id="academyQuiz1">
                 <div class="academy-question">
-                    <h3>1. Le trading doit être compris avant tout comme :</h3>
-                    <label><input type="radio" name="q1" value="a"> une méthode pour avoir toujours raison</label>
-                    <label><input type="radio" name="q1" value="b"> une activité de décision sous incertitude avec gestion du risque</label>
-                    <label><input type="radio" name="q1" value="c"> une suite d’ordres pris sans plan précis</label>
+                    <h3>{{ t('academy_level1_1_le_trading_doit_etre_compris_avant_tout_comme', '1. Le trading doit être compris avant tout comme :') }}</h3>
+                    <label><input type="radio" name="q1" value="a"> {{ t('academy_level1_une_methode_pour_avoir_toujours_raison', 'une méthode pour avoir toujours raison') }}</label>
+                    <label><input type="radio" name="q1" value="b"> {{ t('academy_level1_une_activite_de_decision_sous_incertitude_avec_gestion_du_risque', 'une activité de décision sous incertitude avec gestion du risque') }}</label>
+                    <label><input type="radio" name="q1" value="c"> {{ t('academy_level1_une_suite_d_ordres_pris_sans_plan_precis', 'une suite d’ordres pris sans plan précis') }}</label>
                 </div>
 
                 <div class="academy-question">
-                    <h3>2. Le Stop Loss sert principalement à :</h3>
-                    <label><input type="radio" name="q2" value="a"> protéger le capital et invalider un scénario</label>
-                    <label><input type="radio" name="q2" value="b"> garantir un profit minimum</label>
-                    <label><input type="radio" name="q2" value="c"> augmenter automatiquement le lot</label>
+                    <h3>{{ t('academy_level1_2_le_stop_loss_sert_principalement_a', '2. Le Stop Loss sert principalement à :') }}</h3>
+                    <label><input type="radio" name="q2" value="a"> {{ t('academy_level1_proteger_le_capital_et_invalider_un_scenario', 'protéger le capital et invalider un scénario') }}</label>
+                    <label><input type="radio" name="q2" value="b"> {{ t('academy_level1_garantir_un_profit_minimum', 'garantir un profit minimum') }}</label>
+                    <label><input type="radio" name="q2" value="c"> {{ t('academy_level1_augmenter_automatiquement_le_lot', 'augmenter automatiquement le lot') }}</label>
                 </div>
 
                 <div class="academy-question">
-                    <h3>3. Une erreur structurelle fréquente du débutant est :</h3>
-                    <label><input type="radio" name="q3" value="a"> l’acceptation du risque</label>
-                    <label><input type="radio" name="q3" value="b"> la patience sélective</label>
-                    <label><input type="radio" name="q3" value="c"> le surtrading et le refus de l’invalidation</label>
+                    <h3>{{ t('academy_level1_3_une_erreur_structurelle_frequente_du_debutant_est', '3. Une erreur structurelle fréquente du débutant est :') }}</h3>
+                    <label><input type="radio" name="q3" value="a"> {{ t('academy_level1_l_acceptation_du_risque', 'l’acceptation du risque') }}</label>
+                    <label><input type="radio" name="q3" value="b"> {{ t('academy_level1_la_patience_selective', 'la patience sélective') }}</label>
+                    <label><input type="radio" name="q3" value="c"> {{ t('academy_level1_le_surtrading_et_le_refus_de_l_invalidation', 'le surtrading et le refus de l’invalidation') }}</label>
                 </div>
 
                 <div class="academy-question">
-                    <h3>4. Une position sérieuse doit toujours comporter :</h3>
-                    <label><input type="radio" name="q4" value="a"> une opinion forte uniquement</label>
-                    <label><input type="radio" name="q4" value="b"> une entrée, une invalidation et un objectif</label>
-                    <label><input type="radio" name="q4" value="c"> un levier élevé</label>
+                    <h3>{{ t('academy_level1_4_une_position_serieuse_doit_toujours_comporter', '4. Une position sérieuse doit toujours comporter :') }}</h3>
+                    <label><input type="radio" name="q4" value="a"> {{ t('academy_level1_une_opinion_forte_uniquement', 'une opinion forte uniquement') }}</label>
+                    <label><input type="radio" name="q4" value="b"> {{ t('academy_level1_une_entree_une_invalidation_et_un_objectif', 'une entrée, une invalidation et un objectif') }}</label>
+                    <label><input type="radio" name="q4" value="c"> {{ t('academy_level1_un_levier_eleve', 'un levier élevé') }}</label>
                 </div>
 
                 <div class="academy-question">
-                    <h3>5. La gestion du risque sert avant tout à :</h3>
-                    <label><input type="radio" name="q5" value="a"> accélérer les gains</label>
-                    <label><input type="radio" name="q5" value="b"> préserver le capital et la continuité d’apprentissage</label>
-                    <label><input type="radio" name="q5" value="c"> supprimer toute perte possible</label>
+                    <h3>{{ t('academy_level1_5_la_gestion_du_risque_sert_avant_tout_a', '5. La gestion du risque sert avant tout à :') }}</h3>
+                    <label><input type="radio" name="q5" value="a"> {{ t('academy_level1_accelerer_les_gains', 'accélérer les gains') }}</label>
+                    <label><input type="radio" name="q5" value="b"> {{ t('academy_level1_preserver_le_capital_et_la_continuite_d_apprentissage', 'préserver le capital et la continuité d’apprentissage') }}</label>
+                    <label><input type="radio" name="q5" value="c"> {{ t('academy_level1_supprimer_toute_perte_possible', 'supprimer toute perte possible') }}</label>
                 </div>
 
                 <button
                     type="button"
                     class="academy-btn academy-btn-primary"
                     onclick="submitQuiz('academyQuiz1', ['b','a','c','b','b'], 'quiz1Result')">
-                    Valider le quiz
+                    {{ t('academy_level1_valider_le_quiz', 'Valider le quiz') }}
                 </button>
 
                 <div id="quiz1Result" class="academy-quiz-result"></div>
             </form>
 
-            <form method="POST" action="{{ url_for('academy.academy_complete_level', level='level1') }}" class="academy-complete-form">
+            <form method="POST" action="{{ url_for('academy.academy_complete_level', level='level1', lang_code=current_lang) }}" class="academy-complete-form">
                 <button class="academy-btn academy-btn-secondary" type="submit">
-                    Marquer le niveau 1 comme terminé
+                    {{ t('academy_level1_marquer_le_niveau_1_comme_termine', 'Marquer le niveau 1 comme terminé') }}
                 </button>
             </form>
         </div>

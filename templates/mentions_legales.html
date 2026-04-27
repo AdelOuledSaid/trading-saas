@@ -1,145 +1,93 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VelWolf - Mentions légales</title>
+{% extends "base.html" %}
 
-<link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+{% block title %}{{ t("legal_notice_page_title", "VelWolef - Mentions légales") }}{% endblock %}
+{% block meta_description %}{{ t("legal_notice_meta_description", "Informations légales de VelWolef : éditeur, hébergement, activité, responsabilité et contact.") }}{% endblock %}
+{% block body_class %}{{ t("site_mentions_legales_home_body", "home-body") }}{% endblock %}
+
+{% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
-<link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-</head>
+{% endblock %}
 
-<body class="home-body">
-
-{% include "partials/navbar.html" %}
-
-<!-- HERO -->
+{% block content %}
 <section class="inner-hero">
     <div class="section-container">
-        <span class="hero-badge">Mentions légales</span>
-        <h1 class="inner-page-title">Informations légales de la plateforme</h1>
+        <span class="hero-badge">{{ t("legal_notice_badge", "Mentions légales") }}</span>
+        <h1 class="inner-page-title">{{ t("legal_notice_title", "Informations légales de la plateforme") }}</h1>
         <p class="inner-page-text">
-            Retrouvez les informations officielles concernant l’éditeur du site,
-            l’hébergement et les responsabilités liées à l’utilisation de VelWolf.
+            {{ t("legal_notice_intro", "Retrouvez les informations officielles concernant l’éditeur du site, l’hébergement et les responsabilités liées à l’utilisation de VelWolef.") }}
         </p>
     </div>
 </section>
 
-<!-- CONTENT -->
 <section class="section-standard">
     <div class="section-container">
-
         <div class="legal-container">
 
             <div class="legal-card">
-                <h2>1. Éditeur du site</h2>
+                <h2>{{ t("legal_notice_editor_title", "1. Éditeur du site") }}</h2>
                 <p>
-                    Nom de la plateforme : <strong>VelWolf</strong><br>
-                    Activité : Services de signaux de trading et d’analyse de marché<br>
-                    Contact : <a href="mailto:support@velwolf.com">support@velwolf.com</a>
+                    {{ t("platform_name", "Nom de la plateforme") }} : <strong>VelWolef</strong><br>
+                    {{ t("site_mentions_legales_activite_services_de_signaux_de_trading_d_analyse_de_marche_et_de_format", "Activité : Services de signaux de trading, d’analyse de marché et de formation.") }}<br>
+                    {{ t("contact", "Contact") }} : <a href="mailto:support@velwolef.com">{{ t("site_contact_support_velwolef_com", "support@velwolef.com") }}</a>
                 </p>
             </div>
 
             <div class="legal-card">
-                <h2>2. Hébergement</h2>
+                <h2>{{ t("legal_notice_hosting_title", "2. Hébergement") }}</h2>
                 <p>
-                    Le site est hébergé par :<br>
-                    <strong>Render.com</strong><br>
-                    Plateforme cloud sécurisée pour applications web.
+                    {{ t("legal_notice_hosted_by", "Le site est hébergé par") }} :<br>
+                    <strong>{{ t("site_mentions_legales_render_com", "Render.com") }}</strong><br>
+                    {{ t("legal_notice_hosting_desc", "Plateforme cloud sécurisée pour applications web.") }}
                 </p>
             </div>
 
             <div class="legal-card">
-                <h2>3. Activité</h2>
+                <h2>{{ t("legal_notice_activity_title", "3. Activité") }}</h2>
                 <p>
-                    VelWolf propose une plateforme comprenant des signaux de trading,
-                    des analyses de marché, un dashboard utilisateur et du contenu éducatif.
+                    {{ t("legal_notice_activity_text", "VelWolef propose une plateforme comprenant des signaux de trading, des analyses de marché, un dashboard utilisateur, un Trading Lab et du contenu éducatif.") }}
                 </p>
             </div>
 
             <div class="legal-card warning">
-                <h2>4. Responsabilité</h2>
+                <h2>{{ t("legal_notice_responsibility_title", "4. Responsabilité") }}</h2>
                 <p>
-                    ⚠️ Les informations fournies sur la plateforme sont données à titre informatif uniquement.  
-                    Elles ne constituent en aucun cas un conseil en investissement.  
-                    L’utilisateur est seul responsable de ses décisions financières.
+                    ⚠️ {{ t("legal_notice_responsibility_text", "Les informations fournies sur la plateforme sont données à titre informatif uniquement. Elles ne constituent en aucun cas un conseil en investissement. L’utilisateur est seul responsable de ses décisions financières.") }}
                 </p>
             </div>
 
             <div class="legal-card">
-                <h2>5. Données personnelles</h2>
+                <h2>{{ t("legal_notice_data_title", "5. Données personnelles") }}</h2>
                 <p>
-                    Les données collectées sont utilisées uniquement dans le cadre du fonctionnement
-                    de la plateforme et ne sont jamais revendues à des tiers.
+                    {{ t("legal_notice_data_text", "Les données collectées sont utilisées uniquement dans le cadre du fonctionnement de la plateforme et ne sont jamais revendues à des tiers.") }}
                 </p>
             </div>
 
             <div class="legal-card">
-                <h2>6. Contact</h2>
+                <h2>{{ t("legal_notice_contact_title", "6. Contact") }}</h2>
                 <p>
-                    Pour toute question, vous pouvez nous contacter à :<br>
-                    <strong>support@velwolf.com</strong>
+                    {{ t("legal_notice_contact_text", "Pour toute question, vous pouvez nous contacter à") }} :<br>
+                    <strong>{{ t("site_contact_support_velwolef_com", "support@velwolef.com") }}</strong>
                 </p>
             </div>
 
         </div>
-
     </div>
 </section>
 
-<!-- CTA -->
 <section class="final-cta-section">
     <div class="section-container">
         <div class="final-cta-box">
-            <span class="final-cta-badge">VelWolf Premium</span>
-            <h2>Rejoignez une plateforme structurée et professionnelle</h2>
+            <span class="final-cta-badge">{{ t("premium_badge", "VelWolef Premium") }}</span>
+            <h2>{{ t("legal_notice_cta_title", "Rejoignez une plateforme structurée et professionnelle") }}</h2>
             <p>
-                Accédez à un environnement complet avec signaux, résultats,
-                academy et outils d’analyse avancés.
+                {{ t("legal_notice_cta_text", "Accédez à un environnement complet avec signaux, résultats, academy et outils d’analyse avancés.") }}
             </p>
             <div class="final-cta-actions">
-                <a href="{{ url_for('billing.pricing') }}" class="hero-btn-primary">Voir les offres</a>
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="hero-btn-primary">
+                    {{ t("see_offers", "Voir les offres") }}
+                </a>
             </div>
         </div>
     </div>
 </section>
-
-<!-- FOOTER -->
-<footer class="site-footer">
-    <div class="section-container footer-pro">
-
-        <div class="footer-brand">
-            <h3>VelWolf</h3>
-            <p>Plateforme premium de trading, signaux et formation.</p>
-        </div>
-
-        <div class="footer-columns">
-
-            <div class="footer-col">
-                <h4>Plateforme</h4>
-                <div class="footer-links">
-                    <a href="{{ url_for('main.home') }}">Accueil</a>
-                    <a href="{{ url_for('signals.results') }}">Résultats</a>
-                    <a href="{{ url_for('billing.pricing') }}">Offres</a>
-                </div>
-            </div>
-
-            <div class="footer-col">
-                <h4>Informations</h4>
-                <div class="footer-links">
-                    <a href="{{ url_for('pages.faq_page') }}">FAQ</a>
-                    <a href="{{ url_for('pages.cgu') }}">CGU</a>
-                    <a href="{{ url_for('pages.mentions_legales') }}">Mentions légales</a>
-                    <a href="{{ url_for('pages.contact') }}">Contact</a>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-</footer>
-
-</body>
-</html>
+{% endblock %}

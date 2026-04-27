@@ -1,44 +1,67 @@
 import json
 import os
 
-SUPPORTED_LANGS = ["fr", "en", "es"]
-DEFAULT_LANG = "fr"
+SUPPORTED_LANGS = ["en", "fr", "es", "it", "de", "pt", "ru"]
+DEFAULT_LANG = "en"
 
-# cache pour éviter de recharger les fichiers à chaque requête
 _translation_cache = {}
 
 
 def load_translations(lang):
-    """
-    Charge les traductions avec cache
-    """
     if lang not in SUPPORTED_LANGS:
         lang = DEFAULT_LANG
 
-    # cache
     if lang in _translation_cache:
         return _translation_cache[lang]
 
     base_dir = os.path.dirname(os.path.dirname(__file__))
-    path = os.path.join(base_dir, "translations", f"{lang}.json")
+    translations_dir = os.path.join(base_dir, "translations")
 
-    if not os.path.exists(path):
-        path = os.path.join(base_dir, "translations", f"{DEFAULT_LANG}.json")
+    default_path = os.path.join(translations_dir, f"{DEFAULT_LANG}.json")
+    lang_path = os.path.join(translations_dir, f"{lang}.json")
+
+    default_data = {}
+    lang_data = {}
 
     try:
-        with open(path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            _translation_cache[lang] = data
-            return data
+        if os.path.exists(default_path):
+            with open(default_path, "r", encoding="utf-8") as f:
+                default_data = json.load(f)
     except Exception:
-        return {}
+        default_data = {}
+
+    try:
+        if os.path.exists(lang_path):
+            with open(lang_path, "r", encoding="utf-8") as f:
+                lang_data = json.load(f)
+    except Exception:
+        lang_data = {}
+
+    # Merge intelligent :
+    # si une clé manque dans la langue choisie, on garde l'anglais
+    data = {**default_data, **lang_data}
+
+    _translation_cache[lang] = data
+    return data
 
 
 def translate(translations, key, fallback=None):
-    """
-    Fonction safe pour traduire
-    """
-    if not translations:
-        return fallback or key
+    if not key:
+        return fallback or ""
 
-    return translations.get(key, fallback or key)
+    if not translations:
+        return fallback or key.replace("_", " ").capitalize()
+
+    value = translations.get(key)
+
+    if value:
+        return value
+
+    if fallback:
+        return fallback
+
+    return key.replace("_", " ").capitalize()
+
+
+def clear_translation_cache():
+    _translation_cache.clear()

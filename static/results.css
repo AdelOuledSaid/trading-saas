@@ -1527,3 +1527,339 @@
         font-size: 1.32rem;
     }
 }
+
+/* =========================================================
+   RESULTS FILTERS — PRO SELECT DROPDOWNS
+   Remplace les pills par 3 menus propres sans changer les routes.
+========================================================= */
+.rs-filters-card-pro {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(190px, 1fr));
+    gap: 16px !important;
+    align-items: end;
+    margin-top: 22px;
+    margin-bottom: 26px;
+    padding: 18px !important;
+    border-radius: 24px;
+    background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.11), transparent 32%),
+        linear-gradient(180deg, rgba(10, 16, 32, 0.82), rgba(5, 9, 18, 0.78));
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    box-shadow: 0 18px 48px rgba(2, 6, 23, 0.30);
+    backdrop-filter: blur(16px);
+}
+
+.rs-filter-select-card {
+    position: relative;
+    min-width: 0;
+}
+
+.rs-filter-select-card .rs-filter-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #cfe9ff;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.rs-select-wrap {
+    position: relative;
+}
+
+.rs-select-wrap::after {
+    content: "▾";
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #67e8f9;
+    font-size: 13px;
+    pointer-events: none;
+}
+
+.rs-pro-select {
+    width: 100%;
+    min-height: 52px;
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0 44px 0 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    background:
+        linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(3, 7, 18, 0.96));
+    color: #f8fafc;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 0.01em;
+    outline: none;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 28px rgba(0,0,0,0.22);
+    transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease, background 0.22s ease;
+}
+
+.rs-pro-select:hover {
+    transform: translateY(-1px);
+    border-color: rgba(56, 189, 248, 0.36);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 16px 34px rgba(56, 189, 248, 0.10);
+}
+
+.rs-pro-select:focus {
+    border-color: rgba(34, 197, 94, 0.55);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.14), 0 18px 38px rgba(34, 197, 94, 0.10);
+}
+
+.rs-pro-select option {
+    background: #07101f;
+    color: #f8fafc;
+    font-weight: 800;
+}
+
+@media (max-width: 900px) {
+    .rs-filters-card-pro {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+
+
+/* =====================================
+   FILTER DROPDOWN ULTRA PRO (BUTTON STYLE)
+===================================== */
+
+.rs-filters-card-pro {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 20px;
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(10,16,32,0.9), rgba(5,10,20,0.9));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.rs-select {
+    display: flex;
+    flex-direction: column;
+    min-width: 180px;
+}
+
+.rs-select label {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+/* STYLE BOUTON */
+.rs-select select {
+    appearance: none;
+    background: linear-gradient(135deg, #020617, #0f172a);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+    padding: 12px 14px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* HOVER */
+.rs-select select:hover {
+    background: linear-gradient(135deg, #1e3a8a, #020617);
+    border-color: #3b82f6;
+    transform: translateY(-2px);
+}
+
+/* FOCUS */
+.rs-select select:focus {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34,197,94,0.3);
+}
+
+/* COULEURS PAR TYPE */
+#market-type {
+    background: linear-gradient(135deg, #0f172a, #020617);
+}
+
+#asset-list {
+    background: linear-gradient(135deg, #020617, #1e293b);
+}
+
+#timeframe {
+    background: linear-gradient(135deg, #020617, #111827);
+}
+
+
+/* FIX DROPDOWN PRO SOBRE */
+.rs-filters-card-pro {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+    gap: 18px;
+    padding: 22px;
+    border-radius: 24px;
+    background: rgba(10, 16, 32, 0.78);
+    border: 1px solid rgba(148, 163, 184, 0.14);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.28);
+}
+
+.rs-select {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rs-select label {
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.rs-select select {
+    width: 100%;
+    min-height: 58px;
+    padding: 0 18px;
+    border-radius: 999px;
+    color: #f8fafc;
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    font-size: 15px;
+    font-weight: 900;
+    cursor: pointer;
+    outline: none;
+}
+
+.rs-select select:hover {
+    border-color: rgba(34, 197, 94, 0.55);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(6, 78, 59, 0.58));
+}
+
+.rs-select select:focus {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.16);
+}
+
+/* BOUTON PRINCIPAL VERT/PRO */
+.hero-btn-primary {
+    color: #03110b !important;
+    background: linear-gradient(135deg, #5eead4, #22c55e) !important;
+    border: 1px solid rgba(94, 234, 212, 0.35) !important;
+    box-shadow: 0 18px 45px rgba(34, 197, 94, 0.28) !important;
+}
+
+.hero-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 24px 60px rgba(34, 197, 94, 0.38) !important;
+}
+
+/* FIX DATE SUPERPOSÉE */
+.rs-featured-card::before {
+    top: 16px !important;
+    right: 16px !important;
+    z-index: 4 !important;
+}
+
+.rs-card-date {
+    position: relative;
+    z-index: 5;
+    margin-right: 118px;
+    color: #94a3b8;
+}
+
+.rs-card-head {
+    align-items: flex-start;
+}
+
+/* mobile */
+@media (max-width: 900px) {
+    .rs-filters-card-pro {
+        grid-template-columns: 1fr;
+    }
+
+    .rs-card-date {
+        margin-right: 0;
+        margin-top: 8px;
+    }
+
+    .rs-featured-card::before {
+        position: relative !important;
+        top: auto !important;
+        right: auto !important;
+        margin-bottom: 12px;
+        display: inline-flex;
+    }
+}
+
+
+/* FIX FINAL MENU SELECT */
+.rs-filters-card-pro {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(220px, 1fr)) !important;
+    gap: 18px !important;
+    padding: 22px !important;
+    border-radius: 24px !important;
+    background: rgba(10, 16, 32, 0.86) !important;
+    border: 1px solid rgba(148, 163, 184, 0.16) !important;
+}
+
+.rs-select select,
+.rs-select-shell select,
+#market-type,
+#asset-list,
+#timeframe {
+    width: 100% !important;
+    height: 56px !important;
+    border-radius: 999px !important;
+    padding: 0 18px !important;
+    background-color: #0f172a !important;
+    background-image: none !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(148, 163, 184, 0.22) !important;
+    font-size: 15px !important;
+    font-weight: 900 !important;
+    outline: none !important;
+}
+
+.rs-select select:hover,
+.rs-select-shell select:hover,
+#market-type:hover,
+#asset-list:hover,
+#timeframe:hover {
+    border-color: rgba(34, 197, 94, 0.55) !important;
+    background-color: #10251f !important;
+}
+
+.rs-select select option,
+.rs-select-shell select option,
+#market-type option,
+#asset-list option,
+#timeframe option {
+    background-color: #0f172a !important;
+    color: #ffffff !important;
+}
+
+.hero-btn-primary {
+    color: #03110b !important;
+    background: linear-gradient(135deg, #5eead4, #22c55e) !important;
+    border: 1px solid rgba(94, 234, 212, 0.35) !important;
+    box-shadow: 0 18px 45px rgba(34, 197, 94, 0.28) !important;
+}
+
+.rs-card-date {
+    margin-right: 140px !important;
+}
+
+@media (max-width: 900px) {
+    .rs-filters-card-pro {
+        grid-template-columns: 1fr !important;
+    }
+
+    .rs-card-date {
+        margin-right: 0 !important;
+    }
+}

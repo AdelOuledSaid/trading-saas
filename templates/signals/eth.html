@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ current_lang|default('en') }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VelWolef | Ethereum Strategic Desk</title>
-    <meta name="description" content="Suivez Ethereum avec VelWolef : prix ETH en direct, structure de marché, niveaux techniques, graphique TradingView, signaux récents et lecture stratégique du ETHUSD.">
+    <title>{{ t("eth_page_title", "VelWolef | Ethereum Strategic Desk") }}</title>
+    <meta name="description" content="{{ t('eth_meta_description', 'Suivez Ethereum avec VelWolef : prix ETH en direct, structure de marché, niveaux techniques, graphique TradingView, signaux récents et lecture stratégique du ETHUSD.') }}">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
@@ -33,37 +33,33 @@
 
                     <div class="eth-launch-badge">
                         <span class="eth-launch-icon">◎</span>
-                        <span>Ethereum Strategic Desk • ETHUSD Premium View</span>
+                        <span>{{ t("eth_badge", "Ethereum Strategic Desk • ETHUSD Premium View") }}</span>
                     </div>
 
                     <h1 class="eth-hero-title">
-                        Suivre Ethereum avec une lecture plus claire,
-                        plus premium et plus stratégique
+                        {{ t("eth_hero_title", "Suivre Ethereum avec une lecture plus claire, plus premium et plus stratégique") }}
                     </h1>
 
                     <p class="eth-hero-subtitle">
-                        Cette page réunit l’essentiel du marché Ethereum dans un environnement plus sérieux :
-                        prix spot, structure active, momentum, zones techniques, graphique live, catalyseurs
-                        récents et historique des signaux ETHUSD. Le but n’est pas d’ajouter du bruit,
-                        mais d’offrir une lecture plus utile et plus professionnelle.
+                        {{ t("eth_hero_desc", "Cette page réunit l’essentiel du marché Ethereum dans un environnement plus sérieux : prix spot, structure active, momentum, zones techniques, graphique live, catalyseurs récents et historique des signaux ETHUSD. Le but n’est pas d’ajouter du bruit, mais d’offrir une lecture plus utile et plus professionnelle.") }}
                     </p>
 
                     <div class="eth-hero-actions">
-                        <a href="#eth-terminal" class="eth-btn eth-btn-primary">Voir le desk Ethereum</a>
-                        <a href="#eth-signals-history" class="eth-btn eth-btn-secondary">Voir les signaux ETH</a>
+                        <a href="#eth-terminal" class="eth-btn eth-btn-primary">{{ t("see_eth_desk", "Voir le desk Ethereum") }}</a>
+                        <a href="#eth-signals-history" class="eth-btn eth-btn-secondary">{{ t("see_eth_signals", "Voir les signaux ETH") }}</a>
                     </div>
 
                     <div class="eth-hero-pills">
                         <div class="eth-hero-pill">
-                            <strong>Actif majeur</strong>
-                            <span>Ethereum reste une référence centrale pour lire le segment altcoin et la qualité du risque crypto.</span>
+                            <strong>{{ t("major_asset", "Actif majeur") }}</strong>
+                            <span>{{ t("eth_major_asset_desc", "Ethereum reste une référence centrale pour lire le segment altcoin et la qualité du risque crypto.") }}</span>
                         </div>
                         <div class="eth-hero-pill">
-                            <strong>Lecture enrichie</strong>
+                            <strong>{{ t("enriched_reading", "Lecture enrichie") }}</strong>
                             <span>Prix, structure, momentum, niveaux et signaux réunis dans une seule interface cohérente.</span>
                         </div>
                         <div class="eth-hero-pill">
-                            <strong>Exécution plus propre</strong>
+                            <strong>{{ t("cleaner_execution", "Exécution plus propre") }}</strong>
                             <span>Une meilleure lecture du contexte améliore la sélection des scénarios et la discipline.</span>
                         </div>
                     </div>
@@ -96,7 +92,7 @@
 
                             <div class="eth-stat-grid">
                                 <div class="eth-stat-box eth-stat-box-main">
-                                    <div class="eth-stat-label">ETH Spot</div>
+                                    <div class="eth-stat-label">{{ t("eth_spot", "ETH Spot") }}</div>
                                     <div class="eth-stat-value-row">
                                         <div class="eth-stat-value">{{ eth_price if eth_price else "..." }}</div>
                                         <div class="eth-delta up">live</div>
@@ -120,7 +116,7 @@
                                 </div>
 
                                 <div class="eth-stat-box">
-                                    <div class="eth-stat-label">Volatilité</div>
+                                    <div class="eth-stat-label">{{ t("volatility", "Volatilité") }}</div>
                                     <div class="eth-stat-value-row">
                                         <div class="eth-stat-value">{{ eth_volatility_label or "Modérée" }}</div>
                                         <div class="eth-delta up">active</div>
@@ -130,7 +126,7 @@
 
                             <div class="eth-mid-grid">
                                 <div class="eth-panel-card">
-                                    <div class="eth-panel-title">Momentum Ethereum</div>
+                                    <div class="eth-panel-title">{{ t("eth_momentum", "Momentum Ethereum") }}</div>
                                     <div class="eth-gauge-wrap">
                                         <div class="eth-gauge-arc"></div>
                                         <div class="eth-gauge-needle"></div>
@@ -142,7 +138,7 @@
                                 </div>
 
                                 <div class="eth-panel-card">
-                                    <div class="eth-panel-title">Sentiment marché</div>
+                                    <div class="eth-panel-title">{{ t("market_sentiment", "Sentiment marché") }}</div>
                                     <div class="eth-legend-bar"></div>
 
                                     <div class="eth-legend-list">
@@ -162,7 +158,7 @@
 
                                         <div class="eth-legend-item">
                                             <span class="legend-dot eth-dot-3"></span>
-                                            <span>Tendance</span>
+                                            <span>{{ t("trend", "Tendance") }}</span>
                                             <span>{{ eth_trend_label or "Neutre" }}</span>
                                             <span class="eth-soft">bias</span>
                                         </div>
@@ -172,7 +168,7 @@
 
                             <div class="eth-stat-grid eth-stat-grid-2">
                                 <div class="eth-stat-box">
-                                    <div class="eth-stat-label">Plus haut / bas 24H</div>
+                                    <div class="eth-stat-label">{{ t("high_low_24h", "Plus haut / bas 24H") }}</div>
                                     <div class="eth-stat-value-row">
                                         <div>
                                             <div class="eth-stat-value small">{{ eth_high_24h or "—" }}</div>
@@ -186,7 +182,7 @@
                                 </div>
 
                                 <div class="eth-stat-box">
-                                    <div class="eth-stat-label">Biais actif</div>
+                                    <div class="eth-stat-label">{{ t("active_bias", "Biais actif") }}</div>
                                     <div class="eth-stat-value-row">
                                         <div>
                                             <div class="eth-stat-value small">{{ eth_trend_label or "Neutre" }}</div>
@@ -286,7 +282,7 @@
         <div class="section-container">
             <div class="eth-section-header">
                 <span class="eth-section-chip">Live chart</span>
-                <h2>Graphique Ethereum en direct</h2>
+                <h2>{{ t("eth_live_chart_title", "Graphique Ethereum en direct") }}</h2>
                 <p>
                     Le graphique permet de suivre le ETHUSD en temps réel et de relier visuellement la tendance,
                     les zones techniques et le comportement du prix à la lecture proposée sur le desk.
@@ -317,7 +313,7 @@
         <div class="section-container">
             <div class="eth-section-header">
                 <span class="eth-section-chip">Strategic read</span>
-                <h2>Comment lire Ethereum dans une logique plus sérieuse</h2>
+                <h2>{{ t("serious_eth_read_title", "Comment lire Ethereum dans une logique plus sérieuse") }}</h2>
                 <p>
                     Le suivi d’Ethereum ne repose pas uniquement sur le prix spot. Il faut aussi lire
                     la qualité du momentum, la position du marché sur les niveaux clés, le contexte global
@@ -327,7 +323,7 @@
 
             <div class="eth-insight-grid">
                 <div class="eth-insight-card">
-                    <h3>Tendance dominante</h3>
+                    <h3>{{ t("trend", "Tendance") }} dominante</h3>
                     <p>
                         Ethereum joue souvent un rôle de leader dans le segment altcoin. Quand sa structure
                         s’améliore, la lecture globale du risque crypto devient généralement plus constructive.
@@ -343,7 +339,7 @@
                 </div>
 
                 <div class="eth-insight-card">
-                    <h3>Volatilité et timing</h3>
+                    <h3>{{ t("volatility", "Volatilité") }} et timing</h3>
                     <p>
                         Ethereum peut accélérer rapidement. Un bon setup dépend donc autant du niveau
                         d’entrée que du timing d’exécution et du contrôle du risque.
@@ -366,7 +362,7 @@
         <div class="section-container">
             <div class="eth-section-header">
                 <span class="eth-section-chip">Market catalysts</span>
-                <h2>Les sujets qui influencent actuellement Ethereum</h2>
+                <h2>{{ t("eth_current_catalysts", "Les sujets qui influencent actuellement Ethereum") }}</h2>
                 <p>
                     Une sélection de catalyseurs récents pour suivre le sentiment crypto, l’évolution
                     de l’écosystème Ethereum et les éléments qui peuvent modifier la lecture du ETHUSD.
@@ -385,7 +381,7 @@
                     </div>
 
                     <div class="eth-news-content">
-                        <div class="eth-news-source">{{ article.source or "Source marché" }}</div>
+                        <div class="eth-news-source">{{ article.source or (t("source", "Source") ~ " marché") }}</div>
                         <h3>
                             <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer">
                                 {{ article.title }}
@@ -404,7 +400,7 @@
         <div class="section-container">
             <div class="eth-section-header">
                 <span class="eth-section-chip">Signal desk</span>
-                <h2>Les derniers signaux Ethereum publiés</h2>
+                <h2>{{ t("latest_eth_signals", "Les derniers signaux Ethereum publiés") }}</h2>
                 <p>
                     Les setups ETHUSD sont affichés dans un format plus lisible afin de relier
                     performance, structure et logique d’exécution.
@@ -435,7 +431,7 @@
                                 {% if signal.confidence_label %}
                                     {{ signal.confidence_label() }}
                                 {% else %}
-                                    Confiance
+                                    {{ t("confidence", "Confiance") }}
                                 {% endif %}
                             </span>
                         </div>
@@ -443,7 +439,7 @@
 
                     <div class="eth-signal-prices">
                         <div class="eth-price-box">
-                            <span>Entrée</span>
+                            <span>{{ t("entry", "Entrée") }}</span>
                             <strong>{{ signal.entry_price or "—" }}</strong>
                         </div>
                         <div class="eth-price-box">
@@ -458,15 +454,15 @@
 
                     <div class="eth-signal-meta">
                         <div class="eth-meta-box">
-                            <span>Confiance</span>
+                            <span>{{ t("confidence", "Confiance") }}</span>
                             <strong>{{ signal.confidence or 0 }}/100</strong>
                         </div>
                         <div class="eth-meta-box">
-                            <span>Tendance</span>
+                            <span>{{ t("trend", "Tendance") }}</span>
                             <strong>{{ signal.market_trend or "—" }}</strong>
                         </div>
                         <div class="eth-meta-box">
-                            <span>Type</span>
+                            <span>{{ t("type", "Type") }}</span>
                             <strong>{{ signal.signal_type or "—" }}</strong>
                         </div>
                         <div class="eth-meta-box">
@@ -482,30 +478,30 @@
                             </strong>
                         </div>
                         <div class="eth-meta-box">
-                            <span>Timeframe</span>
+                            <span>{{ t("timeframe", "Timeframe") }}</span>
                             <strong>{{ signal.timeframe or "—" }}</strong>
                         </div>
                         <div class="eth-meta-box">
-                            <span>Source</span>
+                            <span>{{ t("source", "Source") }}</span>
                             <strong>{{ signal.source or "system" }}</strong>
                         </div>
                     </div>
 
                     {% if signal.reason %}
                     <div class="eth-signal-reason">
-                        <h4>Pourquoi ce signal ?</h4>
+                        <h4>{{ t("why_this_signal", "Pourquoi ce signal ?") }}</h4>
                         <p>{{ signal.reason }}</p>
                     </div>
                     {% endif %}
 
                     <div class="eth-signal-footer">
                         <div class="eth-footer-block">
-                            <span>Publié</span>
+                            <span>{{ t("published", "Publié") }}</span>
                             <strong>{{ signal.created_at.strftime('%d/%m/%Y %H:%M') if signal.created_at else "—" }}</strong>
                         </div>
 
                         <div class="eth-footer-block">
-                            <span>Résultat</span>
+                            <span>{{ t("result", "Résultat") }}</span>
                             {% if signal.result_percent is not none %}
                                 <strong class="{% if signal.result_percent >= 0 %}eth-green-text{% else %}eth-red-text{% endif %}">
                                     {{ signal.result_percent }}%
@@ -520,7 +516,7 @@
             </div>
             {% else %}
             <div class="eth-empty-box">
-                <p>Aucun signal Ethereum n’est disponible pour le moment.</p>
+                <p>{{ t("no_eth_signal_now", "Aucun signal Ethereum n’est disponible pour le moment.") }}</p>
             </div>
             {% endif %}
         </div>
@@ -530,8 +526,8 @@
         <div class="section-container">
             <div class="eth-why-box">
                 <div class="eth-why-left">
-                    <span class="eth-section-chip">Pourquoi Ethereum</span>
-                    <h2>Ethereum reste l’un des actifs les plus importants pour lire l’univers altcoin</h2>
+                    <span class="eth-section-chip">{{ t("why_ethereum", "Pourquoi Ethereum") }}</span>
+                    <h2>{{ t("eth_why_title", "Ethereum reste l’un des actifs les plus importants pour lire l’univers altcoin") }}</h2>
                     <p>
                         Lorsqu’il accélère, consolide ou casse une zone majeure, une partie importante du marché suit.
                         Le suivre sérieusement améliore la lecture du sentiment global, de la qualité du momentum
@@ -561,7 +557,7 @@
         <div class="section-container">
             <div class="eth-cta-box">
                 <span class="eth-cta-chip">ETHUSD • VelWolef</span>
-                <h2>Une page Ethereum pensée comme un vrai desk premium</h2>
+                <h2>{{ t("eth_cta_title", "Une page Ethereum pensée comme un vrai desk premium") }}</h2>
                 <p>
                     Dashboard, structure de marché, niveaux techniques, graphique live, catalyseurs récents
                     et historique de signaux : cette page ETH peut devenir un point fort visuel et stratégique
@@ -569,11 +565,11 @@
                 </p>
 
                 <div class="eth-hero-actions">
-                    <a href="{{ url_for('billing.pricing') }}" class="eth-btn eth-btn-primary">Voir les offres</a>
+                    <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="eth-btn eth-btn-primary">{{ t("see_offers", "Voir les offres") }}</a>
                     {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('dashboard.dashboard') }}" class="eth-btn eth-btn-secondary">Accéder au dashboard</a>
+                        <a href="{{ url_for('dashboard.dashboard', lang_code=current_lang) }}" class="eth-btn eth-btn-secondary">{{ t("open_dashboard", "Accéder au dashboard") }}</a>
                     {% else %}
-                        <a href="{{ url_for('auth.register') }}" class="eth-btn eth-btn-secondary">Créer mon compte</a>
+                        <a href="{{ url_for('auth.register', lang_code=current_lang) }}" class="eth-btn eth-btn-secondary">{{ t("create_my_account", "Créer mon compte") }}</a>
                     {% endif %}
                 </div>
             </div>
@@ -586,14 +582,14 @@
     <div class="section-container footer-inner">
         <div class="footer-brand">
             <h3>VelWolef</h3>
-            <p>Une présentation premium des actifs majeurs : Bitcoin, Ethereum, Gold et indices.</p>
+            <p>{{ t("footer_major_assets_desc", "Une présentation premium des actifs majeurs : Bitcoin, Ethereum, Gold et indices.") }}</p>
         </div>
 
         <div class="footer-links">
-            <a href="{{ url_for('main.home') }}">Accueil</a>
-            <a href="{{ url_for('signals.signals_page') }}">Signaux</a>
-            <a href="{{ url_for('signals.results') }}">Résultats</a>
-            <a href="{{ url_for('billing.pricing') }}">Offres</a>
+            <a href="{{ url_for('main.home', lang_code=current_lang) }}">{{ t("home", "Accueil") }}</a>
+            <a href="{{ url_for('signals.signals_page', lang_code=current_lang) }}">{{ t("signals", "Signaux") }}</a>
+            <a href="{{ url_for('signals.results', lang_code=current_lang) }}">{{ t("results", "Résultats") }}</a>
+            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}">{{ t("pricing", "Offres") }}</a>
         </div>
     </div>
 </footer>
@@ -610,7 +606,7 @@ document.addEventListener("DOMContentLoaded", function () {
             timezone: "Europe/Paris",
             theme: "dark",
             style: "1",
-            locale: "fr",
+            locale: "{{ current_lang|default('en') }}",
             toolbar_bg: "#0f1020",
             enable_publishing: false,
             hide_top_toolbar: false,
