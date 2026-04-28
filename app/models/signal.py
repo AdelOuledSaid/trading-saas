@@ -19,14 +19,18 @@ class Signal(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     closed_at = db.Column(db.DateTime, nullable=True)
 
+    # 🔥 AJOUT SOFT DELETE (IMPORTANT)
+    is_deleted = db.Column(db.Boolean, default=False, nullable=False, index=True)
+    deleted_at = db.Column(db.DateTime, nullable=True)
+
     # Premium fields
     confidence = db.Column(db.Float, default=0.0, nullable=False)
     reason = db.Column(db.Text, nullable=True)
 
-    timeframe = db.Column(db.String(20), nullable=True)   # M5, M15, H1, H4...
+    timeframe = db.Column(db.String(20), nullable=True)
     signal_type = db.Column(db.String(100), default="intraday", nullable=False)
 
-    market_trend = db.Column(db.String(20), nullable=True)  # bullish / bearish / neutral
+    market_trend = db.Column(db.String(20), nullable=True)
 
     risk_reward = db.Column(db.Float, nullable=True)
     result_percent = db.Column(db.Float, nullable=True)

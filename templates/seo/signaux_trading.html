@@ -10,92 +10,187 @@
 
 {% block content %}
 <section class="seo-page" style="padding:70px 20px;">
-<div class="section-container" style="max-width:1100px;margin:0 auto;">
+    <div class="section-container" style="max-width:1180px;margin:0 auto;">
 
-<div style="padding:40px;border-radius:20px;background:linear-gradient(135deg,#08111f,#0b1728);margin-bottom:40px;">
-<span style="color:#00ff99;font-weight:700;">
-{{ t("trading_signals_badge", "VelWolef Trading Signals") }}
-</span>
+        <div style="padding:42px;border-radius:28px;background:linear-gradient(135deg,#08111f,#0b1728);border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 70px rgba(0,0,0,.35);margin-bottom:46px;">
+            <span style="display:inline-block;margin-bottom:14px;color:#00ff99;font-weight:900;">
+                {{ t("trading_signals_badge", "VelWolef Trading Signals") }}
+            </span>
 
-<h1 style="margin-top:10px;">
-{{ t("trading_signals_h1", "Signaux trading crypto professionnels") }}
-</h1>
+            <h1 style="font-size:clamp(2.2rem,4vw,3.4rem);line-height:1.1;margin:0 0 18px;color:#fff;">
+                {{ t("trading_signals_h1", "Signaux trading crypto professionnels") }}
+            </h1>
 
-<p style="color:#b8c7dd;margin-top:15px;">
-{{ t("trading_signals_hero_desc", "Suivez des signaux trading structurés avec direction, entrée, stop loss, take profit, contexte marché et alertes Telegram.") }}
-</p>
+            <p style="font-size:18px;line-height:1.8;color:#b8c7dd;max-width:920px;margin:0;">
+                {{ t("trading_signals_hero_desc", "Suivez des signaux trading structurés avec direction, entrée, stop loss, take profit, contexte marché et alertes Telegram.") }}
+            </p>
 
-<p style="margin-top:15px;color:#00ff99;font-weight:700;">
-{{ t("trading_signals_proof", "✔️ BTC • ✔️ ETH • ✔️ SOL • ✔️ Risk management") }}
-</p>
+            <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;color:#00ff99;font-weight:900;">
+                <span>✓ {{ t("trading_signals_proof_btc", "BTC") }}</span>
+                <span>•</span>
+                <span>✓ {{ t("trading_signals_proof_eth", "ETH") }}</span>
+                <span>•</span>
+                <span>✓ {{ t("trading_signals_proof_sol", "SOL") }}</span>
+                <span>•</span>
+                <span>✓ {{ t("trading_signals_proof_risk", "Risk management") }}</span>
+            </div>
 
-<div style="margin-top:25px;">
-<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:12px 18px;border-radius:8px;font-weight:bold;margin-right:10px;">
-{{ t("cta_unlock_signals", "Débloquer les signaux") }}
-</a>
+            <div style="margin-top:28px;display:flex;gap:14px;flex-wrap:wrap;">
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}"
+                   style="background:#00ff99;color:#07111f;padding:14px 22px;border-radius:12px;font-weight:900;text-decoration:none;">
+                    {{ t("cta_unlock_signals", "Débloquer les signaux") }}
+                </a>
 
-<a href="{{ url_for('pages.resultats_trading', lang_code=current_lang) }}" style="border:1px solid #00ff99;color:#00ff99;padding:12px 18px;border-radius:8px;">
-{{ t("cta_results", "Voir les résultats") }}
-</a>
-</div>
-</div>
+                <a href="{{ url_for('pages.resultats_trading', lang_code=current_lang) }}"
+                   style="border:1px solid #00ff99;color:#00ff99;padding:14px 22px;border-radius:12px;font-weight:800;text-decoration:none;">
+                    {{ t("cta_results", "Voir les résultats") }}
+                </a>
+            </div>
+        </div>
 
-<h2>{{ t("trading_signals_why_title", "Pourquoi utiliser des signaux trading ?") }}</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:48px;">
+            <div style="padding:24px;border-radius:20px;background:#0b1220;border:1px solid rgba(255,255,255,.08);">
+                <h3 style="margin:0 0 10px;color:#fff;">{{ t("trading_card_signal_title", "Signal structuré") }}</h3>
+                <p style="color:#b8c7dd;line-height:1.7;margin:0;">
+                    {{ t("trading_card_signal_desc", "Chaque opportunité contient une direction, un point d’entrée, un stop loss et un objectif.") }}
+                </p>
+            </div>
 
-<p>
-{{ t("trading_signals_why_text_1", "Les signaux trading permettent de gagner du temps et de suivre un plan structuré. Au lieu de réagir au hasard, le trader reçoit une opportunité avec des niveaux précis.") }}
-</p>
+            <div style="padding:24px;border-radius:20px;background:#0b1220;border:1px solid rgba(255,255,255,.08);">
+                <h3 style="margin:0 0 10px;color:#fff;">{{ t("trading_card_context_title", "Contexte de marché") }}</h3>
+                <p style="color:#b8c7dd;line-height:1.7;margin:0;">
+                    {{ t("trading_card_context_desc", "La décision est cadrée par Bitcoin, la volatilité, la dominance et le momentum.") }}
+                </p>
+            </div>
 
-<p>
-{{ t("trading_signals_why_text_2", "Un bon signal ne doit pas seulement dire acheter ou vendre. Il doit expliquer le contexte, la tendance, le risque et le scénario d’invalidation.") }}
-</p>
+            <div style="padding:24px;border-radius:20px;background:#0b1220;border:1px solid rgba(255,255,255,.08);">
+                <h3 style="margin:0 0 10px;color:#fff;">{{ t("trading_card_execution_title", "Exécution disciplinée") }}</h3>
+                <p style="color:#b8c7dd;line-height:1.7;margin:0;">
+                    {{ t("trading_card_execution_desc", "Un plan clair aide à éviter les décisions émotionnelles et le sur-trading.") }}
+                </p>
+            </div>
+        </div>
 
-<h2>{{ t("trading_signals_content_title", "Ce que contient un signal") }}</h2>
+        <div style="max-width:980px;">
+            <h2 style="margin-top:0;color:#fff;">
+                {{ t("trading_signals_why_title", "Pourquoi utiliser des signaux trading ?") }}
+            </h2>
 
-<ul>
-<li>{{ t("trading_li_asset", "Actif analysé") }}</li>
-<li>{{ t("trading_li_direction", "Direction du trade") }}</li>
-<li>{{ t("trading_li_entry", "Prix d’entrée") }}</li>
-<li>{{ t("trading_li_sl", "Stop loss") }}</li>
-<li>{{ t("trading_li_tp", "Take profit") }}</li>
-<li>{{ t("trading_li_context", "Contexte marché") }}</li>
-<li>{{ t("trading_li_alert", "Alerte Telegram") }}</li>
-</ul>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("trading_signals_why_text_1", "Les signaux trading permettent de gagner du temps et de suivre un plan structuré. Au lieu de réagir au hasard, le trader reçoit une opportunité avec des niveaux précis.") }}
+            </p>
 
-<h2>{{ t("trading_signals_crypto_title", "Signaux crypto et marché global") }}</h2>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("trading_signals_why_text_2", "Un bon signal ne doit pas seulement dire acheter ou vendre. Il doit expliquer le contexte, la tendance, le risque et le scénario d’invalidation.") }}
+            </p>
 
-<p>
-{{ t("trading_signals_crypto_text", "Les signaux sur BTC, ETH et SOL doivent être alignés avec la structure du marché. Bitcoin reste souvent l’actif directeur, tandis qu’Ethereum et Solana peuvent amplifier les rotations.") }}
-</p>
+            <h2 style="margin-top:42px;color:#fff;">
+                {{ t("trading_signals_content_title", "Ce que contient un signal trading") }}
+            </h2>
 
-<p>
-<a href="{{ url_for('pages.analyse_bitcoin', lang_code=current_lang) }}">
-{{ t("trading_to_btc", "Lire l’analyse Bitcoin") }}
-</a>
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("trading_signals_content_text", "Un signal professionnel doit rester lisible, rapide à comprendre et suffisamment complet pour éviter une mauvaise exécution.") }}
+            </p>
 
-<h2>{{ t("trading_signals_risk_title", "Discipline et risque") }}</h2>
+            <ul style="list-style:none;padding:0;margin:22px 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;">
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    📊 {{ t("trading_li_asset", "Actif analysé") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    📈 {{ t("trading_li_direction", "Direction du trade") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    🎯 {{ t("trading_li_entry", "Prix d’entrée") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    🛑 {{ t("trading_li_sl", "Stop loss") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    💰 {{ t("trading_li_tp", "Take profit") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    🧠 {{ t("trading_li_context", "Contexte marché") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    🔔 {{ t("trading_li_alert", "Alerte Telegram") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    ⚖️ {{ t("trading_li_rr", "Ratio risque / rendement") }}
+                </li>
+            </ul>
 
-<p>
-{{ t("trading_signals_risk_text", "Le but d’un signal trading n’est pas de garantir un gain. Son rôle est de donner un plan clair. Le trader doit toujours respecter son risque et éviter de surexposer son capital.") }}
-</p>
+            <h2 style="margin-top:46px;color:#fff;">
+                {{ t("trading_signals_crypto_title", "Signaux crypto et marché global") }}
+            </h2>
 
-<div style="margin-top:50px;padding:30px;background:#0b1220;border-radius:15px;text-align:center;">
-<h3>{{ t("trading_signals_join_title", "Recevoir les signaux trading VelWolef") }}</h3>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("trading_signals_crypto_text", "Les signaux sur BTC, ETH et SOL doivent être alignés avec la structure du marché. Bitcoin reste souvent l’actif directeur, tandis qu’Ethereum et Solana peuvent amplifier les rotations.") }}
+            </p>
 
-<p style="color:#b8c7dd;">
-{{ t("trading_signals_join_desc", "Rejoignez une plateforme complète avec signaux, dashboard, résultats, academy et alertes Telegram.") }}
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                <a href="{{ url_for('pages.analyse_bitcoin', lang_code=current_lang) }}" style="color:#00ff99;font-weight:800;">
+                    {{ t("trading_to_btc", "Lire l’analyse Bitcoin") }}
+                </a>
+            </p>
 
-<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:14px 20px;border-radius:10px;font-weight:bold;">
-{{ t("cta_final_offers", "Voir les offres") }}
-</a>
-</div>
+            <h2 style="margin-top:42px;color:#fff;">
+                {{ t("trading_signals_risk_title", "Discipline et risque") }}
+            </h2>
 
-<p style="margin-top:20px;color:#6b7280;font-size:14px;">
-{{ t("risk_disclaimer", "Le trading crypto comporte des risques. Aucun signal ne garantit un gain.") }}
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("trading_signals_risk_text", "Le but d’un signal trading n’est pas de garantir un gain. Son rôle est de donner un plan clair. Le trader doit toujours respecter son risque et éviter de surexposer son capital.") }}
+            </p>
 
-</div>
+            <h2 style="margin-top:42px;color:#fff;">
+                {{ t("trading_signals_telegram_title", "Alertes Telegram et suivi membre") }}
+            </h2>
+
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("trading_signals_telegram_text", "Selon le niveau d’abonnement, les membres peuvent recevoir les signaux et les mises à jour dans un canal Telegram adapté. Cela permet de suivre le marché sans rester bloqué devant les graphiques toute la journée.") }}
+            </p>
+        </div>
+
+        <div style="margin-top:56px;padding:34px;border-radius:26px;background:linear-gradient(135deg,#0b1728,#07111f);border:1px solid rgba(0,255,153,.22);text-align:center;">
+            <span style="color:#00ff99;font-weight:900;">
+                {{ t("member_access", "Accès membre") }}
+            </span>
+
+            <h2 style="margin:10px 0 0;color:#fff;">
+                {{ t("trading_signals_join_title", "Recevoir les signaux trading VelWolef") }}
+            </h2>
+
+            <p style="color:#b8c7dd;max-width:760px;margin:14px auto 0;line-height:1.8;">
+                {{ t("trading_signals_join_desc", "Rejoignez une plateforme complète avec signaux, dashboard, résultats, academy et alertes Telegram.") }}
+            </p>
+
+            <div style="margin-top:26px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;">
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}"
+                   style="background:#00ff99;color:#07111f;padding:15px 24px;border-radius:12px;font-weight:900;text-decoration:none;">
+                    {{ t("cta_final_offers", "Voir les offres") }}
+                </a>
+
+                <a href="{{ url_for('pages.resultats_trading', lang_code=current_lang) }}"
+                   style="border:1px solid rgba(255,255,255,.18);color:#fff;padding:15px 24px;border-radius:12px;font-weight:800;text-decoration:none;">
+                    {{ t("cta_results", "Voir les résultats") }}
+                </a>
+            </div>
+        </div>
+
+        <p style="margin-top:24px;color:#8ea2c4;font-size:14px;line-height:1.6;">
+            {{ t("risk_disclaimer", "Le trading crypto comporte des risques. Aucun signal ne garantit un gain.") }}
+        </p>
+
+    </div>
 </section>
+
+<style>
+@media (max-width: 900px) {
+    .seo-page [style*="grid-template-columns:repeat(3"] {
+        grid-template-columns: 1fr !important;
+    }
+    .seo-page [style*="grid-template-columns:repeat(2"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+</style>
 {% endblock %}

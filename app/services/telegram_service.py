@@ -69,7 +69,7 @@ def confidence_icon(signal) -> str:
 def format_reason(signal) -> str:
     reason = getattr(signal, "reason", None)
     if not reason:
-        return "Analyse technique automatique"
+        return "Automated technical analysis"
     return str(reason)
 
 
@@ -109,8 +109,8 @@ def get_site_url() -> str:
 
 def get_affiliate_link(name: str, fallback: str = "") -> str:
     """
-    Lit un lien affiliation depuis config.py ou .env.
-    Exemples .env :
+    Reads an affiliate link from config.py or .env.
+    .env examples:
     AFFILIATE_KRAKEN_LINK=https://...
     AFFILIATE_BYBIT_LINK=https://...
     """
@@ -126,21 +126,21 @@ def build_execution_affiliate_block() -> str:
     lines = [
         "",
         "━━━━━━━━━━━━━━━━━━",
-        "⚡ <b>EXECUTION DU SIGNAL</b>",
+        "⚡ <b>SIGNAL EXECUTION</b>",
         "",
     ]
 
     if kraken_link:
         lines.extend([
-            '🔐 <b>Mode standard</b> : plateforme régulée',
-            f'👉 <a href="{html.escape(kraken_link, quote=True)}">Trader sur Kraken</a>',
+            '🔐 <b>Standard mode</b>: regulated platform',
+            f'👉 <a href="{html.escape(kraken_link, quote=True)}">Trade on Kraken</a>',
             "",
         ])
 
     if bybit_link:
         lines.extend([
-            '🚀 <b>Mode avancé</b> : levier / exécution rapide',
-            f'👉 <a href="{html.escape(bybit_link, quote=True)}">Trader sur Bybit</a>',
+            '🚀 <b>Advanced mode</b>: leverage / fast execution',
+            f'👉 <a href="{html.escape(bybit_link, quote=True)}">Trade on Bybit</a>',
             "",
         ])
 
@@ -148,7 +148,7 @@ def build_execution_affiliate_block() -> str:
         return ""
 
     lines.extend([
-        "⚠️ <i>Vérifie toujours la disponibilité et la conformité selon ton pays. Le trading comporte des risques.</i>",
+        "⚠️ <i>Always check availability and compliance in your country. Trading involves risk.</i>",
     ])
 
     return "\n".join(lines)
@@ -177,11 +177,11 @@ def send_telegram_message_to_chat(
     disable_web_page_preview: bool = True,
 ) -> bool:
     if not getattr(config, "TELEGRAM_BOT_TOKEN", None):
-        current_app.logger.warning("Telegram bot token manquant.")
+        current_app.logger.warning("Telegram bot token missing.")
         return False
 
     if not chat_id:
-        current_app.logger.warning("Telegram chat_id manquant.")
+        current_app.logger.warning("Telegram chat_id missing.")
         return False
 
     url = f"https://api.telegram.org/bot{config.TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -198,7 +198,7 @@ def send_telegram_message_to_chat(
         current_app.logger.info("TELEGRAM [%s] RESPONSE: %s", chat_id, response.text)
         return response.ok
     except Exception as e:
-        current_app.logger.error("Erreur Telegram [%s] : %s", chat_id, repr(e))
+        current_app.logger.error("Telegram error [%s]: %s", chat_id, repr(e))
         return False
 
 
@@ -209,15 +209,15 @@ def send_telegram_photo_to_chat(
     parse_mode: str = "HTML",
 ) -> bool:
     if not getattr(config, "TELEGRAM_BOT_TOKEN", None):
-        current_app.logger.warning("Telegram bot token manquant.")
+        current_app.logger.warning("Telegram bot token missing.")
         return False
 
     if not chat_id:
-        current_app.logger.warning("Telegram chat_id manquant.")
+        current_app.logger.warning("Telegram chat_id missing.")
         return False
 
     if not photo_url:
-        current_app.logger.warning("Telegram photo_url manquant.")
+        current_app.logger.warning("Telegram photo_url missing.")
         return False
 
     url = f"https://api.telegram.org/bot{config.TELEGRAM_BOT_TOKEN}/sendPhoto"
@@ -234,7 +234,7 @@ def send_telegram_photo_to_chat(
         current_app.logger.info("TELEGRAM PHOTO [%s] RESPONSE: %s", chat_id, response.text)
         return response.ok
     except Exception as e:
-        current_app.logger.error("Erreur Telegram photo [%s] : %s", chat_id, repr(e))
+        current_app.logger.error("Telegram photo error [%s]: %s", chat_id, repr(e))
         return False
 
 
@@ -332,20 +332,20 @@ def build_signal_telegram_message(signal) -> str:
 
     if confidence_value >= 85 and rr_value_num >= 2:
         setup_badge = "🎯 <b>SNIPER SETUP</b>"
-        urgency_line = "⚡ <b>Priority</b> : élevée"
-        execution_line = "🧨 <b>Execution</b> : confirmation forte + timing agressif"
+        urgency_line = "⚡ <b>Priority</b>: high"
+        execution_line = "🧨 <b>Execution</b>: strong confirmation + aggressive timing"
     elif confidence_value >= 75:
         setup_badge = "🔥 <b>HIGH CONVICTION SETUP</b>"
-        urgency_line = "⚡ <b>Priority</b> : élevée"
-        execution_line = "🎯 <b>Execution</b> : bon alignement marché"
+        urgency_line = "⚡ <b>Priority</b>: high"
+        execution_line = "🎯 <b>Execution</b>: solid market alignment"
     elif confidence_value >= 65:
         setup_badge = "📈 <b>ACTIVE SETUP</b>"
-        urgency_line = "⚡ <b>Priority</b> : normale"
-        execution_line = "🧭 <b>Execution</b> : attendre confirmation propre"
+        urgency_line = "⚡ <b>Priority</b>: normal"
+        execution_line = "🧭 <b>Execution</b>: wait for clean confirmation"
     else:
         setup_badge = "🛡 <b>WATCHLIST SETUP</b>"
-        urgency_line = "⚡ <b>Priority</b> : sélective"
-        execution_line = "👀 <b>Execution</b> : prudence, setup à surveiller"
+        urgency_line = "⚡ <b>Priority</b>: selective"
+        execution_line = "👀 <b>Execution</b>: caution, setup under watch"
 
     trend_lower = (trend_text or "").lower()
     if trend_lower in ["bullish", "uptrend", "haussier", "bull"]:
@@ -358,7 +358,7 @@ def build_signal_telegram_message(signal) -> str:
         bias_line = "⚖️ <b>Market Bias</b> : neutral / mixed"
 
     learn_block = (
-        f'\n🎓 <a href="{learn_link}">Voir le mini cours lié à ce setup</a>'
+        f'\n🎓 <a href="{learn_link}">View the mini-course linked to this setup</a>'
         if learn_link else ""
     )
 
@@ -432,13 +432,13 @@ def build_tp_telegram_message(signal) -> str:
 
     if confidence_value >= 85 and rr_value_num >= 2:
         result_badge = "🏆 <b>SNIPER TARGET HIT</b>"
-        quality_line = "🎯 <b>Quality</b> : execution premium validée"
+        quality_line = "🎯 <b>Quality</b>: premium execution validated"
     elif confidence_value >= 75:
         result_badge = "✅ <b>HIGH CONVICTION WIN</b>"
-        quality_line = "🔥 <b>Quality</b> : setup fort confirmé"
+        quality_line = "🔥 <b>Quality</b>: strong setup confirmed"
     else:
         result_badge = "✅ <b>TARGET REACHED</b>"
-        quality_line = "📈 <b>Quality</b> : scénario respecté"
+        quality_line = "📈 <b>Quality</b>: scenario respected"
 
     trend_lower = (trend_text or "").lower()
     if trend_lower in ["bullish", "uptrend", "haussier", "bull"]:
@@ -451,7 +451,7 @@ def build_tp_telegram_message(signal) -> str:
         bias_line = "⚖️ <b>Market Bias</b> : neutral / mixed"
 
     learn_block = (
-        f'\n🎓 <a href="{learn_link}">Revoir l’analyse complète de ce trade</a>'
+        f'\n🎓 <a href="{learn_link}">Review the full analysis for this trade</a>'
         if learn_link else ""
     )
 
@@ -521,13 +521,13 @@ def build_sl_telegram_message(signal) -> str:
 
     if confidence_value >= 85 and rr_value_num >= 2:
         result_badge = "⚠️ <b>SNIPER SETUP INVALIDATED</b>"
-        discipline_line = "🛡 <b>Risk Control</b> : invalidation exécutée proprement"
+        discipline_line = "🛡 <b>Risk Control</b>: invalidation executed cleanly"
     elif confidence_value >= 75:
         result_badge = "❌ <b>HIGH CONVICTION SETUP FAILED</b>"
-        discipline_line = "🧯 <b>Risk Control</b> : perte contrôlée"
+        discipline_line = "🧯 <b>Risk Control</b>: controlled loss"
     else:
         result_badge = "❌ <b>RISK INVALIDATED</b>"
-        discipline_line = "📉 <b>Risk Control</b> : scénario non confirmé"
+        discipline_line = "📉 <b>Risk Control</b>: scenario not confirmed"
 
     trend_lower = (trend_text or "").lower()
     if trend_lower in ["bullish", "uptrend", "haussier", "bull"]:
@@ -540,7 +540,7 @@ def build_sl_telegram_message(signal) -> str:
         bias_line = "⚖️ <b>Market Bias</b> : neutral / mixed"
 
     learn_block = (
-        f'\n🎓 <a href="{learn_link}">Comprendre pourquoi le setup a échoué</a>'
+        f'\n🎓 <a href="{learn_link}">Understand why this setup failed</a>'
         if learn_link else ""
     )
 
@@ -598,15 +598,15 @@ def build_vip_result_teaser_message(signal) -> str:
 🆔 <b>Trade ID</b> : {trade_id_text}
 
 ━━━━━━━━━━━━━━━━━━
-Le résultat final de ce trade est réservé aux membres <b>VIP</b>.
+The final result of this trade is reserved for <b>VIP</b> members.
 
 💎 <b>VIP Unlock</b>
-• TP / SL en temps réel
-• résultat complet
-• PnL du trade
-• suivi desk complet
+• Real-time TP / SL
+• Complete result
+• Trade PnL
+• Full desk follow-up
 
-🚀 <b>Upgrade requis pour voir la clôture</b>
+🚀 <b>Upgrade required to view the close</b>
 
 💎 <b>Velwolf Intelligence</b>
 """.strip()
@@ -649,10 +649,10 @@ def infer_market_bias(articles: list[dict]) -> str:
                 score -= 1
 
     if score >= 2:
-        return "🟢 <b>Bias marché</b> : plutôt haussier"
+        return "🟢 <b>Market Bias</b>: mostly bullish"
     if score <= -2:
-        return "🔻 <b>Bias marché</b> : plutôt baissier"
-    return "⚖️ <b>Bias marché</b> : neutre à mixte"
+        return "🔻 <b>Market Bias</b>: mostly bearish"
+    return "⚖️ <b>Market Bias</b>: neutral to mixed"
 
 
 def truncate_text(text: str, max_len: int = 180) -> str:
@@ -667,7 +667,7 @@ def truncate_text(text: str, max_len: int = 180) -> str:
 def build_news_digest_message(
     articles: list[dict],
     title: str = "Velwolf News — Daily Market Update",
-    intro: str = "📊 Voici les actualités les plus importantes du moment :",
+    intro: str = "📊 Here are the most important market updates right now:",
 ) -> str:
     if not articles:
         return ""
@@ -680,28 +680,28 @@ def build_news_digest_message(
     ]
 
     for idx, article in enumerate(articles[:6], start=1):
-        article_title = html.escape(str(article.get("title", "Sans titre")))
+        article_title = html.escape(str(article.get("title", "Untitled")))
         description = truncate_text(str(article.get("description", "")), 160)
-        source = html.escape(str(article.get("source", "Source inconnue")))
+        source = html.escape(str(article.get("source", "Unknown source")))
         emoji = news_emoji(article.get("title", ""), article.get("description", ""))
 
         if description:
             lines.append(
                 f"{idx}. {emoji} <b>{article_title}</b>\n"
                 f"   {html.escape(description)}\n"
-                f"   <i>Source : {source}</i>"
+                f"   <i>Source: {source}</i>"
             )
         else:
             lines.append(
                 f"{idx}. {emoji} <b>{article_title}</b>\n"
-                f"   <i>Source : {source}</i>"
+                f"   <i>Source: {source}</i>"
             )
         lines.append("")
 
     lines.append(infer_market_bias(articles))
     lines.append("")
-    lines.append("⏰ <b>Mise à jour</b> : quotidienne")
-    lines.append("⚠️ <i>Information de marché uniquement — DYOR</i>")
+    lines.append("⏰ <b>Update</b>: daily")
+    lines.append("⚠️ <i>Market information only — DYOR</i>")
     lines.append("")
     lines.append("💎 <b>Velwolf Intelligence</b>")
 
@@ -716,8 +716,8 @@ def build_news_digest_message(
 
 def build_breaking_context(title: str, description: str = "") -> dict:
     """
-    Moteur léger de contexte pour news Telegram.
-    Ne dépend d'aucun service externe afin de ne pas casser l'envoi.
+    Lightweight context engine for Telegram news.
+    Does not depend on any external service to avoid breaking delivery.
     """
     raw_text = f"{title} {description}".lower()
 
@@ -815,9 +815,9 @@ def build_breaking_context(title: str, description: str = "") -> dict:
 
 
 def build_breaking_news_message(article: dict) -> str:
-    title_raw = truncate_text(str(article.get("title", "Sans titre")), 190)
+    title_raw = truncate_text(str(article.get("title", "Untitled")), 190)
     description_raw = truncate_text(str(article.get("description", "")), 170)
-    source = html.escape(str(article.get("source", "Source inconnue")))
+    source = html.escape(str(article.get("source", "Unknown source")))
     url = str(article.get("url", "")).strip()
 
     context = build_breaking_context(title_raw, description_raw)
@@ -854,7 +854,7 @@ def build_breaking_news_message(article: dict) -> str:
         "🧠 <b>Desk View</b>",
         html.escape(context["desk"]),
         "",
-        f"📌 <b>Bias</b> : {html.escape(context['bias'])}",
+        f"📌 <b>Bias</b>: {html.escape(context['bias'])}",
     ])
 
     if context.get("execution"):
@@ -866,7 +866,7 @@ def build_breaking_news_message(article: dict) -> str:
         "",
         "━━━━━━━━━━━━━━━━━━",
         "",
-        f"🗞 <i>Source : {source}</i>",
+        f"🗞 <i>Source: {source}</i>",
     ])
 
     if url:
@@ -890,10 +890,10 @@ def build_breaking_news_message(article: dict) -> str:
 
 def build_watcher_style_caption(article: dict) -> str:
     """
-    Caption ultra pro pour les breaking news avec image.
-    Limite Telegram sendPhoto caption : 1024 caractères.
+    Ultra-pro caption for breaking news with image.
+    Telegram sendPhoto caption limit: 1024 characters.
     """
-    title_raw = truncate_text(str(article.get("title", "Sans titre")), 135)
+    title_raw = truncate_text(str(article.get("title", "Untitled")), 135)
     description_raw = truncate_text(str(article.get("description", "")), 95)
 
     context = build_breaking_context(title_raw, description_raw)
@@ -954,6 +954,6 @@ def send_breaking_news_to_tier(tier: str, article: dict) -> bool:
 def send_daily_news_digest_to_tier(tier: str, articles: list[dict]) -> bool:
     message = build_news_digest_message(articles)
     if not message:
-        current_app.logger.info("Aucune news à envoyer pour %s.", tier)
+        current_app.logger.info("No news to send for %s.", tier)
         return False
     return send_message_to_tier(tier=tier, message=message)

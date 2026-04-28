@@ -66,7 +66,7 @@ TIER_RULES = {
         allow_breaking_news=True,
         include_learn_link=False,
         news_title="Velwolf Public Market News",
-        news_intro="📢 Les actualités marché publiques les plus importantes du moment :",
+        news_intro="📢 The most important public market updates right now:",
     ),
     "basic": TierRules(
         tier="basic",
@@ -79,7 +79,7 @@ TIER_RULES = {
         allow_breaking_news=True,
         include_learn_link=False,
         news_title="Velwolf Basic Daily News",
-        news_intro="📊 Les news essentielles pour les membres Basic :",
+        news_intro="📊 Essential market news for Basic members:",
     ),
     "premium": TierRules(
         tier="premium",
@@ -92,7 +92,7 @@ TIER_RULES = {
         allow_breaking_news=True,
         include_learn_link=True,
         news_title="Velwolf Premium Market News",
-        news_intro="📊 Les actualités premium du jour avec davantage de profondeur :",
+        news_intro="📊 Today's premium market updates with deeper context:",
     ),
     "vip": TierRules(
         tier="vip",
@@ -105,7 +105,7 @@ TIER_RULES = {
         allow_breaking_news=True,
         include_learn_link=True,
         news_title="Velwolf VIP Market Intelligence",
-        news_intro="🚨 Flux VIP : news prioritaires, contexte marché et opportunités à surveiller :",
+        news_intro="🚨 VIP flow: priority news, market context and opportunities to watch:",
     ),
 }
 
@@ -126,7 +126,7 @@ IMPORTANT_UNLOCK_THRESHOLD = 10_000_000
 def get_rules(tier: str) -> TierRules:
     normalized = (tier or "").strip().lower()
     if normalized not in TIER_RULES:
-        raise ValueError(f"Tier inconnu: {tier}")
+        raise ValueError(f"Unknown tier: {tier}")
     return TIER_RULES[normalized]
 
 
@@ -145,7 +145,7 @@ def tier_signal_limit(tier: str) -> int:
 def _normalize_slot(slot: str) -> str:
     normalized = (slot or "").strip().lower()
     if normalized not in VALID_SLOTS:
-        raise ValueError(f"Slot invalide: {slot}")
+        raise ValueError(f"Invalid slot: {slot}")
     return normalized
 
 
@@ -180,15 +180,15 @@ def _send_text(
     content_hash: str | None = None,
 ) -> bool:
     if not message:
-        _log_warning(f"[telegram_dispatcher] Message vide ignoré pour {tier}")
+        _log_warning(f"[telegram_dispatcher] Empty message ignored for {tier}")
         return False
 
     if dispatch_exists(dedup_key):
-        _log_info(f"[telegram_dispatcher] Doublon ignoré par clé | tier={tier} | key={dedup_key}")
+        _log_info(f"[telegram_dispatcher] Duplicate ignored by key | tier={tier} | key={dedup_key}")
         return False
 
     if content_hash and dispatch_exists_by_hash(content_type, tier, content_hash):
-        _log_info(f"[telegram_dispatcher] Doublon ignoré par hash | type={content_type} | tier={tier}")
+        _log_info(f"[telegram_dispatcher] Duplicate ignored by hash | type={content_type} | tier={tier}")
         return False
 
     ok = send_message_to_tier(tier, message)
@@ -203,9 +203,9 @@ def _send_text(
             content_hash=content_hash,
             status="sent",
         )
-        _log_info(f"[telegram_dispatcher] Envoyé | type={content_type} | tier={tier}")
+        _log_info(f"[telegram_dispatcher] Sent | type={content_type} | tier={tier}")
     else:
-        _log_warning(f"[telegram_dispatcher] Échec envoi | type={content_type} | tier={tier}")
+        _log_warning(f"[telegram_dispatcher] Send failed | type={content_type} | tier={tier}")
 
     return ok
 
@@ -219,15 +219,15 @@ def _send_breaking_news(
     content_hash: str | None = None,
 ) -> bool:
     if not article:
-        _log_warning(f"[telegram_dispatcher] Breaking news vide ignorée pour {tier}")
+        _log_warning(f"[telegram_dispatcher] Empty breaking news ignored for {tier}")
         return False
 
     if dispatch_exists(dedup_key):
-        _log_info(f"[telegram_dispatcher] Doublon ignoré par clé | tier={tier} | key={dedup_key}")
+        _log_info(f"[telegram_dispatcher] Duplicate ignored by key | tier={tier} | key={dedup_key}")
         return False
 
     if content_hash and dispatch_exists_by_hash("breaking_news", tier, content_hash):
-        _log_info(f"[telegram_dispatcher] Doublon ignoré par hash | type=breaking_news | tier={tier}")
+        _log_info(f"[telegram_dispatcher] Duplicate ignored by hash | type=breaking_news | tier={tier}")
         return False
 
     ok = send_breaking_news_to_tier(tier=tier, article=article)
@@ -242,9 +242,9 @@ def _send_breaking_news(
             content_hash=content_hash,
             status="sent",
         )
-        _log_info(f"[telegram_dispatcher] Envoyé | type=breaking_news | tier={tier}")
+        _log_info(f"[telegram_dispatcher] Sent | type=breaking_news | tier={tier}")
     else:
-        _log_warning(f"[telegram_dispatcher] Échec envoi | type=breaking_news | tier={tier}")
+        _log_warning(f"[telegram_dispatcher] Send failed | type=breaking_news | tier={tier}")
 
     return ok
 
@@ -295,16 +295,16 @@ def _build_public_briefing_content(base_content: str) -> str:
     if not text:
         return (
             "🏛 <b>MARKET MORNING NOTE</b>\n\n"
-            "<b>Régime du marché</b>\n"
-            "• volatilité en reprise\n"
-            "• flux sélectifs sur les actifs majeurs\n"
-            "• absence de direction claire à court terme\n\n"
-            "<b>Lecture desk</b>\n"
-            "• zones techniques en cours de test\n"
-            "• prudence avant validation des cassures\n"
-            "• priorité à la gestion du risque\n\n"
-            "🔒 <b>Accès limité</b>\n"
-            "Le plan complet, les niveaux d’intervention et les scénarios de session sont réservés aux membres Premium et VIP."
+            "<b>Market Regime</b>\n"
+            "• volatility picking up\n"
+            "• selective flows across major assets\n"
+            "• no clear short-term direction\n\n"
+            "<b>Desk Read</b>\n"
+            "• technical zones being tested\n"
+            "• caution before breakout confirmation\n"
+            "• risk management remains priority\n\n"
+            "🔒 <b>Limited Access</b>\n"
+            "The full plan, execution levels and session scenarios are reserved for Premium and VIP members."
         )
 
     clean_text = " ".join(text.split())
@@ -314,14 +314,14 @@ def _build_public_briefing_content(base_content: str) -> str:
 
     return (
         "🏛 <b>MARKET MORNING NOTE</b>\n\n"
-        "<b>Régime du marché</b>\n"
+        "<b>Market Regime</b>\n"
         f"{teaser}\n\n"
-        "<b>Lecture desk</b>\n"
-        "• priorité à la confirmation avant engagement\n"
-        "• surveillance des réactions sur zones clés\n"
-        "• attention aux accélérations sans relais de flux\n\n"
-        "🔒 <b>Accès limité</b>\n"
-        "Le plan complet, les niveaux d’intervention et les scénarios de session sont réservés aux membres Premium et VIP."
+        "<b>Desk Read</b>\n"
+        "• confirmation comes before engagement\n"
+        "• watch reactions around key zones\n"
+        "• beware of acceleration without flow confirmation\n\n"
+        "🔒 <b>Limited Access</b>\n"
+        "The full plan, execution levels and session scenarios are reserved for Premium and VIP members."
     )
 
 
@@ -330,9 +330,9 @@ def _build_premium_second_content(base_content: str) -> str:
         base_content.strip()
         + "\n\n━━━━━━━━━━━━━━━━━━"
         + "\n📍 <b>Premium Update</b>"
-        + "\n- setups à garder sous surveillance"
-        + "\n- attention aux cassures sans volume"
-        + "\n- confirmation avant nouvelle exposition"
+        + "\n- setups to keep under watch"
+        + "\n- beware of breakouts without volume"
+        + "\n- confirmation before adding new exposure"
     )
 
 
@@ -341,11 +341,11 @@ def _build_vip_second_content(base_content: str) -> str:
         base_content.strip()
         + "\n\n━━━━━━━━━━━━━━━━━━"
         + "\n🔒 <b>VIP Opportunity Map</b>"
-        + "\n- setups sous surveillance"
-        + "\n- zones de réaction prioritaires"
-        + "\n- momentum à confirmer"
-        + "\n- attention aux faux breakouts"
-        + "\n- ajustements rapides selon session"
+        + "\n- setups under watch"
+        + "\n- priority reaction zones"
+        + "\n- momentum needs confirmation"
+        + "\n- beware of false breakouts"
+        + "\n- fast adjustments according to session flow"
     )
 
 
@@ -401,8 +401,8 @@ def _format_unlock_teaser(unlock: dict) -> str:
 🪙 <b>{unlock.get("token", "-")}</b> | {value_text}
 📅 <b>J-{unlock.get("days_until", "-")}</b>
 
-⚠️ Pression potentielle sur le marché
-👉 Analyse complète réservée aux membres <b>VIP</b>
+⚠️ Potential market pressure
+👉 Full analysis reserved for <b>VIP</b> members
 """.strip()
 
 
@@ -430,8 +430,8 @@ def _format_whale_teaser(alert: dict) -> str:
 💰 <b>{alert.get("asset", "-")}</b> | {alert.get("usd_value", "-")}
 🔁 {alert.get("flow_type", "-")} | 🧠 {alert.get("bias", "-")}
 
-⚡ Smart money en mouvement
-👉 Full analysis réservé aux membres VIP
+⚡ Smart money on the move
+👉 Full analysis reserved for VIP members
 """.strip()
 
 
@@ -442,8 +442,8 @@ def _format_liquidation_teaser(event) -> str:
 💰 <b>{event.asset}</b> | {event.value_usd}
 📍 {event.price} | 📊 {event.market_bias}
 
-⚡ Volatilité en hausse
-👉 Accès complet Premium & VIP
+⚡ Volatility is increasing
+👉 Full access for Premium & VIP
 """.strip()
 
 
@@ -491,13 +491,25 @@ def build_public_win_teaser_message(signal: Signal) -> str:
     )
 
     return f"""
-🏆 <b>Signal gagnant clôturé</b>
+🏆 <b>Winning Signal Closed</b>
 
 💰 <b>{asset}</b> • {direction}
-📍 <b>Entrée</b> : {entry} | 🎯 <b>TP</b> : {tp}
 
-⏱ Signal déjà clôturé
-🔒 Pour recevoir les signaux en direct avant fermeture, abonnez-vous en <b>Premium</b> ou <b>VIP</b>.
+📍 <b>Entry</b> : {round(float(entry), 0)}
+🎯 <b>Take Profit Hit</b> : <b>{round(float(tp), 0)}</b>
+
+━━━━━━━━━━━━━━━━━━
+💰 <b>Result</b>: move validated ✔️
+⚡ <b>Execution</b>: clean and respected
+📊 <b>Market Read</b>: precision confirmed
+
+━━━━━━━━━━━━━━━━━━
+🔒 <b>Limited Access</b>
+
+Exact real-time levels are reserved for
+<b>Premium</b> & <b>VIP</b> members
+
+🚀 <b>Receive the next signals BEFORE the move</b>
 """.strip()
 
 
@@ -507,7 +519,7 @@ def send_public_signal_tp_teaser(signal: Signal) -> bool:
 
     sent_today = count_sent_today("public_signal_tp_teaser", "public")
     if sent_today >= PUBLIC_WIN_TEASER_DAILY_LIMIT:
-        _log_info("[telegram_dispatcher] Limite quotidienne TP teaser atteinte pour public.")
+        _log_info("[telegram_dispatcher] Daily TP teaser limit reached for public.")
         return False
 
     key = signal_event_key(
@@ -543,7 +555,7 @@ def _send_public_basic_teasers(
     for tier in ["public", "basic"]:
         if count_sent_today(content_type, tier) >= daily_limit:
             _log_info(
-                f"[telegram_dispatcher] Limite quotidienne teaser atteinte | type={content_type} | tier={tier}"
+                f"[telegram_dispatcher] Daily teaser limit reached | type={content_type} | tier={tier}"
             )
             results[tier] = False
             continue
@@ -562,7 +574,7 @@ def _send_public_basic_teasers(
 def send_morning_briefings() -> dict:
     briefing = ensure_daily_briefing()
     if not briefing or not getattr(briefing, "content", None):
-        _log_warning("[telegram_dispatcher] Aucun briefing du matin disponible.")
+        _log_warning("[telegram_dispatcher] No morning briefing available.")
         return {}
 
     today_str = datetime.utcnow().strftime("%Y-%m-%d")
@@ -615,10 +627,10 @@ def send_morning_briefings() -> dict:
         premium_content = (
             _get_plan_briefing_content("premium", raw_content)
             + "\n\n━━━━━━━━━━━━━━━━━━"
-            + "\n<b>Plan de session</b>\n"
-            + "• scénarios directionnels principaux\n"
-            + "• zones d’intervention prioritaires\n"
-            + "• validation requise avant exécution"
+            + "\n<b>Session Plan</b>\n"
+            + "• main directional scenarios\n"
+            + "• priority execution zones\n"
+            + "• validation required before execution"
         )
 
         msg_premium = format_briefing_message(
@@ -644,10 +656,10 @@ def send_morning_briefings() -> dict:
             _get_plan_briefing_content("vip", raw_content)
             + "\n\n━━━━━━━━━━━━━━━━━━"
             + "\n<b>Desk execution framework</b>\n"
-            + "• scénarios à haute probabilité\n"
-            + "• gestion du timing d’entrée\n"
-            + "• invalidations clés\n"
-            + "• adaptation intraday selon flux"
+            + "• high-probability scenarios\n"
+            + "• entry timing management\n"
+            + "• key invalidations\n"
+            + "• intraday adaptation based on flow"
         )
 
         msg_vip = format_briefing_message(
@@ -673,7 +685,7 @@ def send_second_briefings(
     slot: str = "midday",
 ) -> dict:
     if not second_brief_content or not second_brief_content.strip():
-        _log_warning("[telegram_dispatcher] Second briefing vide.")
+        _log_warning("[telegram_dispatcher] Second briefing empty.")
         return {}
 
     slot = _normalize_slot(slot)
@@ -727,14 +739,14 @@ def send_daily_news(slot: str = "morning") -> dict:
     articles = prepare_digest_articles(limit=4, max_age_hours=48)
 
     if not articles:
-        _log_warning("[telegram_dispatcher] Aucune news disponible.")
+        _log_warning("[telegram_dispatcher] No news available.")
         return {}
 
     today_str = datetime.utcnow().strftime("%Y-%m-%d")
     slot_label = {
-        "morning": "matin",
-        "midday": "midi",
-        "evening": "soir",
+        "morning": "morning",
+        "midday": "midday",
+        "evening": "evening",
     }[slot]
 
     results = {}
@@ -767,7 +779,7 @@ def send_hourly_news() -> dict:
     articles = prepare_digest_articles(limit=1, max_age_hours=3)
 
     if not articles:
-        _log_warning("[telegram_dispatcher] Aucune news horaire disponible.")
+        _log_warning("[telegram_dispatcher] No hourly news available.")
         return {}
 
     results = {}
@@ -802,7 +814,7 @@ def send_hourly_news() -> dict:
 
 def send_breaking_news(article: dict) -> dict:
     if not article:
-        _log_warning("[telegram_dispatcher] Breaking news vide.")
+        _log_warning("[telegram_dispatcher] Breaking news empty.")
         return {}
 
     results = {}
@@ -829,7 +841,7 @@ def send_breaking_news(article: dict) -> dict:
 
 def send_signal_open(signal: Signal) -> dict:
     if not signal:
-        _log_warning("[telegram_dispatcher] Signal OPEN vide.")
+        _log_warning("[telegram_dispatcher] Empty OPEN signal.")
         return {}
 
     message = build_signal_telegram_message(signal)
@@ -844,7 +856,7 @@ def send_signal_open(signal: Signal) -> dict:
         remaining = signal_quota_remaining(tier, rules.signal_limit)
 
         if remaining <= 0:
-            _log_info(f"[telegram_dispatcher] Quota atteint pour {tier} | limit={rules.signal_limit}")
+            _log_info(f"[telegram_dispatcher] Quota reached for {tier} | limit={rules.signal_limit}")
             results[tier] = False
             continue
 
@@ -868,7 +880,7 @@ def send_signal_open(signal: Signal) -> dict:
 
 def send_signal_tp(signal: Signal) -> dict:
     if not signal:
-        _log_warning("[telegram_dispatcher] Signal TP vide.")
+        _log_warning("[telegram_dispatcher] Empty TP signal.")
         return {}
 
     results = {}
@@ -910,7 +922,7 @@ def send_signal_tp(signal: Signal) -> dict:
 
 def send_signal_sl(signal: Signal) -> dict:
     if not signal:
-        _log_warning("[telegram_dispatcher] Signal SL vide.")
+        _log_warning("[telegram_dispatcher] Empty SL signal.")
         return {}
 
     results = {}
@@ -951,7 +963,7 @@ def send_signal_sl(signal: Signal) -> dict:
 def send_liquidations_alerts() -> dict:
     sent_today = count_sent_today("liquidation_alert", "premium")
     if sent_today >= PREMIUM_LIQUIDATION_DAILY_LIMIT:
-        _log_info("[telegram_dispatcher] Limite quotidienne liquidations atteinte pour premium.")
+        _log_info("[telegram_dispatcher] Daily liquidation limit reached for premium.")
         return {}
 
     service = get_liquidations_service()
@@ -964,7 +976,7 @@ def send_liquidations_alerts() -> dict:
     filtered = [e for e in events if e.asset in {"BTC", "ETH", "SOL"}]
 
     if not filtered:
-        _log_warning("[telegram_dispatcher] Aucune liquidation high impact exploitable.")
+        _log_warning("[telegram_dispatcher] No usable high-impact liquidation.")
         return {}
 
     selected = filtered[:2]
@@ -1002,7 +1014,7 @@ def send_liquidations_alerts() -> dict:
 def send_whale_alerts() -> dict:
     sent_today = count_sent_today("whale_alert", "vip")
     if sent_today >= VIP_WHALE_DAILY_LIMIT:
-        _log_info("[telegram_dispatcher] Limite whale atteinte")
+        _log_info("[telegram_dispatcher] Whale limit reached")
         return {}
 
     service = get_whale_tracking_service()
@@ -1020,7 +1032,7 @@ def send_whale_alerts() -> dict:
     if not filtered:
         return {}
 
-    # 🔥 Prend uniquement le plus important
+    # 🔥 Keep only the most important one
     top = sorted(
         filtered,
         key=lambda x: float(x.get("usd_value_number", 0) or 0),
@@ -1031,12 +1043,12 @@ def send_whale_alerts() -> dict:
     # PUBLIC + BASIC TEASER
     # =====================
     teaser = f"""
-🐋 <b>SMART MONEY DÉTECTÉ</b>
+🐋 <b>SMART MONEY DETECTED</b>
 
 💰 <b>{top.get("asset")}</b> | {top.get("usd_value")}
 ⚡ {top.get("impact")} | 🧠 {top.get("bias")}
 
-👉 Analyse complète réservée VIP
+👉 Full analysis reserved for VIP
 """.strip()
 
     results = _send_public_basic_teasers(
@@ -1147,12 +1159,12 @@ def send_token_unlocks_alerts() -> dict:
 
 def send_signal_batch(signals: List[Signal], tier: str) -> dict:
     if not signals:
-        _log_warning(f"[telegram_dispatcher] Aucun signal batch pour {tier}.")
+        _log_warning(f"[telegram_dispatcher] No signal batch for {tier}.")
         return {tier: False}
 
     rules = get_rules(tier)
     if not rules.allow_open_signals:
-        _log_warning(f"[telegram_dispatcher] OPEN non autorisé pour {tier}.")
+        _log_warning(f"[telegram_dispatcher] OPEN not allowed for {tier}.")
         return {tier: False}
 
     if rules.signal_limit >= 999999:
@@ -1206,7 +1218,7 @@ def send_latest_signals_from_db() -> dict:
     )
 
     if not open_signals:
-        _log_warning("[telegram_dispatcher] Aucun signal OPEN en base.")
+        _log_warning("[telegram_dispatcher] No OPEN signal in database.")
         return {}
 
     results = {}
@@ -1288,4 +1300,4 @@ def dispatch_event(
     if event == "unlocks":
         return send_token_unlocks_alerts()
 
-    raise ValueError(f"Event type non supporté: {event_type}")
+    raise ValueError(f"Unsupported event type: {event_type}")

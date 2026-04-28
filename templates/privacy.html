@@ -1,235 +1,98 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ t("site_privacy_premium_tradingbot", "Premium - TradingBot") }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='markets.css') }}">
-</head>
-<body class="dashboard-body">
+{% extends "base.html" %}
 
-<div class="pricing-page">
+{% block robots_meta %}
+index, follow
+{% endblock %}
 
-    <div class="pricing-header">
-        <h1>{{ t("site_privacy_choisis_ton_plan", "💎 Choisis ton plan") }}</h1>
-        <p>{{ t("site_privacy_commence_simple_monte_en_puissance_ou_passe_en_vip", "Commence simple, monte en puissance, ou passe en VIP.") }}</p>
-    </div>
+{% block title %}{{ t("privacy_policy", "Politique de confidentialité") }} | VelWolef{% endblock %}
 
-    <div class="pricing-grid pricing-grid-3">
+{% block meta_description %}
+{{ t("privacy_meta_description", "Politique de confidentialité VelWolef : données collectées, utilisation, sécurité, paiements, Telegram, cookies et droits utilisateurs.") }}
+{% endblock %}
 
-        <div class="pricing-card">
-            <h2>{{ t("site_pricing_basic", "Basic") }}</h2>
-            <div class="price">9€ <span>{{ t("site_pricing_mois", "/ mois") }}</span></div>
-            <ul>
-                <li>{{ t("site_privacy_signaux_en_temps_reel", "✔️ Signaux en temps réel") }}</li>
-                <li>{{ t("site_privacy_dashboard_basique", "✔️ Dashboard basique") }}</li>
-                <li>{{ t("site_privacy_historique_limite", "✔️ Historique limité") }}</li>
-                <li>{{ t("site_privacy_briefing_ia_quotidien", "❌ Briefing IA quotidien") }}</li>
-                <li>{{ t("site_privacy_stats_avancees", "❌ Stats avancées") }}</li>
-                <li>{{ t("site_privacy_telegram_vip", "❌ Telegram VIP") }}</li>
-            </ul>
+{% block content %}
+<section class="privacy-page" style="padding:70px 0;">
+    <div class="section-container" style="max-width:980px; margin:0 auto;">
 
-            {% if user_plan == "basic" %}
-                <a href="{{ url_for('dashboard') }}" class="pricing-btn secondary-btn">{{ t("site_pricing_plan_actuel", "Plan actuel") }}</a>
-            {% else %}
-                <form action="{{ url_for('create_checkout_session') }}" method="POST">
-                    <input type="hidden" name="plan" value="basic">
-                    <button type="submit" class="pricing-btn secondary-btn">{{ t("site_pricing_choisir_basic", "Choisir Basic") }}</button>
-                </form>
-            {% endif %}
+        <div class="privacy-hero" style="text-align:center; margin-bottom:45px;">
+            <span style="display:inline-block; padding:8px 14px; border-radius:999px; background:rgba(0,255,153,.12); color:#00ff99; font-weight:700; font-size:13px;">
+                {{ t("privacy_badge", "Confidentialité & sécurité") }}
+            </span>
+
+            <h1 style="margin-top:18px; font-size:42px; line-height:1.1;">
+                {{ t("privacy_policy", "Politique de confidentialité") }}
+            </h1>
+
+            <p style="color:#9fb0c9; font-size:17px; line-height:1.8; max-width:760px; margin:18px auto 0;">
+                {{ t("privacy_intro", "Cette page explique comment VelWolef collecte, utilise et protège vos données personnelles lorsque vous utilisez notre plateforme, nos services Telegram et nos fonctionnalités d’abonnement.") }}
+            </p>
+
+            <p style="color:#64748b; margin-top:14px; font-size:14px;">
+                {{ t("privacy_last_update", "Dernière mise à jour : 28 avril 2026") }}
+            </p>
         </div>
 
-        <div class="pricing-card premium-plan">
-            <div class="badge-top">{{ t("site_privacy_populaire", "🔥 POPULAIRE") }}</div>
-            <h2>{{ t("site_home_premium", "Premium") }}</h2>
-            <div class="price">19€ <span>{{ t("site_pricing_mois", "/ mois") }}</span></div>
-            <ul>
-                <li>{{ t("site_privacy_tous_les_signaux", "✔️ Tous les signaux") }}</li>
-                <li>{{ t("site_privacy_historique_complet", "✔️ Historique complet") }}</li>
-                <li>{{ t("site_privacy_statistiques_avancees", "✔️ Statistiques avancées") }}</li>
-                <li>{{ t("site_privacy_pnl_cumulatif", "✔️ PnL cumulatif") }}</li>
-                <li>{{ t("site_privacy_capital_simule", "✔️ Capital simulé") }}</li>
-                <li>{{ t("site_privacy_briefing_ia_quotidien_2", "✔️ Briefing IA quotidien") }}</li>
-                <li>{{ t("site_privacy_telegram_vip", "❌ Telegram VIP") }}</li>
-            </ul>
+        <div class="privacy-card" style="background:rgba(15,23,42,.88); border:1px solid rgba(148,163,184,.18); border-radius:24px; padding:34px; box-shadow:0 24px 70px rgba(0,0,0,.35);">
 
-            <div class="offer-persuasion">
-                {{ t("site_privacy_le_meilleur_equilibre_entre_prix_performance_et_fonctionnalites", "Le meilleur équilibre entre prix, performance et fonctionnalités.") }}
+            <h2>{{ t("privacy_data_collected", "1. Données collectées") }}</h2>
+            <p>
+                {{ t("privacy_data_collected_text", "Nous pouvons collecter les informations nécessaires au fonctionnement du service : adresse email, informations de compte, statut d’abonnement, préférences de langue, données de connexion, informations Telegram liées à votre accès, ainsi que certaines données techniques utiles à la sécurité et à l’amélioration de la plateforme.") }}
+            </p>
+
+            <h2>{{ t("privacy_use", "2. Utilisation des données") }}</h2>
+            <p>
+                {{ t("privacy_use_text", "Vos données sont utilisées pour créer et gérer votre compte, vous donner accès aux fonctionnalités correspondant à votre abonnement, sécuriser votre connexion, envoyer les notifications liées au service, gérer les accès Telegram, améliorer l’expérience utilisateur et assurer le bon fonctionnement de la plateforme.") }}
+            </p>
+
+            <h2>{{ t("privacy_payment", "3. Paiements et abonnements") }}</h2>
+            <p>
+                {{ t("privacy_payment_text", "Les paiements sont traités par des prestataires de paiement sécurisés. VelWolef ne stocke pas vos informations complètes de carte bancaire. Nous conservons uniquement les informations nécessaires au suivi de votre abonnement, comme le plan actif, l’identifiant client ou l’identifiant d’abonnement.") }}
+            </p>
+
+            <h2>{{ t("privacy_telegram", "4. Connexion Telegram") }}</h2>
+            <p>
+                {{ t("privacy_telegram_text", "Si vous connectez votre compte Telegram, nous pouvons stocker les informations nécessaires pour vérifier votre identité Telegram, attribuer le bon canal selon votre abonnement et gérer automatiquement votre accès aux groupes ou canaux privés.") }}
+            </p>
+
+            <h2>{{ t("privacy_cookies", "5. Cookies et données techniques") }}</h2>
+            <p>
+                {{ t("privacy_cookies_text", "Le site peut utiliser des cookies ou technologies similaires nécessaires à la connexion, à la sécurité, à la gestion de session et au bon fonctionnement de la plateforme. Ces cookies ne sont pas utilisés pour vendre vos données personnelles.") }}
+            </p>
+
+            <h2>{{ t("privacy_security", "6. Sécurité des données") }}</h2>
+            <p>
+                {{ t("privacy_security_text", "Nous mettons en place des mesures raisonnables pour protéger vos données contre l’accès non autorisé, la perte, l’altération ou l’utilisation abusive. Aucun système n’étant totalement inviolable, nous vous recommandons également d’utiliser un mot de passe fort et unique.") }}
+            </p>
+
+            <h2>{{ t("privacy_retention", "7. Durée de conservation") }}</h2>
+            <p>
+                {{ t("privacy_retention_text", "Les données sont conservées aussi longtemps que nécessaire pour fournir le service, respecter nos obligations légales, résoudre les litiges éventuels et maintenir la sécurité de la plateforme. Vous pouvez demander la suppression de vos données lorsque cela est applicable.") }}
+            </p>
+
+            <h2>{{ t("privacy_rights", "8. Vos droits") }}</h2>
+            <p>
+                {{ t("privacy_rights_text", "Selon votre situation et la réglementation applicable, vous pouvez demander l’accès, la correction, la limitation ou la suppression de vos données personnelles. Vous pouvez également nous contacter pour toute question relative au traitement de vos données.") }}
+            </p>
+
+            <h2>{{ t("privacy_trading_disclaimer", "9. Données liées au trading") }}</h2>
+            <p>
+                {{ t("privacy_trading_disclaimer_text", "Les informations, signaux, analyses et données affichées sur VelWolef sont fournis à titre informatif et éducatif. Elles ne constituent pas un conseil financier personnalisé. Vous restez seul responsable de vos décisions de trading.") }}
+            </p>
+
+            <h2>{{ t("privacy_contact", "10. Contact") }}</h2>
+            <p>
+                {{ t("privacy_contact_text", "Pour toute demande concernant vos données personnelles ou cette politique de confidentialité, vous pouvez nous contacter via la page Contact du site.") }}
+            </p>
+
+            <div style="margin-top:32px; padding:20px; border-radius:18px; background:rgba(0,255,153,.08); border:1px solid rgba(0,255,153,.18);">
+                <strong style="color:#00ff99;">{{ t("privacy_note_title", "Note importante") }}</strong>
+                <p style="margin:8px 0 0; color:#cbd5e1;">
+                    {{ t("privacy_note_text", "Cette politique peut être mise à jour afin de refléter les évolutions du service, de la réglementation ou des fonctionnalités proposées.") }}
+                </p>
             </div>
 
-            {% if user_plan == "premium" %}
-                <a href="{{ url_for('dashboard') }}" class="pricing-btn primary-btn">{{ t("site_pricing_plan_actuel", "Plan actuel") }}</a>
-            {% else %}
-                <form action="{{ url_for('create_checkout_session') }}" method="POST">
-                    <input type="hidden" name="plan" value="premium">
-                    <button type="submit" class="pricing-btn primary-btn">{{ t("site_pricing_choisir_premium", "Choisir Premium") }}</button>
-                </form>
-            {% endif %}
-        </div>
-
-        <div class="pricing-card">
-            <div class="badge-top">{{ t("site_privacy_vip", "👑 VIP") }}</div>
-            <h2>VIP</h2>
-            <div class="price">39€ <span>{{ t("site_pricing_mois", "/ mois") }}</span></div>
-            <ul>
-                <li>{{ t("site_privacy_tout_le_premium", "✔️ Tout le Premium") }}</li>
-                <li>{{ t("site_privacy_telegram_vip_prive", "✔️ Telegram VIP privé") }}</li>
-                <li>{{ t("site_privacy_alertes_prioritaires", "✔️ Alertes prioritaires") }}</li>
-                <li>{{ t("site_privacy_acces_anticipe_aux_nouveautes", "✔️ Accès anticipé aux nouveautés") }}</li>
-                <li>{{ t("site_privacy_briefings_enrichis", "✔️ Briefings enrichis") }}</li>
-                <li>{{ t("site_privacy_support_prioritaire", "✔️ Support prioritaire") }}</li>
-            </ul>
-
-            <div class="offer-persuasion">
-                {{ t("site_privacy_pour_les_utilisateurs_qui_veulent_l_experience_la_plus_complete", "Pour les utilisateurs qui veulent l’expérience la plus complète.") }}
-            </div>
-
-            {% if user_plan == "vip" %}
-                <a href="{{ url_for('dashboard') }}" class="pricing-btn primary-btn">{{ t("site_pricing_plan_actuel", "Plan actuel") }}</a>
-            {% else %}
-                <form action="{{ url_for('create_checkout_session') }}" method="POST">
-                    <input type="hidden" name="plan" value="vip">
-                    <button type="submit" class="pricing-btn primary-btn">{{ t("site_pricing_choisir_vip", "Choisir VIP") }}</button>
-                </form>
-            {% endif %}
         </div>
 
     </div>
-
-    <!-- PROOF -->
-    <section class="panel" style="margin-top:40px;">
-        <div class="panel-header">
-            <h2>{{ t("site_privacy_resultats_recents", "📊 Résultats récents") }}</h2>
-        </div>
-
-        <div class="responsive-three-cols">
-            <div class="stat-card conversion-stat" style="text-align:center;">
-                <h3>+327%</h3>
-                <p style="margin-top:10px; color:#9fb0c9;">{{ t("site_privacy_performance_cumulee", "Performance cumulée") }}</p>
-            </div>
-
-            <div class="stat-card conversion-stat" style="text-align:center;">
-                <h3>73%</h3>
-                <p style="margin-top:10px; color:#9fb0c9;">{{ t("site_privacy_winrate_moyen", "Winrate moyen") }}</p>
-            </div>
-
-            <div class="stat-card conversion-stat" style="text-align:center;">
-                <h3>{{ t("site_privacy_1200_trades", "+1200 trades") }}</h3>
-                <p style="margin-top:10px; color:#9fb0c9;">{{ t("site_privacy_historique_analyse", "Historique analysé") }}</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- WHY -->
-    <section class="panel" style="margin-top:40px;">
-        <div class="panel-header">
-            <h2>{{ t("site_privacy_pourquoi_choisir_tradingbot", "Pourquoi choisir TradingBot ?") }}</h2>
-        </div>
-
-        <div class="responsive-three-cols">
-            <div class="stat-card">
-                <h3>{{ t("site_privacy_ultra_rapide", "⚡ Ultra rapide") }}</h3>
-                <p>{{ t("site_privacy_signaux_envoyes_en_temps_reel_avec_latence_minimale", "Signaux envoyés en temps réel avec latence minimale.") }}</p>
-            </div>
-
-            <div class="stat-card">
-                <h3>{{ t("site_privacy_performance", "📈 Performance") }}</h3>
-                <p>{{ t("site_privacy_optimise_pour_maximiser_le_winrate_et_le_rendement", "Optimisé pour maximiser le winrate et le rendement.") }}</p>
-            </div>
-
-            <div class="stat-card">
-                <h3>{{ t("site_privacy_ia_integree", "🧠 IA intégrée") }}</h3>
-                <p>{{ t("site_privacy_briefing_quotidien_intelligent_base_sur_le_marche_reel", "Briefing quotidien intelligent basé sur le marché réel.") }}</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- URGENCY -->
-    <section class="panel fomo-panel" style="margin-top:40px; text-align:center;">
-        <div class="fomo-badge">{{ t("site_privacy_offre_limitee", "⚠️ Offre limitée") }}</div>
-        <h2 style="margin:18px 0 10px 0;">{{ t("site_privacy_les_places_vip_restent_limitees", "Les places VIP restent limitées") }}</h2>
-        <p style="color:#9fb0c9; max-width:760px; margin:0 auto; line-height:1.8;">
-            {{ t("site_privacy_pour_preserver_la_qualite_du_service_le_nombre_d_utilisateurs_vip_reste", "Pour préserver la qualité du service, le nombre d’utilisateurs VIP reste limité.             Rejoins maintenant la plateforme avant la prochaine hausse de prix.") }}
-        </p>
-    </section>
-
-    <!-- FAQ -->
-    <section class="panel" style="margin-top:40px;">
-        <div class="panel-header">
-            <h2>{{ t("site_privacy_questions_frequentes", "Questions fréquentes") }}</h2>
-        </div>
-
-        <div class="faq-container">
-
-            <div class="faq-item">
-                <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>{{ t("site_privacy_le_service_est_il_automatique", "Le service est-il automatique ?") }}</span>
-                    <div class="faq-icon">+</div>
-                </div>
-                <div class="faq-content">
-                    <p>
-                        {{ t("site_privacy_oui_les_signaux_sont_generes_automatiquement_via_des_strategies_algorith", "Oui, les signaux sont générés automatiquement via des stratégies algorithmiques avancées.") }}
-                    </p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>{{ t("site_privacy_puis_je_annuler_a_tout_moment", "Puis-je annuler à tout moment ?") }}</span>
-                    <div class="faq-icon">+</div>
-                </div>
-                <div class="faq-content">
-                    <p>
-                        {{ t("site_privacy_oui_tu_peux_annuler_ton_abonnement_a_tout_moment_depuis_ton_dashboard", "Oui, tu peux annuler ton abonnement à tout moment depuis ton dashboard.") }}
-                    </p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-header" onclick="toggleFAQ(this)">
-                    <span>{{ t("site_privacy_le_briefing_ia_est_il_fiable", "Le briefing IA est-il fiable ?") }}</span>
-                    <div class="faq-icon">+</div>
-                </div>
-                <div class="faq-content">
-                    <p>
-                        {{ t("site_privacy_le_briefing_utilise_des_donnees_reelles_ia_pour_donner_une_analyse_clair", "Le briefing utilise des données réelles + IA pour donner une analyse claire,                         mais il ne remplace pas une décision de trading personnelle.") }}
-                    </p>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <div style="text-align:center; margin-top:50px;">
-        <h2 style="margin-bottom:10px;">{{ t("site_privacy_pret_a_passer_au_niveau_pro", "Prêt à passer au niveau pro ?") }}</h2>
-        <p style="color:#9fb0c9; margin-bottom:20px;">
-            {{ t("site_privacy_rejoins_les_utilisateurs_premium_et_maximise_tes_resultats", "Rejoins les utilisateurs Premium et maximise tes résultats 📈") }}
-        </p>
-
-        <a href="{{ url_for('register') }}" class="primary-link-btn">
-            {{ t("site_privacy_creer_mon_compte_maintenant", "🚀 Créer mon compte maintenant") }}
-        </a>
-    </div>
-
-</div>
-
-<script>
-function toggleFAQ(el) {
-    const item = el.parentElement;
-    item.classList.toggle("active");
-
-    const content = item.querySelector(".faq-content");
-
-    if (item.classList.contains("active")) {
-        content.style.maxHeight = content.scrollHeight + "px";
-    } else {
-        content.style.maxHeight = null;
-    }
-}
-</script>
-
-</body>
-</html>
+</section>
+{% endblock %}

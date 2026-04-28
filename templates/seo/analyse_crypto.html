@@ -10,98 +10,191 @@
 
 {% block content %}
 <section class="seo-page" style="padding:70px 20px;">
-<div class="section-container" style="max-width:1100px;margin:0 auto;">
+    <div class="section-container" style="max-width:1180px;margin:0 auto;">
 
-<div style="padding:40px;border-radius:20px;background:linear-gradient(135deg,#08111f,#0b1728);margin-bottom:40px;">
-<span style="color:#00ff99;font-weight:700;">
-{{ t("crypto_analysis_badge", "VelWolef Crypto Market Analysis") }}
-</span>
+        <div style="padding:42px;border-radius:28px;background:linear-gradient(135deg,#08111f,#0b1728);border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 70px rgba(0,0,0,.35);margin-bottom:46px;">
+            <span style="display:inline-block;margin-bottom:14px;color:#00ff99;font-weight:900;">
+                {{ t("crypto_analysis_badge", "VelWolef Crypto Market Analysis") }}
+            </span>
 
-<h1 style="margin-top:10px;">
-{{ t("crypto_analysis_h1", "Analyse du marché crypto") }}
-</h1>
+            <h1 style="font-size:clamp(2.2rem,4vw,3.4rem);line-height:1.1;margin:0 0 18px;color:#fff;">
+                {{ t("crypto_analysis_h1", "Analyse du marché crypto") }}
+            </h1>
 
-<p style="color:#b8c7dd;margin-top:15px;">
-{{ t("crypto_analysis_hero_desc", "Comprenez la structure du marché crypto avec Bitcoin, Ethereum, les altcoins, la dominance BTC, la volatilité et le contexte macro.") }}
-</p>
+            <p style="font-size:18px;line-height:1.8;color:#b8c7dd;max-width:920px;margin:0;">
+                {{ t("crypto_analysis_hero_desc", "Comprenez la structure du marché crypto avec Bitcoin, Ethereum, les altcoins, la dominance BTC, la volatilité et le contexte macro.") }}
+            </p>
 
-<p style="margin-top:15px;color:#00ff99;font-weight:700;">
-{{ t("crypto_analysis_proof", "✔️ BTC • ✔️ ETH • ✔️ Altcoins • ✔️ Macro • ✔️ Dominance") }}
-</p>
+            <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;color:#00ff99;font-weight:900;">
+                <span>✓ {{ t("crypto_analysis_proof_btc", "Bitcoin") }}</span>
+                <span>•</span>
+                <span>✓ {{ t("crypto_analysis_proof_eth", "Ethereum") }}</span>
+                <span>•</span>
+                <span>✓ {{ t("crypto_analysis_proof_altcoins", "Altcoins") }}</span>
+                <span>•</span>
+                <span>✓ {{ t("crypto_analysis_proof_macro", "Macro") }}</span>
+                <span>•</span>
+                <span>✓ {{ t("crypto_analysis_proof_dominance", "Dominance") }}</span>
+            </div>
 
-<div style="margin-top:25px;">
-<a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:12px 18px;border-radius:8px;font-weight:bold;margin-right:10px;">
-{{ t("cta_crypto_signals", "Signaux crypto") }}
-</a>
+            <div style="margin-top:28px;display:flex;gap:14px;flex-wrap:wrap;">
+                <a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}"
+                   style="background:#00ff99;color:#07111f;padding:14px 22px;border-radius:12px;font-weight:900;text-decoration:none;">
+                    {{ t("cta_crypto_signals", "Signaux crypto") }}
+                </a>
 
-<a href="{{ url_for('pages.market_crypto', lang_code=current_lang) }}" style="border:1px solid #00ff99;color:#00ff99;padding:12px 18px;border-radius:8px;">
-{{ t("cta_live_market", "Marché live") }}
-</a>
-</div>
-</div>
+                <a href="{{ url_for('pages.market_crypto', lang_code=current_lang) }}"
+                   style="border:1px solid #00ff99;color:#00ff99;padding:14px 22px;border-radius:12px;font-weight:800;text-decoration:none;">
+                    {{ t("cta_live_market", "Marché live") }}
+                </a>
+            </div>
+        </div>
 
-<h2>{{ t("crypto_analysis_why_title", "Pourquoi analyser le marché crypto global ?") }}</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:48px;">
+            <div style="padding:24px;border-radius:20px;background:#0b1220;border:1px solid rgba(255,255,255,.08);">
+                <h3 style="margin:0 0 10px;color:#fff;">{{ t("crypto_card_structure_title", "Structure globale") }}</h3>
+                <p style="color:#b8c7dd;line-height:1.7;margin:0;">
+                    {{ t("crypto_card_structure_desc", "Lire les phases du marché : expansion, compression, rotation ou risque de cassure.") }}
+                </p>
+            </div>
 
-<p>
-{{ t("crypto_analysis_why_text_1", "Le marché crypto ne se résume pas au prix du Bitcoin. Pour comprendre les opportunités, il faut analyser la liquidité, la dominance, la volatilité, le sentiment et les rotations entre actifs.") }}
-</p>
+            <div style="padding:24px;border-radius:20px;background:#0b1220;border:1px solid rgba(255,255,255,.08);">
+                <h3 style="margin:0 0 10px;color:#fff;">{{ t("crypto_card_rotation_title", "Rotation du capital") }}</h3>
+                <p style="color:#b8c7dd;line-height:1.7;margin:0;">
+                    {{ t("crypto_card_rotation_desc", "Comprendre quand le capital passe de BTC vers ETH puis vers certaines poches altcoins.") }}
+                </p>
+            </div>
 
-<p>
-{{ t("crypto_analysis_why_text_2", "Une analyse globale permet de savoir si le marché est en expansion, en compression, en rotation ou en phase de risque. Cette lecture aide à éviter les entrées isolées.") }}
-</p>
+            <div style="padding:24px;border-radius:20px;background:#0b1220;border:1px solid rgba(255,255,255,.08);">
+                <h3 style="margin:0 0 10px;color:#fff;">{{ t("crypto_card_risk_title", "Risque marché") }}</h3>
+                <p style="color:#b8c7dd;line-height:1.7;margin:0;">
+                    {{ t("crypto_card_risk_desc", "Évaluer la volatilité, la liquidité, le contexte macro et le sentiment global.") }}
+                </p>
+            </div>
+        </div>
 
-<h2>{{ t("crypto_analysis_btc_title", "Bitcoin comme actif directeur") }}</h2>
+        <div style="max-width:980px;">
+            <h2 style="margin-top:0;color:#fff;">
+                {{ t("crypto_analysis_why_title", "Pourquoi analyser le marché crypto global ?") }}
+            </h2>
 
-<p>
-{{ t("crypto_analysis_btc_text", "Bitcoin reste le point central. Lorsque BTC montre une tendance claire, le marché peut suivre. Lorsqu’il consolide, les altcoins peuvent parfois prendre le relais, mais seulement si la liquidité le permet.") }}
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("crypto_analysis_why_text_1", "Le marché crypto ne se résume pas au prix du Bitcoin. Pour comprendre les opportunités, il faut analyser la liquidité, la dominance, la volatilité, le sentiment et les rotations entre actifs.") }}
+            </p>
 
-<p>
-<a href="{{ url_for('pages.analyse_bitcoin', lang_code=current_lang) }}">
-{{ t("crypto_analysis_to_btc", "Voir l’analyse Bitcoin") }}
-</a>
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("crypto_analysis_why_text_2", "Une analyse globale permet de savoir si le marché est en expansion, en compression, en rotation ou en phase de risque. Cette lecture aide à éviter les entrées isolées.") }}
+            </p>
 
-<h2>{{ t("crypto_analysis_eth_title", "Ethereum et les altcoins") }}</h2>
+            <h2 style="margin-top:42px;color:#fff;">
+                {{ t("crypto_analysis_regime_title", "Les grands régimes du marché crypto") }}
+            </h2>
 
-<p>
-{{ t("crypto_analysis_eth_text", "Ethereum est souvent le deuxième moteur du marché. Quand ETH surperforme BTC, cela peut signaler un début de rotation vers les altcoins. Solana et d’autres actifs peuvent ensuite amplifier le mouvement.") }}
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("crypto_analysis_regime_text", "Un marché crypto peut changer rapidement de régime. Une phase d’expansion favorise le suivi de tendance, tandis qu’une phase de compression demande plus de patience. Une phase de rotation peut favoriser Ethereum et certains altcoins, alors qu’un contexte de risque impose une gestion plus défensive.") }}
+            </p>
 
-<h2>{{ t("crypto_analysis_macro_title", "Influence macro et volatilité") }}</h2>
+            <ul style="list-style:none;padding:0;margin:22px 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;">
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    🚀 {{ t("crypto_regime_expansion", "Expansion : impulsion et tendance dominante") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    🧊 {{ t("crypto_regime_compression", "Compression : range et attente de déclencheur") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    🔁 {{ t("crypto_regime_rotation", "Rotation : capital vers ETH et altcoins") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    ⚠️ {{ t("crypto_regime_risk", "Risque : volatilité, liquidité faible ou pression macro") }}
+                </li>
+            </ul>
 
-<p>
-{{ t("crypto_analysis_macro_text", "Le marché crypto réagit aussi aux taux, au dollar, à la liquidité globale et au sentiment de risque. Une bonne analyse doit intégrer ces éléments pour éviter de trader contre le contexte.") }}
-</p>
+            <h2 style="margin-top:46px;color:#fff;">
+                {{ t("crypto_analysis_btc_title", "Bitcoin comme actif directeur") }}
+            </h2>
 
-<h2>{{ t("crypto_analysis_signals_title", "De l’analyse aux signaux") }}</h2>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("crypto_analysis_btc_text", "Bitcoin reste le point central. Lorsque BTC montre une tendance claire, le marché peut suivre. Lorsqu’il consolide, les altcoins peuvent parfois prendre le relais, mais seulement si la liquidité le permet.") }}
+            </p>
 
-<p>
-{{ t("crypto_analysis_signals_text", "VelWolef transforme cette lecture globale en signaux structurés avec entrée, stop loss, take profit et contexte de marché.") }}
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                <a href="{{ url_for('pages.analyse_bitcoin', lang_code=current_lang) }}" style="color:#00ff99;font-weight:800;">
+                    {{ t("crypto_analysis_to_btc", "Voir l’analyse Bitcoin") }}
+                </a>
+            </p>
 
-<p>
-<a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}">
-{{ t("crypto_analysis_to_signals", "Recevoir les signaux crypto") }}
-</a>
-</p>
+            <h2 style="margin-top:42px;color:#fff;">
+                {{ t("crypto_analysis_eth_title", "Ethereum et les altcoins") }}
+            </h2>
 
-<div style="margin-top:50px;padding:30px;background:#0b1220;border-radius:15px;text-align:center;">
-<h3>{{ t("crypto_analysis_join_title", "Accéder à l’analyse et aux signaux") }}</h3>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("crypto_analysis_eth_text", "Ethereum est souvent le deuxième moteur du marché. Quand ETH surperforme BTC, cela peut signaler un début de rotation vers les altcoins. Solana et d’autres actifs peuvent ensuite amplifier le mouvement.") }}
+            </p>
 
-<p style="color:#b8c7dd;">
-{{ t("crypto_analysis_join_desc", "Rejoignez VelWolef pour suivre le marché crypto, les signaux, les résultats et les alertes Telegram.") }}
-</p>
+            <h2 style="margin-top:42px;color:#fff;">
+                {{ t("crypto_analysis_macro_title", "Influence macro et volatilité") }}
+            </h2>
 
-<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:14px 20px;border-radius:10px;font-weight:bold;">
-{{ t("cta_final_offers", "Voir les offres") }}
-</a>
-</div>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("crypto_analysis_macro_text", "Le marché crypto réagit aussi aux taux, au dollar, à la liquidité globale et au sentiment de risque. Une bonne analyse doit intégrer ces éléments pour éviter de trader contre le contexte.") }}
+            </p>
 
-<p style="margin-top:20px;color:#6b7280;font-size:14px;">
-{{ t("risk_disclaimer", "Le trading crypto comporte des risques. Aucun signal ne garantit un gain.") }}
-</p>
+            <h2 style="margin-top:42px;color:#fff;">
+                {{ t("crypto_analysis_signals_title", "De l’analyse aux signaux") }}
+            </h2>
 
-</div>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("crypto_analysis_signals_text", "VelWolef transforme cette lecture globale en signaux structurés avec entrée, stop loss, take profit et contexte de marché.") }}
+            </p>
+
+            <p style="color:#b8c7dd;line-height:1.8;">
+                <a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}" style="color:#00ff99;font-weight:800;">
+                    {{ t("crypto_analysis_to_signals", "Recevoir les signaux crypto") }}
+                </a>
+            </p>
+        </div>
+
+        <div style="margin-top:56px;padding:34px;border-radius:26px;background:linear-gradient(135deg,#0b1728,#07111f);border:1px solid rgba(0,255,153,.22);text-align:center;">
+            <span style="color:#00ff99;font-weight:900;">
+                {{ t("member_access", "Accès membre") }}
+            </span>
+
+            <h2 style="margin:10px 0 0;color:#fff;">
+                {{ t("crypto_analysis_join_title", "Accéder à l’analyse et aux signaux") }}
+            </h2>
+
+            <p style="color:#b8c7dd;max-width:760px;margin:14px auto 0;line-height:1.8;">
+                {{ t("crypto_analysis_join_desc", "Rejoignez VelWolef pour suivre le marché crypto, les signaux, les résultats et les alertes Telegram.") }}
+            </p>
+
+            <div style="margin-top:26px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;">
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}"
+                   style="background:#00ff99;color:#07111f;padding:15px 24px;border-radius:12px;font-weight:900;text-decoration:none;">
+                    {{ t("cta_final_offers", "Voir les offres") }}
+                </a>
+
+                <a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}"
+                   style="border:1px solid rgba(255,255,255,.18);color:#fff;padding:15px 24px;border-radius:12px;font-weight:800;text-decoration:none;">
+                    {{ t("cta_crypto_signals", "Signaux crypto") }}
+                </a>
+            </div>
+        </div>
+
+        <p style="margin-top:24px;color:#8ea2c4;font-size:14px;line-height:1.6;">
+            {{ t("risk_disclaimer", "Le trading crypto comporte des risques. Aucun signal ne garantit un gain.") }}
+        </p>
+
+    </div>
 </section>
+
+<style>
+@media (max-width: 900px) {
+    .seo-page [style*="grid-template-columns:repeat(3"] {
+        grid-template-columns: 1fr !important;
+    }
+    .seo-page [style*="grid-template-columns:repeat(2"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+</style>
 {% endblock %}

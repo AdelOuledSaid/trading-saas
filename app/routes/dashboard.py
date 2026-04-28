@@ -232,7 +232,7 @@ def dashboard(lang_code):
     live_market_energy = compute_market_energy_label(market_snapshot.get("total_volume", "..."))
     live_momentum_phase = compute_momentum_phase(market_snapshot.get("market_regime", "Compression"))
 
-    base_query = Signal.query
+    base_query = Signal.query.filter_by(is_deleted=False)
     if selected_asset:
         base_query = base_query.filter_by(asset=selected_asset)
 
@@ -240,7 +240,7 @@ def dashboard(lang_code):
 
     available_assets = [
         row[0]
-        for row in db.session.query(Signal.asset).distinct().order_by(Signal.asset).all()
+        for row in db.session.query(Signal.asset).filter(Signal.is_deleted == False).distinct().order_by(Signal.asset).all()
     ]
 
     limit = signal_limit_for_plan(user_plan)

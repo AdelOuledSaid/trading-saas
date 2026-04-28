@@ -24,6 +24,8 @@ from app.routes.telegram_webhook import telegram_webhook_bp
 from app.routes.academy_routes import academy_bp
 from app.routes.manual_signal import manual_signal_bp
 from app.routes.news_feed import news_feed_bp
+from app.routes.market_ticker import market_ticker_bp
+from app.routes.admin_trades import admin_trades_bp
 
 migrate = Migrate()
 
@@ -280,7 +282,8 @@ def create_app():
     app.register_blueprint(telegram_webhook_bp)
     app.register_blueprint(news_feed_bp)
     app.register_blueprint(academy_bp)
-
+    app.register_blueprint(market_ticker_bp)
+    app.register_blueprint(admin_trades_bp)
     # ✅ AUTO START LIQUIDATIONS
     if _should_autostart_liquidations(app):
         try:

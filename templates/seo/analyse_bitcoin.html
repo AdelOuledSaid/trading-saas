@@ -10,93 +10,167 @@
 
 {% block content %}
 <section class="seo-page" style="padding:70px 20px;">
-<div class="section-container" style="max-width:1100px;margin:0 auto;">
+    <div class="section-container" style="max-width:1180px;margin:0 auto;">
 
-<div style="padding:40px;border-radius:20px;background:linear-gradient(135deg,#08111f,#0b1728);margin-bottom:40px;">
-<span style="color:#00ff99;font-weight:700;">
-{{ t("btc_badge", "VelWolef Bitcoin Intelligence") }}
-</span>
+        <div style="padding:42px;border-radius:28px;background:linear-gradient(135deg,#08111f,#0b1728);border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 70px rgba(0,0,0,.35);margin-bottom:46px;">
+            <span style="display:inline-block;margin-bottom:14px;color:#00ff99;font-weight:900;">
+                {{ t("btc_badge", "VelWolef Bitcoin Intelligence") }}
+            </span>
 
-<h1 style="margin-top:10px;">
-{{ t("btc_h1", "Analyse Bitcoin en temps réel") }}
-</h1>
+            <h1 style="font-size:clamp(2.2rem,4vw,3.4rem);line-height:1.1;margin:0 0 18px;color:#fff;">
+                {{ t("btc_h1", "Analyse Bitcoin en temps réel") }}
+            </h1>
 
-<p style="color:#b8c7dd;margin-top:15px;">
-{{ t("btc_hero_desc", "Bitcoin reste l’actif directeur du marché crypto. Comprendre sa tendance permet de mieux anticiper les mouvements de BTC, ETH, SOL et des altcoins.") }}
-</p>
+            <p style="font-size:18px;line-height:1.8;color:#b8c7dd;max-width:920px;margin:0;">
+                {{ t("btc_hero_desc", "Bitcoin reste l’actif directeur du marché crypto. Comprendre sa tendance permet de mieux anticiper les mouvements de BTC, ETH, SOL et des altcoins.") }}
+            </p>
 
-<p style="margin-top:15px;color:#00ff99;font-weight:700;">
-{{ t("btc_proof", "✔️ Tendance BTC • ✔️ Dominance • ✔️ Niveaux clés • ✔️ Lecture marché") }}
-</p>
+            <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;color:#00ff99;font-weight:900;">
+                <span>✓ {{ t("btc_proof_trend", "Tendance BTC") }}</span>
+                <span>•</span>
+                <span>✓ {{ t("btc_proof_dominance", "Dominance") }}</span>
+                <span>•</span>
+                <span>✓ {{ t("btc_proof_levels", "Niveaux clés") }}</span>
+                <span>•</span>
+                <span>✓ {{ t("btc_proof_market", "Lecture marché") }}</span>
+            </div>
 
-<div style="margin-top:25px;">
-<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:12px 18px;border-radius:8px;font-weight:bold;margin-right:10px;">
-{{ t("cta_access_signals", "Accéder aux signaux") }}
-</a>
+            <div style="margin-top:28px;display:flex;gap:14px;flex-wrap:wrap;">
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}"
+                   style="background:#00ff99;color:#07111f;padding:14px 22px;border-radius:12px;font-weight:900;text-decoration:none;">
+                    {{ t("cta_access_signals", "Accéder aux signaux") }}
+                </a>
 
-<a href="{{ url_for('pages.market_crypto', lang_code=current_lang) }}" style="border:1px solid #00ff99;color:#00ff99;padding:12px 18px;border-radius:8px;">
-{{ t("cta_live_crypto", "Voir le marché crypto") }}
-</a>
-</div>
-</div>
+                <a href="{{ url_for('pages.market_crypto', lang_code=current_lang) }}"
+                   style="border:1px solid #00ff99;color:#00ff99;padding:14px 22px;border-radius:12px;font-weight:800;text-decoration:none;">
+                    {{ t("cta_live_crypto", "Voir le marché crypto") }}
+                </a>
+            </div>
+        </div>
 
-<h2>{{ t("btc_trend_title", "Pourquoi analyser Bitcoin avant de trader ?") }}</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:48px;">
+            <div style="padding:24px;border-radius:20px;background:#0b1220;border:1px solid rgba(255,255,255,.08);">
+                <h3 style="margin:0 0 10px;color:#fff;">{{ t("btc_card_trend_title", "Tendance principale") }}</h3>
+                <p style="color:#b8c7dd;line-height:1.7;margin:0;">
+                    {{ t("btc_card_trend_desc", "Identifier si Bitcoin est en expansion, compression, rotation ou correction.") }}
+                </p>
+            </div>
 
-<p>
-{{ t("btc_trend_text_1", "Bitcoin influence directement l’ensemble du marché crypto. Quand BTC accélère, corrige ou consolide, Ethereum et les altcoins réagissent souvent avec plus ou moins de retard.") }}
-</p>
+            <div style="padding:24px;border-radius:20px;background:#0b1220;border:1px solid rgba(255,255,255,.08);">
+                <h3 style="margin:0 0 10px;color:#fff;">{{ t("btc_card_levels_title", "Zones importantes") }}</h3>
+                <p style="color:#b8c7dd;line-height:1.7;margin:0;">
+                    {{ t("btc_card_levels_desc", "Supports, résistances, liquidité et niveaux d’invalidation.") }}
+                </p>
+            </div>
 
-<p>
-{{ t("btc_trend_text_2", "Une bonne analyse Bitcoin permet d’éviter les entrées isolées. Avant de suivre un signal crypto, il faut comprendre la structure du BTC, la volatilité, la dominance et les zones de liquidité.") }}
-</p>
+            <div style="padding:24px;border-radius:20px;background:#0b1220;border:1px solid rgba(255,255,255,.08);">
+                <h3 style="margin:0 0 10px;color:#fff;">{{ t("btc_card_dominance_title", "Dominance BTC") }}</h3>
+                <p style="color:#b8c7dd;line-height:1.7;margin:0;">
+                    {{ t("btc_card_dominance_desc", "Comprendre si le capital reste sur Bitcoin ou se déplace vers les altcoins.") }}
+                </p>
+            </div>
+        </div>
 
-<h2>{{ t("btc_levels_title", "Niveaux clés et zones de liquidité") }}</h2>
+        <div style="max-width:980px;">
+            <h2 style="margin-top:0;color:#fff;">
+                {{ t("btc_trend_title", "Pourquoi analyser Bitcoin avant de trader ?") }}
+            </h2>
 
-<p>
-{{ t("btc_levels_text", "Les niveaux clés sont les zones où le marché réagit le plus souvent. Ils peuvent servir de support, de résistance, de zone d’entrée ou de zone d’invalidation.") }}
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("btc_trend_text_1", "Bitcoin influence directement l’ensemble du marché crypto. Quand BTC accélère, corrige ou consolide, Ethereum et les altcoins réagissent souvent avec plus ou moins de retard.") }}
+            </p>
 
-<ul>
-<li>{{ t("btc_li_support", "Supports majeurs") }}</li>
-<li>{{ t("btc_li_resistance", "Résistances importantes") }}</li>
-<li>{{ t("btc_li_liquidity", "Zones de liquidité") }}</li>
-<li>{{ t("btc_li_invalidation", "Niveaux d’invalidation") }}</li>
-</ul>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("btc_trend_text_2", "Une bonne analyse Bitcoin permet d’éviter les entrées isolées. Avant de suivre un signal crypto, il faut comprendre la structure du BTC, la volatilité, la dominance et les zones de liquidité.") }}
+            </p>
 
-<h2>{{ t("btc_dominance_title", "Dominance Bitcoin") }}</h2>
+            <h2 style="margin-top:42px;color:#fff;">
+                {{ t("btc_levels_title", "Niveaux clés et zones de liquidité") }}
+            </h2>
 
-<p>
-{{ t("btc_dominance_text", "La dominance Bitcoin indique si le capital se concentre sur BTC ou se déplace vers les altcoins. Une dominance forte favorise souvent Bitcoin. Une dominance en baisse peut créer des opportunités sur Ethereum et Solana.") }}
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("btc_levels_text", "Les niveaux clés sont les zones où le marché réagit le plus souvent. Ils peuvent servir de support, de résistance, de zone d’entrée ou de zone d’invalidation.") }}
+            </p>
 
-<h2>{{ t("btc_signal_title", "Analyse BTC et signaux crypto") }}</h2>
+            <ul style="list-style:none;padding:0;margin:22px 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;">
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    🟢 {{ t("btc_li_support", "Supports majeurs") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    🔴 {{ t("btc_li_resistance", "Résistances importantes") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    💧 {{ t("btc_li_liquidity", "Zones de liquidité") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    🛑 {{ t("btc_li_invalidation", "Niveaux d’invalidation") }}
+                </li>
+            </ul>
 
-<p>
-{{ t("btc_signal_text", "Chez VelWolef, l’analyse Bitcoin sert de base avant d’évaluer les opportunités sur les autres actifs. Un signal crypto doit toujours être cohérent avec le contexte global.") }}
-</p>
+            <h2 style="margin-top:46px;color:#fff;">
+                {{ t("btc_dominance_title", "Dominance Bitcoin") }}
+            </h2>
 
-<p>
-<a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}">
-{{ t("btc_to_crypto_signals", "Voir les signaux crypto") }}
-</a>
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("btc_dominance_text", "La dominance Bitcoin indique si le capital se concentre sur BTC ou se déplace vers les altcoins. Une dominance forte favorise souvent Bitcoin. Une dominance en baisse peut créer des opportunités sur Ethereum et Solana.") }}
+            </p>
 
-<div style="margin-top:50px;padding:30px;background:#0b1220;border-radius:15px;text-align:center;">
-<h3>{{ t("btc_join_title", "Recevoir les signaux basés sur l’analyse BTC") }}</h3>
+            <h2 style="margin-top:42px;color:#fff;">
+                {{ t("btc_signal_title", "Analyse BTC et signaux crypto") }}
+            </h2>
 
-<p style="color:#b8c7dd;">
-{{ t("btc_join_desc", "Accédez aux signaux, au dashboard, aux alertes Telegram et à une lecture structurée du marché crypto.") }}
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("btc_signal_text", "Chez VelWolef, l’analyse Bitcoin sert de base avant d’évaluer les opportunités sur les autres actifs. Un signal crypto doit toujours être cohérent avec le contexte global.") }}
+            </p>
 
-<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:14px 20px;border-radius:10px;font-weight:bold;">
-{{ t("cta_final_offers", "Voir les offres") }}
-</a>
-</div>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                <a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}" style="color:#00ff99;font-weight:800;">
+                    {{ t("btc_to_crypto_signals", "Voir les signaux crypto") }}
+                </a>
+            </p>
+        </div>
 
-<p style="margin-top:20px;color:#6b7280;font-size:14px;">
-{{ t("risk_disclaimer", "Le trading crypto comporte des risques. Aucun signal ne garantit un gain.") }}
-</p>
+        <div style="margin-top:56px;padding:34px;border-radius:26px;background:linear-gradient(135deg,#0b1728,#07111f);border:1px solid rgba(0,255,153,.22);text-align:center;">
+            <span style="color:#00ff99;font-weight:900;">
+                {{ t("member_access", "Accès membre") }}
+            </span>
 
-</div>
+            <h2 style="margin:10px 0 0;color:#fff;">
+                {{ t("btc_join_title", "Recevoir les signaux basés sur l’analyse BTC") }}
+            </h2>
+
+            <p style="color:#b8c7dd;max-width:760px;margin:14px auto 0;line-height:1.8;">
+                {{ t("btc_join_desc", "Accédez aux signaux, au dashboard, aux alertes Telegram et à une lecture structurée du marché crypto.") }}
+            </p>
+
+            <div style="margin-top:26px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;">
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}"
+                   style="background:#00ff99;color:#07111f;padding:15px 24px;border-radius:12px;font-weight:900;text-decoration:none;">
+                    {{ t("cta_final_offers", "Voir les offres") }}
+                </a>
+
+                <a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}"
+                   style="border:1px solid rgba(255,255,255,.18);color:#fff;padding:15px 24px;border-radius:12px;font-weight:800;text-decoration:none;">
+                    {{ t("btc_cta_signals", "Voir les signaux crypto") }}
+                </a>
+            </div>
+        </div>
+
+        <p style="margin-top:24px;color:#8ea2c4;font-size:14px;line-height:1.6;">
+            {{ t("risk_disclaimer", "Le trading crypto comporte des risques. Aucun signal ne garantit un gain.") }}
+        </p>
+
+    </div>
 </section>
+
+<style>
+@media (max-width: 900px) {
+    .seo-page [style*="grid-template-columns:repeat(3"] {
+        grid-template-columns: 1fr !important;
+    }
+    .seo-page [style*="grid-template-columns:repeat(2"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+</style>
 {% endblock %}

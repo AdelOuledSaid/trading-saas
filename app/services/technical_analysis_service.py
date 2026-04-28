@@ -1361,40 +1361,19 @@ class TechnicalAnalysisService:
         orderflow: Dict[str, Any],
         multi_timeframe: Optional[Dict[str, Any]],
     ) -> Dict[str, Any]:
-        confluence_score = multi_timeframe["confluence"]["score"] if multi_timeframe else None
+        """
+        Replay propre basé sur les vrais trades en base de données.
 
-        if signal == "buy" and bias == "bullish":
-            simulated_outcome_pct = round((confidence - 50) / 10, 2)
-        elif signal == "sell" and bias == "bearish":
-            simulated_outcome_pct = round((confidence - 50) / 12, 2)
-        else:
-            simulated_outcome_pct = round(-abs(50 - confidence) / 20, 2)
-
-        row = {
-            "timestamp": int(time.time()),
-            "token": token,
-            "interval": interval,
-            "signal": signal,
-            "bias": bias,
-            "confidence": confidence,
-            "price": round(current_price, 6),
-            "orderflow_state": orderflow["state"],
-            "orderflow_strength": orderflow["strength"],
-            "orderflow_signal": orderflow["dominant_signal"],
-            "delta_pressure": orderflow["delta_pressure"],
-            "confluence_score": confluence_score,
-            "simulated_outcome_pct": simulated_outcome_pct,
-        }
-
+        IMPORTANT:
+        - On ne crée plus de faux historique dans setup_replay.json.
+        - On ne compte que les Signal actifs: is_deleted=False.
+        - Donc un trade supprimé depuis l'admin ne compte plus dans:
+          count, winrate, avg_confidence, last_setups, best_bias.
+        """
         try:
-            self.replay_store.record_setup(row)
+            from app.models import Signal
         except Exception:
-            pass
-
-        try:
-            summary = self.replay_store.summarize(token=token, interval=interval)
-        except Exception:
-            summary = {
+            return {
                 "count": 0,
                 "winrate": None,
                 "avg_confidence": None,
@@ -1402,7 +1381,198 @@ class TechnicalAnalysisService:
                 "best_bias": None,
             }
 
-        return summary
+        token = (token or "").upper().strip()
+        interval = (interval or "").lower().strip()
+
+        asset_aliases = {
+            "BTC": ["BTC", "BTCUSD", "BTCUSDT"],
+            "ETH": ["ETH", "ETHUSD", "ETHUSDT"],
+            "SOL": ["SOL", "SOLUSD", "SOLUSDT"],
+            "XRP": ["XRP", "XRPUSD", "XRPUSDT"],
+            "BNB": ["BNB", "BNBUSD", "BNBUSDT"],
+            "DOGE": ["DOGE", "DOGEUSD", "DOGEUSDT"],
+            "ADA": ["ADA", "ADAUSD", "ADAUSDT"],
+            "AVAX": ["AVAX", "AVAXUSD", "AVAXUSDT"],
+            "LINK": ["LINK", "LINKUSD", "LINKUSDT"],
+            "MATIC": ["MATIC", "MATICUSD", "MATICUSDT"],
+            "TRX": ["TRX", "TRXUSD", "TRXUSDT"],
+            "LTC": ["LTC", "LTCUSD", "LTCUSDT"],
+            "DOT": ["DOT", "DOTUSD", "DOTUSDT"],
+            "UNI": ["UNI", "UNIUSD", "UNIUSDT"],
+            "ATOM": ["ATOM", "ATOMUSD", "ATOMUSDT"],
+            "GOLD": ["GOLD", "XAUUSD"],
+            "US100": ["US100", "NAS100"],
+        }
+
+        assets = asset_aliases.get(token, [token])
+
+        # 1) Essai précis: actif + timeframe sélectionné
+        query = (
+            Signal.query
+            .filter(
+                Signal.is_deleted == False,
+                Signal.asset.in_(assets)
+            )
+        )
+
+        if interval:
+            query = query.filter(
+                (Signal.timeframe == interval) |
+                (Signal.timeframe == interval.upper())
+            )
+
+        trades = (
+            query
+            .order_by(Signal.created_at.asc())
+            .all()
+        )
+
+        # 2) Fallback: même actif, tous timeframes
+        # Important: évite d'afficher 0 juste parce que l'analyse est en 1h
+        # alors que les signaux BTC sont enregistrés en M15/H1/None/etc.
+        if not trades:
+            trades = (
+                Signal.query
+                .filter(
+                    Signal.is_deleted == False,
+                    Signal.asset.in_(assets)
+                )
+                .order_by(Signal.created_at.asc())
+                .all()
+            )
+
+        # 3) Fallback global: tous les trades actifs
+        # Important: garde la section Replay utile même si l'actif analysé
+        # n'a pas encore d'historique dans la base.
+        if not trades:
+            trades = (
+                Signal.query
+                .filter(Signal.is_deleted == False)
+                .order_by(Signal.created_at.asc())
+                .all()
+            )
+
+        if not trades:
+            return {
+                "count": 0,
+                "winrate": None,
+                "avg_confidence": None,
+                "last_setups": [],
+                "best_bias": None,
+            }
+
+        closed_trades = [
+            t for t in trades
+            if (t.status or "").upper() in {"WIN", "LOSS"}
+            or t.result_percent is not None
+        ]
+
+        wins = 0
+        scored = 0
+        confidences: List[float] = []
+        bullish = 0
+        bearish = 0
+
+        for trade in trades:
+            try:
+                confidences.append(float(trade.confidence or 0))
+            except Exception:
+                pass
+
+            action = (trade.action or "").upper()
+            trend = (trade.market_trend or "").lower()
+            status = (trade.status or "").upper()
+
+            if action == "BUY" or trend in {"bullish", "haussier", "bull"}:
+                bullish += 1
+            elif action == "SELL" or trend in {"bearish", "baissier", "bear"}:
+                bearish += 1
+
+            if status in {"WIN", "LOSS"}:
+                scored += 1
+                if status == "WIN":
+                    wins += 1
+            elif trade.result_percent is not None:
+                scored += 1
+                if float(trade.result_percent or 0) > 0:
+                    wins += 1
+
+        best_bias = "bullish" if bullish > bearish else "bearish" if bearish > bullish else "mixed"
+
+        def _trade_outcome_pct(trade) -> Optional[float]:
+            if trade.result_percent is not None:
+                try:
+                    return round(float(trade.result_percent), 2)
+                except Exception:
+                    return None
+
+            try:
+                entry = float(trade.entry_price or 0)
+                if entry <= 0:
+                    return None
+
+                status = (trade.status or "").upper()
+                action = (trade.action or "BUY").upper()
+
+                if status == "WIN" and trade.take_profit is not None:
+                    exit_price = float(trade.take_profit)
+                elif status == "LOSS" and trade.stop_loss is not None:
+                    exit_price = float(trade.stop_loss)
+                else:
+                    return None
+
+                if action == "BUY":
+                    return round(((exit_price - entry) / entry) * 100, 2)
+
+                return round(((entry - exit_price) / entry) * 100, 2)
+            except Exception:
+                return None
+
+        last_source = closed_trades[-5:] if closed_trades else trades[-5:]
+
+        last_setups = []
+        for trade in last_source:
+            trade_action = (trade.action or signal or "neutral").lower()
+            trade_trend = (trade.market_trend or "").lower()
+
+            if trade_action == "buy":
+                row_bias = "bullish"
+            elif trade_action == "sell":
+                row_bias = "bearish"
+            elif trade_trend in {"bullish", "haussier", "bull"}:
+                row_bias = "bullish"
+            elif trade_trend in {"bearish", "baissier", "bear"}:
+                row_bias = "bearish"
+            else:
+                row_bias = "mixed"
+
+            last_setups.append({
+                "timestamp": int(trade.created_at.timestamp()) if trade.created_at else None,
+                "token": token,
+                "interval": trade.timeframe or interval or "1h",
+                "signal": trade_action,
+                "bias": row_bias,
+                "confidence": round(float(trade.confidence or 0), 2),
+                "price": round(float(trade.entry_price or 0), 6),
+                "orderflow_state": orderflow.get("state") if isinstance(orderflow, dict) else None,
+                "orderflow_strength": orderflow.get("strength") if isinstance(orderflow, dict) else None,
+                "orderflow_signal": orderflow.get("dominant_signal") if isinstance(orderflow, dict) else None,
+                "delta_pressure": orderflow.get("delta_pressure") if isinstance(orderflow, dict) else None,
+                "confluence_score": (
+                    multi_timeframe.get("confluence", {}).get("score")
+                    if isinstance(multi_timeframe, dict)
+                    else None
+                ),
+                "simulated_outcome_pct": _trade_outcome_pct(trade),
+            })
+
+        return {
+            "count": len(trades),
+            "winrate": round((wins / scored) * 100, 2) if scored else None,
+            "avg_confidence": round(sum(confidences) / len(confidences), 2) if confidences else None,
+            "last_setups": last_setups,
+            "best_bias": best_bias,
+        }
 
     def build_premium_insight(self, token: str, interval: str, indicator: str, insight_type: Optional[str] = None) -> Dict[str, Any]:
         analysis = self.analyze(token=token, interval=interval, indicator=indicator, include_multi_tf=True)

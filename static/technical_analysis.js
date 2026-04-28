@@ -989,4 +989,9 @@ document.addEventListener("keydown", (e) => {
 document.addEventListener("DOMContentLoaded", () => {
   applyMembershipLocks();
   setActiveTab(currentTab);
+
+  // Chargement automatique de l'analyse au démarrage
+  setTimeout(() => {
+    fetchAnalysis(true);
+  }, 600);
 });

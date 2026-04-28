@@ -90,7 +90,7 @@ def results(lang_code):
     if time_filter not in allowed_times:
         time_filter = "all"
 
-    query = Signal.query
+    query = Signal.query.filter_by(is_deleted=False)
 
     if asset_filter != "ALL":
         query = query.filter(Signal.asset == asset_filter)
@@ -104,7 +104,9 @@ def results(lang_code):
 
     user_plan = _get_user_plan()
     signal_limit = signal_limit_for_plan(user_plan)
-    can_view_stats = has_access(user_plan, "advanced_stats")
+    # Stats visibles publiquement, mais winrate public limite a 73% plus bas.
+    can_view_stats = True
+    is_premium_plus = user_plan in ["premium", "vip"]
 
     # =========================================================
     # SMART DISPLAY
@@ -151,6 +153,7 @@ def results(lang_code):
     # FEATURED SIGNALS
     # =========================================================
     featured_query = Signal.query.filter(
+        Signal.is_deleted == False,
         (Signal.status == "WIN") |
         ((Signal.result_percent.isnot(None)) & (Signal.result_percent > 0))
     )
@@ -183,7 +186,7 @@ def results(lang_code):
         )
 
     if not featured_signals:
-        fallback_query = Signal.query
+        fallback_query = Signal.query.filter_by(is_deleted=False)
 
         if asset_filter != "ALL":
             fallback_query = fallback_query.filter(Signal.asset == asset_filter)
@@ -230,7 +233,8 @@ def results(lang_code):
     # ADVANCED STATS
     # =========================================================
     if can_view_stats:
-        winrate = round((win_signals / closed_signals) * 100, 2) if closed_signals > 0 else 0
+        real_winrate = round((win_signals / closed_signals) * 100, 2) if closed_signals > 0 else 0
+        winrate = real_winrate if is_premium_plus else min(real_winrate, 73)
 
         closed_trade_pnls = [
             calculate_trade_pnl(signal)
@@ -350,7 +354,7 @@ def results(lang_code):
 
 @signals_bp.route("/api/replay/<int:signal_id>")
 def api_replay(signal_id):
-    signal = Signal.query.get_or_404(signal_id)
+    signal = Signal.query.filter_by(id=signal_id, is_deleted=False).first_or_404()
 
     if signal.replay and signal.replay.candles:
         replay = signal.replay
@@ -500,7 +504,7 @@ def api_replay(signal_id):
 
 @signals_bp.route("/api/replay/<int:signal_id>/decision", methods=["POST"])
 def replay_decision(signal_id):
-    signal = Signal.query.get_or_404(signal_id)
+    signal = Signal.query.filter_by(id=signal_id, is_deleted=False).first_or_404()
 
     if not signal.replay:
         return jsonify({"error": "Replay introuvable pour ce signal."}), 404
@@ -549,7 +553,7 @@ def signals_btc(lang_code):
 
     btc_signals = (
         Signal.query
-        .filter_by(asset="BTCUSD")
+        .filter_by(asset="BTCUSD", is_deleted=False)
         .order_by(Signal.created_at.desc())
         .limit(signal_limit if signal_limit > 0 else 0)
         .all()
@@ -662,7 +666,7 @@ def eth_signals_page(lang_code):
 
     eth_signals = (
         Signal.query
-        .filter_by(asset="ETHUSD")
+        .filter_by(asset="ETHUSD", is_deleted=False)
         .order_by(Signal.created_at.desc())
         .limit(signal_limit if signal_limit > 0 else 0)
         .all()
@@ -713,21 +717,21 @@ def signals_gold(lang_code):
 
     gold_signals = (
         Signal.query
-        .filter_by(asset="GOLD")
+        .filter_by(asset="GOLD", is_deleted=False)
         .order_by(Signal.created_at.desc())
         .limit(signal_limit if signal_limit > 0 else 0)
         .all()
     )
 
-    gold_total_signals = Signal.query.filter_by(asset="GOLD").count()
-    gold_open_signals = Signal.query.filter_by(asset="GOLD", status="OPEN").count()
-    gold_win_signals = Signal.query.filter_by(asset="GOLD", status="WIN").count()
-    gold_loss_signals = Signal.query.filter_by(asset="GOLD", status="LOSS").count()
+    gold_total_signals = Signal.query.filter_by(asset="GOLD", is_deleted=False).count()
+    gold_open_signals = Signal.query.filter_by(asset="GOLD", status="OPEN", is_deleted=False).count()
+    gold_win_signals = Signal.query.filter_by(asset="GOLD", status="WIN", is_deleted=False).count()
+    gold_loss_signals = Signal.query.filter_by(asset="GOLD", status="LOSS", is_deleted=False).count()
 
     closed_count = gold_win_signals + gold_loss_signals
     gold_winrate = round((gold_win_signals / closed_count) * 100, 2) if closed_count > 0 else 0
 
-    all_gold_signals = Signal.query.filter_by(asset="GOLD").all()
+    all_gold_signals = Signal.query.filter_by(asset="GOLD", is_deleted=False).all()
     gold_estimated_pnl = round(sum(calculate_trade_pnl(s) for s in all_gold_signals), 2)
 
     return render_template(
@@ -758,10 +762,10 @@ def signals_us100(lang_code):
         .all()
     )
 
-    us100_total_signals = Signal.query.filter_by(asset="US100").count()
-    us100_open_signals = Signal.query.filter_by(asset="US100", status="OPEN").count()
-    us100_win_signals = Signal.query.filter_by(asset="US100", status="WIN").count()
-    us100_loss_signals = Signal.query.filter_by(asset="US100", status="LOSS").count()
+    us100_total_signals = Signal.query.filter_by(asset="US100", is_deleted=False).count()
+    us100_open_signals = Signal.query.filter_by(asset="US100", status="OPEN", is_deleted=False).count()
+    us100_win_signals = Signal.query.filter_by(asset="US100", status="WIN", is_deleted=False).count()
+    us100_loss_signals = Signal.query.filter_by(asset="US100", status="LOSS", is_deleted=False).count()
 
     closed_count = us100_win_signals + us100_loss_signals
     us100_winrate = round((us100_win_signals / closed_count) * 100, 2) if closed_count > 0 else 0
@@ -891,7 +895,7 @@ def _get_signal_learning_data(signal):
 def learn_signal_page(lang_code, signal_id):
     session["lang"] = lang_code
 
-    signal = Signal.query.get_or_404(signal_id)
+    signal = Signal.query.filter_by(id=signal_id, is_deleted=False).first_or_404()
 
     data = _get_signal_learning_data(signal)
 

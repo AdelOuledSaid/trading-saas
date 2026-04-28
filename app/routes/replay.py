@@ -653,7 +653,7 @@ def _load_htf_candles_for_replay(replay, higher_tf):
 @replay_bp.route("/<lang_code>/signal/<int:signal_id>/replay")
 @login_required
 def open_signal_replay(signal_id, lang_code="fr"):
-    signal = Signal.query.get_or_404(signal_id)
+    signal = Signal.query.filter_by(id=signal_id, is_deleted=False).first_or_404()
     replay = ensure_trade_replay_for_signal(signal)
 
     if not replay:
@@ -672,7 +672,15 @@ def open_signal_replay(signal_id, lang_code="fr"):
 @replay_bp.route("/<lang_code>/replay/<int:replay_id>")
 @login_required
 def replay_page(replay_id, lang_code="fr"):
-    replay = TradeReplay.query.get(replay_id)
+    replay = (
+        TradeReplay.query
+        .join(Signal, TradeReplay.signal_id == Signal.id)
+        .filter(
+            TradeReplay.id == replay_id,
+            Signal.is_deleted == False
+        )
+        .first()
+    )
 
     if not replay:
         abort(404)
@@ -688,7 +696,15 @@ def replay_page(replay_id, lang_code="fr"):
 @replay_bp.route("/<lang_code>/api/replay/<int:replay_id>")
 @login_required
 def replay_data(replay_id, lang_code="fr"):
-    replay = TradeReplay.query.get(replay_id)
+    replay = (
+        TradeReplay.query
+        .join(Signal, TradeReplay.signal_id == Signal.id)
+        .filter(
+            TradeReplay.id == replay_id,
+            Signal.is_deleted == False
+        )
+        .first()
+    )
 
     if not replay:
         return jsonify({"error": "Replay introuvable"}), 404
@@ -854,7 +870,15 @@ def replay_data(replay_id, lang_code="fr"):
 @replay_bp.route("/<lang_code>/api/replay/<int:replay_id>/decision", methods=["POST"])
 @login_required
 def save_replay_decision(replay_id, lang_code="fr"):
-    replay = TradeReplay.query.get(replay_id)
+    replay = (
+        TradeReplay.query
+        .join(Signal, TradeReplay.signal_id == Signal.id)
+        .filter(
+            TradeReplay.id == replay_id,
+            Signal.is_deleted == False
+        )
+        .first()
+    )
 
     if not replay:
         return jsonify({"error": "Replay introuvable"}), 404
@@ -968,22 +992,72 @@ def save_replay_decision(replay_id, lang_code="fr"):
 @replay_bp.route("/<lang_code>/my-performance")
 @login_required
 def my_performance(lang_code="fr"):
+    base_query = (
+        db.session.query(UserReplayDecision)
+        .join(TradeReplay, UserReplayDecision.trade_replay_id == TradeReplay.id)
+        .join(Signal, TradeReplay.signal_id == Signal.id)
+        .filter(
+            UserReplayDecision.user_id == current_user.id,
+            Signal.is_deleted == False
+        )
+    )
+
     decisions = (
-        UserReplayDecision.query.filter_by(user_id=current_user.id)
+        base_query
         .order_by(UserReplayDecision.created_at.desc())
         .all()
     )
 
     total_decisions = len(decisions)
 
-    avg_score = db.session.query(func.avg(UserReplayDecision.score)).filter(
-        UserReplayDecision.user_id == current_user.id
-    ).scalar()
+    avg_score = (
+        db.session.query(func.avg(UserReplayDecision.score))
+        .join(TradeReplay, UserReplayDecision.trade_replay_id == TradeReplay.id)
+        .join(Signal, TradeReplay.signal_id == Signal.id)
+        .filter(
+            UserReplayDecision.user_id == current_user.id,
+            Signal.is_deleted == False
+        )
+        .scalar()
+    )
     avg_score = round(float(avg_score), 1) if avg_score is not None else 0
 
-    good_count = UserReplayDecision.query.filter_by(user_id=current_user.id, status="good").count()
-    medium_count = UserReplayDecision.query.filter_by(user_id=current_user.id, status="medium").count()
-    bad_count = UserReplayDecision.query.filter_by(user_id=current_user.id, status="bad").count()
+    good_count = (
+        db.session.query(UserReplayDecision)
+        .join(TradeReplay, UserReplayDecision.trade_replay_id == TradeReplay.id)
+        .join(Signal, TradeReplay.signal_id == Signal.id)
+        .filter(
+            UserReplayDecision.user_id == current_user.id,
+            UserReplayDecision.status == "good",
+            Signal.is_deleted == False
+        )
+        .count()
+    )
+
+    medium_count = (
+        db.session.query(UserReplayDecision)
+        .join(TradeReplay, UserReplayDecision.trade_replay_id == TradeReplay.id)
+        .join(Signal, TradeReplay.signal_id == Signal.id)
+        .filter(
+            UserReplayDecision.user_id == current_user.id,
+            UserReplayDecision.status == "medium",
+            Signal.is_deleted == False
+        )
+        .count()
+    )
+
+    bad_count = (
+        db.session.query(UserReplayDecision)
+        .join(TradeReplay, UserReplayDecision.trade_replay_id == TradeReplay.id)
+        .join(Signal, TradeReplay.signal_id == Signal.id)
+        .filter(
+            UserReplayDecision.user_id == current_user.id,
+            UserReplayDecision.status == "bad",
+            Signal.is_deleted == False
+        )
+        .count()
+    )
+
     success_rate = round((good_count / total_decisions) * 100, 1) if total_decisions > 0 else 0
 
     if avg_score >= 8:

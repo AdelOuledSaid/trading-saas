@@ -81,12 +81,12 @@ def find_open_signal_for_closure(trade_id: str, asset: str):
     signal = None
 
     if trade_id:
-        signal = Signal.query.filter_by(trade_id=trade_id, status="OPEN").first()
+        signal = Signal.query.filter_by(trade_id=trade_id, status="OPEN", is_deleted=False).first()
 
     if not signal and asset:
         signal = (
             Signal.query
-            .filter_by(asset=asset, status="OPEN")
+            .filter_by(asset=asset, status="OPEN", is_deleted=False)
             .order_by(Signal.created_at.desc())
             .first()
         )
@@ -156,7 +156,7 @@ def auto_update_signal_status(price_map: dict):
     }
     """
 
-    signals = Signal.query.filter_by(status="OPEN").all()
+    signals = Signal.query.filter_by(status="OPEN", is_deleted=False).all()
 
     updated = 0
 

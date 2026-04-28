@@ -2,7 +2,7 @@ from app.extensions import db
 
 
 # =========================
-# USER (si pas déjà ailleurs)
+# USER
 # =========================
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)

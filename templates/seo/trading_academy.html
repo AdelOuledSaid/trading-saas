@@ -5,104 +5,180 @@
 {% endblock %}
 
 {% block meta_description %}
-{{ t("seo_academy_desc", "Apprenez le trading crypto avec analyse technique, gestion du risque, stratégie et discipline.") }}
+{{ t("seo_academy_desc", "Apprenez le trading crypto avec analyse technique, gestion du risque, stratégie, psychologie et discipline.") }}
 {% endblock %}
 
 {% block content %}
 <section class="seo-page" style="padding:70px 20px;">
-<div class="section-container" style="max-width:1100px;margin:0 auto;">
+    <div class="section-container" style="max-width:1180px;margin:0 auto;">
 
-<div style="padding:40px;border-radius:20px;background:linear-gradient(135deg,#08111f,#0b1728);margin-bottom:40px;">
-<span style="color:#00ff99;font-weight:700;">
-{{ t("academy_badge", "VelWolef Trading Academy") }}
-</span>
+        <div style="padding:42px;border-radius:28px;background:linear-gradient(135deg,#08111f,#0b1728);border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 70px rgba(0,0,0,.35);margin-bottom:46px;">
+            <span style="display:inline-block;margin-bottom:14px;color:#00ff99;font-weight:900;">
+                {{ t("academy_badge", "VelWolef Trading Academy") }}
+            </span>
 
-<h1 style="margin-top:10px;">
-{{ t("academy_h1", "Apprendre le trading crypto avec une méthode claire") }}
-</h1>
+            <h1 style="font-size:clamp(2.2rem,4vw,3.4rem);line-height:1.1;margin:0 0 18px;color:#fff;">
+                {{ t("academy_h1", "Apprendre le trading crypto avec une méthode claire") }}
+            </h1>
 
-<p style="color:#b8c7dd;margin-top:15px;">
-{{ t("academy_hero_desc", "La Trading Academy VelWolef aide les traders à comprendre l’analyse technique, la gestion du risque, la psychologie et la lecture du marché crypto.") }}
-</p>
+            <p style="font-size:18px;line-height:1.8;color:#b8c7dd;max-width:920px;margin:0;">
+                {{ t("academy_hero_desc", "La Trading Academy VelWolef aide les traders à comprendre l’analyse technique, la gestion du risque, la psychologie et la lecture du marché crypto.") }}
+            </p>
 
-<p style="margin-top:15px;color:#00ff99;font-weight:700;">
-{{ t("academy_proof", "✔️ Analyse technique • ✔️ Risk management • ✔️ Discipline • ✔️ Méthode") }}
-</p>
+            <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;color:#00ff99;font-weight:900;">
+                <span>✓ {{ t("academy_proof_analysis", "Analyse technique") }}</span>
+                <span>•</span>
+                <span>✓ {{ t("academy_proof_risk", "Risk management") }}</span>
+                <span>•</span>
+                <span>✓ {{ t("academy_proof_discipline", "Discipline") }}</span>
+                <span>•</span>
+                <span>✓ {{ t("academy_proof_method", "Méthode") }}</span>
+            </div>
 
-<div style="margin-top:25px;">
-<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:12px 18px;border-radius:8px;font-weight:bold;margin-right:10px;">
-{{ t("cta_access_academy", "Accéder à l’academy") }}
-</a>
+            <div style="margin-top:28px;display:flex;gap:14px;flex-wrap:wrap;">
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}"
+                   style="background:#00ff99;color:#07111f;padding:14px 22px;border-radius:12px;font-weight:900;text-decoration:none;">
+                    {{ t("cta_access_academy", "Accéder à l’academy") }}
+                </a>
 
-<a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}" style="border:1px solid #00ff99;color:#00ff99;padding:12px 18px;border-radius:8px;">
-{{ t("cta_crypto_signals", "Signaux crypto") }}
-</a>
-</div>
-</div>
+                <a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}"
+                   style="border:1px solid #00ff99;color:#00ff99;padding:14px 22px;border-radius:12px;font-weight:800;text-decoration:none;">
+                    {{ t("cta_crypto_signals", "Signaux crypto") }}
+                </a>
+            </div>
+        </div>
 
-<h2>{{ t("academy_why_title", "Pourquoi apprendre avant de trader ?") }}</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:48px;">
+            <div style="padding:24px;border-radius:20px;background:#0b1220;border:1px solid rgba(255,255,255,.08);">
+                <h3 style="margin:0 0 10px;color:#fff;">{{ t("academy_card_method_title", "Méthode structurée") }}</h3>
+                <p style="color:#b8c7dd;line-height:1.7;margin:0;">
+                    {{ t("academy_card_method_desc", "Comprendre les tendances, les niveaux, les confirmations et les invalidations.") }}
+                </p>
+            </div>
 
-<p>
-{{ t("academy_why_text_1", "Le trading crypto attire beaucoup de débutants, mais sans méthode, la majorité prend des décisions émotionnelles. Acheter trop tard, vendre trop tôt ou ignorer le stop loss sont des erreurs fréquentes.") }}
-</p>
+            <div style="padding:24px;border-radius:20px;background:#0b1220;border:1px solid rgba(255,255,255,.08);">
+                <h3 style="margin:0 0 10px;color:#fff;">{{ t("academy_card_risk_title", "Gestion du risque") }}</h3>
+                <p style="color:#b8c7dd;line-height:1.7;margin:0;">
+                    {{ t("academy_card_risk_desc", "Protéger son capital avant de chercher la performance.") }}
+                </p>
+            </div>
 
-<p>
-{{ t("academy_why_text_2", "Apprendre le trading permet de comprendre la structure du marché, les tendances, les niveaux clés et la gestion du risque. Cela transforme une décision impulsive en décision structurée.") }}
-</p>
+            <div style="padding:24px;border-radius:20px;background:#0b1220;border:1px solid rgba(255,255,255,.08);">
+                <h3 style="margin:0 0 10px;color:#fff;">{{ t("academy_card_psy_title", "Psychologie") }}</h3>
+                <p style="color:#b8c7dd;line-height:1.7;margin:0;">
+                    {{ t("academy_card_psy_desc", "Éviter l’impulsivité, le sur-trading et les décisions émotionnelles.") }}
+                </p>
+            </div>
+        </div>
 
-<h2>{{ t("academy_analysis_title", "Analyse technique") }}</h2>
+        <div style="max-width:980px;">
+            <h2 style="margin-top:0;color:#fff;">
+                {{ t("academy_why_title", "Pourquoi apprendre avant de trader ?") }}
+            </h2>
 
-<p>
-{{ t("academy_analysis_text", "L’analyse technique permet de lire les graphiques : supports, résistances, cassures, zones de liquidité, impulsions et corrections. Elle aide à comprendre où le marché peut réagir.") }}
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("academy_why_text_1", "Le trading crypto attire beaucoup de débutants, mais sans méthode, la majorité prend des décisions émotionnelles. Acheter trop tard, vendre trop tôt ou ignorer le stop loss sont des erreurs fréquentes.") }}
+            </p>
 
-<ul>
-<li>{{ t("academy_li_support", "Supports et résistances") }}</li>
-<li>{{ t("academy_li_trend", "Tendance et structure") }}</li>
-<li>{{ t("academy_li_liquidity", "Zones de liquidité") }}</li>
-<li>{{ t("academy_li_confirmation", "Confirmation avant entrée") }}</li>
-</ul>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("academy_why_text_2", "Apprendre le trading permet de comprendre la structure du marché, les tendances, les niveaux clés et la gestion du risque. Cela transforme une décision impulsive en décision structurée.") }}
+            </p>
 
-<h2>{{ t("academy_risk_title", "Gestion du risque") }}</h2>
+            <h2 style="margin-top:42px;color:#fff;">
+                {{ t("academy_analysis_title", "Analyse technique") }}
+            </h2>
 
-<p>
-{{ t("academy_risk_text", "La gestion du risque est plus importante que le signal lui-même. Un trader peut avoir raison sur la direction du marché mais perdre de l’argent s’il utilise un mauvais stop loss ou une taille de position trop élevée.") }}
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("academy_analysis_text", "L’analyse technique permet de lire les graphiques : supports, résistances, cassures, zones de liquidité, impulsions et corrections. Elle aide à comprendre où le marché peut réagir.") }}
+            </p>
 
-<h2>{{ t("academy_psy_title", "Psychologie et discipline") }}</h2>
+            <ul style="list-style:none;padding:0;margin:22px 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;">
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    🟢 {{ t("academy_li_support", "Supports et résistances") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    📈 {{ t("academy_li_trend", "Tendance et structure") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    💧 {{ t("academy_li_liquidity", "Zones de liquidité") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    ✅ {{ t("academy_li_confirmation", "Confirmation avant entrée") }}
+                </li>
+            </ul>
 
-<p>
-{{ t("academy_psy_text", "Le marché crypto est rapide et émotionnel. La discipline permet de ne pas courir après les bougies, d’éviter le sur-trading et de respecter son plan.") }}
-</p>
+            <h2 style="margin-top:46px;color:#fff;">
+                {{ t("academy_risk_title", "Gestion du risque") }}
+            </h2>
 
-<h2>{{ t("academy_apply_title", "Appliquer la méthode avec les signaux") }}</h2>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("academy_risk_text", "La gestion du risque est plus importante que le signal lui-même. Un trader peut avoir raison sur la direction du marché mais perdre de l’argent s’il utilise un mauvais stop loss ou une taille de position trop élevée.") }}
+            </p>
 
-<p>
-{{ t("academy_apply_text", "Les signaux VelWolef permettent d’appliquer cette logique : entrée, stop loss, take profit, contexte et invalidation. L’objectif est de progresser tout en suivant un cadre clair.") }}
-</p>
+            <h2 style="margin-top:42px;color:#fff;">
+                {{ t("academy_psy_title", "Psychologie et discipline") }}
+            </h2>
 
-<p>
-<a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}">
-{{ t("academy_to_signals", "Voir les signaux crypto") }}
-</a>
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("academy_psy_text", "Le marché crypto est rapide et émotionnel. La discipline permet de ne pas courir après les bougies, d’éviter le sur-trading et de respecter son plan.") }}
+            </p>
 
-<div style="margin-top:50px;padding:30px;background:#0b1220;border-radius:15px;text-align:center;">
-<h3>{{ t("academy_join_title", "Rejoindre l’écosystème VelWolef") }}</h3>
+            <h2 style="margin-top:42px;color:#fff;">
+                {{ t("academy_apply_title", "Appliquer la méthode avec les signaux") }}
+            </h2>
 
-<p style="color:#b8c7dd;">
-{{ t("academy_join_desc", "Accédez à la méthode, aux signaux, au dashboard, aux résultats et aux alertes Telegram.") }}
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("academy_apply_text", "Les signaux VelWolef permettent d’appliquer cette logique : entrée, stop loss, take profit, contexte et invalidation. L’objectif est de progresser tout en suivant un cadre clair.") }}
+            </p>
 
-<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:14px 20px;border-radius:10px;font-weight:bold;">
-{{ t("cta_final_offers", "Voir les offres") }}
-</a>
-</div>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                <a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}" style="color:#00ff99;font-weight:800;">
+                    {{ t("academy_to_signals", "Voir les signaux crypto") }}
+                </a>
+            </p>
+        </div>
 
-<p style="margin-top:20px;color:#6b7280;font-size:14px;">
-{{ t("risk_disclaimer", "Le trading crypto comporte des risques. Aucun signal ne garantit un gain.") }}
-</p>
+        <div style="margin-top:56px;padding:34px;border-radius:26px;background:linear-gradient(135deg,#0b1728,#07111f);border:1px solid rgba(0,255,153,.22);text-align:center;">
+            <span style="color:#00ff99;font-weight:900;">
+                {{ t("member_access", "Accès membre") }}
+            </span>
 
-</div>
+            <h2 style="margin:10px 0 0;color:#fff;">
+                {{ t("academy_join_title", "Rejoindre l’écosystème VelWolef") }}
+            </h2>
+
+            <p style="color:#b8c7dd;max-width:760px;margin:14px auto 0;line-height:1.8;">
+                {{ t("academy_join_desc", "Accédez à la méthode, aux signaux, au dashboard, aux résultats et aux alertes Telegram.") }}
+            </p>
+
+            <div style="margin-top:26px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;">
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}"
+                   style="background:#00ff99;color:#07111f;padding:15px 24px;border-radius:12px;font-weight:900;text-decoration:none;">
+                    {{ t("cta_final_offers", "Voir les offres") }}
+                </a>
+
+                <a href="{{ url_for('pages.resultats_trading', lang_code=current_lang) }}"
+                   style="border:1px solid rgba(255,255,255,.18);color:#fff;padding:15px 24px;border-radius:12px;font-weight:800;text-decoration:none;">
+                    {{ t("cta_results", "Voir les résultats") }}
+                </a>
+            </div>
+        </div>
+
+        <p style="margin-top:24px;color:#8ea2c4;font-size:14px;line-height:1.6;">
+            {{ t("risk_disclaimer", "Le trading crypto comporte des risques. Aucun signal ne garantit un gain.") }}
+        </p>
+
+    </div>
 </section>
+
+<style>
+@media (max-width: 900px) {
+    .seo-page [style*="grid-template-columns:repeat(3"] {
+        grid-template-columns: 1fr !important;
+    }
+    .seo-page [style*="grid-template-columns:repeat(2"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+</style>
 {% endblock %}

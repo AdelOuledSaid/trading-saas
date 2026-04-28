@@ -10,94 +10,181 @@
 
 {% block content %}
 <section class="seo-page" style="padding:70px 20px;">
-<div class="section-container" style="max-width:1100px;margin:0 auto;">
+    <div class="section-container" style="max-width:1180px;margin:0 auto;">
 
-<div style="padding:40px;border-radius:20px;background:linear-gradient(135deg,#08111f,#0b1728);margin-bottom:40px;">
-<span style="color:#00ff99;font-weight:700;">
-{{ t("results_badge", "VelWolef Performance Desk") }}
-</span>
+        <div style="padding:42px;border-radius:28px;background:linear-gradient(135deg,#08111f,#0b1728);border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 70px rgba(0,0,0,.35);margin-bottom:46px;">
+            <span style="display:inline-block;margin-bottom:14px;color:#00ff99;font-weight:900;">
+                {{ t("results_badge", "VelWolef Performance Desk") }}
+            </span>
 
-<h1 style="margin-top:10px;">
-{{ t("results_h1", "Résultats trading crypto") }}
-</h1>
+            <h1 style="font-size:clamp(2.2rem,4vw,3.4rem);line-height:1.1;margin:0 0 18px;color:#fff;">
+                {{ t("results_h1", "Résultats trading crypto") }}
+            </h1>
 
-<p style="color:#b8c7dd;margin-top:15px;">
-{{ t("results_hero_desc", "Les résultats trading permettent d’évaluer la qualité d’un système : entrées, sorties, stop loss, take profit, discipline et gestion du risque.") }}
-</p>
+            <p style="font-size:18px;line-height:1.8;color:#b8c7dd;max-width:920px;margin:0;">
+                {{ t("results_hero_desc", "Les résultats trading permettent d’évaluer la qualité d’un système : entrées, sorties, stop loss, take profit, discipline et gestion du risque.") }}
+            </p>
 
-<p style="margin-top:15px;color:#00ff99;font-weight:700;">
-{{ t("results_proof", "✔️ Trades suivis • ✔️ Winrate • ✔️ Risk management • ✔️ Transparence") }}
-</p>
+            <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;color:#00ff99;font-weight:900;">
+                <span>✓ {{ t("results_proof_trades", "Trades suivis") }}</span>
+                <span>•</span>
+                <span>✓ {{ t("results_proof_winrate", "Winrate") }}</span>
+                <span>•</span>
+                <span>✓ {{ t("results_proof_risk", "Risk management") }}</span>
+                <span>•</span>
+                <span>✓ {{ t("results_proof_transparency", "Transparence") }}</span>
+            </div>
 
-<div style="margin-top:25px;">
-<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:12px 18px;border-radius:8px;font-weight:bold;margin-right:10px;">
-{{ t("cta_see_signals", "Voir les signaux") }}
-</a>
+            <div style="margin-top:28px;display:flex;gap:14px;flex-wrap:wrap;">
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}"
+                   style="background:#00ff99;color:#07111f;padding:14px 22px;border-radius:12px;font-weight:900;text-decoration:none;">
+                    {{ t("cta_see_signals", "Voir les signaux") }}
+                </a>
 
-<a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}" style="border:1px solid #00ff99;color:#00ff99;padding:12px 18px;border-radius:8px;">
-{{ t("cta_crypto_signals", "Signaux crypto") }}
-</a>
-</div>
-</div>
+                <a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}"
+                   style="border:1px solid #00ff99;color:#00ff99;padding:14px 22px;border-radius:12px;font-weight:800;text-decoration:none;">
+                    {{ t("cta_crypto_signals", "Signaux crypto") }}
+                </a>
+            </div>
+        </div>
 
-<h2>{{ t("results_why_title", "Pourquoi suivre les résultats trading ?") }}</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:48px;">
+            <div style="padding:24px;border-radius:20px;background:#0b1220;border:1px solid rgba(255,255,255,.08);">
+                <h3 style="margin:0 0 10px;color:#fff;">{{ t("results_card_tracking_title", "Suivi clair") }}</h3>
+                <p style="color:#b8c7dd;line-height:1.7;margin:0;">
+                    {{ t("results_card_tracking_desc", "Chaque trade doit être lisible : actif, direction, entrée, stop loss, take profit et statut.") }}
+                </p>
+            </div>
 
-<p>
-{{ t("results_why_text_1", "Les résultats permettent de comprendre si une stratégie est réellement structurée. Un bon système ne se juge pas seulement sur un trade gagnant, mais sur la cohérence globale des décisions.") }}
-</p>
+            <div style="padding:24px;border-radius:20px;background:#0b1220;border:1px solid rgba(255,255,255,.08);">
+                <h3 style="margin:0 0 10px;color:#fff;">{{ t("results_card_risk_title", "Risque maîtrisé") }}</h3>
+                <p style="color:#b8c7dd;line-height:1.7;margin:0;">
+                    {{ t("results_card_risk_desc", "La qualité d’un système dépend autant des pertes contrôlées que des gains réalisés.") }}
+                </p>
+            </div>
 
-<p>
-{{ t("results_why_text_2", "Un trader sérieux regarde le winrate, le ratio risque/rendement, la perte moyenne, le gain moyen et la discipline d’exécution.") }}
-</p>
+            <div style="padding:24px;border-radius:20px;background:#0b1220;border:1px solid rgba(255,255,255,.08);">
+                <h3 style="margin:0 0 10px;color:#fff;">{{ t("results_card_progress_title", "Progression") }}</h3>
+                <p style="color:#b8c7dd;line-height:1.7;margin:0;">
+                    {{ t("results_card_progress_desc", "Analyser les résultats permet de comprendre les setups efficaces et les erreurs à éviter.") }}
+                </p>
+            </div>
+        </div>
 
-<h2>{{ t("results_performance_title", "Performance et gestion du risque") }}</h2>
+        <div style="max-width:980px;">
+            <h2 style="margin-top:0;color:#fff;">
+                {{ t("results_why_title", "Pourquoi suivre les résultats trading ?") }}
+            </h2>
 
-<p>
-{{ t("results_performance_text", "Un winrate élevé ne suffit pas si les pertes sont trop grandes. À l’inverse, un winrate moyen peut rester rentable si les gains sont plus importants que les pertes.") }}
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("results_why_text_1", "Les résultats permettent de comprendre si une stratégie est réellement structurée. Un bon système ne se juge pas seulement sur un trade gagnant, mais sur la cohérence globale des décisions.") }}
+            </p>
 
-<ul>
-<li>{{ t("results_li_entry", "Prix d’entrée") }}</li>
-<li>{{ t("results_li_sl", "Stop loss") }}</li>
-<li>{{ t("results_li_tp", "Take profit") }}</li>
-<li>{{ t("results_li_status", "Statut du trade") }}</li>
-<li>{{ t("results_li_context", "Contexte du signal") }}</li>
-</ul>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("results_why_text_2", "Un trader sérieux regarde le winrate, le ratio risque/rendement, la perte moyenne, le gain moyen et la discipline d’exécution.") }}
+            </p>
 
-<h2>{{ t("results_transparency_title", "Transparence et suivi") }}</h2>
+            <h2 style="margin-top:42px;color:#fff;">
+                {{ t("results_performance_title", "Performance et gestion du risque") }}
+            </h2>
 
-<p>
-{{ t("results_transparency_text", "VelWolef met l’accent sur la structure : chaque signal doit avoir une logique claire. Le suivi des résultats permet d’identifier les setups efficaces et les conditions à éviter.") }}
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("results_performance_text", "Un winrate élevé ne suffit pas si les pertes sont trop grandes. À l’inverse, un winrate moyen peut rester rentable si les gains sont plus importants que les pertes.") }}
+            </p>
 
-<h2>{{ t("results_learn_title", "Apprendre grâce aux résultats") }}</h2>
+            <ul style="list-style:none;padding:0;margin:22px 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;">
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    🎯 {{ t("results_li_entry", "Prix d’entrée") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    🛑 {{ t("results_li_sl", "Stop loss") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    💰 {{ t("results_li_tp", "Take profit") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    📌 {{ t("results_li_status", "Statut du trade") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    🧠 {{ t("results_li_context", "Contexte du signal") }}
+                </li>
+                <li style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.08);color:#e5edf7;">
+                    ⚖️ {{ t("results_li_rr", "Ratio risque / rendement") }}
+                </li>
+            </ul>
 
-<p>
-{{ t("results_learn_text", "Analyser les résultats permet de progresser. Un trade perdant peut être utile s’il montre une erreur de timing, une mauvaise lecture du contexte ou un risque trop élevé.") }}
-</p>
+            <h2 style="margin-top:46px;color:#fff;">
+                {{ t("results_transparency_title", "Transparence et suivi") }}
+            </h2>
 
-<p>
-<a href="{{ url_for('pages.trading_academy', lang_code=current_lang) }}">
-{{ t("results_to_academy", "Découvrir la Trading Academy") }}
-</a>
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("results_transparency_text", "VelWolef met l’accent sur la structure : chaque signal doit avoir une logique claire. Le suivi des résultats permet d’identifier les setups efficaces et les conditions à éviter.") }}
+            </p>
 
-<div style="margin-top:50px;padding:30px;background:#0b1220;border-radius:15px;text-align:center;">
-<h3>{{ t("results_join_title", "Accéder aux résultats et aux signaux") }}</h3>
+            <h2 style="margin-top:42px;color:#fff;">
+                {{ t("results_winrate_title", "Winrate, PnL et discipline") }}
+            </h2>
 
-<p style="color:#b8c7dd;">
-{{ t("results_join_desc", "Rejoignez VelWolef pour suivre les signaux, les performances, le dashboard et les alertes Telegram.") }}
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("results_winrate_text", "Le winrate est utile, mais il ne raconte pas toute l’histoire. Une stratégie peut avoir beaucoup de trades gagnants mais rester fragile si les pertes sont trop élevées. C’est pourquoi la discipline, la taille de position et le respect du stop loss restent essentiels.") }}
+            </p>
 
-<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:14px 20px;border-radius:10px;font-weight:bold;">
-{{ t("cta_final_offers", "Voir les offres") }}
-</a>
-</div>
+            <h2 style="margin-top:42px;color:#fff;">
+                {{ t("results_learn_title", "Apprendre grâce aux résultats") }}
+            </h2>
 
-<p style="margin-top:20px;color:#6b7280;font-size:14px;">
-{{ t("risk_disclaimer", "Le trading crypto comporte des risques. Aucun signal ne garantit un gain.") }}
-</p>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                {{ t("results_learn_text", "Analyser les résultats permet de progresser. Un trade perdant peut être utile s’il montre une erreur de timing, une mauvaise lecture du contexte ou un risque trop élevé.") }}
+            </p>
 
-</div>
+            <p style="color:#b8c7dd;line-height:1.8;">
+                <a href="{{ url_for('pages.trading_academy', lang_code=current_lang) }}" style="color:#00ff99;font-weight:800;">
+                    {{ t("results_to_academy", "Découvrir la Trading Academy") }}
+                </a>
+            </p>
+        </div>
+
+        <div style="margin-top:56px;padding:34px;border-radius:26px;background:linear-gradient(135deg,#0b1728,#07111f);border:1px solid rgba(0,255,153,.22);text-align:center;">
+            <span style="color:#00ff99;font-weight:900;">
+                {{ t("member_access", "Accès membre") }}
+            </span>
+
+            <h2 style="margin:10px 0 0;color:#fff;">
+                {{ t("results_join_title", "Accéder aux résultats et aux signaux") }}
+            </h2>
+
+            <p style="color:#b8c7dd;max-width:760px;margin:14px auto 0;line-height:1.8;">
+                {{ t("results_join_desc", "Rejoignez VelWolef pour suivre les signaux, les performances, le dashboard et les alertes Telegram.") }}
+            </p>
+
+            <div style="margin-top:26px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;">
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}"
+                   style="background:#00ff99;color:#07111f;padding:15px 24px;border-radius:12px;font-weight:900;text-decoration:none;">
+                    {{ t("cta_final_offers", "Voir les offres") }}
+                </a>
+
+                <a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}"
+                   style="border:1px solid rgba(255,255,255,.18);color:#fff;padding:15px 24px;border-radius:12px;font-weight:800;text-decoration:none;">
+                    {{ t("cta_crypto_signals", "Signaux crypto") }}
+                </a>
+            </div>
+        </div>
+
+        <p style="margin-top:24px;color:#8ea2c4;font-size:14px;line-height:1.6;">
+            {{ t("risk_disclaimer", "Le trading crypto comporte des risques. Aucun signal ne garantit un gain.") }}
+        </p>
+
+    </div>
 </section>
+
+<style>
+@media (max-width: 900px) {
+    .seo-page [style*="grid-template-columns:repeat(3"] {
+        grid-template-columns: 1fr !important;
+    }
+    .seo-page [style*="grid-template-columns:repeat(2"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+</style>
 {% endblock %}
