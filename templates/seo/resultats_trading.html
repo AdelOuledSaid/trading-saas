@@ -1,61 +1,102 @@
 {% extends "base.html" %}
 
-{% block title %}Résultats trading crypto | Performance & winrate | VelWolef{% endblock %}
+{% block title %}
+{{ t("seo_results_title", "Résultats trading crypto | Performance & signaux | VelWolef") }}
+{% endblock %}
 
 {% block meta_description %}
-Consultez les résultats des signaux crypto : performance, winrate, gestion du risque et historique des trades.
+{{ t("seo_results_desc", "Découvrez les résultats des signaux trading crypto : performance, winrate, gestion du risque et historique des trades.") }}
 {% endblock %}
 
 {% block content %}
-<section class="seo-page">
-<div class="section-container">
+<section class="seo-page" style="padding:70px 20px;">
+<div class="section-container" style="max-width:1100px;margin:0 auto;">
 
-<h1>Résultats trading crypto</h1>
+<div style="padding:40px;border-radius:20px;background:linear-gradient(135deg,#08111f,#0b1728);margin-bottom:40px;">
+<span style="color:#00ff99;font-weight:700;">
+{{ t("results_badge", "VelWolef Performance Desk") }}
+</span>
 
-<p>
-Les résultats trading sont essentiels pour évaluer la qualité d’un système.
-Ils permettent de mesurer la performance réelle et d’identifier les points forts et faibles.
+<h1 style="margin-top:10px;">
+{{ t("results_h1", "Résultats trading crypto") }}
+</h1>
+
+<p style="color:#b8c7dd;margin-top:15px;">
+{{ t("results_hero_desc", "Les résultats trading permettent d’évaluer la qualité d’un système : entrées, sorties, stop loss, take profit, discipline et gestion du risque.") }}
 </p>
 
-<h2>Performance des signaux</h2>
-
-<p>
-Chaque signal VelWolef est basé sur une analyse complète du marché.
-Les performances ne dépendent pas uniquement du taux de réussite,
-mais aussi de la gestion du risque.
+<p style="margin-top:15px;color:#00ff99;font-weight:700;">
+{{ t("results_proof", "✔️ Trades suivis • ✔️ Winrate • ✔️ Risk management • ✔️ Transparence") }}
 </p>
 
-<h2>Winrate vs Risk Management</h2>
+<div style="margin-top:25px;">
+<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:12px 18px;border-radius:8px;font-weight:bold;margin-right:10px;">
+{{ t("cta_see_signals", "Voir les signaux") }}
+</a>
 
-<p>
-Un bon trader ne cherche pas à gagner tous ses trades.
-Il cherche à contrôler ses pertes et maximiser ses gains.
-</p>
-
-<p>
-Un ratio risque/rendement bien structuré permet d’être rentable
-même avec un winrate moyen.
-</p>
-
-<h2>Transparence</h2>
-
-<p>
-Tous les trades incluent une entrée, un stop loss et un take profit.
-Cela garantit une transparence totale.
-</p>
-
-<p>
-Pour comprendre les setups utilisés, consulte aussi notre
-<a href="{{ url_for('pages.trading_academy', lang_code=current_lang) }}">
-academy trading
-</a>.
-</p>
-
-<div class="market-cta-row">
-<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="market-btn">
-Voir les signaux
+<a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}" style="border:1px solid #00ff99;color:#00ff99;padding:12px 18px;border-radius:8px;">
+{{ t("cta_crypto_signals", "Signaux crypto") }}
 </a>
 </div>
+</div>
+
+<h2>{{ t("results_why_title", "Pourquoi suivre les résultats trading ?") }}</h2>
+
+<p>
+{{ t("results_why_text_1", "Les résultats permettent de comprendre si une stratégie est réellement structurée. Un bon système ne se juge pas seulement sur un trade gagnant, mais sur la cohérence globale des décisions.") }}
+</p>
+
+<p>
+{{ t("results_why_text_2", "Un trader sérieux regarde le winrate, le ratio risque/rendement, la perte moyenne, le gain moyen et la discipline d’exécution.") }}
+</p>
+
+<h2>{{ t("results_performance_title", "Performance et gestion du risque") }}</h2>
+
+<p>
+{{ t("results_performance_text", "Un winrate élevé ne suffit pas si les pertes sont trop grandes. À l’inverse, un winrate moyen peut rester rentable si les gains sont plus importants que les pertes.") }}
+</p>
+
+<ul>
+<li>{{ t("results_li_entry", "Prix d’entrée") }}</li>
+<li>{{ t("results_li_sl", "Stop loss") }}</li>
+<li>{{ t("results_li_tp", "Take profit") }}</li>
+<li>{{ t("results_li_status", "Statut du trade") }}</li>
+<li>{{ t("results_li_context", "Contexte du signal") }}</li>
+</ul>
+
+<h2>{{ t("results_transparency_title", "Transparence et suivi") }}</h2>
+
+<p>
+{{ t("results_transparency_text", "VelWolef met l’accent sur la structure : chaque signal doit avoir une logique claire. Le suivi des résultats permet d’identifier les setups efficaces et les conditions à éviter.") }}
+</p>
+
+<h2>{{ t("results_learn_title", "Apprendre grâce aux résultats") }}</h2>
+
+<p>
+{{ t("results_learn_text", "Analyser les résultats permet de progresser. Un trade perdant peut être utile s’il montre une erreur de timing, une mauvaise lecture du contexte ou un risque trop élevé.") }}
+</p>
+
+<p>
+<a href="{{ url_for('pages.trading_academy', lang_code=current_lang) }}">
+{{ t("results_to_academy", "Découvrir la Trading Academy") }}
+</a>
+</p>
+
+<div style="margin-top:50px;padding:30px;background:#0b1220;border-radius:15px;text-align:center;">
+<h3>{{ t("results_join_title", "Accéder aux résultats et aux signaux") }}</h3>
+
+<p style="color:#b8c7dd;">
+{{ t("results_join_desc", "Rejoignez VelWolef pour suivre les signaux, les performances, le dashboard et les alertes Telegram.") }}
+</p>
+
+<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:14px 20px;border-radius:10px;font-weight:bold;">
+{{ t("cta_final_offers", "Voir les offres") }}
+</a>
+</div>
+
+<p style="margin-top:20px;color:#6b7280;font-size:14px;">
+{{ t("risk_disclaimer", "Le trading crypto comporte des risques. Aucun signal ne garantit un gain.") }}
+</p>
 
 </div>
 </section>

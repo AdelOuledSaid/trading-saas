@@ -1,54 +1,107 @@
 {% extends "base.html" %}
 
-{% block title %}Apprendre le trading crypto | Academy VelWolef{% endblock %}
+{% block title %}
+{{ t("seo_academy_title", "Apprendre le trading crypto | Academy VelWolef") }}
+{% endblock %}
 
 {% block meta_description %}
-Apprenez le trading crypto avec analyse technique, gestion du risque et stratégie.
+{{ t("seo_academy_desc", "Apprenez le trading crypto avec analyse technique, gestion du risque, stratégie et discipline.") }}
 {% endblock %}
 
 {% block content %}
-<section class="seo-page">
-<div class="section-container">
+<section class="seo-page" style="padding:70px 20px;">
+<div class="section-container" style="max-width:1100px;margin:0 auto;">
 
-<h1>Apprendre le trading crypto</h1>
+<div style="padding:40px;border-radius:20px;background:linear-gradient(135deg,#08111f,#0b1728);margin-bottom:40px;">
+<span style="color:#00ff99;font-weight:700;">
+{{ t("academy_badge", "VelWolef Trading Academy") }}
+</span>
 
-<p>
-Le trading crypto nécessite une approche structurée.
-Sans méthode, la majorité des traders perdent de l’argent.
+<h1 style="margin-top:10px;">
+{{ t("academy_h1", "Apprendre le trading crypto avec une méthode claire") }}
+</h1>
+
+<p style="color:#b8c7dd;margin-top:15px;">
+{{ t("academy_hero_desc", "La Trading Academy VelWolef aide les traders à comprendre l’analyse technique, la gestion du risque, la psychologie et la lecture du marché crypto.") }}
 </p>
 
-<h2>Analyse technique</h2>
-
-<p>
-L’analyse technique permet de comprendre le comportement du prix.
-Supports, résistances et tendances sont essentiels.
+<p style="margin-top:15px;color:#00ff99;font-weight:700;">
+{{ t("academy_proof", "✔️ Analyse technique • ✔️ Risk management • ✔️ Discipline • ✔️ Méthode") }}
 </p>
 
-<h2>Gestion du risque</h2>
+<div style="margin-top:25px;">
+<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:12px 18px;border-radius:8px;font-weight:bold;margin-right:10px;">
+{{ t("cta_access_academy", "Accéder à l’academy") }}
+</a>
 
-<p>
-La gestion du risque est la clé du succès.
-Un bon trader protège son capital avant de chercher le profit.
-</p>
-
-<h2>Discipline et stratégie</h2>
-
-<p>
-Une stratégie claire permet d’éviter les décisions émotionnelles.
-</p>
-
-<p>
-Pour appliquer ces concepts, utilise nos
-<a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}">
-signaux crypto
-</a>.
-</p>
-
-<div class="market-cta-row">
-<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="market-btn">
-Accéder à l’academy
+<a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}" style="border:1px solid #00ff99;color:#00ff99;padding:12px 18px;border-radius:8px;">
+{{ t("cta_crypto_signals", "Signaux crypto") }}
 </a>
 </div>
+</div>
+
+<h2>{{ t("academy_why_title", "Pourquoi apprendre avant de trader ?") }}</h2>
+
+<p>
+{{ t("academy_why_text_1", "Le trading crypto attire beaucoup de débutants, mais sans méthode, la majorité prend des décisions émotionnelles. Acheter trop tard, vendre trop tôt ou ignorer le stop loss sont des erreurs fréquentes.") }}
+</p>
+
+<p>
+{{ t("academy_why_text_2", "Apprendre le trading permet de comprendre la structure du marché, les tendances, les niveaux clés et la gestion du risque. Cela transforme une décision impulsive en décision structurée.") }}
+</p>
+
+<h2>{{ t("academy_analysis_title", "Analyse technique") }}</h2>
+
+<p>
+{{ t("academy_analysis_text", "L’analyse technique permet de lire les graphiques : supports, résistances, cassures, zones de liquidité, impulsions et corrections. Elle aide à comprendre où le marché peut réagir.") }}
+</p>
+
+<ul>
+<li>{{ t("academy_li_support", "Supports et résistances") }}</li>
+<li>{{ t("academy_li_trend", "Tendance et structure") }}</li>
+<li>{{ t("academy_li_liquidity", "Zones de liquidité") }}</li>
+<li>{{ t("academy_li_confirmation", "Confirmation avant entrée") }}</li>
+</ul>
+
+<h2>{{ t("academy_risk_title", "Gestion du risque") }}</h2>
+
+<p>
+{{ t("academy_risk_text", "La gestion du risque est plus importante que le signal lui-même. Un trader peut avoir raison sur la direction du marché mais perdre de l’argent s’il utilise un mauvais stop loss ou une taille de position trop élevée.") }}
+</p>
+
+<h2>{{ t("academy_psy_title", "Psychologie et discipline") }}</h2>
+
+<p>
+{{ t("academy_psy_text", "Le marché crypto est rapide et émotionnel. La discipline permet de ne pas courir après les bougies, d’éviter le sur-trading et de respecter son plan.") }}
+</p>
+
+<h2>{{ t("academy_apply_title", "Appliquer la méthode avec les signaux") }}</h2>
+
+<p>
+{{ t("academy_apply_text", "Les signaux VelWolef permettent d’appliquer cette logique : entrée, stop loss, take profit, contexte et invalidation. L’objectif est de progresser tout en suivant un cadre clair.") }}
+</p>
+
+<p>
+<a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}">
+{{ t("academy_to_signals", "Voir les signaux crypto") }}
+</a>
+</p>
+
+<div style="margin-top:50px;padding:30px;background:#0b1220;border-radius:15px;text-align:center;">
+<h3>{{ t("academy_join_title", "Rejoindre l’écosystème VelWolef") }}</h3>
+
+<p style="color:#b8c7dd;">
+{{ t("academy_join_desc", "Accédez à la méthode, aux signaux, au dashboard, aux résultats et aux alertes Telegram.") }}
+</p>
+
+<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:14px 20px;border-radius:10px;font-weight:bold;">
+{{ t("cta_final_offers", "Voir les offres") }}
+</a>
+</div>
+
+<p style="margin-top:20px;color:#6b7280;font-size:14px;">
+{{ t("risk_disclaimer", "Le trading crypto comporte des risques. Aucun signal ne garantit un gain.") }}
+</p>
 
 </div>
 </section>

@@ -1,79 +1,101 @@
 {% extends "base.html" %}
 
-{% block title %}Analyse Bitcoin en temps réel | BTC tendance & niveaux | VelWolef{% endblock %}
+{% block title %}
+{{ t("seo_btc_title", "Analyse Bitcoin en temps réel | BTC tendance & niveaux | VelWolef") }}
+{% endblock %}
 
 {% block meta_description %}
-Analyse Bitcoin complète : tendance BTC, niveaux clés, dominance, volatilité et lecture du marché crypto.
+{{ t("seo_btc_desc", "Analyse Bitcoin complète : tendance BTC, niveaux clés, dominance, volatilité et lecture du marché crypto.") }}
 {% endblock %}
 
 {% block content %}
-<section class="seo-page">
-<div class="section-container">
+<section class="seo-page" style="padding:70px 20px;">
+<div class="section-container" style="max-width:1100px;margin:0 auto;">
 
-<h1>Analyse Bitcoin en temps réel (BTC)</h1>
+<div style="padding:40px;border-radius:20px;background:linear-gradient(135deg,#08111f,#0b1728);margin-bottom:40px;">
+<span style="color:#00ff99;font-weight:700;">
+{{ t("btc_badge", "VelWolef Bitcoin Intelligence") }}
+</span>
 
-<p>
-Bitcoin est l’actif principal du marché crypto. Il agit comme un indicateur global qui influence directement
-Ethereum, Solana et l’ensemble des altcoins. Comprendre le comportement du BTC est donc essentiel pour
-prendre des décisions de trading efficaces.
+<h1 style="margin-top:10px;">
+{{ t("btc_h1", "Analyse Bitcoin en temps réel") }}
+</h1>
+
+<p style="color:#b8c7dd;margin-top:15px;">
+{{ t("btc_hero_desc", "Bitcoin reste l’actif directeur du marché crypto. Comprendre sa tendance permet de mieux anticiper les mouvements de BTC, ETH, SOL et des altcoins.") }}
 </p>
 
-<p>
-Une analyse Bitcoin sérieuse ne se limite pas à regarder un graphique. Elle implique la compréhension
-de la structure du marché, des zones de liquidité, des impulsions et des corrections. Chez VelWolef,
-chaque lecture du BTC est faite dans un contexte global incluant la dominance, le sentiment du marché
-et les conditions macro-économiques.
+<p style="margin-top:15px;color:#00ff99;font-weight:700;">
+{{ t("btc_proof", "✔️ Tendance BTC • ✔️ Dominance • ✔️ Niveaux clés • ✔️ Lecture marché") }}
 </p>
 
-<h2>Tendance actuelle du Bitcoin</h2>
+<div style="margin-top:25px;">
+<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:12px 18px;border-radius:8px;font-weight:bold;margin-right:10px;">
+{{ t("cta_access_signals", "Accéder aux signaux") }}
+</a>
 
-<p>
-Le marché évolue par cycles. Bitcoin passe par des phases d’expansion, de consolidation et de correction.
-Identifier ces phases permet d’éviter les entrées tardives et d’optimiser les points d’entrée.
-</p>
-
-<p>
-Une tendance haussière est caractérisée par des sommets et des creux de plus en plus élevés,
-tandis qu’une tendance baissière montre l’inverse. Entre les deux, des phases de compression
-peuvent apparaître, rendant le marché plus difficile à trader.
-</p>
-
-<h2>Niveaux clés et zones de liquidité</h2>
-
-<p>
-Les niveaux de support et de résistance sont des zones où le prix réagit fréquemment.
-Ils permettent d’identifier des points d’entrée et de sortie stratégiques.
-</p>
-
-<p>
-Les zones de liquidité, souvent situées autour des anciens highs et lows,
-sont particulièrement importantes car elles attirent les ordres du marché.
-</p>
-
-<h2>Dominance Bitcoin</h2>
-
-<p>
-La dominance BTC mesure la part de Bitcoin dans la capitalisation totale du marché crypto.
-Une dominance en hausse signifie que le capital se dirige vers BTC,
-tandis qu’une baisse indique un intérêt croissant pour les altcoins.
-</p>
-
-<p>
-Comprendre cette dynamique est essentiel pour adapter sa stratégie.
-</p>
-
-<p>
-Pour trader directement, consulte aussi nos
-<a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}">
-signaux crypto
-</a>.
-</p>
-
-<div class="market-cta-row">
-<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="market-btn">
-Accéder aux signaux
+<a href="{{ url_for('pages.market_crypto', lang_code=current_lang) }}" style="border:1px solid #00ff99;color:#00ff99;padding:12px 18px;border-radius:8px;">
+{{ t("cta_live_crypto", "Voir le marché crypto") }}
 </a>
 </div>
+</div>
+
+<h2>{{ t("btc_trend_title", "Pourquoi analyser Bitcoin avant de trader ?") }}</h2>
+
+<p>
+{{ t("btc_trend_text_1", "Bitcoin influence directement l’ensemble du marché crypto. Quand BTC accélère, corrige ou consolide, Ethereum et les altcoins réagissent souvent avec plus ou moins de retard.") }}
+</p>
+
+<p>
+{{ t("btc_trend_text_2", "Une bonne analyse Bitcoin permet d’éviter les entrées isolées. Avant de suivre un signal crypto, il faut comprendre la structure du BTC, la volatilité, la dominance et les zones de liquidité.") }}
+</p>
+
+<h2>{{ t("btc_levels_title", "Niveaux clés et zones de liquidité") }}</h2>
+
+<p>
+{{ t("btc_levels_text", "Les niveaux clés sont les zones où le marché réagit le plus souvent. Ils peuvent servir de support, de résistance, de zone d’entrée ou de zone d’invalidation.") }}
+</p>
+
+<ul>
+<li>{{ t("btc_li_support", "Supports majeurs") }}</li>
+<li>{{ t("btc_li_resistance", "Résistances importantes") }}</li>
+<li>{{ t("btc_li_liquidity", "Zones de liquidité") }}</li>
+<li>{{ t("btc_li_invalidation", "Niveaux d’invalidation") }}</li>
+</ul>
+
+<h2>{{ t("btc_dominance_title", "Dominance Bitcoin") }}</h2>
+
+<p>
+{{ t("btc_dominance_text", "La dominance Bitcoin indique si le capital se concentre sur BTC ou se déplace vers les altcoins. Une dominance forte favorise souvent Bitcoin. Une dominance en baisse peut créer des opportunités sur Ethereum et Solana.") }}
+</p>
+
+<h2>{{ t("btc_signal_title", "Analyse BTC et signaux crypto") }}</h2>
+
+<p>
+{{ t("btc_signal_text", "Chez VelWolef, l’analyse Bitcoin sert de base avant d’évaluer les opportunités sur les autres actifs. Un signal crypto doit toujours être cohérent avec le contexte global.") }}
+</p>
+
+<p>
+<a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}">
+{{ t("btc_to_crypto_signals", "Voir les signaux crypto") }}
+</a>
+</p>
+
+<div style="margin-top:50px;padding:30px;background:#0b1220;border-radius:15px;text-align:center;">
+<h3>{{ t("btc_join_title", "Recevoir les signaux basés sur l’analyse BTC") }}</h3>
+
+<p style="color:#b8c7dd;">
+{{ t("btc_join_desc", "Accédez aux signaux, au dashboard, aux alertes Telegram et à une lecture structurée du marché crypto.") }}
+</p>
+
+<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:14px 20px;border-radius:10px;font-weight:bold;">
+{{ t("cta_final_offers", "Voir les offres") }}
+</a>
+</div>
+
+<p style="margin-top:20px;color:#6b7280;font-size:14px;">
+{{ t("risk_disclaimer", "Le trading crypto comporte des risques. Aucun signal ne garantit un gain.") }}
+</p>
 
 </div>
 </section>

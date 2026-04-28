@@ -1,52 +1,106 @@
 {% extends "base.html" %}
 
-{% block title %}Analyse crypto globale | BTC ETH altcoins | VelWolef{% endblock %}
+{% block title %}
+{{ t("seo_crypto_analysis_title", "Analyse crypto globale | BTC ETH altcoins | VelWolef") }}
+{% endblock %}
 
 {% block meta_description %}
-Analyse complète du marché crypto : Bitcoin, Ethereum, altcoins et macro.
+{{ t("seo_crypto_analysis_desc", "Analyse complète du marché crypto : Bitcoin, Ethereum, altcoins, dominance, volatilité et contexte macro.") }}
 {% endblock %}
 
 {% block content %}
-<section class="seo-page">
-<div class="section-container">
+<section class="seo-page" style="padding:70px 20px;">
+<div class="section-container" style="max-width:1100px;margin:0 auto;">
 
-<h1>Analyse du marché crypto</h1>
+<div style="padding:40px;border-radius:20px;background:linear-gradient(135deg,#08111f,#0b1728);margin-bottom:40px;">
+<span style="color:#00ff99;font-weight:700;">
+{{ t("crypto_analysis_badge", "VelWolef Crypto Market Analysis") }}
+</span>
 
-<p>
-Le marché crypto est influencé par plusieurs facteurs : Bitcoin,
-la liquidité, la macro et la psychologie des investisseurs.
+<h1 style="margin-top:10px;">
+{{ t("crypto_analysis_h1", "Analyse du marché crypto") }}
+</h1>
+
+<p style="color:#b8c7dd;margin-top:15px;">
+{{ t("crypto_analysis_hero_desc", "Comprenez la structure du marché crypto avec Bitcoin, Ethereum, les altcoins, la dominance BTC, la volatilité et le contexte macro.") }}
 </p>
 
-<h2>Structure du marché</h2>
-
-<p>
-Comprendre les cycles permet d’anticiper les mouvements.
+<p style="margin-top:15px;color:#00ff99;font-weight:700;">
+{{ t("crypto_analysis_proof", "✔️ BTC • ✔️ ETH • ✔️ Altcoins • ✔️ Macro • ✔️ Dominance") }}
 </p>
 
-<h2>Altcoins</h2>
+<div style="margin-top:25px;">
+<a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:12px 18px;border-radius:8px;font-weight:bold;margin-right:10px;">
+{{ t("cta_crypto_signals", "Signaux crypto") }}
+</a>
 
-<p>
-Les altcoins suivent souvent Bitcoin mais avec plus de volatilité.
-</p>
-
-<h2>Macro</h2>
-
-<p>
-Le marché crypto dépend aussi des conditions économiques globales.
-</p>
-
-<p>
-Pour trader, utilise nos
-<a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}">
-signaux crypto
-</a>.
-</p>
-
-<div class="market-cta-row">
-<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="market-btn">
-Voir les opportunités
+<a href="{{ url_for('pages.market_crypto', lang_code=current_lang) }}" style="border:1px solid #00ff99;color:#00ff99;padding:12px 18px;border-radius:8px;">
+{{ t("cta_live_market", "Marché live") }}
 </a>
 </div>
+</div>
+
+<h2>{{ t("crypto_analysis_why_title", "Pourquoi analyser le marché crypto global ?") }}</h2>
+
+<p>
+{{ t("crypto_analysis_why_text_1", "Le marché crypto ne se résume pas au prix du Bitcoin. Pour comprendre les opportunités, il faut analyser la liquidité, la dominance, la volatilité, le sentiment et les rotations entre actifs.") }}
+</p>
+
+<p>
+{{ t("crypto_analysis_why_text_2", "Une analyse globale permet de savoir si le marché est en expansion, en compression, en rotation ou en phase de risque. Cette lecture aide à éviter les entrées isolées.") }}
+</p>
+
+<h2>{{ t("crypto_analysis_btc_title", "Bitcoin comme actif directeur") }}</h2>
+
+<p>
+{{ t("crypto_analysis_btc_text", "Bitcoin reste le point central. Lorsque BTC montre une tendance claire, le marché peut suivre. Lorsqu’il consolide, les altcoins peuvent parfois prendre le relais, mais seulement si la liquidité le permet.") }}
+</p>
+
+<p>
+<a href="{{ url_for('pages.analyse_bitcoin', lang_code=current_lang) }}">
+{{ t("crypto_analysis_to_btc", "Voir l’analyse Bitcoin") }}
+</a>
+</p>
+
+<h2>{{ t("crypto_analysis_eth_title", "Ethereum et les altcoins") }}</h2>
+
+<p>
+{{ t("crypto_analysis_eth_text", "Ethereum est souvent le deuxième moteur du marché. Quand ETH surperforme BTC, cela peut signaler un début de rotation vers les altcoins. Solana et d’autres actifs peuvent ensuite amplifier le mouvement.") }}
+</p>
+
+<h2>{{ t("crypto_analysis_macro_title", "Influence macro et volatilité") }}</h2>
+
+<p>
+{{ t("crypto_analysis_macro_text", "Le marché crypto réagit aussi aux taux, au dollar, à la liquidité globale et au sentiment de risque. Une bonne analyse doit intégrer ces éléments pour éviter de trader contre le contexte.") }}
+</p>
+
+<h2>{{ t("crypto_analysis_signals_title", "De l’analyse aux signaux") }}</h2>
+
+<p>
+{{ t("crypto_analysis_signals_text", "VelWolef transforme cette lecture globale en signaux structurés avec entrée, stop loss, take profit et contexte de marché.") }}
+</p>
+
+<p>
+<a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}">
+{{ t("crypto_analysis_to_signals", "Recevoir les signaux crypto") }}
+</a>
+</p>
+
+<div style="margin-top:50px;padding:30px;background:#0b1220;border-radius:15px;text-align:center;">
+<h3>{{ t("crypto_analysis_join_title", "Accéder à l’analyse et aux signaux") }}</h3>
+
+<p style="color:#b8c7dd;">
+{{ t("crypto_analysis_join_desc", "Rejoignez VelWolef pour suivre le marché crypto, les signaux, les résultats et les alertes Telegram.") }}
+</p>
+
+<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="background:#00ff99;color:#07111f;padding:14px 20px;border-radius:10px;font-weight:bold;">
+{{ t("cta_final_offers", "Voir les offres") }}
+</a>
+</div>
+
+<p style="margin-top:20px;color:#6b7280;font-size:14px;">
+{{ t("risk_disclaimer", "Le trading crypto comporte des risques. Aucun signal ne garantit un gain.") }}
+</p>
 
 </div>
 </section>
