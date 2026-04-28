@@ -45,7 +45,7 @@
                     <a href="{{ url_for('pages.market_opportunities', lang_code=lang) }}">{{ t("opportunities") }}</a>
                     <a href="{{ url_for('pages.market_sentiment', lang_code=lang) }}">{{ t("sentiment") }}</a>
                     <a href="{{ url_for('economic_calendar.economic_calendar', lang_code=lang) }}">{{ t("economic_calendar") }}</a>
-                    <a href="{{ url_for('pages.whales', lang_code=lang) }}">🐋 {{ t("whales") }}</a>
+                    <a href="/{{ lang }}/markets/whales">🐋 {{ t("whales", "Whales") }}</a>
                     <a href="{{ url_for('token_unlocks.token_unlocks_page', lang_code=lang) }}">{{ t("token_unlocks") }}</a>
                     <a href="{{ url_for('news_feed.news_feed', lang_code=lang) }}">📰 {{ t("news") }}</a>
                     <a href="{{ url_for('liquidations.liquidations_page', lang_code=lang) }}">{{ t("liquidations") }}</a>

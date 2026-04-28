@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Signaux trading crypto | BTC ETH SOL | VelWolef{% endblock %}
+
+{% block meta_description %}
+Recevez des signaux trading crypto avec entrée, stop loss et analyse marché.
+{% endblock %}
+
+{% block content %}
+<section class="seo-page">
+<div class="section-container">
+
+<h1>Signaux trading crypto professionnels</h1>
+
+<p>
+Les signaux trading permettent de suivre des opportunités basées sur une analyse structurée.
+</p>
+
+<h2>Fonctionnement</h2>
+
+<p>
+Chaque signal inclut une direction, un point d’entrée et un plan de gestion du risque.
+</p>
+
+<h2>Pourquoi utiliser des signaux</h2>
+
+<p>
+Ils permettent de gagner du temps et d’éviter les erreurs émotionnelles.
+</p>
+
+<p>
+Pour comprendre le marché, consulte notre
+<a href="{{ url_for('pages.analyse_bitcoin', lang_code=current_lang) }}">
+analyse Bitcoin
+</a>.
+</p>
+
+<div class="market-cta-row">
+<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="market-btn">
+Accéder aux signaux
+</a>
+</div>
+
+</div>
+</section>
+{% endblock %}

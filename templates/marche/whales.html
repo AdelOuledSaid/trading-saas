@@ -2,146 +2,219 @@
 
 {% block title %}{{ t("whale_intelligence_page_title", "Whale Intelligence | VelWolef") }}{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='whales.css') }}">
+{% endblock %}
+
 {% block content %}
 
-<section class="inner-hero">
-    <div class="section-container">
-        <span class="section-badge">{{ t("markets_whales_institutional_flow_monitor", "Institutional Flow Monitor") }}</span>
-        <h1 class="inner-page-title">{{ t("markets_whales_whale_intelligence", "Whale Intelligence") }}</h1>
-        <p class="inner-page-text">
-            {{ t("markets_whales_suivez_les_mouvements_des_gros_portefeuilles_crypto_identifiez_les_flux", "Suivez les mouvements des gros portefeuilles crypto, identifiez les flux vers les exchanges,             surveillez les retraits stratégiques et analysez le biais du marché avec une vision institutionnelle.") }}
-        </p>
-    </div>
-</section>
+{% set dominant_bias = snapshot.dominant_bias or "Neutral" %}
+{% set pressure = 50 %}
+{% if dominant_bias == "Bullish" %}
+    {% set pressure = 74 %}
+{% elif dominant_bias == "Bearish" %}
+    {% set pressure = 28 %}
+{% endif %}
 
-<section class="section-standard">
-    <div class="section-container">
-        <div class="results-proof-box">
-            <div class="results-proof-left">
-                <span class="proof-badge">{{ t("markets_whales_executive_summary", "Executive Summary") }}</span>
-                <h2>{{ t("markets_whales_lecture_executive_du_flux_baleines", "Lecture exécutive du flux baleines") }}</h2>
+{% set signal_label = "NEUTRAL WATCH" %}
+{% set signal_class = "neutral" %}
+{% set signal_score = 50 %}
+{% set signal_text = t("markets_whales_ai_signal_neutral_text", "Flux équilibrés. Attendre une confirmation par la structure de prix, le volume et le momentum avant de prendre une décision.") %}
+
+{% if dominant_bias == "Bullish" %}
+    {% set signal_label = "BUY PRESSURE DETECTED" %}
+    {% set signal_class = "bullish" %}
+    {% set signal_score = 78 %}
+    {% set signal_text = t("markets_whales_ai_signal_bullish_text", "Pression acheteuse détectée. Les flux récents suggèrent une accumulation ou une réduction de l’offre disponible sur les exchanges.") %}
+{% elif dominant_bias == "Bearish" %}
+    {% set signal_label = "SELL RISK DETECTED" %}
+    {% set signal_class = "bearish" %}
+    {% set signal_score = 72 %}
+    {% set signal_text = t("markets_whales_ai_signal_bearish_text", "Risque vendeur détecté. Les flux récents suggèrent une préparation de vente, de prise de profit ou de couverture.") %}
+{% endif %}
+
+<div class="whales-page">
+
+<section class="whales-hero">
+    <div class="whales-container">
+        <div class="whales-hero-grid">
+
+            <div>
+                <span class="whales-badge">
+                    {{ t("markets_whales_institutional_flow_monitor", "Institutional Flow Monitor") }}
+                </span>
+
+                <h1>{{ t("markets_whales_whale_intelligence", "Whale Intelligence") }}</h1>
+
                 <p>
-                    {{ t("markets_whales_cette_page_centralise_les_flux_majeurs_detectes_sur_les_principaux_actif", "Cette page centralise les flux majeurs détectés sur les principaux actifs suivis.                     L’objectif n’est pas seulement de voir les transactions, mais de comprendre si le marché                     est en phase d’accumulation, de distribution ou de préparation de liquidité.") }}
+                    {{ t("markets_whales_suivez_les_mouvements_des_gros_portefeuilles_crypto_identifiez_les_flux",
+                    "Suivez les mouvements des gros portefeuilles crypto, identifiez les flux vers les exchanges, surveillez les retraits stratégiques et analysez le biais du marché avec une vision institutionnelle.") }}
                 </p>
 
-                <div class="results-mini-grid">
-                    <div class="results-mini-card">
+                <div class="whales-hero-actions">
+                    <a href="#whale-live-feed" class="whales-btn whales-btn-primary">
+                        {{ t("markets_whales_voir_les_flux", "Voir les flux live") }}
+                    </a>
+                    <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="whales-btn whales-btn-secondary">
+                        {{ t("discover_premium", "Découvrir Premium") }}
+                    </a>
+                </div>
+
+                <div class="whales-hero-stats">
+                    <div class="whales-stat-card">
+                        <span class="label">{{ t("markets_whales_volume_total_tracke", "Volume total tracké") }}</span>
+                        <strong>{{ snapshot.total_usd_tracked or "$0.0M" }}</strong>
+                        <small>24h</small>
+                    </div>
+
+                    <div class="whales-stat-card">
+                        <span class="label">{{ t("markets_whales_biais_dominant", "Biais dominant") }}</span>
+                        <strong class="{% if dominant_bias == 'Bullish' %}bullish-text{% endif %}">
+                            {{ dominant_bias }}
+                        </strong>
+                        <small>market bias</small>
+                    </div>
+
+                    <div class="whales-stat-card">
+                        <span class="label">{{ t("markets_whales_transactions_surveillees", "Transactions surveillées") }}</span>
                         <strong>{{ snapshot.total_alerts or 0 }}</strong>
-                        <span>{{ t("markets_whales_transactions_surveillees", "Transactions surveillées") }}</span>
+                        <small>alerts</small>
                     </div>
-                    <div class="results-mini-card">
-                        <strong>{{ snapshot.exchange_flows or 0 }}</strong>
+                </div>
+            </div>
+
+            <aside class="whales-glass-card whales-hero-panel">
+                <div class="panel-header">
+                    <span class="panel-dot green"></span>
+                    <span class="panel-title">{{ t("markets_whales_ai_signal", "Whale Signal AI") }}</span>
+                </div>
+
+                <div class="whale-ai-signal {{ signal_class }}">
+                    <div class="whale-ai-top">
+                        <span class="whale-ai-status">{{ signal_label }}</span>
+                        <span class="whale-ai-score">{{ signal_score }}%</span>
+                    </div>
+
+                    <div class="whale-ai-meter">
+                        <span style="width: {{ signal_score }}%;"></span>
+                    </div>
+
+                    <p>{{ signal_text }}</p>
+                </div>
+
+                <div class="snapshot-list">
+                    <div class="snapshot-item">
+                        <span>{{ t("markets_whales_plus_grosse_transaction", "Plus grosse transaction") }}</span>
+                        <strong>{{ snapshot.biggest_transaction_asset or "BTC" }} — {{ snapshot.biggest_transaction_value or "$0.0M" }}</strong>
+                    </div>
+
+                    <div class="snapshot-item">
+                        <span>{{ t("markets_whales_type_dominant", "Type dominant") }}</span>
+                        <strong>{{ snapshot.biggest_transaction_type or "Exchange Flow" }}</strong>
+                    </div>
+
+                    <div class="snapshot-item">
                         <span>{{ t("markets_whales_flux_exchange_detectes", "Flux exchange détectés") }}</span>
-                    </div>
-                    <div class="results-mini-card">
-                        <strong>{{ snapshot.dominant_bias or "Neutral" }}</strong>
-                        <span>{{ t("markets_whales_biais_dominant", "Biais dominant") }}</span>
+                        <strong>{{ snapshot.exchange_flows or 0 }}</strong>
                     </div>
                 </div>
-            </div>
+            </aside>
 
-            <div class="results-proof-right">
-                <div class="proof-card">
-                    <strong>{{ t("markets_whales_plus_grosse_transaction", "Plus grosse transaction") }}</strong>
-                    <span>
-                        {{ snapshot.biggest_transaction_asset or "BTC" }}
-                        — {{ snapshot.biggest_transaction_value or "$0.0M" }}
-                    </span>
-                </div>
-                <div class="proof-card">
-                    <strong>{{ t("markets_whales_type_dominant", "Type dominant") }}</strong>
-                    <span>{{ snapshot.biggest_transaction_type or "Exchange Flow" }}</span>
-                </div>
-                <div class="proof-card">
-                    <strong>{{ t("markets_whales_volume_total_tracke", "Volume total tracké") }}</strong>
-                    <span>{{ snapshot.total_usd_tracked or "$0.0M" }}</span>
-                </div>
-            </div>
         </div>
     </div>
 </section>
 
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>{{ t("markets_whales_macro_reading", "Macro Reading") }}</span>
-            <h2>{{ t("markets_whales_lecture_rapide_de_l_impact_marche", "Lecture rapide de l’impact marché") }}</h2>
-            <p>
-                {{ t("markets_whales_tous_les_mouvements_baleines_ne_se_valent_pas_le_sens_du_flux_la_presenc", "Tous les mouvements baleines ne se valent pas. Le sens du flux, la présence d’un exchange                 et le type d’actif permettent d’avoir une lecture tactique plus propre.") }}
-            </p>
-        </div>
-
-        <div class="why-grid">
-            <div class="why-card">
-                <strong>{{ t("markets_whales_exchange_outflow", "Exchange Outflow") }}</strong>
-                <p>
-                    {{ t("markets_whales_quand_de_grosses_quantites_quittent_un_exchange_vers_des_wallets_prives", "Quand de grosses quantités quittent un exchange vers des wallets privés, cela peut signaler                     une accumulation ou une baisse de l’offre immédiatement disponible.") }}
-                </p>
+<section class="whales-section">
+    <div class="whales-container">
+        <div class="whales-glass-card">
+            <div class="panel-header">
+                <span class="panel-dot green"></span>
+                <span class="panel-title">Market Pressure</span>
             </div>
 
-            <div class="why-card">
-                <strong>{{ t("markets_whales_exchange_inflow", "Exchange Inflow") }}</strong>
-                <p>
-                    {{ t("markets_whales_quand_des_baleines_deposent_massivement_sur_un_exchange_cela_peut_signal", "Quand des baleines déposent massivement sur un exchange, cela peut signaler une préparation                     de vente, de prise de profit ou de couverture.") }}
-                </p>
+            <div class="whale-pressure-row">
+                <span>{{ t("markets_whales_sell_pressure", "Sell pressure") }}</span>
+                <strong>{{ pressure }}%</strong>
+                <span>{{ t("markets_whales_buy_pressure", "Buy pressure") }}</span>
             </div>
 
-            <div class="why-card">
-                <strong>{{ t("markets_whales_wallet_treasury_flow", "Wallet / Treasury Flow") }}</strong>
-                <p>
-                    {{ t("markets_whales_les_transferts_internes_et_treasury_sont_souvent_moins_directionnels_mai", "Les transferts internes et treasury sont souvent moins directionnels, mais ils donnent                     des indices utiles sur la préparation de liquidité et le repositionnement des fonds.") }}
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="proof-box">
-            <div class="proof-left">
-                <span class="proof-badge">{{ t("markets_whales_top_flows", "Top Flows") }}</span>
-                <h2>{{ t("markets_whales_transactions_les_plus_importantes", "Transactions les plus importantes") }}</h2>
-                <p>
-                    {{ t("markets_whales_voici_les_flux_qui_meritent_la_plus_grande_attention_dans_une_logique_de", "Voici les flux qui méritent la plus grande attention dans une logique de lecture tactique                     et institutionnelle.") }}
-                </p>
+            <div class="whale-pressure-bar">
+                <span class="{% if pressure > 50 %}bullish{% elif pressure < 50 %}bearish{% else %}neutral{% endif %}" style="width: {{ pressure }}%;"></span>
             </div>
 
-            <div class="proof-right">
-                {% if latest_high_impact %}
-                    {% for item in latest_high_impact %}
-                    <div class="proof-card">
-                        <strong>{{ item.asset }} — {{ item.flow_type }}</strong>
-                        <span>
-                            {{ item.usd_value }} • {{ item.wallet_from }} → {{ item.wallet_to }}
-                            {{ t("markets_liquidations_biais", "• biais") }} {{ item.bias }} • {{ item.time }}
-                        </span>
-                    </div>
-                    {% endfor %}
+            <p class="whale-pressure-text">
+                {% if pressure > 50 %}
+                    {{ t("markets_whales_pressure_bullish", "Pression acheteuse dominante détectée sur les flux récents.") }}
+                {% elif pressure < 50 %}
+                    {{ t("markets_whales_pressure_bearish", "Pression vendeuse dominante détectée sur les flux récents.") }}
                 {% else %}
-                    <div class="proof-card">
-                        <strong>{{ t("markets_whales_aucune_alerte_high_impact", "Aucune alerte high impact") }}</strong>
-                        <span>{{ t("markets_whales_les_prochaines_grosses_transactions_apparaitront_ici", "Les prochaines grosses transactions apparaîtront ici.") }}</span>
-                    </div>
+                    {{ t("markets_whales_pressure_neutral", "Marché équilibré. Aucun déséquilibre clair dans les flux récents.") }}
                 {% endif %}
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="whales-section">
+    <div class="whales-container">
+        <div class="impact-grid">
+            <div class="impact-card bullish-card">
+                <div class="impact-icon">↑</div>
+                <h3>{{ t("markets_whales_accumulation_discrete", "Accumulation discrète") }}</h3>
+                <p>{{ t("markets_whales_des_outflows_repetes_sur_btc_ou_eth_peuvent_signaler_une_phase_d_accumul", "Des outflows répétés sur BTC ou ETH peuvent signaler une phase d’accumulation lente, surtout si les réserves exchange diminuent en parallèle.") }}</p>
+                <span class="impact-tag bullish">Bullish setup</span>
+            </div>
+
+            <div class="impact-card bearish-card">
+                <div class="impact-icon">↓</div>
+                <h3>{{ t("markets_whales_distribution_progressive", "Distribution progressive") }}</h3>
+                <p>{{ t("markets_whales_une_serie_d_inflows_apres_extension_haussiere_peut_indiquer_une_rotation", "Une série d’inflows après extension haussière peut indiquer une rotation ou une préparation de vente partielle.") }}</p>
+                <span class="impact-tag bearish">Risk setup</span>
+            </div>
+
+            <div class="impact-card neutral-card">
+                <div class="impact-icon">~</div>
+                <h3>{{ t("markets_whales_stablecoin_dry_powder", "Stablecoin dry powder") }}</h3>
+                <p>{{ t("markets_whales_les_gros_transferts_usdt_et_usdc_vers_les_plateformes_peuvent_represente", "Les gros transferts USDT et USDC vers les plateformes peuvent représenter du capital prêt à être déployé sur les actifs risqués.") }}</p>
+                <span class="impact-tag neutral">Liquidity watch</span>
             </div>
         </div>
     </div>
 </section>
 
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>{{ t("markets_whales_live_feed", "Live Feed") }}</span>
-            <h2>{{ t("markets_whales_flux_principal_des_alertes_baleines", "Flux principal des alertes baleines") }}</h2>
+<section class="whales-section">
+    <div class="whales-container">
+        <div class="mini-flow-card">
+            <div class="mini-flow-top">
+                <span class="mini-flow-badge">{{ t("markets_whales_top_flows", "Top Flow") }}</span>
+                <span class="mini-flow-time">LIVE</span>
+            </div>
+
+            <h3>
+                {{ snapshot.biggest_transaction_asset or "BTC" }} —
+                {{ snapshot.biggest_transaction_value or "$0.0M" }}
+            </h3>
+
             <p>
-                {{ t("markets_whales_tableau_de_surveillance_des_grosses_transactions_detectees_sur_les_actif", "Tableau de surveillance des grosses transactions détectées sur les actifs suivis par la plateforme.") }}
+                {{ t("markets_whales_flux_detecte", "Flux détecté") }} :
+                {{ snapshot.biggest_transaction_type or "Exchange Flow" }}
+                • {{ t("markets_whales_biais_dominant", "Biais dominant") }} {{ dominant_bias }}
             </p>
+        </div>
+    </div>
+</section>
+
+<section class="whales-section" id="whale-live-feed">
+    <div class="whales-container">
+        <div class="section-heading">
+            <span class="section-kicker">{{ t("markets_whales_live_feed", "Live Feed") }}</span>
+            <h2>{{ t("markets_whales_flux_principal_des_alertes_baleines", "Flux principal des alertes baleines") }}</h2>
+            <p>{{ t("markets_whales_tableau_de_surveillance_des_grosses_transactions_detectees_sur_les_actif", "Tableau de surveillance des grosses transactions détectées sur les actifs suivis par la plateforme.") }}</p>
         </div>
 
         {% if whale_alerts %}
-        <div class="btc-signals-table-wrap">
-            <table class="btc-signals-table">
+        <div class="whales-table-wrap">
+            <table class="whales-table">
                 <thead>
                     <tr>
                         <th>{{ t("status_active", "Actif") }}</th>
@@ -155,176 +228,154 @@
                         <th>{{ t("markets_liquidations_heure", "Heure") }}</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     {% for whale in whale_alerts %}
                     <tr>
-                        <td><strong>{{ whale.asset }}</strong><br><span>{{ whale.network }}</span></td>
+                        <td>
+                            <div class="asset-cell">
+                                <span class="asset-dot {{ whale.asset|lower }}"></span>
+                                <div>
+                                    <strong>{{ whale.asset }}</strong>
+                                    <small>{{ whale.network }}</small>
+                                </div>
+                            </div>
+                        </td>
+
                         <td>{{ whale.amount }}</td>
                         <td>{{ whale.usd_value }}</td>
                         <td>{{ whale.wallet_from }}</td>
                         <td>{{ whale.wallet_to }}</td>
-                        <td>{{ whale.flow_type }}</td>
+
+                        <td>
+                            <span class="table-badge type">{{ whale.flow_type }}</span>
+                        </td>
+
                         <td>
                             {% if whale.bias == 'Bullish' %}
-                                <span class="text-green">{{ whale.bias }}</span>
+                                <span class="table-badge bullish">{{ whale.bias }}</span>
                             {% elif whale.bias == 'Bearish' %}
-                                <span class="text-red">{{ whale.bias }}</span>
+                                <span class="table-badge bearish">{{ whale.bias }}</span>
                             {% else %}
-                                <span class="text-blue">{{ whale.bias }}</span>
+                                <span class="table-badge neutral">{{ whale.bias }}</span>
                             {% endif %}
                         </td>
-                        <td>{{ whale.impact }}</td>
+
+                        <td>
+                            <span class="table-badge impact">{{ whale.impact }}</span>
+                        </td>
+
                         <td>{{ whale.time }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+
+        <div class="whales-mobile-list">
+            {% for whale in whale_alerts %}
+            <article class="whale-mobile-card">
+                <div class="mobile-card-top">
+                    <div class="asset-cell">
+                        <span class="asset-dot {{ whale.asset|lower }}"></span>
+                        <div>
+                            <strong>{{ whale.asset }}</strong>
+                            <small>{{ whale.network }}</small>
+                        </div>
+                    </div>
+                    <span class="mobile-time">{{ whale.time }}</span>
+                </div>
+
+                <div class="mobile-grid">
+                    <div>
+                        <span class="mobile-label">{{ t("markets_whales_montant", "Montant") }}</span>
+                        <strong>{{ whale.amount }}</strong>
+                    </div>
+                    <div>
+                        <span class="mobile-label">{{ t("markets_liquidations_valeur_usd", "Valeur USD") }}</span>
+                        <strong>{{ whale.usd_value }}</strong>
+                    </div>
+                    <div>
+                        <span class="mobile-label">{{ t("markets_whales_depuis", "Depuis") }}</span>
+                        <strong>{{ whale.wallet_from }}</strong>
+                    </div>
+                    <div>
+                        <span class="mobile-label">{{ t("markets_whales_vers", "Vers") }}</span>
+                        <strong>{{ whale.wallet_to }}</strong>
+                    </div>
+                </div>
+
+                <div class="mobile-badges">
+                    <span class="table-badge type">{{ whale.flow_type }}</span>
+                    {% if whale.bias == 'Bullish' %}
+                        <span class="table-badge bullish">{{ whale.bias }}</span>
+                    {% elif whale.bias == 'Bearish' %}
+                        <span class="table-badge bearish">{{ whale.bias }}</span>
+                    {% else %}
+                        <span class="table-badge neutral">{{ whale.bias }}</span>
+                    {% endif %}
+                    <span class="table-badge impact">{{ whale.impact }}</span>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
         {% else %}
-        <div class="proof-box">
-            <div class="proof-left">
-                <h2>{{ t("markets_whales_aucune_alerte_pour_ces_filtres", "Aucune alerte pour ces filtres") }}</h2>
-                <p>
-                    {{ t("markets_whales_essaie_un_autre_actif_retire_le_filtre_high_impact_ou_reinitialise_la_vu", "Essaie un autre actif, retire le filtre High Impact ou réinitialise la vue.") }}
-                </p>
-            </div>
-            <div class="proof-right">
-                <a href="{{ url_for('pages.whales', lang_code=current_lang) }}" class="primary-link-btn">{{ t("markets_whales_voir_toutes_les_alertes", "Voir toutes les alertes") }}</a>
-            </div>
+        <div class="whales-empty-state">
+            <h3>{{ t("markets_whales_aucune_alerte_high_impact", "Aucune alerte high impact") }}</h3>
+            <p>{{ t("markets_whales_les_prochaines_grosses_transactions_apparaitront_ici", "Les prochaines grosses transactions apparaîtront ici.") }}</p>
+            <a href="/{{ current_lang or 'fr' }}/markets/whales" class="whales-btn whales-btn-primary">
+                {{ t("markets_whales_voir_toutes_les_alertes", "Voir toutes les alertes") }}
+            </a>
         </div>
         {% endif %}
     </div>
 </section>
 
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>{{ t("markets_whales_institutional_read", "Institutional Read") }}</span>
-            <h2>{{ t("markets_whales_comment_exploiter_le_whale_flow", "Comment exploiter le whale flow") }}</h2>
-            <p>
-                {{ t("markets_whales_le_whale_flow_devient_vraiment_puissant_lorsqu_il_est_croise_avec_la_str", "Le whale flow devient vraiment puissant lorsqu’il est croisé avec la structure de prix,                 la volatilité, le momentum et l’activité stablecoin.") }}
-            </p>
-        </div>
-
-        <div class="why-grid">
-            <div class="why-card">
-                <strong>{{ t("markets_whales_accumulation_discrete", "Accumulation discrète") }}</strong>
-                <p>
-                    {{ t("markets_whales_des_outflows_repetes_sur_btc_ou_eth_peuvent_signaler_une_phase_d_accumul", "Des outflows répétés sur BTC ou ETH peuvent signaler une phase d’accumulation lente,                     surtout si les réserves exchange diminuent en parallèle.") }}
-                </p>
-            </div>
-
-            <div class="why-card">
-                <strong>{{ t("markets_whales_distribution_progressive", "Distribution progressive") }}</strong>
-                <p>
-                    {{ t("markets_whales_une_serie_d_inflows_apres_extension_haussiere_peut_indiquer_une_rotation", "Une série d’inflows après extension haussière peut indiquer une rotation ou une                     préparation de vente partielle.") }}
-                </p>
-            </div>
-
-            <div class="why-card">
-                <strong>{{ t("markets_whales_stablecoin_dry_powder", "Stablecoin dry powder") }}</strong>
-                <p>
-                    {{ t("markets_whales_les_gros_transferts_usdt_et_usdc_vers_les_plateformes_peuvent_represente", "Les gros transferts USDT et USDC vers les plateformes peuvent représenter du capital                     prêt à être déployé sur les actifs risqués.") }}
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>{{ t("markets_whales_premium_desk_tools", "Premium Desk Tools") }}</span>
+<section class="whales-section">
+    <div class="whales-container">
+        <div class="section-heading">
+            <span class="section-kicker">{{ t("markets_whales_premium_desk_tools", "Premium Desk Tools") }}</span>
             <h2>{{ t("markets_whales_modules_avances_de_lecture_marche", "Modules avancés de lecture marché") }}</h2>
-            <p>
-                {{ t("markets_whales_trois_angles_complementaires_pour_enrichir_l_analyse_whale", "Trois angles complémentaires pour enrichir l’analyse whale.") }}
-            </p>
+            <p>{{ t("markets_whales_trois_angles_complementaires_pour_enrichir_l_analyse_whale", "Trois angles complémentaires pour enrichir l’analyse whale.") }}</p>
         </div>
 
-        <div class="market-updates-grid">
-            <article class="market-news-card">
-                <div class="market-news-meta">
-                    <span>{{ t("markets_whales_liquidity_watch", "Liquidity Watch") }}</span>
-                </div>
+        <div class="insights-grid">
+            <article class="insight-card premium-tool-card">
                 <h3>{{ t("markets_whales_stablecoin_pressure_monitor", "Stablecoin Pressure Monitor") }}</h3>
-                <p>
-                    {{ t("markets_whales_les_mouvements_usdt_et_usdc_vers_les_plateformes_peuvent_signaler_une_re", "Les mouvements USDT et USDC vers les plateformes peuvent signaler une réserve de liquidité                     prête à entrer sur les actifs risqués.") }}
-                </p>
+                <p>{{ t("markets_whales_les_mouvements_usdt_et_usdc_vers_les_plateformes_peuvent_signaler_une_re", "Les mouvements USDT et USDC vers les plateformes peuvent signaler une réserve de liquidité prête à entrer sur les actifs risqués.") }}</p>
+                <span class="impact-tag neutral">{{ t("markets_whales_liquidity_watch", "Liquidity Watch") }}</span>
             </article>
 
-            <article class="market-news-card">
-                <div class="market-news-meta">
-                    <span>{{ t("markets_whales_rotation_signal", "Rotation Signal") }}</span>
-                </div>
+            <article class="insight-card premium-tool-card">
                 <h3>{{ t("markets_whales_institutional_rotation_watch", "Institutional Rotation Watch") }}</h3>
-                <p>
-                    {{ t("markets_whales_une_alternance_entre_flux_entrants_et_sortants_sur_differents_actifs_peu", "Une alternance entre flux entrants et sortants sur différents actifs peut indiquer                     une rotation institutionnelle plutôt qu’une simple pression directionnelle.") }}
-                </p>
-            </article>
-
-            <article class="market-news-card">
-                <div class="market-news-meta">
-                    <span>{{ t("markets_whales_pressure_read", "Pressure Read") }}</span>
-                </div>
-                <h3>{{ t("markets_whales_directional_pressure_map", "Directional Pressure Map") }}</h3>
-                <p>
-                    {{ t("markets_whales_une_concentration_de_flux_de_meme_nature_dans_une_courte_fenetre_de_temp", "Une concentration de flux de même nature dans une courte fenêtre de temps augmente souvent                     la valeur tactique du signal.") }}
-                </p>
+                <p>{{ t("markets_whales_une_alternance_entre_flux_entrants_et_sortants_sur_differents_actifs_peu", "Une alternance entre flux entrants et sortants sur différents actifs peut indiquer une rotation institutionnelle plutôt qu’une simple pression directionnelle.") }}</p>
+                <span class="impact-tag bullish">{{ t("markets_whales_rotation_signal", "Rotation Signal") }}</span>
             </article>
         </div>
     </div>
 </section>
 
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>{{ t("markets_whales_market_scenarios", "Market Scenarios") }}</span>
-            <h2>{{ t("markets_whales_scenarios_de_lecture_pour_l_utilisateur", "Scénarios de lecture pour l’utilisateur") }}</h2>
-            <p>
-                {{ t("markets_whales_voici_comment_transformer_l_information_brute_en_decisions_de_surveillan", "Voici comment transformer l’information brute en décisions de surveillance plus claires.") }}
-            </p>
-        </div>
-
-        <div class="why-grid">
-            <div class="why-card">
-                <strong>{{ t("markets_whales_scenario_bullish", "Scénario bullish") }}</strong>
-                <p>
-                    {{ t("markets_whales_btc_ou_eth_en_outflow_massif_structure_haussiere_intacte_baisse_des_rese", "BTC ou ETH en outflow massif + structure haussière intacte + baisse des réserves exchange                     = environnement favorable à la continuation.") }}
-                </p>
+<section class="whales-section">
+    <div class="whales-container">
+        <div class="whales-cta-card">
+            <div>
+                <h2>{{ t("markets_whales_donne_a_tes_abonnes_une_vraie_lecture_desk_du_marche", "Donne à tes abonnés une vraie lecture desk du marché") }}</h2>
+                <p>{{ t("markets_whales_combine_whale_intelligence_signaux_replay_sentiment_et_suivi_marche_pour", "Combine Whale Intelligence, signaux, replay, sentiment et suivi marché pour construire une expérience premium à haute valeur perçue.") }}</p>
             </div>
 
-            <div class="why-card">
-                <strong>{{ t("markets_whales_scenario_bearish", "Scénario bearish") }}</strong>
-                <p>
-                    {{ t("markets_whales_inflows_repetes_vers_les_grandes_plateformes_apres_extension_risque_accr", "Inflows répétés vers les grandes plateformes après extension = risque accru de prise                     de profit ou de rotation défensive.") }}
-                </p>
-            </div>
-
-            <div class="why-card">
-                <strong>{{ t("markets_whales_scenario_opportuniste", "Scénario opportuniste") }}</strong>
-                <p>
-                    {{ t("markets_whales_activite_stablecoin_croissante_outflows_actifs_majeurs_combinaison_souve", "Activité stablecoin croissante + outflows actifs majeurs = combinaison souvent intéressante                     pour surveiller un breakout ou un rebond de qualité.") }}
-                </p>
+            <div class="whales-cta-actions">
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="whales-btn whales-btn-primary">
+                    {{ t('discover_premium', 'Découvrir Premium') }}
+                </a>
+                <a href="{{ url_for('dashboard.dashboard', lang_code=current_lang) }}" class="whales-btn whales-btn-secondary">
+                    {{ t('back_dashboard', 'Retour Dashboard') }}
+                </a>
             </div>
         </div>
     </div>
 </section>
 
-<section class="final-cta-section">
-    <div class="section-container">
-        <div class="final-cta-box">
-            <span class="final-cta-badge">{{ t("markets_whales_premium_intelligence", "Premium Intelligence") }}</span>
-            <h2>{{ t("markets_whales_donne_a_tes_abonnes_une_vraie_lecture_desk_du_marche", "Donne à tes abonnés une vraie lecture desk du marché") }}</h2>
-            <p>
-                {{ t("markets_whales_combine_whale_intelligence_signaux_replay_sentiment_et_suivi_marche_pour", "Combine Whale Intelligence, signaux, replay, sentiment et suivi marché pour construire                 une expérience premium à haute valeur perçue.") }}
-            </p>
-
-            <div class="final-cta-actions">
-                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="primary-link-btn">{{ t('discover_premium', 'Découvrir Premium') }}</a>
-                <a href="{{ url_for('dashboard.dashboard', lang_code=current_lang) }}" class="white-outline-btn">{{ t('back_dashboard', 'Retour Dashboard') }}</a>
-            </div>
-        </div>
-    </div>
-</section>
+</div>
 
 {% endblock %}

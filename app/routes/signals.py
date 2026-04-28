@@ -1,6 +1,6 @@
 import requests
 from datetime import datetime, timedelta
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, session
 from flask_login import current_user
 import config
 
@@ -56,11 +56,20 @@ def _resolve_time_threshold(time_filter: str):
 
 @signals_bp.route("/<lang_code>/signals")
 def signals_page(lang_code):
+    session["lang"] = lang_code
     return render_template("signals/index.html", current_lang=lang_code)
+
+
+@signals_bp.route("/results")
+def results_no_lang():
+    lang = session.get("lang", "en")
+    return results(lang)
 
 
 @signals_bp.route("/<lang_code>/results")
 def results(lang_code):
+    session["lang"] = lang_code
+
     asset_filter = request.args.get("asset", "ALL").upper().strip()
     time_filter = request.args.get("time", "all").strip()
 
@@ -533,6 +542,8 @@ def replay_decision(signal_id):
 
 @signals_bp.route("/<lang_code>/signals/btc")
 def signals_btc(lang_code):
+    session["lang"] = lang_code
+
     user_plan = _get_user_plan()
     signal_limit = signal_limit_for_plan(user_plan)
 
@@ -573,6 +584,8 @@ def signals_btc(lang_code):
 
 @signals_bp.route("/<lang_code>/signals/eth")
 def eth_signals_page(lang_code):
+    session["lang"] = lang_code
+
     user_plan = _get_user_plan()
     signal_limit = signal_limit_for_plan(user_plan)
 
@@ -693,6 +706,8 @@ def eth_signals_page(lang_code):
 
 @signals_bp.route("/<lang_code>/signals/gold")
 def signals_gold(lang_code):
+    session["lang"] = lang_code
+
     user_plan = _get_user_plan()
     signal_limit = signal_limit_for_plan(user_plan)
 
@@ -730,6 +745,8 @@ def signals_gold(lang_code):
 
 @signals_bp.route("/<lang_code>/signals/us100")
 def signals_us100(lang_code):
+    session["lang"] = lang_code
+
     user_plan = _get_user_plan()
     signal_limit = signal_limit_for_plan(user_plan)
 
@@ -872,6 +889,8 @@ def _get_signal_learning_data(signal):
 
 @signals_bp.route("/<lang_code>/mini-course/signal/<int:signal_id>")
 def learn_signal_page(lang_code, signal_id):
+    session["lang"] = lang_code
+
     signal = Signal.query.get_or_404(signal_id)
 
     data = _get_signal_learning_data(signal)

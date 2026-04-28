@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Résultats trading crypto | Performance & winrate | VelWolef{% endblock %}
+
+{% block meta_description %}
+Consultez les résultats des signaux crypto : performance, winrate, gestion du risque et historique des trades.
+{% endblock %}
+
+{% block content %}
+<section class="seo-page">
+<div class="section-container">
+
+<h1>Résultats trading crypto</h1>
+
+<p>
+Les résultats trading sont essentiels pour évaluer la qualité d’un système.
+Ils permettent de mesurer la performance réelle et d’identifier les points forts et faibles.
+</p>
+
+<h2>Performance des signaux</h2>
+
+<p>
+Chaque signal VelWolef est basé sur une analyse complète du marché.
+Les performances ne dépendent pas uniquement du taux de réussite,
+mais aussi de la gestion du risque.
+</p>
+
+<h2>Winrate vs Risk Management</h2>
+
+<p>
+Un bon trader ne cherche pas à gagner tous ses trades.
+Il cherche à contrôler ses pertes et maximiser ses gains.
+</p>
+
+<p>
+Un ratio risque/rendement bien structuré permet d’être rentable
+même avec un winrate moyen.
+</p>
+
+<h2>Transparence</h2>
+
+<p>
+Tous les trades incluent une entrée, un stop loss et un take profit.
+Cela garantit une transparence totale.
+</p>
+
+<p>
+Pour comprendre les setups utilisés, consulte aussi notre
+<a href="{{ url_for('pages.trading_academy', lang_code=current_lang) }}">
+academy trading
+</a>.
+</p>
+
+<div class="market-cta-row">
+<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="market-btn">
+Voir les signaux
+</a>
+</div>
+
+</div>
+</section>
+{% endblock %}

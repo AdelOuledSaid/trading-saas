@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Analyse crypto globale | BTC ETH altcoins | VelWolef{% endblock %}
+
+{% block meta_description %}
+Analyse complète du marché crypto : Bitcoin, Ethereum, altcoins et macro.
+{% endblock %}
+
+{% block content %}
+<section class="seo-page">
+<div class="section-container">
+
+<h1>Analyse du marché crypto</h1>
+
+<p>
+Le marché crypto est influencé par plusieurs facteurs : Bitcoin,
+la liquidité, la macro et la psychologie des investisseurs.
+</p>
+
+<h2>Structure du marché</h2>
+
+<p>
+Comprendre les cycles permet d’anticiper les mouvements.
+</p>
+
+<h2>Altcoins</h2>
+
+<p>
+Les altcoins suivent souvent Bitcoin mais avec plus de volatilité.
+</p>
+
+<h2>Macro</h2>
+
+<p>
+Le marché crypto dépend aussi des conditions économiques globales.
+</p>
+
+<p>
+Pour trader, utilise nos
+<a href="{{ url_for('pages.seo_crypto_signals', lang_code=current_lang) }}">
+signaux crypto
+</a>.
+</p>
+
+<div class="market-cta-row">
+<a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="market-btn">
+Voir les opportunités
+</a>
+</div>
+
+</div>
+</section>
+{% endblock %}

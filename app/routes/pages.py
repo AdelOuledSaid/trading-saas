@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
 from flask_login import current_user, login_required
 
+from flask import current_app
 from app.models import Signal
 from app.services.whale_tracking_service import WhaleTrackingService
 from app.services.market_service import get_crypto_command_center
@@ -292,3 +293,43 @@ def whales(lang_code=None):
         active_filters=active_filters,
     )
 #---------------------------------------------------
+
+
+@pages_bp.route("/robots.txt")
+def robots_txt():
+    return current_app.send_static_file("robots.txt")
+
+@pages_bp.route("/signaux-crypto")
+@pages_bp.route("/<lang_code>/signaux-crypto")
+@pages_bp.route("/<lang_code>/crypto-signals")
+def seo_crypto_signals(lang_code=None):
+    current_lang = normalize_lang(lang_code)
+    return render_template(
+        "seo/crypto_signals.html",
+        current_lang=current_lang
+    )
+
+@pages_bp.route("/<lang_code>/analyse-bitcoin")
+def analyse_bitcoin(lang_code):
+    return render_template("seo/analyse_bitcoin.html", current_lang=lang_code)
+
+@pages_bp.route("/<lang_code>/resultats-trading")
+def resultats_trading(lang_code):
+    return render_template("seo/resultats_trading.html", current_lang=lang_code)
+
+@pages_bp.route("/<lang_code>/trading-academy")
+def trading_academy(lang_code):
+    return render_template("seo/trading_academy.html", current_lang=lang_code)
+
+@pages_bp.route("/<lang_code>/signaux-trading")
+def signaux_trading(lang_code):
+    return render_template("seo/signaux_trading.html", current_lang=lang_code)
+
+@pages_bp.route("/<lang_code>/analyse-crypto")
+def analyse_crypto(lang_code):
+    return render_template("seo/analyse_crypto.html", current_lang=lang_code)
+
+
+@pages_bp.route("/sitemap.xml")
+def sitemap():
+    return current_app.send_static_file("sitemap.xml")

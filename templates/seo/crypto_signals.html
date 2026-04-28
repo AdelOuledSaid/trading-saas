@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Signaux crypto en temps réel | BTC, ETH, SOL | VelWolef{% endblock %}
+
+{% block meta_description %}
+Recevez des signaux crypto structurés sur Bitcoin, Ethereum et Solana avec analyse marché, gestion du risque, niveaux d’entrée, stop loss, take profit et alertes Telegram.
+{% endblock %}
+
+{% block content %}
+<section class="seo-page">
+    <div class="section-container">
+
+        <span class="market-badge">VelWolef Crypto Signals</span>
+
+        <h1>Signaux crypto en temps réel pour BTC, ETH et SOL</h1>
+
+        <p>
+            VelWolef propose une approche structurée des signaux crypto pour aider les traders à mieux lire le marché,
+            identifier les zones importantes et suivre des setups avec entrée, stop loss et take profit.
+        </p>
+
+        <p>
+            L’objectif n’est pas d’envoyer des signaux au hasard, mais de fournir un contexte clair : tendance du Bitcoin,
+            volatilité, dominance BTC, rotation du capital vers Ethereum ou les altcoins, et niveau de risque global.
+        </p>
+
+        <div class="market-hero-actions">
+            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="market-btn">
+                Voir les offres
+            </a>
+            <a href="{{ url_for('pages.market_crypto', lang_code=current_lang) }}" class="market-btn secondary">
+                Voir le marché crypto
+            </a>
+        </div>
+
+        <h2>Pourquoi suivre des signaux crypto structurés ?</h2>
+
+        <p>
+            Le marché crypto évolue rapidement. Bitcoin peut changer de direction en quelques minutes, Ethereum suit
+            souvent une dynamique différente, et les altcoins comme Solana peuvent amplifier les mouvements. Sans méthode,
+            beaucoup de traders entrent trop tard, utilisent un mauvais stop loss ou prennent trop de risque.
+        </p>
+
+        <p>
+            Un signal crypto professionnel doit toujours inclure une logique complète : actif, direction, prix d’entrée,
+            stop loss, take profit, timeframe, contexte marché et invalidation. C’est cette structure qui permet de
+            trader avec plus de discipline.
+        </p>
+
+        <h2>Ce que contient un signal crypto VelWolef</h2>
+
+        <ul>
+            <li>Actif analysé : BTC, ETH, SOL ou autre crypto majeure</li>
+            <li>Direction : achat ou vente selon la structure du marché</li>
+            <li>Prix d’entrée clair</li>
+            <li>Stop loss pour contrôler le risque</li>
+            <li>Take profit pour définir l’objectif</li>
+            <li>Contexte marché : tendance, volatilité, dominance, momentum</li>
+            <li>Alertes Telegram selon le niveau d’abonnement</li>
+        </ul>
+
+        <h2>Signaux Bitcoin</h2>
+
+        <p>
+            Bitcoin reste l’actif directeur du marché crypto. Quand BTC accélère, corrige ou consolide, tout le marché
+            réagit. Les signaux Bitcoin permettent donc de comprendre la direction principale avant de regarder Ethereum
+            ou les altcoins.
+        </p>
+
+        <h2>Signaux Ethereum et altcoins</h2>
+
+        <p>
+            Ethereum et Solana peuvent offrir des mouvements puissants lorsque le marché entre en phase de rotation.
+            VelWolef surveille ces conditions afin d’éviter les entrées isolées et de privilégier les setups alignés
+            avec le contexte global.
+        </p>
+
+        <h2>Alertes Telegram crypto</h2>
+
+        <p>
+            Les membres peuvent recevoir les signaux directement sur Telegram selon leur plan. Le canal public donne
+            une vision limitée, tandis que les plans Basic, Premium et VIP donnent accès à une distribution plus complète.
+        </p>
+
+        <h2>Gestion du risque</h2>
+
+        <p>
+            Aucun signal n’est garanti. Le trading crypto comporte un risque important. C’est pourquoi chaque signal
+            doit être accompagné d’un stop loss, d’un objectif clair et d’une taille de position adaptée.
+        </p>
+
+        <div class="market-highlight market-highlight-premium">
+            <div class="highlight-copy">
+                <h3>Commencer avec VelWolef</h3>
+                <p>
+                    Accédez à un environnement complet avec signaux, dashboard, résultats, academy et analyse marché.
+                </p>
+            </div>
+
+            <div class="market-cta-row">
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="market-btn">
+                    Débloquer les signaux
+                </a>
+                <a href="{{ url_for('pages.market_crypto', lang_code=current_lang) }}" class="market-btn secondary">
+                    Analyse crypto live
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

@@ -1,6 +1,7 @@
 <footer class="site-footer">
     <div class="footer-container">
 
+        <!-- 🔹 BRAND -->
         <div class="footer-brand">
             <h3>VelWolef</h3>
 
@@ -25,7 +26,7 @@
 
         <div class="footer-links-group">
 
-            <!-- NAV -->
+            <!-- 🔹 NAV -->
             <div class="footer-col">
                 <h4>{{ t("nav", "Navigation") }}</h4>
 
@@ -50,36 +51,18 @@
                 </a>
             </div>
 
-            <!-- ACADEMY -->
+            <!-- 🔹 SEO (REMPLACE ACADEMY) -->
             <div class="footer-col">
-                <h4>{{ t("academy", "Academy") }}</h4>
+                <h4>Analyse & Marché</h4>
 
-                <a href="{{ url_for('academy.academy_index', lang_code=current_lang) }}">
-                    {{ t("academy_home", "Academy") }}
-                </a>
-
-                <a href="{{ url_for('academy.academy_level_1', lang_code=current_lang) }}">
-                    {{ t("level_1", "Niveau 1") }}
-                </a>
-
-                <a href="{{ url_for('academy.academy_level_2', lang_code=current_lang) }}">
-                    {{ t("level_2", "Niveau 2") }}
-                </a>
-
-                <a href="{{ url_for('academy.academy_level_3', lang_code=current_lang) }}">
-                    {{ t("level_3", "Niveau 3") }}
-                </a>
-
-                <a href="{{ url_for('academy.academy_level_4', lang_code=current_lang) }}">
-                    {{ t("level_4", "Niveau 4 Pro") }}
-                </a>
-
-                <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}">
-                    {{ t("upgrade", "Upgrade") }}
-                </a>
+                <a href="/fr/signaux-crypto">Signaux crypto</a>
+                <a href="/fr/signaux-trading">Signaux trading</a>
+                <a href="/fr/analyse-bitcoin">Analyse Bitcoin</a>
+                <a href="/fr/analyse-crypto">Analyse crypto</a>
+                <a href="/fr/resultats-trading">Résultats trading</a>
             </div>
 
-            <!-- SUPPORT -->
+            <!-- 🔹 SUPPORT -->
             <div class="footer-col">
                 <h4>{{ t("support", "Support") }}</h4>
 
@@ -96,7 +79,7 @@
                 </a>
             </div>
 
-            <!-- LEGAL -->
+            <!-- 🔹 LEGAL -->
             <div class="footer-col">
                 <h4>{{ t("legal", "Légal") }}</h4>
 
@@ -116,6 +99,14 @@
         </div>
     </div>
 
+    <!-- 🔹 SEO LIGHT (petite ligne discrète) -->
+    <div style="text-align:center; margin-top:20px; font-size:13px; color:#64748b;">
+        <a href="/fr/signaux-crypto">Signaux crypto</a> •
+        <a href="/fr/analyse-bitcoin">Analyse Bitcoin</a> •
+        <a href="/fr/resultats-trading">Résultats trading</a>
+    </div>
+
+    <!-- 🔹 BOTTOM -->
     <div class="footer-bottom">
         <p>
             © 2026 VelWolef —

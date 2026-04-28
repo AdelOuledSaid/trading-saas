@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# 🔒 Pages privées
+Disallow: /dashboard
+Disallow: /login
+Disallow: /signal/
+Disallow: /replay
+Disallow: /webhook
+Disallow: /telegram/webhook
+
+
+# 🔒 Admin / technique
+Disallow: /admin
+Disallow: /wp-admin
+
+# ✅ Sitemap
+Sitemap: https://www.velwolef.com/sitemap.xml
