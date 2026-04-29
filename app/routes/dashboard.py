@@ -369,14 +369,13 @@ def dashboard(lang_code):
     telegram_bot_link = ""
 
     if telegram_bot_username and not telegram_linked:
-        token = ensure_telegram_link_token(current_user)
-        telegram_bot_link = f"https://t.me/{telegram_bot_username}?start={token}"
+       token = ensure_telegram_link_token(current_user)
+       telegram_bot_link = f"https://t.me/{telegram_bot_username}?start={token}"
 
-        print("TELEGRAM BOT LINK =", telegram_bot_link)
-        print("telegram_linked =", telegram_linked, flush=True)
-        print("telegram_bot_username =", telegram_bot_username, flush=True)
-        print("telegram_bot_link =", telegram_bot_link, flush=True)
-        print("telegram_link_token =", getattr(current_user, "telegram_link_token", None), flush=True)
+       from flask import current_app
+       current_app.logger.info(
+           f"Telegram link generated for user_id={current_user.id}"
+       )
 
     return render_template(
         "dashboard.html",
