@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="{{ current_lang|default('en') }}">
+<html lang="{{ request.args.get('lang_code') or current_lang|default('en') }}">
 <head>
     <meta charset="UTF-8">
-    <title>{{ t("mini_course_title", "Mini cours") }} | VelWolef</title>
+    <title>{{ t("mini_course_title", "Mini Course") }} | VelWolef</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
@@ -21,13 +21,9 @@
             --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             margin: 0;
@@ -54,9 +50,7 @@
             mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent 82%);
         }
 
-        a {
-            color: inherit;
-        }
+        a { color: inherit; }
 
         .shell {
             width: min(1180px, 100%);
@@ -97,6 +91,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
+            align-items: center;
         }
 
         .btn {
@@ -121,6 +116,89 @@
             border-color: rgba(98,168,255,0.35);
         }
 
+        .lang-dropdown {
+            position: relative;
+        }
+
+        .lang-dropdown-toggle {
+            height: 44px;
+            min-width: 66px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.045);
+            color: #eaf2ff;
+            padding: 8px 13px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 900;
+            font-size: 13px;
+            transition: transform .2s ease, background .2s ease, border-color .2s ease;
+        }
+
+        .lang-dropdown-toggle:hover {
+            transform: translateY(-1px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(98,168,255,0.35);
+        }
+
+        .flag-icon {
+            width: 22px;
+            height: 16px;
+            border-radius: 4px;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+
+        .lang-dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 52px;
+            min-width: 150px;
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            padding: 8px;
+            border-radius: 18px;
+            background: rgba(8, 17, 31, 0.98);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+            z-index: 100;
+        }
+
+        .lang-dropdown:hover .lang-dropdown-menu {
+            display: flex;
+        }
+
+        .lang-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #dbeafe;
+            font-weight: 900;
+            font-size: 13px;
+            border: 1px solid transparent;
+        }
+
+        .lang-option-left {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lang-option:hover,
+        .lang-option.active {
+            background: rgba(98,168,255,0.16);
+            border-color: rgba(98,168,255,0.22);
+            color: #ffffff;
+        }
+
         .hero {
             display: grid;
             grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
@@ -130,7 +208,8 @@
         }
 
         .hero-card,
-        .panel {
+        .panel,
+        .side-card {
             background: linear-gradient(180deg, var(--panel), rgba(7, 16, 31, 0.92));
             border: 1px solid var(--line);
             border-radius: 28px;
@@ -235,9 +314,7 @@
             box-shadow: inset 0 0 34px rgba(0,0,0,0.35), 0 22px 60px rgba(53,224,138,0.12);
         }
 
-        .score-ring-inner {
-            text-align: center;
-        }
+        .score-ring-inner { text-align: center; }
 
         .score-ring-inner strong {
             display: block;
@@ -276,9 +353,7 @@
             margin-bottom: 8px;
         }
 
-        .mini-box strong {
-            font-size: 18px;
-        }
+        .mini-box strong { font-size: 18px; }
 
         .metric-grid {
             display: grid;
@@ -325,14 +400,9 @@
             align-items: start;
         }
 
-        .stack {
-            display: grid;
-            gap: 18px;
-        }
+        .stack { display: grid; gap: 18px; }
 
-        .panel {
-            padding: 24px;
-        }
+        .panel { padding: 24px; }
 
         .panel-head {
             display: flex;
@@ -373,9 +443,7 @@
             color: #c7d4e8;
         }
 
-        p {
-            margin: 0;
-        }
+        p { margin: 0; }
 
         ul {
             padding-left: 20px;
@@ -466,10 +534,7 @@
             background: rgba(98,168,255,0.08);
         }
 
-        .heatmap {
-            display: grid;
-            gap: 10px;
-        }
+        .heatmap { display: grid; gap: 10px; }
 
         .heat-row {
             display: grid;
@@ -519,22 +584,14 @@
         }
 
         @media (max-width: 980px) {
-            body {
-                padding: 16px;
-            }
+            body { padding: 16px; }
 
             .hero,
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
+            .content-grid { grid-template-columns: 1fr; }
 
-            .sticky {
-                position: static;
-            }
+            .sticky { position: static; }
 
-            .metric-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
+            .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
 
         @media (max-width: 620px) {
@@ -556,14 +613,20 @@
                 grid-template-columns: 1fr;
             }
 
-            h1 {
-                font-size: 38px;
+            h1 { font-size: 38px; }
+
+            .lang-dropdown-menu {
+                left: 0;
+                right: auto;
             }
         }
     </style>
 </head>
 
 <body>
+{% set active_lang = request.args.get("lang_code") or current_lang|default("en") %}
+{% set supported_langs = ["fr", "en", "es", "de", "it", "pt", "ru"] %}
+
 <div class="shell">
 
     <div class="topbar">
@@ -573,25 +636,65 @@
         </div>
 
         <div class="top-actions">
-            {% if current_lang is defined %}
-            <span class="btn">🌍 {{ current_lang|upper }}</span>
-            {% endif %}
-            <a class="btn" href="javascript:history.back()">← {{ t("back", "Retour") }}</a>
+
+            <div class="lang-dropdown">
+                <button class="lang-dropdown-toggle" type="button">
+                    {% if active_lang == "fr" %}
+                        <img class="flag-icon" src="https://flagcdn.com/w40/fr.png" alt="FR">
+                    {% elif active_lang == "en" %}
+                        <img class="flag-icon" src="https://flagcdn.com/w40/gb.png" alt="EN">
+                    {% elif active_lang == "ru" %}
+                        <img class="flag-icon" src="https://flagcdn.com/w40/ru.png" alt="RU">
+                    {% elif active_lang == "it" %}
+                        <img class="flag-icon" src="https://flagcdn.com/w40/it.png" alt="IT">
+                    {% elif active_lang == "es" %}
+                        <img class="flag-icon" src="https://flagcdn.com/w40/es.png" alt="ES">
+                    {% elif active_lang == "de" %}
+                        <img class="flag-icon" src="https://flagcdn.com/w40/de.png" alt="DE">
+                    {% elif active_lang == "pt" %}
+                        <img class="flag-icon" src="https://flagcdn.com/w40/pt.png" alt="PT">
+                    {% else %}
+                        <img class="flag-icon" src="https://flagcdn.com/w40/gb.png" alt="EN">
+                    {% endif %}
+                    <span>{{ active_lang|upper }}</span>
+                </button>
+
+                <div class="lang-dropdown-menu">
+                    {% for l in supported_langs %}
+                        {% set url_args = request.view_args.copy() if request.view_args else {} %}
+                        {% set _ = url_args.pop("lang_code", None) %}
+                        <a class="lang-option {% if active_lang == l %}active{% endif %}"
+                           href="{{ url_for(request.endpoint, **url_args) }}?lang_code={{ l }}">
+                            <span class="lang-option-left">
+                                <img class="flag-icon"
+                                     src="https://flagcdn.com/w40/{{ 'gb' if l == 'en' else l }}.png"
+                                     alt="{{ l|upper }}">
+                                {{ l|upper }}
+                            </span>
+                            {% if active_lang == l %}
+                                <span>✓</span>
+                            {% endif %}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <a class="btn" href="javascript:history.back()">← {{ t("back", "Back") }}</a>
         </div>
     </div>
 
     <section class="hero">
         <div class="hero-card">
-            <div class="badge">✦ {{ t("mini_course_ai", "MINI COURS AI") }}</div>
+            <div class="badge">✦ {{ t("mini_course_ai", "AI MINI COURSE") }}</div>
 
-            <h1>{{ t("understand_trade", "Comprendre le trade") }}</h1>
+            <h1>{{ t("understand_trade", "Understand the Trade") }}</h1>
 
             <p class="hero-subtitle">
-                {{ t("mini_course_pro_desc", "Cette page transforme le signal en mini formation : contexte, objectif, invalidation, risque, psychologie et plan d’exécution. L’objectif est de comprendre le trade avant de l’exécuter.") }}
+                {{ t("mini_course_pro_desc", "This page transforms a trading signal into a mini training experience: context, objective, invalidation, risk, psychology, and execution plan. The goal is to understand the trade before executing it.") }}
             </p>
 
             <div class="trade-strip">
-                <div class="trade-chip"><span>{{ t("asset", "Actif") }}</span> {{ signal.asset or "-" }}</div>
+                <div class="trade-chip"><span>{{ t("asset", "Asset") }}</span> {{ signal.asset or "-" }}</div>
                 <div class="trade-chip"><span>{{ t("direction", "Direction") }}</span> {{ signal.action or "-" }}</div>
                 <div class="trade-chip"><span>{{ t("timeframe", "Timeframe") }}</span> {{ signal.timeframe or "-" }}</div>
                 <div class="trade-chip"><span>{{ t("risk_reward", "Risk / Reward") }}</span> {{ data.rr }}</div>
@@ -600,15 +703,15 @@
 
         <aside class="side-card">
             <div>
-                <span class="panel-kicker">{{ t("ai_confidence", "Confiance AI") }}</span>
-                <h2>{{ t("setup_quality_score", "Score qualité du setup") }}</h2>
+                <span class="panel-kicker">{{ t("ai_confidence", "AI Confidence") }}</span>
+                <h2>{{ t("setup_quality_score", "Setup Quality Score") }}</h2>
             </div>
 
             <div class="score-wrap">
                 <div class="score-ring">
                     <div class="score-ring-inner">
                         <strong>{{ signal.confidence or 0 }}%</strong>
-                        <span>{{ t("confidence", "Confiance") }}</span>
+                        <span>{{ t("confidence", "Confidence") }}</span>
                     </div>
                 </div>
             </div>
@@ -636,7 +739,7 @@
 
     <section class="metric-grid" id="quick-view">
         <div class="metric">
-            <div class="label">{{ t("asset", "Actif") }}</div>
+            <div class="label">{{ t("asset", "Asset") }}</div>
             <div class="value">{{ signal.asset or "-" }}</div>
         </div>
         <div class="metric">
@@ -661,8 +764,8 @@
             <section class="panel" id="summary">
                 <div class="panel-head">
                     <div>
-                        <span class="panel-kicker">{{ t("executive_summary", "Résumé exécutif") }}</span>
-                        <h2>{{ t("ai_summary", "Résumé AI") }}</h2>
+                        <span class="panel-kicker">{{ t("executive_summary", "Executive Summary") }}</span>
+                        <h2>{{ t("ai_summary", "AI Summary") }}</h2>
                     </div>
                 </div>
                 <p>{{ data.ai_summary }}</p>
@@ -671,8 +774,8 @@
             <section class="panel" id="reason">
                 <div class="panel-head">
                     <div>
-                        <span class="panel-kicker">{{ t("trade_logic", "Logique du trade") }}</span>
-                        <h2>{{ t("why_trade", "Pourquoi ce trade existe") }}</h2>
+                        <span class="panel-kicker">{{ t("trade_logic", "Trade Logic") }}</span>
+                        <h2>{{ t("why_trade", "Why This Trade Exists") }}</h2>
                     </div>
                 </div>
                 <p>{{ data.reason }}</p>
@@ -681,14 +784,14 @@
             <section class="panel" id="levels">
                 <div class="panel-head">
                     <div>
-                        <span class="panel-kicker">{{ t("risk_framework", "Cadre de risque") }}</span>
-                        <h2>{{ t("objective_invalidation", "Objectif et invalidation") }}</h2>
+                        <span class="panel-kicker">{{ t("risk_framework", "Risk Framework") }}</span>
+                        <h2>{{ t("objective_invalidation", "Objective & Invalidation") }}</h2>
                     </div>
                 </div>
 
                 <div class="two-col">
                     <div class="callout">
-                        <h3 class="green">{{ t("objective", "Objectif") }}</h3>
+                        <h3 class="green">{{ t("objective", "Objective") }}</h3>
                         <p>{{ data.objective }}</p>
                     </div>
 
@@ -702,30 +805,30 @@
             <section class="panel" id="execution">
                 <div class="panel-head">
                     <div>
-                        <span class="panel-kicker">{{ t("execution", "Exécution") }}</span>
-                        <h2>{{ t("execution_plan", "Plan d’exécution conseillé") }}</h2>
+                        <span class="panel-kicker">{{ t("execution", "Execution") }}</span>
+                        <h2>{{ t("execution_plan", "Recommended Execution Plan") }}</h2>
                     </div>
                 </div>
 
                 <div class="timeline">
                     <div class="step">
                         <div class="step-card">
-                            <h3>{{ t("read_context", "Lire le contexte") }}</h3>
-                            <p>{{ t("read_context_desc", "Vérifier que le signal reste cohérent avec la structure du marché et le timeframe utilisé.") }}</p>
+                            <h3>{{ t("read_context", "Read the Context") }}</h3>
+                            <p>{{ t("read_context_desc", "Make sure the signal remains aligned with market structure and the selected timeframe.") }}</p>
                         </div>
                     </div>
 
                     <div class="step">
                         <div class="step-card">
-                            <h3>{{ t("respect_entry_zone", "Respecter la zone d’entrée") }}</h3>
+                            <h3>{{ t("respect_entry_zone", "Respect the Entry Zone") }}</h3>
                             <p>{{ data.execution_plan }}</p>
                         </div>
                     </div>
 
                     <div class="step">
                         <div class="step-card">
-                            <h3>{{ t("protect_capital", "Protéger le capital") }}</h3>
-                            <p>{{ t("protect_capital_desc", "Ne pas déplacer le stop loss sans raison structurelle. Le stop représente l’invalidation du scénario.") }}</p>
+                            <h3>{{ t("protect_capital", "Protect Capital") }}</h3>
+                            <p>{{ t("protect_capital_desc", "Do not move the stop loss without a structural reason. The stop represents the invalidation point of the scenario.") }}</p>
                         </div>
                     </div>
                 </div>
@@ -734,14 +837,14 @@
             <section class="panel" id="strengths-risks">
                 <div class="panel-head">
                     <div>
-                        <span class="panel-kicker">{{ t("setup_diagnosis", "Diagnostic du setup") }}</span>
-                        <h2>{{ t("strengths_and_risks", "Forces et risques du setup") }}</h2>
+                        <span class="panel-kicker">{{ t("setup_diagnosis", "Setup Diagnosis") }}</span>
+                        <h2>{{ t("strengths_and_risks", "Setup Strengths & Risks") }}</h2>
                     </div>
                 </div>
 
                 <div class="two-col">
                     <div class="callout">
-                        <h3 class="green">{{ t("strengths", "Forces du setup") }}</h3>
+                        <h3 class="green">{{ t("strengths", "Setup Strengths") }}</h3>
                         <ul>
                             {% for item in data.strengths %}
                             <li>{{ item }}</li>
@@ -750,7 +853,7 @@
                     </div>
 
                     <div class="callout red">
-                        <h3 class="red">{{ t("risks", "Risques du setup") }}</h3>
+                        <h3 class="red">{{ t("risks", "Setup Risks") }}</h3>
                         <ul>
                             {% for item in data.risks %}
                             <li>{{ item }}</li>
@@ -763,15 +866,15 @@
             <section class="panel" id="psychology">
                 <div class="panel-head">
                     <div>
-                        <span class="panel-kicker">{{ t("trader_psychology", "Psychologie trader") }}</span>
-                        <h2>{{ t("mistake_to_avoid", "Erreur à éviter") }}</h2>
+                        <span class="panel-kicker">{{ t("trader_psychology", "Trader Psychology") }}</span>
+                        <h2>{{ t("mistake_to_avoid", "Mistake to Avoid") }}</h2>
                     </div>
                 </div>
 
                 <div class="warning">
                     <div class="warning-icon">⚠️</div>
                     <div>
-                        <h3>{{ t("discipline_alert", "Alerte discipline") }}</h3>
+                        <h3>{{ t("discipline_alert", "Discipline Alert") }}</h3>
                         <p>{{ data.mistake_to_avoid }}</p>
                     </div>
                 </div>
@@ -782,25 +885,25 @@
         <aside class="sticky">
             <section class="panel">
                 <span class="panel-kicker">{{ t("navigation", "Navigation") }}</span>
-                <h2>{{ t("course_map", "Plan du cours") }}</h2>
+                <h2>{{ t("course_map", "Course Map") }}</h2>
 
                 <div class="mini-nav" style="margin-top: 16px;">
-                    <a href="#quick-view"><span>{{ t("quick_view", "Vue rapide") }}</span><span>01</span></a>
-                    <a href="#summary"><span>{{ t("ai_summary", "Résumé AI") }}</span><span>02</span></a>
-                    <a href="#reason"><span>{{ t("trade_logic", "Logique du trade") }}</span><span>03</span></a>
-                    <a href="#levels"><span>{{ t("objective_invalidation", "Objectif / invalidation") }}</span><span>04</span></a>
-                    <a href="#execution"><span>{{ t("execution_plan", "Plan d’exécution") }}</span><span>05</span></a>
-                    <a href="#psychology"><span>{{ t("trader_psychology", "Psychologie") }}</span><span>06</span></a>
+                    <a href="#quick-view"><span>{{ t("quick_view", "Quick View") }}</span><span>01</span></a>
+                    <a href="#summary"><span>{{ t("ai_summary", "AI Summary") }}</span><span>02</span></a>
+                    <a href="#reason"><span>{{ t("trade_logic", "Trade Logic") }}</span><span>03</span></a>
+                    <a href="#levels"><span>{{ t("objective_invalidation", "Objective / Invalidation") }}</span><span>04</span></a>
+                    <a href="#execution"><span>{{ t("execution_plan", "Execution Plan") }}</span><span>05</span></a>
+                    <a href="#psychology"><span>{{ t("trader_psychology", "Psychology") }}</span><span>06</span></a>
                 </div>
             </section>
 
             <section class="panel">
-                <span class="panel-kicker">{{ t("setup_heatmap", "Heatmap setup") }}</span>
-                <h2>{{ t("quality_reading", "Lecture qualité") }}</h2>
+                <span class="panel-kicker">{{ t("setup_heatmap", "Setup Heatmap") }}</span>
+                <h2>{{ t("quality_reading", "Quality Reading") }}</h2>
 
                 <div class="heatmap" style="margin-top: 16px;">
                     <div class="heat-row">
-                        <span>{{ t("confidence", "Confiance") }}</span>
+                        <span>{{ t("confidence", "Confidence") }}</span>
                         <div class="bar"><div class="bar-fill" style="width: {{ signal.confidence or 0 }}%;"></div></div>
                         <strong>{{ signal.confidence or 0 }}%</strong>
                     </div>
@@ -812,18 +915,18 @@
                     </div>
 
                     <div class="heat-row">
-                        <span>{{ t("risk", "Risque") }}</span>
+                        <span>{{ t("risk", "Risk") }}</span>
                         <div class="bar"><div class="bar-fill redbar" style="width: 42%;"></div></div>
-                        <strong>{{ t("controlled", "Contrôlé") }}</strong>
+                        <strong>{{ t("controlled", "Controlled") }}</strong>
                     </div>
                 </div>
             </section>
 
             <section class="panel">
-                <span class="panel-kicker">{{ t("premium_note", "Note premium") }}</span>
-                <h2>{{ t("before_execution", "Avant exécution") }}</h2>
+                <span class="panel-kicker">{{ t("premium_note", "Premium Note") }}</span>
+                <h2>{{ t("before_execution", "Before Execution") }}</h2>
                 <p>
-                    {{ t("before_execution_desc", "Un signal est un scénario, pas une certitude. La qualité vient du respect du plan, de la taille de position et de l’invalidation.") }}
+                    {{ t("before_execution_desc", "A signal is a scenario, not a certainty. Quality comes from respecting the plan, position sizing, and invalidation.") }}
                 </p>
             </section>
         </aside>
