@@ -16,14 +16,16 @@ def get_client():
 
 def generate_daily_briefing(btc_data: str, gold_data: str, eco_data: str) -> str:
     """
-    Génère un briefing trading ULTRA PREMIUM (structure hedge fund)
+    Generate institutional-grade daily briefing (Hedge fund style)
     """
 
     client = get_client()
 
-    # ✅ FALLBACK SI PAS DE CLÉ
+    # =========================
+    # FALLBACK (IMPORTANT)
+    # =========================
     fallback = f"""
-📊 Morning Brief
+🏛 Market Brief
 
 BTC:
 {btc_data}
@@ -34,10 +36,10 @@ Gold:
 Macro:
 {eco_data}
 
-Plan du jour :
-- attendre confirmation
-- surveiller volatilité
-- privilégier gestion du risque
+Plan:
+- wait for confirmation
+- monitor volatility
+- manage risk
 """.strip()
 
     if client is None:
@@ -45,54 +47,65 @@ Plan du jour :
 
     try:
         prompt = f"""
-Tu es un analyste macro & trader professionnel travaillant dans un hedge fund.
+You are a senior macro analyst working in a hedge fund trading desk.
 
-Ta mission :
-Produire un briefing trading PREMIUM, structuré, clair et directement exploitable.
+Your mission:
+Produce a high-quality institutional trading briefing in ENGLISH ONLY.
 
-IMPORTANT :
-- Pas de blabla inutile
-- Style professionnel
-- Phrase courte
-- Orientation trading
-- Focus opportunités + risque
+Requirements:
+- professional tone (Bloomberg / Glassnode style)
+- concise, no fluff
+- actionable insights
+- no hype, no promises
+- adapt dynamically to market conditions
 
-========================
-STRUCTURE OBLIGATOIRE
-========================
-
-## 🧠 1. Market Sentiment
-- Biais global (Risk-on / Risk-off)
-- Direction dominante
-- Contexte macro rapide
-
-## ₿ 2. Bitcoin (BTC)
-- Tendance actuelle
-- Zones clés
-- Scénarios
-
-## 🪙 3. Gold (XAUUSD)
-- Tendance
-- Zones clés
-
-## 🌍 4. Macro & News Impact
-- Événements importants
-- Impact marché
-
-## 🎯 5. Opportunités du jour
-- Actifs à surveiller
-- Conditions d'entrée
-
-## ⚠️ 6. Risk Management
-- Niveau de risque
-- Pièges possibles
-
-## 📌 7. Conclusion Trading
-- Biais final
-- Stratégie
+Dynamic adaptation rules:
+- If volatility is high → emphasize risk, liquidity, invalidation
+- If BTC trending → focus continuation / breakout logic
+- If Gold leading → highlight macro / safe haven flows
+- If macro heavy → explain impact clearly
+- If mixed market → emphasize patience & confirmation
 
 ========================
-DONNÉES
+STRUCTURE (MANDATORY)
+========================
+
+🏛 Market Regime
+- risk-on / risk-off / mixed
+- dominant flow
+- liquidity conditions
+
+₿ Bitcoin Desk View
+- structure
+- momentum
+- key zones
+- bullish / bearish scenarios
+
+🥇 Gold Desk View
+- trend
+- safe-haven demand
+- key levels
+
+🌍 Macro & News
+- key events
+- expected impact
+
+🎯 Trading Opportunities
+- assets to monitor
+- conditions before entry
+- confirmation signals
+
+⚠️ Risk Management
+- main risks
+- invalidation levels
+- what to avoid
+
+📌 Desk Conclusion
+- final bias
+- execution strategy
+
+========================
+DATA
 ========================
 
 BTC:
@@ -103,10 +116,12 @@ GOLD:
 
 MACRO:
 {eco_data}
+
+Return ONLY the final briefing in English.
 """
 
         response = client.responses.create(
-            model="gpt-4.1-mini",
+            model=os.getenv("OPENAI_MODEL", "gpt-4.1-mini"),
             input=prompt
         )
 

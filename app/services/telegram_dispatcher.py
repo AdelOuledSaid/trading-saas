@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from flask import current_app
-
+from app.services.signal_service import calculate_trade_pnl
 from app.models import Signal
 from app.services.briefing_service import (
     ensure_daily_briefing,
@@ -26,6 +26,7 @@ from app.services.telegram_dedup import (
     signal_quota_remaining,
 )
 from app.services.telegram_service import (
+    format_price,
     build_news_digest_message,
     build_signal_telegram_message,
     build_sl_telegram_message,

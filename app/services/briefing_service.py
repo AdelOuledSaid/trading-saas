@@ -43,16 +43,18 @@ def build_basic_briefing(content: str) -> str:
         f"{base}\n\n"
         "━━━━━━━━━━━━━━━━━━\n"
         "📌 <b>Basic Focus</b>\n"
-        "- lecture simple du marché\n"
-        "- zones principales à surveiller\n"
-        "- prudence avant toute entrée\n\n"
+        "- simplified market read\n"
+        "- key zones to monitor\n"
+        "- confirmation required before entry\n"
+        "- risk control remains the priority\n\n"
         "━━━━━━━━━━━━━━━━━━\n"
-        "🔒 <b>Résumé incomplet volontairement</b>\n"
-        "La version détaillée avec davantage de contexte reste réservée aux membres supérieurs.\n\n"
-        "💎 <b>Upgrade pour accéder à :</b>\n"
-        "• analyse plus complète\n"
-        "• meilleures zones de réaction\n"
-        "• opportunités du jour\n"
+        "🔒 <b>Partial Institutional Brief</b>\n"
+        "The full desk view, execution map and deeper market context are reserved for higher-tier members.\n\n"
+        "💎 <b>Upgrade to access:</b>\n"
+        "• deeper market structure\n"
+        "• priority reaction zones\n"
+        "• daily opportunity map\n"
+        "• execution context\n"
     ).strip()
 
 
@@ -62,14 +64,15 @@ def build_premium_briefing(content: str) -> str:
     return (
         f"{base}\n\n"
         "━━━━━━━━━━━━━━━━━━\n"
-        "📊 <b>Premium Focus</b>\n"
-        "- lecture détaillée de la tendance\n"
-        "- actifs prioritaires\n"
-        "- zones de réaction importantes\n"
-        "- prudence sur les faux breakouts\n\n"
+        "📊 <b>Premium Desk Focus</b>\n"
+        "- detailed trend structure\n"
+        "- priority assets in play\n"
+        "- key reaction zones\n"
+        "- liquidity and breakout validation\n"
+        "- caution around false moves\n\n"
         "━━━━━━━━━━━━━━━━━━\n"
         "🔒 <b>VIP Edge</b>\n"
-        "Les setups sniper, le timing d’exécution et la lecture desk avancée restent réservés VIP.\n"
+        "Sniper setups, execution timing, invalidation levels and advanced desk reading remain reserved for VIP members.\n"
     ).strip()
 
 
@@ -79,17 +82,18 @@ def build_vip_briefing(content: str) -> str:
     return (
         f"{base}\n\n"
         "━━━━━━━━━━━━━━━━━━\n"
-        "🔒 <b>VIP Focus</b>\n"
-        "- zones de liquidité prioritaires\n"
-        "- actifs à surveiller en priorité\n"
-        "- lecture macro / momentum\n"
-        "- scénarios continuation / invalidation\n\n"
+        "🏛 <b>VIP Institutional Desk Map</b>\n"
+        "- priority liquidity zones\n"
+        "- assets with the cleanest flow\n"
+        "- macro / momentum alignment\n"
+        "- continuation and invalidation scenarios\n"
+        "- reaction zones for intraday execution\n\n"
         "━━━━━━━━━━━━━━━━━━\n"
         "💎 <b>Desk Insight</b>\n"
-        "- surveiller les sweeps de liquidité\n"
-        "- éviter les entrées impulsives\n"
-        "- privilégier les setups propres avec bon RR\n"
-        "- attendre confirmation avant exécution agressive\n"
+        "- monitor liquidity sweeps before entry\n"
+        "- avoid impulsive entries without confirmation\n"
+        "- prioritize clean setups with strong risk/reward\n"
+        "- adapt exposure according to volatility and flow\n"
     ).strip()
 
 
@@ -128,7 +132,7 @@ def ensure_daily_briefing():
         raw_content = _clean_text(raw_content)
 
         if not raw_content:
-            current_app.logger.warning("Briefing généré vide.")
+            current_app.logger.warning("Briefing generated empty.")
             return None
 
         briefing = DailyBriefing(
@@ -139,11 +143,11 @@ def ensure_daily_briefing():
         db.session.add(briefing)
         db.session.commit()
 
-        current_app.logger.info("Briefing du jour généré avec succès.")
+        current_app.logger.info("Daily briefing generated successfully.")
         return briefing
 
     except Exception as e:
-        current_app.logger.error("Erreur génération briefing: %s", repr(e))
+        current_app.logger.error("Briefing generation error: %s", repr(e))
         return None
 
 

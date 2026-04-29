@@ -140,14 +140,14 @@ def cron_midday():
         content = """
 📍 Midday Brief
 
-Le marché reste en observation sur les zones clés.
-Privilégier la patience et attendre une confirmation nette.
+The market remains in observation around key liquidity zones.
+US indices hold a reactive structure while crypto stays sensitive to momentum and macro flow.
 
-Checklist :
-- niveaux intraday
-- volume sur cassure
-- réaction des actifs leaders
-- prudence avant exposition
+Points to monitor:
+- intraday levels holding
+- reaction of leading assets
+- breakout volume confirmation
+- trend validation before new exposure
 """.strip()
 
         result = send_second_briefings(
@@ -170,14 +170,14 @@ def cron_evening():
         content = """
 🌙 Evening Brief
 
-La session se termine. On prépare les scénarios du lendemain
-et on évite le surtrading.
+The session is closing with focus on risk control and preparation for tomorrow.
 
-Checklist :
-- zones défendues
-- faux breakouts
-- actifs leaders
-- protection des gains
+Checklist:
+- defended zones
+- fake breakouts
+- leading assets
+- profit protection
+- next-day scenarios
 """.strip()
 
         result = send_second_briefings(
