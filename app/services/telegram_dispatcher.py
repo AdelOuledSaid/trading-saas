@@ -31,6 +31,7 @@ from app.services.telegram_service import (
     build_sl_telegram_message,
     build_tp_telegram_message,
     build_vip_result_teaser_message,
+    build_paid_win_summary_message,
     send_breaking_news_to_tier,
     send_message_to_tier,
 )
@@ -475,7 +476,7 @@ def _format_single_whale_message(alert: dict) -> str:
 
 def build_public_win_teaser_message(signal: Signal) -> str:
     asset = getattr(signal, "asset", None) or getattr(signal, "symbol", "ASSET")
-    direction = getattr(signal, "side", None) or getattr(signal, "signal_type", "BUY")
+    direction = getattr(signal, "action", None) or getattr(signal, "side", None) or getattr(signal, "signal_type", "BUY")
     entry = (
         getattr(signal, "entry_price", None)
         or getattr(signal, "entry", None)
@@ -490,26 +491,48 @@ def build_public_win_teaser_message(signal: Signal) -> str:
         or "-"
     )
 
+    try:
+        pnl = abs(calculate_trade_pnl(signal))
+    except Exception:
+        pnl = 0
+
+    try:
+        entry_text = format_price(entry)
+    except Exception:
+        entry_text = str(entry)
+
+    try:
+        tp_text = format_price(tp)
+    except Exception:
+        tp_text = str(tp)
+
+    try:
+        pnl_text = format_price(pnl)
+    except Exception:
+        pnl_text = str(pnl)
+
     return f"""
-🏆 <b>Winning Signal Closed</b>
+🏆 <b>BEST TRADE CLOSED</b>
 
-💰 <b>{asset}</b> • {direction}
-
-📍 <b>Entry</b> : {round(float(entry), 0)}
-🎯 <b>Take Profit Hit</b> : <b>{round(float(tp), 0)}</b>
-
-━━━━━━━━━━━━━━━━━━
-💰 <b>Result</b>: move validated ✔️
-⚡ <b>Execution</b>: clean and respected
-📊 <b>Market Read</b>: precision confirmed
+💰 <b>{asset}</b> • <b>{direction}</b>
+📍 <b>Entry</b> : {entry_text}
+🎯 <b>Target Hit</b> : {tp_text}
+💵 <b>Gain</b> : <b>+{pnl_text}</b>
 
 ━━━━━━━━━━━━━━━━━━
-🔒 <b>Limited Access</b>
+✅ Clean setup.
+✅ Target respected.
+✅ Market plan validated.
 
-Exact real-time levels are reserved for
-<b>Premium</b> & <b>VIP</b> members
+This is the type of execution Premium and VIP members receive in real time — before the move is completed.
 
-🚀 <b>Receive the next signals BEFORE the move</b>
+💎 <b>Premium / VIP Access</b>
+• Real-time entries
+• TP / SL levels
+• Full trade follow-up
+• Complete result and PnL
+
+🚀 <b>Join Premium or VIP to receive the next setup live.</b>
 """.strip()
 
 
@@ -885,8 +908,10 @@ def send_signal_tp(signal: Signal) -> dict:
 
     results = {}
 
+    # Public: marketing message only when trade is won.
     results["public"] = send_public_signal_tp_teaser(signal)
 
+    # VIP keeps the full detailed result.
     vip_key = signal_event_key(
         event_type="signal_tp",
         tier="vip",
@@ -901,19 +926,20 @@ def send_signal_tp(signal: Signal) -> dict:
         content_ref=str(getattr(signal, "id", "")),
     )
 
-    teaser_message = build_vip_result_teaser_message(signal)
+    # Basic + Premium: send the gain amount only for winning trades.
+    win_message = build_paid_win_summary_message(signal)
     for tier in ["basic", "premium"]:
-        teaser_key = signal_event_key(
-            event_type="signal_tp_teaser",
+        win_key = signal_event_key(
+            event_type="signal_tp_win_summary",
             tier=tier,
             signal_id=getattr(signal, "id", None),
             trade_id=getattr(signal, "trade_id", None),
         )
         results[tier] = _send_text(
             tier=tier,
-            message=teaser_message,
-            content_type="signal_tp_teaser",
-            dedup_key=teaser_key,
+            message=win_message,
+            content_type="signal_tp_win_summary",
+            dedup_key=win_key,
             content_ref=str(getattr(signal, "id", "")),
         )
 
@@ -941,21 +967,9 @@ def send_signal_sl(signal: Signal) -> dict:
         content_ref=str(getattr(signal, "id", "")),
     )
 
-    teaser_message = build_vip_result_teaser_message(signal)
-    for tier in ["basic", "premium"]:
-        teaser_key = signal_event_key(
-            event_type="signal_sl_teaser",
-            tier=tier,
-            signal_id=getattr(signal, "id", None),
-            trade_id=getattr(signal, "trade_id", None),
-        )
-        results[tier] = _send_text(
-            tier=tier,
-            message=teaser_message,
-            content_type="signal_sl_teaser",
-            dedup_key=teaser_key,
-            content_ref=str(getattr(signal, "id", "")),
-        )
+    # Basic + Premium: do not send anything when the trade is not won.
+    results["basic"] = False
+    results["premium"] = False
 
     return results
 

@@ -579,6 +579,41 @@ def build_sl_telegram_message(signal) -> str:
     return message
 
 
+def build_paid_win_summary_message(signal) -> str:
+    """
+    Message sent to Basic and Premium only when a trade is won.
+    If the trade is not won, dispatcher will not call this function.
+    """
+    asset = (signal.asset or "").upper()
+    action = (signal.action or "").upper()
+
+    asset_icon = asset_emoji(asset)
+    dir_icon = action_emoji(action)
+    pnl = abs(calculate_trade_pnl(signal))
+
+    timeframe_text = html.escape(format_timeframe(signal))
+    trade_id_text = html.escape(str(signal.trade_id or "-"))
+
+    return f"""
+✅ <b>Winning Trade Closed</b>
+
+{asset_icon} <b>{asset}</b> • {dir_icon} <b>{action}</b>
+
+━━━━━━━━━━━━━━━━━━
+💰 <b>Entry</b> : {format_price(signal.entry_price)}
+🎯 <b>Target Hit</b> : {format_price(signal.take_profit)}
+💵 <b>Gain</b> : <b>+{format_price(pnl)}</b>
+⚖️ <b>Risk/Reward</b> : {format_rr(signal)}
+
+━━━━━━━━━━━━━━━━━━
+⏱ <b>Timeframe</b> : {timeframe_text}
+🆔 <b>Trade ID</b> : {trade_id_text}
+📌 <b>Status</b> : WIN
+
+💎 <b>Velwolf Intelligence</b>
+""".strip()
+
+
 def build_vip_result_teaser_message(signal) -> str:
     asset = (signal.asset or "").upper()
     action = (signal.action or "").upper()
