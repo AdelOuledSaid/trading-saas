@@ -5,33 +5,63 @@ from app.extensions import cache
 
 
 NEWS_BACKUP_CACHE_KEY = "market_updates_backup_v1"
+CRYPTO_LIVE_BACKUP_KEY = "crypto_live_backup_v2"
+GLOBAL_MARKET_BACKUP_KEY = "global_market_backup_v2"
+FEAR_GREED_BACKUP_KEY = "fear_greed_backup_v2"
+
+
+def coingecko_headers():
+    headers = {
+        "accept": "application/json",
+        "User-Agent": "VelWolf/1.0"
+    }
+    api_key = getattr(config, "COINGECKO_API_KEY", None)
+    if api_key:
+        headers["x-cg-pro-api-key"] = api_key
+    return headers
+
+
+def safe_float(value, default=0.0):
+    try:
+        return float(value)
+    except Exception:
+        return default
+
+
+def format_big_number(value):
+    try:
+        value = float(value)
+    except Exception:
+        return "..."
+
+    if value >= 1_000_000_000_000:
+        return f"{value / 1_000_000_000_000:.2f}T"
+    if value >= 1_000_000_000:
+        return f"{value / 1_000_000_000:.2f}B"
+    if value >= 1_000_000:
+        return f"{value / 1_000_000:.2f}M"
+    if value >= 1_000:
+        return f"{value / 1_000:.2f}K"
+    return f"{value:.2f}"
+
+
+def format_currency(value, decimals=0):
+    try:
+        value = float(value)
+    except Exception:
+        return "..."
+    return f"${value:,.{decimals}f}"
 
 
 def get_btc_data():
-    url = "https://api.coingecko.com/api/v3/coins/markets"
-    params = {
-        "vs_currency": "usd",
-        "ids": "bitcoin",
-        "price_change_percentage": "24h",
-    }
+    crypto = get_crypto_market_live("bitcoin")
+    btc = crypto.get("bitcoin", {})
 
-    response = requests.get(url, params=params, timeout=10)
-    response.raise_for_status()
-    data = response.json()
+    price = safe_float(btc.get("usd"))
+    change = safe_float(btc.get("usd_24h_change"))
 
-    if not data:
-        raise ValueError("Aucune donnée BTC reçue")
-
-    btc = data[0]
-
-    price = btc.get("current_price")
-    change = btc.get("price_change_percentage_24h_in_currency")
-
-    if price is None:
+    if not price:
         raise ValueError("Prix BTC introuvable")
-
-    if change is None:
-        change = 0
 
     trend = "haussière" if change > 0 else "baissière" if change < 0 else "neutre"
 
@@ -124,50 +154,170 @@ def get_market_updates():
         return cached or []
 
 
-def coingecko_headers():
-    headers = {"accept": "application/json"}
-    api_key = getattr(config, "COINGECKO_API_KEY", None)
-    if api_key:
-        headers["x-cg-pro-api-key"] = api_key
-    return headers
+@cache.memoize(timeout=600)
+def get_crypto_market_live(ids="bitcoin,ethereum"):
+    """
+    Cache 10 minutes pour éviter les erreurs CoinGecko 429.
+    Si CoinGecko bloque, on retourne la dernière donnée valide.
+    """
+    url = "https://api.coingecko.com/api/v3/simple/price"
+    params = {
+        "ids": ids,
+        "vs_currencies": "usd",
+        "include_market_cap": "true",
+        "include_24hr_vol": "true",
+        "include_24hr_change": "true",
+        "include_last_updated_at": "true",
+    }
 
+    backup_key = f"{CRYPTO_LIVE_BACKUP_KEY}:{ids}"
 
-def format_big_number(value):
     try:
-        value = float(value)
-    except Exception:
-        return "..."
+        response = requests.get(
+            url,
+            params=params,
+            headers=coingecko_headers(),
+            timeout=12
+        )
+        response.raise_for_status()
+        data = response.json()
 
-    if value >= 1_000_000_000_000:
-        return f"{value / 1_000_000_000_000:.2f}T"
-    if value >= 1_000_000_000:
-        return f"{value / 1_000_000_000:.2f}B"
-    if value >= 1_000_000:
-        return f"{value / 1_000_000:.2f}M"
-    if value >= 1_000:
-        return f"{value / 1_000:.2f}K"
-    return f"{value:.2f}"
+        if data:
+            cache.set(backup_key, data, timeout=3600)
+
+        return data or {}
+
+    except Exception as e:
+        current_app.logger.warning("CoinGecko crypto fallback utilisé: %s", repr(e))
+        cached = cache.get(backup_key)
+        return cached or {}
 
 
-def format_currency(value, decimals=0):
+@cache.memoize(timeout=900)
+def get_global_market_live():
+    """
+    Cache 15 minutes.
+    Cette fonction donne déjà btc_dominance, donc on évite un deuxième appel /global ailleurs.
+    """
     try:
-        value = float(value)
-    except Exception:
-        return "..."
-    return f"${value:,.{decimals}f}"
+        r = requests.get(
+            "https://api.coingecko.com/api/v3/global",
+            headers=coingecko_headers(),
+            timeout=12
+        )
+        r.raise_for_status()
+        data = r.json().get("data", {})
+
+        result = {
+            "market_cap_usd": safe_float(data.get("total_market_cap", {}).get("usd")),
+            "volume_usd": safe_float(data.get("total_volume", {}).get("usd")),
+            "btc_dominance": safe_float(data.get("market_cap_percentage", {}).get("btc")),
+            "active_cryptos": data.get("active_cryptocurrencies", 0),
+            "markets": data.get("markets", 0),
+            "market_cap_change_24h": safe_float(data.get("market_cap_change_percentage_24h_usd")),
+        }
+
+        cache.set(GLOBAL_MARKET_BACKUP_KEY, result, timeout=3600)
+        return result
+
+    except Exception as e:
+        current_app.logger.warning("CoinGecko global fallback utilisé: %s", repr(e))
+        cached = cache.get(GLOBAL_MARKET_BACKUP_KEY)
+
+        if cached:
+            return cached
+
+        return {
+            "market_cap_usd": 0,
+            "volume_usd": 0,
+            "btc_dominance": 0,
+            "active_cryptos": 0,
+            "markets": 0,
+            "market_cap_change_24h": 0,
+        }
 
 
-def safe_float(value, default=0.0):
+@cache.memoize(timeout=900)
+def get_btc_dominance_live():
+    """
+    Gardée pour compatibilité, mais utilise get_global_market_live()
+    pour éviter un appel CoinGecko supplémentaire.
+    """
+    global_data = get_global_market_live()
+    return round(safe_float(global_data.get("btc_dominance")), 2)
+
+
+@cache.memoize(timeout=900)
+def get_fear_greed_live():
     try:
-        return float(value)
+        r = requests.get("https://api.alternative.me/fng/?limit=1", timeout=10)
+        r.raise_for_status()
+        data = r.json()["data"][0]
+
+        result = {
+            "value": data["value"],
+            "classification": data["value_classification"]
+        }
+
+        cache.set(FEAR_GREED_BACKUP_KEY, result, timeout=3600)
+        return result
+
     except Exception:
-        return default
+        cached = cache.get(FEAR_GREED_BACKUP_KEY)
+        return cached or {"value": 50, "classification": "Neutral"}
+
+
+@cache.memoize(timeout=900)
+def get_asset_news(asset_key, limit=6):
+    if not config.NEWS_API_KEY:
+        return []
+
+    queries = {
+        "BTC": '(bitcoin OR btc)',
+        "ETH": '(ethereum OR eth)',
+    }
+
+    q = queries.get(asset_key.upper())
+    if not q:
+        return []
+
+    url = "https://newsapi.org/v2/everything"
+    params = {
+        "q": q,
+        "language": "en",
+        "sortBy": "publishedAt",
+        "pageSize": limit,
+        "apiKey": config.NEWS_API_KEY,
+    }
+
+    try:
+        response = requests.get(url, params=params, timeout=15)
+        response.raise_for_status()
+        data = response.json()
+
+        articles = []
+        for a in data.get("articles", []):
+            if not a.get("title") or not a.get("url"):
+                continue
+
+            articles.append({
+                "title": a["title"],
+                "description": a.get("description", ""),
+                "image": a.get("urlToImage"),
+                "source": a.get("source", {}).get("name", "Source"),
+                "url": a["url"],
+            })
+
+        return articles[:limit]
+
+    except Exception as e:
+        current_app.logger.warning("Erreur news asset fallback: %s", repr(e))
+        return []
 
 
 def compute_sentiment_score(change_btc, change_eth, btc_dominance, fear_value):
     score = 50
 
-    # BTC momentum
     if change_btc >= 3:
         score += 15
     elif change_btc >= 1:
@@ -181,7 +331,6 @@ def compute_sentiment_score(change_btc, change_eth, btc_dominance, fear_value):
     elif change_btc < 0:
         score -= 5
 
-    # ETH momentum
     if change_eth >= 4:
         score += 12
     elif change_eth >= 1.5:
@@ -195,7 +344,6 @@ def compute_sentiment_score(change_btc, change_eth, btc_dominance, fear_value):
     elif change_eth < 0:
         score -= 4
 
-    # BTC dominance
     if btc_dominance >= 54:
         score += 6
     elif btc_dominance >= 50:
@@ -203,7 +351,6 @@ def compute_sentiment_score(change_btc, change_eth, btc_dominance, fear_value):
     elif btc_dominance < 48:
         score -= 4
 
-    # Fear & Greed
     if 55 <= fear_value <= 75:
         score += 8
     elif 45 <= fear_value < 55:
@@ -318,135 +465,11 @@ def compute_execution_mode(regime):
     return "Defense First"
 
 
-@cache.memoize(timeout=120)
-def get_crypto_market_live(ids="bitcoin,ethereum"):
-    url = "https://api.coingecko.com/api/v3/simple/price"
-    params = {
-        "ids": ids,
-        "vs_currencies": "usd",
-        "include_market_cap": "true",
-        "include_24hr_vol": "true",
-        "include_24hr_change": "true",
-        "include_last_updated_at": "true",
-    }
-
-    try:
-        response = requests.get(url, params=params, headers=coingecko_headers(), timeout=15)
-        response.raise_for_status()
-        return response.json()
-    except Exception as e:
-        current_app.logger.error("Erreur crypto live: %s", repr(e))
-        return {}
-
-
 @cache.memoize(timeout=600)
-def get_asset_news(asset_key, limit=6):
-    if not config.NEWS_API_KEY:
-        return []
-
-    queries = {
-        "BTC": '(bitcoin OR btc)',
-        "ETH": '(ethereum OR eth)',
-    }
-
-    q = queries.get(asset_key.upper())
-    if not q:
-        return []
-
-    url = "https://newsapi.org/v2/everything"
-    params = {
-        "q": q,
-        "language": "en",
-        "sortBy": "publishedAt",
-        "pageSize": limit,
-        "apiKey": config.NEWS_API_KEY,
-    }
-
-    try:
-        response = requests.get(url, params=params, timeout=15)
-        response.raise_for_status()
-        data = response.json()
-
-        articles = []
-        for a in data.get("articles", []):
-            if not a.get("title") or not a.get("url"):
-                continue
-
-            articles.append({
-                "title": a["title"],
-                "description": a.get("description", ""),
-                "image": a.get("urlToImage"),
-                "source": a.get("source", {}).get("name", "Source"),
-                "url": a["url"],
-            })
-
-        return articles[:limit]
-
-    except Exception as e:
-        current_app.logger.error("Erreur news: %s", repr(e))
-        return []
-
-
-@cache.memoize(timeout=300)
-def get_fear_greed_live():
-    try:
-        r = requests.get("https://api.alternative.me/fng/?limit=1", timeout=10)
-        r.raise_for_status()
-        data = r.json()["data"][0]
-        return {
-            "value": data["value"],
-            "classification": data["value_classification"]
-        }
-    except Exception:
-        return {"value": "...", "classification": "..."}
-
-
-@cache.memoize(timeout=300)
-def get_btc_dominance_live():
-    try:
-        r = requests.get("https://api.coingecko.com/api/v3/global", timeout=10)
-        r.raise_for_status()
-        data = r.json()["data"]
-        return round(data["market_cap_percentage"]["btc"], 2)
-    except Exception:
-        return "..."
-
-
-@cache.memoize(timeout=300)
-def get_global_market_live():
-    try:
-        r = requests.get(
-            "https://api.coingecko.com/api/v3/global",
-            headers=coingecko_headers(),
-            timeout=12
-        )
-        r.raise_for_status()
-        data = r.json().get("data", {})
-        return {
-            "market_cap_usd": safe_float(data.get("total_market_cap", {}).get("usd")),
-            "volume_usd": safe_float(data.get("total_volume", {}).get("usd")),
-            "btc_dominance": safe_float(data.get("market_cap_percentage", {}).get("btc")),
-            "active_cryptos": data.get("active_cryptocurrencies", 0),
-            "markets": data.get("markets", 0),
-            "market_cap_change_24h": safe_float(data.get("market_cap_change_percentage_24h_usd")),
-        }
-    except Exception as e:
-        current_app.logger.error("Erreur global market live: %s", repr(e))
-        return {
-            "market_cap_usd": 0,
-            "volume_usd": 0,
-            "btc_dominance": 0,
-            "active_cryptos": 0,
-            "markets": 0,
-            "market_cap_change_24h": 0,
-        }
-
-
-@cache.memoize(timeout=180)
 def get_market_overview():
     crypto = get_crypto_market_live("bitcoin,ethereum")
     fear = get_fear_greed_live()
-    btc_dominance = get_btc_dominance_live()
+    global_data = get_global_market_live()
 
     btc = crypto.get("bitcoin", {})
     eth = crypto.get("ethereum", {})
@@ -464,7 +487,7 @@ def get_market_overview():
     except Exception:
         fear_value = 50
 
-    btc_dom_value = safe_float(btc_dominance)
+    btc_dom_value = safe_float(global_data.get("btc_dominance"))
     sentiment_score = compute_sentiment_score(btc_change, eth_change, btc_dom_value, fear_value)
     bias = compute_market_bias_from_score(sentiment_score)
 
@@ -509,7 +532,7 @@ def get_market_overview():
     }
 
 
-@cache.memoize(timeout=180)
+@cache.memoize(timeout=600)
 def get_crypto_command_center():
     crypto = get_crypto_market_live("bitcoin,ethereum")
     fear = get_fear_greed_live()
