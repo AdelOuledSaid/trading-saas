@@ -4,6 +4,264 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 
+from flask import has_request_context, request
+
+
+SUPPORTED_LANGS = {"fr", "en", "es", "de", "it", "pt", "ru"}
+
+
+TEXTS = {
+    "no_candle_data": {
+        "fr": "Aucune donnée bougie disponible.",
+        "en": "No candle data available.",
+        "es": "No hay datos de velas disponibles.",
+        "de": "Keine Kerzendaten verfügbar.",
+        "it": "Nessun dato candela disponibile.",
+        "pt": "Nenhum dado de candle disponível.",
+        "ru": "Нет доступных данных свечей.",
+    },
+    "direction": {
+        "fr": "Direction {direction}.",
+        "en": "Direction {direction}.",
+        "es": "Dirección {direction}.",
+        "de": "Richtung {direction}.",
+        "it": "Direzione {direction}.",
+        "pt": "Direção {direction}.",
+        "ru": "Направление {direction}.",
+    },
+    "local_structure": {
+        "fr": "Structure locale {market_structure}.",
+        "en": "Local structure {market_structure}.",
+        "es": "Estructura local {market_structure}.",
+        "de": "Lokale Struktur {market_structure}.",
+        "it": "Struttura locale {market_structure}.",
+        "pt": "Estrutura local {market_structure}.",
+        "ru": "Локальная структура {market_structure}.",
+    },
+    "htf_bias": {
+        "fr": "Biais HTF {htf_bias}.",
+        "en": "HTF bias {htf_bias}.",
+        "es": "Sesgo HTF {htf_bias}.",
+        "de": "HTF-Bias {htf_bias}.",
+        "it": "Bias HTF {htf_bias}.",
+        "pt": "Viés HTF {htf_bias}.",
+        "ru": "HTF bias {htf_bias}.",
+    },
+    "trade_healthy": {
+        "fr": "Le trade reste sain.",
+        "en": "The trade remains healthy.",
+        "es": "La operación sigue saludable.",
+        "de": "Der Trade bleibt gesund.",
+        "it": "Il trade rimane sano.",
+        "pt": "O trade permanece saudável.",
+        "ru": "Сделка остается стабильной.",
+    },
+    "trade_pressure": {
+        "fr": "Le trade subit une pression modérée.",
+        "en": "The trade is under moderate pressure.",
+        "es": "La operación está bajo presión moderada.",
+        "de": "Der Trade steht unter moderatem Druck.",
+        "it": "Il trade è sotto pressione moderata.",
+        "pt": "O trade está sob pressão moderada.",
+        "ru": "Сделка находится под умеренным давлением.",
+    },
+    "trade_critical": {
+        "fr": "Le trade est proche de l’invalidation.",
+        "en": "The trade is close to invalidation.",
+        "es": "La operación está cerca de la invalidación.",
+        "de": "Der Trade nähert sich der Invalidierung.",
+        "it": "Il trade è vicino all’invalidazione.",
+        "pt": "O trade está próximo da invalidação.",
+        "ru": "Сделка близка к отмене сценария.",
+    },
+    "trade_invalidated": {
+        "fr": "Le trade est techniquement invalidé.",
+        "en": "The trade is technically invalidated.",
+        "es": "La operación está técnicamente invalidada.",
+        "de": "Der Trade ist technisch invalidiert.",
+        "it": "Il trade è tecnicamente invalidato.",
+        "pt": "O trade está tecnicamente invalidado.",
+        "ru": "Сделка технически инвалидирована.",
+    },
+    "trade_unknown": {
+        "fr": "L’état du trade est incertain.",
+        "en": "The trade status is uncertain.",
+        "es": "El estado de la operación es incierto.",
+        "de": "Der Zustand des Trades ist unklar.",
+        "it": "Lo stato del trade è incerto.",
+        "pt": "O estado do trade é incerto.",
+        "ru": "Состояние сделки неопределенно.",
+    },
+    "distance_sl": {
+        "fr": "Distance au SL: {value}%.",
+        "en": "Distance to SL: {value}%.",
+        "es": "Distancia al SL: {value}%.",
+        "de": "Abstand zum SL: {value}%.",
+        "it": "Distanza dallo SL: {value}%.",
+        "pt": "Distância até o SL: {value}%.",
+        "ru": "Расстояние до SL: {value}%.",
+    },
+    "distance_tp": {
+        "fr": "Distance au TP: {value}%.",
+        "en": "Distance to TP: {value}%.",
+        "es": "Distancia al TP: {value}%.",
+        "de": "Abstand zum TP: {value}%.",
+        "it": "Distanza dal TP: {value}%.",
+        "pt": "Distância até o TP: {value}%.",
+        "ru": "Расстояние до TP: {value}%.",
+    },
+    "entry_title": {
+        "fr": "Entrée du trade",
+        "en": "Trade Entry",
+        "es": "Entrada de la operación",
+        "de": "Trade-Einstieg",
+        "it": "Ingresso del trade",
+        "pt": "Entrada do trade",
+        "ru": "Вход в сделку",
+    },
+    "entry_desc": {
+        "fr": "Point d’exécution du setup.",
+        "en": "Setup execution point.",
+        "es": "Punto de ejecución del setup.",
+        "de": "Ausführungspunkt des Setups.",
+        "it": "Punto di esecuzione del setup.",
+        "pt": "Ponto de execução do setup.",
+        "ru": "Точка исполнения сетапа.",
+    },
+    "decision_title": {
+        "fr": "Moment de décision",
+        "en": "Decision Moment",
+        "es": "Momento de decisión",
+        "de": "Entscheidungsmoment",
+        "it": "Momento decisionale",
+        "pt": "Momento de decisão",
+        "ru": "Момент принятия решения",
+    },
+    "decision_desc": {
+        "fr": "Le marché atteint une zone de gestion critique.",
+        "en": "The market reaches a critical management zone.",
+        "es": "El mercado alcanza una zona crítica de gestión.",
+        "de": "Der Markt erreicht eine kritische Managementzone.",
+        "it": "Il mercato raggiunge una zona critica di gestione.",
+        "pt": "O mercado atinge uma zona crítica de gestão.",
+        "ru": "Рынок достигает критической зоны управления.",
+    },
+    "trade_open_title": {
+        "fr": "Trade toujours actif",
+        "en": "Trade Still Active",
+        "es": "Operación aún activa",
+        "de": "Trade noch aktiv",
+        "it": "Trade ancora attivo",
+        "pt": "Trade ainda ativo",
+        "ru": "Сделка все еще активна",
+    },
+    "trade_open_desc": {
+        "fr": "Le trade reste ouvert. Le replay est une lecture de gestion, pas une conclusion fermée.",
+        "en": "The trade remains open. The replay is a management reading, not a closed conclusion.",
+        "es": "La operación sigue abierta. El replay es una lectura de gestión, no una conclusión cerrada.",
+        "de": "Der Trade bleibt offen. Das Replay ist eine Managementanalyse, keine endgültige Schlussfolgerung.",
+        "it": "Il trade resta aperto. Il replay è una lettura di gestione, non una conclusione chiusa.",
+        "pt": "O trade permanece aberto. O replay é uma leitura de gestão, não uma conclusão fechada.",
+        "ru": "Сделка остается открытой. Replay — это анализ управления, а не окончательный вывод.",
+    },
+    "tp_hit_title": {
+        "fr": "Take Profit atteint",
+        "en": "Take Profit Hit",
+        "es": "Take Profit alcanzado",
+        "de": "Take Profit erreicht",
+        "it": "Take Profit raggiunto",
+        "pt": "Take Profit atingido",
+        "ru": "Take Profit достигнут",
+    },
+    "tp_hit_desc": {
+        "fr": "L’objectif a été touché.",
+        "en": "The target was reached.",
+        "es": "El objetivo fue alcanzado.",
+        "de": "Das Ziel wurde erreicht.",
+        "it": "L’obiettivo è stato raggiunto.",
+        "pt": "O alvo foi atingido.",
+        "ru": "Цель была достигнута.",
+    },
+    "sl_hit_title": {
+        "fr": "Stop Loss touché",
+        "en": "Stop Loss Hit",
+        "es": "Stop Loss alcanzado",
+        "de": "Stop Loss erreicht",
+        "it": "Stop Loss raggiunto",
+        "pt": "Stop Loss atingido",
+        "ru": "Stop Loss достигнут",
+    },
+    "sl_hit_desc": {
+        "fr": "Le scénario a été invalidé.",
+        "en": "The scenario was invalidated.",
+        "es": "El escenario fue invalidado.",
+        "de": "Das Szenario wurde invalidiert.",
+        "it": "Lo scenario è stato invalidato.",
+        "pt": "O cenário foi invalidado.",
+        "ru": "Сценарий был отменен.",
+    },
+    "breakeven_title": {
+        "fr": "Break-even",
+        "en": "Break-even",
+        "es": "Break-even",
+        "de": "Break-even",
+        "it": "Break-even",
+        "pt": "Break-even",
+        "ru": "Безубыток",
+    },
+    "breakeven_desc": {
+        "fr": "Sortie neutre, capital protégé.",
+        "en": "Neutral exit, capital protected.",
+        "es": "Salida neutra, capital protegido.",
+        "de": "Neutraler Ausstieg, Kapital geschützt.",
+        "it": "Uscita neutra, capitale protetto.",
+        "pt": "Saída neutra, capital protegido.",
+        "ru": "Нейтральный выход, капитал защищен.",
+    },
+    "timeline_entry": {
+        "fr": "Entrée",
+        "en": "Entry",
+        "es": "Entrada",
+        "de": "Einstieg",
+        "it": "Entrata",
+        "pt": "Entrada",
+        "ru": "Вход",
+    },
+    "timeline_decision": {
+        "fr": "Décision",
+        "en": "Decision",
+        "es": "Decisión",
+        "de": "Entscheidung",
+        "it": "Decisione",
+        "pt": "Decisão",
+        "ru": "Решение",
+    },
+}
+
+
+def _get_active_lang() -> str:
+    lang = "en"
+
+    if has_request_context():
+        lang = (
+            request.args.get("lang_code")
+            or (request.view_args or {}).get("lang_code")
+            or "en"
+        )
+
+    lang = str(lang or "en").lower()
+    return lang if lang in SUPPORTED_LANGS else "en"
+
+
+def _tr(key: str, **kwargs: Any) -> str:
+    lang = _get_active_lang()
+    value = TEXTS.get(key, {}).get(lang) or TEXTS.get(key, {}).get("en") or key
+
+    try:
+        return value.format(**kwargs)
+    except Exception:
+        return value
+
 
 # =========================
 # DATA CLASSES
@@ -202,18 +460,10 @@ def _detect_level_hits(
     stop_loss: float | None,
     take_profit: float | None,
 ) -> tuple[ReplayLevelHit, ReplayLevelHit]:
-    """
-    Important:
-    - On ne valide PAS TP/SL sur la bougie d'entrée.
-    - Sinon entry/decision/exit peuvent tomber sur le même index.
-    """
     sl_hit = ReplayLevelHit(index=None, time=None, price=stop_loss, reason=None)
     tp_hit = ReplayLevelHit(index=None, time=None, price=take_profit, reason=None)
 
-    if not candles:
-        return sl_hit, tp_hit
-
-    if len(candles) <= 1:
+    if not candles or len(candles) <= 1:
         return sl_hit, tp_hit
 
     start_idx = min(len(candles) - 1, entry_index + 1)
@@ -260,7 +510,6 @@ def _resolve_exit_from_hits(
         if sl_hit.index < tp_hit.index:
             return sl_hit.index, "SL", sl_hit.price, "LOSS"
 
-        # même bougie après l'entrée: on garde le pire cas conservateur
         return sl_hit.index, "SL", sl_hit.price, "LOSS"
 
     if tp_hit.index is not None:
@@ -275,7 +524,6 @@ def _resolve_exit_from_hits(
     final_idx = int(candles[-1].get("index", 0))
     final_close = _safe_float(candles[-1].get("close"), None)
 
-    # On évite une sortie avant ou égale à l'entrée quand aucun hit n'a été détecté
     final_idx = max(final_idx, min(len(candles) - 1, entry_index + 2))
     return final_idx, "OPEN", final_close, fallback_result
 
@@ -325,27 +573,27 @@ def _compute_decision_context(
     distance_to_tp_percent: float | None,
 ) -> str:
     parts = [
-        f"Direction {direction}.",
-        f"Structure locale {market_structure}.",
-        f"Biais HTF {htf_bias}.",
+        _tr("direction", direction=direction),
+        _tr("local_structure", market_structure=market_structure),
+        _tr("htf_bias", htf_bias=htf_bias),
     ]
 
     if trade_health == "healthy":
-        parts.append("Le trade reste sain.")
+        parts.append(_tr("trade_healthy"))
     elif trade_health == "under_pressure":
-        parts.append("Le trade subit une pression modérée.")
+        parts.append(_tr("trade_pressure"))
     elif trade_health == "critical":
-        parts.append("Le trade est proche de l’invalidation.")
+        parts.append(_tr("trade_critical"))
     elif trade_health == "invalidated":
-        parts.append("Le trade est techniquement invalidé.")
+        parts.append(_tr("trade_invalidated"))
     else:
-        parts.append("L’état du trade est incertain.")
+        parts.append(_tr("trade_unknown"))
 
     if distance_to_sl_percent is not None:
-        parts.append(f"Distance au SL: {distance_to_sl_percent}%.")
+        parts.append(_tr("distance_sl", value=distance_to_sl_percent))
 
     if distance_to_tp_percent is not None:
-        parts.append(f"Distance au TP: {distance_to_tp_percent}%.")
+        parts.append(_tr("distance_tp", value=distance_to_tp_percent))
 
     return " ".join(parts)
 
@@ -363,8 +611,6 @@ def _choose_decision_index(
         return 0
 
     last_idx = len(candles) - 1
-
-    # Il faut au moins une vraie bougie après l'entrée
     min_decision = min(last_idx, entry_index + 1)
 
     if exit_index <= min_decision:
@@ -462,8 +708,8 @@ def _build_events_and_timeline(
         {
             "id": 1,
             "type": "entry",
-            "title": "Entrée du trade",
-            "description": "Point d’exécution du setup.",
+            "title": _tr("entry_title"),
+            "description": _tr("entry_desc"),
             "price_level": entry_price,
             "index": entry_index,
             "time": entry_time,
@@ -471,8 +717,8 @@ def _build_events_and_timeline(
         {
             "id": 2,
             "type": "decision",
-            "title": "Moment de décision",
-            "description": "Le marché atteint une zone de gestion critique.",
+            "title": _tr("decision_title"),
+            "description": _tr("decision_desc"),
             "price_level": entry_price,
             "index": decision_index,
             "time": decision_time,
@@ -480,21 +726,21 @@ def _build_events_and_timeline(
     ]
 
     exit_type = "open"
-    exit_title = "Trade toujours actif"
-    exit_description = "Le trade reste ouvert. Le replay est une lecture de gestion, pas une conclusion fermée."
+    exit_title = _tr("trade_open_title")
+    exit_description = _tr("trade_open_desc")
 
     if exit_reason == "TP":
         exit_type = "tp_hit"
-        exit_title = "Take Profit atteint"
-        exit_description = "L’objectif a été touché."
+        exit_title = _tr("tp_hit_title")
+        exit_description = _tr("tp_hit_desc")
     elif exit_reason == "SL":
         exit_type = "sl_hit"
-        exit_title = "Stop Loss touché"
-        exit_description = "Le scénario a été invalidé."
+        exit_title = _tr("sl_hit_title")
+        exit_description = _tr("sl_hit_desc")
     elif derived_result == "BREAKEVEN":
         exit_type = "breakeven"
-        exit_title = "Break-even"
-        exit_description = "Sortie neutre, capital protégé."
+        exit_title = _tr("breakeven_title")
+        exit_description = _tr("breakeven_desc")
 
     events.append(
         {
@@ -509,9 +755,9 @@ def _build_events_and_timeline(
     )
 
     timeline = [
-        {"type": "entry", "label": "Entrée", "index": entry_index},
-        {"type": "decision", "label": "Décision", "index": decision_index},
-        {"type": "outcome", "label": "Trade actif" if exit_type == "open" else exit_title, "index": exit_index},
+        {"type": "entry", "label": _tr("timeline_entry"), "index": entry_index},
+        {"type": "decision", "label": _tr("timeline_decision"), "index": decision_index},
+        {"type": "outcome", "label": _tr("trade_open_title") if exit_type == "open" else exit_title, "index": exit_index},
     ]
 
     timeline.sort(key=lambda x: x["index"])
@@ -554,7 +800,7 @@ def build_replay_engine_result(
             max_favorable_excursion_percent=None,
             max_adverse_excursion_percent=None,
             live_outcome_if_hold=base_result,
-            decision_context="Aucune donnée bougie disponible.",
+            decision_context=_tr("no_candle_data"),
             should_stop_replay_at_exit=False,
             sl_hit=ReplayLevelHit(None, None, stop_loss, None),
             tp_hit=ReplayLevelHit(None, None, take_profit, None),
@@ -597,7 +843,6 @@ def build_replay_engine_result(
         take_profit=take_profit,
     )
 
-    # Séparation minimale garantie : entry < decision < exit, si possible
     min_decision = min(last_idx, entry_index + 1)
     if decision_index < min_decision:
         decision_index = min_decision
@@ -618,6 +863,7 @@ def build_replay_engine_result(
 
     market_structure = _infer_market_structure(candles[:decision_index + 1])
     htf_bias = _infer_htf_bias(htf_candles)
+
     trade_health = _compute_trade_health(
         direction=direction,
         last_price=last_price_before_decision,

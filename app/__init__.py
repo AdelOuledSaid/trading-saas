@@ -4,7 +4,7 @@ from flask import Flask, g, session, request, url_for
 import stripe
 import config
 from flask_migrate import Migrate
-
+from flask import Flask, g, session, request, url_for, redirect
 from app.extensions import db, login_manager, cache
 from app.core.auth import load_user
 from app.utils.explainer import explain_reason
@@ -109,6 +109,28 @@ def create_app():
     app.jinja_env.filters["format_price"] = format_price
 
     # ✅ LANGUE (100% MANUELLE - PAS DE GEO / BROWSER)
+    @app.before_request
+    def force_lang():
+        path = request.path
+
+        if path.startswith((
+            "/fr/", "/en/", "/es/", "/it/", "/de/", "/pt/", "/ru/",
+            "/static/",
+            "/api/",
+            "/webhook",
+            "/stripe-webhook",
+            "/telegram",
+            "/cron/",
+            "/sitemap.xml",
+            "/robots.txt",
+            "/favicon"
+        )):
+            return None
+
+        if path == "/":
+           return None
+
+        return redirect("/fr" + path, code=301)
     @app.before_request
     def set_language():
         """

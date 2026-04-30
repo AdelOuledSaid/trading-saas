@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 import random
 
-from flask import Blueprint, render_template, jsonify, abort, request, redirect, url_for
+from flask import Blueprint, render_template, jsonify, abort, request, redirect, url_for, has_request_context
 from flask_login import login_required, current_user
 from sqlalchemy import func
 
@@ -12,7 +12,74 @@ from app.services.replay_recorder_service import ensure_trade_replay_for_signal
 from app.services.universal_candles_service import fetch_candles
 from app.services.replay_engine_service import build_replay_engine_result
 
+
 replay_bp = Blueprint("replay", __name__)
+
+
+# =========================
+# MULTI LANG REPLAY
+# =========================
+SUPPORTED_LANGS = {"fr", "en", "es", "de", "it", "pt", "ru"}
+
+TEXTS = {
+    "hold": {"fr": "Conserver", "en": "Hold", "es": "Mantener", "de": "Halten", "it": "Mantenere", "pt": "Manter", "ru": "Держать"},
+    "partial": {"fr": "Alléger", "en": "Reduce", "es": "Reducir", "de": "Reduzieren", "it": "Ridurre", "pt": "Reduzir", "ru": "Сократить"},
+    "close": {"fr": "Fermer", "en": "Close", "es": "Cerrar", "de": "Schließen", "it": "Chiudere", "pt": "Fechar", "ru": "Закрыть"},
+
+    "good": {"fr": "Excellente décision", "en": "Excellent decision", "es": "Excelente decisión", "de": "Ausgezeichnete Entscheidung", "it": "Decisione eccellente", "pt": "Excelente decisão", "ru": "Отличное решение"},
+    "medium": {"fr": "Décision moyenne", "en": "Average decision", "es": "Decisión media", "de": "Durchschnittliche Entscheidung", "it": "Decisione media", "pt": "Decisão média", "ru": "Среднее решение"},
+    "bad": {"fr": "Mauvaise décision", "en": "Bad decision", "es": "Mala decisión", "de": "Schlechte Entscheidung", "it": "Decisione sbagliata", "pt": "Má decisão", "ru": "Плохое решение"},
+    "decision_analyzed": {"fr": "Décision analysée", "en": "Decision analyzed", "es": "Decisión analizada", "de": "Entscheidung analysiert", "it": "Decisione analizzata", "pt": "Decisão analisada", "ru": "Решение проанализировано"},
+
+    "excellent_choice": {"fr": "Excellente décision", "en": "Excellent decision", "es": "Excelente decisión", "de": "Ausgezeichnete Entscheidung", "it": "Decisione eccellente", "pt": "Excelente decisão", "ru": "Отличное решение"},
+    "prudent_management": {"fr": "Gestion prudente", "en": "Prudent management", "es": "Gestión prudente", "de": "Vorsichtiges Management", "it": "Gestione prudente", "pt": "Gestão prudente", "ru": "Осторожное управление"},
+    "aggressive_but_valid": {"fr": "Choix défendable mais agressif", "en": "Defensible but aggressive choice", "es": "Elección defendible pero agresiva", "de": "Vertretbare, aber aggressive Entscheidung", "it": "Scelta difendibile ma aggressiva", "pt": "Escolha defensável, mas agressiva", "ru": "Оправданный, но агрессивный выбор"},
+    "too_conservative_exit": {"fr": "Sortie trop conservatrice", "en": "Exit too conservative", "es": "Salida demasiado conservadora", "de": "Zu konservativer Ausstieg", "it": "Uscita troppo conservativa", "pt": "Saída conservadora demais", "ru": "Слишком консервативный выход"},
+    "limits_damage": {"fr": "Tu limites la casse mais tu restes exposé", "en": "You limit the damage, but you remain exposed", "es": "Limitas el daño, pero sigues expuesto", "de": "Du begrenzt den Schaden, bleibst aber exponiert", "it": "Limiti il danno, ma resti esposto", "pt": "Você limita o dano, mas continua exposto", "ru": "Ты ограничиваешь ущерб, но остаешься под риском"},
+    "ignore_invalidation": {"fr": "Tu ignores l’invalidation du setup", "en": "You ignore the setup invalidation", "es": "Ignoras la invalidación del setup", "de": "Du ignorierst die Invalidierung des Setups", "it": "Ignori l’invalidazione del setup", "pt": "Você ignora a invalidação do setup", "ru": "Ты игнорируешь отмену сетапа"},
+    "emotional_exit": {"fr": "Sortie émotionnelle sur un setup à fort potentiel", "en": "Emotional exit on a high-potential setup", "es": "Salida emocional en un setup de alto potencial", "de": "Emotionaler Ausstieg bei einem Setup mit hohem Potenzial", "it": "Uscita emotiva su un setup ad alto potenziale", "pt": "Saída emocional em um setup de alto potencial", "ru": "Эмоциональный выход из сетапа с высоким потенциалом"},
+    "cut_too_early": {"fr": "Tu coupes trop tôt", "en": "You exit too early", "es": "Sales demasiado pronto", "de": "Du steigst zu früh aus", "it": "Esci troppo presto", "pt": "Você sai cedo demais", "ru": "Ты выходишь слишком рано"},
+    "acceptable_not_optimal": {"fr": "Décision acceptable mais non optimale", "en": "Acceptable but not optimal decision", "es": "Decisión aceptable pero no óptima", "de": "Akzeptable, aber nicht optimale Entscheidung", "it": "Decisione accettabile ma non ottimale", "pt": "Decisão aceitável, mas não ideal", "ru": "Приемлемое, но не оптимальное решение"},
+
+    "feedback_hold_good": {"fr": "✅ Très bon choix. Le plan de trade devait être respecté malgré la pression du marché.", "en": "✅ Very good choice. The trade plan had to be respected despite market pressure.", "es": "✅ Muy buena elección. El plan debía respetarse pese a la presión del mercado.", "de": "✅ Sehr gute Wahl. Der Trading-Plan musste trotz Marktdruck respektiert werden.", "it": "✅ Ottima scelta. Il piano di trading andava rispettato nonostante la pressione del mercato.", "pt": "✅ Muito boa escolha. O plano precisava ser respeitado apesar da pressão do mercado.", "ru": "✅ Очень хороший выбор. План сделки нужно было соблюдать несмотря на давление рынка."},
+    "feedback_partial_good": {"fr": "✅ Bonne lecture. Sécuriser partiellement était la meilleure réponse dans ce contexte.", "en": "✅ Good read. Partial protection was the best response in this context.", "es": "✅ Buena lectura. Asegurar parcialmente era la mejor respuesta en este contexto.", "de": "✅ Gute Einschätzung. Teilweises Absichern war hier die beste Reaktion.", "it": "✅ Buona lettura. Proteggere parzialmente era la risposta migliore in questo contesto.", "pt": "✅ Boa leitura. Proteger parcialmente era a melhor resposta neste contexto.", "ru": "✅ Хорошее чтение рынка. Частичная фиксация была лучшим решением в этом контексте."},
+    "feedback_close_good": {"fr": "✅ Bonne décision. Le setup était invalidé, sortir protégeait le capital.", "en": "✅ Good decision. The setup was invalidated, exiting protected capital.", "es": "✅ Buena decisión. El setup estaba invalidado, salir protegía el capital.", "de": "✅ Gute Entscheidung. Das Setup war invalidiert, Ausstieg schützte Kapital.", "it": "✅ Buona decisione. Il setup era invalidato, uscire proteggeva il capitale.", "pt": "✅ Boa decisão. O setup foi invalidado, sair protegeu o capital.", "ru": "✅ Хорошее решение. Сетап был отменен, выход защитил капитал."},
+    "feedback_should_hold": {"fr": "⚠️ Le setup n’était pas encore invalidé. Un trader discipliné laissait davantage respirer la position.", "en": "⚠️ The setup was not invalidated yet. A disciplined trader would have allowed the position more room.", "es": "⚠️ El setup aún no estaba invalidado. Un trader disciplinado habría dejado respirar más la posición.", "de": "⚠️ Das Setup war noch nicht invalidiert. Ein disziplinierter Trader hätte der Position mehr Raum gegeben.", "it": "⚠️ Il setup non era ancora invalidato. Un trader disciplinato avrebbe lasciato più spazio alla posizione.", "pt": "⚠️ O setup ainda não estava invalidado. Um trader disciplinado deixaria a posição respirar mais.", "ru": "⚠️ Сетап еще не был отменен. Дисциплинированный трейдер дал бы позиции больше пространства."},
+    "feedback_should_partial": {"fr": "⚠️ Le contexte appelait une gestion intermédiaire. Tout couper ou tout laisser courir n’était pas optimal.", "en": "⚠️ The context called for intermediate management. Fully closing or fully holding was not optimal.", "es": "⚠️ El contexto pedía una gestión intermedia. Cerrar todo o dejar todo correr no era óptimo.", "de": "⚠️ Der Kontext verlangte ein Zwischenmanagement. Alles schließen oder alles laufen lassen war nicht optimal.", "it": "⚠️ Il contesto richiedeva una gestione intermedia. Chiudere tutto o lasciare correre tutto non era ottimale.", "pt": "⚠️ O contexto pedia uma gestão intermediária. Fechar tudo ou deixar tudo correr não era ideal.", "ru": "⚠️ Контекст требовал промежуточного управления. Полностью закрывать или полностью держать было не оптимально."},
+    "feedback_should_close": {"fr": "❌ Le marché ne validait plus le scénario initial. Il fallait réduire fortement le risque ou sortir.", "en": "❌ The market no longer validated the initial scenario. Risk had to be strongly reduced or the trade closed.", "es": "❌ El mercado ya no validaba el escenario inicial. Había que reducir mucho el riesgo o salir.", "de": "❌ Der Markt bestätigte das ursprüngliche Szenario nicht mehr. Das Risiko musste stark reduziert oder der Trade geschlossen werden.", "it": "❌ Il mercato non validava più lo scenario iniziale. Bisognava ridurre fortemente il rischio o uscire.", "pt": "❌ O mercado já não validava o cenário inicial. Era preciso reduzir fortemente o risco ou sair.", "ru": "❌ Рынок больше не подтверждал первоначальный сценарий. Нужно было сильно снизить риск или выйти."},
+
+    "structure_detected": {"fr": "Structure détectée : {value}.", "en": "Detected structure: {value}.", "es": "Estructura detectada: {value}.", "de": "Erkannte Struktur: {value}.", "it": "Struttura rilevata: {value}.", "pt": "Estrutura detectada: {value}.", "ru": "Обнаруженная структура: {value}."},
+    "htf_bias": {"fr": "Biais HTF : {value}.", "en": "HTF bias: {value}.", "es": "Sesgo HTF: {value}.", "de": "HTF-Bias: {value}.", "it": "Bias HTF: {value}.", "pt": "Viés HTF: {value}.", "ru": "HTF bias: {value}."},
+    "trade_state": {"fr": "État du trade au moment de décision : {value}.", "en": "Trade state at decision moment: {value}.", "es": "Estado de la operación en el momento de decisión: {value}.", "de": "Trade-Zustand im Entscheidungsmoment: {value}.", "it": "Stato del trade al momento decisionale: {value}.", "pt": "Estado do trade no momento da decisão: {value}.", "ru": "Состояние сделки в момент решения: {value}."},
+
+    "replay_not_found": {"fr": "Replay introuvable", "en": "Replay not found", "es": "Replay no encontrado", "de": "Replay nicht gefunden", "it": "Replay non trovato", "pt": "Replay não encontrado", "ru": "Replay не найден"},
+    "invalid_decision": {"fr": "Décision invalide", "en": "Invalid decision", "es": "Decisión inválida", "de": "Ungültige Entscheidung", "it": "Decisione non valida", "pt": "Decisão inválida", "ru": "Недопустимое решение"},
+    "decision_saved": {"fr": "Décision sauvegardée", "en": "Decision saved", "es": "Decisión guardada", "de": "Entscheidung gespeichert", "it": "Decisione salvata", "pt": "Decisão salva", "ru": "Решение сохранено"},
+    "save_error": {"fr": "Erreur sauvegarde", "en": "Save error", "es": "Error al guardar", "de": "Speicherfehler", "it": "Errore di salvataggio", "pt": "Erro ao salvar", "ru": "Ошибка сохранения"},
+    "replay_data_error": {"fr": "Erreur données replay: {error}", "en": "Replay data error: {error}", "es": "Error de datos replay: {error}", "de": "Replay-Datenfehler: {error}", "it": "Errore dati replay: {error}", "pt": "Erro nos dados do replay: {error}", "ru": "Ошибка данных replay: {error}"},
+    "no_replay_data": {"fr": "Aucune donnée replay disponible", "en": "No replay data available", "es": "No hay datos replay disponibles", "de": "Keine Replay-Daten verfügbar", "it": "Nessun dato replay disponibile", "pt": "Nenhum dado de replay disponível", "ru": "Нет доступных данных replay"},
+    "no_candle_build": {"fr": "Impossible de construire le replay: aucune bougie exploitable.", "en": "Unable to build replay: no usable candle data.", "es": "No se puede construir el replay: no hay velas utilizables.", "de": "Replay kann nicht erstellt werden: keine nutzbaren Kerzendaten.", "it": "Impossibile costruire il replay: nessuna candela utilizzabile.", "pt": "Não foi possível construir o replay: nenhum candle utilizável.", "ru": "Невозможно построить replay: нет пригодных свечей."},
+    "desk_note": {"fr": "Ce replay utilise un scénario auto-guidé stable avec une décision manuelle au moment critique.", "en": "This replay uses a stable auto-guided scenario with a manual decision at the critical moment.", "es": "Este replay usa un escenario auto-guiado estable con decisión manual en el momento crítico.", "de": "Dieses Replay nutzt ein stabiles automatisch geführtes Szenario mit manueller Entscheidung im kritischen Moment.", "it": "Questo replay usa uno scenario auto-guidato stabile con decisione manuale nel momento critico.", "pt": "Este replay usa um cenário auto-guiado estável com decisão manual no momento crítico.", "ru": "Этот replay использует стабильный авто-сценарий с ручным решением в критический момент."},
+    "comparison_text": {"fr": "Tu fais mieux que {value}% des traders sur cette décision.", "en": "You performed better than {value}% of traders on this decision.", "es": "Lo hiciste mejor que el {value}% de los traders en esta decisión.", "de": "Du warst bei dieser Entscheidung besser als {value}% der Trader.", "it": "Hai fatto meglio del {value}% dei trader su questa decisione.", "pt": "Você teve desempenho melhor que {value}% dos traders nesta decisão.", "ru": "Ты справился лучше, чем {value}% трейдеров в этом решении."},
+}
+
+
+def _lang():
+    if has_request_context():
+        lang = request.args.get("lang_code") or (request.view_args or {}).get("lang_code") or "en"
+    else:
+        lang = "en"
+
+    lang = str(lang or "en").lower()
+    return lang if lang in SUPPORTED_LANGS else "en"
+
+
+def tr(key, **kwargs):
+    value = TEXTS.get(key, {}).get(_lang()) or TEXTS.get(key, {}).get("en") or key
+    try:
+        return value.format(**kwargs)
+    except Exception:
+        return value
 
 
 # =========================
@@ -89,9 +156,9 @@ def _ideal_decision_from_result(result):
 
 def _decision_label(decision):
     mapping = {
-        "hold": "Conserver",
-        "partial": "Alléger",
-        "close": "Fermer",
+        "hold": tr("hold"),
+        "partial": tr("partial"),
+        "close": tr("close"),
     }
     return mapping.get(decision, decision)
 
@@ -101,54 +168,54 @@ def _score_decision(choice, ideal_decision, result, rr):
     result = (result or "").upper()
 
     if choice == ideal_decision:
-        return 10, "good", "Excellente décision"
+        return 10, "good", tr("excellent_choice")
 
     if ideal_decision == "hold" and choice == "partial":
-        return 6, "medium", "Gestion prudente"
+        return 6, "medium", tr("prudent_management")
 
     if ideal_decision == "partial" and choice == "hold":
-        return 5, "medium", "Choix défendable mais agressif"
+        return 5, "medium", tr("aggressive_but_valid")
 
     if ideal_decision == "partial" and choice == "close":
-        return 3, "bad", "Sortie trop conservatrice"
+        return 3, "bad", tr("too_conservative_exit")
 
     if ideal_decision == "close" and choice == "partial":
-        return 4, "medium", "Tu limites la casse mais tu restes exposé"
+        return 4, "medium", tr("limits_damage")
 
     if ideal_decision == "close" and choice == "hold":
-        return 0, "bad", "Tu ignores l’invalidation du setup"
+        return 0, "bad", tr("ignore_invalidation")
 
     if ideal_decision == "hold" and choice == "close":
         if rr >= 2:
-            return 1, "bad", "Sortie émotionnelle sur un setup à fort potentiel"
-        return 2, "bad", "Tu coupes trop tôt"
+            return 1, "bad", tr("emotional_exit")
+        return 2, "bad", tr("cut_too_early")
 
-    return 4, "medium", "Décision acceptable mais non optimale"
+    return 4, "medium", tr("acceptable_not_optimal")
 
 
 def _feedback_message(choice, ideal_decision, result):
     if choice == ideal_decision:
         if choice == "hold":
-            return "✅ Très bon choix. Le plan de trade devait être respecté malgré la pression du marché."
+            return tr("feedback_hold_good")
         if choice == "partial":
-            return "✅ Bonne lecture. Sécuriser partiellement était la meilleure réponse dans ce contexte."
-        return "✅ Bonne décision. Le setup était invalidé, sortir protégeait le capital."
+            return tr("feedback_partial_good")
+        return tr("feedback_close_good")
 
     if ideal_decision == "hold":
-        return "⚠️ Le setup n’était pas encore invalidé. Un trader discipliné laissait davantage respirer la position."
+        return tr("feedback_should_hold")
     if ideal_decision == "partial":
-        return "⚠️ Le contexte appelait une gestion intermédiaire. Tout couper ou tout laisser courir n’était pas optimal."
-    return "❌ Le marché ne validait plus le scénario initial. Il fallait réduire fortement le risque ou sortir."
+        return tr("feedback_should_partial")
+    return tr("feedback_should_close")
 
 
 def _status_label(status):
     status = (status or "").lower()
     mapping = {
-        "good": "Excellente décision",
-        "medium": "Décision moyenne",
-        "bad": "Mauvaise décision",
+        "good": tr("good"),
+        "medium": tr("medium"),
+        "bad": tr("bad"),
     }
-    return mapping.get(status, "Décision analysée")
+    return mapping.get(status, tr("decision_analyzed"))
 
 
 def _compute_timing_score(score):
@@ -339,9 +406,9 @@ def _build_htf_zones(htf_candles):
 
 def _build_lessons_from_engine(engine):
     lessons = [
-        f"Structure détectée : {engine.market_structure}.",
-        f"Biais HTF : {engine.htf_bias}.",
-        f"État du trade au moment de décision : {engine.trade_health}.",
+        tr("structure_detected", value=engine.market_structure),
+        tr("htf_bias", value=engine.htf_bias),
+        tr("trade_state", value=engine.trade_health),
         engine.decision_context,
     ]
 
@@ -707,7 +774,7 @@ def replay_data(replay_id, lang_code="fr"):
     )
 
     if not replay:
-        return jsonify({"error": "Replay introuvable"}), 404
+        return jsonify({"error": tr("replay_not_found")}), 404
 
     primary_tf = (replay.timeframe or "15m").lower()
     higher_tf = _next_higher_timeframe(primary_tf)
@@ -717,7 +784,7 @@ def replay_data(replay_id, lang_code="fr"):
             replay, primary_tf
         )
     except Exception as e:
-        return jsonify({"error": f"Erreur données replay: {str(e)}"}), 500
+        return jsonify({"error": tr("replay_data_error", error=str(e))}), 500
 
     try:
         htf_candles = _load_htf_candles_for_replay(replay, higher_tf)
@@ -730,7 +797,7 @@ def replay_data(replay_id, lang_code="fr"):
         return (
             jsonify(
                 {
-                    "error": "Aucune donnée replay disponible",
+                    "error": tr("no_replay_data"),
                     "debug": {
                         "symbol": replay.symbol,
                         "timeframe": primary_tf,
@@ -745,7 +812,7 @@ def replay_data(replay_id, lang_code="fr"):
         return (
             jsonify(
                 {
-                    "error": "Impossible de construire le replay: aucune bougie exploitable.",
+                    "error": tr("no_candle_build"),
                     "debug": {
                         "symbol": replay.symbol,
                         "timeframe": primary_tf,
@@ -842,7 +909,7 @@ def replay_data(replay_id, lang_code="fr"):
                 "lessons": lessons,
                 "timeline": engine.timeline,
                 "user_hint_before_decision": engine.decision_context,
-                "desk_note": "Ce replay utilise un scénario auto-guidé stable avec une décision manuelle au moment critique.",
+                "desk_note": tr("desk_note"),
                 "htf_bias": engine.htf_bias,
                 "htf_zones": htf_zones,
             },
@@ -881,13 +948,13 @@ def save_replay_decision(replay_id, lang_code="fr"):
     )
 
     if not replay:
-        return jsonify({"error": "Replay introuvable"}), 404
+        return jsonify({"error": tr("replay_not_found")}), 404
 
     data = request.get_json() or {}
     decision = (data.get("decision") or "").strip().lower()
 
     if decision not in ["close", "hold", "partial"]:
-        return jsonify({"error": "Décision invalide"}), 400
+        return jsonify({"error": tr("invalid_decision")}), 400
 
     existing = (
         UserReplayDecision.query.filter_by(
@@ -904,7 +971,7 @@ def save_replay_decision(replay_id, lang_code="fr"):
     try:
         _, primary_candles, _, _, _ = _load_primary_candles_for_replay(replay, primary_tf)
     except Exception as e:
-        return jsonify({"error": f"Erreur données replay: {str(e)}"}), 500
+        return jsonify({"error": tr("replay_data_error", error=str(e))}), 500
 
     try:
         htf_candles = _load_htf_candles_for_replay(replay, higher_tf)
@@ -966,7 +1033,7 @@ def save_replay_decision(replay_id, lang_code="fr"):
             jsonify(
                 {
                     "success": True,
-                    "message": "Décision sauvegardée",
+                    "message": tr("decision_saved"),
                     "score": int(score),
                     "status": status,
                     "status_text": status_text,
@@ -978,14 +1045,14 @@ def save_replay_decision(replay_id, lang_code="fr"):
                     "timing_score": int(timing_score),
                     "user_avg_score": user_avg_score,
                     "estimated_percentile": estimated_percentile,
-                    "comparison_text": f"Tu fais mieux que {estimated_percentile}% des traders sur cette décision.",
+                    "comparison_text": tr("comparison_text", value=estimated_percentile),
                 }
             ),
             201,
         )
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": "Erreur sauvegarde", "details": str(e)}), 500
+        return jsonify({"error": tr("save_error"), "details": str(e)}), 500
 
 
 @replay_bp.route("/my-performance")
