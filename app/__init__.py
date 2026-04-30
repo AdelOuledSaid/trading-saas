@@ -123,7 +123,7 @@ def create_app():
             "/cron/",
             "/sitemap.xml",
             "/robots.txt",
-            "/favicon"
+            "/favicon.ico"
         )):
             return None
 

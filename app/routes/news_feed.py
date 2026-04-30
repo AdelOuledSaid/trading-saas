@@ -459,6 +459,7 @@ def get_cached_data():
 
 
 @news_feed_bp.route("/news-feed")
+@news_feed_bp.route("/<lang_code>/news-feed")
 def news_feed():
     data = get_cached_data()
     return render_template("news_feed.html", **data)

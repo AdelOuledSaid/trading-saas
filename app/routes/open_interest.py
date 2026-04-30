@@ -221,6 +221,7 @@ def _build_dashboard(oi_snapshots, summary):
 
 
 @open_interest_bp.route("/open-interest")
+@open_interest_bp.route("/<lang_code>/open-interest")
 def open_interest_page():
     service = OpenInterestService()
 

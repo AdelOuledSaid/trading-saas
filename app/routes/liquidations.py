@@ -115,6 +115,7 @@ def _get_filters():
 
 
 @liquidations_bp.route("/liquidations")
+@liquidations_bp.route("/<lang_code>/liquidations")
 def liquidations_page():
     service = get_liquidations_service()
 
