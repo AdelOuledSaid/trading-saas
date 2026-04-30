@@ -222,7 +222,7 @@ def _build_dashboard(oi_snapshots, summary):
 
 @open_interest_bp.route("/open-interest")
 @open_interest_bp.route("/<lang_code>/open-interest")
-def open_interest_page():
+def open_interest_page(lang_code=None):
     service = OpenInterestService()
 
     asset = (request.args.get("asset", "") or "").strip().upper()
