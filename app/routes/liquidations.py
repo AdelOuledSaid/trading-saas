@@ -116,7 +116,7 @@ def _get_filters():
 
 @liquidations_bp.route("/liquidations")
 @liquidations_bp.route("/<lang_code>/liquidations")
-def liquidations_page():
+def liquidations_page(lang_code=None):
     service = get_liquidations_service()
 
     asset_filter, side_filter, only_high_impact, limit, active_filters = _get_filters()
