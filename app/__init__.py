@@ -128,10 +128,13 @@ def create_app():
             return None
 
         if path == "/":
-           return None
+            return None
 
-        return redirect("/fr" + path, code=301)
-    @app.before_request
+        target = "/fr" + path
+        if request.query_string:
+            target += "?" + request.query_string.decode("utf-8")
+
+        return redirect(target, code=301)
     def set_language():
         """
         Détection langue robuste.
