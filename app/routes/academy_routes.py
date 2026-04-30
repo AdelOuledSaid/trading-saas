@@ -62,7 +62,7 @@ def academy_context():
 
 @academy_bp.route("/academy")
 @academy_bp.route("/<lang_code>/academy")
-def academy_index():
+def academy_index(lang_code=None):
     return render_template("academy/index.html", **academy_context())
 
 
