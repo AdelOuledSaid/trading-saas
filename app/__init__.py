@@ -121,6 +121,9 @@ def create_app():
             "/stripe-webhook",
             "/telegram",
             "/cron/",
+            "/marche/",
+            "/marches/",
+            "/academy/",
             "/sitemap.xml",
             "/robots.txt",
             "/favicon.ico"
