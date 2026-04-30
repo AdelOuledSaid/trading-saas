@@ -109,35 +109,9 @@ def create_app():
     app.jinja_env.filters["format_price"] = format_price
 
     # ✅ LANGUE (100% MANUELLE - PAS DE GEO / BROWSER)
+    
+  
     @app.before_request
-    def force_lang():
-        path = request.path
-
-        if path.startswith((
-            "/fr/", "/en/", "/es/", "/it/", "/de/", "/pt/", "/ru/",
-            "/static/",
-            "/api/",
-            "/webhook",
-            "/stripe-webhook",
-            "/telegram",
-            "/cron/",
-            "/marche/",
-            "/marches/",
-            "/academy/",
-            "/sitemap.xml",
-            "/robots.txt",
-            "/favicon.ico"
-        )):
-            return None
-
-        if path == "/":
-            return None
-
-        target = "/fr" + path
-        if request.query_string:
-            target += "?" + request.query_string.decode("utf-8")
-
-        return redirect(target, code=301)
     def set_language():
         """
         Détection langue robuste.
@@ -150,10 +124,12 @@ def create_app():
         5. DEFAULT_LANG
         """
         lang = None
-
+        path_lang = request.path.strip("/").split("/")[0]
+        if path_lang in SUPPORTED_LANGS:
+           lang = path_lang
         # 1) Langue depuis route /<lang_code>/...
-        if request.view_args:
-            lang = request.view_args.get("lang_code")
+        if request.view_args and not lang:
+           lang = request.view_args.get("lang_code")
 
         # 2) Langue depuis query string
         if not lang:
