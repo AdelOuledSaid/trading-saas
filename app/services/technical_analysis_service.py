@@ -509,11 +509,116 @@ class TechnicalAnalysisService:
             }
 
     def _get_binance_klines(self, symbol: str, interval: str, limit: int = 250) -> List[List[Any]]:
+        """
+        Return OHLCV candles in Binance kline format.
+
+        Binance can return HTTP 451 on some cloud providers/regions, including
+        Render. In that case we automatically fall back to OKX public market
+        candles. The returned rows keep the same shape expected by
+        _build_dataframe(), so the rest of the analysis remains unchanged.
+
+        NOTE:
+        - Price candles from OKX are real market data.
+        - quote_asset_volume, number_of_trades and taker buy fields are not
+          provided by OKX candles, so they are approximated with neutral values.
+        """
         url = f"{BINANCE_BASE_URL}/api/v3/klines"
         params = {"symbol": symbol, "interval": interval, "limit": limit}
-        resp = self.session.get(url, params=params, timeout=6)
+
+        try:
+            resp = self.session.get(url, params=params, timeout=6)
+            resp.raise_for_status()
+            return resp.json()
+        except Exception:
+            return self._get_okx_klines(symbol=symbol, interval=interval, limit=limit)
+
+    def _get_okx_klines(self, symbol: str, interval: str, limit: int = 250) -> List[List[Any]]:
+        """
+        Fetch real OHLCV candles from OKX and convert them to Binance kline shape.
+
+        OKX endpoint:
+        https://www.okx.com/api/v5/market/candles
+
+        OKX response candle format:
+        [ts, open, high, low, close, vol, volCcy, volCcyQuote, confirm]
+
+        Binance-like output expected by _build_dataframe:
+        [
+            open_time, open, high, low, close, volume, close_time,
+            quote_asset_volume, number_of_trades,
+            taker_buy_base_asset_volume, taker_buy_quote_asset_volume, ignore
+        ]
+        """
+        okx_symbol = symbol.replace("USDT", "-USDT")
+
+        interval_map = {
+            "15m": "15m",
+            "1h": "1H",
+            "4h": "4H",
+            "1d": "1D",
+        }
+
+        url = "https://www.okx.com/api/v5/market/candles"
+        params = {
+            "instId": okx_symbol,
+            "bar": interval_map.get(interval, "1H"),
+            "limit": str(limit),
+        }
+
+        resp = self.session.get(url, params=params, timeout=8)
         resp.raise_for_status()
-        return resp.json()
+        payload = resp.json()
+
+        if str(payload.get("code", "0")) != "0":
+            raise RuntimeError(f"OKX API error: {payload}")
+
+        data = payload.get("data", [])
+        if not data:
+            raise RuntimeError("OKX returned empty candles")
+
+        rows: List[List[Any]] = []
+
+        # OKX returns candles newest first. Pandas indicators need oldest first.
+        for candle in reversed(data):
+            ts = int(candle[0])
+            open_ = candle[1]
+            high = candle[2]
+            low = candle[3]
+            close = candle[4]
+            volume = candle[5]
+            quote_volume = candle[7] if len(candle) > 7 else "0"
+
+            close_time = ts
+            number_of_trades = 0
+
+            # OKX candles do not provide taker-buy split. Use neutral 50/50
+            # approximation so orderflow does not break.
+            try:
+                taker_buy_base = str(float(volume) * 0.5)
+            except Exception:
+                taker_buy_base = "0"
+
+            try:
+                taker_buy_quote = str(float(quote_volume) * 0.5)
+            except Exception:
+                taker_buy_quote = "0"
+
+            rows.append([
+                ts,
+                open_,
+                high,
+                low,
+                close,
+                volume,
+                close_time,
+                quote_volume,
+                number_of_trades,
+                taker_buy_base,
+                taker_buy_quote,
+                0,
+            ])
+
+        return rows
 
     def _build_dataframe(self, candles: List[List[Any]]) -> pd.DataFrame:
         df = pd.DataFrame(
