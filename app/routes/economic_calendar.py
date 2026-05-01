@@ -24,7 +24,7 @@ def economic_calendar():
     if impact_only == "1" and not importance:
         importance = "high"
 
-    events = EconomicCalendarService.fetch_events(
+    events, fallback_mode = EconomicCalendarService.fetch_events(
         period=period,
         country=country or None,
         importance=importance or None,
@@ -41,6 +41,7 @@ def economic_calendar():
         currency = event.get("currency", "")
 
         volatility_score = 35
+
         if impact == "high":
             volatility_score = 90
         elif impact == "medium":
@@ -54,16 +55,18 @@ def economic_calendar():
         event["volatility_score"] = min(volatility_score, 99)
 
     impact_order = {"high": 0, "medium": 1, "low": 2}
+
     events = sorted(
         events,
         key=lambda e: (
             impact_order.get(e.get("impact", "low"), 3),
             e.get("date_obj") is None,
             e.get("date_obj"),
-        )
+        ),
     )
 
     market_bias = "Neutral"
+
     if any(e.get("currency") == "USD" and e.get("impact") == "high" for e in events):
         market_bias = "USD / Gold / Nasdaq Focus"
     elif any(e.get("currency") == "EUR" and e.get("impact") == "high" for e in events):
@@ -86,6 +89,6 @@ def economic_calendar():
         medium_impact_count=medium_impact_count,
         low_impact_count=low_impact_count,
         market_bias=market_bias,
-        fallback_mode=True,
+        fallback_mode=fallback_mode,
         top_event=top_event,
     )

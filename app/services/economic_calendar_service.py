@@ -1,222 +1,57 @@
 import os
 from datetime import datetime, timedelta
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Tuple
 
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class EconomicCalendarService:
-    BASE_URL = "https://eodhistoricaldata.com/api/economic-events"
 
-    FALLBACK_EVENTS = [
-        {
-            "date": "2026-04-14",
-            "time": "08:00:00",
-            "country": "EU",
-            "currency": "EUR",
-            "event": "ECB President Speech",
-            "actual": "-",
-            "forecast": "-",
-            "previous": "-",
-            "importance": "high",
-        },
-        {
-            "date": "2026-04-14",
-            "time": "12:30:00",
-            "country": "US",
-            "currency": "USD",
-            "event": "Core CPI YoY",
-            "actual": "3.2%",
-            "forecast": "3.1%",
-            "previous": "3.4%",
-            "importance": "high",
-        },
-        {
-            "date": "2026-04-14",
-            "time": "12:30:00",
-            "country": "US",
-            "currency": "USD",
-            "event": "CPI MoM",
-            "actual": "0.4%",
-            "forecast": "0.3%",
-            "previous": "0.4%",
-            "importance": "high",
-        },
-        {
-            "date": "2026-04-14",
-            "time": "14:00:00",
-            "country": "US",
-            "currency": "USD",
-            "event": "Fed Member Speech",
-            "actual": "-",
-            "forecast": "-",
-            "previous": "-",
-            "importance": "medium",
-        },
-        {
-            "date": "2026-04-15",
-            "time": "06:00:00",
-            "country": "UK",
-            "currency": "GBP",
-            "event": "CPI YoY",
-            "actual": "2.8%",
-            "forecast": "2.7%",
-            "previous": "3.0%",
-            "importance": "high",
-        },
-        {
-            "date": "2026-04-15",
-            "time": "12:30:00",
-            "country": "US",
-            "currency": "USD",
-            "event": "Retail Sales MoM",
-            "actual": "0.6%",
-            "forecast": "0.4%",
-            "previous": "0.3%",
-            "importance": "high",
-        },
-        {
-            "date": "2026-04-15",
-            "time": "14:30:00",
-            "country": "US",
-            "currency": "USD",
-            "event": "Crude Oil Inventories",
-            "actual": "-1.8M",
-            "forecast": "-0.9M",
-            "previous": "1.2M",
-            "importance": "medium",
-        },
-        {
-            "date": "2026-04-16",
-            "time": "01:30:00",
-            "country": "AU",
-            "currency": "AUD",
-            "event": "Employment Change",
-            "actual": "24K",
-            "forecast": "18K",
-            "previous": "11K",
-            "importance": "high",
-        },
-        {
-            "date": "2026-04-16",
-            "time": "11:00:00",
-            "country": "EU",
-            "currency": "EUR",
-            "event": "Core CPI YoY Final",
-            "actual": "2.7%",
-            "forecast": "2.7%",
-            "previous": "2.9%",
-            "importance": "high",
-        },
-        {
-            "date": "2026-04-16",
-            "time": "12:15:00",
-            "country": "EU",
-            "currency": "EUR",
-            "event": "ECB Rate Decision",
-            "actual": "4.25%",
-            "forecast": "4.25%",
-            "previous": "4.50%",
-            "importance": "high",
-        },
-        {
-            "date": "2026-04-17",
-            "time": "12:30:00",
-            "country": "US",
-            "currency": "USD",
-            "event": "Initial Jobless Claims",
-            "actual": "221K",
-            "forecast": "225K",
-            "previous": "232K",
-            "importance": "medium",
-        },
-        {
-            "date": "2026-04-17",
-            "time": "14:00:00",
-            "country": "US",
-            "currency": "USD",
-            "event": "Consumer Sentiment",
-            "actual": "77.5",
-            "forecast": "76.9",
-            "previous": "76.1",
-            "importance": "medium",
-        },
-        {
-            "date": "2026-04-20",
-            "time": "00:01:00",
-            "country": "CN",
-            "currency": "CNY",
-            "event": "Loan Prime Rate 1Y",
-            "actual": "3.35%",
-            "forecast": "3.35%",
-            "previous": "3.45%",
-            "importance": "medium",
-        },
-        {
-            "date": "2026-04-21",
-            "time": "14:00:00",
-            "country": "CA",
-            "currency": "CAD",
-            "event": "BoC Governor Speech",
-            "actual": "-",
-            "forecast": "-",
-            "previous": "-",
-            "importance": "medium",
-        },
-        {
-            "date": "2026-04-22",
-            "time": "13:45:00",
-            "country": "US",
-            "currency": "USD",
-            "event": "Flash Manufacturing PMI",
-            "actual": "51.6",
-            "forecast": "51.2",
-            "previous": "50.8",
-            "importance": "medium",
-        },
-    ]
+    # =========================
+    # CONFIG
+    # =========================
+    TE_URL = "https://api.tradingeconomics.com/calendar"
 
+    # =========================
+    # SAFE
+    # =========================
     @staticmethod
-    def _safe_text(value: Any, default: str = "-") -> str:
+    def _safe(value, default="-"):
         if value is None:
             return default
-        text = str(value).strip()
-        return text if text else default
+        v = str(value).strip()
+        return v if v else default
 
+    # =========================
+    # DATE PARSE
+    # =========================
     @staticmethod
-    def _parse_date(date_raw: Optional[str], time_raw: Optional[str] = None) -> Optional[datetime]:
-        if not date_raw:
+    def _parse_date(date_str: Optional[str]) -> Optional[datetime]:
+        if not date_str:
             return None
 
-        candidates = []
-
-        if time_raw:
-            candidates.extend([
-                f"{date_raw} {time_raw}",
-                f"{date_raw} {time_raw}:00",
-            ])
-
-        candidates.append(date_raw)
-
         formats = [
-            "%Y-%m-%d %H:%M:%S",
-            "%Y-%m-%d %H:%M",
-            "%Y-%m-%d",
             "%Y-%m-%dT%H:%M:%S",
-            "%Y-%m-%dT%H:%M:%SZ",
+            "%Y-%m-%d %H:%M:%S",
+            "%Y-%m-%d",
         ]
 
-        for candidate in candidates:
-            for fmt in formats:
-                try:
-                    return datetime.strptime(candidate, fmt)
-                except ValueError:
-                    continue
+        for fmt in formats:
+            try:
+                return datetime.strptime(date_str[:19], fmt)
+            except:
+                continue
 
         return None
 
+    # =========================
+    # PERIOD
+    # =========================
     @staticmethod
-    def get_date_range(period: str) -> tuple[str, str]:
+    def get_date_range(period: str) -> Tuple[str, str]:
         today = datetime.utcnow().date()
 
         if period == "yesterday":
@@ -229,7 +64,7 @@ class EconomicCalendarService:
             start = today - timedelta(days=today.weekday())
             end = start + timedelta(days=6)
         elif period == "next_week":
-            start = today - timedelta(days=today.weekday()) + timedelta(days=7)
+            start = today + timedelta(days=7 - today.weekday())
             end = start + timedelta(days=6)
         else:
             start = today
@@ -237,70 +72,103 @@ class EconomicCalendarService:
 
         return start.isoformat(), end.isoformat()
 
+    # =========================
+    # NORMALIZE TE
+    # =========================
     @classmethod
-    def _normalize_event(cls, item: Dict[str, Any]) -> Dict[str, Any]:
-        date_raw = item.get("date")
-        time_raw = item.get("time")
-        dt = cls._parse_date(date_raw, time_raw)
+    def _normalize_te(cls, item: Dict[str, Any]) -> Dict[str, Any]:
 
-        impact_raw = cls._safe_text(
-            item.get("importance") or item.get("impact") or "low",
-            "low"
-        ).lower()
+        dt = cls._parse_date(item.get("Date"))
 
-        if impact_raw not in {"low", "medium", "high"}:
-            impact_raw = "low"
+        impact_map = {
+            1: "low",
+            2: "medium",
+            3: "high"
+        }
+
+        impact = impact_map.get(item.get("Importance"), "low")
 
         return {
             "date_obj": dt,
-            "date_display": dt.strftime("%d %b %Y • %H:%M") if dt else cls._safe_text(date_raw),
-            "country": cls._safe_text(item.get("country")),
-            "currency": cls._safe_text(item.get("currency")),
-            "event": cls._safe_text(item.get("event")),
-            "actual": cls._safe_text(item.get("actual")),
-            "forecast": cls._safe_text(item.get("forecast")),
-            "previous": cls._safe_text(item.get("previous")),
-            "impact": impact_raw,
+            "date_display": dt.strftime("%d %b %Y • %H:%M") if dt else "-",
+            "country": cls._safe(item.get("Country")),
+            "currency": cls._safe(item.get("Currency")),
+            "event": cls._safe(item.get("Event")),
+            "actual": cls._safe(item.get("Actual")),
+            "forecast": cls._safe(item.get("Forecast")),
+            "previous": cls._safe(item.get("Previous")),
+            "impact": impact,
         }
 
+    # =========================
+    # API TRADING ECONOMICS
+    # =========================
     @classmethod
-    def _fetch_from_api(cls, from_date: str, to_date: str) -> List[Dict[str, Any]]:
-        api_key = os.getenv("EODHD_API_KEY")
-        if not api_key:
-            return []
+    def _fetch_te(cls) -> List[Dict[str, Any]]:
 
-        params = {
-            "api_token": api_key,
-            "fmt": "json",
-            "from": from_date,
-            "to": to_date,
-        }
+        key = os.getenv("TRADING_ECONOMICS_KEY", "guest:guest")
 
         try:
-            response = requests.get(cls.BASE_URL, params=params, timeout=20)
-            print("=== EODHD DEBUG START ===", flush=True)
-            print("URL:", response.url, flush=True)
-            print("STATUS:", response.status_code, flush=True)
-            print("RESPONSE:", response.text[:1000], flush=True)
-            print("=== EODHD DEBUG END ===", flush=True)
+            params = {
+                "c": key,
+                "format": "json"
+            }
 
-            response.raise_for_status()
-            data = response.json()
+            r = requests.get(cls.TE_URL, params=params, timeout=15)
 
-            if not isinstance(data, list):
+            print("=== TE DEBUG ===")
+            print("STATUS:", r.status_code)
+            print("URL:", r.url)
+
+            if r.status_code != 200:
                 return []
 
-            return [cls._normalize_event(item) for item in data]
+            data = r.json()
+
+            return [cls._normalize_te(x) for x in data]
 
         except Exception as e:
-            print("=== EODHD ERROR ===", flush=True)
-            print(str(e), flush=True)
+            print("TE ERROR:", str(e))
             return []
 
+    # =========================
+    # FALLBACK INTELLIGENT
+    # =========================
     @classmethod
-    def _fetch_fallback(cls) -> List[Dict[str, Any]]:
-        return [cls._normalize_event(item) for item in cls.FALLBACK_EVENTS]
+    def _fallback(cls) -> List[Dict[str, Any]]:
 
+        today = datetime.utcnow().date()
+
+        base = [
+            ("USD", "Core CPI YoY", "high"),
+            ("USD", "Fed Speech", "medium"),
+            ("EUR", "ECB Rate Decision", "high"),
+            ("GBP", "CPI YoY", "high"),
+            ("JPY", "BoJ Statement", "medium"),
+        ]
+
+        events = []
+
+        for i, (cur, name, impact) in enumerate(base):
+            dt = datetime.combine(today, datetime.min.time()) + timedelta(hours=8 + i * 2)
+
+            events.append({
+                "date_obj": dt,
+                "date_display": dt.strftime("%d %b %Y • %H:%M"),
+                "country": cur,
+                "currency": cur,
+                "event": name,
+                "actual": "-",
+                "forecast": "-",
+                "previous": "-",
+                "impact": impact,
+            })
+
+        return events
+
+    # =========================
+    # MAIN
+    # =========================
     @classmethod
     def fetch_events(
         cls,
@@ -308,59 +176,48 @@ class EconomicCalendarService:
         country: Optional[str] = None,
         importance: Optional[str] = None,
         search_query: Optional[str] = None,
-    ) -> List[Dict[str, Any]]:
+    ) -> Tuple[List[Dict[str, Any]], bool]:
+
         from_date, to_date = cls.get_date_range(period)
 
-        events = cls._fetch_from_api(from_date, to_date)
+        events = cls._fetch_te()
+        fallback = False
 
         if not events:
-            events = cls._fetch_fallback()
+            events = cls._fallback()
+            fallback = True
 
+        # FILTER DATE
         from_dt = datetime.strptime(from_date, "%Y-%m-%d").date()
         to_dt = datetime.strptime(to_date, "%Y-%m-%d").date()
 
-        filtered_by_period = []
-        for event in events:
-            if event["date_obj"] is None:
-                continue
-            event_date = event["date_obj"].date()
-            if from_dt <= event_date <= to_dt:
-                filtered_by_period.append(event)
+        events = [
+            e for e in events
+            if e["date_obj"] and from_dt <= e["date_obj"].date() <= to_dt
+        ]
 
-        events = filtered_by_period
-
+        # FILTER COUNTRY
         if country:
-            country_lower = country.strip().lower()
+            c = country.lower()
             events = [
                 e for e in events
-                if country_lower in e["country"].lower() or country_lower in e["currency"].lower()
+                if c in e["currency"].lower() or c in e["country"].lower()
             ]
 
-        if importance and importance.lower() in {"low", "medium", "high"}:
-            events = [e for e in events if e["impact"] == importance.lower()]
+        # FILTER IMPACT
+        if importance:
+            events = [e for e in events if e["impact"] == importance]
 
+        # SEARCH SMART
         if search_query:
-            q = search_query.strip().lower()
-            if q:
-                query_aliases = {
-                    "gold": ["gold", "xau", "usd", "cpi", "fed", "inflation", "interest", "jobless"],
-                    "btc": ["btc", "bitcoin", "usd", "fed", "cpi", "risk", "nasdaq"],
-                    "nasdaq": ["nasdaq", "usd", "fed", "cpi", "retail", "pmi", "jobs"],
-                }
+            q = search_query.lower()
 
-                expanded_terms = [q]
-                if q in query_aliases:
-                    expanded_terms.extend(query_aliases[q])
+            events = [
+                e for e in events
+                if q in e["event"].lower()
+                or q in e["currency"].lower()
+            ]
 
-                events = [
-                    e for e in events
-                    if any(
-                        term in e["event"].lower()
-                        or term in e["country"].lower()
-                        or term in e["currency"].lower()
-                        for term in expanded_terms
-                    )
-                ]
+        events.sort(key=lambda x: x["date_obj"])
 
-        events.sort(key=lambda x: x["date_obj"] or datetime.max)
-        return events
+        return events, fallback
