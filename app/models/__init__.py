@@ -12,7 +12,7 @@ from app.models.replay import (
 from app.models.telegram_dispatch_log import TelegramDispatchLog
 
 from app.extensions import db
-
+from app.models.token_unlock_event import TokenUnlockEvent
 
 class UserWatchlist(db.Model):
     __tablename__ = "user_watchlist"

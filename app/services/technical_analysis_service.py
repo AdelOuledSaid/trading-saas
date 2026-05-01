@@ -189,7 +189,7 @@ class TechnicalAnalysisService:
     MULTI_TIMEFRAMES = ("15m", "1h", "4h", "1d")
 
     _cg_cache = SimpleTTLCache(ttl_seconds=90)
-    _analysis_cache = SimpleTTLCache(ttl_seconds=20)
+    _analysis_cache = SimpleTTLCache(ttl_seconds=120)
 
     def __init__(self) -> None:
         self.session = requests.Session()
@@ -224,7 +224,7 @@ class TechnicalAnalysisService:
             return cached
 
         meta = self.TOKEN_MAP[token]
-        candles = self._get_binance_klines(meta["binance_symbol"], interval=interval, limit=250)
+        candles = self._get_binance_klines(meta["binance_symbol"], interval=interval, limit=120)
         df = self._build_dataframe(candles)
 
         indicators = self._compute_indicators(df)
@@ -410,7 +410,7 @@ class TechnicalAnalysisService:
         }
 
         try:
-            resp = self.session.get(url, params=params, headers=self._cg_headers(), timeout=15)
+            resp = self.session.get(url, params=params, headers=self._cg_headers(), timeout=6)
             if resp.status_code == 429:
                 return cached or []
             resp.raise_for_status()
@@ -447,7 +447,7 @@ class TechnicalAnalysisService:
         }
 
         try:
-            resp = self.session.get(url, params=params, headers=self._cg_headers(), timeout=15)
+            resp = self.session.get(url, params=params, headers=self._cg_headers(), timeout=6)
             if resp.status_code == 429:
                 return cached or []
             resp.raise_for_status()
@@ -480,7 +480,7 @@ class TechnicalAnalysisService:
         }
 
         try:
-            resp = self.session.get(url, params=params, headers=self._cg_headers(), timeout=15)
+            resp = self.session.get(url, params=params, headers=self._cg_headers(), timeout=6)
             if resp.status_code == 429:
                 return cached or {
                     "current_price": fallback_price,
@@ -511,7 +511,7 @@ class TechnicalAnalysisService:
     def _get_binance_klines(self, symbol: str, interval: str, limit: int = 250) -> List[List[Any]]:
         url = f"{BINANCE_BASE_URL}/api/v3/klines"
         params = {"symbol": symbol, "interval": interval, "limit": limit}
-        resp = self.session.get(url, params=params, timeout=15)
+        resp = self.session.get(url, params=params, timeout=6)
         resp.raise_for_status()
         return resp.json()
 

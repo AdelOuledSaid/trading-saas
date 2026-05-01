@@ -160,30 +160,38 @@ def technical_analysis_api():
     indicator = request.args.get("indicator", "stochasticrsi")
 
     ta = TechnicalAnalysisService()
-    ai = AISummaryService()
-
-    analysis = ta.analyze(
-        token=token,
-        interval=interval,
-        indicator=indicator,
-        include_multi_tf=True,
-    )
-    data = analysis.to_dict()
 
     try:
-        data["ai_summary"] = ai.summarize(data["summary_context"])
-    except Exception:
-        data["ai_summary"] = (
-            f"{data.get('token', 'Asset')} {data.get('interval', '').upper()} "
-            f"bias {data.get('bias', 'mixed')} with confidence {data.get('confidence', '--')}%."
+        analysis = ta.analyze(
+            token=token,
+            interval=interval,
+            indicator=indicator,
+            include_multi_tf=False,  # ULTRA FAST: avoids 4 extra Binance calls on page load
         )
+        data = analysis.to_dict()
+    except Exception as exc:
+        # Never leave the frontend with an empty/white page.
+        return jsonify({
+            "error": True,
+            "message": "Technical analysis temporarily unavailable. Please retry in a few seconds.",
+            "details": str(exc),
+            "token": token.upper(),
+            "interval": interval,
+            "indicator": indicator,
+            "access": _access_payload(),
+        }), 200
+
+    # ULTRA FAST: no slow AI call on initial page load.
+    data["ai_summary"] = (
+        f"{data.get('token', 'Asset')} {str(data.get('interval', '')).upper()} "
+        f"bias {data.get('bias', 'mixed')} with confidence {data.get('confidence', '--')}%."
+    )
 
     if not data.get("ai_advanced_analysis"):
         data["ai_advanced_analysis"] = _fallback_ai_advanced_analysis(data)
 
     data = _apply_access_control(data)
     return jsonify(data)
-
 
 @technical_analysis_bp.route("/api/technical-analysis/premium")
 def premium_insight():

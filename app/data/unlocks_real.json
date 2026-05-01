@@ -1,0 +1,64 @@
+[
+    {"symbol":"ARB","name":"Arbitrum","date":"2026-05-01","value":12000000,"market_cap_ratio":0.8},
+    {"symbol":"SUI","name":"Sui","date":"2026-05-01","value":18000000,"market_cap_ratio":1.2},
+  
+    {"symbol":"APT","name":"Aptos","date":"2026-05-02","value":22000000,"market_cap_ratio":1.5},
+  
+    {"symbol":"OP","name":"Optimism","date":"2026-05-03","value":8000000,"market_cap_ratio":0.6},
+  
+    {"symbol":"STRK","name":"Starknet","date":"2026-05-04","value":15000000,"market_cap_ratio":1.1},
+  
+    {"symbol":"SEI","name":"Sei","date":"2026-05-05","value":6000000,"market_cap_ratio":0.4},
+  
+    {"symbol":"ARB","name":"Arbitrum","date":"2026-05-06","value":23500000,"market_cap_ratio":1.7},
+  
+    {"symbol":"IMX","name":"Immutable","date":"2026-05-07","value":9000000,"market_cap_ratio":0.7},
+  
+    {"symbol":"DYDX","name":"dYdX","date":"2026-05-08","value":11000000,"market_cap_ratio":0.9},
+  
+    {"symbol":"APT","name":"Aptos","date":"2026-05-09","value":38000000,"market_cap_ratio":2.3},
+  
+    {"symbol":"SUI","name":"Sui","date":"2026-05-10","value":42000000,"market_cap_ratio":2.8},
+  
+    {"symbol":"OP","name":"Optimism","date":"2026-05-11","value":9500000,"market_cap_ratio":0.7},
+  
+    {"symbol":"OP","name":"Optimism","date":"2026-05-12","value":18000000,"market_cap_ratio":1.1},
+  
+    {"symbol":"SEI","name":"Sei","date":"2026-05-13","value":5000000,"market_cap_ratio":0.3},
+  
+    {"symbol":"IMX","name":"Immutable","date":"2026-05-14","value":12000000,"market_cap_ratio":0.9},
+  
+    {"symbol":"SUI","name":"Sui","date":"2026-05-15","value":52000000,"market_cap_ratio":3.0},
+  
+    {"symbol":"ARB","name":"Arbitrum","date":"2026-05-16","value":20000000,"market_cap_ratio":1.4},
+  
+    {"symbol":"STRK","name":"Starknet","date":"2026-05-17","value":14000000,"market_cap_ratio":1.0},
+  
+    {"symbol":"STRK","name":"Starknet","date":"2026-05-18","value":31000000,"market_cap_ratio":2.1},
+  
+    {"symbol":"DYDX","name":"dYdX","date":"2026-05-19","value":17000000,"market_cap_ratio":1.2},
+  
+    {"symbol":"TIA","name":"Celestia","date":"2026-05-20","value":28000000,"market_cap_ratio":1.9},
+  
+    {"symbol":"SEI","name":"Sei","date":"2026-05-21","value":15000000,"market_cap_ratio":0.9},
+  
+    {"symbol":"IMX","name":"Immutable","date":"2026-05-22","value":10000000,"market_cap_ratio":0.8},
+  
+    {"symbol":"ARB","name":"Arbitrum","date":"2026-05-23","value":1850000000,"market_cap_ratio":8.5},
+  
+    {"symbol":"TIA","name":"Celestia","date":"2026-05-24","value":42000000,"market_cap_ratio":2.7},
+  
+    {"symbol":"APT","name":"Aptos","date":"2026-05-25","value":36000000,"market_cap_ratio":2.2},
+  
+    {"symbol":"SEI","name":"Sei","date":"2026-05-26","value":9000000,"market_cap_ratio":0.6},
+  
+    {"symbol":"DYDX","name":"dYdX","date":"2026-05-27","value":27000000,"market_cap_ratio":1.8},
+  
+    {"symbol":"OP","name":"Optimism","date":"2026-05-28","value":12000000,"market_cap_ratio":0.9},
+  
+    {"symbol":"STRK","name":"Starknet","date":"2026-05-29","value":8000000,"market_cap_ratio":0.5},
+  
+    {"symbol":"IMX","name":"Immutable","date":"2026-05-30","value":21000000,"market_cap_ratio":1.4},
+  
+    {"symbol":"TIA","name":"Celestia","date":"2026-05-31","value":15000000,"market_cap_ratio":1.0}
+  ]

@@ -181,7 +181,7 @@ class WhaleTrackingService:
     # REAL DATA LOADER
     # =========================================================
 
-    @cache.memoize(timeout=120)
+    @cache.memoize(timeout=300)
     def _load_real_alerts(self) -> List[WhaleAlert]:
         alerts: List[WhaleAlert] = []
 
@@ -253,7 +253,7 @@ class WhaleTrackingService:
             )
             if isinstance(data, list):
                 rows.extend(data)
-            time.sleep(0.2)
+            time.sleep(0.05)
 
         alerts: List[WhaleAlert] = []
         seen_hashes = set()
@@ -338,7 +338,7 @@ class WhaleTrackingService:
             )
             if isinstance(data, list):
                 rows.extend(data)
-            time.sleep(0.2)
+            time.sleep(0.05)
 
         alerts: List[WhaleAlert] = []
         seen_hashes = set()
@@ -412,7 +412,7 @@ class WhaleTrackingService:
             self.ETHERSCAN_BASE_URL,
             params=self._etherscan_params(**params),
             headers=self._etherscan_headers(),
-            timeout=12,
+            timeout=4,
         )
 
         if r.status_code == 429:
@@ -485,7 +485,7 @@ class WhaleTrackingService:
                     f"{self.TRONSCAN_BASE_URL}/api/token_trc20/transfers",
                     params=params,
                     headers=self._tronscan_headers(),
-                    timeout=10,
+                    timeout=4,
                 )
 
                 if r.status_code == 429:
@@ -505,7 +505,7 @@ class WhaleTrackingService:
             if isinstance(token_transfers, list):
                 rows.extend(token_transfers)
 
-            time.sleep(0.35)
+            time.sleep(0.08)
 
         alerts: List[WhaleAlert] = []
         seen = set()
@@ -725,7 +725,7 @@ class WhaleTrackingService:
             r = requests.get(
                 "https://api.coingecko.com/api/v3/simple/price",
                 params={"ids": "ethereum", "vs_currencies": "usd"},
-                timeout=8,
+                timeout=3,
             )
 
             if r.status_code == 429:
