@@ -333,3 +333,7 @@ def analyse_crypto(lang_code):
 @pages_bp.route("/sitemap.xml")
 def sitemap():
     return current_app.send_static_file("sitemap.xml")
+
+@pages_bp.route("/payment-success")
+def payment_success():
+    return render_template("payment_success.html")
