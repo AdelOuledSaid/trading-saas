@@ -4,25 +4,84 @@
     <meta charset="UTF-8">
     <title>Paiement réussi</title>
 
+    <!-- GOOGLE ANALYTICS -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-02LMXNBVH8"></script>
 
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
 
-      gtag('config', 'G-02LMXNBVH8');
+        function gtag(){
+            dataLayer.push(arguments);
+        }
 
-      gtag('event', 'premium_subscription', {
-          value: 30,
-          currency: 'EUR'
-      });
+        gtag('js', new Date());
+
+        gtag('config', 'G-02LMXNBVH8', {
+            send_page_view: true
+        });
+
+        console.log("GA4 INITIALIZED");
     </script>
 
+    <style>
+        body{
+            margin:0;
+            padding:0;
+            background:#050816;
+            color:white;
+            font-family:Arial, sans-serif;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            text-align:center;
+        }
+
+        .box{
+            background:#0b1220;
+            padding:50px;
+            border-radius:20px;
+            border:1px solid rgba(255,255,255,0.1);
+            box-shadow:0 10px 40px rgba(0,0,0,0.4);
+        }
+
+        h1{
+            font-size:42px;
+            margin-bottom:20px;
+            color:#22c55e;
+        }
+
+        p{
+            font-size:18px;
+            color:#cbd5e1;
+        }
+    </style>
 </head>
+
 <body>
 
-<h1>Paiement réussi ✅</h1>
+<div class="box">
+    <h1>✅ Paiement réussi</h1>
+    <p>Votre abonnement Premium VelWolef est maintenant actif.</p>
+</div>
+
+<!-- EVENT TRACKING -->
+<script>
+
+console.log("TEST SCRIPT OK");
+
+setTimeout(function(){
+
+    console.log("ENVOI premium_subscription");
+
+    gtag('event', 'premium_subscription', {
+        value: 30,
+        currency: 'EUR'
+    });
+
+}, 3000);
+
+</script>
 
 </body>
 </html>
