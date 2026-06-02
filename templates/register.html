@@ -148,7 +148,7 @@ noindex, nofollow
                   {% endif %}
                 {% endwith %}
 
-                <form method="POST" class="auth-form">
+                <form method="POST" class="auth-form" id="register-form">
                     <div class="form-group">
                         <label for="register-email">
                             {% if current_lang == "en" %}
@@ -186,17 +186,27 @@ noindex, nofollow
                             required
                         >
                     </div>
-                     <!-- 🔥 AJOUT -->
-<div class="form-group">
-    <label>{{ t("site_register_confirmer_le_mot_de_passe", "Confirmer le mot de passe") }}</label>
-    <input
-        type="password"
-        name="confirm_password"
-        placeholder="Confirmer mot de passe"
-        required
-    >
-</div>
-                    <button type="submit" class="auth-submit-btn auth-submit-btn-purple">
+
+                    <div class="form-group">
+                        <label>{{ t("site_register_confirmer_le_mot_de_passe", "Confirmer le mot de passe") }}</label>
+                        <input
+                            type="password"
+                            name="confirm_password"
+                            placeholder="Confirmer mot de passe"
+                            required
+                        >
+                    </div>
+
+                    <p style="font-size:14px;color:#9ca3af;margin-top:8px;margin-bottom:14px;line-height:1.5;">
+                        📧 After registration, a verification email will be sent to your inbox.
+                        Please also check your Spam/Junk folder. The email may take up to 2 minutes to arrive.
+                    </p>
+
+                    <button
+                        type="submit"
+                        id="register-btn"
+                        class="auth-submit-btn auth-submit-btn-purple"
+                    >
                         {% if current_lang == "en" %}
                             {{ t("site_register_create_my_account", "Create my account") }}
                         {% elif current_lang == "es" %}
@@ -232,4 +242,20 @@ noindex, nofollow
         </div>
     </div>
 </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("register-form");
+    const button = document.getElementById("register-btn");
+
+    if (form && button) {
+        form.addEventListener("submit", function () {
+            button.disabled = true;
+            button.innerHTML = "Sending verification email...";
+            button.style.opacity = "0.7";
+            button.style.cursor = "not-allowed";
+        });
+    }
+});
+</script>
 {% endblock %}
