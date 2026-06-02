@@ -16,77 +16,82 @@ DEFAULT_LANG = "en"
 
 EMAIL_VERIFY_TEXTS = {
     "fr": {
-        "subject": "Confirme ton compte VelWolef",
+        "subject": "Bienvenue sur Velwolef – Confirme ton adresse email",
         "badge": "VÉRIFICATION DE COMPTE",
-        "title": "Bienvenue sur VelWolef",
-        "intro": "Merci d’avoir créé ton compte. Confirme ton adresse email pour activer ton accès et sécuriser ton espace.",
-        "button": "Confirmer mon compte",
-        "copy": "Si le bouton ne fonctionne pas, copie ce lien dans ton navigateur :",
+        "title": "Bienvenue sur Velwolef 🚀",
+        "intro": "Merci de rejoindre Velwolef. Confirme ton adresse email pour activer ton compte et accéder à toutes les fonctionnalités de la plateforme.",
+        "button": "Confirmer mon email",
+        "copy": "Si le bouton ne fonctionne pas, copie et colle ce lien dans ton navigateur :",
         "why_title": "Pourquoi cet email ?",
-        "why_text": "Tu reçois cet email car une demande de création de compte a été effectuée sur VelWolef.",
+        "why_text": "Cet email a été envoyé car un compte Velwolef a été créé avec cette adresse email. Si ce n’est pas toi, tu peux ignorer ce message.",
     },
+
     "en": {
-        "subject": "Confirm your VelWolef account",
+        "subject": "Welcome to Velwolef – Confirm your email",
         "badge": "ACCOUNT VERIFICATION",
-        "title": "Welcome to VelWolef",
-        "intro": "Thanks for creating your account. Confirm your email address to activate your access and secure your account.",
-        "button": "Confirm my account",
-        "copy": "If the button does not work, copy this link into your browser:",
-        "why_title": "Why this email?",
-        "why_text": "You received this email because an account creation request was made on VelWolef.",
+        "title": "Welcome to Velwolef 🚀",
+        "intro": "Thank you for joining Velwolef. Please confirm your email address to activate your account and start receiving trading signals, platform updates, and exclusive features.",
+        "button": "Confirm My Email",
+        "copy": "If the button does not work, copy and paste this link into your browser:",
+        "why_title": "Why did you receive this email?",
+        "why_text": "This email was sent because a Velwolef account was created using this email address. If you did not create an account, you can safely ignore this message.",
     },
+
     "es": {
-        "subject": "Confirma tu cuenta VelWolef",
+        "subject": "Bienvenido a Velwolef – Confirma tu correo electrónico",
         "badge": "VERIFICACIÓN DE CUENTA",
-        "title": "Bienvenido a VelWolef",
-        "intro": "Gracias por crear tu cuenta. Confirma tu email para activar tu acceso y proteger tu cuenta.",
-        "button": "Confirmar mi cuenta",
-        "copy": "Si el botón no funciona, copia este enlace en tu navegador:",
-        "why_title": "¿Por qué este email?",
-        "why_text": "Recibes este email porque se solicitó la creación de una cuenta en VelWolef.",
+        "title": "Bienvenido a Velwolef 🚀",
+        "intro": "Gracias por unirte a Velwolef. Confirma tu correo electrónico para activar tu cuenta y acceder a todas las funciones de la plataforma.",
+        "button": "Confirmar mi correo",
+        "copy": "Si el botón no funciona, copia y pega este enlace en tu navegador:",
+        "why_title": "¿Por qué recibiste este correo?",
+        "why_text": "Este correo fue enviado porque se creó una cuenta de Velwolef con esta dirección de correo electrónico.",
     },
+
     "de": {
-        "subject": "Bestätige dein VelWolef-Konto",
+        "subject": "Willkommen bei Velwolef – Bestätige deine E-Mail",
         "badge": "KONTOBESTÄTIGUNG",
-        "title": "Willkommen bei VelWolef",
-        "intro": "Danke für deine Registrierung. Bestätige deine E-Mail-Adresse, um deinen Zugang zu aktivieren und dein Konto zu sichern.",
-        "button": "Konto bestätigen",
+        "title": "Willkommen bei Velwolef 🚀",
+        "intro": "Danke, dass du Velwolef beigetreten bist. Bitte bestätige deine E-Mail-Adresse, um dein Konto zu aktivieren.",
+        "button": "E-Mail bestätigen",
         "copy": "Falls der Button nicht funktioniert, kopiere diesen Link in deinen Browser:",
-        "why_title": "Warum diese E-Mail?",
-        "why_text": "Du erhältst diese E-Mail, weil eine Kontoerstellung bei VelWolef angefordert wurde.",
+        "why_title": "Warum erhältst du diese E-Mail?",
+        "why_text": "Diese E-Mail wurde gesendet, weil mit dieser Adresse ein Velwolef-Konto erstellt wurde.",
     },
+
     "it": {
-        "subject": "Conferma il tuo account VelWolef",
+        "subject": "Benvenuto su Velwolef – Conferma la tua email",
         "badge": "VERIFICA ACCOUNT",
-        "title": "Benvenuto su VelWolef",
-        "intro": "Grazie per aver creato il tuo account. Conferma la tua email per attivare l’accesso e proteggere il tuo account.",
-        "button": "Conferma il mio account",
-        "copy": "Se il pulsante non funziona, copia questo link nel browser:",
-        "why_title": "Perché questa email?",
-        "why_text": "Ricevi questa email perché è stata richiesta la creazione di un account su VelWolef.",
+        "title": "Benvenuto su Velwolef 🚀",
+        "intro": "Grazie per esserti unito a Velwolef. Conferma la tua email per attivare il tuo account.",
+        "button": "Conferma la mia email",
+        "copy": "Se il pulsante non funziona, copia e incolla questo link nel browser:",
+        "why_title": "Perché hai ricevuto questa email?",
+        "why_text": "Questa email è stata inviata perché è stato creato un account Velwolef con questo indirizzo email.",
     },
+
     "pt": {
-        "subject": "Confirme sua conta VelWolef",
+        "subject": "Bem-vindo ao Velwolef – Confirme seu email",
         "badge": "VERIFICAÇÃO DE CONTA",
-        "title": "Bem-vindo ao VelWolef",
-        "intro": "Obrigado por criar sua conta. Confirme seu email para ativar seu acesso e proteger sua conta.",
-        "button": "Confirmar minha conta",
-        "copy": "Se o botão não funcionar, copie este link no navegador:",
-        "why_title": "Por que este email?",
-        "why_text": "Você recebeu este email porque uma solicitação de criação de conta foi feita no VelWolef.",
+        "title": "Bem-vindo ao Velwolef 🚀",
+        "intro": "Obrigado por se juntar ao Velwolef. Confirme seu email para ativar sua conta.",
+        "button": "Confirmar meu email",
+        "copy": "Se o botão não funcionar, copie e cole este link no navegador:",
+        "why_title": "Por que você recebeu este email?",
+        "why_text": "Este email foi enviado porque uma conta Velwolef foi criada usando este endereço de email.",
     },
+
     "ru": {
-        "subject": "Подтвердите аккаунт VelWolef",
+        "subject": "Добро пожаловать в Velwolef – Подтвердите email",
         "badge": "ПОДТВЕРЖДЕНИЕ АККАУНТА",
-        "title": "Добро пожаловать в VelWolef",
-        "intro": "Спасибо за регистрацию. Подтвердите email, чтобы активировать доступ и защитить аккаунт.",
-        "button": "Подтвердить аккаунт",
-        "copy": "Если кнопка не работает, скопируйте эту ссылку в браузер:",
-        "why_title": "Почему это письмо?",
-        "why_text": "Вы получили это письмо, потому что был создан запрос на регистрацию аккаунта в VelWolef.",
+        "title": "Добро пожаловать в Velwolef 🚀",
+        "intro": "Спасибо за регистрацию в Velwolef. Подтвердите свой email, чтобы активировать аккаунт.",
+        "button": "Подтвердить email",
+        "copy": "Если кнопка не работает, скопируйте и вставьте эту ссылку в браузер:",
+        "why_title": "Почему вы получили это письмо?",
+        "why_text": "Это письмо было отправлено, потому что с этим адресом электронной почты был создан аккаунт Velwolef.",
     },
 }
-
 
 def get_lang(lang_code):
     if lang_code in SUPPORTED_LANGS:
@@ -207,8 +212,9 @@ def send_verification_email(user, lang_code):
             VelWolef
           </p>
           <p style="margin:0;color:#64748b;font-size:12px;line-height:1.6;">
-            Trading signals, performance and academy platform.<br>
-            support@velwolef.com
+            Professional Trading Signals & Analytics Platform<br>
+            support@velwolef.com<br>
+            www.velwolef.com
           </p>
         </div>
       </div>
