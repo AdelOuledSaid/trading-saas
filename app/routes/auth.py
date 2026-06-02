@@ -355,7 +355,7 @@ def register(lang_code):
 
         try:
             send_verification_email(new_user, current_lang)
-            flash("Account created successfully. Please check your email before logging in.", "success")
+            flash("✅ Account created successfully. A verification email has been sent to your inbox. Please also check your Spam/Junk folder. Sender: support@velwolef.com","success")
         except Exception:
             current_app.logger.exception("Erreur envoi email verification")
             flash("Account created, but the verification email could not be sent.", "danger")
@@ -536,7 +536,7 @@ def login(lang_code):
             return render_template("login.html")
 
         if not user.is_verified:
-            flash("You must verify your email before logging in.", "warning")
+            flash("⚠️ Your email address has not been verified yet. Please check your inbox and Spam/Junk folder, or request a new verification email.","warning")
             return redirect(url_for("auth.resend_verification", lang_code=current_lang))
 
         login_user(user)
