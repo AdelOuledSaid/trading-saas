@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 from email_validator import validate_email, EmailNotValidError
+from datetime import datetime, timezone, timedelta
 
 from app.extensions import db
 from app.models import User
@@ -12,6 +13,27 @@ auth_bp = Blueprint("auth", __name__)
 
 SUPPORTED_LANGS = ["fr", "en", "es", "de", "it", "pt", "ru"]
 DEFAULT_LANG = "en"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Rate-limit : on garde en mémoire le dernier envoi par email.
+# Délai minimum entre deux envois : 2 minutes.
+# ─────────────────────────────────────────────────────────────────────────────
+_verification_email_last_sent: dict[str, datetime] = {}
+_RESEND_COOLDOWN = timedelta(minutes=2)
+
+
+def _can_send_verification(email: str) -> bool:
+    """Retourne True si aucun email de vérification n'a été envoyé
+    dans les 2 dernières minutes pour cet email."""
+    last = _verification_email_last_sent.get(email)
+    if last is None:
+        return True
+    return datetime.now(timezone.utc) - last > _RESEND_COOLDOWN
+
+
+def _mark_verification_sent(email: str) -> None:
+    """Enregistre l'heure d'envoi pour cet email."""
+    _verification_email_last_sent[email] = datetime.now(timezone.utc)
 
 
 EMAIL_VERIFY_TEXTS = {
@@ -23,7 +45,7 @@ EMAIL_VERIFY_TEXTS = {
         "button": "Confirmer mon email",
         "copy": "Si le bouton ne fonctionne pas, copie et colle ce lien dans ton navigateur :",
         "why_title": "Pourquoi cet email ?",
-        "why_text": "Cet email a été envoyé car un compte Velwolef a été créé avec cette adresse email. Si ce n’est pas toi, tu peux ignorer ce message.",
+        "why_text": "Cet email a été envoyé car un compte Velwolef a été créé avec cette adresse email. Si ce n'est pas toi, tu peux ignorer ce message.",
     },
 
     "en": {
@@ -336,8 +358,14 @@ def register(lang_code):
 
         if existing_user:
             if not existing_user.is_verified:
+                # ── FIX : on n'envoie un email que si le cooldown est écoulé ──
+                if not _can_send_verification(email):
+                    flash("Account already created but not verified. A verification email was already sent recently, please check your inbox (and Spam folder).", "warning")
+                    return redirect(url_for("auth.login", lang_code=current_lang))
+
                 try:
                     send_verification_email(existing_user, current_lang)
+                    _mark_verification_sent(email)
                     flash("Account already created but not verified. A new verification email has been sent.", "success")
                 except Exception:
                     current_app.logger.exception("Erreur renvoi email verification")
@@ -361,6 +389,7 @@ def register(lang_code):
 
         try:
             send_verification_email(new_user, current_lang)
+            _mark_verification_sent(email)
             flash("✅ Account created successfully. A verification email has been sent to your inbox. Please also check your Spam/Junk folder. Sender: support@velwolef.com","success")
         except Exception:
             current_app.logger.exception("Erreur envoi email verification")
@@ -428,8 +457,14 @@ def resend_verification(lang_code):
             flash("This email is already verified. You can log in.", "success")
             return redirect(url_for("auth.login", lang_code=current_lang))
 
+        # ── FIX : même protection sur le renvoi manuel ──
+        if not _can_send_verification(email):
+            flash("A verification email was already sent recently. Please check your inbox and Spam/Junk folder.", "warning")
+            return redirect(url_for("auth.login", lang_code=current_lang))
+
         try:
             send_verification_email(user, current_lang)
+            _mark_verification_sent(email)
             flash("A new verification email has been sent.", "success")
         except Exception:
             current_app.logger.exception("Erreur renvoi email verification")
