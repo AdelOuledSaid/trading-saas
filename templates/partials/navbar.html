@@ -18,7 +18,7 @@
             </a>
              <!-- AI -->
             
-            <a href="{{ url_for('technical_analysis.technical_analysis_page', lang_code=lang) }}">{{ t("Analyse IA") }}</a>
+            <a href="{{ url_for('technical_analysis.technical_analysis_page', lang_code=lang) }}">{{ t("nav_ai_analysis", "AI Analysis") if current_lang != "fr" else "Analyse IA" }}</a>
             <!-- SIGNALS -->
             <div class="nav-dropdown">
                 <button class="nav-drop-btn" type="button">
