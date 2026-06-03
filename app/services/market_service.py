@@ -228,12 +228,12 @@ def get_global_market_live():
             return cached
 
         return {
-            "market_cap_usd": 0,
-            "volume_usd": 0,
-            "btc_dominance": 0,
-            "active_cryptos": 0,
-            "markets": 0,
-            "market_cap_change_24h": 0,
+            "market_cap_usd": None,
+            "volume_usd": None,
+            "btc_dominance": None,
+            "active_cryptos": None,
+            "markets": None,
+            "market_cap_change_24h": None,
         }
 
 

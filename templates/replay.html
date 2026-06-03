@@ -3,571 +3,702 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="robots" content="noindex, nofollow">
-  <title>{{ t("site_replay_replay_trading", "Replay Trading") }}</title>
-
+  <meta name="robots" content="noindex, nofollow">
+  <title>{{ t("site_replay_replay_trading", "Replay Trading") }} — VelWolef</title>
   <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
-
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* TradingView exact palette */
+      --tv-bg:          #131722;
+      --tv-bg2:         #1e222d;
+      --tv-bg3:         #2a2e39;
+      --tv-bg4:         #363a45;
+      --tv-border:      #2a2e39;
+      --tv-border2:     #434651;
+      --tv-text:        #d1d4dc;
+      --tv-text2:       #b2b5be;
+      --tv-muted:       #787b86;
+      --tv-blue:        #2962ff;
+      --tv-blue-hover:  #1e53e5;
+      --tv-green:       #26a69a;
+      --tv-red:         #ef5350;
+      --tv-amber:       #f57c00;
+      --tv-purple:      #7b1fa2;
+      --tv-teal:        #00897b;
+      --tv-radius:      4px;
+      --tv-font:        -apple-system, BlinkMacSystemFont, "Trebuchet MS", sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
-      margin: 0;
-      background: #07111f;
-      color: #e5edf7;
-      font-family: Inter, Arial, sans-serif;
-    }
-
-    .replay-shell {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 20px;
-      display: grid;
-      grid-template-columns: 1.4fr 380px;
-      gap: 20px;
-    }
-
-    .replay-main-column,
-    .replay-side-column {
-      display: grid;
-      gap: 18px;
-      align-content: start;
-    }
-
-    .card,
-    .intel-card,
-    .analysis-card,
-    .benchmark-card,
-    .side-note-card {
-      background: #0b1728;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 20px;
-      padding: 22px;
-    }
-
-    .hero-card {
-      background: linear-gradient(135deg, #0a1b33, #081425);
-      border: 1px solid rgba(59,130,246,0.15);
-      border-radius: 24px;
-      padding: 24px;
-    }
-
-    .hero-top {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-
-    .pill {
-      display: inline-flex;
-      padding: 8px 14px;
-      border-radius: 999px;
-      font-size: 13px;
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #c8d4e8;
-      background: rgba(255,255,255,0.03);
-    }
-
-    .pill.buy,
-    .buy {
-      color: #22c55e;
-    }
-
-    .pill.sell,
-    .sell {
-      color: #ef4444;
-    }
-
-    .pill.win,
-    .status-win {
-      color: #22c55e;
-    }
-
-    .pill.loss,
-    .status-loss {
-      color: #ef4444;
-    }
-
-    h1, h2, h3, h4, p {
-      margin-top: 0;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-top: 18px;
-    }
-
-    .hero-box {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 16px;
-      padding: 14px;
-    }
-
-    .hero-box span {
-      display: block;
-      color: #8ea2c4;
+      background: var(--tv-bg);
+      color: var(--tv-text);
+      font-family: var(--tv-font);
       font-size: 12px;
-      margin-bottom: 8px;
+      line-height: 1.5;
     }
 
-    .hero-box strong {
-      font-size: 28px;
-    }
-
-    .chart-card {
-      background: #081425;
-      border: 1px solid rgba(59,130,246,0.12);
-      border-radius: 24px;
-      padding: 18px;
-    }
-
-    .chart-head {
+    /* ══════════════════════════════════════
+       TOPBAR — identique TradingView
+    ══════════════════════════════════════ */
+    .tv-topbar {
+      height: 46px;
+      background: var(--tv-bg2);
+      border-bottom: 1px solid var(--tv-border);
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
+      padding: 0 12px;
+      gap: 8px;
+      position: relative;
+      z-index: 200;
+      flex-shrink: 0;
+    }
+    .tv-logo {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--tv-text);
+      letter-spacing: -.5px;
+      white-space: nowrap;
+    }
+    .tv-logo span { color: var(--tv-blue); }
+
+    .tv-topbar-sep {
+      width: 1px; height: 24px;
+      background: var(--tv-border2);
+      flex-shrink: 0;
+    }
+
+    .tv-symbol-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: var(--tv-radius);
+      transition: background .12s;
+    }
+    .tv-symbol-group:hover { background: var(--tv-bg3); }
+    .tv-symbol-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--tv-text);
+    }
+    .tv-symbol-price {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--tv-text2);
+    }
+
+    .tv-topbar-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tv-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--tv-radius);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .tv-chip.blue   { color: #6b9cf4; background: rgba(41,98,255,.12); border-color: rgba(41,98,255,.25); }
+    .tv-chip.buy    { color: #26a69a; background: rgba(38,166,154,.12); border-color: rgba(38,166,154,.25); }
+    .tv-chip.sell   { color: #ef5350; background: rgba(239,83,80,.12);  border-color: rgba(239,83,80,.25); }
+    .tv-chip.win    { color: #26a69a; background: rgba(38,166,154,.12); border-color: rgba(38,166,154,.25); }
+    .tv-chip.loss   { color: #ef5350; background: rgba(239,83,80,.12);  border-color: rgba(239,83,80,.25); }
+    .tv-chip.open   { color: #f57c00; background: rgba(245,124,0,.12);  border-color: rgba(245,124,0,.25); }
+    .tv-chip.live {
+      color: #26a69a;
+      background: rgba(38,166,154,.1);
+      border-color: rgba(38,166,154,.2);
+    }
+    .tv-chip.live::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #26a69a;
+      animation: tv-blink 1.4s infinite;
+    }
+    @keyframes tv-blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+    /* ══════════════════════════════════════
+       TOOLBAR — TradingView drawing bar style
+    ══════════════════════════════════════ */
+    .tv-toolbar {
+      height: 38px;
+      background: var(--tv-bg2);
+      border-bottom: 1px solid var(--tv-border);
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .tv-btn {
+      height: 28px;
+      padding: 0 10px;
+      border-radius: var(--tv-radius);
+      border: none;
+      background: transparent;
+      color: var(--tv-text2);
+      font-family: var(--tv-font);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      transition: background .12s, color .12s;
+    }
+    .tv-btn:hover { background: var(--tv-bg3); color: var(--tv-text); }
+    .tv-btn.primary {
+      background: var(--tv-blue);
+      color: #fff;
+    }
+    .tv-btn.primary:hover { background: var(--tv-blue-hover); }
+
+    .tv-toolbar-vsep {
+      width: 1px; height: 22px;
+      background: var(--tv-border2);
+      margin: 0 4px;
+      flex-shrink: 0;
+    }
+
+    .tv-speed-group {
+      display: flex;
+      align-items: center;
+      background: var(--tv-bg3);
+      border-radius: var(--tv-radius);
+      overflow: hidden;
+      border: 1px solid var(--tv-border2);
+    }
+    .tv-speed-group button {
+      width: 32px; height: 26px;
+      border: none;
+      background: transparent;
+      color: var(--tv-muted);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--tv-font);
+      border-right: 1px solid var(--tv-border2);
+      transition: all .12s;
+    }
+    .tv-speed-group button:last-child { border-right: none; }
+    .tv-speed-group button:hover { background: var(--tv-bg4); color: var(--tv-text); }
+    .tv-speed-group button.active { background: var(--tv-blue); color: #fff; }
+
+    .tv-phase-pill {
+      margin-left: auto;
+      padding: 3px 10px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--tv-bg3);
+      color: var(--tv-muted);
+      border: 1px solid var(--tv-border2);
+    }
+
+    /* ══════════════════════════════════════
+       MAIN LAYOUT
+    ══════════════════════════════════════ */
+    .replay-shell {
+      display: flex;
+      height: calc(100vh - 84px);
+      overflow: hidden;
+    }
+
+    /* Left tools sidebar */
+    .tv-tools {
+      width: 46px;
+      background: var(--tv-bg2);
+      border-right: 1px solid var(--tv-border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 6px 0;
+      gap: 1px;
+      flex-shrink: 0;
+    }
+    .tv-tool {
+      width: 34px; height: 34px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: var(--tv-radius);
+      cursor: pointer;
+      color: var(--tv-muted);
+      font-size: 14px;
+      transition: all .12s;
+      position: relative;
+    }
+    .tv-tool:hover { background: var(--tv-bg3); color: var(--tv-text); }
+    .tv-tool.active { background: rgba(41,98,255,.15); color: var(--tv-blue); }
+    .tv-tool-sep {
+      width: 26px; height: 1px;
+      background: var(--tv-border);
+      margin: 3px 0;
+    }
+
+    /* Main center — chart */
+    .replay-main-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+      background: var(--tv-bg);
+    }
+
+    /* chart-card — classe requise par JS */
+    .chart-card {
+      flex: 1;
+      position: relative;
+      background: var(--tv-bg);
+      overflow: hidden;
+      min-height: 0;
     }
 
     #chart {
       width: 100%;
-      height: 540px;
-      min-height: 540px;
-      border-radius: 18px;
-      overflow: hidden;
-      background: #07111f;
+      height: 100%;
+      min-height: 400px;
     }
 
-    .control-row {
+    /* hero-card caché */
+    .hero-card { display: none !important; }
+
+    /* decision-box */
+    .decision-box {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--tv-bg2);
+      border: 1px solid rgba(245,124,0,.45);
+      border-radius: 8px;
+      padding: 14px 18px;
+      min-width: 320px;
+      max-width: 420px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.6);
+      z-index: 100;
+    }
+    .decision-box.hidden { display: none; }
+    .decision-box h3 {
+      font-size: 12px;
+      font-weight: 700;
+      color: #f57c00;
+      margin-bottom: 4px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 16px;
+      align-items: center;
+      gap: 6px;
     }
-
-    .control-row button {
-      border: 0;
-      border-radius: 12px;
-      padding: 11px 16px;
-      background: #1d4ed8;
-      color: white;
-      font-weight: 600;
+    .decision-box p {
+      font-size: 12px;
+      color: var(--tv-text2);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .decision-actions { display: flex; gap: 8px; }
+    .decision-actions button {
+      flex: 1; height: 30px;
+      border-radius: var(--tv-radius);
+      border: none;
+      font-size: 11px;
+      font-weight: 700;
       cursor: pointer;
+      font-family: var(--tv-font);
+      transition: opacity .12s;
     }
+    .decision-actions button:hover { opacity: .85; }
+    .btn-close   { background: var(--tv-red);   color: #fff; }
+    .btn-hold    { background: var(--tv-green);  color: #fff; }
+    .btn-partial { background: var(--tv-amber);  color: #fff; }
 
-    .control-row button.secondary {
-      background: #13233d;
-      border: 1px solid rgba(255,255,255,0.08);
+    /* Progress bar bottom */
+    .tv-progress-wrap {
+      height: 44px;
+      background: var(--tv-bg2);
+      border-top: 1px solid var(--tv-border);
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 10px;
+      flex-shrink: 0;
     }
-
-    .control-row button.speed-btn.active {
-      outline: 2px solid #3b82f6;
-    }
-
-    .replay-progress-wrap {
-      margin-top: 16px;
-    }
-
+    .replay-progress-wrap { flex: 1; }
     .replay-progress {
       width: 100%;
-      height: 10px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 999px;
+      height: 3px;
+      background: var(--tv-bg4);
+      border-radius: 2px;
       overflow: hidden;
-      position: relative;
+      cursor: pointer;
     }
-
     #progress-bar {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #2563eb, #60a5fa);
-      border-radius: 999px;
+      background: var(--tv-blue);
+      transition: width .1s linear;
     }
-
     .progress-meta {
-      margin-top: 10px;
       display: flex;
       justify-content: space-between;
-      color: #94a3b8;
-      font-size: 13px;
+      color: var(--tv-muted);
+      font-size: 10px;
+      margin-top: 3px;
     }
 
-    .replay-timeline {
-      position: relative;
-      margin-top: 18px;
-      height: 70px;
-      border-top: 1px dashed rgba(148,163,184,0.18);
+    #events { display: none; }
+
+    /* ══════════════════════════════════════
+       RIGHT PANEL — TradingView style
+    ══════════════════════════════════════ */
+    .replay-side-column {
+      width: 300px;
+      background: var(--tv-bg2);
+      border-left: 1px solid var(--tv-border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      flex-shrink: 0;
     }
 
-    .timeline-node {
-      position: absolute;
-      transform: translateX(-50%);
-      text-align: center;
-      color: #94a3b8;
-      transition: 0.2s ease;
-      min-width: 80px;
+    /* Tab bar */
+    .tv-tabs {
+      display: flex;
+      background: var(--tv-bg2);
+      border-bottom: 1px solid var(--tv-border);
+      flex-shrink: 0;
     }
-
-    .timeline-node.label-top {
-      top: -7px;
-    }
-
-    .timeline-node.label-bottom {
-      top: 24px;
-    }
-
-    .timeline-dot {
-      width: 14px;
-      height: 14px;
-      background: #334155;
-      border-radius: 999px;
-      display: block;
-      margin: 0 auto 8px;
-    }
-
-    .timeline-node.active .timeline-dot {
-      background: #3b82f6;
-      box-shadow: 0 0 0 6px rgba(59,130,246,0.15);
-    }
-
-    .timeline-node.entry.active .timeline-dot { background: #22c55e; }
-    .timeline-node.decision.active .timeline-dot { background: #f59e0b; }
-    .timeline-node.outcome.active .timeline-dot { background: #3b82f6; }
-
-    .timeline-node small {
+    .tv-tab {
+      flex: 1;
+      height: 34px;
+      display: flex; align-items: center; justify-content: center;
       font-size: 12px;
+      font-weight: 500;
+      color: var(--tv-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all .12s;
+    }
+    .tv-tab:hover { color: var(--tv-text); }
+    .tv-tab.active {
+      color: var(--tv-text);
+      border-bottom-color: var(--tv-blue);
+    }
+    .tv-tab-pane { display: none; }
+    .tv-tab-pane.active { display: block; }
+
+    /* Scrollable content */
+    .tv-panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .tv-panel-scroll::-webkit-scrollbar { width: 3px; }
+    .tv-panel-scroll::-webkit-scrollbar-thumb {
+      background: var(--tv-bg4);
+      border-radius: 2px;
+    }
+
+    /* Section headers */
+    .tv-section-head {
+      padding: 10px 14px 6px;
+      font-size: 10px;
       font-weight: 700;
-      white-space: nowrap;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color: var(--tv-muted);
+      border-bottom: 1px solid var(--tv-border);
     }
 
-    .event-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 12px;
-      opacity: 0.55;
-    }
-
-    .event-card.active {
-      opacity: 1;
-      border-color: rgba(59,130,246,0.25);
-    }
-
-    .event-top {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-      color: #93a4c2;
-      font-size: 12px;
-    }
-
-    .event-type {
-      padding: 4px 8px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.05);
-    }
-
-    .event-entry { color: #22c55e; }
-    .event-tp { color: #3b82f6; }
-    .event-sl { color: #ef4444; }
-    .event-decision { color: #f59e0b; }
-
-    .hint-stream {
+    /* Stat boxes grid */
+    .tv-stat-grid {
       display: grid;
-      gap: 12px;
-      margin-top: 18px;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--tv-border);
+      border-bottom: 1px solid var(--tv-border);
     }
-
-    .hint-item {
-      padding: 14px 16px;
-      border-radius: 14px;
-      font-size: 14px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      line-height: 1.45;
+    .tv-stat {
+      background: var(--tv-bg2);
+      padding: 10px 14px;
     }
-
-    .hint-item.good { border-color: rgba(34,197,94,0.35); }
-    .hint-item.bad { border-color: rgba(239,68,68,0.35); }
-    .hint-item.warning { border-color: rgba(245,158,11,0.35); }
-
-    .metric-list {
-      display: grid;
-      gap: 0;
+    .tv-stat-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--tv-muted);
+      margin-bottom: 4px;
     }
+    .tv-stat-val {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--tv-text);
+    }
+    .tv-stat-val.green { color: var(--tv-green); }
+    .tv-stat-val.red   { color: var(--tv-red); }
+    .tv-stat-val.blue  { color: #6b9cf4; }
 
+    /* Row list — classes requises par JS */
+    .card {
+      background: var(--tv-bg2);
+      border-bottom: 1px solid var(--tv-border);
+    }
+    .card h3 {
+      padding: 10px 14px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color: var(--tv-muted);
+      border-bottom: 1px solid var(--tv-border);
+      margin: 0;
+    }
+    .metric-list { display: block; }
     .metric-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      padding: 14px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 7px 14px;
+      border-bottom: 1px solid var(--tv-border);
+      font-size: 12px;
     }
-
-    .metric-row:last-child {
-      border-bottom: 0;
-    }
-
-    .metric-row span {
-      color: #b8c4d8;
-    }
-
+    .metric-row:last-child { border-bottom: none; }
+    .metric-row span { color: var(--tv-muted); }
     .metric-row strong {
-      text-align: right;
+      color: var(--tv-text);
+      font-weight: 600;
     }
 
-    .decision-box {
-      margin-top: 16px;
-      display: grid;
-      gap: 10px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(245,158,11,0.22);
-      border-radius: 18px;
-      padding: 18px;
+    /* Score section */
+    .tv-score-box {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--tv-border);
     }
-
-    .decision-box.hidden {
-      display: none;
-    }
-
-    .decision-actions {
+    .tv-score-inner {
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .decision-actions button {
-      border: 0;
-      border-radius: 12px;
-      padding: 10px 14px;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .btn-close { background: #ef4444; color: #fff; }
-    .btn-hold { background: #22c55e; color: #07111f; }
-    .btn-partial { background: #f59e0b; color: #07111f; }
-
-    .chart-error {
-      padding: 40px;
-      color: #fca5a5;
-      font-weight: 700;
-    }
-
-    .panel-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .panel-kicker {
-      display: block;
-      color: #93a4c2;
-      font-size: 13px;
-      margin-bottom: 6px;
-    }
-
-    .panel-head h3,
-    .analysis-card h3,
-    .intel-card h3,
-    .benchmark-card h3,
-    .side-note-card h3 {
-      margin: 0;
-      font-size: 24px;
-      line-height: 1.2;
-    }
-
-    .panel-badge {
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #c8d4e8;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .intel-grid,
-    .benchmark-grid,
-    .analysis-split {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 18px;
-    }
-
-    .intel-box,
-    .benchmark-box,
-    .analysis-box {
-      display: block;
-      padding: 18px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.045);
-      border: 1px solid rgba(255,255,255,0.09);
-    }
-
-    .intel-box span,
-    .benchmark-box span {
-      display: block;
-      color: #94a3b8;
-      font-size: 13px;
+      align-items: center;
+      gap: 12px;
+      background: var(--tv-bg3);
+      border-radius: var(--tv-radius);
+      padding: 10px 12px;
       margin-bottom: 8px;
     }
-
-    .intel-box strong,
-    .benchmark-box strong {
-      display: block;
-      color: #ffffff;
-      font-size: 20px;
-      margin-bottom: 6px;
+    .tv-score-ring {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: conic-gradient(var(--tv-blue) 0%, var(--tv-bg4) 0%);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      position: relative;
     }
-
-    .intel-box small,
-    .analysis-box p {
-      display: block;
-      color: #b8c4d8;
-      font-size: 14px;
-      line-height: 1.55;
+    .tv-score-ring::after {
+      content: '';
+      width: 32px; height: 32px;
+      background: var(--tv-bg3);
+      border-radius: 50%;
+      position: absolute;
     }
-
-    .analysis-box h4 {
-      margin: 0 0 12px;
-      font-size: 17px;
+    .tv-score-num {
+      font-size: 13px; font-weight: 800;
+      color: var(--tv-text);
+      position: relative; z-index: 1;
     }
+    .tv-score-label { font-size: 13px; font-weight: 600; color: var(--tv-text); }
+    .tv-score-sub   { font-size: 11px; color: var(--tv-muted); margin-top: 2px; }
 
-    .benchmark-progress-wrap {
-      margin-top: 18px;
-    }
-
-    .benchmark-progress-label {
+    .tv-bar-row {
       display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-      color: #b8c4d8;
+      align-items: center;
+      gap: 8px;
+      margin: 4px 0;
     }
-
-    .benchmark-progress {
-      height: 10px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 999px;
+    .tv-bar-name { font-size: 11px; color: var(--tv-muted); width: 65px; flex-shrink: 0; }
+    .tv-bar-track {
+      flex: 1;
+      height: 3px;
+      background: var(--tv-bg4);
+      border-radius: 2px;
       overflow: hidden;
     }
-
-    .benchmark-progress-fill {
+    .tv-bar-fill {
       height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #2563eb, #60a5fa);
-      border-radius: 999px;
+      background: var(--tv-blue);
+      border-radius: 2px;
+      transition: width .4s;
+    }
+    .tv-bar-val { font-size: 11px; font-weight: 700; color: var(--tv-text); width: 28px; text-align: right; }
+
+    /* side-note-card */
+    .side-note-card {
+      background: var(--tv-bg2);
+      border-bottom: 1px solid var(--tv-border);
+    }
+    .side-note-card h3 {
+      padding: 10px 14px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color: var(--tv-muted);
+      border-bottom: 1px solid var(--tv-border);
+      margin: 0;
     }
 
-    .lesson-item {
-      padding: 14px 16px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      margin-bottom: 10px;
-      line-height: 1.45;
+    /* feedback text */
+    #decision-feedback {
+      padding: 0 14px 10px;
+      font-size: 11px;
+      color: var(--tv-muted);
+      line-height: 1.5;
     }
 
-    @media (max-width: 1100px) {
-      .replay-shell {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    /* JS-injected cards */
+    #elite-live-card h3,
+    #elite-ai-card h3 {
+      padding: 10px 14px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color: var(--tv-muted);
+      border-bottom: 1px solid var(--tv-border);
+      margin: 0;
+    }
+    #elite-live-card .metric-row,
+    #elite-ai-card p {
+      padding: 7px 14px;
     }
 
+    /* Pill (classes requises par JS) */
+    .pill {
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 700;
+      background: var(--tv-bg3);
+      border: 1px solid var(--tv-border2);
+      color: var(--tv-muted);
+    }
+    .pill.buy  { color: var(--tv-green); border-color: rgba(38,166,154,.3); background: rgba(38,166,154,.08); }
+    .pill.sell { color: var(--tv-red);   border-color: rgba(239,83,80,.3);   background: rgba(239,83,80,.08); }
+
+    /* Hidden sections */
+    .analysis-card, .lessons-card, .benchmark-card, .intel-card { display: none !important; }
+
+    /* Responsive */
     @media (max-width: 900px) {
-      .intel-grid,
-      .benchmark-grid,
-      .analysis-split {
-        grid-template-columns: 1fr;
-      }
+      .tv-tools { display: none; }
+      .replay-side-column { width: 260px; }
     }
-
-    @media (max-width: 720px) {
-      .replay-shell {
-        padding: 12px;
-      }
-
-      .hero-grid {
-        grid-template-columns: 1fr;
-      }
-
-      #chart {
-        height: 390px;
-        min-height: 390px;
-      }
+    @media (max-width: 650px) {
+      .replay-side-column { display: none; }
     }
   </style>
 </head>
-
 <body>
+
+  <!-- TOPBAR -->
+  <div class="tv-topbar">
+    <div class="tv-logo">Vel<span>Wolef</span></div>
+    <div class="tv-topbar-sep"></div>
+    <div class="tv-symbol-group">
+      <span class="tv-symbol-name" id="hero-symbol">—</span>
+      <span class="tv-symbol-price" id="entry-price-box">—</span>
+    </div>
+    <div class="tv-topbar-right">
+      <span class="tv-chip blue">{{ t("site_dashboard_replay_premium", "Replay") }}</span>
+      <span class="tv-chip" id="hero-direction">—</span>
+      <span class="tv-chip" id="result-badge">{{ t("site_replay_open", "OPEN") }}</span>
+      <span class="tv-chip live" id="chart-badge">LIVE</span>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="tv-toolbar">
+    <button class="tv-btn primary" onclick="startReplay()">▶ {{ t("site_replay_play", "Play") }}</button>
+    <button class="tv-btn" onclick="pauseReplay()">⏸ {{ t("site_replay_pause", "Pause") }}</button>
+    <button class="tv-btn" onclick="stepReplay()">⏭ {{ t("site_replay_step", "Step") }}</button>
+    <button class="tv-btn" onclick="resetReplay()">⟲ {{ t("site_replay_reset", "Reset") }}</button>
+    <div class="tv-toolbar-vsep"></div>
+    <div class="tv-speed">
+      <button class="active speed-btn" onclick="setReplaySpeed(this, 1)">×1</button>
+      <button class="speed-btn" onclick="setReplaySpeed(this, 2)">×2</button>
+      <button class="speed-btn" onclick="setReplaySpeed(this, 4)">×4</button>
+    </div>
+    <div class="tv-toolbar-vsep"></div>
+    <span id="decision-mode-text" class="tv-phase-badge" style="background:rgba(125,133,144,.1); color:var(--muted);">
+      {{ t("site_replay_en_attente", "En attente") }}
+    </span>
+  </div>
+
+  <!-- SHELL -->
   <div class="replay-shell">
+
+    <!-- LEFT TOOLS -->
+    <div class="tv-tools">
+      <div class="tv-tool active">⊹</div>
+      <div class="tv-tool-sep"></div>
+      <div class="tv-tool">╱</div>
+      <div class="tv-tool">▭</div>
+      <div class="tv-tool">T</div>
+      <div class="tv-tool-sep"></div>
+      <div class="tv-tool">⟷</div>
+      <div class="tv-tool">ƒ</div>
+    </div>
+
+    <!-- MAIN COLUMN -->
     <div class="replay-main-column">
+
+      <!-- Hero (pills) — caché visuellement mais IDs requis -->
       <section class="hero-card">
         <div class="hero-top">
           <span class="pill">{{ t("site_dashboard_replay_premium", "Replay premium") }}</span>
-          <span class="pill" id="hero-symbol">-</span>
-          <span class="pill" id="hero-direction">-</span>
-          <span class="pill" id="result-badge">{{ t("site_replay_open", "OPEN") }}</span>
-          <span class="pill" id="chart-badge">-</span>
+          <span class="pill" id="hero-symbol-2">-</span>
+          <span class="pill" id="result-badge-2">{{ t("site_replay_open", "OPEN") }}</span>
         </div>
-
-        <h1>{{ t("site_replay_replay_dynamique_du_trade", "Replay dynamique du trade") }}</h1>
-        <p id="market-context">{{ t("site_replay_chargement_du_contexte", "Chargement du contexte...") }}</p>
-
+        <h1>{{ t("site_replay_replay_dynamique_du_trade", "Replay") }}</h1>
+        <p id="market-context">{{ t("site_replay_chargement_du_contexte", "Chargement...") }}</p>
         <div class="hero-grid">
-          <div class="hero-box">
-            <span>{{ t("entry", "Entrée") }}</span>
-            <strong id="entry-price-box">-</strong>
-          </div>
-          <div class="hero-box">
-            <span>{{ t("site_learn_signal_stop_loss", "Stop Loss") }}</span>
-            <strong id="stop-loss-box">-</strong>
-          </div>
-          <div class="hero-box">
-            <span>{{ t("site_learn_signal_take_profit", "Take Profit") }}</span>
-            <strong id="take-profit-box">-</strong>
-          </div>
-          <div class="hero-box">
-            <span>{{ t("result", "Résultat") }}</span>
-            <strong id="result-box">-</strong>
+          <div class="hero-box"><span>{{ t("entry", "Entrée") }}</span><strong id="entry-price-box-2">-</strong></div>
+          <div class="hero-box"><span>SL</span><strong id="stop-loss-box">-</strong></div>
+          <div class="hero-box"><span>TP</span><strong id="take-profit-box">-</strong></div>
+          <div class="hero-box"><span>{{ t("result", "Résultat") }}</span><strong id="result-box">-</strong></div>
+        </div>
+      </section>
+
+      <!-- CHART CARD — classe requise par JS -->
+      <section class="chart-card" style="position:relative;">
+        <div id="chart"></div>
+
+        <!-- Decision box — classe et ID requis par JS -->
+        <div id="decision-box" class="decision-box hidden">
+          <h3>{{ t("site_replay_moment_de_decision", "⚡ Moment de décision") }}</h3>
+          <p>{{ t("site_replay_que_fais_tu_a_cet_instant_du_trade", "Que fais-tu à cet instant du trade ?") }}</p>
+          <div class="decision-actions">
+            <button class="btn-close"   onclick="makeDecision('close')">{{ t("close", "Fermer") }}</button>
+            <button class="btn-hold"    onclick="makeDecision('hold')">{{ t("site_replay_conserver", "Conserver") }}</button>
+            <button class="btn-partial" onclick="makeDecision('partial')">{{ t("site_replay_alleger", "Alléger") }}</button>
           </div>
         </div>
       </section>
 
-      <section class="chart-card">
-        <div class="chart-head">
-          <div>
-            <h2>{{ t("site_replay_chart_principal", "Chart principal") }}</h2>
-            <p>{{ t("site_replay_les_bougies_s_affichent_progressivement_dans_le_temps", "Les bougies s’affichent progressivement dans le temps.") }}</p>
-          </div>
-          <div class="pill" id="decision-mode-text">{{ t("site_replay_en_attente", "En attente") }}</div>
-        </div>
-
-        <div id="chart"></div>
-
-        <div class="control-row">
-          <button onclick="startReplay()">{{ t("site_replay_play", "▶ Play") }}</button>
-          <button class="secondary" onclick="pauseReplay()">{{ t("site_replay_pause", "⏸ Pause") }}</button>
-          <button class="secondary" onclick="stepReplay()">{{ t("site_replay_step", "⏭ Step") }}</button>
-          <button class="secondary" onclick="resetReplay()">{{ t("site_replay_reset", "⟲ Reset") }}</button>
-
-          <button class="secondary speed-btn" onclick="setReplaySpeed(this, 1)">{{ t("site_replay_x1", "x1") }}</button>
-          <button class="secondary speed-btn" onclick="setReplaySpeed(this, 2)">{{ t("site_replay_x2", "x2") }}</button>
-          <button class="secondary speed-btn" onclick="setReplaySpeed(this, 4)">{{ t("site_replay_x4", "x4") }}</button>
-        </div>
-
+      <!-- Progress bar -->
+      <div class="tv-progress-wrap">
         <div class="replay-progress-wrap">
           <div class="replay-progress">
             <div id="progress-bar"></div>
@@ -577,32 +708,56 @@
             <span id="candle-counter">0 / 0</span>
           </div>
         </div>
+      </div>
 
-        <div id="events"></div>
+      <!-- Events (injecté par JS) -->
+      <div id="events"></div>
 
-        <div id="decision-box" class="decision-box hidden">
-          <h3>{{ t("site_replay_moment_de_decision", "Moment de décision") }}</h3>
-          <p>{{ t("site_replay_que_fais_tu_a_cet_instant_du_trade", "Que fais-tu à cet instant du trade ?") }}</p>
-          <div class="decision-actions">
-            <button class="btn-close" onclick="makeDecision('close')">{{ t("close", "Fermer") }}</button>
-            <button class="btn-hold" onclick="makeDecision('hold')">{{ t("site_replay_conserver", "Conserver") }}</button>
-            <button class="btn-partial" onclick="makeDecision('partial')">{{ t("site_replay_alleger", "Alléger") }}</button>
-          </div>
-        </div>
-      </section>
-
+      <!-- Sections cachées requises par JS pour post-analysis -->
       <section class="analysis-card training-card">
         <h3>{{ t("site_replay_analyse_post_trade", "Analyse post-trade") }}</h3>
         <p id="post-analysis">{{ t("site_replay_chargement", "Chargement...") }}</p>
       </section>
-
       <section class="analysis-card lessons-card">
         <h3>{{ t("site_replay_lecons", "Leçons") }}</h3>
         <div id="lessons-list"></div>
       </section>
-    </div>
 
+    </div><!-- /replay-main-column -->
+
+    <!-- SIDE COLUMN — classe requise par JS -->
     <aside class="replay-side-column">
+
+      <!-- Tabs -->
+      <div class="tv-tabs">
+        <div class="tv-tab active" onclick="tvTab(this,'tab-trade')">Trade</div>
+        <div class="tv-tab" onclick="tvTab(this,'tab-stats')">Stats</div>
+        <div class="tv-tab" onclick="tvTab(this,'tab-ia')">IA</div>
+      </div>
+
+      <div class="tv-panel-scroll">
+
+      <!-- Stat boxes toujours visibles -->
+      <div class="tv-stat-grid">
+        <div class="tv-stat">
+          <div class="tv-stat-label">ENTRY</div>
+          <div class="tv-stat-val blue" id="stat-entry-disp">—</div>
+        </div>
+        <div class="tv-stat">
+          <div class="tv-stat-label">RESULT</div>
+          <div class="tv-stat-val" id="stat-result-disp">—</div>
+        </div>
+        <div class="tv-stat">
+          <div class="tv-stat-label">SL</div>
+          <div class="tv-stat-val red" id="stat-sl-disp">—</div>
+        </div>
+        <div class="tv-stat">
+          <div class="tv-stat-label">TP</div>
+          <div class="tv-stat-val green" id="stat-tp-disp">—</div>
+        </div>
+      </div>
+
+      <!-- Résumé du trade — IDs requis par JS -->
       <section class="card">
         <h3>{{ t("site_replay_resume_du_trade", "Résumé du trade") }}</h3>
         <div class="metric-list">
@@ -619,35 +774,108 @@
         </div>
       </section>
 
-      <section class="card">
-        <h3>{{ t("site_replay_score_trader", "Score trader") }}</h3>
-        <div class="metric-list">
-          <div class="metric-row"><span>{{ t("site_open_interest_score", "Score") }}</span><strong id="trader-score">0</strong></div>
-          <div class="metric-row"><span>{{ t("status", "Statut") }}</span><strong id="trader-status">{{ t("site_replay_en_attente", "En attente") }}</strong></div>
-          <div class="metric-row"><span>{{ t("site_level1_discipline", "Discipline") }}</span><strong id="discipline-score">0/10</strong></div>
-          <div class="metric-row"><span>{{ t("site_level2_timing", "Timing") }}</span><strong id="timing-score">0/10</strong></div>
+      <!-- Score trader -->
+      <div class="tv-score-box">
+        <div class="tv-section-head">{{ t("site_replay_score_trader", "Score trader") }}</div>
+        <div class="tv-score-inner" style="margin-top:8px;">
+          <div class="tv-score-ring" id="score-ring">
+            <span class="tv-score-num" id="trader-score">0</span>
+          </div>
+          <div>
+            <div class="tv-score-label" id="trader-status">{{ t("site_replay_en_attente", "En attente") }}</div>
+            <div class="tv-score-sub" id="decision-feedback">{{ t("site_replay_le_score_apparaitra_apres_ton_choix", "Score après décision") }}</div>
+          </div>
         </div>
-        <p id="decision-feedback" style="margin-top:14px;color:#93a4c2;">{{ t("site_replay_le_score_apparaitra_apres_ton_choix", "Le score apparaîtra après ton choix.") }}</p>
-      </section>
+        <div class="tv-bar-row">
+          <span class="tv-bar-name">{{ t("site_level1_discipline", "Discipline") }}</span>
+          <div class="tv-bar-track"><div class="tv-bar-fill" id="bar-discipline" style="width:0%"></div></div>
+          <span class="tv-bar-val" id="discipline-score">0</span>
+        </div>
+        <div class="tv-bar-row">
+          <span class="tv-bar-name">{{ t("site_level2_timing", "Timing") }}</span>
+          <div class="tv-bar-track"><div class="tv-bar-fill" id="bar-timing" style="width:0%"></div></div>
+          <span class="tv-bar-val" id="timing-score">0</span>
+        </div>
+      </div>
 
+      <!-- Badges — IDs requis par JS -->
       <section class="side-note-card">
         <h3>{{ t("site_replay_badges", "Badges") }}</h3>
         <div class="metric-list">
-          <div class="metric-row"><span>{{ t("site_replay_setup", "Setup") }}</span><strong id="setup-grade-badge">{{ t("site_replay_setup_2", "Setup -") }}</strong></div>
+          <div class="metric-row"><span>{{ t("site_replay_setup", "Setup") }}</span><strong id="setup-grade-badge">-</strong></div>
           <div class="metric-row"><span>{{ t("site_replay_difficulte", "Difficulté") }}</span><strong id="difficulty-badge">-</strong></div>
         </div>
       </section>
-    </aside>
-  </div>
+
+      </div><!-- /tv-panel-scroll -->
+    </aside><!-- /replay-side-column -->
+
+  </div><!-- /replay-shell -->
 
   <script>
-    const replayApiBase = "/{{ current_lang }}/api/replay/{{ replay.id }}";
+    /* Tab switch */
+    function tvTab(el, paneId) {
+      document.querySelectorAll('.tv-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tv-tab-pane').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
+      const pane = document.getElementById(paneId);
+      if (pane) pane.classList.add('active');
+    }
 
+    /* Speed */
     function setReplaySpeed(btn, multiplier) {
-      document.querySelectorAll(".speed-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+      document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
       setSpeed(multiplier);
     }
+
+    /* Sync stat display boxes depuis IDs JS */
+    function syncStatDisplay() {
+      const map = [
+        ['side-entry',  'stat-entry-disp'],
+        ['side-sl',     'stat-sl-disp'],
+        ['side-tp',     'stat-tp-disp'],
+        ['side-result', 'stat-result-disp'],
+      ];
+      map.forEach(([src, dst]) => {
+        const s = document.getElementById(src);
+        const d = document.getElementById(dst);
+        if (s && d && s.textContent.trim() !== '-' && s.textContent.trim() !== '') {
+          d.textContent = s.textContent;
+          // Appliquer couleur résultat
+          if (dst === 'stat-result-disp') {
+            const v = s.textContent.trim().toUpperCase();
+            d.className = 'tv-stat-val' + (v.includes('WIN') ? ' green' : v.includes('LOSS') ? ' red' : '');
+          }
+        }
+      });
+
+      // Sync score ring
+      const scoreEl = document.getElementById('trader-score');
+      const ring = document.getElementById('score-ring');
+      if (scoreEl && ring) {
+        const pct = Math.min(100, Math.max(0, parseInt(scoreEl.textContent) || 0));
+        ring.style.background = `conic-gradient(#2962ff ${pct}%, #363a45 ${pct}%)`;
+      }
+
+      // Sync discipline/timing bars
+      const disc = document.getElementById('discipline-score');
+      const tim  = document.getElementById('timing-score');
+      if (disc) {
+        const v = parseFloat(disc.textContent) || 0;
+        const bar = document.getElementById('bar-discipline');
+        if (bar) bar.style.width = Math.min(100, v * 10) + '%';
+      }
+      if (tim) {
+        const v = parseFloat(tim.textContent) || 0;
+        const bar = document.getElementById('bar-timing');
+        if (bar) bar.style.width = Math.min(100, v * 10) + '%';
+      }
+    }
+    setInterval(syncStatDisplay, 400);
+
+    /* replayApiBase */
+    const replayApiBase = "/{{ current_lang }}/api/replay/{{ replay.id }}";
   </script>
 
   <script src="{{ url_for('static', filename='replay.js') }}"></script>

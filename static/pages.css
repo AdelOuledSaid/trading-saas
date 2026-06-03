@@ -77,7 +77,6 @@ canvas {
     overflow: hidden;
     padding: 96px 0 84px;
     z-index: 1;
-    isolation: isolate;
     min-height: 860px;
 }
 
@@ -2313,7 +2312,7 @@ canvas {
     visibility: hidden;
     transform: translateY(8px);
     transition: all 0.22s ease;
-    z-index: 60;
+    z-index: 9999;
 }
 
 .home-body .nav-dropdown:hover .nav-dropdown-menu {
