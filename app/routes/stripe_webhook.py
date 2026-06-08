@@ -11,9 +11,24 @@ stripe.api_key = config.STRIPE_SECRET_KEY
 stripe_webhook_bp = Blueprint("stripe_webhook", __name__)
 
 
+def _stripe_get(obj, key, default=None):
+    """Compatible avec les objets Stripe v15 (StripeObject) et les dicts."""
+    try:
+        if hasattr(obj, key):
+            val = getattr(obj, key)
+            return val if val is not None else default
+        return obj[key]
+    except (KeyError, AttributeError, TypeError):
+        return default
+
+
 def _get_user_from_customer_or_metadata(obj):
-    metadata = obj.get("metadata", {}) or {}
-    user_id = metadata.get("user_id")
+    metadata = _stripe_get(obj, "metadata") or {}
+    # metadata peut être un StripeObject aussi
+    if hasattr(metadata, "get"):
+        user_id = metadata.get("user_id") if hasattr(metadata, "get") else _stripe_get(metadata, "user_id")
+    else:
+        user_id = _stripe_get(metadata, "user_id")
 
     if user_id:
         try:
@@ -23,7 +38,7 @@ def _get_user_from_customer_or_metadata(obj):
         except Exception:
             pass
 
-    customer_id = obj.get("customer")
+    customer_id = _stripe_get(obj, "customer")
     if customer_id:
         return User.query.filter_by(stripe_customer_id=customer_id).first()
 
@@ -54,11 +69,11 @@ def stripe_webhook():
     current_app.logger.info("Stripe webhook reçu: %s", event_type)
 
     if event_type == "checkout.session.completed":
-        if obj.get("mode") == "subscription":
-            metadata = obj.get("metadata", {}) or {}
-            user_id = metadata.get("user_id")
-            customer_id = obj.get("customer")
-            subscription_id = obj.get("subscription")
+        if _stripe_get(obj, "mode") == "subscription":
+            metadata = _stripe_get(obj, "metadata") or {}
+            user_id = metadata.get("user_id") if hasattr(metadata, "get") else _stripe_get(metadata, "user_id")
+            customer_id = _stripe_get(obj, "customer")
+            subscription_id = _stripe_get(obj, "subscription")
 
             if user_id:
                 try:
@@ -78,19 +93,19 @@ def stripe_webhook():
         user = _get_user_from_customer_or_metadata(subscription)
 
         if user:
-            items = subscription.get("items", {}).get("data", [])
+            items_obj = _stripe_get(subscription, "items") or {}; items = (items_obj.get("data", []) if hasattr(items_obj, "get") else getattr(items_obj, "data", []))
             price_id = None
 
             if items:
-                price_id = items[0].get("price", {}).get("id")
+                price_id = (_stripe_get(items[0], "price") or {}).get("id") if hasattr(_stripe_get(items[0], "price"), "get") else _stripe_get(_stripe_get(items[0], "price"), "id")
 
             plan = get_plan_from_price_id(price_id)
-            status = subscription.get("status")
+            status = _stripe_get(subscription, "status")
 
             active_statuses = ["trialing", "active"]
 
-            user.stripe_customer_id = subscription.get("customer")
-            user.stripe_subscription_id = subscription.get("id")
+            user.stripe_customer_id = _stripe_get(subscription, "customer")
+            user.stripe_subscription_id = _stripe_get(subscription, "id")
 
             if status in active_statuses:
                 user.plan = plan
@@ -112,8 +127,8 @@ def stripe_webhook():
         if user:
             user.plan = "free"
             user.is_premium = False
-            user.stripe_customer_id = subscription.get("customer") or user.stripe_customer_id
-            user.stripe_subscription_id = subscription.get("id") or user.stripe_subscription_id
+            user.stripe_customer_id = _stripe_get(subscription, "customer") or user.stripe_customer_id
+            user.stripe_subscription_id = _stripe_get(subscription, "id") or user.stripe_subscription_id
             db.session.commit()
 
     return jsonify({"received": True}), 200
