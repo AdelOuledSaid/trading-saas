@@ -219,7 +219,31 @@
             <p>{{ t("site_pricing_basic_pour_demarrer_premium_pour_trader_serieusement_vip_pour_acceder_au", "Basic pour démarrer, Premium pour trader sérieusement, VIP pour accéder au flux le plus avancé.") }}</p>
         </div>
     </section>
+    {% if current_user.is_authenticated and current_user.stripe_customer_id %}
+<div style="margin-top:40px;text-align:center;">
 
+    <h3 style="color:white;margin-bottom:15px;">
+        {{ t("manage_subscription", "Manage your subscription") }}
+    </h3>
+
+    <p style="color:#9fb0c9;margin-bottom:20px;">
+        {{ t("manage_subscription_text",
+        "You can update your payment method or cancel your subscription at any time.") }}
+    </p>
+
+    <form method="POST"
+          action="{{ url_for('billing.create_customer_portal_session', lang_code=current_lang) }}">
+
+        <button type="submit"
+                class="plan-btn"
+                style="max-width:350px;margin:auto;background:#ef4444;color:white;">
+            {{ t("cancel_subscription", "Manage / Cancel Subscription") }}
+        </button>
+
+    </form>
+
+</div>
+{% endif %}
     <div class="pricing-security">
         {{ t("pricing_security_line", "✔️ Accès immédiat après paiement • ✔️ Annulation possible • ✔️ Support rapide • ✔️ Paiement sécurisé") }}
     </div>
