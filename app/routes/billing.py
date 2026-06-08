@@ -103,8 +103,14 @@ def create_checkout_session(lang_code):
 
         checkout_session = stripe.checkout.Session.create(
             mode="subscription",
+            locale="auto",
             payment_method_types=["card"],
-            line_items=[{"price": price_id, "quantity": 1}],
+            line_items=[
+                {
+                    "price": price_id,
+                    "quantity": 1,
+                }
+            ],
             customer=current_user.stripe_customer_id,
             client_reference_id=str(current_user.id),
             metadata={
@@ -121,6 +127,15 @@ def create_checkout_session(lang_code):
                     "plan": selected_plan,
                     "source": "pricing",
                     "lang_code": lang_code,
+                }
+            },
+            custom_text={
+                "submit": {
+                    "message": (
+                        "You can cancel your subscription at any time "
+                        "from your account dashboard or Stripe customer portal. "
+                        "No long-term commitment."
+                    )
                 }
             },
             success_url=f"{config.DOMAIN}/{lang_code}/success?session_id={{CHECKOUT_SESSION_ID}}",
@@ -149,7 +164,7 @@ def create_customer_portal_session(lang_code):
     try:
         portal_session = stripe.billing_portal.Session.create(
             customer=current_user.stripe_customer_id,
-            return_url=f"{config.DOMAIN}/{lang_code}/pricing"
+            return_url=f"{config.DOMAIN}/{lang_code}/pricing",
         )
         return redirect(portal_session.url, code=303)
 
@@ -176,11 +191,10 @@ def success(lang_code):
             if customer_id and not getattr(current_user, "stripe_customer_id", None):
                 current_user.stripe_customer_id = customer_id
 
-            if subscription_id and not getattr(current_user, "stripe_subscription_id", None):
+            if subscription_id:
                 current_user.stripe_subscription_id = subscription_id
 
             db.session.commit()
-
             sync_user_premium_status(current_user)
 
             try:
@@ -199,7 +213,7 @@ def success(lang_code):
                 send_email(
                     current_user.email,
                     "Paiement confirmé VelWolef",
-                    html
+                    html,
                 )
             except Exception as e:
                 current_app.logger.warning("Erreur email paiement: %s", repr(e))
@@ -216,7 +230,7 @@ def success(lang_code):
             except Exception as telegram_error:
                 current_app.logger.warning(
                     "Erreur notification Telegram paiement: %s",
-                    repr(telegram_error)
+                    repr(telegram_error),
                 )
 
         except Exception as e:
