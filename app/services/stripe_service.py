@@ -6,20 +6,18 @@ from app.extensions import db
 
 stripe.api_key = config.STRIPE_SECRET_KEY
 
-# 🔥 MULTI PRICE SUPPORT
+
 PRICE_TO_PLAN = {
-    # BASIC
     config.STRIPE_PRICE_BASIC_EUR: "basic",
     config.STRIPE_PRICE_BASIC_USD: "basic",
 
-    # PREMIUM
     config.STRIPE_PRICE_PREMIUM_EUR: "premium",
     config.STRIPE_PRICE_PREMIUM_USD: "premium",
 
-    # VIP
     config.STRIPE_PRICE_VIP_EUR: "vip",
     config.STRIPE_PRICE_VIP_USD: "vip",
 }
+
 
 PLAN_HIERARCHY = {
     "free": 0,
@@ -27,6 +25,7 @@ PLAN_HIERARCHY = {
     "premium": 2,
     "vip": 3,
 }
+
 
 PLAN_FEATURES = {
     "free": {
@@ -71,7 +70,6 @@ def normalize_plan(plan: str) -> str:
     return "free"
 
 
-# 🔥 MODIFIÉ
 def get_price_id_for_plan(plan: str, lang_code: str) -> str:
     plan = normalize_plan(plan)
     is_us = lang_code == "en"
@@ -124,19 +122,29 @@ def get_subscription(subscription_id: str):
 
 def get_subscription_status(subscription_id: str):
     sub = get_subscription(subscription_id)
-    return sub.get("status") if sub else None
+
+    if not sub:
+        return None
+
+    try:
+        return sub.status
+    except Exception:
+        try:
+            return sub["status"]
+        except Exception:
+            return None
 
 
 def get_subscription_price_id(subscription_id: str):
     sub = get_subscription(subscription_id)
+
     if not sub:
         return None
 
-    items = sub.get("items", {}).get("data", [])
-    if not items:
+    try:
+        return sub["items"]["data"][0]["price"]["id"]
+    except Exception:
         return None
-
-    return items[0].get("price", {}).get("id")
 
 
 def has_active_stripe_subscription(user) -> bool:
@@ -158,16 +166,24 @@ def sync_user_premium_status(user):
         return
 
     sub = get_subscription(user.stripe_subscription_id)
+
     if not sub:
         return
 
-    status = sub.get("status")
+    try:
+        status = sub.status
+    except Exception:
+        try:
+            status = sub["status"]
+        except Exception:
+            status = None
+
     price_id = get_subscription_price_id(user.stripe_subscription_id)
 
     plan = get_plan_from_price_id(price_id)
     active = status in ["trialing", "active", "past_due"]
 
-    if active:
+    if active and plan in ["basic", "premium", "vip"]:
         user.plan = plan
         user.is_premium = True
     else:
