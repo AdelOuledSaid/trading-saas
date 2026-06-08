@@ -49,7 +49,7 @@ let indicatorState = {
   ema50: true,
   vwap: true,
   htf: true,
-  structure: true,
+  structure: false,
   volume: true,
   rsi: true
 };
@@ -127,16 +127,21 @@ function computeReplayWindow() {
   exitIndex = detectExitIndex();
   decisionIndex = computeProDecisionIndex();
 
-  if (decisionIndex <= entryIndex && exitIndex > entryIndex) {
-    decisionIndex = Math.min(exitIndex, entryIndex + 2);
+  // Decision doit TOUJOURS etre apres l'entree (minimum +3 bougies)
+  if (decisionIndex <= entryIndex + 2) {
+    decisionIndex = Math.min(exitIndex - 1, entryIndex + 3);
   }
 
-  if (decisionIndex >= exitIndex && exitIndex > entryIndex) {
-    decisionIndex = Math.max(entryIndex + 1, exitIndex - 1);
+  // Decision doit etre avant la sortie
+  if (decisionIndex >= exitIndex) {
+    decisionIndex = Math.max(entryIndex + 3, exitIndex - 1);
   }
+
+  // Securite finale
+  decisionIndex = Math.max(entryIndex + 3, decisionIndex);
 
   // Affichage large : 100 bougies avant entrée
-startIndex = Math.max(0, entryIndex - 100);
+startIndex = Math.max(0, entryIndex - 20);
 
 // Fin du replay après sortie
 endIndex = Math.min(
@@ -148,7 +153,7 @@ endIndex = Math.min(
 replayCandles = candles.slice(startIndex, endIndex + 1);
 
 // Mais le PLAY commence seulement 10 bougies avant entrée
-const playStartIndex = Math.max(0, entryIndex - 10);
+const playStartIndex = Math.max(0, entryIndex - 20);
 currentPos = Math.max(1, playStartIndex - startIndex + 1);
   decisionDone = false;
   decisionShown = false;
@@ -161,17 +166,27 @@ function detectExitIndex() {
 
   for (let i = entryIndex + 1; i < candles.length; i++) {
     const c = candles[i];
-    const tpTouched = Number.isFinite(tp) && c.low <= tp && c.high >= tp;
-    const slTouched = Number.isFinite(sl) && c.low <= sl && c.high >= sl;
 
     if (direction === "BUY") {
-      if (tpTouched) return i;
-      if (slTouched) return i;
+      // BUY : TP au-dessus (high >= tp), SL en-dessous (low <= sl)
+      const tpHit = Number.isFinite(tp) && c.high >= tp;
+      const slHit = Number.isFinite(sl) && c.low  <= sl;
+      if (tpHit && slHit) return i; // même bougie : priorité TP
+      if (tpHit) return i;
+      if (slHit) return i;
+
     } else if (direction === "SELL") {
-      if (tpTouched) return i;
-      if (slTouched) return i;
-    } else if (tpTouched || slTouched) {
-      return i;
+      // SELL : TP en-dessous (low <= tp), SL au-dessus (high >= sl)
+      const tpHit = Number.isFinite(tp) && c.low  <= tp;
+      const slHit = Number.isFinite(sl) && c.high >= sl;
+      if (tpHit && slHit) return i; // même bougie : priorité TP
+      if (tpHit) return i;
+      if (slHit) return i;
+
+    } else {
+      const hit = (Number.isFinite(tp) && (c.low <= tp || c.high >= tp)) ||
+                  (Number.isFinite(sl) && (c.low <= sl || c.high >= sl));
+      if (hit) return i;
     }
   }
 
@@ -329,8 +344,7 @@ function renderChart() {
   candleSeries.setData(visible.map(toChartCandle));
   updateIndicatorSeries(visible);
 
-  const structureMarkers = indicatorState.structure ? buildStructureMarkers(visible) : [];
-  setSeriesMarkers(buildMarkers(visible).concat(structureMarkers));
+  setSeriesMarkers(buildMarkers(visible));
 
   renderProgress();
   updateLiveStats(visible);
@@ -389,7 +403,7 @@ function stepReplay() {
 
 function resetReplay() {
   pauseReplay();
-  const playStartIndex = Math.max(0, entryIndex - 10);
+  const playStartIndex = Math.max(0, entryIndex - 20);
   currentPos = Math.max(1, playStartIndex - startIndex + 1);
   decisionDone = false;
   decisionShown = false;
@@ -455,7 +469,7 @@ function initIndicatorPanel() {
     <label><input type="checkbox" data-indicator="ema50" checked> EMA 50</label>
     <label><input type="checkbox" data-indicator="vwap" checked> VWAP</label>
     <label><input type="checkbox" data-indicator="htf" checked> MTF</label>
-    <label><input type="checkbox" data-indicator="structure" checked> HH/HL</label>
+    <label><input type="checkbox" data-indicator="structure"> HH/HL</label>
     <label><input type="checkbox" data-indicator="volume" checked> Volume</label>
     <label><input type="checkbox" data-indicator="rsi" checked> RSI</label>
   `;
@@ -789,11 +803,14 @@ function buildMarkers(visible) {
   const visibleIndexes = new Set(visible.map(c => c.index));
   const markers = [];
 
+  // Marqueur Entry : affiché une seule fois à entryIndex fixe
   if (visibleIndexes.has(entryIndex)) {
     markers.push({ time: candles[entryIndex].time, position: "belowBar", color: "#22c55e", shape: "arrowUp", text: "Entry" });
   }
 
-  if (visibleIndexes.has(decisionIndex)) {
+  // Afficher Decision seulement si le replay a atteint ce point
+  const decisionReached = replayCandles.some((c, i) => c.index === decisionIndex && i < currentPos);
+  if (decisionReached && visibleIndexes.has(decisionIndex)) {
     markers.push({ time: candles[decisionIndex].time, position: "aboveBar", color: "#f59e0b", shape: "circle", text: "Decision" });
   }
 
@@ -808,7 +825,8 @@ function buildMarkers(visible) {
   }
 
   const last = visible[visible.length - 1];
-  if (last) markers.push({ time: last.time, position: "aboveBar", color: "#60a5fa", shape: "circle", text: "LIVE" });
+  const entryReached = visible.some(c => c.index >= entryIndex);
+  if (last && entryReached) markers.push({ time: last.time, position: "aboveBar", color: "#60a5fa", shape: "circle", text: "LIVE" });
 
   return markers;
 }
@@ -918,6 +936,18 @@ function hydrateUI() {
   setText("hero-symbol", trade.symbol || "-");
   setText("hero-direction", trade.direction || "-");
   setText("result-badge", resultLabel(trade.result || trade.derived_result || "OPEN"));
+  // Recalculer le résultat depuis le chart après chargement
+  setTimeout(() => {
+    if (exitIndex > entryIndex) {
+      const computed = outcomeIsWin() ? "WIN" : "LOSS";
+      setText("result-badge", computed);
+      setText("side-result", computed);
+      const rb = document.getElementById("result-badge");
+      if (rb) rb.className = "chip " + (computed === "WIN" ? "win" : "loss");
+      const sr = document.getElementById("stat-result");
+      if (sr) { sr.textContent = computed; sr.className = "sb-v " + (computed === "WIN" ? "g" : "r"); }
+    }
+  }, 200);
   setText("chart-badge", `${trade.symbol || "-"} • ${trade.timeframe || "-"}`);
 
   setText("entry-price-box", formatPrice(trade.entry_price));
@@ -1016,7 +1046,25 @@ function clampIndex(value, fallback = 0) {
 }
 
 function outcomeIsWin() {
-  return String(trade.result || trade.derived_result || "").toUpperCase() === "WIN";
+  // Calculer depuis le chart : quelle ligne est touchée en premier ?
+  const direction = String(trade.direction || "").toUpperCase();
+  const tp = Number(trade.take_profit);
+  const sl = Number(trade.stop_loss);
+
+  for (let i = entryIndex + 1; i <= exitIndex && i < candles.length; i++) {
+    const c = candles[i];
+    if (direction === "BUY") {
+      if (Number.isFinite(tp) && c.high >= tp) return true;
+      if (Number.isFinite(sl) && c.low  <= sl) return false;
+    } else if (direction === "SELL") {
+      if (Number.isFinite(tp) && c.low  <= tp) return true;
+      if (Number.isFinite(sl) && c.high >= sl) return false;
+    }
+  }
+
+  // Fallback sur la DB si rien détecté
+  const r = String(trade.result || trade.derived_result || "").toUpperCase();
+  return r === "WIN" || r === "TP" || r.includes("WIN");
 }
 
 function resultLabel(value) {

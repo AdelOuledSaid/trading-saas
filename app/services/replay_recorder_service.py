@@ -152,28 +152,28 @@ def build_default_replay_window(signal: Signal) -> tuple[datetime, datetime]:
 
     if timeframe in {"1", "1m"}:
         before = timedelta(minutes=20)
-        after = timedelta(minutes=60)
+        after = timedelta(hours=4)      # 240 bougies 1m — assez pour atteindre TP/SL
     elif timeframe in {"5", "5m"}:
         before = timedelta(minutes=60)
-        after = timedelta(hours=3)
+        after = timedelta(hours=8)      # 96 bougies 5m
     elif timeframe in {"15", "15m"}:
         before = timedelta(hours=2)
-        after = timedelta(hours=8)
+        after = timedelta(hours=16)     # 64 bougies 15m
     elif timeframe in {"30", "30m"}:
         before = timedelta(hours=4)
-        after = timedelta(hours=12)
+        after = timedelta(hours=24)     # 48 bougies 30m
     elif timeframe in {"60", "1h"}:
         before = timedelta(hours=8)
-        after = timedelta(hours=24)
+        after = timedelta(hours=48)     # 48 bougies 1h
     elif timeframe in {"4h"}:
         before = timedelta(days=2)
-        after = timedelta(days=4)
+        after = timedelta(days=8)       # 48 bougies 4h
     elif timeframe in {"1d"}:
         before = timedelta(days=10)
-        after = timedelta(days=15)
+        after = timedelta(days=30)      # 30 bougies 1d
     else:
         before = timedelta(hours=2)
-        after = timedelta(hours=8)
+        after = timedelta(hours=16)
 
     return created_at - before, created_at + after
 
