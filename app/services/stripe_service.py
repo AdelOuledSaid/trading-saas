@@ -30,8 +30,7 @@ def _get_user_from_customer_or_metadata(obj):
     return None
 
 
-@stripe_webhook_bp.route("/stripe/webhook", methods=["POST"], strict_slashes=False)
-@stripe_webhook_bp.route("/stripe/webhook/", methods=["POST"], strict_slashes=False)
+@stripe_webhook_bp.route("/stripe/webhook", methods=["POST"])
 def stripe_webhook():
     payload = request.data
     sig_header = request.headers.get("Stripe-Signature")
