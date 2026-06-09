@@ -3482,7 +3482,7 @@
   "level_3": "Level 3",
   "level_4": "Level 4 Pro",
   "support": "Support",
-  "terms": "CGU",
+  "terms": "Terms",
   "legal_notice": "Legal notices",
   "all_rights_reserved": "All rights reserved",
   "no_btc_winning_signal_now": "No Bitcoin winning signals are available at the moment.",
@@ -4131,5 +4131,11 @@
   "privacy_contact": "10. Contact",
   "privacy_contact_text": "For any request regarding your personal data or this privacy policy, you can contact us via the Contact page of the site.",
   "privacy_note_title": "Important note",
-  "privacy_note_text": "This policy may be updated to reflect changes to the service, regulations or features offered."
+  "privacy_note_text": "This policy may be updated to reflect changes to the service, regulations or features offered.",
+  "footer_analysis_markets": "Analysis & Markets",
+  "footer_crypto_signals": "Crypto signals",
+  "footer_trading_signals": "Trading signals",
+  "footer_bitcoin_analysis": "Bitcoin analysis",
+  "footer_crypto_analysis": "Crypto analysis",
+  "footer_trading_results": "Trading results"
 }
