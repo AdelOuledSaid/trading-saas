@@ -22,31 +22,51 @@ def build_midday_brief() -> str:
     return """
 📍 Midday Brief
 
-Le marché reste en observation sur les zones clés de liquidité.
-Les indices US gardent une structure réactive, tandis que la crypto
-reste sensible aux impulsions momentum et au flux macro.
+Markets remain focused on key liquidity zones.
+US indices continue to show a reactive structure, while crypto
+remains sensitive to momentum-driven moves and macroeconomic flows.
 
-Points à surveiller :
-- maintien ou rejet sur les niveaux intraday
-- réaction des actifs leaders
-- volume sur cassure ou fausse sortie
-- confirmation de tendance avant nouvelle exposition
+Key points to monitor:
+- support or rejection at intraday levels
+- reaction of leading assets
+- volume confirmation on breakouts
+- trend validation before increasing exposure
+- risk management during volatile periods
+
+━━━━━━━━━━━━━━━━━━
+
+📍 Premium Update
+- monitor active setups closely
+- avoid chasing impulsive moves
+- watch for false breakouts without volume
+- wait for confirmation before scaling positions
+
+— Velwolf Intelligence Desk
 """.strip()
-
 
 def build_evening_brief() -> str:
     return """
 🌙 Evening Brief
 
-La session se termine sur des niveaux à surveiller pour demain.
-Le but est de conserver une lecture claire, sans surtrader,
-et de préparer les scénarios pour la prochaine fenêtre active.
+The session is ending with key levels to monitor for tomorrow.
+The objective is to maintain a clear market view, avoid overtrading,
+and prepare scenarios for the next active trading window.
 
-Checklist :
-- noter les zones défendues
-- identifier les faux breakouts
-- préparer les actifs leaders
-- protéger les gains existants
+Checklist:
+- identify defended zones
+- detect false breakouts
+- prepare leading assets
+- protect existing profits
+- build next-session scenarios
+
+━━━━━━━━━━━━━━━━━━
+
+📍 Premium Update
+- setups to keep under watch
+- beware of breakouts without volume
+- confirmation before adding new exposure
+
+— Velwolf Intelligence Desk
 """.strip()
 
 
