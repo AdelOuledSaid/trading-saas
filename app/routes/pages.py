@@ -236,7 +236,17 @@ def learn_signal(signal_id, lang_code=None):
 
 
 
+@pages_bp.route("/<lang_code>/mini-course/<int:signal_id>")
+@login_required
+def mini_course(signal_id, lang_code):
+    normalize_lang(lang_code)
 
+    signal = Signal.query.get_or_404(signal_id)
+
+    return render_template(
+        "learn/mini_course.html",
+        signal=signal
+    )
 # =========================================================
 # WHALE INTELLIGENCE
 # =========================================================
