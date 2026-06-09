@@ -243,9 +243,56 @@ def mini_course(signal_id, lang_code):
 
     signal = Signal.query.get_or_404(signal_id)
 
+    entry = float(signal.entry_price or 0)
+    sl = float(signal.stop_loss or 0)
+    tp = float(signal.take_profit or 0)
+
+    risk = abs(entry - sl)
+    reward = abs(tp - entry)
+
+    rr = round(reward / risk, 2) if risk > 0 else "-"
+
+    data = {
+        "rr": rr,
+
+        "ai_summary":
+            f"Signal {signal.action} sur {signal.asset} avec un objectif vers {signal.take_profit} "
+            f"et une invalidation sous {signal.stop_loss}.",
+
+        "reason":
+            signal.reason if hasattr(signal, "reason") and signal.reason
+            else "Le scénario est basé sur la structure actuelle du marché et la direction dominante.",
+
+        "objective":
+            f"Atteindre la zone TP à {signal.take_profit}.",
+
+        "invalidation":
+            f"Le scénario devient invalide sous le niveau {signal.stop_loss}.",
+
+        "execution_plan":
+            f"Entrée autour de {signal.entry_price}, stop à {signal.stop_loss} "
+            f"et prise de profit à {signal.take_profit}.",
+
+        "strengths": [
+            "Plan de trading clairement défini",
+            "Niveau d'entrée identifié",
+            f"Ratio risque/rendement : {rr}"
+        ],
+
+        "risks": [
+            "Volatilité du marché",
+            "Faux breakout possible",
+            "Non-respect du stop loss"
+        ],
+
+        "mistake_to_avoid":
+            "Ne pas déplacer le stop loss sous l'effet des émotions."
+    }
+
     return render_template(
         "learn/mini_course.html",
-        signal=signal
+        signal=signal,
+        data=data
     )
 # =========================================================
 # WHALE INTELLIGENCE
