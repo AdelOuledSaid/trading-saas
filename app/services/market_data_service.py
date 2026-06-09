@@ -41,13 +41,21 @@ class MarketDataService:
                 "market_cap_change_24h": global_data.get("market_cap_change_percentage_24h_usd", 0),
             }
         except Exception:
+            # Fallback Binance pour les données globales
+            try:
+                import requests as _req
+                r = _req.get("https://api.binance.com/api/v3/ticker/24hr?symbols=%5B%22BTCUSDT%22%5D", timeout=4)
+                btc_data = r.json()[0] if r.ok else {}
+                btc_change = float(btc_data.get("priceChangePercent", 0))
+            except Exception:
+                btc_change = 0
             return {
-                "market_cap_usd": 0,
-                "volume_usd": 0,
-                "btc_dominance": 0,
-                "active_cryptos": 0,
-                "markets": 0,
-                "market_cap_change_24h": 0,
+                "market_cap_usd": None,
+                "volume_usd": None,
+                "btc_dominance": None,
+                "active_cryptos": None,
+                "markets": None,
+                "market_cap_change_24h": btc_change,
             }
 
     def get_top_coins(self, per_page=20, page=1):

@@ -48,19 +48,19 @@
                     <div class="tu-stats">
                         <div class="tu-stat-box">
                             <span>Market Cap</span>
-                            <strong>${{ "{:,.0f}".format(snapshot.market_cap_usd or 0) }}</strong>
+                            <strong>{% if snapshot.market_cap_usd %}${{ "{:,.0f}".format(snapshot.market_cap_usd) }}{% else %}N/A{% endif %}</strong>
                         </div>
                         <div class="tu-stat-box">
                             <span>{{ t('volume_24h', 'Volume 24h') }}</span>
-                            <strong>${{ "{:,.0f}".format(snapshot.volume_usd or 0) }}</strong>
+                            <strong>{% if snapshot.volume_usd %}${{ "{:,.0f}".format(snapshot.volume_usd) }}{% else %}N/A{% endif %}</strong>
                         </div>
                         <div class="tu-stat-box">
                             <span>{{ t('btc_dominance', 'BTC Dominance') }}</span>
-                            <strong>{{ "%.2f"|format(snapshot.btc_dominance or 0) }}%</strong>
+                            <strong>{% if snapshot.btc_dominance %}{{ "%.2f"|format(snapshot.btc_dominance) }}%{% else %}N/A{% endif %}</strong>
                         </div>
                         <div class="tu-stat-box">
                             <span>{{ t('active_cryptos', 'Active Cryptos') }}</span>
-                            <strong>{{ "{:,}".format(snapshot.active_cryptos or 0) }}</strong>
+                            <strong>{% if snapshot.active_cryptos %}{{ "{:,}".format(snapshot.active_cryptos) }}{% else %}N/A{% endif %}</strong>
                         </div>
                     </div>
                 </div>

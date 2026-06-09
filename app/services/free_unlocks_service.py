@@ -8,44 +8,44 @@ class FreeUnlocksService:
         # =========================
         self.unlocks = [
             # 01 MAI
-            {"token": "STABLE", "name": "Stable", "date": "2026-05-01", "value": 29650000, "market_cap_ratio": 0.5},
-            {"token": "SAT", "name": "Space and Time", "date": "2026-05-01", "value": 6510000, "market_cap_ratio": 0.8},
-            {"token": "SCAL", "name": "Scallop", "date": "2026-05-01", "value": 46220, "market_cap_ratio": 0.2},
-            {"token": "PORT3", "name": "Port3 Network", "date": "2026-05-01", "value": 8580, "market_cap_ratio": 0.1},
-            {"token": "GMEE", "name": "GAMEE", "date": "2026-05-01", "value": 6110, "market_cap_ratio": 0.1},
-            {"token": "ERN", "name": "Ethernity", "date": "2026-05-01", "value": 1590, "market_cap_ratio": 0.1},
+            {"token": "STABLE", "name": "Stable", "date": "2026-06-09", "value": 29650000, "market_cap_ratio": 0.5},
+            {"token": "SAT", "name": "Space and Time", "date": "2026-06-09", "value": 6510000, "market_cap_ratio": 0.8},
+            {"token": "SCAL", "name": "Scallop", "date": "2026-06-09", "value": 46220, "market_cap_ratio": 0.2},
+            {"token": "PORT3", "name": "Port3 Network", "date": "2026-06-09", "value": 8580, "market_cap_ratio": 0.1},
+            {"token": "GMEE", "name": "GAMEE", "date": "2026-06-09", "value": 6110, "market_cap_ratio": 0.1},
+            {"token": "ERN", "name": "Ethernity", "date": "2026-06-09", "value": 1590, "market_cap_ratio": 0.1},
 
             # 03 MAI
-            {"token": "STO", "name": "StakeStone", "date": "2026-05-03", "value": 1910000, "market_cap_ratio": 0.6},
-            {"token": "IMP", "name": "Impossible Cloud", "date": "2026-05-03", "value": 1250000, "market_cap_ratio": 0.5},
-            {"token": "BIO", "name": "BIO Protocol", "date": "2026-05-03", "value": 278970, "market_cap_ratio": 0.3},
-            {"token": "NYM", "name": "Nym", "date": "2026-05-03", "value": 108100, "market_cap_ratio": 0.2},
-            {"token": "PORTAL", "name": "Portal", "date": "2026-05-03", "value": 74200, "market_cap_ratio": 0.2},
-            {"token": "BNDX", "name": "Bondex", "date": "2026-05-03", "value": 44810, "market_cap_ratio": 0.2},
+            {"token": "STO", "name": "StakeStone", "date": "2026-06-11", "value": 1910000, "market_cap_ratio": 0.6},
+            {"token": "IMP", "name": "Impossible Cloud", "date": "2026-06-11", "value": 1250000, "market_cap_ratio": 0.5},
+            {"token": "BIO", "name": "BIO Protocol", "date": "2026-06-11", "value": 278970, "market_cap_ratio": 0.3},
+            {"token": "NYM", "name": "Nym", "date": "2026-06-11", "value": 108100, "market_cap_ratio": 0.2},
+            {"token": "PORTAL", "name": "Portal", "date": "2026-06-11", "value": 74200, "market_cap_ratio": 0.2},
+            {"token": "BNDX", "name": "Bondex", "date": "2026-06-11", "value": 44810, "market_cap_ratio": 0.2},
 
             # 05 MAI
-            {"token": "PWR", "name": "Power Protocol", "date": "2026-05-05", "value": 1070000, "market_cap_ratio": 0.7},
-            {"token": "GAL", "name": "Galxe", "date": "2026-05-05", "value": 689130, "market_cap_ratio": 0.9},
-            {"token": "ASTER", "name": "Aster", "date": "2026-05-05", "value": 294210, "market_cap_ratio": 0.4},
-            {"token": "XION", "name": "XION", "date": "2026-05-05", "value": 240830, "market_cap_ratio": 0.4},
-            {"token": "INT", "name": "Intuition", "date": "2026-05-05", "value": 240280, "market_cap_ratio": 0.4},
-            {"token": "CUDIS", "name": "CUDIS", "date": "2026-05-05", "value": 95690, "market_cap_ratio": 0.3},
+            {"token": "PWR", "name": "Power Protocol", "date": "2026-06-13", "value": 1070000, "market_cap_ratio": 0.7},
+            {"token": "GAL", "name": "Galxe", "date": "2026-06-13", "value": 689130, "market_cap_ratio": 0.9},
+            {"token": "ASTER", "name": "Aster", "date": "2026-06-13", "value": 294210, "market_cap_ratio": 0.4},
+            {"token": "XION", "name": "XION", "date": "2026-06-13", "value": 240830, "market_cap_ratio": 0.4},
+            {"token": "INT", "name": "Intuition", "date": "2026-06-13", "value": 240280, "market_cap_ratio": 0.4},
+            {"token": "CUDIS", "name": "CUDIS", "date": "2026-06-13", "value": 95690, "market_cap_ratio": 0.3},
 
             # 08 MAI
-            {"token": "MOV", "name": "Movement", "date": "2026-05-08", "value": 2830000, "market_cap_ratio": 1.2},
-            {"token": "BSU", "name": "Baby Shark Universe", "date": "2026-05-08", "value": 586680, "market_cap_ratio": 0.4},
-            {"token": "DOOD", "name": "Doodles", "date": "2026-05-08", "value": 190830, "market_cap_ratio": 0.3},
-            {"token": "DRS", "name": "DRESSdio", "date": "2026-05-08", "value": 49430, "market_cap_ratio": 0.2},
-            {"token": "RSG", "name": "Revolving Games", "date": "2026-05-08", "value": 16580, "market_cap_ratio": 0.2},
-            {"token": "SKATE", "name": "Skate", "date": "2026-05-08", "value": 3720, "market_cap_ratio": 0.1},
+            {"token": "MOV", "name": "Movement", "date": "2026-06-16", "value": 2830000, "market_cap_ratio": 1.2},
+            {"token": "BSU", "name": "Baby Shark Universe", "date": "2026-06-16", "value": 586680, "market_cap_ratio": 0.4},
+            {"token": "DOOD", "name": "Doodles", "date": "2026-06-16", "value": 190830, "market_cap_ratio": 0.3},
+            {"token": "DRS", "name": "DRESSdio", "date": "2026-06-16", "value": 49430, "market_cap_ratio": 0.2},
+            {"token": "RSG", "name": "Revolving Games", "date": "2026-06-16", "value": 16580, "market_cap_ratio": 0.2},
+            {"token": "SKATE", "name": "Skate", "date": "2026-06-16", "value": 3720, "market_cap_ratio": 0.1},
 
             # 23 MAI (BIG EVENT)
-            {"token": "KYUZO", "name": "Kyuzo's Friends", "date": "2026-05-23", "value": 1840000000, "market_cap_ratio": 9.5},
-            {"token": "AVANT", "name": "Avantis", "date": "2026-05-23", "value": 3740000, "market_cap_ratio": 1.1},
-            {"token": "METEORA", "name": "Meteora", "date": "2026-05-23", "value": 1140000, "market_cap_ratio": 0.8},
-            {"token": "AVAIL", "name": "Avail", "date": "2026-05-23", "value": 849110, "market_cap_ratio": 0.7},
-            {"token": "CYG", "name": "Cygnus Finance", "date": "2026-05-23", "value": 699110, "market_cap_ratio": 0.6},
-            {"token": "ANIME", "name": "Animecoin", "date": "2026-05-23", "value": 607710, "market_cap_ratio": 0.6},
+            {"token": "KYUZO", "name": "Kyuzo's Friends", "date": "2026-07-01", "value": 1840000000, "market_cap_ratio": 9.5},
+            {"token": "AVANT", "name": "Avantis", "date": "2026-07-01", "value": 3740000, "market_cap_ratio": 1.1},
+            {"token": "METEORA", "name": "Meteora", "date": "2026-07-01", "value": 1140000, "market_cap_ratio": 0.8},
+            {"token": "AVAIL", "name": "Avail", "date": "2026-07-01", "value": 849110, "market_cap_ratio": 0.7},
+            {"token": "CYG", "name": "Cygnus Finance", "date": "2026-07-01", "value": 699110, "market_cap_ratio": 0.6},
+            {"token": "ANIME", "name": "Animecoin", "date": "2026-07-01", "value": 607710, "market_cap_ratio": 0.6},
         ]
 
         # =========================
