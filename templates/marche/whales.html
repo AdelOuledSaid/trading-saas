@@ -1,6 +1,27 @@
 {% extends "base.html" %}
 
 {% block title %}{{ t("whale_intelligence_page_title", "Whale Intelligence | VelWolef") }}{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Si données vides → le cache bg est encore en train de charger → recharger dans 10s
+  var stats = document.querySelectorAll(".whale-stat-value, .whales-stat-value");
+  var isEmpty = false;
+  stats.forEach(function(el) {
+    var v = el.textContent.trim();
+    if (v === "$0.0M" || v === "0" || v === "Neutral") isEmpty = true;
+  });
+  if (isEmpty) {
+    var banner = document.createElement("div");
+    banner.id = "whale-loading-banner";
+    banner.style.cssText = "position:fixed;bottom:20px;right:20px;background:#1e222d;border:1px solid #2962ff;border-radius:8px;padding:12px 16px;font-size:12px;color:#b2b5be;z-index:9999;display:flex;align-items:center;gap:8px;";
+    banner.innerHTML = '<span style="width:8px;height:8px;border-radius:50%;background:#2962ff;animation:blink 1s infinite;display:inline-block;"></span> Loading whale data... auto-refreshing';
+    document.body.appendChild(banner);
+    setTimeout(function() { window.location.reload(); }, 12000);
+  }
+});
+</script>
+{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='whales.css') }}">
@@ -19,18 +40,18 @@
 {% set signal_label = "NEUTRAL WATCH" %}
 {% set signal_class = "neutral" %}
 {% set signal_score = 50 %}
-{% set signal_text = t("markets_whales_ai_signal_neutral_text", "Flux équilibrés. Attendre une confirmation par la structure de prix, le volume et le momentum avant de prendre une décision.") %}
+{% set signal_text = t("markets_whales_ai_signal_neutral_text", "Balanced flows. Wait for confirmation from price structure, volume and momentum before taking action.") %}
 
 {% if dominant_bias == "Bullish" %}
     {% set signal_label = "BUY PRESSURE DETECTED" %}
     {% set signal_class = "bullish" %}
     {% set signal_score = 78 %}
-    {% set signal_text = t("markets_whales_ai_signal_bullish_text", "Pression acheteuse détectée. Les flux récents suggèrent une accumulation ou une réduction de l’offre disponible sur les exchanges.") %}
+    {% set signal_text = t("markets_whales_ai_signal_bullish_text", "Buy pressure detected. Recent flows suggest accumulation or reduction of available supply on exchanges.") %}
 {% elif dominant_bias == "Bearish" %}
     {% set signal_label = "SELL RISK DETECTED" %}
     {% set signal_class = "bearish" %}
     {% set signal_score = 72 %}
-    {% set signal_text = t("markets_whales_ai_signal_bearish_text", "Risque vendeur détecté. Les flux récents suggèrent une préparation de vente, de prise de profit ou de couverture.") %}
+    {% set signal_text = t("markets_whales_ai_signal_bearish_text", "Seller risk detected. Recent flows suggest sell preparation, profit taking or hedging.") %}
 {% endif %}
 
 <div class="whales-page">
@@ -53,7 +74,7 @@
 
                 <div class="whales-hero-actions">
                     <a href="#whale-live-feed" class="whales-btn whales-btn-primary">
-                        {{ t("markets_whales_voir_les_flux", "Voir les flux live") }}
+                        {{ t("markets_whales_voir_les_flux", "View live flows") }}
                     </a>
                     <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="whales-btn whales-btn-secondary">
                         {{ t("discover_premium", "Découvrir Premium") }}
@@ -144,11 +165,11 @@
 
             <p class="whale-pressure-text">
                 {% if pressure > 50 %}
-                    {{ t("markets_whales_pressure_bullish", "Pression acheteuse dominante détectée sur les flux récents.") }}
+                    {{ t("markets_whales_pressure_bullish", "Dominant buy pressure detected on recent flows.") }}
                 {% elif pressure < 50 %}
-                    {{ t("markets_whales_pressure_bearish", "Pression vendeuse dominante détectée sur les flux récents.") }}
+                    {{ t("markets_whales_pressure_bearish", "Dominant sell pressure detected on recent flows.") }}
                 {% else %}
-                    {{ t("markets_whales_pressure_neutral", "Marché équilibré. Aucun déséquilibre clair dans les flux récents.") }}
+                    {{ t("markets_whales_pressure_neutral", "Balanced market. No clear imbalance in recent flows.") }}
                 {% endif %}
             </p>
         </div>
@@ -208,8 +229,8 @@
     <div class="whales-container">
         <div class="section-heading">
             <span class="section-kicker">{{ t("markets_whales_live_feed", "Live Feed") }}</span>
-            <h2>{{ t("markets_whales_flux_principal_des_alertes_baleines", "Flux principal des alertes baleines") }}</h2>
-            <p>{{ t("markets_whales_tableau_de_surveillance_des_grosses_transactions_detectees_sur_les_actif", "Tableau de surveillance des grosses transactions détectées sur les actifs suivis par la plateforme.") }}</p>
+            <h2>{{ t("markets_whales_flux_principal_des_alertes_baleines", "Main stream of whale alerts") }}</h2>
+            <p>{{ t("markets_whales_tableau_de_surveillance_des_grosses_transactions_detectees_sur_les_actif", "Monitoring table of large transactions detected on assets monitored by the platform.") }}</p>
         </div>
 
         {% if whale_alerts %}
@@ -322,10 +343,10 @@
 
         {% else %}
         <div class="whales-empty-state">
-            <h3>{{ t("markets_whales_aucune_alerte_high_impact", "Aucune alerte high impact") }}</h3>
-            <p>{{ t("markets_whales_les_prochaines_grosses_transactions_apparaitront_ici", "Les prochaines grosses transactions apparaîtront ici.") }}</p>
+            <h3>{{ t("markets_whales_aucune_alerte_high_impact", "No high impact alerts") }}</h3>
+            <p>{{ t("markets_whales_les_prochaines_grosses_transactions_apparaitront_ici", "The next large transactions will appear here.") }}</p>
             <a href="/{{ current_lang or 'fr' }}/markets/whales" class="whales-btn whales-btn-primary">
-                {{ t("markets_whales_voir_toutes_les_alertes", "Voir toutes les alertes") }}
+                {{ t("markets_whales_voir_toutes_les_alertes", "View all alerts") }}
             </a>
         </div>
         {% endif %}
@@ -336,8 +357,8 @@
     <div class="whales-container">
         <div class="section-heading">
             <span class="section-kicker">{{ t("markets_whales_premium_desk_tools", "Premium Desk Tools") }}</span>
-            <h2>{{ t("markets_whales_modules_avances_de_lecture_marche", "Modules avancés de lecture marché") }}</h2>
-            <p>{{ t("markets_whales_trois_angles_complementaires_pour_enrichir_l_analyse_whale", "Trois angles complémentaires pour enrichir l’analyse whale.") }}</p>
+            <h2>{{ t("markets_whales_modules_avances_de_lecture_marche", "Advanced market reading modules") }}</h2>
+            <p>{{ t("markets_whales_trois_angles_complementaires_pour_enrichir_l_analyse_whale", "Three complementary angles to enrich whale analysis.") }}</p>
         </div>
 
         <div class="insights-grid">
@@ -360,7 +381,7 @@
     <div class="whales-container">
         <div class="whales-cta-card">
             <div>
-                <h2>{{ t("markets_whales_donne_a_tes_abonnes_une_vraie_lecture_desk_du_marche", "Donne à tes abonnés une vraie lecture desk du marché") }}</h2>
+                <h2>{{ t("markets_whales_donne_a_tes_abonnes_une_vraie_lecture_desk_du_marche", "Give your subscribers a real desk reading of the market") }}</h2>
                 <p>{{ t("markets_whales_combine_whale_intelligence_signaux_replay_sentiment_et_suivi_marche_pour", "Combine Whale Intelligence, signaux, replay, sentiment et suivi marché pour construire une expérience premium à haute valeur perçue.") }}</p>
             </div>
 

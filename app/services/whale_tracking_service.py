@@ -120,6 +120,7 @@ class WhaleTrackingService:
         alerts = sorted(alerts, key=lambda x: (x.score, x.timestamp), reverse=True)
         return alerts[:limit]
 
+    @cache.memoize(timeout=300)
     def get_whale_alerts_dict(
         self,
         asset: Optional[str] = None,
@@ -135,6 +136,7 @@ class WhaleTrackingService:
         )
         return [asdict(alert) for alert in alerts]
 
+    @cache.memoize(timeout=300)
     def get_dashboard_snapshot(self) -> Dict[str, Any]:
         alerts = self._load_real_alerts()
 
@@ -166,6 +168,7 @@ class WhaleTrackingService:
             "biggest_transaction_type": biggest.flow_type if biggest else None,
         }
 
+    @cache.memoize(timeout=300)
     def get_latest_high_impact(self, limit: int = 5) -> List[Dict[str, Any]]:
         alerts = self.get_whale_alerts(only_high_impact=True, limit=limit)
         return [asdict(a) for a in alerts]

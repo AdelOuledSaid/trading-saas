@@ -72,14 +72,12 @@ function formatMoney(value) {
 function formatPrice(value) {
   if (value === null || value === undefined || Number.isNaN(Number(value))) return "--";
   const num = Number(value);
-
-  if (Math.abs(num) >= 1000) {
-    return `$${num.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
-  }
-  if (Math.abs(num) >= 1) {
-    return `$${num.toFixed(4)}`;
-  }
-  return `$${num.toFixed(6)}`;
+  // Arrondir selon la magnitude
+  if (num >= 10000)      return "$" + Math.round(num).toLocaleString("en-US");
+  if (num >= 1000)       return "$" + num.toLocaleString("en-US", {maximumFractionDigits: 1});
+  if (num >= 100)        return "$" + num.toLocaleString("en-US", {maximumFractionDigits: 2});
+  if (num >= 1)          return "$" + num.toLocaleString("en-US", {maximumFractionDigits: 3});
+  return "$" + num.toLocaleString("en-US", {maximumFractionDigits: 6});
 }
 
 function formatPct(value) {
@@ -610,8 +608,15 @@ function renderConfluencePanel(data) {
 
 function renderTimeframeCard(tfName, biasId, metaId, data) {
   const tf = getTf(data, tfName);
-  setText(biasId, prettifyMarketStructure(tf.bias || tf.trend || "unknown"));
-  setText(metaId, `RSI ${tf.rsi ?? "--"} · Conf ${tf.confidence ?? "--"}`);
+  // Si pas de données MTF, utiliser le biais principal comme fallback
+  const tfBias = tf.bias || tf.trend || null;
+  if (!tfBias) {
+    setText(biasId, prettifyMarketStructure(data?.bias || "neutral"));
+    setText(metaId, "No MTF data");
+  } else {
+    setText(biasId, prettifyMarketStructure(tfBias));
+    setText(metaId, `RSI ${tf.rsi ?? "--"} · Conf ${tf.confidence ?? "--"}`);
+  }
 }
 
 function renderMultiTimeframeSummary(data) {
@@ -967,11 +972,11 @@ function renderAnalysis(data) {
   setText("macdValue", data.indicators?.macd ?? "--");
   setText("riskValue", prettifyMarketStructure(premium?.risk_profile || "medium"));
 
-  setText("res1", data.levels?.resistance_1 ?? "--");
-  setText("res2", data.levels?.resistance_2 ?? "--");
-  setText("pivot", data.levels?.pivot ?? "--");
-  setText("sup1", data.levels?.support_1 ?? "--");
-  setText("sup2", data.levels?.support_2 ?? "--");
+  setText("res1",  data.levels?.resistance_1 ? formatPrice(data.levels.resistance_1) : "--");
+  setText("res2",  data.levels?.resistance_2 ? formatPrice(data.levels.resistance_2) : "--");
+  setText("pivot", data.levels?.pivot        ? formatPrice(data.levels.pivot)        : "--");
+  setText("sup1",  data.levels?.support_1    ? formatPrice(data.levels.support_1)    : "--");
+  setText("sup2",  data.levels?.support_2    ? formatPrice(data.levels.support_2)    : "--");
 
   if (summaryTags) {
     summaryTags.innerHTML = "";

@@ -236,110 +236,86 @@ def learn_signal(signal_id, lang_code=None):
 
 
 
-@pages_bp.route("/<lang_code>/mini-course/<int:signal_id>")
-@login_required
-def mini_course(signal_id, lang_code):
-    normalize_lang(lang_code)
 
-    signal = Signal.query.get_or_404(signal_id)
-
-    entry = float(signal.entry_price or 0)
-    sl = float(signal.stop_loss or 0)
-    tp = float(signal.take_profit or 0)
-
-    risk = abs(entry - sl)
-    reward = abs(tp - entry)
-
-    rr = round(reward / risk, 2) if risk > 0 else "-"
-
-    data = {
-        "rr": rr,
-
-        "ai_summary":
-            f"Signal {signal.action} sur {signal.asset} avec un objectif vers {signal.take_profit} "
-            f"et une invalidation sous {signal.stop_loss}.",
-
-        "reason":
-            signal.reason if hasattr(signal, "reason") and signal.reason
-            else "Le scénario est basé sur la structure actuelle du marché et la direction dominante.",
-
-        "objective":
-            f"Atteindre la zone TP à {signal.take_profit}.",
-
-        "invalidation":
-            f"Le scénario devient invalide sous le niveau {signal.stop_loss}.",
-
-        "execution_plan":
-            f"Entrée autour de {signal.entry_price}, stop à {signal.stop_loss} "
-            f"et prise de profit à {signal.take_profit}.",
-
-        "strengths": [
-            "Plan de trading clairement défini",
-            "Niveau d'entrée identifié",
-            f"Ratio risque/rendement : {rr}"
-        ],
-
-        "risks": [
-            "Volatilité du marché",
-            "Faux breakout possible",
-            "Non-respect du stop loss"
-        ],
-
-        "mistake_to_avoid":
-            "Ne pas déplacer le stop loss sous l'effet des émotions."
-    }
-
-    return render_template(
-        "learn/mini_course.html",
-        signal=signal,
-        data=data
-    )
 # =========================================================
 # WHALE INTELLIGENCE
 # =========================================================
+# ── WHALE CACHE ──────────────────────────────────────────────
+import time as _wtime
+import threading as _wthread
+
+_WC = {"ts": 0, "alerts": [], "snapshot": {}, "latest": []}
+_WC_LOCK = _wthread.Lock()
+_WC_LOADING = [False]
+
+
+def _whale_bg_refresh():
+    if _WC_LOADING[0]:
+        return
+    _WC_LOADING[0] = True
+    try:
+        svc = WhaleTrackingService()
+        a = svc.get_whale_alerts_dict(limit=50)
+        s = svc.get_dashboard_snapshot()
+        l = svc.get_latest_high_impact(limit=5)
+        with _WC_LOCK:
+            _WC.update({"ts": _wtime.time(), "alerts": a, "snapshot": s, "latest": l})
+    except Exception as e:
+        import logging; logging.getLogger(__name__).error("whale bg: %s", e)
+    finally:
+        _WC_LOADING[0] = False
+
+
+def _whale_ensure():
+    with _WC_LOCK:
+        age = _wtime.time() - _WC["ts"]
+        has = bool(_WC["alerts"])
+    if not has or age > 300:
+        t = _wthread.Thread(target=_whale_bg_refresh, daemon=True)
+        t.start()
+        if not has:
+            t.join(timeout=15)
+
+
 @pages_bp.route("/marche/whales")
 @pages_bp.route("/<lang_code>/markets/whales")
 def whales(lang_code=None):
     normalize_lang(lang_code)
 
-    service = WhaleTrackingService()
-
-    asset = (request.args.get("asset", "") or "").strip().upper()
-    impact = (request.args.get("impact", "") or "").strip().lower()
+    asset     = (request.args.get("asset",     "") or "").strip().upper()
+    impact    = (request.args.get("impact",    "") or "").strip().lower()
     direction = (request.args.get("direction", "") or "").strip().lower()
 
     try:
         limit = int(request.args.get("limit", 12))
     except (TypeError, ValueError):
         limit = 12
+    limit = max(1, min(50, limit))
 
-    if limit < 1:
-        limit = 1
-    if limit > 50:
-        limit = 50
-
-    valid_assets = {"BTC", "ETH", "SOL", "USDT", "USDC"}
-    valid_directions = {"inflow", "outflow", "transfer", "treasury"}
-
-    asset_filter = asset if asset in valid_assets else None
-    direction_filter = direction if direction in valid_directions else None
+    asset_filter    = asset     if asset     in {"BTC","ETH","SOL","USDT","USDC"} else None
+    direction_filter = direction if direction in {"inflow","outflow","transfer","treasury"} else None
     only_high_impact = impact == "high"
 
-    whale_alerts = service.get_whale_alerts_dict(
-        asset=asset_filter,
-        only_high_impact=only_high_impact,
-        direction=direction_filter,
-        limit=limit,
-    )
+    _whale_ensure()
 
-    snapshot = service.get_dashboard_snapshot()
-    latest_high_impact = service.get_latest_high_impact(limit=5)
+    with _WC_LOCK:
+        all_alerts         = list(_WC["alerts"])
+        snapshot           = dict(_WC["snapshot"])
+        latest_high_impact = list(_WC["latest"])
 
+    if asset_filter:
+        all_alerts = [a for a in all_alerts if (a.get("asset") or "").upper() == asset_filter]
+    if direction_filter:
+        all_alerts = [a for a in all_alerts if (a.get("direction") or "").lower() == direction_filter]
+    if only_high_impact:
+        all_alerts = [a for a in all_alerts if "high" in (a.get("impact_level") or "").lower()]
+
+    whale_alerts   = all_alerts[:limit]
     active_filters = {
-        "asset": asset_filter or "",
-        "impact": "high" if only_high_impact else "",
+        "asset":     asset_filter or "",
+        "impact":    "high" if only_high_impact else "",
         "direction": direction_filter or "",
-        "limit": limit,
+        "limit":     limit,
     }
 
     return render_template(
@@ -349,6 +325,7 @@ def whales(lang_code=None):
         latest_high_impact=latest_high_impact,
         active_filters=active_filters,
     )
+
 #---------------------------------------------------
 
 
