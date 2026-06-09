@@ -118,16 +118,16 @@ function prettifyMarketStructure(value) {
   const map = {
     bullish_trend_structure: "Structure haussière",
     bearish_trend_structure: "Structure baissière",
-    neutral_range_structure: "Structure neutre",
-    bullish: "Haussier",
-    bearish: "Baissier",
+    neutral_range_structure: "Neutral structure",
+    bullish: "Bullish",
+    bearish: "Bearish",
     mixed: "Mixte",
-    neutral: "Neutre",
-    inside_balance: "Équilibre interne",
-    seller_absorption: "Absorption vendeuse",
+    neutral: "Neutral",
+    inside_balance: "Internal equilibrium",
+    seller_absorption: "Seller absorptioneuse",
     buyer_absorption: "Absorption acheteuse",
-    strong_bullish_momentum: "Momentum haussier fort",
-    strong_bearish_momentum: "Momentum baissier fort",
+    strong_bullish_momentum: "Strong bullish momentum",
+    strong_bearish_momentum: "Strong bearish momentum",
     bullish_continuation: "Continuation haussière",
     bearish_continuation: "Continuation baissière",
     reversal_risk: "Risque de retournement",
@@ -135,8 +135,8 @@ function prettifyMarketStructure(value) {
     positive_cross: "Croisement positif",
     negative_cross: "Croisement négatif",
     normal: "Normal",
-    selective: "Sélectif",
-    balanced: "Équilibré",
+    selective: "Selective",
+    balanced: "Balanced",
     aggressive: "Agressif",
     defensive: "Défensif",
     weak: "Faible",
@@ -193,7 +193,7 @@ function setSignalPill(el, signal) {
   const map = {
     buy: ["Achat", "ta-signal-pill ta-signal-buy"],
     sell: ["Vente", "ta-signal-pill ta-signal-sell"],
-    neutral: ["Neutre", "ta-signal-pill ta-signal-neutral"]
+    neutral: ["Neutral", "ta-signal-pill ta-signal-neutral"]
   };
 
   const key = String(signal || "").toLowerCase();
@@ -207,10 +207,10 @@ function setBiasBadge(el, bias) {
   if (!el) return;
 
   const map = {
-    bullish: ["Biais haussier", "ta-bias-pill ta-bias-bullish"],
-    bearish: ["Biais baissier", "ta-bias-pill ta-bias-bearish"],
-    mixed: ["Biais mixte", "ta-bias-pill ta-bias-neutral"],
-    neutral: ["Biais neutre", "ta-bias-pill ta-bias-neutral"]
+    bullish: ["Bullish bias", "ta-bias-pill ta-bias-bullish"],
+    bearish: ["Bearish bias", "ta-bias-pill ta-bias-bearish"],
+    mixed: ["Mixed bias", "ta-bias-pill ta-bias-neutral"],
+    neutral: ["Neutral bias", "ta-bias-pill ta-bias-neutral"]
   };
 
   const key = String(bias || "").toLowerCase();
@@ -225,7 +225,7 @@ function getScoreTone(score) {
 
   if (Number.isNaN(num)) {
     return {
-      label: "Neutre",
+      label: "Neutral",
       color: "var(--ta-gold)",
       className: "ta-neutral-text"
     };
@@ -233,7 +233,7 @@ function getScoreTone(score) {
 
   if (num >= 70) {
     return {
-      label: "Haussier",
+      label: "Bullish",
       color: "var(--ta-green)",
       className: "ta-bullish-text"
     };
@@ -241,14 +241,14 @@ function getScoreTone(score) {
 
   if (num <= 40) {
     return {
-      label: "Baissier",
+      label: "Bearish",
       color: "var(--ta-red)",
       className: "ta-bearish-text"
     };
   }
 
   return {
-    label: "Neutre",
+    label: "Neutral",
     color: "var(--ta-gold)",
     className: "ta-neutral-text"
   };
@@ -348,7 +348,7 @@ function renderWatchlist(items) {
       <div class="ta-watch-item">
         <div>
           <strong>Données limitées</strong>
-          <small>Watchlist temporairement indisponible</small>
+          <small>Watchlist temporarily unavailable</small>
         </div>
       </div>
     `;
@@ -380,10 +380,10 @@ function renderTrending(items) {
     container.innerHTML = `
       <div class="ta-indicator-row">
         <div>
-          <strong>Tendance marché indisponible</strong>
-          <p>Liste temporairement limitée.</p>
+          <strong>Market trend unavailable</strong>
+          <p>Temporarily limited list.</p>
         </div>
-        <span class="ta-status-chip gold">Limité</span>
+        <span class="ta-status-chip gold">Limited</span>
       </div>
     `;
   }
@@ -540,7 +540,7 @@ function buildInsightContent(type, data) {
       title: "Confluence multi-timeframe",
       subtitle: "Lecture alignée des horizons de temps",
       html: `
-        <p>Score de confluence: <strong>${confluence.score ?? "--"}</strong> · Biais dominant: <strong>${prettifyMarketStructure(confluence.dominant_bias)}</strong></p>
+        <p>Confluence score: <strong>${confluence.score ?? data?.multi_timeframe?.confluence?.score ?? "--"}</strong> · Dominant bias: <strong>${prettifyMarketStructure(confluence.dominant_bias)}</strong></p>
         <div class="ta-insight-grid">
           ${buildTfBox("15M", tf15m)}
           ${buildTfBox("1H", tf1h)}
@@ -549,7 +549,7 @@ function buildInsightContent(type, data) {
         </div>
         <ul class="ta-insight-list">
           <li>Alignement: ${prettifyMarketStructure(confluence.alignment)}</li>
-          <li>Qualité d'entrée: ${prettifyMarketStructure(confluence.entry_quality)}</li>
+          <li>Qualité d'entrée: ${prettifyMarketStructure(confluence.entry_quality ?? data?.multi_timeframe?.confluence?.entry_quality)}</li>
           <li>Orderflow: ${prettifyMarketStructure(orderflow.state)}</li>
         </ul>
       `
@@ -579,7 +579,7 @@ function buildInsightContent(type, data) {
         <p>${premium?.premium_ai_context || data?.ai_summary || "Aucun contexte IA disponible."}</p>
         <ul class="ta-insight-list">
           <li>Régime de tendance: ${prettifyMarketStructure(trend)}</li>
-          <li>Biais: ${prettifyMarketStructure(data?.bias)}</li>
+          <li>Bias: ${prettifyMarketStructure(data?.bias)}</li>
           <li>Confiance exécution: ${confidence}%</li>
           <li>Force orderflow: ${orderflow?.strength ?? "--"}</li>
         </ul>
@@ -678,7 +678,7 @@ function renderReplayPanel(data) {
     <div class="ta-indicator-row">
       <div>
         <strong>${formatText(row.signal).toUpperCase()} • ${formatText(row.interval).toUpperCase()}</strong>
-        <p>Biais: ${prettifyMarketStructure(row.bias)} · Conf: ${row.confidence ?? "--"} · Outcome: ${row.simulated_outcome_pct ?? "--"}%</p>
+        <p>Bias: ${prettifyMarketStructure(row.bias)} · Conf: ${row.confidence ?? "--"} · Outcome: ${row.simulated_outcome_pct ?? "--"}%</p>
       </div>
       <span class="ta-status-chip ${Number(row.simulated_outcome_pct) >= 0 ? "green" : "gold"}">
         ${Number(row.simulated_outcome_pct) >= 0 ? "Positif" : "Surveille"}
@@ -717,7 +717,13 @@ function renderPremiumBlocks(data) {
   );
   setText("premiumAiSummary", premium?.premium_ai_context || data?.ai_summary || "Aucun contexte premium disponible.");
 
-  setText("vipConfluenceScore", `${confluence?.score ?? "--"} / 100`);
+  // Entry / TP / SL dans le plan side
+  const _planEntry = data?.levels?.pivot ?? data?.current_price ?? null;
+  const _planTp = data?.levels?.resistance_1 ?? null;
+  const _planSl = data?.levels?.support_1 ?? null;
+  setText("planEntry", _planEntry ? formatPrice(_planEntry) : "--");
+  setText("planTp",    _planTp    ? formatPrice(_planTp)    : "--");
+  setText("planSl",    _planSl    ? formatPrice(_planSl)    : "--");
   setText("vipExecutionMode", prettifyMarketStructure(premium?.execution_mode || "selective"));
   setText("vipRiskProfile", prettifyMarketStructure(premium?.risk_profile || "balanced"));
   setText(
@@ -730,13 +736,53 @@ function renderPremiumBlocks(data) {
   );
   setText(
     "vipNeutralScenario",
-    premium?.neutral_scenario || "Régime neutre tant que la confluence reste mixte et que le marché manque d’impulsion."
+    premium?.neutral_scenario || "Neutral regime as long as confluence remains mixed and the market lacks momentum."
   );
   setText(
     "vipDeskNotes",
     premium?.desk_notes ||
-      `Lecture desk : biais ${prettifyMarketStructure(data?.bias || "mixed")}, confluence ${confluence?.score ?? "--"}, replay ${replay?.winrate ?? "--"}%, flux ${prettifyMarketStructure(orderflow.state)}.`
+      `Desk reading: bias ${prettifyMarketStructure(data?.bias || "mixed")}, confluence ${confluence?.score ?? "--"}, replay ${replay?.winrate ?? "--"}%, flow ${prettifyMarketStructure(orderflow.state)}.`
   );
+}
+
+function cleanStructureText(raw) {
+  if (!raw) return "--";
+  return raw
+    .replace(/\s*\|\s*(Location|Score|location|score|Conf|conf)=[\d.]+/gi, "")
+    .replace(/\s*\|\s*[\w_]+=[\w\d._-]+/g, "")
+    .replace(/\s*\|+\s*/g, " ")
+    .trim();
+}
+
+function cleanExecutionNote(raw) {
+  if (!raw) return "";
+  if (!raw.includes("signal=") && !raw.includes("bias=")) {
+    return raw.replace(/_/g, " ");
+  }
+  const parts = {};
+  raw.split("|").forEach(function(p) {
+    var kv = p.trim().split("=");
+    if (kv.length >= 2) parts[kv[0].trim()] = kv.slice(1).join("=").trim();
+  });
+  var lines = [];
+  if (parts.signal)     lines.push("Signal: <strong>" + parts.signal.toUpperCase() + "</strong>");
+  if (parts.bias)       lines.push("Bias: <strong>" + parts.bias + "</strong>");
+  if (parts.confidence) lines.push("Confidence: <strong>" + parts.confidence + "%</strong>");
+  if (parts.trend)      lines.push("Trend: <strong>" + parts.trend + "</strong>");
+  if (parts.RSI)        lines.push("RSI: <strong>" + parts.RSI + "</strong>");
+  if (parts.MFI)        lines.push("MFI: <strong>" + parts.MFI + "</strong>");
+  if (parts.orderflow)  lines.push("Orderflow: <strong>" + parts.orderflow.replace(/_/g," ") + "</strong>");
+  if (parts.volatility) lines.push("Volatility: <strong>" + parts.volatility + "</strong>");
+  var result = lines.join(" &nbsp;&middot;&nbsp; ");
+  var execStyle = raw.split("Execution style:");
+  if (execStyle.length > 1) {
+    result += "<br><em style='color:#b2b5be;font-size:11px;'>Execution style: " + execStyle[1].split("Replay")[0].trim() + "</em>";
+  }
+  var replayMem = raw.split("Replay memory:");
+  if (replayMem.length > 1) {
+    result += "<br><span style='font-size:11px;color:#787b86;'>Replay: " + replayMem[1].trim() + "</span>";
+  }
+  return result;
 }
 
 function renderAdvancedAI(data) {
@@ -747,48 +793,45 @@ function renderAdvancedAI(data) {
 
   setBiasBadge(advancedAiBias, tradePlan.bias || data?.bias || "mixed");
 
-  const structure = adv.market_structure || data?.summary_context?.market_structure || data?.summary_context?.trend || "unknown";
-  const momentum = adv.momentum || data?.summary_context?.momentum_regime || "neutral";
-  const location = adv.location_score ?? adv.location ?? null;
-  const score = adv.score ?? null;
+  const rawStructure = adv.market_structure || data?.summary_context?.market_structure || data?.summary_context?.trend || "unknown";
+  const structure     = cleanStructureText(rawStructure);
+  const momentum      = cleanStructureText(adv.momentum || data?.summary_context?.momentum_regime || "neutral");
+  const location      = adv.location_score ?? adv.location ?? null;
+  const score         = adv.score ?? null;
   const momentumScore = adv.momentum_score ?? score ?? null;
 
-  setHTML(
-    "aiMarketStructure",
-    `
-      <span class="ta-adv-main">${prettifyMarketStructure(structure)}</span>
-      ${location !== null ? `<span class="ta-adv-meta">Location: ${Number(location).toFixed(3)}</span>` : ""}
-      ${score !== null ? `<span class="ta-adv-score ${score >= 70 ? "good" : score >= 50 ? "mid" : "bad"}">Score ${score}</span>` : ""}
-    `
+  function scoreColor(s) { return s >= 70 ? "#26a69a" : s >= 50 ? "#f57c00" : "#ef5350"; }
+  function scoreBadge(s) {
+    if (s === null) return "";
+    return '<span style="display:inline-block;font-size:11px;font-weight:700;color:' + scoreColor(s) + ';background:rgba(255,255,255,0.05);padding:2px 7px;border-radius:4px;margin-top:4px;">' + s + '</span>';
+  }
+
+  setHTML("aiMarketStructure",
+    '<span style="font-size:14px;font-weight:700;color:#d1d4dc;display:block;margin-bottom:4px;">' + prettifyMarketStructure(structure) + '</span>' +
+    (location !== null ? '<span style="font-size:11px;color:#787b86;">Loc <strong style="color:#b2b5be;">' + Number(location).toFixed(2) + '</strong></span>' : "") +
+    scoreBadge(score)
   );
 
-  setHTML(
-    "aiMomentum",
-    `
-      <span class="ta-adv-main">${prettifyMarketStructure(momentum)}</span>
-      ${momentumScore !== null ? `<span class="ta-adv-score ${momentumScore >= 70 ? "good" : momentumScore >= 50 ? "mid" : "bad"}">Momentum ${momentumScore}</span>` : ""}
-    `
+  setHTML("aiMomentum",
+    '<span style="font-size:14px;font-weight:700;color:#d1d4dc;display:block;margin-bottom:4px;">' + prettifyMarketStructure(momentum) + '</span>' +
+    scoreBadge(momentumScore)
   );
 
-  setHTML(
-    "aiDeltaPressure",
-    `<span class="ta-adv-main">${prettifyMarketStructure(simulated.delta_pressure || data?.orderflow?.delta_pressure || "balanced_pressure")}</span>`
+  setHTML("aiDeltaPressure",
+    '<span style="font-size:14px;font-weight:700;color:#d1d4dc;">' +
+    prettifyMarketStructure(simulated.delta_pressure || data?.orderflow?.delta_pressure || "balanced_pressure") + '</span>'
   );
 
-  setHTML(
-    "aiImbalanceZone",
-    `<span class="ta-adv-main">${prettifyMarketStructure(simulated.imbalance_zone || data?.orderflow?.imbalance_zone || "inside_balance")}</span>`
+  setHTML("aiImbalanceZone",
+    '<span style="font-size:14px;font-weight:700;color:#d1d4dc;">' +
+    prettifyMarketStructure(simulated.imbalance_zone || data?.orderflow?.imbalance_zone || "inside_balance") + '</span>'
   );
 
-  setText(
-    "aiExecutionNote",
-    adv.execution_note ||
-      data?.premium?.premium_ai_context ||
-      data?.ai_summary ||
-      "Aucune note d’exécution avancée chargée."
-  );
+  const rawNote = adv.execution_note || data?.premium?.premium_ai_context || data?.ai_summary || "";
+  setHTML("aiExecutionNote", cleanExecutionNote(rawNote) || "No execution note loaded.");
 
-  setText("aiInvalidation", adv.invalidation || "Aucune invalidation chargée.");
+  const rawInval = adv.invalidation || "";
+  setText("aiInvalidation", rawInval.replace(/_/g, " ") || "No invalidation loaded.");
 }
 
 function renderExecutionPlan(data) {
@@ -802,19 +845,84 @@ function renderExecutionPlan(data) {
   const adv = data?.ai_advanced_analysis || {};
   const tradePlan = adv?.trade_plan || {};
 
+  const score = premium?.score ?? data.confidence ?? 0;
+  const scoreColor = score >= 70 ? "#26a69a" : score >= 40 ? "#f57c00" : "#ef5350";
+  const changeVal = data.price_change_24h ?? 0;
+  const changeColor = changeVal >= 0 ? "#26a69a" : "#ef5350";
+  const changeSign = ""; // formatPct gère déjà le signe
+  const userPlan = window.VELWOLEF_CONFIG?.plan 
+    || document.querySelector(".ta-shell-tv")?.dataset?.userPlan 
+    || "free";
+  const isPremium = ["basic", "premium", "vip"].includes(userPlan);
+
   executionPlan.innerHTML = `
-    <p><strong>Actif :</strong> ${data.token || "--"}</p>
-    <p><strong>Timeframe :</strong> ${String(data.interval || "--").toUpperCase()}</p>
-    <p><strong>Indicateur :</strong> ${data.indicator || "--"}</p>
-    <p><strong>Prix live :</strong> ${formatPrice(data.current_price)}</p>
-    <p><strong>Variation 24H :</strong> ${formatPct(data.price_change_24h)}</p>
-    <p><strong>Biais :</strong> ${prettifyMarketStructure(data.bias)}</p>
-    <p><strong>Score confluence :</strong> ${confluence.score ?? "--"}</p>
-    <p><strong>Qualité d'entrée :</strong> ${prettifyMarketStructure(confluence.entry_quality)}</p>
-    <p><strong>Orderflow :</strong> ${prettifyMarketStructure(orderflow.state)} (${orderflow.strength ?? "--"})</p>
-    <p><strong>Winrate replay :</strong> ${replay.winrate ?? "--"}%</p>
-    <p><strong>Mode d'exécution :</strong> ${prettifyMarketStructure(premium.execution_mode || "selective")}</p>
-    <p><strong>Confiance du plan :</strong> ${tradePlan.confidence ?? data.confidence ?? "--"}%</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+      <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px 12px;">
+        <div style="font-size:10px;color:#787b86;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Asset</div>
+        <div style="font-size:16px;font-weight:700;color:#d1d4dc;">${data.token || "--"}</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px 12px;">
+        <div style="font-size:10px;color:#787b86;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Live price</div>
+        <div style="font-size:15px;font-weight:700;color:#d1d4dc;">${formatPrice(data.current_price)}</div>
+        <div style="font-size:11px;font-weight:600;color:${changeColor};">${changeSign}${formatPct(data.price_change_24h)}</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px 12px;">
+        <div style="font-size:10px;color:#787b86;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Timeframe</div>
+        <div style="font-size:15px;font-weight:700;color:#d1d4dc;">${String(data.interval || "--").toUpperCase()}</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px 12px;">
+        <div style="font-size:10px;color:#787b86;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Indicator</div>
+        <div style="font-size:13px;font-weight:600;color:#d1d4dc;">${data.indicator || "--"}</div>
+      </div>
+    </div>
+
+    ${isPremium ? `
+    <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:12px 14px;margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:10px;color:#787b86;text-transform:uppercase;letter-spacing:.5px;">AI Score</span>
+        <span style="font-size:18px;font-weight:800;color:${scoreColor};">${score} <span style="font-size:12px;color:#787b86;font-weight:400;">/ 100</span></span>
+      </div>
+      <div style="height:4px;background:#2a2e39;border-radius:2px;overflow:hidden;">
+        <div style="height:100%;width:${score}%;background:${scoreColor};border-radius:2px;transition:width .4s;"></div>
+      </div>
+    </div>` : `
+    <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:12px 14px;margin-bottom:8px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;">🔒</div>
+      <div style="font-size:12px;font-weight:700;color:#d1d4dc;margin-bottom:4px;">AI Score — Premium</div>
+      <div style="font-size:11px;color:#787b86;">Available on Basic, Premium & VIP plans</div>
+      <a href="pricing" style="display:inline-block;margin-top:10px;padding:6px 16px;background:#2962ff;color:#fff;border-radius:4px;font-size:11px;font-weight:700;text-decoration:none;">See offers →</a>
+    </div>`}
+
+    <div style="display:flex;flex-direction:column;gap:1px;background:#2a2e39;border-radius:8px;overflow:hidden;">
+      <div style="display:flex;justify-content:space-between;padding:8px 12px;background:#1e222d;">
+        <span style="color:#787b86;font-size:12px;">Bias</span>
+        <span style="color:#d1d4dc;font-weight:600;font-size:12px;">${prettifyMarketStructure(data.bias)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 12px;background:#1e222d;">
+        <span style="color:#787b86;font-size:12px;">Confluence score</span>
+        <span style="color:#d1d4dc;font-weight:600;font-size:12px;">${confluence.score ?? data?.multi_timeframe?.confluence?.score ?? "--"}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 12px;background:#1e222d;">
+        <span style="color:#787b86;font-size:12px;">Entry quality</span>
+        <span style="color:#d1d4dc;font-weight:600;font-size:12px;">${prettifyMarketStructure(confluence.entry_quality ?? data?.multi_timeframe?.confluence?.entry_quality)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 12px;background:#1e222d;">
+        <span style="color:#787b86;font-size:12px;">Orderflow</span>
+        <span style="color:#d1d4dc;font-weight:600;font-size:12px;">${prettifyMarketStructure(orderflow.state)} (${orderflow.strength ?? "--"})</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 12px;background:#1e222d;">
+        <span style="color:#787b86;font-size:12px;">Replay winrate</span>
+        <span style="color:#d1d4dc;font-weight:600;font-size:12px;">${isPremium ? (replay.winrate ?? data?.setup_replay?.winrate ?? "--") + "%" : "🔒"}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 12px;background:#1e222d;">
+        <span style="color:#787b86;font-size:12px;">Execution mode</span>
+        <span style="color:#d1d4dc;font-weight:600;font-size:12px;">${prettifyMarketStructure(premium.execution_mode || "selective")}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 12px;background:#1e222d;">
+        <span style="color:#787b86;font-size:12px;">Plan confidence</span>
+        <span style="color:#d1d4dc;font-weight:600;font-size:12px;">${tradePlan.confidence ?? data.confidence ?? "--"}%</span>
+      </div>
+    </div>
   `;
 }
 
@@ -832,7 +940,14 @@ function renderAnalysis(data) {
   setText("heroMarketCap", formatMoney(data.market_cap));
   setText("heroVolume", formatMoney(data.volume_24h));
 
-  const deskScore = premium?.score ?? data.confidence ?? 0;
+  // Score : confidence est toujours calculé, premium.score seulement pour VIP
+  const deskScore = (premium?.score && premium.score > 0)
+    ? premium.score
+    : (data?.ai_advanced_analysis?.trade_plan?.confidence && data.ai_advanced_analysis.trade_plan.confidence > 0)
+    ? data.ai_advanced_analysis.trade_plan.confidence
+    : (data.confidence && data.confidence > 0)
+    ? data.confidence
+    : 0;
   updateScoreGauge(deskScore);
 
   setText("heroTrend", prettifyMarketStructure(data.summary_context?.trend));
