@@ -246,7 +246,23 @@ def learn_signal(signal_id, lang_code=None):
 
     return render_template("replay.html", replay=replay)
 
+# =========================================================
+# MINI COURSE
+# =========================================================
 
+@pages_bp.route("/learn/mini-course/<int:signal_id>")
+@pages_bp.route("/<lang_code>/learn/mini-course/<int:signal_id>")
+@login_required
+def mini_course(signal_id, lang_code=None):
+    normalize_lang(lang_code)
+
+    signal = Signal.query.get_or_404(signal_id)
+
+    return render_template(
+        "learn/mini_course.html",
+        signal=signal,
+        current_lang=normalize_lang(lang_code)
+    )
 
 
 # =========================================================

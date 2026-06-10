@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, session, redirect, url_for, flash
 from flask_login import current_user, login_required
-
+from app.routes.pages import normalize_lang
 academy_bp = Blueprint("academy", __name__)
 
 
@@ -121,21 +121,21 @@ def academy_level_4():
 @login_required
 def academy_level_5(lang_code=None):
     normalize_lang(lang_code)
-    return render_template("academy/level5.html", ...)
+    return render_template("academy/level5.html")
 
 @academy_bp.route("/academy/level-6")
 @academy_bp.route("/<lang_code>/academy/level-6")
 @login_required
 def academy_level_6(lang_code=None):
     normalize_lang(lang_code)
-    return render_template("academy/level6.html", ...)
+    return render_template("academy/level6.html")
 
 @academy_bp.route("/academy/level-7")
 @academy_bp.route("/<lang_code>/academy/level-7")
 @login_required
 def academy_level_7(lang_code=None):
     normalize_lang(lang_code)
-    return render_template("academy/level7.html", ...)
+    return render_template("academy/level7.html")
 # =========================================================
 # UPGRADE
 # =========================================================
