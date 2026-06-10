@@ -228,12 +228,12 @@ def get_global_market_live():
             return cached
 
         return {
-            "market_cap_usd": None,
-            "volume_usd": None,
+            "market_cap_usd": 0,
+            "volume_usd": 0,
             "btc_dominance": None,
-            "active_cryptos": None,
-            "markets": None,
-            "market_cap_change_24h": None,
+            "active_cryptos": 0,
+            "markets": 0,
+            "market_cap_change_24h": 0,
         }
 
 
@@ -577,40 +577,40 @@ def get_crypto_command_center():
     bias_principal = compute_bias_principal_from_score(sentiment_score)
 
     if market_regime == "Expansion":
-        main_scenario = "Continuation haussière si la structure BTC reste propre"
-        invalidation = "Perte de momentum BTC + chute de la dominance + dégradation du sentiment"
-        rotation_text = "BTC mène, ETH suit, puis alts sélectives"
-        desk_priority = "Suivi de tendance sur actifs leaders"
+        main_scenario = "Bullish continuation if BTC structure holds clean"
+        invalidation = "Loss of BTC momentum + dominance drop + sentiment deterioration"
+        rotation_text = "BTC leads, ETH follows, then selective alts"
+        desk_priority = "Trend following on leading assets"
         momentum_label = "Strong" if btc_change > 2 else "Stable"
         dominance_state = "Positive" if btc_dominance >= 50 else "Neutral"
         macro_state = "Supportive" if fear_value >= 55 else "Mixed"
         execution_state = "Aggressive" if risk_mode in ("Risk-On", "Bullish") else "Selective"
 
     elif market_regime == "Rotation":
-        main_scenario = "Rotation progressive du capital vers ETH et certaines altcoins"
-        invalidation = "Reprise forte de la dominance BTC ou faiblesse rapide d'ETH"
-        rotation_text = "ETH et alts reprennent du terrain face à BTC"
-        desk_priority = "Sélection des rotations les plus propres"
+        main_scenario = "Progressive capital rotation toward ETH and select altcoins"
+        invalidation = "Strong BTC dominance recovery or rapid ETH weakness"
+        rotation_text = "ETH and alts gaining ground against BTC"
+        desk_priority = "Select the cleanest rotations"
         momentum_label = "Rotational"
         dominance_state = "Neutral"
         macro_state = "Mixed"
         execution_state = "Selective"
 
     elif market_regime == "Compression":
-        main_scenario = "Marché en attente d'un déclencheur directionnel clair"
-        invalidation = "Cassure de range avec volume et suivi"
-        rotation_text = "Pas de rotation claire, marché encore hésitant"
-        desk_priority = "Contexte avant breakout"
+        main_scenario = "Market waiting for a clear directional trigger"
+        invalidation = "Range breakout with volume and follow-through"
+        rotation_text = "No clear rotation, market still hesitant"
+        desk_priority = "Context before breakout"
         momentum_label = "Muted"
         dominance_state = "Balanced"
         macro_state = "Monitored"
         execution_state = "Patience"
 
     else:
-        main_scenario = "Risque de dégradation structurelle, prudence maximale"
-        invalidation = "Réintégration haussière des niveaux clés avec reprise du sentiment"
-        rotation_text = "Capital défensif, peu d'appétit pour les altcoins"
-        desk_priority = "Préservation du capital"
+        main_scenario = "Structural breakdown risk — maximum caution"
+        invalidation = "Bullish reclaim of key levels with sentiment recovery"
+        rotation_text = "Defensive capital — low altcoin appetite"
+        desk_priority = "Capital preservation"
         momentum_label = "Weak"
         dominance_state = "Fragile"
         macro_state = "Elevated"
@@ -620,33 +620,33 @@ def get_crypto_command_center():
         {
             "name": "Bitcoin",
             "score": 9.4 if btc_change >= 0 else 8.7,
-            "description": "Leader du marché, repère principal pour la direction globale et la qualité des impulsions.",
-            "tag_1": "Leader",
-            "tag_2": "High Priority",
+            "description": "Market leader. Main reference for global direction and impulse quality.",
+            "tag_1": "LEADER",
+            "tag_2": "HIGH PRIORITY",
             "css_class": "high",
         },
         {
             "name": "Ethereum",
             "score": 8.8 if eth_change >= 0 else 8.1,
-            "description": "Actif de transition clé pour lire la rotation du capital et le comportement altcoin.",
-            "tag_1": "Rotation Watch",
-            "tag_2": "High Priority",
+            "description": "Key transition asset for reading capital rotation and altcoin behavior.",
+            "tag_1": "ROTATION WATCH",
+            "tag_2": "HIGH PRIORITY",
             "css_class": "high",
         },
         {
             "name": "Solana",
             "score": 7.9,
-            "description": "Momentum spéculatif élevé, utile pour mesurer l’appétit au risque du marché.",
-            "tag_1": "Momentum",
-            "tag_2": "Selective",
+            "description": "High speculative momentum — useful for measuring market risk appetite.",
+            "tag_1": "MOMENTUM",
+            "tag_2": "SELECTIVE",
             "css_class": "",
         },
         {
             "name": "Total Market Cap",
             "score": 9.1 if total_market_cap > 0 else 8.5,
-            "description": "Vue macro indispensable pour confirmer la force globale du marché et valider les scénarios.",
-            "tag_1": "Macro",
-            "tag_2": "High Priority",
+            "description": "Essential macro view to confirm global market strength and validate scenarios.",
+            "tag_1": "MACRO",
+            "tag_2": "HIGH PRIORITY",
             "css_class": "macro",
         },
     ]
