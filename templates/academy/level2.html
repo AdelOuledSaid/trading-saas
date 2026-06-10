@@ -1,440 +1,426 @@
+{% set academy_level = "level2" %}
+{% set academy_total_lessons = 12 %}
 {% extends "base.html" %}
+{% block title %}Academy Level 2 — Advanced Structure & Execution | VelWolef{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}">
+<style>
+:root{--l2:#8b5cf6;--l2d:rgba(139,92,246,.1);--l2b:rgba(139,92,246,.25);--s:#111520;--br:rgba(255,255,255,.07);--tx:#c8d0e0;--mu:#6b7588;--gr:#22c55e;--re:#ef4444;--am:#f59e0b;}
+.lhero{background:linear-gradient(135deg,#0a0d13 0%,#110a29 60%,#0a0d13 100%);border-bottom:1px solid var(--l2b);padding:48px 0;}
+.lbadge{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;background:var(--l2d);border:1px solid var(--l2b);color:#c4b5fd;margin-right:8px;margin-bottom:20px;}
+.lbadge.pp{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.25);color:#c4b5fd;}
+.lhero h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;line-height:1.1;color:#fff;margin-bottom:16px;}
+.lhero h1 em{font-style:normal;color:var(--l2);}
+.lhero p.sub{font-size:1rem;color:var(--tx);line-height:1.75;max-width:580px;margin-bottom:28px;}
+.lstats{display:flex;gap:28px;flex-wrap:wrap;margin-bottom:28px;}
+.lstat .num{font-size:1.5rem;font-weight:800;color:var(--l2);display:block;}
+.lstat .lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);}
+.lgrid{display:grid;grid-template-columns:1fr 290px;gap:24px;align-items:start;}
+.lsidebar{position:sticky;top:80px;}
+.ltoc{background:var(--s);border:1px solid var(--l2b);border-radius:12px;padding:16px;}
+.ltoc h3{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#c4b5fd;margin-bottom:10px;}
+.ltoc a{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:6px;font-size:12px;color:var(--mu);text-decoration:none;transition:all .15s;}
+.ltoc a:hover{background:var(--l2d);color:#fff;}
+.ltoc .n{font-size:10px;font-weight:700;color:var(--l2);width:18px;flex-shrink:0;}
+.lsh{display:flex;align-items:center;gap:14px;margin:42px 0 20px;padding-bottom:12px;border-bottom:1px solid var(--br);}
+.lsn{width:36px;height:36px;border-radius:8px;background:var(--l2d);border:1px solid var(--l2b);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--l2);flex-shrink:0;}
+.lsh h2{font-size:1.15rem;font-weight:700;color:#fff;margin-bottom:2px;}
+.lsh p{font-size:11px;color:var(--mu);}
+.lb p{font-size:14px;color:var(--tx);line-height:1.8;margin-bottom:12px;}
+.lb h3{font-size:1rem;font-weight:700;color:#fff;margin-bottom:9px;}
+.lb h4{font-size:.88rem;font-weight:600;color:#c4b5fd;margin:16px 0 6px;}
+.lbox{border-radius:9px;padding:15px 17px;margin:14px 0;}
+.lbox.def{background:rgba(139,92,246,.05);border-left:3px solid var(--l2);}
+.lbox.key{background:rgba(251,191,36,.05);border-left:3px solid var(--am);}
+.lbox.warn{background:rgba(239,68,68,.05);border-left:3px solid var(--re);}
+.lbox.ex{background:rgba(34,197,94,.05);border-left:3px solid var(--gr);}
+.blbl{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:5px;}
+.lbox.def .blbl{color:#c4b5fd;}.lbox.key .blbl{color:var(--am);}.lbox.warn .blbl{color:var(--re);}.lbox.ex .blbl{color:var(--gr);}
+.lbox p{margin:0;font-size:13px;color:var(--tx);line-height:1.7;}
+.llist{list-style:none;padding:0;margin:10px 0;}
+.llist li{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid var(--br);font-size:13px;color:var(--tx);}
+.llist li:last-child{border-bottom:none;}
+.llist li::before{content:"→";color:var(--l2);flex-shrink:0;}
+.lcards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0;}
+.lcard{background:var(--s);border:1px solid var(--br);border-radius:10px;padding:14px 16px;}
+.lcard h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--mu);margin-bottom:8px;}
+.lcard ul{list-style:none;padding:0;margin:0;}
+.lcard ul li{font-size:12px;color:var(--tx);padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.lcard ul li:last-child{border-bottom:none;}
+.lcard ul li::before{content:"• ";color:var(--l2);}
+.ltable{width:100%;border-collapse:collapse;margin:13px 0;}
+.ltable th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);padding:9px 12px;border-bottom:1px solid var(--br);text-align:left;}
+.ltable td{font-size:13px;color:var(--tx);padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.04);}
+.ltable tr:last-child td{border-bottom:none;}
+.ltable tr:hover td{background:rgba(139,92,246,.02);}
+.lquiz{background:var(--s);border:1px solid var(--l2b);border-radius:12px;padding:24px;}
+.lq{margin-bottom:18px;}
+.lq h3{font-size:14px;font-weight:600;color:#fff;margin-bottom:9px;}
+.lq label{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:7px;cursor:pointer;font-size:13px;color:var(--tx);border:1px solid var(--br);margin-bottom:5px;transition:all .15s;}
+.lq label:hover{background:var(--l2d);border-color:var(--l2b);}
+.lq input[type=radio]{accent-color:var(--l2);}
+.lprogcard{background:var(--s);border:1px solid var(--br);border-radius:12px;padding:17px;margin-bottom:13px;}
+.ltrack{height:4px;background:rgba(255,255,255,.07);border-radius:2px;margin:7px 0;overflow:hidden;}
+.lfill{height:100%;background:var(--l2);border-radius:2px;}
+.llock{background:linear-gradient(135deg,#0a0d13,#110a29);border:1px solid var(--l2b);border-radius:14px;padding:36px;text-align:center;margin-top:32px;}
+.llock h3{color:#fff;font-size:1.2rem;margin:14px 0 8px;}
+.llock p{color:var(--tx);font-size:13px;line-height:1.7;margin-bottom:20px;}
+@media(max-width:900px){.lgrid{grid-template-columns:1fr;}.lsidebar{display:none;}.lcards{grid-template-columns:1fr;}}
+</style>
+{% endblock %}
 
-{% block title %}{{ t("academy_level2_page_title", "Academy Niveau 2 | VelWolef") }}{% endblock %} {% block extra_css %} <link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}"> {% endblock %} {% block content %} {% if not has_academy_plus %} <script> document.addEventListener("DOMContentLoaded", function () { document.body.dataset.autoUpgradePopup = "true"; }); </script> {% endif %} <section class="academy-page-hero academy-section"> <div class="academy-shell"> <div class="academy-breadcrumb"> <a href="{{ url_for('academy.academy_index', lang_code=current_lang) }}">Academy</a> <span>/</span> <span>{{ t('academy_level_2', 'Niveau 2') }}</span> </div> <div class="academy-page-grid"> <div> <span class="academy-kicker">{{ t('academy_level2_niveau_2_structure_confluence_execution', 'Niveau 2 — Structure, confluence & exécution') }}</span> <h1>{{ t('academy_level2_passer_des_bases_a_une_lecture_plus_professionnelle_du_marche', 'Passer des bases à une lecture plus professionnelle du marché') }}</h1> <p class="academy-lead"> {{ t('academy_level2_le_niveau_2_ne_cherche_plus_seulement_a_corriger_les_erreurs_du_debuta', 'Le niveau 2 ne cherche plus seulement à corriger les erreurs du débutant. Il vise à structurer une vraie lecture opérationnelle : comprendre la structure de marché, distinguer tendance, range et transition, lire la confluence, identifier la liquidité et améliorer la qualité du timing d’entrée.') }} </p> <p class="academy-lead"> {{ t('academy_level2_ici_l_objectif_est_clair_passer_d_une_comprehension_theorique_a_une_ex', 'Ici, l’objectif est clair : passer d’une compréhension théorique à une exécution plus mature. L’utilisateur doit apprendre à sélectionner davantage, à attendre davantage, et à traiter chaque idée comme un setup à confirmer plutôt qu’une impulsion à exécuter.') }} </p> <div class="academy-actions"> {% if has_academy_plus %} <a href="#learning-hub" class="academy-btn academy-btn-primary">{{ t('academy_level1_ouvrir_le_hub', 'Ouvrir le hub') }}</a> <a href="#lesson-1" class="academy-btn academy-btn-secondary">{{ t('academy_level1_commencer_module_1', 'Commencer module 1') }}</a> <a href="#quiz-final" class="academy-btn academy-btn-secondary">{{ t('academy_level1_aller_au_quiz_final', 'Aller au quiz final') }}</a> {% else %} <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-btn academy-btn-primary">{{ t('academy_level2_debloquer_niveau_2', 'Débloquer Niveau 2') }}</a> <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-btn academy-btn-gold">{{ t('academy_level2_passer_premium_vip', 'Passer Premium / VIP') }}</a> {% endif %} </div> <div class="academy-access-strip"> {% if has_academy_plus %} {% if is_vip %} <span class="academy-plan-badge-vip">{{ t('academy_level1_plan_vip', 'Plan VIP') }}</span> {% else %} <span class="academy-plan-badge-premium">{{ t('academy_level1_plan_premium', 'Plan Premium') }}</span> {% endif %} <strong>{{ t('academy_level2_niveau_2_debloque', 'Niveau 2 débloqué') }}</strong> {% else %} <span class="academy-plan-badge-basic">{{ t('academy_level1_plan_basic', 'Plan Basic') }}</span> <strong>{{ t('academy_level2_niveau_2_reserve_aux_plans_premium_vip', 'Niveau 2 réservé aux plans Premium / VIP') }}</strong> {% endif %} </div> </div> <div class="academy-side-progress"> <div class="academy-progress-head"> <span>{{ t('academy_level1_progression_actuelle', 'Progression actuelle') }}</span> <strong>{{ academy_progress.level2 if academy_progress else 0 }}%</strong> </div> <div class="academy-progress-bar"> <div class="academy-progress-fill academy-progress-fill-purple" style="width: {{ academy_progress.level2 if academy_progress else 0 }}%;"></div> </div> <div class="academy-progress-head academy-progress-head-second"> <span>{{ t('academy_level1_acces', 'Accès') }}</span> <strong>{% if has_academy_plus %}{{ t('academy_level2_premium_vip', 'Premium / VIP') }}{% else %}{{ t('academy_level2_verrouille', 'Verrouillé') }}{% endif %}</strong> </div> <div class="academy-info-card" style="margin-top: 18px;"> <h3>{{ t('academy_level2_objectif_du_niveau', 'Objectif du niveau') }}</h3> <p> {{ t('academy_level2_passer_d_une_comprehension_des_bases_a_une_lecture_plus_structuree_str', 'Passer d’une compréhension des bases à une lecture plus structurée : structure, confluence, timing, liquidité et qualité d’exécution.') }} </p> </div> <div class="academy-info-card" style="margin-top: 18px;"> <h3>{{ t('academy_level1_resultat_attendu', 'Résultat attendu') }}</h3> <p> {{ t('academy_level2_a_la_fin_du_niveau_2_l_eleve_doit_savoir_reconnaitre_un_environnement', 'À la fin du niveau 2, l’élève doit savoir reconnaître un environnement de marché, hiérarchiser les signaux, sélectionner les setups de meilleure qualité et éviter les entrées médiocres.') }} </p> </div> </div> </div> </div> </section> <section class="academy-section" id="learning-hub"> <div class="academy-shell"> <div class="academy-level-grid"> <div> <div class="academy-academic-block academy-learning-hub"> <span class="academy-box-label">{{ t('academy_level1_learning_hub', 'Learning Hub') }}</span> <h3>{{ t('academy_level2_level_2_dashboard_structure_execution_score', 'Level 2 Dashboard — Structure & Execution Score') }}</h3> <p> {{ t('academy_level2_le_niveau_2_transforme_la_lecture_debutant_en_lecture_plus_professionn', 'Le niveau 2 transforme la lecture “débutant” en lecture plus professionnelle. Vous entrez ici dans la logique du filtre : tout ne vaut pas d’être tradé, et un bon trader apprend d’abord à éliminer les setups faibles.') }} </p> <div class="academy-kpi-row"> <div class="academy-kpi-card"> <span>{{ t('academy_level1_modules', 'Modules') }}</span> <strong>10</strong> </div> <div class="academy-kpi-card"> <span>{{ t('academy_level2_quiz_intermediaire', 'Quiz intermédiaire') }}</span> <strong>1</strong> </div> <div class="academy-kpi-card"> <span>{{ t('academy_level1_quiz_final', 'Quiz final') }}</span> <strong>1</strong> </div> <div class="academy-kpi-card"> <span>{{ t('academy_level1_niveau', 'Niveau') }}</span> <strong>{{ t('academy_level2_advanced_core', 'Advanced Core') }}</strong> </div> </div> <div class="academy-summary-grid" style="margin-top: 22px;"> <div class="academy-info-card"> <h3>{{ t('academy_level1_score_visuel', 'Score visuel') }}</h3> <div class="academy-score-ring-wrap"> <div class="academy-score-ring" style="--score: {{ academy_progress.level2 if academy_progress else 0 }};"> <div class="academy-score-ring-inner"> <strong>{{ academy_progress.level2 if academy_progress else 0 }}%</strong> <span>{{ t('academy_level1_progression', 'Progression') }}</span> </div> </div> </div> <div class="academy-checkline"> <div class="academy-checkline-item"><span>✓</span> {{ t('academy_level2_lecture_structurelle_avant_entree', 'Lecture structurelle avant entrée') }}</div> <div class="academy-checkline-item"><span>✓</span> {{ t('academy_level2_confluence_avant_conviction', 'Confluence avant conviction') }}</div> <div class="academy-checkline-item"><span>✓</span> {{ t('academy_level2_timing_avant_execution', 'Timing avant exécution') }}</div> </div> </div> <div class="academy-info-card"> <h3>{{ t('academy_level1_timeline_de_progression', 'Timeline de progression') }}</h3> <div class="academy-progress-timeline"> <div class="academy-timeline-item"> <div class="academy-timeline-dot">1</div> <div class="academy-timeline-card"> <div class="academy-status-badge done">{{ t('academy_level2_bases_integrees', '● Bases intégrées') }}</div> <p style="margin-top:10px;">{{ t('academy_level2_le_niveau_1_a_installe_le_langage_le_risque_et_la_logique_d_invalidati', 'Le niveau 1 a installé le langage, le risque et la logique d’invalidation.') }}</p> </div> </div> <div class="academy-timeline-item"> <div class="academy-timeline-dot">2</div> <div class="academy-timeline-card"> <div class="academy-status-badge live">{{ t('academy_level2_lecture_avancee', '● Lecture avancée') }}</div> <p style="margin-top:10px;">{{ t('academy_level2_le_niveau_2_vous_apprend_a_hierarchiser_structure_zone_liquidite_confl', 'Le niveau 2 vous apprend à hiérarchiser structure, zone, liquidité, confluence et timing.') }}</p> </div> </div> <div class="academy-timeline-item"> <div class="academy-timeline-dot">3</div> <div class="academy-timeline-card"> <div class="academy-status-badge locked">{{ t('academy_level2_preparation_niveau_3', '● Préparation niveau 3') }}</div> <p style="margin-top:10px;">{{ t('academy_level2_une_fois_ce_niveau_maitrise_vous_serez_pret_pour_l_analyse_multi_timef', 'Une fois ce niveau maîtrisé, vous serez prêt pour l’analyse multi-timeframe et le plan de marché.') }}</p> </div> </div> </div> </div> </div> <div class="academy-mastery-board"> <div class="academy-mastery-card"> <h3>{{ t('academy_index_structure_de_marche', 'Structure de marché') }}</h3> <p>{{ t('academy_level2_lire_tendance_range_transition_et_changements_de_regime', 'Lire tendance, range, transition et changements de régime.') }}</p> <div class="academy-mastery-meter"> <div class="academy-mastery-fill" style="width: 82%;"></div> </div> </div> <div class="academy-mastery-card"> <h3>{{ t('academy_index_confluence', 'Confluence') }}</h3> <p>{{ t('academy_level2_comprendre_pourquoi_un_setup_vaut_plus_qu_un_autre', 'Comprendre pourquoi un setup vaut plus qu’un autre.') }}</p> <div class="academy-mastery-meter"> <div class="academy-mastery-fill" style="width: 80%;"></div> </div> </div> <div class="academy-mastery-card"> <h3>{{ t('academy_level2_timing', 'Timing') }}</h3> <p>{{ t('academy_level2_entrer_mieux_et_surtout_eviter_les_entrees_mediocres', 'Entrer mieux, et surtout éviter les entrées médiocres.') }}</p> <div class="academy-mastery-meter"> <div class="academy-mastery-fill" style="width: 76%;"></div> </div> </div> <div class="academy-mastery-card"> <h3>{{ t('academy_level2_liquidite', 'Liquidité') }}</h3> <p>{{ t('academy_level2_comprendre_les_pieges_et_les_faux_departs_du_marche', 'Comprendre les pièges et les faux départs du marché.') }}</p> <div class="academy-mastery-meter"> <div class="academy-mastery-fill" style="width: 74%;"></div> </div> </div> </div> <div class="academy-info-card" style="margin-top: 22px;"> <h3>{{ t('academy_index_progression_reelle', 'Progression réelle') }}</h3> <p data-academy-completion-text>{{ t('academy_level1_0_10_modules_valides_0_complete', '0/10 modules validés • 0% complété') }}</p> <div id="academyCompletionBadge" style="margin-top: 14px;"></div> </div> </div> {% if has_academy_plus %} <div class="academy-academic-block" style="margin-top: 24px;"> <span class="academy-box-label">{{ t('academy_level1_validation_express', 'Validation express') }}</span> <h3>{{ t('academy_level2_quick_check_selection_d_un_setup_de_qualite', 'Quick Check — Sélection d’un setup de qualité') }}</h3> <p> {{ t('academy_level2_un_bon_trader_ne_cherche_pas_seulement_une_direction_il_cherche_un_env', 'Un bon trader ne cherche pas seulement une direction. Il cherche un environnement, une zone, une confluence et un timing cohérents.') }} </p> <div class="academy-quiz-card" style="margin-top: 18px;"> <form class="academy-quiz-form" id="academyQuickStartQuiz2"> <div class="academy-question"> <h3>{{ t('academy_level2_1_un_setup_devient_plus_fort_quand', '1. Un setup devient plus fort quand :') }}</h3> <label><input type="radio" name="q1" value="a"> {{ t('academy_level2_il_y_a_une_seule_bonne_raison_d_entrer', 'il y a une seule bonne raison d’entrer') }}</label> <label><input type="radio" name="q1" value="b"> {{ t('academy_level2_plusieurs_elements_coherents_convergent', 'plusieurs éléments cohérents convergent') }}</label> <label><input type="radio" name="q1" value="c"> {{ t('academy_level2_le_prix_bouge_vite', 'le prix bouge vite') }}</label> </div> <div class="academy-question"> <h3>{{ t('academy_level2_2_un_faux_breakout_survient_souvent_quand', '2. Un faux breakout survient souvent quand :') }}</h3> <label><input type="radio" name="q2" value="a"> {{ t('academy_level2_le_marche_attire_des_entrees_tardives_avant_de_reintegrer', 'le marché attire des entrées tardives avant de réintégrer') }}</label> <label><input type="radio" name="q2" value="b"> {{ t('academy_level2_le_marche_confirme_calmement_sa_structure', 'le marché confirme calmement sa structure') }}</label> <label><input type="radio" name="q2" value="c"> {{ t('academy_level2_il_n_y_a_aucune_liquidite', 'il n’y a aucune liquidité') }}</label> </div> <div class="academy-question"> <h3>{{ t('academy_level2_3_le_bon_timing_d_entree_sert_principalement_a', '3. Le bon timing d’entrée sert principalement à :') }}</h3> <label><input type="radio" name="q3" value="a"> {{ t('academy_level2_entrer_le_plus_tot_possible', 'entrer le plus tôt possible') }}</label> <label><input type="radio" name="q3" value="b"> {{ t('academy_level2_ameliorer_le_rapport_qualite_risque_d_un_scenario_valide', 'améliorer le rapport qualité/risque d’un scénario valide') }}</label> <label><input type="radio" name="q3" value="c"> {{ t('academy_level2_eviter_toute_perte', 'éviter toute perte') }}</label> </div> <button type="button" class="academy-btn academy-btn-primary" onclick="submitQuiz('academyQuickStartQuiz2', ['b','a','b'], 'academyQuickStartResult2')"> {{ t('academy_level1_verifier_mon_niveau', 'Vérifier mon niveau') }} </button> <div id="academyQuickStartResult2" class="academy-quiz-result"></div> </form> </div> </div> {% else %} <div class="academy-lock-card" style="margin-top:24px;"> <div class="academy-lock-icon">🔒</div> <h3>{{ t('academy_level2_contenu_premium_vip', 'Contenu Premium / VIP') }}</h3> <p> {{ t('academy_level2_le_niveau_2_debloque_la_vraie_lecture_d_execution_structure_confluence', 'Le niveau 2 débloque la vraie lecture d’exécution : structure, confluence, liquidité, journal de trading, quiz avancé et progression complète.') }} </p> <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-btn academy-btn-gold academy-btn-full" style="margin-top:16px;"> {{ t('academy_level2_debloquer_le_niveau_2', 'Débloquer le Niveau 2') }} </a> </div> {% endif %} {% if has_academy_plus %} <div class="academy-academic-block" style="margin-top: 24px;"> <span class="academy-box-label">{{ t('academy_level2_visualisation_structurelle', 'Visualisation structurelle') }}</span> <h3>{{ t('academy_level2_graphique_pedagogique_eth_usd', 'Graphique pédagogique — ETH/USD') }}</h3> <p> {{ t('academy_level2_le_niveau_2_ne_vous_demande_plus_seulement_de_voir_une_hausse_ou_une_b', 'Le niveau 2 ne vous demande plus seulement de “voir une hausse ou une baisse”. Il vous demande de comprendre si le marché structure proprement, s’il piège, s’il consolide ou s’il prépare une continuation.') }} </p> <div class="academy-chart-box"> <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_eth_level2&symbol=BINANCE:ETHUSDT&interval=240&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=F1F3F6&studies=[]&theme=dark&style=1&timezone=Etc%2FUTC&withdateranges=1&hideideas=1" width="100%" height="420" frameborder="0" allowtransparency="true" scrolling="no"> </iframe> </div> </div> {% endif %} {% if has_academy_plus %} <div class="academy-accordion"> <details class="academy-lesson" id="lesson-1" open> <summary class="academy-lesson-summary"> <div class="academy-lesson-title-wrap"> <div class="academy-lesson-kicker"> <span class="academy-module-badge current" data-lesson-badge="lesson-1">{{ t('academy_level1_module_01', 'Module 01') }}</span> <span class="academy-mini-score">{{ t('academy_level2_structure_core', 'Structure core') }}</span> </div> <h2 class="academy-lesson-title">{{ t('academy_index_structure_de_marche', 'Structure de marché') }}</h2> <p>{{ t('academy_level2_comprendre_tendance_correction_transition_et_rupture_de_structure', 'Comprendre tendance, correction, transition et rupture de structure.') }}</p> </div> <div class="academy-lesson-arrow">⌄</div> </summary> <div class="academy-lesson-body"> <div class="academy-academic-block"> <h3>{{ t('academy_level2_la_structure_organise_la_lecture_du_prix', 'La structure organise la lecture du prix') }}</h3> <p> {{ t('academy_level2_le_niveau_2_commence_par_une_idee_fondamentale_un_marche_n_est_pas_sim', 'Le niveau 2 commence par une idée fondamentale : un marché n’est pas simplement “haussier” ou “baissier”. Il alterne impulsion, correction, pause, expansion, transition et parfois désordre.') }} </p> <p> {{ t('academy_level2_lire_la_structure_revient_a_comprendre_ce_que_le_marche_fait_maintenan', 'Lire la structure revient à comprendre ce que le marché fait maintenant, comment il l’a fait jusque-là, et ce que cela implique pour la suite.') }} </p> <p> {{ t('academy_level2_la_structure_permet_au_trader_de_ne_pas_confondre_un_simple_retracemen', 'La structure permet au trader de ne pas confondre un simple retracement avec un retournement, ou une cassure locale avec un changement de régime plus profond.') }} </p> <div class="academy-definition-box"> <span class="academy-box-label">{{ t('academy_level1_definition', 'Définition') }}</span> <p> {{ t('academy_level2_la_structure_de_marche_designe_l_organisation_du_prix_dans_le_temps_se', 'La structure de marché désigne l’organisation du prix dans le temps : séquence d’impulsions, de corrections, de cassures, de retests et de transitions.') }} </p> </div> <div class="academy-keytakeaway-box"> <span class="academy-box-label">{{ t('academy_level1_a_retenir', 'À retenir') }}</span> <p> {{ t('academy_level2_un_bon_trader_n_achete_pas_juste_parce_que_ca_monte_il_identifie_si_la', 'Un bon trader n’achète pas juste parce que “ça monte” : il identifie si la structure justifie encore la continuité.') }} </p> </div> <div class="academy-summary-grid"> <div class="academy-info-card"> <h3>{{ t('academy_level2_ce_qu_il_faut_observer', 'Ce qu’il faut observer') }}</h3> <ul class="academy-reflection-list"> <li>{{ t('academy_level2_impulsions_fortes_ou_faibles', 'Impulsions fortes ou faibles.') }}</li> <li>{{ t('academy_level2_corrections_propres_ou_chaotiques', 'Corrections propres ou chaotiques.') }}</li> <li>{{ t('academy_level2_rupture_de_sommets_creux', 'Rupture de sommets / creux.') }}</li> <li>{{ t('academy_level2_changement_de_rythme', 'Changement de rythme.') }}</li> </ul> </div> <div class="academy-info-card"> <h3>{{ t('academy_level1_erreur_frequente', 'Erreur fréquente') }}</h3> <ul class="academy-reflection-list"> <li>{{ t('academy_level2_appeler_retournement_une_simple_pause', 'Appeler retournement une simple pause.') }}</li> <li>{{ t('academy_level2_vendre_trop_tot_une_tendance_active', 'Vendre trop tôt une tendance active.') }}</li> <li>{{ t('academy_level2_lire_un_micro_mouvement_sans_contexte', 'Lire un micro mouvement sans contexte.') }}</li> </ul> </div> </div> <div class="academy-lesson-tools"> <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-1"> {{ t('academy_level1_marquer_comme_termine', '✔ Marquer comme terminé') }} </button> <a class="academy-anchor-btn" href="#lesson-2">{{ t('academy_level1_module_suivant', 'Module suivant') }}</a> </div> </div> </div> </details> <details class="academy-lesson" id="lesson-2"> <summary class="academy-lesson-summary"> <div class="academy-lesson-title-wrap"> <div class="academy-lesson-kicker"> <span class="academy-module-badge" data-lesson-badge="lesson-2">{{ t('academy_level1_module_02', 'Module 02') }}</span> </div> <h2 class="academy-lesson-title">{{ t('academy_level2_tendance_range_et_transition', 'Tendance, range et transition') }}</h2> <p>{{ t('academy_level2_distinguer_les_regimes_de_marche_pour_eviter_les_mauvaises_lectures', 'Distinguer les régimes de marché pour éviter les mauvaises lectures.') }}</p> </div> <div class="academy-lesson-arrow">⌄</div> </summary> <div class="academy-lesson-body"> <div class="academy-academic-block"> <h3>{{ t('academy_level2_le_meme_setup_ne_vaut_pas_la_meme_chose_selon_le_regime', 'Le même setup ne vaut pas la même chose selon le régime') }}</h3> <p> {{ t('academy_level2_une_cassure_dans_une_tendance_forte_n_a_pas_la_meme_valeur_qu_une_cass', 'Une cassure dans une tendance forte n’a pas la même valeur qu’une cassure au milieu d’un range. Une réaction sur support n’a pas la même logique dans une correction saine que dans une vraie transition baissière.') }} </p> <p> {{ t('academy_level2_le_trader_plus_avance_apprend_donc_a_classer_l_environnement_tendance', 'Le trader plus avancé apprend donc à classer l’environnement : tendance, range, compression, expansion ou transition.') }} </p> <div class="academy-comparison-box"> <span class="academy-box-label">{{ t('academy_level1_comparaison', 'Comparaison') }}</span> <div class="academy-comparison-table"> <div class="academy-comparison-row academy-comparison-head"> <div>{{ t('academy_level2_regime', 'Régime') }}</div> <div>{{ t('academy_level2_lecture', 'Lecture') }}</div> <div>{{ t('risk', 'Risque') }}</div> </div> <div class="academy-comparison-row"> <div>{{ t('academy_level2_tendance', 'Tendance') }}</div> <div>{{ t('academy_level2_favoriser_les_continuites', 'Favoriser les continuités') }}</div> <div>{{ t('academy_level2_entrees_tardives', 'Entrées tardives') }}</div> </div> <div class="academy-comparison-row"> <div>{{ t('academy_level2_range', 'Range') }}</div> <div>{{ t('academy_level2_favoriser_reactions_bornees', 'Favoriser réactions bornées') }}</div> <div>{{ t('academy_level2_faux_breakouts', 'Faux breakouts') }}</div> </div> <div class="academy-comparison-row"> <div>{{ t('academy_level2_transition', 'Transition') }}</div> <div>{{ t('academy_level2_prudence_maximale', 'Prudence maximale') }}</div> <div>{{ t('academy_level2_contradictions', 'Contradictions') }}</div> </div> </div> </div> <div class="academy-lesson-tools"> <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-2"> {{ t('academy_level1_marquer_comme_termine', '✔ Marquer comme terminé') }} </button> <a class="academy-anchor-btn" href="#lesson-3">{{ t('academy_level1_module_suivant', 'Module suivant') }}</a> </div> </div> </div> </details> <details class="academy-lesson" id="lesson-3"> <summary class="academy-lesson-summary"> <div class="academy-lesson-title-wrap"> <div class="academy-lesson-kicker"> <span class="academy-module-badge" data-lesson-badge="lesson-3">{{ t('academy_level1_module_03', 'Module 03') }}</span> </div> <h2 class="academy-lesson-title">{{ t('academy_index_confluence', 'Confluence') }}</h2> <p>{{ t('academy_level2_comprendre_pourquoi_certains_setups_ont_plus_de_valeur_que_d_autres', 'Comprendre pourquoi certains setups ont plus de valeur que d’autres.') }}</p> </div> <div class="academy-lesson-arrow">⌄</div> </summary> <div class="academy-lesson-body"> <div class="academy-academic-block"> <h3>{{ t('academy_level2_un_seul_argument_ne_suffit_pas_toujours', 'Un seul argument ne suffit pas toujours') }}</h3> <p> {{ t('academy_level2_la_confluence_designe_la_convergence_de_plusieurs_elements_coherents_s', 'La confluence désigne la convergence de plusieurs éléments cohérents : structure, zone, comportement du prix, timing, momentum, contexte ou liquidité.') }} </p> <p> {{ t('academy_level2_le_but_n_est_pas_d_empiler_artificiellement_des_indicateurs_le_but_est', 'Le but n’est pas d’empiler artificiellement des indicateurs. Le but est de renforcer la cohérence d’un scénario.') }} </p> <div class="academy-definition-box"> <span class="academy-box-label">{{ t('academy_level1_definition', 'Définition') }}</span> <p> {{ t('academy_level2_la_confluence_est_l_alignement_de_plusieurs_facteurs_independants_qui', 'La confluence est l’alignement de plusieurs facteurs indépendants qui renforcent la qualité relative d’un setup.') }} </p> </div> <div class="academy-summary-grid"> <div class="academy-info-card"> <h3>{{ t('academy_level2_confluence_saine', 'Confluence saine') }}</h3> <ul class="academy-reflection-list"> <li>{{ t('academy_level2_structure_claire', 'Structure claire.') }}</li> <li>{{ t('academy_level2_zone_visible', 'Zone visible.') }}</li> <li>{{ t('academy_level2_reaction_lisible', 'Réaction lisible.') }}</li> <li>{{ t('academy_level2_timing_coherent', 'Timing cohérent.') }}</li> </ul> </div> <div class="academy-info-card"> <h3>{{ t('academy_level2_fausse_confluence', 'Fausse confluence') }}</h3> <ul class="academy-reflection-list"> <li>{{ t('academy_level2_trop_d_indicateurs_redondants', 'Trop d’indicateurs redondants.') }}</li> <li>{{ t('academy_level2_arguments_contradictoires', 'Arguments contradictoires.') }}</li> <li>{{ t('academy_level2_besoin_force_de_justifier_un_trade', 'Besoin forcé de justifier un trade.') }}</li> <li>{{ t('academy_level2_conviction_emotionnelle_deguisee', 'Conviction émotionnelle déguisée.') }}</li> </ul> </div> </div> <div class="academy-lesson-tools"> <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-3"> {{ t('academy_level1_marquer_comme_termine', '✔ Marquer comme terminé') }} </button> <a class="academy-anchor-btn" href="#lesson-4">{{ t('academy_level1_module_suivant', 'Module suivant') }}</a>  </div> </div> </div> </details> <details class="academy-lesson" id="lesson-4"> <summary class="academy-lesson-summary"> <div class="academy-lesson-title-wrap">  <div class="academy-lesson-kicker">  <span class="academy-module-badge" data-lesson-badge="lesson-4">{{ t('academy_level1_module_04', 'Module 04') }}</span>  </div>  <h2 class="academy-lesson-title">{{ t('academy_level2_breakout_et_faux_breakout', 'Breakout et faux breakout') }}</h2>  <p>{{ t('academy_level2_apprendre_a_distinguer_la_vraie_continuite_du_piege_de_liquidite', 'Apprendre à distinguer la vraie continuité du piège de liquidité.') }}</p> </div> <div class="academy-lesson-arrow">⌄</div> </summary> <div class="academy-lesson-body"> <div class="academy-academic-block">  <h3>{{ t('academy_level2_toute_cassure_n_est_pas_une_opportunite', 'Toute cassure n’est pas une opportunité') }}</h3>  <p>  {{ t('academy_level2_beaucoup_de_debutants_croient_qu_une_cassure_visible_suffit_a_valider', 'Beaucoup de débutants croient qu’une cassure visible suffit à valider une continuation.  Or un breakout peut être sain, prématuré, épuisé ou totalement piégé.') }}  </p>  <p>  {{ t('academy_level2_le_faux_breakout_attire_souvent_l_entree_tardive_d_operateurs_impatien', 'Le faux breakout attire souvent l’entrée tardive d’opérateurs impatients  avant une réintégration rapide du prix dans sa zone initiale.') }}  </p>  <div class="academy-case-box">  <span class="academy-box-label">{{ t('academy_level2_cas_type', 'Cas type') }}</span>  <p>  {{ t('academy_level2_le_prix_casse_le_haut_d_un_range_attire_les_acheteurs_impulsifs_puis_r', 'Le prix casse le haut d’un range, attire les acheteurs impulsifs,  puis réintègre le range et invalide la cassure.') }}  </p>  </div>  <div class="academy-warning-box">  <span class="academy-box-label">{{ t('academy_level1_erreur_frequente', 'Erreur fréquente') }}</span>   <p>   {{ t('academy_level2_confondre_vitesse_de_mouvement_et_qualite_de_validation', 'Confondre vitesse de mouvement et qualité de validation.') }}   </p>   </div>   <div class="academy-lesson-tools">   <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-4">   {{ t('academy_level1_marquer_comme_termine', '✔ Marquer comme terminé') }}     </button>     <a class="academy-anchor-btn" href="#lesson-5">{{ t('academy_level1_module_suivant', 'Module suivant') }}</a>         </div>        </div>       </div>      </details>      <details class="academy-lesson" id="lesson-5">       <summary class="academy-lesson-summary">        <div class="academy-lesson-title-wrap">         <div class="academy-lesson-kicker">          <span class="academy-module-badge" data-lesson-badge="lesson-5">{{ t('academy_level1_module_05', 'Module 05') }}</span>         </div>         <h2 class="academy-lesson-title">{{ t('academy_level2_liquidite_et_pieges_de_marche', 'Liquidité et pièges de marché') }}</h2>         <p>{{ t('academy_level2_comprendre_pourquoi_le_marche_depasse_parfois_une_zone_avant_de_repart', 'Comprendre pourquoi le marché dépasse parfois une zone avant de repartir.') }}</p>        </div>        <div class="academy-lesson-arrow">⌄</div>       </summary>       <div class="academy-lesson-body">        <div class="academy-academic-block">         <h3>{{ t('academy_level2_le_marche_cherche_parfois_des_reactions_avant_de_choisir_sa_direction', 'Le marché cherche parfois des réactions avant de choisir sa direction') }}</h3>         <p>          {{ t('academy_level2_une_zone_n_est_pas_toujours_respectee_proprement_le_prix_peut_la_depas', 'Une zone n’est pas toujours respectée “proprement”. Le prix peut la dépasser,          balayer des stops, attirer des entrées puis repartir dans l’autre sens.') }}         </p>         <p>          {{ t('academy_level2_cette_logique_ne_doit_pas_etre_vue_comme_du_chaos_pur_mais_comme_une_r', 'Cette logique ne doit pas être vue comme du chaos pur, mais comme une réalité          structurelle : le marché teste, balaie, piège parfois, puis révèle.') }}         </p>         <div class="academy-keytakeaway-box">          <span class="academy-box-label">{{ t('academy_level1_a_retenir', 'À retenir') }}</span>                   <p>                     {{ t('academy_level2_une_meche_ou_un_depassement_temporaire_ne_signifient_pas_toujours_une', 'Une mèche ou un dépassement temporaire ne signifient pas toujours une vraie invalidation structurelle.') }}                   </p>                 </div>                 <div class="academy-lesson-tools">                   <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-5">                     ✔ {{ t("mark_completed", "Marquer comme terminé") }}
-                                    </button>
-                                    <a class="academy-anchor-btn" href="#lesson-6">{{ t("next_module", "Module suivant") }}</a>
-                                </div>
-                            </div>
-                        </div>
-                    </details>
+{% block content %}
+{% if not has_academy_plus %}<script>document.addEventListener("DOMContentLoaded",function(){document.body.dataset.autoUpgradePopup="true";});</script>{% endif %}
 
-                    <details class="academy-lesson" id="lesson-6">
-                        <summary class="academy-lesson-summary">
-                            <div class="academy-lesson-title-wrap">
-                                <div class="academy-lesson-kicker">
-                                    <span class="academy-module-badge" data-lesson-badge="lesson-6">{{ t('academy_level1_module_06', 'Module 06') }}</span>
-                                </div>
-                                <h2 class="academy-lesson-title">{{ t('academy_level2_timing_d_entree', 'Timing d’entrée') }}</h2>
-                                <p>{{ t('academy_level2_une_bonne_idee_mal_executee_peut_devenir_un_mauvais_trade', 'Une bonne idée mal exécutée peut devenir un mauvais trade.') }}</p>
-                            </div>
-                            <div class="academy-lesson-arrow">⌄</div>
-                        </summary>
-                        <div class="academy-lesson-body">
-                            <div class="academy-academic-block">
-                                <h3>{{ t('academy_level2_le_timing_ne_remplace_pas_l_idee_il_l_optimise', 'Le timing ne remplace pas l’idée, il l’optimise') }}</h3>
-                                <p>
-                                    {{ t('academy_level2_le_timing_d_entree_consiste_a_chercher_le_moment_ou_le_scenario_valide', 'Le timing d’entrée consiste à chercher le moment où le scénario valide                                     offre la meilleure qualité d’engagement : moins de vulnérabilité,                                     meilleure lisibilité, meilleure invalidation.') }}
-                                </p>
-                                <p>
-                                    {{ t('academy_level2_entrer_trop_tot_expose_a_l_incertitude_inutile_entrer_trop_tard_degrad', 'Entrer trop tôt expose à l’incertitude inutile. Entrer trop tard dégrade souvent le ratio.') }}
-                                </p>
-
-                                <div class="academy-summary-grid">
-                                    <div class="academy-info-card">
-                                        <h3>{{ t('academy_level2_trop_tot', 'Trop tôt') }}</h3>
-                                        <ul class="academy-reflection-list">
-                                            <li>{{ t('academy_level2_signal_non_confirme', 'Signal non confirmé.') }}</li>
-                                            <li>{{ t('academy_level2_zone_encore_fragile', 'Zone encore fragile.') }}</li>
-                                            <li>{{ t('academy_level2_hypothese_prematuree', 'Hypothèse prématurée.') }}</li>
-                                        </ul>
-                                    </div>
-                                    <div class="academy-info-card">
-                                        <h3>{{ t('academy_level2_trop_tard', 'Trop tard') }}</h3>
-                                        <ul class="academy-reflection-list">
-                                            <li>{{ t('academy_level2_impulsion_deja_avancee', 'Impulsion déjà avancée.') }}</li>
-                                            <li>{{ t('academy_level2_stop_plus_large', 'Stop plus large.') }}</li>
-                                            <li>{{ t('academy_level2_rendement_moins_interessant', 'Rendement moins intéressant.') }}</li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <div class="academy-lesson-tools">
-                                    <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-6">
-                                        ✔ {{ t("mark_completed", "Marquer comme terminé") }}
-                                    </button>
-                                    <a class="academy-anchor-btn" href="#lesson-7">{{ t("next_module", "Module suivant") }}</a>
-                                </div>
-                            </div>
-                        </div>
-                    </details>
-
-                    <details class="academy-lesson" id="lesson-7">
-                        <summary class="academy-lesson-summary">
-                            <div class="academy-lesson-title-wrap">
-                                <div class="academy-lesson-kicker">
-                                    <span class="academy-module-badge" data-lesson-badge="lesson-7">{{ t('academy_level1_module_07', 'Module 07') }}</span>
-                                </div>
-                                <h2 class="academy-lesson-title">{{ t('academy_level2_gestion_active_du_trade', 'Gestion active du trade') }}</h2>
-                                <p>{{ t('academy_level2_savoir_adapter_sans_tomber_dans_l_improvisation_emotionnelle', 'Savoir adapter sans tomber dans l’improvisation émotionnelle.') }}</p>
-                            </div>
-                            <div class="academy-lesson-arrow">⌄</div>
-                        </summary>
-                        <div class="academy-lesson-body">
-                            <div class="academy-academic-block">
-                                <h3>{{ t('academy_level2_gerer_activement_ne_veut_pas_dire_improviser', 'Gérer activement ne veut pas dire improviser') }}</h3>
-                                <p>
-                                    {{ t('academy_level2_le_trader_plus_avance_commence_a_comprendre_que_certains_trades_peuven', 'Le trader plus avancé commence à comprendre que certains trades peuvent être gérés                                     activement : réduction du risque, prise partielle, adaptation à la structure.') }}
-                                </p>
-                                <p>
-                                    {{ t('academy_level2_mais_cette_gestion_active_n_a_de_valeur_que_si_elle_est_guidee_par_des', 'Mais cette gestion active n’a de valeur que si elle est guidée par des règles,                                     pas par la peur ou la cupidité.') }}
-                                </p>
-
-                                <div class="academy-warning-box">
-                                    <span class="academy-box-label">{{ t("common_mistake", "Erreur fréquente") }}</span>
-                                    <p>
-                                        {{ t('academy_level2_deplacer_son_stop_ou_prendre_ses_profits_sans_logique_juste_parce_que', 'Déplacer son stop ou prendre ses profits sans logique juste parce que le prix bouge vite.') }}
-                                    </p>
-                                </div>
-
-                                <div class="academy-lesson-tools">
-                                    <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-7">
-                                        ✔ {{ t("mark_completed", "Marquer comme terminé") }}
-                                    </button>
-                                    <a class="academy-anchor-btn" href="#lesson-8">{{ t("next_module", "Module suivant") }}</a>
-                                </div>
-                            </div>
-                        </div>
-                    </details>
-
-                    <details class="academy-lesson" id="lesson-8">
-                        <summary class="academy-lesson-summary">
-                            <div class="academy-lesson-title-wrap">
-                                <div class="academy-lesson-kicker">
-                                    <span class="academy-module-badge" data-lesson-badge="lesson-8">{{ t('academy_level1_module_08', 'Module 08') }}</span>
-                                </div>
-                                <h2 class="academy-lesson-title">{{ t('academy_level2_journal_de_trading', 'Journal de trading') }}</h2>
-                                <p>{{ t('academy_level2_transformer_l_experience_en_progres_mesurable', 'Transformer l’expérience en progrès mesurable.') }}</p>
-                            </div>
-                            <div class="academy-lesson-arrow">⌄</div>
-                        </summary>
-                        <div class="academy-lesson-body">
-                            <div class="academy-academic-block">
-                                <h3>{{ t('academy_level2_un_trade_termine_doit_produire_une_information_utile', 'Un trade terminé doit produire une information utile') }}</h3>
-                                <p>
-                                    {{ t('academy_level2_le_journal_de_trading_n_est_pas_une_formalite_decorative_il_sert_a_com', 'Le journal de trading n’est pas une formalité décorative.                                     Il sert à comprendre si le problème vient du scénario, du timing,                                     de la gestion, de l’émotion ou du contexte.') }}
-                                </p>
-
-                                <div class="academy-checklist">
-                                    <span class="academy-box-label">{{ t("checklist", "Checklist") }} {{ t('academy_level2_journal', 'journal') }}</span>
-                                    <ul class="academy-reflection-list">
-                                        <li>{{ t('academy_level2_contexte_du_marche', 'Contexte du marché.') }}</li>
-                                        <li>{{ t('academy_level2_pourquoi_l_entree_semblait_valable', 'Pourquoi l’entrée semblait valable.') }}</li>
-                                        <li>{{ t('academy_level2_ce_qui_a_confirme_ou_fragilise_l_idee', 'Ce qui a confirmé ou fragilisé l’idée.') }}</li>
-                                        <li>{{ t('academy_level2_gestion_du_risque', 'Gestion du risque.') }}</li>
-                                        <li>{{ t('academy_level2_erreur_eventuelle', 'Erreur éventuelle.') }}</li>
-                                        <li>{{ t('academy_level2_lecon_exploitable', 'Leçon exploitable.') }}</li>
-                                    </ul>
-                                </div>
-
-                                <div class="academy-lesson-tools">
-                                    <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-8">
-                                        ✔ {{ t("mark_completed", "Marquer comme terminé") }}
-                                    </button>
-                                    <a class="academy-anchor-btn" href="#lesson-9">{{ t("next_module", "Module suivant") }}</a>
-                                </div>
-                            </div>
-                        </div>
-                    </details>
-
-                    <details class="academy-lesson" id="lesson-9">
-                        <summary class="academy-lesson-summary">
-                            <div class="academy-lesson-title-wrap">
-                                <div class="academy-lesson-kicker">
-                                    <span class="academy-module-badge" data-lesson-badge="lesson-9">{{ t('academy_level1_module_09', 'Module 09') }}</span>
-                                </div>
-                                <h2 class="academy-lesson-title">{{ t('academy_level2_etudes_de_cas', 'Études de cas') }}</h2>
-                                <p>{{ t('academy_level2_appliquer_la_structure_et_la_confluence_a_des_cas_de_marche_reels', 'Appliquer la structure et la confluence à des cas de marché réels.') }}</p>
-                            </div>
-                            <div class="academy-lesson-arrow">⌄</div>
-                        </summary>
-                        <div class="academy-lesson-body">
-                            <div class="academy-cards">
-                                <article class="academy-case-card">
-                                    <span class="academy-mini-badge">BTC</span>
-                                    <h3>{{ t('academy_level2_cas_1_continuite_apres_retest', 'Cas 1 — Continuité après retest') }}</h3>
-                                    <p>
-                                        {{ t('academy_level2_le_prix_casse_une_resistance_revient_tester_la_zone_puis_repart_la_qua', 'Le prix casse une résistance, revient tester la zone, puis repart.                                         La qualité du trade dépend de la tenue structurelle et du timing du retest.') }}
-                                    </p>
-                                </article>
-
-                                <article class="academy-case-card">
-                                    <span class="academy-mini-badge">{{ t('academy_level2_gold', 'GOLD') }}</span>
-                                    <h3>{{ t('academy_level2_cas_2_faux_breakout_en_transition', 'Cas 2 — Faux breakout en transition') }}</h3>
-                                    <p>
-                                        {{ t('academy_level2_le_prix_depasse_brievement_une_zone_importante_avant_de_reintegrer_le', 'Le prix dépasse brièvement une zone importante avant de réintégrer.                                         Le trader discipliné attend la confirmation, le débutant achète la mèche.') }}
-                                    </p>
-                                </article>
-
-                                <article class="academy-case-card">
-                                    <span class="academy-mini-badge">ETH</span>
-                                    <h3>{{ t('academy_level2_cas_3_zone_structure_confluence', 'Cas 3 — Zone + structure + confluence') }}</h3>
-                                    <p>
-                                        {{ t('academy_level2_une_zone_seule_ne_suffit_pas_la_structure_et_le_comportement_du_prix_d', 'Une zone seule ne suffit pas. La structure et le comportement du prix                                         déterminent si le setup mérite réellement l’attention.') }}
-                                    </p>
-                                </article>
-                            </div>
-
-                            <div class="academy-lesson-tools">
-                                <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-9">
-                                    ✔ {{ t("mark_completed", "Marquer comme terminé") }}
-                                </button>
-                                <a class="academy-anchor-btn" href="#lesson-10">{{ t("next_module", "Module suivant") }}</a>
-                            </div>
-                        </div>
-                    </details>
-
-                    <details class="academy-lesson" id="lesson-10">
-                        <summary class="academy-lesson-summary">
-                            <div class="academy-lesson-title-wrap">
-                                <div class="academy-lesson-kicker">
-                                    <span class="academy-module-badge" data-lesson-badge="lesson-10">{{ t('academy_level1_module_10', 'Module 10') }}</span>
-                                </div>
-                                <h2 class="academy-lesson-title">{{ t('academy_level2_synthese_du_niveau_2', 'Synthèse du niveau 2') }}</h2>
-                                <p>{{ t('academy_level2_transformer_la_lecture_du_marche_en_methode_d_execution_plus_propre', 'Transformer la lecture du marché en méthode d’exécution plus propre.') }}</p>
-                            </div>
-                            <div class="academy-lesson-arrow">⌄</div>
-                        </summary>
-                        <div class="academy-lesson-body">
-                            <div class="academy-academic-block">
-                                <h3>{{ t('academy_level2_ce_que_le_niveau_2_doit_installer', 'Ce que le niveau 2 doit installer') }}</h3>
-                                <p>
-                                    {{ t('academy_level2_le_niveau_2_doit_faire_passer_l_utilisateur_d_une_logique_de_comprehen', 'Le niveau 2 doit faire passer l’utilisateur d’une logique de compréhension                                     à une logique de filtrage et de hiérarchisation.') }}
-                                </p>
-                                <p>
-                                    {{ t('academy_level2_un_bon_eleve_de_niveau_2_ne_cherche_plus_seulement_a_avoir_une_idee_il', 'Un bon élève de niveau 2 ne cherche plus seulement à “avoir une idée”.                                     Il cherche à savoir si cette idée mérite d’être exécutée.') }}
-                                </p>
-
-                                <div class="academy-summary-grid">
-                                    <div class="academy-info-card">
-                                        <h3>{{ t('academy_level1_competences_acquises', 'Compétences acquises') }}</h3>
-                                        <ul class="academy-reflection-list">
-                                            <li>{{ t('academy_level2_lire_une_structure_de_marche', 'Lire une structure de marché.') }}</li>
-                                            <li>{{ t('academy_level2_distinguer_tendance_range_et_transition', 'Distinguer tendance, range et transition.') }}</li>
-                                            <li>{{ t('academy_level2_comprendre_la_confluence', 'Comprendre la confluence.') }}</li>
-                                            <li>{{ t('academy_level2_reconnaitre_faux_breakout_et_pieges_de_liquidite', 'Reconnaître faux breakout et pièges de liquidité.') }}</li>
-                                            <li>{{ t('academy_level2_ameliorer_le_timing_d_entree', 'Améliorer le timing d’entrée.') }}</li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="academy-info-card">
-                                        <h3>{{ t('academy_level2_preparation_niveau_3_2', 'Préparation niveau 3') }}</h3>
-                                        <ul class="academy-reflection-list">
-                                            <li>{{ t('academy_level2_lecture_multi_timeframe', 'Lecture multi-timeframe.') }}</li>
-                                            <li>{{ t('academy_level2_plan_de_marche', 'Plan de marché.') }}</li>
-                                            <li>{{ t('academy_level2_selection_d_actifs', 'Sélection d’actifs.') }}</li>
-                                            <li>{{ t('academy_level2_correlations_et_vision_plus_large', 'Corrélations et vision plus large.') }}</li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <div class="academy-lesson-tools">
-                                    <button class="academy-btn academy-btn-secondary" type="button" data-complete-lesson="lesson-10">
-                                        ✔ {{ t("mark_completed", "Marquer comme terminé") }}
-                                    </button>
-                                    <a class="academy-anchor-btn" href="#quiz-final">{{ t("go_to_final_quiz", "Aller au quiz final") }}</a>
-                                </div>
-                            </div>
-                        </div>
-                    </details>
-
-                </div>
-                {% endif %}
-            </div>
-
-            <aside class="academy-sticky-card">
-                <div class="academy-info-card academy-sticky-nav">
-                    <h3>{{ t("sticky_navigation", "Navigation sticky") }}</h3>
-                    <div class="academy-outline-nav" style="margin-top: 14px;">
-                        <a class="academy-outline-link" href="#learning-hub">
-                            <span>{{ t('academy_level1_hub_score_visuel', 'Hub & score visuel') }}</span>
-                            <small>{{ t('academy_level1_overview', 'Overview') }}</small>
-                        </a>
-                        <a class="academy-outline-link" href="#lesson-1">
-                            <span>{{ t('academy_level2_01_structure_de_marche', '01 — Structure de marché') }}</span>
-                            <small>{{ t('academy_level2_core', 'Core') }}</small>
-                        </a>
-                        <a class="academy-outline-link" href="#lesson-2">
-                            <span>{{ t('academy_level2_02_tendance_range_transition', '02 — Tendance / range / transition') }}</span>
-                            <small>{{ t('academy_level1_context', 'Context') }}</small>
-                        </a>
-                        <a class="academy-outline-link" href="#lesson-3">
-                            <span>{{ t('academy_level2_03_confluence', '03 — Confluence') }}</span>
-                            <small>{{ t('academy_level2_setup_quality', 'Setup Quality') }}</small>
-                        </a>
-                        <a class="academy-outline-link" href="#lesson-4">
-                            <span>{{ t('academy_level2_04_breakout_faux_breakout', '04 — Breakout / faux breakout') }}</span>
-                            <small>{{ t('academy_level2_break_logic', 'Break Logic') }}</small>
-                        </a>
-                        <a class="academy-outline-link" href="#lesson-5">
-                            <span>{{ t('academy_level2_05_liquidite', '05 — Liquidité') }}</span>
-                            <small>{{ t('academy_level2_market_traps', 'Market Traps') }}</small>
-                        </a>
-                        <a class="academy-outline-link" href="#lesson-6">
-                            <span>{{ t('academy_level2_06_timing_d_entree', '06 — Timing d’entrée') }}</span>
-                            <small>{{ t('academy_level1_execution', 'Execution') }}</small>
-                        </a>
-                        <a class="academy-outline-link" href="#lesson-7">
-                            <span>{{ t('academy_level2_07_gestion_active', '07 — Gestion active') }}</span>
-                            <small>{{ t('academy_level2_management', 'Management') }}</small>
-                        </a>
-                        <a class="academy-outline-link" href="#lesson-8">
-                            <span>{{ t('academy_level2_08_journal_de_trading', '08 — Journal de trading') }}</span>
-                            <small>{{ t('academy_level1_review', 'Review') }}</small>
-                        </a>
-                        <a class="academy-outline-link" href="#lesson-9">
-                            <span>{{ t('academy_level2_09_etudes_de_cas', '09 — Études de cas') }}</span>
-                            <small>{{ t('academy_level2_cases', 'Cases') }}</small>
-                        </a>
-                        <a class="academy-outline-link" href="#lesson-10">
-                            <span>{{ t('academy_level1_10_synthese', '10 — Synthèse') }}</span>
-                            <small>{{ t('academy_level1_review', 'Review') }}</small>
-                        </a>
-                        <a class="academy-outline-link" href="#quiz-final">
-                            <span>{{ t("final_quiz", "Quiz final") }}</span>
-                            <small>{{ t('academy_level1_validation', 'Validation') }}</small>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="academy-info-card">
-                    <h3>{{ t("level_badges", "Badges du niveau") }}</h3>
-                    <div class="academy-lesson-tools" style="margin-top: 14px;">
-                        <span class="academy-module-badge validated">{{ t('academy_level2_advanced_core_2', '✓ Advanced Core') }}</span>
-                        <span class="academy-module-badge current">{{ t('academy_level2_confluence_timing', 'Confluence & timing') }}</span>
-                        <span class="academy-module-badge">{{ t("academy", "Academy") }} Level 2</span>
-                    </div>
-                </div>
-
-                <div class="academy-info-card">
-                    <h3>{{ t('academy_level1_ce_que_ce_niveau_doit_changer', 'Ce que ce niveau doit changer') }}</h3>
-                    <p>
-                        {{ t('academy_level2_vous_faire_sortir_d_une_logique_de_reaction_pour_entrer_dans_une_logiq', 'Vous faire sortir d’une logique de réaction pour entrer dans une logique                         de sélection, de patience et de qualité d’exécution.') }}
-                    </p>
-                </div>
-            </aside>
-        </div>
+<section class="lhero">
+  <div class="academy-shell">
+    <div class="academy-breadcrumb"><a href="{{ url_for('academy.academy_index', lang_code=current_lang) }}">Academy</a><span>/</span><span>Level 2</span></div>
+    <span class="lbadge pp">Level 2 — Advanced Execution</span><span class="lbadge pp">Premium / VIP</span>
+    <h1>Advanced Structure<br><em>& Execution</em></h1>
+    <p class="sub">Level 1 gave you the language. Level 2 gives you the professional reading: how structure breaks and shifts, where liquidity hides, how to filter setups by quality, and how to execute with precision rather than impulse.</p>
+    <div class="lstats">
+      <div class="lstat"><span class="num">12</span><span class="lbl">Modules</span></div>
+      <div class="lstat"><span class="num">4h+</span><span class="lbl">Content</span></div>
+      <div class="lstat"><span class="num">1</span><span class="lbl">Certification</span></div>
     </div>
+    <div class="academy-actions">
+      {% if has_academy_plus %}
+      <a href="#m1" class="academy-btn academy-btn-primary">Start Module 1</a>
+      <a href="#cert" class="academy-btn academy-btn-secondary">Go to Certification</a>
+      {% else %}
+      <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-btn academy-btn-gold">Unlock Level 2 — Premium / VIP</a>
+      {% endif %}
+    </div>
+  </div>
 </section>
+
+<section class="academy-section">
+<div class="academy-shell">
+<div class="lgrid">
+<div>
+
+<div class="academy-academic-block" style="margin-top:36px;">
+  <span class="academy-box-label">Level 2 — Overview</span>
+  <h3>From theoretical foundations to professional market reading</h3>
+  <p>Level 2 builds directly on Level 1's concepts without repeating them. You already know what a trade is, how to size it and how to read basic structure. Now you learn how structure breaks and shifts, where liquidity creates traps, why some setups are worth 3x more than others, and how to build a selection filter that improves every entry.</p>
+  <div class="lcards">
+    <div class="lcard"><h4>New concepts (not in Level 1)</h4><ul>
+      <li>Break of Structure (BOS) & CHoCH</li><li>Order blocks & imbalances</li>
+      <li>Liquidity sweeps & fair value gaps</li><li>False breakouts & manipulation patterns</li>
+      <li>Multi-factor confluence scoring</li><li>HTF bias construction</li>
+      <li>Setup quality filtering (A+ vs B–)</li><li>Advanced journal — setup grading</li>
+      <li>Volume reading basics</li><li>Session-based setup selection</li>
+      <li>Execution refinement on LTF</li><li>Level 2 certification</li>
+    </ul></div>
+    <div class="lcard"><h4>Prerequisite</h4><ul><li>Level 1 completed (or equivalent knowledge)</li></ul>
+    <h4 style="margin-top:12px;">Access</h4><ul><li>Premium and VIP plans</li></ul>
+    <h4 style="margin-top:12px;">What comes next</h4><ul><li>Level 3 introduces multi-timeframe planning, top-down analysis and inter-market correlations — concepts not covered here</li></ul></div>
+  </div>
+</div>
 
 {% if has_academy_plus %}
-<section class="academy-section academy-dark-band" id="quiz-mid">
-    <div class="academy-shell">
-        <div class="academy-section-title">
-            <span class="academy-kicker">{{ t("evaluation", "Évaluation") }} {{ t('academy_level2_intermediaire', 'intermédiaire') }}</span>
-            <h2>{{ t('academy_level2_checkpoint_de_progression', 'Checkpoint de progression') }}</h2>
-        </div>
 
-        <div class="academy-quiz-card">
-            <form class="academy-quiz-form" id="academyQuiz2Mid">
-                <div class="academy-question">
-                    <h3>{{ t('academy_level2_1_la_confluence_signifie', '1. La confluence signifie :') }}</h3>
-                    <label><input type="radio" name="q1" value="a"> {{ t('academy_level2_multiplier_les_indicateurs_sans_hierarchie', 'multiplier les indicateurs sans hiérarchie') }}</label>
-                    <label><input type="radio" name="q1" value="b"> {{ t('academy_level2_aligner_plusieurs_facteurs_coherents_pour_renforcer_un_setup', 'aligner plusieurs facteurs cohérents pour renforcer un setup') }}</label>
-                    <label><input type="radio" name="q1" value="c"> {{ t('academy_level2_trader_seulement_avec_une_conviction_forte', 'trader seulement avec une conviction forte') }}</label>
-                </div>
+<!-- M01 -->
+<div class="lsh" id="m1"><div class="lsn">01</div><div><h2>Advanced Market Structure: BOS & CHoCH</h2><p>Beyond HH/HL — reading structural shifts with precision</p></div></div>
+<div class="lb">
+  <p>Level 1 taught you to identify Higher Highs, Higher Lows, Lower Highs and Lower Lows. Level 2 goes deeper: it teaches you to recognize the precise moment a structure breaks or changes character — and what that means for your positioning.</p>
+  <div class="lbox def"><span class="blbl">Break of Structure (BOS)</span><p>A BOS occurs when price closes beyond a previous swing high (in an uptrend) or swing low (in a downtrend) with confirmation. It signals continuation — the trend is extending, not reversing. BOS is NOT a reversal signal; it confirms the existing direction.</p></div>
+  <div class="lbox def"><span class="blbl">Change of Character (CHoCH)</span><p>A CHoCH occurs when price breaks the last Higher Low in an uptrend (or last Lower High in a downtrend). This is the first signal of a potential trend reversal — a change in the market's behavior. CHoCH requires confirmation and is not traded immediately on its own.</p></div>
+  <h4>BOS vs CHoCH — practical decision matrix</h4>
+  <table class="ltable">
+    <thead><tr><th>Event</th><th>What it signals</th><th>Correct response</th><th>Error to avoid</th></tr></thead>
+    <tbody>
+      <tr><td><strong>BOS (uptrend)</strong></td><td>Continuation — buy the dip</td><td>Wait for pullback to OB/FVG, long with structure</td><td>Shorting the break as if it were resistance</td></tr>
+      <tr><td><strong>BOS (downtrend)</strong></td><td>Continuation — sell the rally</td><td>Wait for pullback to OB/FVG, short with structure</td><td>Longing the bounce as a reversal</td></tr>
+      <tr><td><strong>CHoCH</strong></td><td>Potential reversal — wait for confirmation</td><td>Reduce exposure, look for opposing structure</td><td>Immediately reversing on first CHoCH without confirmation</td></tr>
+    </tbody>
+  </table>
+  <div class="lbox warn"><span class="blbl">Critical nuance</span><p>Not every CHoCH leads to a reversal. Many are liquidity sweeps that push price briefly beyond a key level before continuing the original trend. Always wait for a subsequent BOS in the new direction before committing to a reversal thesis.</p></div>
+</div>
 
-                <div class="academy-question">
-                    <h3>{{ t('academy_level2_2_un_faux_breakout_est_souvent', '2. Un faux breakout est souvent :') }}</h3>
-                    <label><input type="radio" name="q2" value="a"> {{ t('academy_level2_une_cassure_qui_attire_puis_piege', 'une cassure qui attire puis piège') }}</label>
-                    <label><input type="radio" name="q2" value="b"> {{ t('academy_level2_une_continuation_saine', 'une continuation saine') }}</label>
-                    <label><input type="radio" name="q2" value="c"> {{ t('academy_level2_une_absence_totale_de_liquidite', 'une absence totale de liquidité') }}</label>
-                </div>
+<!-- M02 -->
+<div class="lsh" id="m2"><div class="lsn">02</div><div><h2>Order Blocks & Imbalance Zones</h2><p>Where institutional footprints show in the chart</p></div></div>
+<div class="lb">
+  <p>Order blocks and imbalances are two of the most reliable concepts in modern technical analysis. They represent areas where significant institutional activity occurred — and where price frequently returns to "fill" or react before continuing.</p>
+  <div class="lbox def"><span class="blbl">Order Block (OB)</span><p>The last bearish candle before a strong bullish move (bullish OB) or the last bullish candle before a strong bearish move (bearish OB). When price returns to this zone, institutional orders that were not filled may reactivate — creating a high-probability reaction area.</p></div>
+  <div class="lbox def"><span class="blbl">Fair Value Gap (FVG) / Imbalance</span><p>A 3-candle pattern where the middle candle's body exceeds the wicks of the surrounding candles, leaving a price gap that was never traded through. Markets tend to return to fill these gaps before resuming the move — typically within 1–3 sessions.</p></div>
+  <h4>How to use OBs and FVGs</h4>
+  <ul class="llist">
+    <li>Identify the BOS first — then look for the OB or FVG that caused it</li>
+    <li>Mark the zone on the 1H or 4H timeframe for precision</li>
+    <li>Wait for price to return to the zone (OB or FVG edge)</li>
+    <li>Look for LTF confirmation: rejection candle, small CHoCH or engulfing</li>
+    <li>SL below the OB low (for bullish) or above OB high (for bearish)</li>
+  </ul>
+  <div class="lbox ex"><span class="blbl">Example — BTC 4H bullish OB</span><p>BTC creates a BOS at $61,500 from a zone that started with a bearish candle at $59,800–$60,200. This zone is the bullish OB. On pullback, price returns to $60,100. LTF (15M) shows a bullish engulfing candle. Entry: $60,200. SL: $59,600 (below OB). TP: $63,000 (next resistance). R:R 4.7:1.</p></div>
+</div>
 
-                <div class="academy-question">
-                    <h3>{{ t('academy_level2_3_le_timing_sert_a', '3. Le timing sert à :') }}</h3>
-                    <label><input type="radio" name="q3" value="a"> {{ t('academy_level2_eviter_toute_perte', 'éviter toute perte') }}</label>
-                    <label><input type="radio" name="q3" value="b"> {{ t('academy_level2_entrer_plus_tot_que_tout_le_monde', 'entrer plus tôt que tout le monde') }}</label>
-                    <label><input type="radio" name="q3" value="c"> {{ t('academy_level2_ameliorer_la_qualite_d_execution_d_un_scenario_valide', 'améliorer la qualité d’exécution d’un scénario valide') }}</label>
-                </div>
+<!-- M03 -->
+<div class="lsh" id="m3"><div class="lsn">03</div><div><h2>Liquidity Sweeps & Market Manipulation</h2><p>Understanding how price harvests orders before the real move</p></div></div>
+<div class="lb">
+  <p>Liquidity is the fuel that moves markets. Large operators need buy or sell orders in quantity to fill their positions. Retail traders, by placing stop losses at predictable locations (below obvious lows, above obvious highs), create pools of liquidity that the market sweeps before moving in the intended direction.</p>
+  <div class="lbox def"><span class="blbl">Liquidity sweep (stop hunt)</span><p>A brief, sharp move that penetrates a visible high or low — triggering stop losses from retail traders — before reversing and moving in the original direction. This is not random: it is the market mechanism for accessing the liquidity needed to fuel the real move.</p></div>
+  <h4>Common liquidity targets to monitor</h4>
+  <table class="ltable">
+    <thead><tr><th>Liquidity type</th><th>Location</th><th>Signal when swept</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Equal highs (EQH)</strong></td><td>Two or more highs at same price</td><td>Potential short entry after sweep and rejection</td></tr>
+      <tr><td><strong>Equal lows (EQL)</strong></td><td>Two or more lows at same price</td><td>Potential long entry after sweep and recovery</td></tr>
+      <tr><td><strong>Previous day/week high</strong></td><td>Yesterday's or last week's high</td><td>Commonly swept at session open before reversal</td></tr>
+      <tr><td><strong>Obvious swing low/high</strong></td><td>Most visible recent turning point</td><td>High probability of sweep before continuation</td></tr>
+    </tbody>
+  </table>
+  <div class="lbox warn"><span class="blbl">The Level 1 stop placement error — revisited</span><p>In Level 1, you learned to place stops below support zones. In Level 2, you learn that the most obvious support zones are exactly where liquidity sits — and are often swept first. Place your stops beyond the likely sweep point, not at the obvious level everyone else uses.</p></div>
+  <div class="lbox ex"><span class="blbl">Practical example</span><p>BTC has equal lows at $59,800. You expect a bounce from $60,000 support. Instead of entering at $60,000 with SL at $59,700, wait: the market sweeps to $59,750, grabs the liquidity below the equal lows, and reverses strongly. Your entry is now $60,100 (after the sweep confirms reversal), SL at $59,400, TP at $63,500. Better R:R, better probability.</p></div>
+</div>
 
-                <button
-                    type="button"
-                    class="academy-btn academy-btn-primary"
-                    onclick="submitQuiz('academyQuiz2Mid', ['b','a','c'], 'quiz2MidResult')">
-                    {{ t("validate_checkpoint", "Valider ce checkpoint") }}
-                </button>
+<!-- M04 -->
+<div class="lsh" id="m4"><div class="lsn">04</div><div><h2>False Breakouts & Manipulation Patterns</h2><p>Identifying when the market is setting a trap</p></div></div>
+<div class="lb">
+  <p>False breakouts are the single most common trap in technical analysis. Price appears to break above resistance or below support — triggering breakout entries — only to reverse strongly and move in the opposite direction.</p>
+  <h4>Anatomy of a false breakout</h4>
+  <ul class="llist">
+    <li>Price approaches a visible resistance zone with increasing momentum</li>
+    <li>A candle closes above resistance — triggering buy breakout orders</li>
+    <li>Volume does not confirm: the candle lacks a strong close or wicks badly</li>
+    <li>Price reverses back below the broken level within 1–3 candles</li>
+    <li>Stop losses from breakout buyers are harvested — feeding the reversal</li>
+  </ul>
+  <div class="lbox def"><span class="blbl">Confirmation filters for real breakouts</span><p>A genuine breakout requires: (1) a strong body close beyond the zone (not a wick), (2) a candle of above-average size, (3) a successful retest of the broken zone as new support/resistance, (4) continued momentum after the retest. A false breakout fails at least 2 of these 4 criteria.</p></div>
+  <div class="lcards">
+    <div class="lcard"><h4>Signs of a real breakout</h4><ul><li>Strong body close beyond zone</li><li>Above-average candle size</li><li>Increased volume on break</li><li>Successful retest of broken level</li><li>No immediate reversal</li></ul></div>
+    <div class="lcard"><h4>Signs of a false breakout</h4><ul><li>Wick pierces but body closes inside</li><li>Small candle, weak momentum</li><li>Immediate reversal within 2 candles</li><li>No follow-through volume</li><li>Sweep of obvious equal highs/lows</li></ul></div>
+  </div>
+</div>
 
-                <div id="quiz2MidResult" class="academy-quiz-result"></div>
-            </form>
-        </div>
-    </div>
-</section>
+<!-- M05 -->
+<div class="lsh" id="m5"><div class="lsn">05</div><div><h2>HTF Bias — Reading the Dominant Direction</h2><p>Building a directional framework before looking at execution timeframes</p></div></div>
+<div class="lb">
+  <p>HTF (Higher TimeFrame) bias is the directional filter that determines which side of the market you can trade. You trade with the bias, not against it. This concept bridges Level 1's basic structure reading with Level 3's multi-timeframe planning — at Level 2, you apply it to a single pair.</p>
+  <h4>HTF bias construction — 4 steps</h4>
+  <ul class="llist">
+    <li><strong>Step 1 — Weekly chart:</strong> What is the dominant trend? HH/HL = bullish bias. LH/LL = bearish bias.</li>
+    <li><strong>Step 2 — Daily chart:</strong> Where is price relative to key weekly zones? Near support (potential long) or resistance (potential short)?</li>
+    <li><strong>Step 3 — 4H chart:</strong> Is the 4H structure aligned with the daily bias? BOS in the direction of the weekly trend?</li>
+    <li><strong>Step 4 — Bias conclusion:</strong> "The bias is bullish on all timeframes — I will only look for long setups until the 4H structure breaks bearishly."</li>
+  </ul>
+  <div class="lbox key"><span class="blbl">The bias filter rule</span><p>If your HTF bias is bullish, you do not take short trades — even if a short setup looks perfect on the 15M chart. Trading against the HTF bias is the most common way advanced-beginner traders give back their profits.</p></div>
+  <div class="lbox warn"><span class="blbl">Level 2 limit — single instrument</span><p>At this level, you build HTF bias on one instrument at a time. Level 3 introduces multi-instrument top-down analysis and inter-market correlations — reading how DXY, US100 and BTC.D interact to create a composite bias across multiple markets.</p></div>
+</div>
+
+<!-- M06 -->
+<div class="lsh" id="m6"><div class="lsn">06</div><div><h2>Multi-Factor Confluence Scoring</h2><p>Why some setups are worth 3x more than others</p></div></div>
+<div class="lb">
+  <p>Not all setups are equal. A setup with 5 independent factors pointing in the same direction has a significantly higher probability than a setup with only 1 factor. Confluence scoring is the systematic process of evaluating setup quality before committing capital.</p>
+  <div class="lbox def"><span class="blbl">Confluence</span><p>Confluence is the convergence of multiple independent technical factors at the same price zone, each independently supporting the same directional bias. The more independent factors that align, the higher the setup quality.</p></div>
+  <h4>Level 2 confluence scoring matrix (max 10 points)</h4>
+  <table class="ltable">
+    <thead><tr><th>Factor</th><th>Points</th><th>Condition</th></tr></thead>
+    <tbody>
+      <tr><td>HTF structure aligned with trade direction</td><td>+2</td><td>Weekly and daily bias matches entry direction</td></tr>
+      <tr><td>Order block present at entry zone</td><td>+2</td><td>Valid OB from prior BOS identified at zone</td></tr>
+      <tr><td>Fair Value Gap (FVG) at entry</td><td>+1</td><td>Open FVG overlapping with entry zone</td></tr>
+      <tr><td>Liquidity sweep before entry</td><td>+2</td><td>Equal low/high swept, stop hunt confirmed</td></tr>
+      <tr><td>LTF confirmation signal</td><td>+1</td><td>15M or 5M CHoCH or engulfing in direction</td></tr>
+      <tr><td>Session timing correct</td><td>+1</td><td>London or NY session (not Asian noise)</td></tr>
+      <tr><td>No key event in next 2 hours</td><td>+1</td><td>Economic calendar clear</td></tr>
+    </tbody>
+  </table>
+  <div class="lbox ex"><span class="blbl">Scoring interpretation</span><p>8–10 points: A+ setup — full conviction size (1.5–2% risk). 6–7 points: A setup — standard size (1% risk). 4–5 points: B setup — reduced size (0.5% risk) or skip. Below 4: Do not trade — insufficient edge to justify the risk.</p></div>
+</div>
+
+<!-- M07 -->
+<div class="lsh" id="m7"><div class="lsn">07</div><div><h2>Setup Quality Filtering — A+ vs B–</h2><p>Selecting less, earning more</p></div></div>
+<div class="lb">
+  <p>The most counterintuitive discovery in trading development is that trading less frequently — but selecting only the highest quality setups — consistently outperforms trading every signal. Quality filtering is not about missing opportunities; it is about concentrating capital on the situations where edge is strongest.</p>
+  <div class="lcards">
+    <div class="lcard"><h4>A+ Setup criteria</h4><ul><li>HTF bias fully aligned</li><li>OB + FVG at entry zone</li><li>Liquidity sweep confirmed</li><li>LTF confirmation present</li><li>R:R ≥ 2.5:1</li><li>Session timing optimal</li></ul></div>
+    <div class="lcard"><h4>Skip criteria (B– or below)</h4><ul><li>HTF bias unclear or mixed</li><li>No structural justification for entry zone</li><li>No sweep — entering on first touch</li><li>No LTF confirmation</li><li>R:R below 1.5:1</li><li>Asian session or news imminent</li></ul></div>
+  </div>
+  <div class="lbox key"><span class="blbl">The selectivity paradox</span><p>Most beginning traders think more trades = more opportunities = more profit. The data consistently shows the opposite: a trader taking 5 A+ setups per week outperforms a trader taking 20 mixed setups, because the quality filter eliminates the losing trades that drag down expectancy.</p></div>
+</div>
+
+<!-- M08 -->
+<div class="lsh" id="m8"><div class="lsn">08</div><div><h2>Volume Reading Fundamentals</h2><p>Using volume to confirm or question price action</p></div></div>
+<div class="lb">
+  <p>Volume is the only indicator that shows how much real participation is behind a price move. Price without volume context is incomplete information. A breakout with high volume is more credible than the same breakout with declining volume.</p>
+  <h4>Core volume principles</h4>
+  <table class="ltable">
+    <thead><tr><th>Situation</th><th>Volume signal</th><th>Interpretation</th></tr></thead>
+    <tbody>
+      <tr><td>Price breaks resistance</td><td>Above-average volume</td><td>Credible breakout — real participation</td></tr>
+      <tr><td>Price breaks resistance</td><td>Below-average volume</td><td>Potential false breakout — watch for reversal</td></tr>
+      <tr><td>Price falls strongly</td><td>Climax volume (spike)</td><td>Possible exhaustion — potential reversal zone</td></tr>
+      <tr><td>Price rallies on declining volume</td><td>Volume divergence</td><td>Weakening momentum — distribution possible</td></tr>
+      <tr><td>Price consolidates on low volume</td><td>Low participation</td><td>Compression — directional move brewing</td></tr>
+    </tbody>
+  </table>
+  <div class="lbox warn"><span class="blbl">Crypto-specific note</span><p>In crypto markets, volume data varies significantly by exchange. Use Binance spot volume for BTC/ETH (most liquid). Aggregate volume tools (like TradingView's volume profile) give a cleaner picture than raw candle volume alone.</p></div>
+</div>
+
+<!-- M09 -->
+<div class="lsh" id="m9"><div class="lsn">09</div><div><h2>Session-Based Setup Selection</h2><p>Not all times of day are equal for setup quality</p></div></div>
+<div class="lb">
+  <p>A technically perfect setup during the Asian session (00:00–07:00 UTC) has a lower probability of working than the same setup during the London-NY overlap (13:00–16:00 UTC). Sessions matter because institutional participation determines whether a setup has the liquidity to move cleanly.</p>
+  <table class="ltable">
+    <thead><tr><th>Session</th><th>UTC hours</th><th>Setup quality</th><th>Best for</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Asian</strong></td><td>00:00–07:00</td><td>Low</td><td>Range identification, not directional trades</td></tr>
+      <tr><td><strong>Pre-London</strong></td><td>06:00–08:00</td><td>Medium</td><td>Early signals, small size, caution</td></tr>
+      <tr><td><strong>London open</strong></td><td>08:00–11:00</td><td>High</td><td>Directional breakouts, OB reactions</td></tr>
+      <tr><td><strong>London-NY overlap</strong></td><td>13:00–16:00</td><td>Very High</td><td>Highest volume, most reliable setups</td></tr>
+      <tr><td><strong>NY afternoon</strong></td><td>16:00–20:00</td><td>Medium</td><td>Continuation or reversal of London move</td></tr>
+      <tr><td><strong>Late session</strong></td><td>20:00–00:00</td><td>Low</td><td>Avoid — thin liquidity, unpredictable</td></tr>
+    </tbody>
+  </table>
+  <div class="lbox key"><span class="blbl">Session rule for Level 2</span><p>Prioritize setups that appear during London open or the London-NY overlap. Apply the full confluence scoring matrix. A 7-point setup during the London-NY overlap is worth more than a 9-point setup at 3am Asian session.</p></div>
+</div>
+
+<!-- M10 -->
+<div class="lsh" id="m10"><div class="lsn">10</div><div><h2>LTF Entry Refinement</h2><p>Using the lower timeframe to improve entry precision</p></div></div>
+<div class="lb">
+  <p>Once the HTF bias is set and the confluence zone is identified, the Lower TimeFrame (LTF) — typically 5M or 15M — is used for precise entry timing. This significantly improves R:R by tightening the stop loss without changing the trade thesis.</p>
+  <h4>LTF confirmation signals</h4>
+  <ul class="llist">
+    <li><strong>15M CHoCH in direction of HTF bias:</strong> Price makes a small BOS in the trade direction after touching the OB/FVG zone — confirming local structure shift</li>
+    <li><strong>Engulfing candle:</strong> A strong candle that fully engulfs the previous candle's range — immediate directional commitment signal</li>
+    <li><strong>LTF OB reaction:</strong> Price reacts at a small order block visible only on 5M or 15M — confirms zone is active</li>
+    <li><strong>Volume spike at reversal:</strong> Volume increases significantly at the rejection point — institutional participation confirmed</li>
+  </ul>
+  <div class="lbox ex"><span class="blbl">R:R improvement example</span><p>HTF setup: long at $60,000–$60,200 zone. Without LTF refinement: enter at $60,100, SL at $59,400 (700-point stop). With LTF refinement: wait for 15M CHoCH at $60,050, SL at $59,750 (300-point stop). Same trade, same TP — R:R improves from 2.8:1 to 7.2:1 just by waiting for LTF confirmation.</p></div>
+</div>
+
+<!-- M11 -->
+<div class="lsh" id="m11"><div class="lsn">11</div><div><h2>Advanced Journal — Setup Grading System</h2><p>Measuring setup quality, not just outcomes</p></div></div>
+<div class="lb">
+  <p>Level 1 introduced the trading journal. Level 2 adds a setup grading dimension: after every trade, you score the quality of the setup itself — independently of whether it won or lost. This separation is critical for identifying whether losses come from bad luck or bad process.</p>
+  <h4>Level 2 journal entry — 8 fields</h4>
+  <ul class="llist">
+    <li><strong>Setup grade (A+/A/B/C):</strong> Confluence score from the matrix before entry</li>
+    <li><strong>HTF bias:</strong> Was the bias clearly defined and respected?</li>
+    <li><strong>Structural logic:</strong> OB, FVG, or sweep identified at zone?</li>
+    <li><strong>LTF confirmation:</strong> Was entry triggered by LTF signal or impulsive entry?</li>
+    <li><strong>Execution quality (1–10):</strong> How closely did execution match the plan?</li>
+    <li><strong>Management quality (1–10):</strong> Was management structural or emotional?</li>
+    <li><strong>Outcome (R):</strong> Result in multiples of R — not dollar amount</li>
+    <li><strong>Lesson:</strong> What would make this a better A+ setup next time?</li>
+  </ul>
+  <div class="lbox key"><span class="blbl">The grading insight</span><p>After 30+ graded trades, calculate your average outcome by setup grade. If A+ setups average +1.8R and B setups average –0.3R, you have empirical proof that you should only trade A+ setups. This data — not intuition — is what builds lasting edge.</p></div>
+</div>
+
+<!-- M12 -->
+<div class="lsh" id="m12"><div class="lsn">12</div><div><h2>Building Your Execution Playbook</h2><p>Converting all Level 2 concepts into a repeatable decision system</p></div></div>
+<div class="lb">
+  <p>A playbook is a set of explicitly defined, reproducible trade setups — each with its own entry conditions, confirmation requirements, stop placement rules, and target logic. A playbook prevents improvisation and converts discipline into structure.</p>
+  <h4>Template: Level 2 trade setup entry</h4>
+  <ul class="llist">
+    <li><strong>Setup name:</strong> "Bullish OB retest after liquidity sweep"</li>
+    <li><strong>Required HTF bias:</strong> Bullish on weekly and daily</li>
+    <li><strong>Zone type:</strong> Bullish OB from prior BOS at significant HTF level</li>
+    <li><strong>Liquidity condition:</strong> Equal lows swept before zone reach (confirmed sweep)</li>
+    <li><strong>LTF entry trigger:</strong> 15M CHoCH bullish or 15M bullish engulfing at OB edge</li>
+    <li><strong>Stop placement:</strong> Below the OB low + 0.5× ATR buffer</li>
+    <li><strong>Minimum R:R:</strong> 2.5:1 — if target does not allow this, skip</li>
+    <li><strong>Session requirement:</strong> London or NY session only</li>
+    <li><strong>Minimum confluence score:</strong> 7/10 or above</li>
+  </ul>
+  <div class="lbox key"><span class="blbl">From Level 2 to Level 3</span><p>Your playbook currently covers single-instrument execution. Level 3 introduces multi-timeframe top-down planning, scenario building across multiple markets, and inter-market correlation awareness — expanding the playbook from one instrument to a full market view.</p></div>
+</div>
+
+<!-- CERTIFICATION -->
+<div id="cert" style="margin-top:52px;">
+  <div class="academy-section-title"><span class="academy-kicker">Level 2 Certification</span><h2>Advanced Structure & Execution Exam</h2></div>
+  <div class="lquiz" style="margin-top:18px;">
+    <form class="academy-quiz-form" id="quiz2">
+      <div class="lq"><h3>1. A Change of Character (CHoCH) in an uptrend occurs when:</h3>
+        <label><input type="radio" name="q1" value="a"> price makes a new all-time high with strong momentum</label>
+        <label><input type="radio" name="q1" value="b"> price breaks the last Higher Low — signaling a potential trend reversal, not a confirmed one</label>
+        <label><input type="radio" name="q1" value="c"> price rejects a resistance zone with a wick</label>
+      </div>
+      <div class="lq"><h3>2. A Bullish Order Block is:</h3>
+        <label><input type="radio" name="q2" value="a"> any green candle on the chart that is larger than average</label>
+        <label><input type="radio" name="q2" value="b"> the last bearish candle before a strong bullish impulse that created a BOS</label>
+        <label><input type="radio" name="q2" value="c"> the zone between the 50% and 61.8% Fibonacci retracement levels</label>
+      </div>
+      <div class="lq"><h3>3. A liquidity sweep followed by a strong reversal is significant because:</h3>
+        <label><input type="radio" name="q3" value="a"> it confirms the trend will continue in the sweep direction</label>
+        <label><input type="radio" name="q3" value="b"> it indicates large operators accessed the liquidity below/above retail stops before moving in the real direction</label>
+        <label><input type="radio" name="q3" value="c"> it only occurs on crypto markets, not Forex</label>
+      </div>
+      <div class="lq"><h3>4. A setup scores 8/10 on the confluence matrix. The correct approach is:</h3>
+        <label><input type="radio" name="q4" value="a"> skip it — the score is not 10/10</label>
+        <label><input type="radio" name="q4" value="b"> enter with full conviction size (1.5–2% risk) — this is an A+ setup</label>
+        <label><input type="radio" name="q4" value="c"> enter with maximum leverage to maximize the high-probability outcome</label>
+      </div>
+      <div class="lq"><h3>5. Using LTF (15M) entry refinement on an HTF setup typically:</h3>
+        <label><input type="radio" name="q5" value="a"> reduces the probability of the trade working</label>
+        <label><input type="radio" name="q5" value="b"> improves R:R by tightening the stop without changing the trade thesis</label>
+        <label><input type="radio" name="q5" value="c"> forces you to enter earlier and at a worse price</label>
+      </div>
+      <div class="lq"><h3>6. A breakout with below-average volume should be treated as:</h3>
+        <label><input type="radio" name="q6" value="a"> a confirmed high-conviction breakout ready to trade immediately</label>
+        <label><input type="radio" name="q6" value="b"> a potential false breakout — wait for the retest and volume confirmation</label>
+        <label><input type="radio" name="q6" value="c"> irrelevant — volume does not matter in crypto markets</label>
+      </div>
+      <div class="lq"><h3>7. An HTF bullish bias means:</h3>
+        <label><input type="radio" name="q7" value="a"> you only take long trades until the 4H structure breaks bearishly</label>
+        <label><input type="radio" name="q7" value="b"> you can take short trades when a 5M setup looks perfect</label>
+        <label><input type="radio" name="q7" value="c"> the market will always go up during this period</label>
+      </div>
+      <div class="lq"><h3>8. The advanced journal setup grading system is most valuable for:</h3>
+        <label><input type="radio" name="q8" value="a"> tracking which broker gives the best spreads</label>
+        <label><input type="radio" name="q8" value="b"> empirically separating bad luck from bad process — and proving which setup grades produce positive expectancy</label>
+        <label><input type="radio" name="q8" value="c"> reducing the time needed to prepare for each trade</label>
+      </div>
+      <button type="button" class="academy-btn academy-btn-primary" onclick="submitQuiz('quiz2',['b','b','b','b','b','b','a','b'],'r2')">Validate Certification</button>
+      <div id="r2" class="academy-quiz-result"></div>
+    </form>
+    <form method="POST" action="{{ url_for('academy.academy_complete_level', level='level2', lang_code=current_lang) }}" style="margin-top:14px;">
+      <button class="academy-btn academy-btn-secondary" type="submit">Mark Level 2 Complete</button>
+    </form>
+  </div>
+</div>
+
+{% else %}
+<div class="llock">
+  <div style="font-size:44px;">🔒</div>
+  <h3>Level 2 — Premium / VIP</h3>
+  <p>Level 2 unlocks advanced structure (BOS, CHoCH, order blocks), liquidity sweeps, confluence scoring, setup quality filtering, session-based selection and a 12-question certification exam.</p>
+  <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-btn academy-btn-gold" style="display:inline-block;margin-top:4px;">Upgrade to Premium — Unlock Level 2</a>
+</div>
 {% endif %}
 
-<section class="academy-section" id="quiz-final">
-    <div class="academy-shell">
-        <div class="academy-section-title">
-            <span class="academy-kicker">{{ t("final_evaluation", "Évaluation finale") }}</span>
-            <h2>{{ t("level2_validation", "Validation du niveau 2") }}</h2>
-        </div>
-
-        <div class="academy-quiz-card">
-            {% if has_academy_plus %}
-            <form class="academy-quiz-form" id="academyQuiz2">
-                <div class="academy-question">
-                    <h3>{{ t('academy_level2_1_une_bonne_lecture_structurelle_consiste_a', '1. Une bonne lecture structurelle consiste à :') }}</h3>
-                    <label><input type="radio" name="q1" value="a"> {{ t('academy_level2_regarder_uniquement_la_bougie_actuelle', 'regarder uniquement la bougie actuelle') }}</label>
-                    <label><input type="radio" name="q1" value="b"> {{ t('academy_level2_comprendre_impulsions_corrections_et_changements_de_regime', 'comprendre impulsions, corrections et changements de régime') }}</label>
-                    <label><input type="radio" name="q1" value="c"> {{ t('academy_level2_ignorer_le_contexte', 'ignorer le contexte') }}</label>
-                </div>
-
-                <div class="academy-question">
-                    <h3>{{ t('academy_level2_2_un_marche_en_transition_demande', '2. Un marché en transition demande :') }}</h3>
-                    <label><input type="radio" name="q2" value="a"> {{ t('academy_level2_davantage_de_prudence', 'davantage de prudence') }}</label>
-                    <label><input type="radio" name="q2" value="b"> {{ t('academy_level2_un_levier_plus_eleve', 'un levier plus élevé') }}</label>
-                    <label><input type="radio" name="q2" value="c"> {{ t('academy_level2_moins_d_analyse', 'moins d’analyse') }}</label>
-                </div>
-
-                <div class="academy-question">
-                    <h3>{{ t('academy_level2_3_un_breakout_de_qualite_doit_etre', '3. Un breakout de qualité doit être :') }}</h3>
-                    <label><input type="radio" name="q3" value="a"> {{ t('academy_level2_uniquement_rapide', 'uniquement rapide') }}</label>
-                    <label><input type="radio" name="q3" value="b"> {{ t('academy_level2_structurellement_valide', 'structurellement validé') }}</label>
-                    <label><input type="radio" name="q3" value="c"> {{ t('academy_level2_pris_des_la_premiere_meche', 'pris dès la première mèche') }}</label>
-                </div>
-
-                <div class="academy-question">
-                    <h3>{{ t('academy_level2_4_le_journal_de_trading_sert_a', '4. Le journal de trading sert à :') }}</h3>
-                    <label><input type="radio" name="q4" value="a"> {{ t('academy_level2_remplir_une_formalite_inutile', 'remplir une formalité inutile') }}</label>
-                    <label><input type="radio" name="q4" value="b"> {{ t('academy_level2_transformer_l_experience_en_information_exploitable', 'transformer l’expérience en information exploitable') }}</label>
-                    <label><input type="radio" name="q4" value="c"> {{ t('academy_level2_justifier_les_pertes', 'justifier les pertes') }}</label>
-                </div>
-
-                <div class="academy-question">
-                    <h3>{{ t('academy_level2_5_le_niveau_2_prepare_au_niveau_3_parce_qu_il', '5. Le niveau 2 prépare au niveau 3 parce qu’il :') }}</h3>
-                    <label><input type="radio" name="q5" value="a"> {{ t('academy_level2_remplace_completement_la_structure', 'remplace complètement la structure') }}</label>
-                    <label><input type="radio" name="q5" value="b"> {{ t('academy_level2_installe_la_logique_de_filtre_de_lecture_et_d_execution', 'installe la logique de filtre, de lecture et d’exécution') }}</label>
-                    <label><input type="radio" name="q5" value="c"> {{ t('academy_level2_supprime_toute_incertitude', 'supprime toute incertitude') }}</label>
-                </div>
-
-                <button
-                    type="button"
-                    class="academy-btn academy-btn-primary"
-                    onclick="submitQuiz('academyQuiz2', ['b','a','b','b','b'], 'quiz2Result')">
-                    {{ t('academy_level2_valider_le_quiz_final', 'Valider le quiz final') }}
-                </button>
-
-                <div id="quiz2Result" class="academy-quiz-result"></div>
-            </form>
-
-            <form method="POST" action="{{ url_for('academy.academy_complete_level', level='level2', lang_code=current_lang) }}" class="academy-complete-form">
-                <button class="academy-btn academy-btn-secondary" type="submit">
-                    {{ t('academy_level2_marquer_le_niveau_2_comme_termine', 'Marquer le niveau 2 comme terminé') }}
-                </button>
-            </form>
-            {% else %}
-            <div class="academy-locked-box">
-                <div class="academy-lock-icon">🔒</div>
-                <h3>{{ t('academy_level2_quiz_reserve_au_plan_premium_vip', 'Quiz réservé au plan Premium / VIP') }}</h3>
-                <p>
-                    {{ t('academy_level2_debloquez_le_niveau_2_pour_acceder_au_quiz_final_a_la_progression_reel', 'Débloquez le niveau 2 pour accéder au quiz final, à la progression réelle                     et au parcours') }} {{ t("academy", "Academy") }} {{ t('academy_level2_avance', 'avancé.') }}
-                </p>
-                <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-btn academy-btn-gold">
-                    {{ t('academy_level2_debloquer_le_niveau_2_2', 'Débloquer le niveau 2') }}
-                </a>
-            </div>
-            {% endif %}
-        </div>
-    </div>
+</div>
+<aside class="lsidebar">
+  {% set p = academy_progress.level2 if academy_progress and academy_progress.level2 is defined else 0 %}
+  <div class="lprogcard">
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:12px;font-weight:600;color:var(--mu);">Progress</span><strong style="color:var(--l2);">{{ p }}%</strong></div>
+    <div class="ltrack"><div class="lfill" style="width:{{ p }}%;"></div></div>
+    <div style="font-size:11px;color:var(--mu);margin-top:5px;">Premium / VIP required</div>
+  </div>
+  <div class="ltoc">
+    <h3>Contents</h3>
+    <a href="#m1"><span class="n">01</span>BOS & CHoCH</a>
+    <a href="#m2"><span class="n">02</span>Order Blocks & FVG</a>
+    <a href="#m3"><span class="n">03</span>Liquidity Sweeps</a>
+    <a href="#m4"><span class="n">04</span>False Breakouts</a>
+    <a href="#m5"><span class="n">05</span>HTF Bias</a>
+    <a href="#m6"><span class="n">06</span>Confluence Scoring</a>
+    <a href="#m7"><span class="n">07</span>Setup Quality Filter</a>
+    <a href="#m8"><span class="n">08</span>Volume Reading</a>
+    <a href="#m9"><span class="n">09</span>Session Selection</a>
+    <a href="#m10"><span class="n">10</span>LTF Entry Refinement</a>
+    <a href="#m11"><span class="n">11</span>Advanced Journal</a>
+    <a href="#m12"><span class="n">12</span>Execution Playbook</a>
+    <a href="#cert" style="color:var(--l2);margin-top:7px;"><span class="n">★</span>Certification</a>
+  </div>
+  <div class="lprogcard" style="margin-top:13px;">
+    <h3 style="font-size:13px;font-weight:700;color:#fff;margin-bottom:7px;">What comes next</h3>
+    <p style="font-size:12px;color:var(--tx);line-height:1.6;">Level 3 introduces multi-timeframe planning, top-down analysis across multiple markets, inter-market correlations and global exposure management — all new concepts not covered here.</p>
+  </div>
+</aside>
+</div>
+</div>
 </section>
-
 {% endblock %}
+{% block extra_js %}<script src="{{ url_for('static', filename='academy.js') }}"></script>{% endblock %}

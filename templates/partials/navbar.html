@@ -18,7 +18,7 @@
             </a>
              <!-- AI -->
             
-            <a href="{{ url_for('technical_analysis.technical_analysis_page', lang_code=lang) }}">{{ t("nav_ai_analysis", "AI Analysis") if current_lang != "fr" else "Analyse IA" }}</a>
+            <a href="{{ url_for('technical_analysis.technical_analysis_page', lang_code=lang) }}">{{ t("Analyse IA") }}</a>
             <!-- SIGNALS -->
             <div class="nav-dropdown">
                 <button class="nav-drop-btn" type="button">
@@ -72,12 +72,20 @@
                     {{ t("academy", "Academy") }} ▾
                 </button>
                 <div class="nav-dropdown-menu">
-                    <a href="{{ url_for('academy.academy_index', lang_code=lang) }}">🎓 {{ t("academy_overview") }}</a>
-                    <a href="{{ url_for('academy.academy_level_1', lang_code=lang) }}">📘 {{ t("academy_level_1") }}</a>
-                    <a href="{{ url_for('academy.academy_level_2', lang_code=lang) }}">🚀 {{ t("academy_level_2") }}</a>
-                    <a href="{{ url_for('academy.academy_level_3', lang_code=lang) }}">🧭 {{ t("academy_level_3") }}</a>
-                    <a href="{{ url_for('academy.academy_level_4', lang_code=lang) }}">🏛️ {{ t("academy_pro") }}</a>
-                    <a href="{{ url_for('academy.academy_upgrade', lang_code=lang) }}">💎 {{ t("academy_upgrade") }}</a>
+                    <a href="{{ url_for('academy.academy_index', lang_code=lang) }}">🎓 Academy Overview</a>
+                    <div style="padding:4px 14px;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:4px;">Free</div>
+                    <a href="{{ url_for('academy.academy_level_1', lang_code=lang) }}">📘 Level 1 — Foundations</a>
+                    <div style="padding:4px 14px;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:4px;">Basic+</div>
+                    <a href="{{ url_for('academy.academy_level_2', lang_code=lang) }}">⚡ Level 2 — Execution</a>
+                    <a href="{{ url_for('academy.academy_level_3', lang_code=lang) }}">🧭 Level 3 — Operator</a>
+                    <div style="padding:4px 14px;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:4px;">Premium+</div>
+                    <a href="{{ url_for('academy.academy_level_4', lang_code=lang) }}">🏛️ Level 4 — Desk Pro</a>
+                    <a href="{{ url_for('academy.academy_level_5', lang_code=lang) }}">🎯 Level 5 — Edge Building</a>
+                    <div style="padding:4px 14px;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:4px;">VIP</div>
+                    <a href="{{ url_for('academy.academy_level_6', lang_code=lang) }}">📊 Level 6 — Quantitative</a>
+                    <a href="{{ url_for('academy.academy_level_7', lang_code=lang) }}">🏆 Level 7 — Pro Management</a>
+                    <div style="border-top:1px solid rgba(255,255,255,.08);margin:6px 0;"></div>
+                    <a href="{{ url_for('academy.academy_upgrade', lang_code=lang) }}">💎 Upgrade Plan</a>
                 </div>
             </div>
 

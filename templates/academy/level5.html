@@ -1,0 +1,430 @@
+{% set academy_level = "level5" %}
+{% set academy_total_lessons = 12 %}
+{% extends "base.html" %}
+{% block title %}Academy Level 5 — Strategy & Edge Building | VelWolef{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}">
+<style>
+:root{--l5:#f97316;--l5d:rgba(249,115,22,.1);--l5b:rgba(249,115,22,.25);--s:#111520;--br:rgba(255,255,255,.07);--tx:#c8d0e0;--mu:#6b7588;--gr:#22c55e;--re:#ef4444;--bl:#3b82f6;}
+.lhero{background:linear-gradient(135deg,#0a0d13 0%,#1a0d05 60%,#0a0d13 100%);border-bottom:1px solid var(--l5b);padding:48px 0;}
+.lbadge{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;background:var(--l5d);border:1px solid var(--l5b);color:#fed7aa;margin-right:8px;margin-bottom:20px;}
+.lhero h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;line-height:1.1;color:#fff;margin-bottom:16px;}
+.lhero h1 em{font-style:normal;color:var(--l5);}
+.lhero p.sub{font-size:1rem;color:var(--tx);line-height:1.75;max-width:580px;margin-bottom:28px;}
+.lstats{display:flex;gap:28px;flex-wrap:wrap;margin-bottom:28px;}
+.lstat .num{font-size:1.5rem;font-weight:800;color:var(--l5);display:block;}
+.lstat .lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);}
+.lgrid{display:grid;grid-template-columns:1fr 290px;gap:24px;align-items:start;}
+.lsidebar{position:sticky;top:80px;}
+.ltoc{background:var(--s);border:1px solid var(--l5b);border-radius:12px;padding:16px;}
+.ltoc h3{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#fed7aa;margin-bottom:10px;}
+.ltoc a{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:6px;font-size:12px;color:var(--mu);text-decoration:none;transition:all .15s;}
+.ltoc a:hover{background:var(--l5d);color:#fff;}
+.ltoc .n{font-size:10px;font-weight:700;color:var(--l5);width:18px;flex-shrink:0;}
+.lsh{display:flex;align-items:center;gap:14px;margin:42px 0 20px;padding-bottom:12px;border-bottom:1px solid var(--br);}
+.lsn{width:36px;height:36px;border-radius:8px;background:var(--l5d);border:1px solid var(--l5b);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--l5);flex-shrink:0;}
+.lsh h2{font-size:1.15rem;font-weight:700;color:#fff;margin-bottom:2px;}
+.lsh p{font-size:11px;color:var(--mu);}
+.lb p{font-size:14px;color:var(--tx);line-height:1.8;margin-bottom:12px;}
+.lb h3{font-size:1rem;font-weight:700;color:#fff;margin-bottom:9px;}
+.lb h4{font-size:.88rem;font-weight:600;color:#fed7aa;margin:16px 0 6px;}
+.lbox{border-radius:9px;padding:15px 17px;margin:14px 0;}
+.lbox.def{background:rgba(249,115,22,.05);border-left:3px solid var(--l5);}
+.lbox.key{background:rgba(251,191,36,.05);border-left:3px solid #f59e0b;}
+.lbox.warn{background:rgba(239,68,68,.05);border-left:3px solid var(--re);}
+.lbox.ex{background:rgba(59,130,246,.05);border-left:3px solid var(--bl);}
+.blbl{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:5px;}
+.lbox.def .blbl{color:#fed7aa;}.lbox.key .blbl{color:#fbbf24;}.lbox.warn .blbl{color:var(--re);}.lbox.ex .blbl{color:#93c5fd;}
+.lbox p{margin:0;font-size:13px;color:var(--tx);line-height:1.7;}
+.llist{list-style:none;padding:0;margin:10px 0;}
+.llist li{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid var(--br);font-size:13px;color:var(--tx);}
+.llist li:last-child{border-bottom:none;}
+.llist li::before{content:"→";color:var(--l5);flex-shrink:0;}
+.lcards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0;}
+.lcard{background:var(--s);border:1px solid var(--br);border-radius:10px;padding:14px 16px;}
+.lcard h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--mu);margin-bottom:8px;}
+.lcard ul{list-style:none;padding:0;margin:0;}
+.lcard ul li{font-size:12px;color:var(--tx);padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.lcard ul li:last-child{border-bottom:none;}
+.lcard ul li::before{content:"• ";color:var(--l5);}
+.ltable{width:100%;border-collapse:collapse;margin:13px 0;}
+.ltable th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);padding:9px 12px;border-bottom:1px solid var(--br);text-align:left;}
+.ltable td{font-size:13px;color:var(--tx);padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.04);}
+.ltable tr:last-child td{border-bottom:none;}
+.lquiz{background:var(--s);border:1px solid var(--l5b);border-radius:12px;padding:24px;}
+.lq{margin-bottom:18px;}
+.lq h3{font-size:14px;font-weight:600;color:#fff;margin-bottom:9px;}
+.lq label{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:7px;cursor:pointer;font-size:13px;color:var(--tx);border:1px solid var(--br);margin-bottom:5px;transition:all .15s;}
+.lq label:hover{background:var(--l5d);border-color:var(--l5b);}
+.lq input[type=radio]{accent-color:var(--l5);}
+.lprogcard{background:var(--s);border:1px solid var(--br);border-radius:12px;padding:17px;margin-bottom:13px;}
+.ltrack{height:4px;background:rgba(255,255,255,.07);border-radius:2px;margin:7px 0;overflow:hidden;}
+.lfill{height:100%;background:var(--l5);border-radius:2px;}
+.llock{background:linear-gradient(135deg,#0a0d13,#1a0d05);border:1px solid var(--l5b);border-radius:14px;padding:36px;text-align:center;margin-top:32px;}
+.llock h3{color:#fff;font-size:1.2rem;margin:14px 0 8px;}
+.llock p{color:var(--tx);font-size:13px;line-height:1.7;margin-bottom:20px;}
+.lcheck{display:flex;flex-direction:column;gap:8px;margin:14px 0;}
+.lcheck-item{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:8px;background:var(--s);border:1px solid var(--br);font-size:13px;color:var(--tx);}
+.lcheck-item::before{content:'☐';color:var(--l5);flex-shrink:0;font-size:15px;}
+@media(max-width:900px){.lgrid{grid-template-columns:1fr;}.lsidebar{display:none;}.lcards{grid-template-columns:1fr;}}
+</style>
+{% endblock %}
+
+{% block content %}
+{% if not has_academy_plus %}<script>document.addEventListener("DOMContentLoaded",function(){document.body.dataset.autoUpgradePopup="true";});</script>{% endif %}
+
+<section class="lhero">
+  <div class="academy-shell">
+    <div class="academy-breadcrumb"><a href="{{ url_for('academy.academy_index', lang_code=current_lang) }}">Academy</a><span>/</span><span>Level 5</span></div>
+    <span class="lbadge">Level 5 — Edge Building</span>
+    <span class="lbadge">Premium / VIP</span>
+    <h1>Strategy &<br><em>Edge Building</em></h1>
+    <p class="sub">Level 5 is where you stop borrowing other people's strategies and start building your own. You will learn to construct, test, measure and validate a proprietary edge — and develop the psychological mastery to execute it consistently under pressure.</p>
+    <div class="lstats">
+      <div class="lstat"><span class="num">12</span><span class="lbl">Modules</span></div>
+      <div class="lstat"><span class="num">5h+</span><span class="lbl">Content</span></div>
+      <div class="lstat"><span class="num">1</span><span class="lbl">Certification</span></div>
+    </div>
+    <div class="academy-actions">
+      {% if has_academy_plus %}
+      <a href="#m1" class="academy-btn academy-btn-primary">Start Module 1</a>
+      <a href="#cert" class="academy-btn academy-btn-secondary">Go to Certification</a>
+      {% else %}
+      <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-btn academy-btn-gold">Unlock Level 5 — Premium / VIP</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="academy-section">
+<div class="academy-shell">
+<div class="lgrid">
+<div>
+
+<div class="academy-academic-block" style="margin-top:36px;">
+  <span class="academy-box-label">Level 5 — Overview</span>
+  <h3>From following methods to owning your edge</h3>
+  <p>The first four levels gave you frameworks borrowed from institutional practice. Level 5 teaches you to build your own. You will learn to define what an edge actually is statistically, how to test it rigorously over historical data without code, how to measure its validity with statistical confidence, and how to develop the psychological infrastructure to execute it without degradation under real market pressure.</p>
+  <div class="lcards">
+    <div class="lcard"><h4>New concepts in Level 5</h4><ul>
+      <li>Edge definition — statistical vs intuitive</li>
+      <li>Strategy taxonomy & type selection</li>
+      <li>Manual backtesting methodology</li>
+      <li>Statistical validity — sample size & confidence</li>
+      <li>Performance metrics beyond win rate</li>
+      <li>Edge degradation detection</li>
+      <li>Cognitive bias catalogue (12 biases)</li>
+      <li>Emotion regulation under pressure</li>
+      <li>Flow state & peak performance conditions</li>
+      <li>Strategy optimization vs overfitting</li>
+      <li>The edge maintenance protocol</li>
+      <li>Level 5 certification</li>
+    </ul></div>
+    <div class="lcard"><h4>Prerequisites</h4><ul><li>Level 1–4 completed (or equivalent)</li></ul>
+    <h4 style="margin-top:12px;">Access</h4><ul><li>Premium and VIP plans</li></ul>
+    <h4 style="margin-top:12px;">What comes next</h4><ul><li>Level 6 introduces quantitative methods: Python/Excel backtesting, statistical metrics (Sharpe, drawdown, win distribution) and systematic automation</li></ul></div>
+  </div>
+</div>
+
+{% if has_academy_plus %}
+
+<!-- M01 -->
+<div class="lsh" id="m1"><div class="lsn">01</div><div><h2>What is a Statistical Edge?</h2><p>Moving from intuition to empirically validated advantage</p></div></div>
+<div class="lb">
+  <p>Most traders believe they have an edge. Very few can prove it. An edge is not a feeling, a pattern you noticed once, or a method you read about. A statistical edge is a quantifiable, repeatable advantage that produces positive expectancy across a large sample of trades in defined market conditions.</p>
+  <div class="lbox def"><span class="blbl">Definition</span><p>A trading edge is a set of conditions under which the probability of a profitable outcome, weighted by the average reward-to-risk ratio, produces a positive expected value (EV) over a statistically significant sample. Without a defined sample, you do not have an edge — you have a hypothesis.</p></div>
+  <h4>The 4 components of a provable edge</h4>
+  <ul class="llist">
+    <li><strong>Entry condition:</strong> precisely defined, no discretion — "price returns to 4H bullish OB after equal lows sweep and 1H CHoCH" not "price looks supported"</li>
+    <li><strong>Exit rule:</strong> fixed R:R or structural target — defined before entry, not adjusted during the trade</li>
+    <li><strong>Market condition filter:</strong> which regime, session, and instrument type activates this edge</li>
+    <li><strong>Sample size:</strong> minimum 50 occurrences before drawing conclusions — 100+ for statistical confidence</li>
+  </ul>
+  <div class="lbox warn"><span class="blbl">The edge illusion</span><p>A 7-trade winning streak does not prove an edge. A 20-trade losing streak does not disprove one. Random outcomes dominate at small sample sizes. The traders who abandon valid edges after 10 losses — and keep invalid systems after 10 wins — never develop real statistical literacy.</p></div>
+</div>
+
+<!-- M02 -->
+<div class="lsh" id="m2"><div class="lsn">02</div><div><h2>Strategy Taxonomy — Finding Your Type</h2><p>Not all edges suit all traders — understanding the 5 strategy archetypes</p></div></div>
+<div class="lb">
+  <p>Before testing a strategy, you must understand which archetype fits your psychology, available time and capital base. A scalping strategy that requires 6 hours at the screen will not work for a part-time trader. A trend-following system that requires 3-month drawdown tolerance will destroy a trader with low loss tolerance.</p>
+  <table class="ltable">
+    <thead><tr><th>Archetype</th><th>Timeframe</th><th>Required traits</th><th>Typical expectancy</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Scalping</strong></td><td>1M–5M</td><td>Fast execution, high screen time, low emotional reactivity</td><td>Low R:R (0.8–1.2:1), high win rate (60–75%)</td></tr>
+      <tr><td><strong>Intraday swing</strong></td><td>15M–1H</td><td>Patience, session discipline, 2–4h/day</td><td>Medium R:R (1.5–2.5:1), moderate win rate (45–55%)</td></tr>
+      <tr><td><strong>Daily swing</strong></td><td>4H–1D</td><td>Tolerance for multi-day drawdown, less monitoring</td><td>High R:R (2.5–4:1), lower win rate (35–50%)</td></tr>
+      <tr><td><strong>Position / trend</strong></td><td>Daily–Weekly</td><td>Very high drawdown tolerance, macro awareness</td><td>Very high R:R (5:1+), low win rate (25–40%)</td></tr>
+      <tr><td><strong>Event-based</strong></td><td>Variable</td><td>Macro expertise, calendar awareness, patience</td><td>Variable, high per-event R:R when active</td></tr>
+    </tbody>
+  </table>
+  <div class="lbox key"><span class="blbl">Self-assessment before choosing</span><p>Answer honestly: How many hours can I dedicate per day? Can I tolerate 15 consecutive losing trades without changing the system? Do I prefer many small wins or fewer large ones? Your honest answers determine your archetype — not what sounds most sophisticated.</p></div>
+</div>
+
+<!-- M03 -->
+<div class="lsh" id="m3"><div class="lsn">03</div><div><h2>Manual Backtesting Methodology</h2><p>Testing your strategy rigorously without code</p></div></div>
+<div class="lb">
+  <p>Manual backtesting is the process of scrolling through historical charts and recording every instance where your defined entry conditions occurred — regardless of outcome. Done correctly, it is as statistically valid as automated backtesting for discretionary strategies.</p>
+  <h4>The 6-step manual backtesting protocol</h4>
+  <ul class="llist">
+    <li><strong>Step 1 — Define entry conditions in writing:</strong> Every variable must be explicit. "4H closes above OB after sweep of weekly equal lows with 1H CHoCH confirmation" not "looks like a good OB."</li>
+    <li><strong>Step 2 — Set the test period:</strong> Minimum 6 months of data. Include at least one trending and one ranging period. Avoid cherry-picking favorable periods.</li>
+    <li><strong>Step 3 — Scroll forward one candle at a time:</strong> Use TradingView's bar replay function. Never look ahead. Record every occurrence of the setup regardless of context feeling.</li>
+    <li><strong>Step 4 — Record every trade in a spreadsheet:</strong> Date, entry, SL, TP, result in R, market structure context (trend/range/transition), session.</li>
+    <li><strong>Step 5 — Minimum 50 occurrences before analysis:</strong> Below 50, results are statistically meaningless. Continue scrolling.</li>
+    <li><strong>Step 6 — Calculate metrics:</strong> Win rate, average R per trade, expectancy, max consecutive losses, performance by market structure and session.</li>
+  </ul>
+  <div class="lbox ex"><span class="blbl">TradingView Bar Replay</span><p>In TradingView, click the clock icon in the top toolbar to enter "Bar Replay" mode. Set the start date 6 months back. Advance one candle at a time with the right arrow key. This simulates real-time trading without the emotional context — ideal for objective strategy testing.</p></div>
+  <div class="lbox warn"><span class="blbl">The confirmation bias trap</span><p>Backtesting only the trades you remember working is not backtesting — it is selective memory validation. The protocol requires recording every occurrence of the setup conditions, including the ones that failed. Omitting losers from the sample invalidates the entire test.</p></div>
+</div>
+
+<!-- M04 -->
+<div class="lsh" id="m4"><div class="lsn">04</div><div><h2>Statistical Validity & Sample Size</h2><p>When can you trust your backtest results?</p></div></div>
+<div class="lb">
+  <p>One of the most dangerous mistakes in strategy development is drawing conclusions from insufficient data. A 20-trade sample with a 70% win rate tells you almost nothing — statistically, this result is consistent with random outcomes.</p>
+  <table class="ltable">
+    <thead><tr><th>Sample size</th><th>Statistical reliability</th><th>Confidence level</th></tr></thead>
+    <tbody>
+      <tr><td>Under 30 trades</td><td>Very low — results are noise</td><td>Below 60%</td></tr>
+      <tr><td>30–50 trades</td><td>Low — directional signal only</td><td>60–70%</td></tr>
+      <tr><td>50–100 trades</td><td>Moderate — usable for initial validation</td><td>70–80%</td></tr>
+      <tr><td>100–200 trades</td><td>Good — strategy can be deployed with reduced size</td><td>80–90%</td></tr>
+      <tr><td>200+ trades</td><td>High — full confidence in statistical edge</td><td>90%+</td></tr>
+    </tbody>
+  </table>
+  <div class="lbox def"><span class="blbl">The binomial test — simplified</span><p>If you claim a 55% win rate, you need approximately 100 trades to distinguish it from random coin-flip (50%) at 80% confidence. Fewer trades cannot statistically rule out luck as the explanation. This is why "I've been profitable for 2 weeks" is not edge validation.</p></div>
+  <div class="lbox key"><span class="blbl">Forward testing vs backtesting</span><p>After backtesting 100+ trades, deploy the strategy in forward testing: trade it live with minimal size (0.25% risk) for 30 forward trades. If the forward results are within 15% of backtest results, the strategy is validated for full deployment. If not, the backtest likely has issues (look-ahead bias, curve fitting, changed market conditions).</p></div>
+</div>
+
+<!-- M05 -->
+<div class="lsh" id="m5"><div class="lsn">05</div><div><h2>Performance Metrics — Beyond Win Rate</h2><p>The 7 metrics that fully describe your strategy's quality</p></div></div>
+<div class="lb">
+  <p>Win rate is the most cited and least informative metric in trading. A complete strategy evaluation requires 7 metrics that together paint an accurate picture of the edge's strength, consistency and risk profile.</p>
+  <table class="ltable">
+    <thead><tr><th>Metric</th><th>Formula</th><th>Healthy range</th><th>Red flag</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Expectancy</strong></td><td>(Win% × Avg win R) − (Loss% × Avg loss R)</td><td>>+0.2R per trade</td><td>Below 0 — losing system</td></tr>
+      <tr><td><strong>Profit factor</strong></td><td>Gross profit ÷ Gross loss</td><td>>1.5</td><td>Below 1.0 — system destroys capital</td></tr>
+      <tr><td><strong>Max drawdown</strong></td><td>Largest peak-to-trough loss in R</td><td>Under –10R</td><td>Above –20R — unacceptable volatility</td></tr>
+      <tr><td><strong>Max consecutive losses</strong></td><td>Longest losing streak in sample</td><td>Under 8</td><td>Above 15 — psychologically unsustainable</td></tr>
+      <tr><td><strong>Recovery factor</strong></td><td>Total net profit R ÷ Max drawdown R</td><td>>2.0</td><td>Below 1.0 — not recovering losses adequately</td></tr>
+      <tr><td><strong>R-multiple distribution</strong></td><td>Distribution of individual trade R outcomes</td><td>Right-skewed (few big winners)</td><td>Heavy left tail — catastrophic losses possible</td></tr>
+      <tr><td><strong>Performance by regime</strong></td><td>Expectancy split by trend/range/transition</td><td>Positive in 2+ regimes</td><td>Only positive in one regime — fragile edge</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- M06 -->
+<div class="lsh" id="m6"><div class="lsn">06</div><div><h2>Edge Degradation Detection</h2><p>Knowing when your strategy stops working — before it destroys your account</p></div></div>
+<div class="lb">
+  <p>Markets evolve. A strategy that produced +0.5R per trade expectancy in 2022 may produce –0.1R in 2024 due to changed volatility regimes, increased algorithmic participation, or structural market shifts. Edge degradation is real — and detecting it early is what separates professional operators from traders who ride a system into ruin.</p>
+  <h4>The 3 signals of edge degradation</h4>
+  <ul class="llist">
+    <li><strong>Rolling 20-trade expectancy drops below 0:</strong> Calculate expectancy on your last 20 trades on a rolling basis. If it turns negative for 3 consecutive 20-trade windows, the edge may be degrading in current conditions.</li>
+    <li><strong>Win rate drops more than 15% from backtest baseline:</strong> If your backtested win rate was 50% and the last 50 live trades show 30%, this is statistically significant degradation.</li>
+    <li><strong>Specific regime performance collapses:</strong> If your strategy worked well in trending markets but now loses in all trending periods, the edge specific to that regime has degraded.</li>
+  </ul>
+  <div class="lbox key"><span class="blbl">Response protocol</span><p>Step 1: Stop trading at full size immediately. Step 2: Paper trade the same setup for 30 occurrences. Step 3: Analyze whether the setup conditions are still occurring as defined. Step 4: Check if market structure has fundamentally changed (increased HFT, lower volatility, regime shift). Step 5: Adapt the strategy or retire it — do not force a degraded edge back to profitability through willpower.</p></div>
+</div>
+
+<!-- M07 -->
+<div class="lsh" id="m7"><div class="lsn">07</div><div><h2>The 12 Cognitive Biases That Destroy Edge</h2><p>Identifying the mental errors that corrupt your execution</p></div></div>
+<div class="lb">
+  <p>A statistically valid edge can be completely neutralized by cognitive biases in execution. The bias catalogue below covers the 12 most damaging patterns observed in discretionary traders — each with a precise detection method and mitigation protocol.</p>
+  <div class="lcards">
+    <div class="lcard"><h4>Pattern biases</h4><ul>
+      <li><strong>Confirmation bias:</strong> Seeking evidence that supports existing position, ignoring contradictions</li>
+      <li><strong>Recency bias:</strong> Overweighting the last 5 trades in evaluating system quality</li>
+      <li><strong>Availability heuristic:</strong> Overestimating probability of vivid recent losses or wins</li>
+      <li><strong>Gambler's fallacy:</strong> "I've had 5 losses, a win is due" — sequences have no memory</li>
+      <li><strong>Anchoring:</strong> Fixating on entry price rather than current structural reality</li>
+      <li><strong>Hindsight bias:</strong> "I knew that was going to happen" — corrupts accurate review</li>
+    </ul></div>
+    <div class="lcard"><h4>Execution biases</h4><ul>
+      <li><strong>Loss aversion:</strong> Holding losers 2x longer than winners (Kahneman & Tversky)</li>
+      <li><strong>Overconfidence:</strong> After winning streaks, taking larger or lower-quality trades</li>
+      <li><strong>Sunk cost fallacy:</strong> "I've held this loss so long, it must come back"</li>
+      <li><strong>FOMO (Fear of missing out):</strong> Entering late or without setup criteria</li>
+      <li><strong>Disposition effect:</strong> Selling winners too early, holding losers too long</li>
+      <li><strong>Action bias:</strong> Trading for the sake of activity, not opportunity</li>
+    </ul></div>
+  </div>
+  <div class="lbox def"><span class="blbl">Detection method for each bias</span><p>After every trade that deviated from the plan, ask: which of the 12 biases explains this deviation? Tag it in your journal. After 30 tagged entries, calculate which bias appears most frequently — this is your primary cognitive vulnerability. Target it with a specific pre-trade prompt in your checklist.</p></div>
+</div>
+
+<!-- M08 -->
+<div class="lsh" id="m8"><div class="lsn">08</div><div><h2>Emotion Regulation Under Market Pressure</h2><p>Practical tools for maintaining execution quality under stress</p></div></div>
+<div class="lb">
+  <p>At Level 4, you learned that a drawdown protocol exists. At Level 5, you learn the psychological mechanisms behind why drawdowns are cognitively destabilizing — and the specific tools to maintain execution quality under the physiological stress response that trading produces.</p>
+  <h4>The physiological stress response in trading</h4>
+  <p>When a trade moves against you, cortisol and adrenaline are released. These hormones narrow attention, accelerate decision-making, and suppress the prefrontal cortex — the part of the brain responsible for rule-following, long-term thinking and impulse control. You become more reactive, more emotional and less rational exactly when precision is most needed.</p>
+  <h4>5 regulation tools that actually work</h4>
+  <ul class="llist">
+    <li><strong>Box breathing (4-4-4-4):</strong> Inhale 4 seconds, hold 4, exhale 4, hold 4. Activates the parasympathetic nervous system within 90 seconds. Use before any trade decision following a loss.</li>
+    <li><strong>The 10-minute rule:</strong> After any loss exceeding 1R, a mandatory 10-minute screen break before the next decision. Non-negotiable.</li>
+    <li><strong>Process narration:</strong> Verbally or in writing narrate exactly what the setup conditions are before entering. Forces cortex engagement over amygdala reaction.</li>
+    <li><strong>Pre-session priming:</strong> Write 3 sentences defining today's trading identity before opening the platform. "Today I trade A+ setups only. I accept that I may not trade at all. My edge works over 100 trades."</li>
+    <li><strong>Post-loss protocol:</strong> Close all charts. Write one sentence describing the trade objectively (not emotionally). Rate your execution quality 1–10. Reopen charts only after 15 minutes.</li>
+  </ul>
+</div>
+
+<!-- M09 -->
+<div class="lsh" id="m9"><div class="lsn">09</div><div><h2>Flow State & Peak Performance Conditions</h2><p>Creating the environment where your best trading happens</p></div></div>
+<div class="lb">
+  <p>Flow state — Csikszentmihalyi's concept of optimal performance — occurs when challenge level matches skill level, attention is fully absorbed, and self-consciousness disappears. Elite athletes, musicians and surgeons deliberately cultivate flow. Elite traders can too.</p>
+  <div class="lbox def"><span class="blbl">Flow state in trading</span><p>The conditions when you execute your plan effortlessly, decisions feel clear and automatic, losses do not destabilize you, and the quality of your analysis is consistently at your personal best. This is not luck — it is a state that can be deliberately induced and maintained.</p></div>
+  <h4>The 6 conditions that produce trading flow</h4>
+  <ul class="llist">
+    <li><strong>Clear, explicit rules:</strong> Flow cannot occur when you are improvising. Your playbook must be written and specific.</li>
+    <li><strong>Appropriate challenge level:</strong> Strategies too simple produce boredom; strategies too complex produce anxiety. Neither produces flow.</li>
+    <li><strong>Physical state optimization:</strong> 7–8 hours sleep, no alcohol within 24h, physical exercise before trading. Neurochemistry precedes performance.</li>
+    <li><strong>Distraction elimination:</strong> Phone away, no social media open, no other screens. Partial attention produces partial performance.</li>
+    <li><strong>Defined daily trade limit:</strong> Knowing you will take maximum 3 trades per session removes urgency anxiety.</li>
+    <li><strong>Emotional neutrality to outcomes:</strong> This is built over 200+ journaled trades where you internalize that process quality — not single trade outcomes — determines long-term results.</li>
+  </ul>
+</div>
+
+<!-- M10 -->
+<div class="lsh" id="m10"><div class="lsn">10</div><div><h2>Strategy Optimization vs Overfitting</h2><p>The line between refinement and curve-fitting</p></div></div>
+<div class="lb">
+  <p>Once you have a backtested strategy with 100+ trades, the temptation is to optimize it further — adjusting parameters to improve historical performance. This process, done incorrectly, produces overfitting: a strategy perfectly adapted to historical data that fails immediately in live trading.</p>
+  <div class="lbox def"><span class="blbl">Overfitting</span><p>Overfitting occurs when a strategy's parameters are adjusted to maximize performance on historical data rather than capturing a genuine structural pattern. The result is a strategy with excellent past performance and poor forward performance — because the "pattern" was noise, not signal.</p></div>
+  <div class="lcards">
+    <div class="lcard"><h4>Valid optimization</h4><ul>
+      <li>Adding a session filter based on statistical evidence</li>
+      <li>Removing setups that consistently fail in ranging markets</li>
+      <li>Adjusting SL distance based on ATR in different volatility regimes</li>
+      <li>Adding a macro alignment filter with statistical validation</li>
+    </ul></div>
+    <div class="lcard"><h4>Overfitting warning signs</h4><ul>
+      <li>Adjusting parameters until historical performance maximizes</li>
+      <li>Too many filters — strategy triggers only 3 times per year</li>
+      <li>Performance only positive in specific 6-month window</li>
+      <li>Forward test shows immediate significant underperformance</li>
+    </ul></div>
+  </div>
+  <div class="lbox key"><span class="blbl">The out-of-sample test</span><p>Split your historical data: backtest on the first 70%, validate on the last 30% without adjusting parameters. If performance on the validation set is within 20% of the training set, the strategy is likely capturing a real pattern. If performance collapses on the validation set, you have overfit.</p></div>
+</div>
+
+<!-- M11 -->
+<div class="lsh" id="m11"><div class="lsn">11</div><div><h2>The Edge Maintenance Protocol</h2><p>Keeping your strategy sharp as markets evolve</p></div></div>
+<div class="lb">
+  <p>A validated edge is not permanent. Markets change, volatility regimes shift, participant behavior evolves. The edge maintenance protocol is a scheduled system for monitoring strategy health and adapting before degradation becomes catastrophic.</p>
+  <h4>Monthly edge review (30 minutes)</h4>
+  <ul class="llist">
+    <li>Calculate rolling 20-trade expectancy — compare to backtest baseline</li>
+    <li>Check win rate vs historical baseline — flag if deviation exceeds 10%</li>
+    <li>Review performance by session — is one session consistently underperforming?</li>
+    <li>Review performance by market structure — is the edge regime-dependent?</li>
+    <li>Count setup occurrences — are setups appearing at the expected historical frequency?</li>
+  </ul>
+  <h4>Quarterly strategy audit (2 hours)</h4>
+  <ul class="llist">
+    <li>Run a fresh 50-trade forward test with full metrics</li>
+    <li>Compare to original backtest on all 7 metrics</li>
+    <li>Review whether market structure in your instrument has fundamentally changed</li>
+    <li>Assess whether any new confluence filter improves performance without overfitting</li>
+    <li>Document the audit results — trend over 4 quarters reveals edge lifecycle</li>
+  </ul>
+</div>
+
+<!-- M12 -->
+<div class="lsh" id="m12"><div class="lsn">12</div><div><h2>Building Your Personal Trading System Document</h2><p>The definitive written specification of your edge</p></div></div>
+<div class="lb">
+  <p>The capstone of Level 5 is a single document — your Personal Trading System (PTS). This is not a list of rules. It is a complete, specific, externally verifiable description of your edge: every condition, every filter, every exit rule, every risk parameter, and every psychological protocol. If you handed this document to another disciplined trader, they should be able to execute your edge without asking a single question.</p>
+  <h4>PTS document structure</h4>
+  <div class="lcheck">
+    <div class="lcheck-item">Section 1 — Edge definition: exact entry conditions, all filters, no vague language</div>
+    <div class="lcheck-item">Section 2 — Statistical validation: backtest summary, sample size, all 7 metrics</div>
+    <div class="lcheck-item">Section 3 — Risk parameters: % per trade by setup grade, max daily loss, max weekly loss</div>
+    <div class="lcheck-item">Section 4 — Execution rules: session hours, maximum trades per session, LTF trigger required</div>
+    <div class="lcheck-item">Section 5 — Psychological protocols: pre-session routine, post-loss protocol, drawdown response tiers</div>
+    <div class="lcheck-item">Section 6 — Edge maintenance schedule: monthly review checklist, quarterly audit protocol</div>
+    <div class="lcheck-item">Section 7 — Version history: date of each significant strategy update with reason and forward test result</div>
+  </div>
+  <div class="lbox key"><span class="blbl">Why the document matters</span><p>Your PTS document serves two functions: it forces the precision that reveals whether you actually have an edge (vague rules cannot be written precisely), and it creates an external reference that prevents emotional drift — when under pressure, you consult the document, not your feelings.</p></div>
+</div>
+
+<!-- CERT -->
+<div id="cert" style="margin-top:52px;">
+  <div class="academy-section-title"><span class="academy-kicker">Level 5 Certification</span><h2>Strategy & Edge Building Exam</h2></div>
+  <div class="lquiz" style="margin-top:18px;">
+    <form class="academy-quiz-form" id="quiz5">
+      <div class="lq"><h3>1. A statistical edge requires a minimum of how many trades before drawing conclusions?</h3>
+        <label><input type="radio" name="q1" value="a"> 10 trades — enough to see a pattern</label>
+        <label><input type="radio" name="q1" value="b"> 50+ trades for initial validation, 100+ for statistical confidence</label>
+        <label><input type="radio" name="q1" value="c"> 200 trades minimum — smaller samples are useless</label>
+      </div>
+      <div class="lq"><h3>2. Confirmation bias in trading most commonly manifests as:</h3>
+        <label><input type="radio" name="q2" value="a"> taking too many trades in trending markets</label>
+        <label><input type="radio" name="q2" value="b"> seeking evidence that supports an existing position while ignoring contradicting signals</label>
+        <label><input type="radio" name="q2" value="c"> setting stop losses too tightly in volatile markets</label>
+      </div>
+      <div class="lq"><h3>3. The "out-of-sample test" in strategy development serves to:</h3>
+        <label><input type="radio" name="q3" value="a"> maximize performance on historical data</label>
+        <label><input type="radio" name="q3" value="b"> validate whether the strategy captures a real pattern or is curve-fitted to historical noise</label>
+        <label><input type="radio" name="q3" value="c"> test how the strategy performs during high-volatility news events</label>
+      </div>
+      <div class="lq"><h3>4. A strategy with Profit Factor below 1.0 means:</h3>
+        <label><input type="radio" name="q4" value="a"> the strategy has a win rate below 50%</label>
+        <label><input type="radio" name="q4" value="b"> gross losses exceed gross profits — the strategy destroys capital over time</label>
+        <label><input type="radio" name="q4" value="c"> the strategy needs more trades to reach statistical significance</label>
+      </div>
+      <div class="lq"><h3>5. The physiological stress response during a losing trade primarily impairs:</h3>
+        <label><input type="radio" name="q5" value="a"> physical reaction speed</label>
+        <label><input type="radio" name="q5" value="b"> prefrontal cortex function — reducing rule-following, impulse control and long-term thinking</label>
+        <label><input type="radio" name="q5" value="c"> visual processing speed needed to read charts</label>
+      </div>
+      <div class="lq"><h3>6. Rolling 20-trade expectancy turning negative for 3 consecutive windows signals:</h3>
+        <label><input type="radio" name="q6" value="a"> normal variance — continue trading at full size</label>
+        <label><input type="radio" name="q6" value="b"> potential edge degradation — reduce size and begin forward testing investigation</label>
+        <label><input type="radio" name="q6" value="c"> the strategy needs to be retired immediately</label>
+      </div>
+      <div class="lq"><h3>7. The Personal Trading System document is valuable primarily because:</h3>
+        <label><input type="radio" name="q7" value="a"> it impresses other traders and shows discipline</label>
+        <label><input type="radio" name="q7" value="b"> it forces the precision that reveals whether an edge is real, and prevents emotional drift under pressure</label>
+        <label><input type="radio" name="q7" value="c"> brokers require it for professional account applications</label>
+      </div>
+      <div class="lq"><h3>8. Flow state in trading is best described as:</h3>
+        <label><input type="radio" name="q8" value="a"> the feeling of excitement after a large winning trade</label>
+        <label><input type="radio" name="q8" value="b"> a deliberate performance state where execution is effortless, clear and consistent — achieved through specific environmental and psychological conditions</label>
+        <label><input type="radio" name="q8" value="c"> the state of complete detachment from market outcomes</label>
+      </div>
+      <button type="button" class="academy-btn academy-btn-primary" onclick="submitQuiz('quiz5',['b','b','b','b','b','b','b','b'],'r5')">Validate Certification</button>
+      <div id="r5" class="academy-quiz-result"></div>
+    </form>
+    <form method="POST" action="{{ url_for('academy.academy_complete_level', level='level5', lang_code=current_lang) }}" style="margin-top:14px;">
+      <button class="academy-btn academy-btn-secondary" type="submit">Mark Level 5 Complete</button>
+    </form>
+  </div>
+</div>
+
+{% else %}
+<div class="llock"><div style="font-size:44px;">🔒</div><h3>Level 5 — Premium / VIP</h3>
+<p>Level 5 unlocks strategy construction, manual backtesting methodology, statistical validation, 12 cognitive biases, emotion regulation tools, flow state protocols and the Personal Trading System framework.</p>
+<a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-btn academy-btn-gold" style="display:inline-block;margin-top:4px;">Upgrade to Premium — Unlock Level 5</a></div>
+{% endif %}
+
+</div>
+<aside class="lsidebar">
+  {% set p = academy_progress.level5 if academy_progress and academy_progress.level5 is defined else 0 %}
+  <div class="lprogcard"><div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:12px;font-weight:600;color:var(--mu);">Progress</span><strong style="color:var(--l5);">{{ p }}%</strong></div><div class="ltrack"><div class="lfill" style="width:{{ p }}%;"></div></div><div style="font-size:11px;color:var(--mu);margin-top:5px;">Premium / VIP required</div></div>
+  <div class="ltoc"><h3>Contents</h3>
+    <a href="#m1"><span class="n">01</span>What is Statistical Edge?</a>
+    <a href="#m2"><span class="n">02</span>Strategy Taxonomy</a>
+    <a href="#m3"><span class="n">03</span>Manual Backtesting</a>
+    <a href="#m4"><span class="n">04</span>Statistical Validity</a>
+    <a href="#m5"><span class="n">05</span>Performance Metrics</a>
+    <a href="#m6"><span class="n">06</span>Edge Degradation</a>
+    <a href="#m7"><span class="n">07</span>12 Cognitive Biases</a>
+    <a href="#m8"><span class="n">08</span>Emotion Regulation</a>
+    <a href="#m9"><span class="n">09</span>Flow State</a>
+    <a href="#m10"><span class="n">10</span>Optimization vs Overfitting</a>
+    <a href="#m11"><span class="n">11</span>Edge Maintenance Protocol</a>
+    <a href="#m12"><span class="n">12</span>Personal Trading System</a>
+    <a href="#cert" style="color:var(--l5);margin-top:7px;"><span class="n">★</span>Certification</a>
+  </div>
+  <div class="lprogcard" style="margin-top:13px;"><h3 style="font-size:13px;font-weight:700;color:#fff;margin-bottom:7px;">What comes next</h3><p style="font-size:12px;color:var(--tx);line-height:1.6;">Level 6 introduces quantitative methods: Python/Excel backtesting, Sharpe ratio, maximum drawdown analysis, win distribution statistics and systematic automation frameworks.</p></div>
+</aside>
+</div></div></section>
+{% endblock %}
+{% block extra_js %}<script src="{{ url_for('static', filename='academy.js') }}"></script>{% endblock %}

@@ -1,180 +1,540 @@
 {% extends "base.html" %}
-
-{% block title %}
-{{ t("academy_page_title", "VelWolef Academy | Parcours complet") }}
-{% endblock %}
+{% block title %}VelWolef Academy — Institutional Trading Curriculum{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}">
+<style>
+:root{--ac-gold:#d4a843;--ac-gd:rgba(212,168,67,.1);--ac-gb:rgba(212,168,67,.22);--ac-bg:#0a0d13;--ac-s:#111520;--ac-br:rgba(255,255,255,.07);--ac-tx:#c8d0e0;--ac-mu:#6b7588;--l1:#3b82f6;--l2:#8b5cf6;--l3:#10b981;--l4:#d4a843;}
+
+/* HERO */
+.ai-hero{background:linear-gradient(160deg,#0a0d13 0%,#0c1020 40%,#0d1a0f 100%);padding:70px 0 60px;border-bottom:1px solid var(--ac-gb);}
+.ai-hero-inner{display:grid;grid-template-columns:1fr 360px;gap:40px;align-items:center;}
+.ai-kicker{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:4px;background:var(--ac-gd);border:1px solid var(--ac-gb);font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ac-gold);margin-bottom:20px;}
+.ai-kicker::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--ac-gold);animation:blink 1.8s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.ai-hero h1{font-size:clamp(2.2rem,4.5vw,3.6rem);font-weight:800;line-height:1.08;color:#fff;margin-bottom:18px;}
+.ai-hero h1 span{color:var(--ac-gold);}
+.ai-hero-desc{font-size:1.05rem;color:var(--ac-tx);line-height:1.75;max-width:560px;margin-bottom:30px;}
+.ai-cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;}
+.ai-access-strip{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--ac-s);border:1px solid var(--ac-br);border-radius:8px;font-size:13px;color:var(--ac-tx);}
+.ai-access-strip strong{color:#fff;}
+
+/* PROGRESS CARD */
+.ai-prog-card{background:var(--ac-s);border:1px solid var(--ac-gb);border-radius:14px;padding:22px;}
+.ai-prog-card h3{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--ac-gold);margin-bottom:16px;}
+.ai-prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.ai-prog-row span{font-size:12px;color:var(--ac-mu);}
+.ai-prog-row strong{font-size:12px;font-weight:700;color:#fff;}
+.ai-track{height:4px;background:rgba(255,255,255,.07);border-radius:2px;margin-bottom:12px;overflow:hidden;}
+.ai-fill{height:100%;border-radius:2px;}
+.ai-fill.l1{background:var(--l1);}
+.ai-fill.l2{background:var(--l2);}
+.ai-fill.l3{background:var(--l3);}
+.ai-fill.l4{background:var(--l4);}
+.ai-total-row{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--ac-br);margin-top:4px;}
+.ai-total-row span{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--ac-mu);}
+.ai-total-row strong{font-size:1.3rem;font-weight:800;color:var(--ac-gold);}
+
+/* STATS BAR */
+.ai-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--ac-br);border:1px solid var(--ac-br);border-radius:12px;overflow:hidden;margin:48px 0;}
+.ai-stat{background:var(--ac-s);padding:20px;text-align:center;}
+.ai-stat .num{font-size:1.8rem;font-weight:800;color:#fff;display:block;}
+.ai-stat .lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--ac-mu);margin-top:4px;display:block;}
+
+/* LEVELS SECTION */
+.ai-levels-head{text-align:center;margin-bottom:40px;}
+.ai-levels-head h2{font-size:2rem;font-weight:800;color:#fff;margin-bottom:10px;}
+.ai-levels-head p{font-size:1rem;color:var(--ac-tx);max-width:560px;margin:0 auto;}
+
+/* LEVEL CARDS */
+.ai-levels-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-bottom:60px;}
+.ai-level-card{background:var(--ac-s);border:1px solid var(--ac-br);border-radius:16px;padding:28px;position:relative;overflow:hidden;transition:border-color .2s,transform .2s;}
+.ai-level-card:hover{transform:translateY(-3px);}
+.ai-level-card.l1{border-color:rgba(59,130,246,.25);}
+.ai-level-card.l1:hover{border-color:rgba(59,130,246,.5);}
+.ai-level-card.l2{border-color:rgba(139,92,246,.25);}
+.ai-level-card.l2:hover{border-color:rgba(139,92,246,.5);}
+.ai-level-card.l3{border-color:rgba(16,185,129,.25);}
+.ai-level-card.l3:hover{border-color:rgba(16,185,129,.5);}
+.ai-level-card.l4{border-color:var(--ac-gb);background:linear-gradient(135deg,#111520,#1a1208);}
+.ai-level-card.l4:hover{border-color:var(--ac-gold);}
+.ai-level-stripe{position:absolute;top:0;left:0;width:100%;height:3px;}
+.l1 .ai-level-stripe{background:var(--l1);}
+.l2 .ai-level-stripe{background:var(--l2);}
+.l3 .ai-level-stripe{background:var(--l3);}
+.l4 .ai-level-stripe{background:linear-gradient(90deg,var(--ac-gold),#f0c060);}
+.ai-level-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.ai-level-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+.l1 .ai-level-badge{background:rgba(59,130,246,.1);color:#93c5fd;}
+.l2 .ai-level-badge{background:rgba(139,92,246,.1);color:#c4b5fd;}
+.l3 .ai-level-badge{background:rgba(16,185,129,.1);color:#6ee7b7;}
+.l4 .ai-level-badge{background:var(--ac-gd);color:var(--ac-gold);}
+.ai-plan-tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:4px;}
+.ai-plan-tag.free{background:rgba(34,197,94,.1);color:#86efac;border:1px solid rgba(34,197,94,.2);}
+.ai-plan-tag.prem{background:rgba(139,92,246,.1);color:#c4b5fd;border:1px solid rgba(139,92,246,.2);}
+.ai-plan-tag.vip{background:var(--ac-gd);color:var(--ac-gold);border:1px solid var(--ac-gb);}
+.ai-level-card h3{font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:6px;}
+.ai-level-card .sub{font-size:12px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;margin-bottom:12px;display:block;}
+.l1 .sub{color:#60a5fa;}
+.l2 .sub{color:#a78bfa;}
+.l3 .sub{color:#34d399;}
+.l4 .sub{color:var(--ac-gold);}
+.ai-level-card p{font-size:13px;color:var(--ac-tx);line-height:1.65;margin-bottom:18px;}
+.ai-module-list{display:flex;flex-direction:column;gap:4px;margin-bottom:18px;}
+.ai-module-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ac-mu);}
+.ai-module-item::before{content:"";width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.l1 .ai-module-item::before{background:var(--l1);}
+.l2 .ai-module-item::before{background:var(--l2);}
+.l3 .ai-module-item::before{background:var(--l3);}
+.l4 .ai-module-item::before{background:var(--ac-gold);}
+.ai-level-footer{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid var(--ac-br);}
+.ai-prog-mini{flex:1;margin-right:14px;}
+.ai-prog-mini span{font-size:11px;color:var(--ac-mu);}
+.ai-prog-mini-track{height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-top:4px;overflow:hidden;}
+.ai-prog-mini-fill{height:100%;border-radius:2px;}
+.l1 .ai-prog-mini-fill{background:var(--l1);}
+.l2 .ai-prog-mini-fill{background:var(--l2);}
+.l3 .ai-prog-mini-fill{background:var(--l3);}
+.l4 .ai-prog-mini-fill{background:var(--ac-gold);}
+.ai-level-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:7px;font-size:12px;font-weight:700;text-decoration:none;transition:all .15s;white-space:nowrap;}
+.ai-level-btn.go{background:#2962ff;color:#fff;}
+.ai-level-btn.go:hover{background:#1e53e5;}
+.ai-level-btn.unlock{background:var(--ac-gd);border:1px solid var(--ac-gb);color:var(--ac-gold);}
+.ai-level-btn.unlock:hover{background:rgba(212,168,67,.2);}
+.ai-level-btn.locked{background:rgba(255,255,255,.05);border:1px solid var(--ac-br);color:var(--ac-mu);cursor:not-allowed;}
+
+/* CURRICULUM PATH */
+.ai-path{display:flex;gap:0;margin-bottom:60px;}
+.ai-path-step{flex:1;text-align:center;position:relative;}
+.ai-path-step::after{content:'→';position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--ac-mu);}
+.ai-path-step:last-child::after{display:none;}
+.ai-path-num{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;margin:0 auto 10px;}
+.ai-path-step:nth-child(1) .ai-path-num{background:rgba(59,130,246,.15);color:#93c5fd;border:2px solid rgba(59,130,246,.3);}
+.ai-path-step:nth-child(2) .ai-path-num{background:rgba(139,92,246,.15);color:#c4b5fd;border:2px solid rgba(139,92,246,.3);}
+.ai-path-step:nth-child(3) .ai-path-num{background:rgba(16,185,129,.15);color:#6ee7b7;border:2px solid rgba(16,185,129,.3);}
+.ai-path-step:nth-child(4) .ai-path-num{background:var(--ac-gd);color:var(--ac-gold);border:2px solid var(--ac-gb);}
+.ai-path-step:nth-child(5) .ai-path-num{background:rgba(249,115,22,.15);color:#fed7aa;border:2px solid rgba(249,115,22,.3);}
+.ai-path-step:nth-child(6) .ai-path-num{background:rgba(6,182,212,.15);color:#a5f3fc;border:2px solid rgba(6,182,212,.3);}
+.ai-path-step:nth-child(7) .ai-path-num{background:rgba(168,85,247,.15);color:#d8b4fe;border:2px solid rgba(168,85,247,.3);}
+.ai-path-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px;}
+.ai-path-desc{font-size:11px;color:var(--ac-mu);}
+
+/* FEATURES */
+.ai-features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:60px;}
+.ai-feature{background:var(--ac-s);border:1px solid var(--ac-br);border-radius:12px;padding:20px;}
+.ai-feature-icon{font-size:24px;margin-bottom:12px;}
+.ai-feature h4{font-size:13px;font-weight:700;color:#fff;margin-bottom:6px;}
+.ai-feature p{font-size:12px;color:var(--ac-mu);line-height:1.6;margin:0;}
+
+/* CTA bottom */
+.ai-cta-bottom{background:linear-gradient(135deg,rgba(212,168,67,.05),rgba(212,168,67,.02));border:1px solid var(--ac-gb);border-radius:16px;padding:40px;text-align:center;margin-bottom:40px;}
+.ai-cta-bottom h2{font-size:1.6rem;font-weight:800;color:#fff;margin-bottom:10px;}
+.ai-cta-bottom p{font-size:14px;color:var(--ac-tx);margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto;}
+.ai-cta-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;}
+
+@media(max-width:900px){
+  .ai-hero-inner{grid-template-columns:1fr;}
+  .ai-levels-grid{grid-template-columns:1fr;}
+  .ai-stats{grid-template-columns:repeat(2,1fr);}
+  .ai-features{grid-template-columns:1fr;}
+  .ai-path{flex-direction:column;gap:12px;}
+  .ai-path-step::after{display:none;}
+}
+</style>
 {% endblock %}
 
 {% block content %}
 
-<section class="academy-section academy-page-hero">
-    <div class="academy-shell">
-        <div class="academy-page-grid">
+{% set p1 = academy_progress.get('level1', 0) if academy_progress else 0 %}
+{% set p2 = academy_progress.get('level2', 0) if academy_progress else 0 %}
+{% set p3 = academy_progress.get('level3', 0) if academy_progress else 0 %}
+{% set p4 = academy_progress.get('level4', 0) if academy_progress else 0 %}
+{% set total_progress = ((p1 + p2 + p3 + p4) // 4) %}
 
-            <div>
-                <span class="academy-kicker">{{ t('academy_index_velwolef_academy', 'VelWolef Academy') }}</span>
-
-                <h1>
-                    {{ t('academy_index_un_parcours_structure_du_niveau_debutant_au_niveau_desk',
-                    'Un parcours structuré du niveau débutant au niveau desk') }}
-                </h1>
-
-                <p class="academy-lead">
-                    {{ t('academy_index_l_academy_velwolef_est_concue_comme_une_progression_reelle_vous_ne_con',
-                    'L’Academy VelWolef est conçue comme une progression réelle. Vous ne consommez pas simplement du contenu : vous évoluez dans votre manière de lire le marché.') }}
-                </p>
-
-                <p class="academy-lead">
-                    {{ t('academy_index_chaque_niveau_apporte_une_transformation_comprendre_structurer_planifi',
-                    'Chaque niveau apporte une transformation : comprendre → structurer → planifier → penser comme un desk.') }}
-                </p>
-
-                <div class="academy-actions">
-                    <a href="#levels" class="academy-btn academy-btn-primary">
-                        {{ t('academy_index_voir_les_niveaux', 'Voir les niveaux') }}
-                    </a>
-                </div>
-
-                <div class="academy-access-strip">
-                    {% if is_vip %}
-                        <span class="academy-plan-badge-vip">VIP</span>
-                        <strong>{{ t('academy_index_acces_complet_aux_4_niveaux', 'Accès complet aux 4 niveaux') }}</strong>
-                    {% elif is_premium %}
-                        <span class="academy-plan-badge-premium">Premium</span>
-                        <strong>{{ t('academy_index_acces_niveaux_1_a_3', 'Accès niveaux 1 à 3') }}</strong>
-                    {% else %}
-                        <span class="academy-plan-badge-basic">{{ t('academy_index_basic', 'Basic') }}</span>
-                        <strong>{{ t('academy_index_acces_niveau_1', 'Accès niveau 1') }}</strong>
-                    {% endif %}
-                </div>
-            </div>
-
-            {# ✅ FIX SAFE (NE TOUCHE PAS À LA TRADUCTION) #}
-            {% set p1 = academy_progress.get('level1', 0) if academy_progress else 0 %}
-            {% set p2 = academy_progress.get('level2', 0) if academy_progress else 0 %}
-            {% set p3 = academy_progress.get('level3', 0) if academy_progress else 0 %}
-            {% set p4 = academy_progress.get('level4', 0) if academy_progress else 0 %}
-            {% set total_progress = ((p1 + p2 + p3 + p4) // 4) %}
-
-            <div class="academy-side-progress">
-
-                <div class="academy-progress-head">
-                    <span>{{ t('academy_index_progression_globale', 'Progression globale') }}</span>
-                    <strong>{{ total_progress }}%</strong>
-                </div>
-
-                <div class="academy-progress-bar">
-                    <div class="academy-progress-fill" style="width: {{ total_progress }}%;"></div>
-                </div>
-
-                <div class="academy-info-card" style="margin-top:20px;">
-                    <h3>{{ t('academy_index_objectif_final', 'Objectif final') }}</h3>
-                    <p>
-                        {{ t('academy_index_construire_une_logique_complete_lecture_du_marche_execution_propre_pre',
-                        'Construire une logique complète : lecture du marché, exécution propre, préparation, allocation et discipline.') }}
-                    </p>
-                </div>
-
-            </div>
-
+<!-- HERO -->
+<section class="ai-hero academy-section">
+  <div class="academy-shell">
+    <div class="ai-hero-inner">
+      <div>
+        <span class="ai-kicker">VelWolef Academy</span>
+        <h1>From first trade<br>to <span>institutional desk</span></h1>
+        <p class="ai-hero-desc">A structured curriculum of 7 levels, 84 modules and 35+ hours of content — built around one goal: making you think, plan and execute like a professional operator, not a reactive trader.</p>
+        <div class="ai-cta-row">
+          <a href="#levels" class="academy-btn academy-btn-primary">Explore the curriculum</a>
+          <a href="{{ url_for('academy.academy_level_1', lang_code=current_lang) }}" class="academy-btn academy-btn-secondary">Start Level 1 — Free</a>
         </div>
+        <div class="ai-access-strip">
+          {% if is_vip %}
+            <span class="academy-plan-badge-vip">VIP</span>
+            <strong>Full access — all 7 levels unlocked</strong>
+          {% elif is_premium %}
+            <span class="academy-plan-badge-premium">Premium</span>
+            <strong>Levels 1, 2 & 3 unlocked — upgrade for Level 4 Pro</strong>
+          {% else %}
+            <span class="academy-plan-badge-basic">Basic</span>
+            <strong>Levels 1, 2 &amp; 3 included — upgrade for advanced levels</strong>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- PROGRESS CARD -->
+      <div class="ai-prog-card">
+        <h3>Your Progress</h3>
+
+        <div class="ai-prog-row"><span>Level 1 — Foundations</span><strong>{{ p1 }}%</strong></div>
+        <div class="ai-track"><div class="ai-fill l1" style="width:{{ p1 }}%;"></div></div>
+
+        <div class="ai-prog-row"><span>Level 2 — Advanced Execution</span><strong>{{ p2 }}%</strong></div>
+        <div class="ai-track"><div class="ai-fill l2" style="width:{{ p2 }}%;"></div></div>
+
+        <div class="ai-prog-row"><span>Level 3 — Operator Vision</span><strong>{{ p3 }}%</strong></div>
+        <div class="ai-track"><div class="ai-fill l3" style="width:{{ p3 }}%;"></div></div>
+
+        <div class="ai-prog-row"><span>Level 4 Pro — Institutional Desk</span><strong>{{ p4 }}%</strong></div>
+        <div class="ai-track"><div class="ai-fill l4" style="width:{{ p4 }}%;"></div></div>
+
+        <div class="ai-total-row">
+          <span>Overall progress</span>
+          <strong>{{ total_progress }}%</strong>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
 
-<section class="academy-section academy-dark-band" id="levels">
-    <div class="academy-shell">
-
-        <div class="academy-section-title">
-            <span class="academy-kicker">{{ t('academy_index_parcours_academy', 'Parcours Academy') }}</span>
-            <h2>{{ t('academy_index_les_4_niveaux', 'Les 4 niveaux') }}</h2>
-        </div>
-
-        <div class="academy-grid-2">
-
-            <!-- LEVEL 1 -->
-            <div class="academy-course-card academy-course-card-featured">
-                <div class="academy-course-top">
-                    <span class="academy-level-pill">{{ t('academy_index_level_1', 'Level 1') }}</span>
-                    <span class="academy-mini-badge">{{ t('academy_index_inclus', 'Inclus') }}</span>
-                </div>
-
-                <h3>{{ t('academy_index_foundations', 'Foundations') }}</h3>
-
-                <p>
-                    {{ t('academy_index_base_du_trading_structure_risque_invalidation_et_discipline',
-                    'Base du trading : structure, risque, invalidation et discipline.') }}
-                </p>
-
-                <a href="{{ url_for('academy.academy_level_1', lang_code=current_lang) }}" class="academy-link-btn">
-                    {{ t('academy_index_acceder', 'Accéder →') }}
-                </a>
-            </div>
-
-            <!-- LEVEL 2 -->
-            <div class="academy-course-card">
-                <div class="academy-course-top">
-                    <span class="academy-level-pill">{{ t('academy_index_level_2', 'Level 2') }}</span>
-                    <span class="academy-mini-badge">Premium</span>
-                </div>
-
-                <h3>{{ t('academy_index_structure_execution', 'Structure & Execution') }}</h3>
-
-                {% if is_premium %}
-                    <a href="{{ url_for('academy.academy_level_2', lang_code=current_lang) }}" class="academy-link-btn">
-                        {{ t('academy_index_acceder', 'Accéder →') }}
-                    </a>
-                {% else %}
-                    <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-link-btn">
-                        {{ t('academy_index_debloquer', 'Débloquer →') }}
-                    </a>
-                {% endif %}
-            </div>
-
-            <!-- LEVEL 3 -->
-            <div class="academy-course-card">
-                <div class="academy-course-top">
-                    <span class="academy-level-pill">{{ t('academy_index_level_3', 'Level 3') }}</span>
-                    <span class="academy-mini-badge">Premium</span>
-                </div>
-
-                <h3>{{ t('academy_index_operator_vision', 'Operator Vision') }}</h3>
-
-                {% if is_premium %}
-                    <a href="{{ url_for('academy.academy_level_3', lang_code=current_lang) }}" class="academy-link-btn">
-                        {{ t('academy_index_acceder', 'Accéder →') }}
-                    </a>
-                {% else %}
-                    <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-link-btn">
-                        {{ t('academy_index_debloquer', 'Débloquer →') }}
-                    </a>
-                {% endif %}
-            </div>
-
-            <!-- LEVEL 4 -->
-            <div class="academy-course-card academy-course-card-featured">
-                <div class="academy-course-top">
-                    <span class="academy-level-pill">{{ t('academy_index_level_4_pro', 'Level 4 Pro') }}</span>
-                    <span class="academy-mini-badge">VIP</span>
-                </div>
-
-                <h3>{{ t('academy_index_desk_institutionnel', 'Desk / Institutionnel') }}</h3>
-
-                {% if is_vip %}
-                    <a href="{{ url_for('academy.academy_level_4', lang_code=current_lang) }}" class="academy-link-btn">
-                        {{ t('academy_index_acceder', 'Accéder →') }}
-                    </a>
-                {% else %}
-                    <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-link-btn">
-                        {{ t('academy_index_passer_vip', 'Passer VIP →') }}
-                    </a>
-                {% endif %}
-            </div>
-
-        </div>
+<!-- STATS BAR -->
+<section class="academy-section" style="padding:32px 0;">
+  <div class="academy-shell">
+    <div class="ai-stats">
+      <div class="ai-stat"><span class="num">7</span><span class="lbl">Levels</span></div>
+      <div class="ai-stat"><span class="num">84</span><span class="lbl">Modules</span></div>
+      <div class="ai-stat"><span class="num">35h+</span><span class="lbl">Content</span></div>
+      <div class="ai-stat"><span class="num">7</span><span class="lbl">Certifications</span></div>
     </div>
+  </div>
+</section>
+
+<!-- LEARNING PATH -->
+<section class="academy-section academy-dark-band" style="padding:48px 0;">
+  <div class="academy-shell">
+    <div class="ai-levels-head">
+      <span class="academy-kicker">Learning Path</span>
+      <h2>A progression built for transformation</h2>
+      <p>Each level is a distinct conceptual leap — not just more content, but a new way of thinking about markets.</p>
+    </div>
+
+    <div class="ai-path" style="margin-bottom:48px;">
+      <div class="ai-path-step">
+        <div class="ai-path-num">1</div>
+        <div class="ai-path-title">Foundations</div>
+        <div class="ai-path-desc">Think correctly<br>about risk</div>
+      </div>
+      <div class="ai-path-step">
+        <div class="ai-path-num">2</div>
+        <div class="ai-path-title">Execution</div>
+        <div class="ai-path-desc">Read structure<br>& select setups</div>
+      </div>
+      <div class="ai-path-step">
+        <div class="ai-path-num">3</div>
+        <div class="ai-path-title">Operator</div>
+        <div class="ai-path-desc">Plan markets<br>& manage exposure</div>
+      </div>
+      <div class="ai-path-step">
+        <div class="ai-path-num">4</div>
+        <div class="ai-path-title">Desk Pro</div>
+        <div class="ai-path-desc">Institutional<br>frameworks</div>
+      </div>
+      <div class="ai-path-step">
+        <div class="ai-path-num">5</div>
+        <div class="ai-path-title">Edge</div>
+        <div class="ai-path-desc">Build & validate<br>your system</div>
+      </div>
+      <div class="ai-path-step">
+        <div class="ai-path-num">6</div>
+        <div class="ai-path-title">Quantitative</div>
+        <div class="ai-path-desc">Python, stats<br>& automation</div>
+      </div>
+      <div class="ai-path-step">
+        <div class="ai-path-num">7</div>
+        <div class="ai-path-title">Professional</div>
+        <div class="ai-path-desc">Capital management<br>& compliance</div>
+      </div>
+    </div>
+
+    <!-- LEVEL CARDS -->
+    <div class="ai-levels-grid" id="levels">
+
+      <!-- LEVEL 1 -->
+      <div class="ai-level-card l1">
+        <div class="ai-level-stripe"></div>
+        <div class="ai-level-top">
+          <span class="ai-level-badge">Level 1</span>
+          <span class="ai-plan-tag free">All Plans</span>
+        </div>
+        <h3>Trading Foundations</h3>
+        <span class="sub">12 modules · 3h · Certification</span>
+        <p>Build the rational base before searching for performance. Define what a trade is, how to size it, how to manage risk, and how to think in scenarios — not predictions.</p>
+        <div class="ai-module-list">
+          <div class="ai-module-item">Defining trading with precision</div>
+          <div class="ai-module-item">Pip, lot, leverage & position sizing</div>
+          <div class="ai-module-item">SL & TP architecture</div>
+          <div class="ai-module-item">Risk management — the 1% rule</div>
+          <div class="ai-module-item">R:R ratio & mathematical expectancy</div>
+          <div class="ai-module-item">Pre-trade checklist & trading journal</div>
+        </div>
+        <div class="ai-level-footer">
+          <div class="ai-prog-mini">
+            <span>Progress: {{ p1 }}%</span>
+            <div class="ai-prog-mini-track"><div class="ai-prog-mini-fill" style="width:{{ p1 }}%;"></div></div>
+          </div>
+          <a href="{{ url_for('academy.academy_level_1', lang_code=current_lang) }}" class="ai-level-btn go">Start →</a>
+        </div>
+      </div>
+
+      <!-- LEVEL 2 -->
+      <div class="ai-level-card l2">
+        <div class="ai-level-stripe"></div>
+        <div class="ai-level-top">
+          <span class="ai-level-badge">Level 2</span>
+          <span class="ai-plan-tag prem">Premium / VIP</span>
+        </div>
+        <h3>Advanced Structure & Execution</h3>
+        <span class="sub">12 modules · 4h · Certification</span>
+        <p>Go beyond basic structure. Learn BOS & CHoCH, order blocks, liquidity sweeps, false breakouts, confluence scoring, and the setup quality filter that separates A+ trades from noise.</p>
+        <div class="ai-module-list">
+          <div class="ai-module-item">Break of Structure (BOS) & CHoCH</div>
+          <div class="ai-module-item">Order blocks & fair value gaps</div>
+          <div class="ai-module-item">Liquidity sweeps & stop hunts</div>
+          <div class="ai-module-item">Multi-factor confluence scoring (0–10)</div>
+          <div class="ai-module-item">Setup quality filtering — A+ vs B–</div>
+          <div class="ai-module-item">LTF entry refinement & execution playbook</div>
+        </div>
+        <div class="ai-level-footer">
+          <div class="ai-prog-mini">
+            <span>Progress: {{ p2 }}%</span>
+            <div class="ai-prog-mini-track"><div class="ai-prog-mini-fill" style="width:{{ p2 }}%;"></div></div>
+          </div>
+          {% if has_academy_plus %}
+          <a href="{{ url_for('academy.academy_level_2', lang_code=current_lang) }}" class="ai-level-btn go">Continue →</a>
+          {% else %}
+          <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="ai-level-btn unlock">Unlock →</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- LEVEL 3 -->
+      <div class="ai-level-card l3">
+        <div class="ai-level-stripe"></div>
+        <div class="ai-level-top">
+          <span class="ai-level-badge">Level 3</span>
+          <span class="ai-plan-tag prem">Premium / VIP</span>
+        </div>
+        <h3>Market Planning & Operator Vision</h3>
+        <span class="sub">12 modules · 5h · Certification</span>
+        <p>Stop reacting — start planning. Multi-timeframe top-down analysis, scenario A/B/C construction, inter-market correlations, asset selection matrix and global exposure management.</p>
+        <div class="ai-module-list">
+          <div class="ai-module-item">Multi-TF top-down analysis protocol</div>
+          <div class="ai-module-item">Scenario A / B / C construction</div>
+          <div class="ai-module-item">DXY, US100 & BTC.D as planning tools</div>
+          <div class="ai-module-item">Asset selection matrix (0–10 scoring)</div>
+          <div class="ai-module-item">Global exposure & hidden concentration</div>
+          <div class="ai-module-item">R-multiples performance measurement</div>
+        </div>
+        <div class="ai-level-footer">
+          <div class="ai-prog-mini">
+            <span>Progress: {{ p3 }}%</span>
+            <div class="ai-prog-mini-track"><div class="ai-prog-mini-fill" style="width:{{ p3 }}%;"></div></div>
+          </div>
+          {% if has_academy_plus %}
+          <a href="{{ url_for('academy.academy_level_3', lang_code=current_lang) }}" class="ai-level-btn go">Continue →</a>
+          {% else %}
+          <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="ai-level-btn unlock">Unlock →</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- LEVEL 4 -->
+      <div class="ai-level-card l4">
+        <div class="ai-level-stripe"></div>
+        <div class="ai-level-top">
+          <span class="ai-level-badge">Level 4 Pro</span>
+          <span class="ai-plan-tag vip">VIP Only</span>
+        </div>
+        <h3>Institutional Desk Mastery</h3>
+        <span class="sub">15 modules · 6h · Desk Pro Certification</span>
+        <p>The institutional layer. Macro regime mapping, portfolio of 6–10 ideas, scaling models, hidden concentration risk, drawdown protocol and a 6-dimension professional review framework.</p>
+        <div class="ai-module-list">
+          <div class="ai-module-item">Market regime mapping (5 states)</div>
+          <div class="ai-module-item">Portfolio exposure & idea management</div>
+          <div class="ai-module-item">Scaling — scout / core / runner model</div>
+          <div class="ai-module-item">Drawdown protocol — 3-tier response</div>
+          <div class="ai-module-item">6-dimension pro review framework</div>
+          <div class="ai-module-item">Desk routine & daily institutional protocol</div>
+        </div>
+        <div class="ai-level-footer">
+          <div class="ai-prog-mini">
+            <span>Progress: {{ p4 }}%</span>
+            <div class="ai-prog-mini-track"><div class="ai-prog-mini-fill" style="width:{{ p4 }}%;"></div></div>
+          </div>
+          {% if is_vip %}
+          <a href="{{ url_for('academy.academy_level_4', lang_code=current_lang) }}" class="ai-level-btn go">Enter Desk →</a>
+          {% else %}
+          <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="ai-level-btn unlock">Go VIP →</a>
+          {% endif %}
+        </div>
+      </div>
+
+
+      <!-- LEVEL 5 -->
+      <div class="ai-level-card" style="border-color:rgba(249,115,22,.25);">
+        <div class="ai-level-stripe" style="background:#f97316;"></div>
+        <div class="ai-level-top">
+          <span class="ai-level-badge" style="background:rgba(249,115,22,.1);color:#fed7aa;">Level 5</span>
+          <span class="ai-plan-tag prem">Premium / VIP</span>
+        </div>
+        <h3>Strategy & Edge Building</h3>
+        <span class="sub" style="color:#fb923c;">12 modules · 5h · Certification</span>
+        <p>Build and statistically validate your own proprietary edge. Manual backtesting, performance metrics, edge degradation detection, cognitive bias mastery and flow state protocols.</p>
+        <div class="ai-module-list">
+          <div class="ai-module-item" style="--dot:#f97316">What is a statistical edge?</div>
+          <div class="ai-module-item">Manual backtesting methodology</div>
+          <div class="ai-module-item">7 performance metrics (Profit Factor, MDD...)</div>
+          <div class="ai-module-item">12 cognitive biases — detection & mitigation</div>
+          <div class="ai-module-item">Flow state & peak performance conditions</div>
+          <div class="ai-module-item">Personal Trading System document</div>
+        </div>
+        <div class="ai-level-footer">
+          <div class="ai-prog-mini">
+            <span>Progress: {{ academy_progress.get('level5', 0) if academy_progress else 0 }}%</span>
+            <div class="ai-prog-mini-track"><div class="ai-prog-mini-fill" style="background:#f97316;width:{{ academy_progress.get('level5', 0) if academy_progress else 0 }}%;"></div></div>
+          </div>
+          {% if has_academy_plus %}
+          <a href="{{ url_for('academy.academy_level_5', lang_code=current_lang) }}" class="ai-level-btn go">Continue →</a>
+          {% else %}
+          <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="ai-level-btn unlock">Unlock →</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- LEVEL 6 -->
+      <div class="ai-level-card" style="border-color:rgba(6,182,212,.25);">
+        <div class="ai-level-stripe" style="background:#06b6d4;"></div>
+        <div class="ai-level-top">
+          <span class="ai-level-badge" style="background:rgba(6,182,212,.1);color:#a5f3fc;">Level 6</span>
+          <span class="ai-plan-tag vip">VIP Only</span>
+        </div>
+        <h3>Quantitative Analysis & Backtesting</h3>
+        <span class="sub" style="color:#22d3ee;">12 modules · 6h · Certification</span>
+        <p>Python and Excel backtesting, Sharpe & Sortino ratios, Monte Carlo simulation, automated signal detection and statistical hypothesis testing — quantitative rigor for your edge.</p>
+        <div class="ai-module-list">
+          <div class="ai-module-item">Python setup — no coding experience needed</div>
+          <div class="ai-module-item">Sharpe, Sortino & Profit Factor</div>
+          <div class="ai-module-item">Monte Carlo simulation (1,000 scenarios)</div>
+          <div class="ai-module-item">Statistical hypothesis testing (t-test)</div>
+          <div class="ai-module-item">Automated signal detection with Python</div>
+          <div class="ai-module-item">Systematic-discretionary hybrid framework</div>
+        </div>
+        <div class="ai-level-footer">
+          <div class="ai-prog-mini">
+            <span>Progress: {{ academy_progress.get('level6', 0) if academy_progress else 0 }}%</span>
+            <div class="ai-prog-mini-track"><div class="ai-prog-mini-fill" style="background:#06b6d4;width:{{ academy_progress.get('level6', 0) if academy_progress else 0 }}%;"></div></div>
+          </div>
+          {% if is_vip %}
+          <a href="{{ url_for('academy.academy_level_6', lang_code=current_lang) }}" class="ai-level-btn go">Continue →</a>
+          {% else %}
+          <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="ai-level-btn unlock">Go VIP →</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- LEVEL 7 -->
+      <div class="ai-level-card" style="border-color:rgba(168,85,247,.28);background:linear-gradient(135deg,#111520,#130a20);grid-column:1/-1;">
+        <div class="ai-level-stripe" style="background:linear-gradient(90deg,#a855f7,#d4a843);"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;">
+          <div>
+            <div class="ai-level-top">
+              <span class="ai-level-badge" style="background:rgba(168,85,247,.1);color:#d8b4fe;">Level 7 — Master</span>
+              <span class="ai-plan-tag vip">VIP Only</span>
+            </div>
+            <h3>Professional Account Management</h3>
+            <span class="sub" style="color:#c084fc;">12 modules · 6h · Master Certification</span>
+            <p>The final level. Prop firm challenges, funded account risk management, track record construction, investor reporting, compliance, fund structures, fee models and the operational infrastructure of a professional trading business.</p>
+            <div class="ai-level-footer" style="margin-top:16px;">
+              <div class="ai-prog-mini">
+                <span>Progress: {{ academy_progress.get('level7', 0) if academy_progress else 0 }}%</span>
+                <div class="ai-prog-mini-track"><div class="ai-prog-mini-fill" style="background:#a855f7;width:{{ academy_progress.get('level7', 0) if academy_progress else 0 }}%;"></div></div>
+              </div>
+              {% if is_vip %}
+              <a href="{{ url_for('academy.academy_level_7', lang_code=current_lang) }}" class="ai-level-btn go" style="background:#a855f7;">Enter Level 7 →</a>
+              {% else %}
+              <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="ai-level-btn unlock" style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:#d8b4fe;">Go VIP →</a>
+              {% endif %}
+            </div>
+          </div>
+          <div>
+            <div class="ai-module-list">
+              <div class="ai-module-item">Prop firm evaluation structure & strategy</div>
+              <div class="ai-module-item">Funded account risk rules & psychology</div>
+              <div class="ai-module-item">Building a verified track record</div>
+              <div class="ai-module-item">Monthly investor reporting</div>
+              <div class="ai-module-item">Compliance, AML & KYC</div>
+              <div class="ai-module-item">Fund structures: SMA, LP, LLC</div>
+              <div class="ai-module-item">Fee models — 2/20, performance-only, splits</div>
+              <div class="ai-module-item">🏆 Master Certification — all 7 levels</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /levels grid -->
+
+    <!-- FEATURES -->
+    <div class="ai-features">
+      <div class="ai-feature">
+        <div class="ai-feature-icon">📈</div>
+        <h4>Real charts, real examples</h4>
+        <p>Every module uses live TradingView charts and real market case studies — not theoretical diagrams.</p>
+      </div>
+      <div class="ai-feature">
+        <div class="ai-feature-icon">🎯</div>
+        <h4>Progressive curriculum</h4>
+        <p>Each level introduces entirely new concepts — no repetition, no padding. L1 foundations never appear again in L2, L3 or L4.</p>
+      </div>
+      <div class="ai-feature">
+        <div class="ai-feature-icon">✅</div>
+        <h4>Certifications at each level</h4>
+        <p>Every level ends with a rigorous multiple-choice exam. Pass to earn your level badge and validate your understanding.</p>
+      </div>
+      <div class="ai-feature">
+        <div class="ai-feature-icon">📊</div>
+        <h4>Performance measurement built in</h4>
+        <p>From Level 1's R:R basics to Level 3's R-multiple system — the Academy teaches you to measure progress empirically.</p>
+      </div>
+      <div class="ai-feature">
+        <div class="ai-feature-icon">🏛️</div>
+        <h4>Institutional methodology</h4>
+        <p>Level 4 teaches the exact frameworks used by professional desks: regime mapping, exposure management, drawdown protocols and review systems.</p>
+      </div>
+      <div class="ai-feature">
+        <div class="ai-feature-icon">🔄</div>
+        <h4>Integrated with the platform</h4>
+        <p>Apply what you learn directly in the AI Analysis, Replay, Opportunities and Market pages — the Academy and the platform reinforce each other.</p>
+      </div>
+    </div>
+
+    <!-- CTA BOTTOM -->
+    <div class="ai-cta-bottom">
+      <h2>Start your progression today</h2>
+      <p>Level 1 is free and takes less than 3 hours to complete. It will change how you think about every trade you take.</p>
+      <div class="ai-cta-row">
+        <a href="{{ url_for('academy.academy_level_1', lang_code=current_lang) }}" class="academy-btn academy-btn-primary">Start Level 1 — Free</a>
+        {% if not is_vip %}
+        <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-btn academy-btn-gold">Unlock All 4 Levels — VIP</a>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
 </section>
 
 {% endblock %}

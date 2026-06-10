@@ -1,28 +1,409 @@
 {% extends "base.html" %}
+{% block title %}Unlock the Full Academy — VelWolef{% endblock %}
 
-{% block title %}{{ t("academy_upgrade_page_title", "Upgrade Academy | VelWolef") }}{% endblock %} {% block extra_css %} <link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}"> {% endblock %} {% block content %} <section class="academy-section academy-page-hero"> <div class="academy-shell"> <div class="academy-breadcrumb"> <a href="{{ url_for('academy.academy_index', lang_code=current_lang) }}">Academy</a> <span>/</span> <span>{{ t('academy_upgrade_upgrade', 'Upgrade') }}</span> </div> <div class="academy-upgrade-hero-grid"> <div> <span class="academy-kicker">{{ t('academy_upgrade_upgrade_academy', 'Upgrade Academy') }}</span> <h1>{{ t('academy_upgrade_debloquez_les_niveaux_avances_du_parcours_academy', 'Débloquez les niveaux avancés du parcours Academy') }}</h1> <p class="academy-lead"> {{ t('academy_upgrade_le_parcours_velwolef_academy_a_ete_pense_comme_une_progression_logique', 'Le parcours VelWolef Academy a été pensé comme une progression logique. Le niveau 1 pose les fondations. Les niveaux supérieurs ajoutent une vraie montée en gamme : structure, exécution, planification, vision opérateur et logique desk pour le niveau Pro.') }} </p> <p class="academy-lead"> {{ t('academy_upgrade_cette_page_ne_promet_pas_de_contenu_fictif_vous_debloquez_uniquement_c', 'Cette page ne promet pas de contenu fictif. Vous débloquez uniquement ce qui existe réellement dans la plateforme : niveaux avancés, modules, quiz, progression, logique premium et architecture de formation plus poussée.') }} </p> <div class="academy-actions"> <a href="#plans" class="academy-btn academy-btn-primary">{{ t('academy_upgrade_voir_les_plans', 'Voir les plans') }}</a> <a href="{{ url_for('academy.academy_index', lang_code=current_lang) }}" class="academy-btn academy-btn-secondary">{{ t('academy_upgrade_retour_a_l_academy', 'Retour à l’Academy') }}</a> </div> <div class="academy-proof-inline"> <span>{{ t('academy_upgrade_niveaux_progressifs', '✔ Niveaux progressifs') }}</span> <span>{{ t('academy_upgrade_quiz_et_validation', '✔ Quiz et validation') }}</span> <span>{{ t('academy_upgrade_logique_premium_reelle', '✔ Logique premium réelle') }}</span> <span>{{ t('academy_upgrade_aucun_faux_contenu', '✔ Aucun faux contenu') }}</span> </div> </div> <div class="academy-upgrade-box academy-upgrade-box-xl"> <div class="academy-upgrade-topline"> <span class="academy-kicker">{{ t('academy_upgrade_acces_actuel', 'Accès actuel') }}</span> {% if is_vip %} <span class="academy-upgrade-live">{{ t('academy_upgrade_vip_actif', 'VIP actif') }}</span> {% elif is_premium %} <span class="academy-upgrade-live">{{ t('academy_upgrade_premium_actif', 'Premium actif') }}</span> {% else %} <span class="academy-upgrade-live">{{ t('academy_upgrade_acces_basic', 'Accès Basic') }}</span> {% endif %} </div> <h2>{{ t('academy_upgrade_votre_niveau_d_acces_academy', 'Votre niveau d’accès Academy') }}</h2> <p class="academy-upgrade-lead"> {% if is_vip %} {{ t('academy_upgrade_vous_avez_deja_acces_a_l_ensemble_du_parcours_academy_y_compris_le_niv', 'Vous avez déjà accès à l’ensemble du parcours Academy, y compris le Niveau 4 Pro.') }} {% elif is_premium %} {{ t('academy_upgrade_vous_avez_acces_aux_niveaux_1_2_et_3_le_niveau_4_pro_reste_reserve_au', 'Vous avez accès aux niveaux 1, 2 et 3. Le Niveau 4 Pro reste réservé au plan VIP.') }} {% else %} {{ t('academy_upgrade_vous_avez_acces_au_niveau_1_les_niveaux_2_3_et_4_pro_sont_reserves_aux', 'Vous avez accès au Niveau 1. Les niveaux 2, 3 et 4 Pro sont réservés aux plans supérieurs.') }} {% endif %} </p> <div class="academy-upgrade-points"> <div class="academy-upgrade-point">{{ t('academy_upgrade_level_1_foundations', 'Level 1 : Foundations') }}</div> <div class="academy-upgrade-point">{{ t('academy_upgrade_level_2_structure_execution', 'Level 2 : Structure & Execution') }}</div> <div class="academy-upgrade-point">{{ t('academy_upgrade_level_3_operator_vision', 'Level 3 : Operator Vision') }}</div> <div class="academy-upgrade-point">{{ t('academy_upgrade_level_4_pro_desk_institutionnel', 'Level 4 Pro : Desk / Institutionnel') }}</div> </div> </div> </div> </div> </section> <section class="academy-section academy-dark-band" id="plans"> <div class="academy-shell"> <div class="academy-section-title"> <span class="academy-kicker">{{ t('academy_upgrade_plans_academy', 'Plans Academy') }}</span> <h2>{{ t('academy_upgrade_choisissez_le_niveau_d_acces_adapte', 'Choisissez le niveau d’accès adapté') }}</h2> <p class="academy-lead academy-section-lead"> {{ t('academy_upgrade_chaque_plan_debloque_un_degre_different_de_profondeur_pedagogique_l_ob', 'Chaque plan débloque un degré différent de profondeur pédagogique. L’objectif est de faire évoluer la posture du trader, pas seulement d’ajouter des pages.') }} </p> </div> <div class="academy-grid-3"> <!-- BASIC --> <div class="academy-upgrade-price-card"> <div class="academy-course-top"> <span class="academy-level-pill">Basic</span> {% if user_plan == "basic" or user_plan == "free" %} <span class="academy-mini-badge">{{ t('academy_upgrade_plan_actuel', 'Plan actuel') }}</span> {% endif %} </div> <h3>{{ t('academy_upgrade_fondations_essentielles', 'Fondations essentielles') }}</h3> <p> {{ t('academy_upgrade_le_plan_basic_donne_acces_au_niveau_1_qui_construit_la_base_mentale_et', 'Le plan Basic donne accès au Niveau 1, qui construit la base mentale et technique : structure minimale d’un trade, risque, invalidation et discipline débutante.') }} </p> <div class="academy-upgrade-value-list academy-mt-24"> <div class="academy-upgrade-value-item">{{ t('academy_upgrade_acces_au_niveau_1', 'Accès au Niveau 1') }}</div> <div class="academy-upgrade-value-item">{{ t('academy_upgrade_fondations_du_trading', 'Fondations du trading') }}</div> <div class="academy-upgrade-value-item">{{ t('academy_upgrade_quiz_de_validation', 'Quiz de validation') }}</div> <div class="academy-upgrade-value-item">{{ t('academy_upgrade_progression_de_base', 'Progression de base') }}</div> </div> <div class="academy-certificate-locked academy-mt-24"> {{ t('academy_upgrade_ideal_pour_commencer_proprement', 'Idéal pour commencer proprement.') }} </div> </div> <!-- PREMIUM --> <div class="academy-upgrade-price-card academy-course-card-featured"> <div class="academy-course-top"> <span class="academy-level-pill">Premium</span> {% if is_premium and not is_vip %} <span class="academy-mini-badge">{{ t('academy_upgrade_plan_actuel', 'Plan actuel') }}</span> {% else %} <span class="academy-mini-badge">{{ t('academy_upgrade_le_plus_equilibre', 'Le plus équilibré') }}</span> {% endif %} </div> <h3>{{ t('academy_upgrade_lecture_execution_vision_operateur', 'Lecture + exécution + vision opérateur') }}</h3> <p> {{ t('academy_upgrade_le_plan_premium_debloque_les_niveaux_2_et_3_vous_passez_d_une_base_the', 'Le plan Premium débloque les niveaux 2 et 3. Vous passez d’une base théorique à une vraie logique d’exécution, de structure, de planification et de préparation de marché.') }} </p> <div class="academy-upgrade-value-list academy-mt-24"> <div class="academy-upgrade-value-item">{{ t('academy_upgrade_tout_le_basic', 'Tout le Basic') }}</div> <div class="academy-upgrade-value-item">{{ t('academy_upgrade_niveau_2_structure_execution', 'Niveau 2 : Structure & Execution') }}</div> <div class="academy-upgrade-value-item">{{ t('academy_upgrade_niveau_3_operator_vision', 'Niveau 3 : Operator Vision') }}</div> <div class="academy-upgrade-value-item">{{ t('academy_upgrade_confluence_timing_multi_timeframe', 'Confluence, timing, multi-timeframe') }}</div> <div class="academy-upgrade-value-item">{{ t('academy_upgrade_progression_premium_complete', 'Progression premium complète') }}</div> </div> {% if not is_premium %} {% if current_user.is_authenticated %} <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST" class="academy-mt-24"> <input type="hidden" name="plan" value="premium"> <button type="submit" class="academy-btn academy-btn-primary academy-btn-full"> {{ t('academy_upgrade_passer_premium', 'Passer Premium') }} </button> </form> {% else %} <a href="{{ url_for('auth.login', lang_code=current_lang) }}" class="academy-btn academy-btn-primary academy-btn-full academy-mt-24"> {{ t('academy_upgrade_se_connecter_pour_upgrader', 'Se connecter pour upgrader') }} </a> {% endif %} {% else %} <div class="academy-certificate-ready academy-mt-24"> {{ t('academy_upgrade_premium_deja_actif', 'Premium déjà actif.') }} </div> {% endif %} </div> <!-- VIP --> <div class="academy-upgrade-price-card"> <div class="academy-course-top"> <span class="academy-level-pill">VIP</span> {% if is_vip %} <span class="academy-mini-badge">{{ t('academy_upgrade_plan_actuel', 'Plan actuel') }}</span> {% else %} <span class="academy-mini-badge">{{ t('academy_upgrade_pro', 'Pro') }}</span> {% endif %} </div> <h3>{{ t('academy_upgrade_desk_institutionnel_niveau_4_pro', 'Desk / Institutionnel / Niveau 4 Pro') }}</h3> <p> {{ t('academy_upgrade_le_plan_vip_debloque_l_integralite_de_l_academy_y_compris_le_niveau_4', 'Le plan VIP débloque l’intégralité de l’Academy, y compris le Niveau 4 Pro : régime macro, intermarket, allocation, exposition globale et logique desk.') }} </p> <div class="academy-upgrade-value-list academy-mt-24"> <div class="academy-upgrade-value-item">{{ t('academy_upgrade_tout_le_premium', 'Tout le Premium') }}</div> <div class="academy-upgrade-value-item">{{ t('academy_upgrade_niveau_4_pro_complet', 'Niveau 4 Pro complet') }}</div> <div class="academy-upgrade-value-item">{{ t('academy_upgrade_approche_desk_institutionnelle', 'Approche desk / institutionnelle') }}</div> <div class="academy-upgrade-value-item">{{ t('academy_upgrade_portefeuille_d_idees_et_allocation', 'Portefeuille d’idées et allocation') }}</div> <div class="academy-upgrade-value-item">{{ t('academy_upgrade_certification_du_parcours_complet', 'Certification du parcours complet') }}</div> </div> {% if not is_vip %} {% if current_user.is_authenticated %} <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST" class="academy-mt-24"> <input type="hidden" name="plan" value="vip"> <button type="submit" class="academy-btn academy-btn-gold academy-btn-full"> {{ t('academy_level4_passer_vip', 'Passer VIP') }} </button> </form> {% else %} <a href="{{ url_for('auth.login', lang_code=current_lang) }}" class="academy-btn academy-btn-gold academy-btn-full academy-mt-24"> {{ t('academy_upgrade_se_connecter_pour_upgrader', 'Se connecter pour upgrader') }} </a> {% endif %} {% else %} <div class="academy-certificate-ready academy-mt-24"> {{ t('academy_upgrade_vip_deja_actif', 'VIP déjà actif.') }} </div> {% endif %} </div> </div> </div> </section> <section class="academy-section"> <div class="academy-shell"> <div class="academy-section-title"> <span class="academy-kicker">{{ t('academy_upgrade_ce_que_vous_debloquez_vraiment', 'Ce que vous débloquez vraiment') }}</span> <h2>{{ t('academy_upgrade_une_progression_reelle_pas_une_promesse_marketing_vide', 'Une progression réelle, pas une promesse marketing vide') }}</h2> </div> <div class="academy-grid-3"> <div class="academy-upgrade-proof-card"> <div class="academy-feature-icon">📘</div> <h3>{{ t('academy_upgrade_niveaux_structures', 'Niveaux structurés') }}</h3>  <p>  {{ t('academy_upgrade_chaque_niveau_a_un_vrai_role_dans_la_progression_foundations_execution', 'Chaque niveau a un vrai rôle dans la progression : foundations, exécution,  vision opérateur puis logique desk.') }}  </p> </div> <div class="academy-upgrade-proof-card">  <div class="academy-feature-icon">🧠</div>  <h3>{{ t('academy_upgrade_montee_en_gamme_coherente', 'Montée en gamme cohérente') }}</h3>  <p>  {{ t('academy_upgrade_vous_ne_lisez_pas_simplement_plus_de_contenu_vous_changez_de_maniere_d', 'Vous ne lisez pas simplement plus de contenu.  Vous changez de manière de penser le marché.') }}  </p> </div> <div class="academy-upgrade-proof-card">  <div class="academy-feature-icon">🎯</div>  <h3>{{ t('academy_upgrade_validation_progression', 'Validation & progression') }}</h3>  <p>  {{ t('academy_upgrade_quiz_progression_visuelle_badges_et_architecture_academy_coherente_ave', 'Quiz, progression visuelle, badges et architecture Academy cohérente   avec les niveaux déjà présents sur ton site.') }}   </p>  </div>  </div>  <div class="academy-academic-block">  <span class="academy-box-label">{{ t('academy_upgrade_transparence', 'Transparence') }}</span>  <h3>{{ t('academy_upgrade_aucune_promesse_de_videos_si_elles_n_existent_pas', 'Aucune promesse de vidéos si elles n’existent pas') }}</h3>  <p>   {{ t('academy_upgrade_cette_version_de_la_page_upgrade_a_ete_nettoyee_pour_ne_pas_promettre', 'Cette version de la page upgrade a été nettoyée pour ne pas promettre   de vidéos ou d’éléments absents de la plateforme.   Le message commercial reste aligné avec ce que ton site propose réellement.') }}  </p>  </div> </div> </section> <section class="academy-section academy-dark-band"> <div class="academy-shell">  <div class="academy-upgrade-final">  <h2>{{ t('academy_upgrade_montez_de_niveau_au_bon_moment', 'Montez de niveau au bon moment') }}</h2>    <p>     {{ t('academy_upgrade_le_bon_plan_depend_de_votre_stade_actuel_si_vous_construisez_encore_vo', 'Le bon plan dépend de votre stade actuel.     Si vous construisez encore vos bases, le Niveau 1 suffit pour démarrer proprement.         Si vous voulez une vraie lecture du marché, le Premium devient la suite logique.         Si vous voulez une logique de desk complète, le VIP débloque la couche supérieure.') }}       </p>       <div class="academy-actions" style="justify-content:center;">         {% if is_vip %}           <a href="{{ url_for('academy.academy_level_4', lang_code=current_lang) }}" class="academy-btn academy-btn-gold">{{ t('academy_upgrade_ouvrir_le', 'Ouvrir le') }} {{ t("level_4_pro", "Niveau 4 Pro") }}</a>
-                {% elif is_premium %}
-                    <a href="{{ url_for('academy.academy_index', lang_code=current_lang) }}" class="academy-btn academy-btn-primary">{{ t("back_to_academy", "Retour à l’Academy") }}</a>
-                    {% if current_user.is_authenticated %}
-                    <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
-                        <input type="hidden" name="plan" value="vip">
-                        <button type="submit" class="academy-btn academy-btn-gold">{{ t("upgrade_vip", "Passer VIP") }}</button>
-                    </form>
-                    {% endif %}
-                {% else %}
-                    <a href="{{ url_for('academy.academy_level_1', lang_code=current_lang) }}" class="academy-btn academy-btn-secondary">{{ t('academy_upgrade_voir_le', 'Voir le') }} {{ t("level_1", "Niveau 1") }}</a>
-                    {% if current_user.is_authenticated %}
-                    <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
-                        <input type="hidden" name="plan" value="premium">
-                        <button type="submit" class="academy-btn academy-btn-primary">{{ t("upgrade_premium", "Passer Premium") }}</button>
-                    </form>
-                    {% else %}
-                    <a href="{{ url_for('auth.login', lang_code=current_lang) }}" class="academy-btn academy-btn-primary">{{ t("login", "Se connecter") }}</a>
-                    {% endif %}
-                {% endif %}
-            </div>
-        </div>
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}">
+<style>
+:root{--go:#d4a843;--gd:rgba(212,168,67,.1);--gb:rgba(212,168,67,.22);--s:#111520;--br:rgba(255,255,255,.07);--tx:#c8d0e0;--mu:#6b7588;}
+
+/* HERO */
+.uh-hero{background:linear-gradient(160deg,#0a0d13 0%,#0c1020 50%,#0d1a0f 100%);padding:64px 0 52px;border-bottom:1px solid var(--gb);}
+.uh-hero-inner{display:grid;grid-template-columns:1fr 380px;gap:40px;align-items:start;}
+.uh-kicker{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:4px;background:var(--gd);border:1px solid var(--gb);font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--go);margin-bottom:18px;}
+.uh-hero h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;line-height:1.1;color:#fff;margin-bottom:14px;}
+.uh-hero h1 span{color:var(--go);}
+.uh-hero-desc{font-size:1rem;color:var(--tx);line-height:1.75;max-width:520px;margin-bottom:26px;}
+.uh-proof{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px;}
+.uh-proof span{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:4px;font-size:12px;color:#86efac;font-weight:600;}
+
+/* ACCESS CARD */
+.uh-access-card{background:var(--s);border:1px solid var(--gb);border-radius:14px;padding:24px;}
+.uh-access-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.uh-access-top span{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--mu);}
+.uh-access-badge{padding:4px 10px;border-radius:4px;font-size:11px;font-weight:700;}
+.uh-access-badge.free{background:rgba(255,255,255,.06);color:#cbd5e0;}
+.uh-access-badge.basic{background:rgba(59,130,246,.1);color:#93c5fd;}
+.uh-access-badge.prem{background:rgba(139,92,246,.1);color:#c4b5fd;}
+.uh-access-badge.vip{background:var(--gd);color:var(--go);}
+.uh-access-card h2{font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:8px;}
+.uh-access-card p{font-size:13px;color:var(--tx);line-height:1.6;margin-bottom:18px;}
+.uh-level-list{display:flex;flex-direction:column;gap:6px;}
+.uh-level-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;font-size:12px;}
+.uh-level-item.unlocked{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);color:#86efac;}
+.uh-level-item.locked{background:rgba(255,255,255,.03);border:1px solid var(--br);color:var(--mu);}
+.uh-level-item.locked span.icon{opacity:.4;}
+
+/* PLANS */
+.uh-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:40px 0;}
+.uh-plan{background:var(--s);border:1px solid var(--br);border-radius:16px;padding:26px;position:relative;transition:border-color .2s;}
+.uh-plan.featured{border-color:rgba(139,92,246,.4);background:linear-gradient(160deg,#111520,#130a20);}
+.uh-plan.vip-plan{border-color:var(--gb);background:linear-gradient(160deg,#111520,#1a1208);}
+.uh-plan-badge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px;}
+.uh-plan.basic .uh-plan-badge{background:rgba(59,130,246,.1);color:#93c5fd;}
+.uh-plan.featured .uh-plan-badge{background:rgba(139,92,246,.1);color:#c4b5fd;}
+.uh-plan.vip-plan .uh-plan-badge{background:var(--gd);color:var(--go);}
+.uh-current{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;background:rgba(34,197,94,.1);color:#86efac;border:1px solid rgba(34,197,94,.2);margin-left:8px;}
+.uh-plan h3{font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:6px;}
+.uh-plan-sub{font-size:12px;color:var(--mu);margin-bottom:14px;display:block;}
+.uh-plan p{font-size:13px;color:var(--tx);line-height:1.6;margin-bottom:18px;}
+.uh-includes{list-style:none;padding:0;margin:0 0 20px;}
+.uh-includes li{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px;color:var(--tx);border-bottom:1px solid rgba(255,255,255,.04);}
+.uh-includes li:last-child{border-bottom:none;}
+.uh-includes li::before{content:"✓";color:#22c55e;font-weight:700;flex-shrink:0;}
+.uh-includes li.locked-item::before{content:"🔒";font-size:10px;}
+.uh-includes li.locked-item{color:var(--mu);}
+
+/* COMPARISON TABLE */
+.uh-compare{width:100%;border-collapse:collapse;margin:8px 0;}
+.uh-compare th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);padding:10px 14px;border-bottom:1px solid var(--br);text-align:left;}
+.uh-compare th:not(:first-child){text-align:center;}
+.uh-compare td{font-size:13px;color:var(--tx);padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);}
+.uh-compare td:not(:first-child){text-align:center;}
+.uh-compare tr:last-child td{border-bottom:none;}
+.uh-compare tr:hover td{background:rgba(255,255,255,.02);}
+.uh-check{color:#22c55e;font-size:16px;}
+.uh-cross{color:var(--mu);font-size:14px;}
+.uh-level-cell{font-weight:600;color:#fff;}
+.uh-level-cell small{display:block;font-size:11px;font-weight:400;color:var(--mu);}
+
+/* FAQ */
+.uh-faq{display:flex;flex-direction:column;gap:12px;}
+.uh-faq details{background:var(--s);border:1px solid var(--br);border-radius:10px;overflow:hidden;}
+.uh-faq details[open]{border-color:var(--gb);}
+.uh-faq summary{padding:16px 18px;cursor:pointer;font-size:14px;font-weight:600;color:#fff;list-style:none;display:flex;justify-content:space-between;align-items:center;}
+.uh-faq summary::-webkit-details-marker{display:none;}
+.uh-faq summary::after{content:'+';font-size:18px;color:var(--go);}
+.uh-faq details[open] summary::after{content:'−';}
+.uh-faq .faq-body{padding:0 18px 16px;font-size:13px;color:var(--tx);line-height:1.7;}
+
+/* CTA BOTTOM */
+.uh-cta{background:linear-gradient(135deg,rgba(212,168,67,.06),rgba(212,168,67,.02));border:1px solid var(--gb);border-radius:16px;padding:48px;text-align:center;}
+.uh-cta h2{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:10px;}
+.uh-cta p{font-size:14px;color:var(--tx);max-width:500px;margin:0 auto 28px;line-height:1.7;}
+.uh-cta-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+
+@media(max-width:900px){
+  .uh-hero-inner{grid-template-columns:1fr;}
+  .uh-plans{grid-template-columns:1fr;}
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="uh-hero">
+  <div class="academy-shell">
+    <div class="academy-breadcrumb">
+      <a href="{{ url_for('academy.academy_index', lang_code=current_lang) }}">Academy</a>
+      <span>/</span><span>Upgrade</span>
     </div>
+    <div class="uh-hero-inner">
+      <div>
+        <span class="uh-kicker">🎓 VelWolef Academy</span>
+        <h1>Unlock the full<br><span>7-level curriculum</span></h1>
+        <p class="uh-hero-desc">
+          The Academy is a structured progression — not a content library. Each plan unlocks a new way of thinking about markets. No empty promises, no theoretical fluff: only what exists and delivers real results.
+        </p>
+        <div class="uh-proof">
+          <span>✓ 7 complete levels</span>
+          <span>✓ 84 university-grade modules</span>
+          <span>✓ 7 certifications</span>
+          <span>✓ 35h+ of content</span>
+          <span>✓ Real charts & case studies</span>
+          <span>✓ No repeated content between levels</span>
+        </div>
+        <div class="academy-actions">
+          <a href="#plans" class="academy-btn academy-btn-primary">See all plans</a>
+          <a href="{{ url_for('academy.academy_index', lang_code=current_lang) }}" class="academy-btn academy-btn-secondary">Back to Academy</a>
+        </div>
+      </div>
+
+      <!-- CURRENT ACCESS CARD -->
+      <div class="uh-access-card">
+        <div class="uh-access-top">
+          <span>Your current access</span>
+          {% if is_vip %}
+          <span class="uh-access-badge vip">VIP Active</span>
+          {% elif is_premium %}
+          <span class="uh-access-badge prem">Premium Active</span>
+          {% elif user_plan == 'basic' %}
+          <span class="uh-access-badge basic">Basic Active</span>
+          {% else %}
+          <span class="uh-access-badge free">Free</span>
+          {% endif %}
+        </div>
+        <h2>Your Academy access</h2>
+        <p>
+          {% if is_vip %}
+          You have full access to all 7 levels — the complete VelWolef Academy curriculum including Level 7 Pro Management and the Master Certification.
+          {% elif is_premium %}
+          You have access to Levels 1–5. Upgrade to VIP to unlock Levels 6 (Quantitative) and 7 (Professional Management).
+          {% elif user_plan == 'basic' %}
+          You have access to Levels 1, 2 and 3. Upgrade to Premium to unlock Levels 4 & 5, or go VIP for the complete curriculum.
+          {% else %}
+          You have access to Level 1 — Foundations (free for all). Upgrade to access the full structured progression.
+          {% endif %}
+        </p>
+        <div class="uh-level-list">
+          <div class="uh-level-item unlocked"><span class="icon">📘</span> Level 1 — Foundations</div>
+          <div class="uh-level-item {% if has_academy_plus or user_plan == 'basic' %}unlocked{% else %}locked{% endif %}"><span class="icon">⚡</span> Level 2 — Advanced Execution</div>
+          <div class="uh-level-item {% if has_academy_plus or user_plan == 'basic' %}unlocked{% else %}locked{% endif %}"><span class="icon">🧭</span> Level 3 — Operator Vision</div>
+          <div class="uh-level-item {% if is_premium or is_vip %}unlocked{% else %}locked{% endif %}"><span class="icon">🏛️</span> Level 4 — Institutional Desk</div>
+          <div class="uh-level-item {% if is_premium or is_vip %}unlocked{% else %}locked{% endif %}"><span class="icon">🎯</span> Level 5 — Edge Building</div>
+          <div class="uh-level-item {% if is_vip %}unlocked{% else %}locked{% endif %}"><span class="icon">📊</span> Level 6 — Quantitative</div>
+          <div class="uh-level-item {% if is_vip %}unlocked{% else %}locked{% endif %}"><span class="icon">🏆</span> Level 7 — Pro Management</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANS -->
+<section class="academy-section academy-dark-band" id="plans">
+  <div class="academy-shell">
+    <div class="academy-section-title">
+      <span class="academy-kicker">Plans</span>
+      <h2>Choose your access level</h2>
+      <p class="academy-lead">Each plan unlocks a deeper level of trading methodology — not just more pages, but a genuine shift in how you think about markets.</p>
+    </div>
+
+    <div class="uh-plans">
+
+      <!-- BASIC -->
+      <div class="uh-plan basic">
+        <span class="uh-plan-badge">Basic{% if user_plan == 'basic' %}<span class="uh-current">Current</span>{% endif %}</span>
+        <h3>Foundations</h3>
+        <span class="uh-plan-sub">Levels 1, 2 & 3 · 36 modules</span>
+        <p>Build the rational base and learn professional structure. Covers everything from defining a trade to multi-timeframe planning and scenario construction.</p>
+        <ul class="uh-includes">
+          <li>Level 1 — Trading Foundations (12 modules)</li>
+          <li>Level 2 — Advanced Structure & Execution (12 modules)</li>
+          <li>Level 3 — Market Planning & Operator Vision (12 modules)</li>
+          <li>3 certifications (Foundations, Execution, Operator)</li>
+          <li>BOS, CHoCH, order blocks, liquidity, confluence scoring</li>
+          <li>Multi-TF top-down, scenario A/B/C, inter-market reading</li>
+          <li class="locked-item">Level 4–7 (Premium/VIP required)</li>
+        </ul>
+        {% if user_plan != 'basic' and not is_premium and not is_vip %}
+          {% if current_user.is_authenticated %}
+          <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
+            <input type="hidden" name="plan" value="basic">
+            <button type="submit" class="academy-btn academy-btn-primary academy-btn-full">Get Basic →</button>
+          </form>
+          {% else %}
+          <a href="{{ url_for('auth.login', lang_code=current_lang) }}" class="academy-btn academy-btn-primary academy-btn-full">Sign in to upgrade →</a>
+          {% endif %}
+        {% else %}
+        <div class="academy-certificate-ready" style="margin-top:16px;">{% if user_plan == 'basic' %}Current plan.{% else %}Included in your plan.{% endif %}</div>
+        {% endif %}
+      </div>
+
+      <!-- PREMIUM -->
+      <div class="uh-plan featured">
+        <span class="uh-plan-badge">Premium{% if is_premium and not is_vip %}<span class="uh-current">Current</span>{% endif %} <span style="font-size:10px;color:#a78bfa;margin-left:4px;">Most Popular</span></span>
+        <h3>Advanced Operator</h3>
+        <span class="uh-plan-sub">Levels 1–5 · 63 modules</span>
+        <p>Everything in Basic plus the institutional desk framework and proprietary edge building — the methodology used by professional traders to manage their own capital.</p>
+        <ul class="uh-includes">
+          <li>Everything in Basic (Levels 1–3)</li>
+          <li>Level 4 — Institutional Desk Pro (15 modules)</li>
+          <li>Level 5 — Strategy & Edge Building (12 modules)</li>
+          <li>5 certifications including Desk Pro</li>
+          <li>Macro regime mapping, portfolio of ideas, scaling</li>
+          <li>Manual backtesting, 12 cognitive biases, flow state</li>
+          <li>Personal Trading System document framework</li>
+          <li class="locked-item">Level 6–7 (VIP required)</li>
+        </ul>
+        {% if not is_premium and not is_vip %}
+          {% if current_user.is_authenticated %}
+          <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
+            <input type="hidden" name="plan" value="premium">
+            <button type="submit" class="academy-btn academy-btn-primary academy-btn-full">Upgrade to Premium →</button>
+          </form>
+          {% else %}
+          <a href="{{ url_for('auth.login', lang_code=current_lang) }}" class="academy-btn academy-btn-primary academy-btn-full">Sign in to upgrade →</a>
+          {% endif %}
+        {% else %}
+        <div class="academy-certificate-ready" style="margin-top:16px;">{% if is_premium and not is_vip %}Current plan.{% else %}Included in your VIP plan.{% endif %}</div>
+        {% endif %}
+      </div>
+
+      <!-- VIP -->
+      <div class="uh-plan vip-plan">
+        <span class="uh-plan-badge">VIP{% if is_vip %}<span class="uh-current">Current</span>{% endif %}</span>
+        <h3>Complete Curriculum</h3>
+        <span class="uh-plan-sub">All 7 levels · 84 modules · Master Certification</span>
+        <p>The full Academy — from foundations to managing external capital. Quantitative analysis with Python, prop firm strategy, compliance, fund structures and the Master Certification covering all 7 levels.</p>
+        <ul class="uh-includes">
+          <li>Everything in Premium (Levels 1–5)</li>
+          <li>Level 6 — Quantitative Analysis & Backtesting (12 modules)</li>
+          <li>Level 7 — Professional Account Management (12 modules)</li>
+          <li>7 certifications + Master Certification badge</li>
+          <li>Python backtesting, Sharpe/Sortino, Monte Carlo</li>
+          <li>Prop firm strategy & funded account management</li>
+          <li>Track record, investor reporting, compliance, AML</li>
+          <li>Fund structures (SMA, LP, LLC) & fee models</li>
+        </ul>
+        {% if not is_vip %}
+          {% if current_user.is_authenticated %}
+          <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
+            <input type="hidden" name="plan" value="vip">
+            <button type="submit" class="academy-btn academy-btn-gold academy-btn-full">Upgrade to VIP →</button>
+          </form>
+          {% else %}
+          <a href="{{ url_for('auth.login', lang_code=current_lang) }}" class="academy-btn academy-btn-gold academy-btn-full">Sign in to upgrade →</a>
+          {% endif %}
+        {% else %}
+        <div class="academy-certificate-ready" style="margin-top:16px;">✓ Full VIP access active — all 7 levels unlocked.</div>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <!-- COMPARISON TABLE -->
+    <div class="academy-academic-block" style="margin-top:40px;">
+      <span class="academy-box-label">Feature Comparison</span>
+      <h3>What each plan includes</h3>
+      <table class="uh-compare">
+        <thead>
+          <tr>
+            <th>Level</th>
+            <th>Free</th>
+            <th>Basic</th>
+            <th>Premium</th>
+            <th>VIP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="uh-level-cell">Level 1<small>Foundations · 12 modules</small></td>
+            <td><span class="uh-check">✓</span></td>
+            <td><span class="uh-check">✓</span></td>
+            <td><span class="uh-check">✓</span></td>
+            <td><span class="uh-check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="uh-level-cell">Level 2<small>Advanced Execution · 12 modules</small></td>
+            <td><span class="uh-cross">—</span></td>
+            <td><span class="uh-check">✓</span></td>
+            <td><span class="uh-check">✓</span></td>
+            <td><span class="uh-check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="uh-level-cell">Level 3<small>Operator Vision · 12 modules</small></td>
+            <td><span class="uh-cross">—</span></td>
+            <td><span class="uh-check">✓</span></td>
+            <td><span class="uh-check">✓</span></td>
+            <td><span class="uh-check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="uh-level-cell">Level 4<small>Institutional Desk · 15 modules</small></td>
+            <td><span class="uh-cross">—</span></td>
+            <td><span class="uh-cross">—</span></td>
+            <td><span class="uh-check">✓</span></td>
+            <td><span class="uh-check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="uh-level-cell">Level 5<small>Edge Building · 12 modules</small></td>
+            <td><span class="uh-cross">—</span></td>
+            <td><span class="uh-cross">—</span></td>
+            <td><span class="uh-check">✓</span></td>
+            <td><span class="uh-check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="uh-level-cell">Level 6<small>Quantitative · 12 modules</small></td>
+            <td><span class="uh-cross">—</span></td>
+            <td><span class="uh-cross">—</span></td>
+            <td><span class="uh-cross">—</span></td>
+            <td><span class="uh-check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="uh-level-cell">Level 7<small>Pro Management · 12 modules</small></td>
+            <td><span class="uh-cross">—</span></td>
+            <td><span class="uh-cross">—</span></td>
+            <td><span class="uh-cross">—</span></td>
+            <td><span class="uh-check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="uh-level-cell">Master Certification</td>
+            <td><span class="uh-cross">—</span></td>
+            <td><span class="uh-cross">—</span></td>
+            <td><span class="uh-cross">—</span></td>
+            <td><span class="uh-check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="uh-level-cell">Total modules</td>
+            <td>12</td>
+            <td>36</td>
+            <td>63</td>
+            <td>84</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="academy-section">
+  <div class="academy-shell">
+    <div class="academy-section-title">
+      <span class="academy-kicker">FAQ</span>
+      <h2>Common questions</h2>
+    </div>
+    <div class="uh-faq">
+      <details>
+        <summary>Does each level truly have different content — or is it the same repeated?</summary>
+        <div class="faq-body">Each level introduces entirely new concepts not covered in previous levels. Level 1 covers foundations. Level 2 introduces BOS, order blocks and liquidity sweeps — none of which appear in Level 1. Level 3 adds multi-timeframe planning and inter-market correlations. Level 4 teaches institutional desk logic. Level 5 covers statistical edge validation. Level 6 adds Python quantitative analysis. Level 7 covers professional capital management. There is no content repetition between levels by design.</div>
+      </details>
+      <details>
+        <summary>Do I need to complete Level 1 before accessing Level 2?</summary>
+        <div class="faq-body">You can access any unlocked level at any time. However, the curriculum is designed as a genuine progression — concepts in Level 3 assume knowledge from Level 2, and Level 4 builds directly on Level 3. We strongly recommend completing each level in order for maximum benefit.</div>
+      </details>
+      <details>
+        <summary>What is the Master Certification?</summary>
+        <div class="faq-body">The Master Certification is awarded after completing Level 7's final exam — a comprehensive assessment covering all 7 levels. It is the capstone credential of the VelWolef Academy, demonstrating mastery of the complete curriculum from trading foundations to professional capital management.</div>
+      </details>
+      <details>
+        <summary>Do I need to know Python for Level 6?</summary>
+        <div class="faq-body">No prior coding experience is required. Level 6 includes a complete Python setup module designed for traders with zero coding background. You will learn to run, read and modify existing scripts rather than write code from scratch. All scripts are provided with full explanations.</div>
+      </details>
+      <details>
+        <summary>Is Level 7 relevant if I am not planning to manage external capital?</summary>
+        <div class="faq-body">Even for personal traders, Level 7 provides highly relevant content: prop firm evaluation strategy, funded account risk management, track record construction, and the professional review frameworks. Many traders use Level 7 to prepare for prop firm challenges — the funded account risk management module alone justifies the level for serious traders.</div>
+      </details>
+      <details>
+        <summary>Can I upgrade from Basic to VIP directly?</summary>
+        <div class="faq-body">Yes — you can upgrade to any plan at any time. If you upgrade from Basic to VIP, all 7 levels are unlocked immediately including Levels 4, 5, 6 and 7.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BOTTOM -->
+<section class="academy-section academy-dark-band">
+  <div class="academy-shell">
+    <div class="uh-cta">
+      <h2>Start where you are</h2>
+      <p>Level 1 is completely free. It takes less than 3 hours and will fundamentally change how you think about every trade you take. When you are ready for more, the next level is waiting.</p>
+      <div class="uh-cta-btns">
+        <a href="{{ url_for('academy.academy_level_1', lang_code=current_lang) }}" class="academy-btn academy-btn-secondary">Start Level 1 — Free</a>
+        {% if not is_vip %}
+        {% if current_user.is_authenticated %}
+        <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST" style="display:inline;">
+          <input type="hidden" name="plan" value="vip">
+          <button type="submit" class="academy-btn academy-btn-gold">Unlock All 7 Levels — VIP</button>
+        </form>
+        {% else %}
+        <a href="{{ url_for('auth.login', lang_code=current_lang) }}" class="academy-btn academy-btn-gold">Sign in to upgrade</a>
+        {% endif %}
+        {% else %}
+        <a href="{{ url_for('academy.academy_level_7', lang_code=current_lang) }}" class="academy-btn academy-btn-gold">Enter Level 7 — Master →</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </section>
 
 {% endblock %}

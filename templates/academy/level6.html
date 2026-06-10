@@ -1,0 +1,566 @@
+{% set academy_level = "level6" %}
+{% set academy_total_lessons = 12 %}
+{% extends "base.html" %}
+{% block title %}Academy Level 6 — Quantitative Analysis & Backtesting | VelWolef{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}">
+<style>
+:root{--l6:#06b6d4;--l6d:rgba(6,182,212,.1);--l6b:rgba(6,182,212,.25);--s:#111520;--br:rgba(255,255,255,.07);--tx:#c8d0e0;--mu:#6b7588;--gr:#22c55e;--re:#ef4444;--am:#f59e0b;}
+.lhero{background:linear-gradient(135deg,#0a0d13 0%,#03111a 60%,#0a0d13 100%);border-bottom:1px solid var(--l6b);padding:48px 0;}
+.lbadge{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;background:var(--l6d);border:1px solid var(--l6b);color:#a5f3fc;margin-right:8px;margin-bottom:20px;}
+.lhero h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;line-height:1.1;color:#fff;margin-bottom:16px;}
+.lhero h1 em{font-style:normal;color:var(--l6);}
+.lhero p.sub{font-size:1rem;color:var(--tx);line-height:1.75;max-width:580px;margin-bottom:28px;}
+.lstats{display:flex;gap:28px;flex-wrap:wrap;margin-bottom:28px;}
+.lstat .num{font-size:1.5rem;font-weight:800;color:var(--l6);display:block;}
+.lstat .lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);}
+.lgrid{display:grid;grid-template-columns:1fr 290px;gap:24px;align-items:start;}
+.lsidebar{position:sticky;top:80px;}
+.ltoc{background:var(--s);border:1px solid var(--l6b);border-radius:12px;padding:16px;}
+.ltoc h3{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#a5f3fc;margin-bottom:10px;}
+.ltoc a{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:6px;font-size:12px;color:var(--mu);text-decoration:none;transition:all .15s;}
+.ltoc a:hover{background:var(--l6d);color:#fff;}
+.ltoc .n{font-size:10px;font-weight:700;color:var(--l6);width:18px;flex-shrink:0;}
+.lsh{display:flex;align-items:center;gap:14px;margin:42px 0 20px;padding-bottom:12px;border-bottom:1px solid var(--br);}
+.lsn{width:36px;height:36px;border-radius:8px;background:var(--l6d);border:1px solid var(--l6b);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--l6);flex-shrink:0;}
+.lsh h2{font-size:1.15rem;font-weight:700;color:#fff;margin-bottom:2px;}
+.lsh p{font-size:11px;color:var(--mu);}
+.lb p{font-size:14px;color:var(--tx);line-height:1.8;margin-bottom:12px;}
+.lb h3{font-size:1rem;font-weight:700;color:#fff;margin-bottom:9px;}
+.lb h4{font-size:.88rem;font-weight:600;color:#a5f3fc;margin:16px 0 6px;}
+.lbox{border-radius:9px;padding:15px 17px;margin:14px 0;}
+.lbox.def{background:rgba(6,182,212,.05);border-left:3px solid var(--l6);}
+.lbox.key{background:rgba(251,191,36,.05);border-left:3px solid var(--am);}
+.lbox.warn{background:rgba(239,68,68,.05);border-left:3px solid var(--re);}
+.lbox.ex{background:rgba(34,197,94,.05);border-left:3px solid var(--gr);}
+.blbl{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:5px;}
+.lbox.def .blbl{color:#a5f3fc;}.lbox.key .blbl{color:var(--am);}.lbox.warn .blbl{color:var(--re);}.lbox.ex .blbl{color:var(--gr);}
+.lbox p{margin:0;font-size:13px;color:var(--tx);line-height:1.7;}
+.llist{list-style:none;padding:0;margin:10px 0;}
+.llist li{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid var(--br);font-size:13px;color:var(--tx);}
+.llist li:last-child{border-bottom:none;}
+.llist li::before{content:"→";color:var(--l6);flex-shrink:0;}
+.lcards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0;}
+.lcard{background:var(--s);border:1px solid var(--br);border-radius:10px;padding:14px 16px;}
+.lcard h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--mu);margin-bottom:8px;}
+.lcard ul{list-style:none;padding:0;margin:0;}
+.lcard ul li{font-size:12px;color:var(--tx);padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.lcard ul li:last-child{border-bottom:none;}
+.lcard ul li::before{content:"• ";color:var(--l6);}
+.ltable{width:100%;border-collapse:collapse;margin:13px 0;}
+.ltable th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);padding:9px 12px;border-bottom:1px solid var(--br);text-align:left;}
+.ltable td{font-size:13px;color:var(--tx);padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.04);}
+.ltable tr:last-child td{border-bottom:none;}
+.lquiz{background:var(--s);border:1px solid var(--l6b);border-radius:12px;padding:24px;}
+.lq{margin-bottom:18px;}
+.lq h3{font-size:14px;font-weight:600;color:#fff;margin-bottom:9px;}
+.lq label{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:7px;cursor:pointer;font-size:13px;color:var(--tx);border:1px solid var(--br);margin-bottom:5px;transition:all .15s;}
+.lq label:hover{background:var(--l6d);border-color:var(--l6b);}
+.lq input[type=radio]{accent-color:var(--l6);}
+.lprogcard{background:var(--s);border:1px solid var(--br);border-radius:12px;padding:17px;margin-bottom:13px;}
+.ltrack{height:4px;background:rgba(255,255,255,.07);border-radius:2px;margin:7px 0;overflow:hidden;}
+.lfill{height:100%;background:var(--l6);border-radius:2px;}
+.llock{background:linear-gradient(135deg,#0a0d13,#03111a);border:1px solid var(--l6b);border-radius:14px;padding:36px;text-align:center;margin-top:32px;}
+.llock h3{color:#fff;font-size:1.2rem;margin:14px 0 8px;}
+.llock p{color:var(--tx);font-size:13px;line-height:1.7;margin-bottom:20px;}
+.code{background:#0d1117;border:1px solid var(--br);border-radius:8px;padding:14px 16px;font-family:'Courier New',monospace;font-size:12px;color:#a5f3fc;margin:14px 0;overflow-x:auto;}
+@media(max-width:900px){.lgrid{grid-template-columns:1fr;}.lsidebar{display:none;}.lcards{grid-template-columns:1fr;}}
+</style>
+{% endblock %}
+
+{% block content %}
+{% if not is_vip %}<script>document.addEventListener("DOMContentLoaded",function(){document.body.dataset.autoUpgradePopup="true";});</script>{% endif %}
+
+<section class="lhero">
+  <div class="academy-shell">
+    <div class="academy-breadcrumb"><a href="{{ url_for('academy.academy_index', lang_code=current_lang) }}">Academy</a><span>/</span><span>Level 6</span></div>
+    <span class="lbadge">Level 6 — Quantitative</span><span class="lbadge">VIP Only</span>
+    <h1>Quantitative Analysis<br><em>& Backtesting</em></h1>
+    <p class="sub">Level 6 moves beyond manual analysis into the quantitative layer: Python and Excel backtesting, statistical performance metrics, automated signal detection, and the mathematical foundations that separate data-driven edge from intuition-based trading.</p>
+    <div class="lstats">
+      <div class="lstat"><span class="num">12</span><span class="lbl">Modules</span></div>
+      <div class="lstat"><span class="num">6h+</span><span class="lbl">Content</span></div>
+      <div class="lstat"><span class="num">1</span><span class="lbl">Certification</span></div>
+    </div>
+    <div class="academy-actions">
+      {% if is_vip %}
+      <a href="#m1" class="academy-btn academy-btn-primary">Start Module 1</a>
+      <a href="#cert" class="academy-btn academy-btn-secondary">Go to Certification</a>
+      {% else %}
+      <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-btn academy-btn-gold">Upgrade to VIP — Unlock Level 6</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="academy-section">
+<div class="academy-shell">
+<div class="lgrid">
+<div>
+
+<div class="academy-academic-block" style="margin-top:36px;">
+  <span class="academy-box-label">Level 6 — Overview</span>
+  <h3>From manual analysis to data-driven edge measurement</h3>
+  <p>Level 5 taught you to build and validate a strategy manually. Level 6 teaches you to measure, test and automate it quantitatively — using Python and Excel to process thousands of historical data points, calculate institutional-grade performance metrics, and build systematic signals that remove execution discretion.</p>
+  <div class="lcards">
+    <div class="lcard"><h4>New concepts in Level 6</h4><ul>
+      <li>Python setup for trading analysis (no prior coding required)</li>
+      <li>Excel backtesting template construction</li>
+      <li>Sharpe & Sortino ratio</li>
+      <li>Maximum drawdown & drawdown duration</li>
+      <li>Win distribution analysis</li>
+      <li>Monte Carlo simulation for strategy robustness</li>
+      <li>Automated signal detection with Python</li>
+      <li>Statistical hypothesis testing (t-test)</li>
+      <li>Correlation matrix construction</li>
+      <li>Regime classification with data</li>
+      <li>Systematic vs discretionary hybrid frameworks</li>
+      <li>Level 6 certification</li>
+    </ul></div>
+    <div class="lcard"><h4>Prerequisites</h4><ul><li>Level 1–5 completed</li><li>No coding experience required — Python intro included</li></ul>
+    <h4 style="margin-top:12px;">Access</h4><ul><li>VIP plan only</li></ul>
+    <h4 style="margin-top:12px;">Tools needed</h4><ul><li>Python 3 (free) + pandas, yfinance libraries</li><li>Microsoft Excel or Google Sheets</li><li>TradingView (any plan)</li></ul></div>
+  </div>
+</div>
+
+{% if is_vip %}
+
+<!-- M01 -->
+<div class="lsh" id="m1"><div class="lsn">01</div><div><h2>Python Setup for Trading Analysis</h2><p>Your quantitative environment in 20 minutes — no prior coding required</p></div></div>
+<div class="lb">
+  <p>Python is the standard language for quantitative finance. You do not need to become a programmer — you need to read, modify and run existing scripts that automate analysis tasks that would take hours manually. This module gets your environment running and tests it with your first real analysis.</p>
+  <h4>Setup in 4 steps</h4>
+  <ul class="llist">
+    <li><strong>Step 1 — Install Python:</strong> Download Python 3.11+ from python.org. During install, check "Add Python to PATH".</li>
+    <li><strong>Step 2 — Install libraries:</strong> Open terminal/command prompt and run: <code>pip install pandas numpy yfinance matplotlib scipy</code></li>
+    <li><strong>Step 3 — Install VS Code:</strong> Free code editor from code.visualstudio.com — install the Python extension.</li>
+    <li><strong>Step 4 — Test with first script:</strong> Run the code below to download and plot BTC daily data.</li>
+  </ul>
+  <div class="code">import yfinance as yf
+import matplotlib.pyplot as plt
+
+# Download BTC daily data — last 2 years
+btc = yf.download("BTC-USD", period="2y", interval="1d")
+
+# Plot closing price
+plt.figure(figsize=(12, 5))
+plt.plot(btc['Close'], color='#06b6d4', linewidth=1.5)
+plt.title('BTC/USD — Daily Close')
+plt.xlabel('Date')
+plt.ylabel('Price USD')
+plt.grid(alpha=0.2)
+plt.show()
+
+print(f"Data shape: {btc.shape}")
+print(btc.tail())</div>
+  <div class="lbox key"><span class="blbl">Why Python matters at Level 6</span><p>Manual backtesting (Level 5) is limited to ~200 trades in a few months of data. Python backtesting processes 5 years of data, 1,000+ occurrences, across multiple instruments, in seconds. This is not automation for its own sake — it is the difference between 80% confidence and 99% statistical confidence in your edge.</p></div>
+</div>
+
+<!-- M02 -->
+<div class="lsh" id="m2"><div class="lsn">02</div><div><h2>Excel Backtesting Template</h2><p>A no-code systematic backtesting framework in Excel</p></div></div>
+<div class="lb">
+  <p>Before writing Python code, understanding the backtesting logic in Excel builds the foundation. This module walks through building a complete backtesting spreadsheet that calculates all 7 performance metrics from Level 5 automatically.</p>
+  <h4>Excel template structure</h4>
+  <table class="ltable">
+    <thead><tr><th>Column</th><th>Content</th><th>Formula</th></tr></thead>
+    <tbody>
+      <tr><td>A</td><td>Date</td><td>Manual entry</td></tr>
+      <tr><td>B</td><td>Direction (L/S)</td><td>Manual entry</td></tr>
+      <tr><td>C</td><td>Entry price</td><td>Manual entry</td></tr>
+      <tr><td>D</td><td>Stop loss</td><td>Manual entry</td></tr>
+      <tr><td>E</td><td>Take profit</td><td>Manual entry</td></tr>
+      <tr><td>F</td><td>Exit price</td><td>Manual entry</td></tr>
+      <tr><td>G</td><td>Risk in R</td><td>=ABS(C2-D2)</td></tr>
+      <tr><td>H</td><td>Result in R</td><td>=(F2-C2)/G2</td></tr>
+      <tr><td>I</td><td>Cumulative R</td><td>=SUM($H$2:H2)</td></tr>
+      <tr><td>J</td><td>Session</td><td>Manual tag (London/NY/Asia)</td></tr>
+      <tr><td>K</td><td>Setup grade</td><td>Manual tag (A+/A/B)</td></tr>
+    </tbody>
+  </table>
+  <div class="lbox ex"><span class="blbl">Key formulas for the summary dashboard</span><p>Win rate: =COUNTIF(H2:H100,">"&0)/COUNT(H2:H100). Expectancy: =AVERAGEIF(H2:H100,">"&0)*COUNTIF(H2:H100,">"&0)/COUNT(H2:H100) - AVERAGEIF(H2:H100,"<"&0)*COUNTIF(H2:H100,"<"&0)/COUNT(H2:H100). Profit Factor: =SUMIF(H2:H100,">"&0)/ABS(SUMIF(H2:H100,"<"&0)).</p></div>
+</div>
+
+<!-- M03 -->
+<div class="lsh" id="m3"><div class="lsn">03</div><div><h2>Sharpe & Sortino Ratio</h2><p>Measuring return per unit of risk — the institutional standard</p></div></div>
+<div class="lb">
+  <p>Win rate and expectancy measure whether a strategy makes money. Sharpe and Sortino ratios measure whether it makes money efficiently relative to the risk taken — which is the institutional standard for evaluating any trading system.</p>
+  <div class="lbox def"><span class="blbl">Sharpe Ratio</span><p>Sharpe = (Average return − Risk-free rate) ÷ Standard deviation of returns. Measures excess return per unit of total volatility. A Sharpe above 1.0 is considered good; above 2.0 is excellent. A strategy with 15% annual return and 5% volatility (Sharpe 3.0) is superior to one with 30% return and 25% volatility (Sharpe 1.2).</p></div>
+  <div class="lbox def"><span class="blbl">Sortino Ratio</span><p>Sortino = (Average return − Risk-free rate) ÷ Downside deviation. Unlike Sharpe, it only penalizes downside volatility — upside variance is not punished. For trading strategies with asymmetric return distributions (few large winners), Sortino is typically the more relevant metric.</p></div>
+  <div class="code"># Calculate Sharpe and Sortino from your trade R-multiples
+import numpy as np
+
+# Your trade results in R (replace with your actual data)
+trades = [1.8, -1.0, 2.3, -1.0, 1.5, 3.1, -1.0, -1.0, 2.8, 1.2]
+
+returns = np.array(trades)
+rf = 0  # risk-free rate in R terms
+
+sharpe = (np.mean(returns) - rf) / np.std(returns)
+downside = returns[returns < 0]
+sortino = (np.mean(returns) - rf) / np.std(downside) if len(downside) > 0 else np.inf
+
+print(f"Sharpe Ratio: {sharpe:.2f}")
+print(f"Sortino Ratio: {sortino:.2f}")
+print(f"Expectancy: {np.mean(returns):.3f}R per trade")</div>
+  <table class="ltable">
+    <thead><tr><th>Sharpe ratio</th><th>Strategy quality</th></tr></thead>
+    <tbody>
+      <tr><td>Below 0</td><td>Losing strategy</td></tr>
+      <tr><td>0–0.5</td><td>Poor — barely above random</td></tr>
+      <tr><td>0.5–1.0</td><td>Acceptable — deploy with caution</td></tr>
+      <tr><td>1.0–2.0</td><td>Good — institutional deployment range</td></tr>
+      <tr><td>Above 2.0</td><td>Excellent — rare in discretionary trading</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- M04 -->
+<div class="lsh" id="m4"><div class="lsn">04</div><div><h2>Maximum Drawdown Analysis</h2><p>Understanding the true risk of your strategy</p></div></div>
+<div class="lb">
+  <p>Maximum drawdown (MDD) is the largest peak-to-trough decline in your equity curve. It is the most psychologically significant metric for discretionary traders — because it defines the worst period you will experience if you run the strategy long enough.</p>
+  <div class="code"># Calculate maximum drawdown from equity curve
+import numpy as np
+import pandas as pd
+
+# Cumulative R-multiples (replace with your data)
+equity = [0, 1.8, 0.8, 3.1, 2.1, 3.6, 6.7, 5.7, 4.7, 7.5, 8.7]
+
+equity_series = pd.Series(equity)
+rolling_max = equity_series.cummax()
+drawdown = equity_series - rolling_max
+
+max_dd = drawdown.min()
+max_dd_pct = (max_dd / rolling_max[drawdown.idxmin()]) * 100
+
+print(f"Maximum Drawdown: {max_dd:.2f}R")
+print(f"Max Drawdown %: {max_dd_pct:.1f}%")
+print(f"Drawdown occurred at trade: {drawdown.idxmin()}")</div>
+  <div class="lbox key"><span class="blbl">The psychological vs statistical MDD</span><p>A statistically acceptable MDD of –10R sounds manageable on paper. Experiencing it in real trading — where each loss feels permanent — is psychologically very different. Before deploying a strategy, simulate the worst historical drawdown period mentally: "If I had 8 consecutive losses at my planned risk, would I continue the strategy?" If the honest answer is no, reduce position sizing until the answer becomes yes.</p></div>
+</div>
+
+<!-- M05 -->
+<div class="lsh" id="m5"><div class="lsn">05</div><div><h2>Win Distribution Analysis</h2><p>Understanding the shape of your returns — not just the average</p></div></div>
+<div class="lb">
+  <p>Average expectancy tells you the mean outcome. Win distribution tells you the shape — are wins clustered near 1R with occasional 3R outliers, or is the distribution more uniform? This matters for understanding variance, streak risk and psychological sustainability.</p>
+  <div class="code"># Visualize your win distribution
+import matplotlib.pyplot as plt
+import numpy as np
+
+trades = [-1,-1,1.8,-1,2.3,3.1,-1,1.5,-1,2.8,4.2,-1,-1,1.2,2.0,-1,3.5,-1,1.9,-1]
+
+winners = [t for t in trades if t > 0]
+losers  = [t for t in trades if t < 0]
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+axes[0].hist(winners, bins=10, color='#22c55e', alpha=0.7, edgecolor='white')
+axes[0].set_title('Winner Distribution (R)')
+axes[0].set_xlabel('R-multiple')
+axes[1].hist(losers, bins=10, color='#ef4444', alpha=0.7, edgecolor='white')
+axes[1].set_title('Loser Distribution (R)')
+axes[1].set_xlabel('R-multiple')
+for ax in axes:
+    ax.set_facecolor('#111520')
+    ax.tick_params(colors='#c8d0e0')
+plt.tight_layout()
+plt.show()
+
+print(f"Avg winner: {np.mean(winners):.2f}R | Avg loser: {np.mean(losers):.2f}R")
+print(f"Largest winner: {max(winners):.2f}R | Largest loser: {min(losers):.2f}R")</div>
+  <div class="lbox warn"><span class="blbl">Fat tail risk</span><p>A heavy left tail (losses significantly larger than –1R) indicates poor stop management — stops are being moved or missed. This single issue can destroy a mathematically positive expectancy strategy. If your loser distribution shows any result beyond –2R, investigate every instance for execution failures.</p></div>
+</div>
+
+<!-- M06 -->
+<div class="lsh" id="m6"><div class="lsn">06</div><div><h2>Monte Carlo Simulation</h2><p>Testing strategy robustness against random outcome sequences</p></div></div>
+<div class="lb">
+  <p>A backtest shows you one specific historical sequence of outcomes. Monte Carlo simulation shuffles those same outcomes thousands of times to answer: "What is the range of possible equity curves if my edge is real but outcomes occur in different orders?" This reveals the true worst-case drawdown and the probability of ruin at different risk levels.</p>
+  <div class="code">import numpy as np
+import matplotlib.pyplot as plt
+
+# Your historical trade results in R
+trades = [-1,-1,1.8,-1,2.3,3.1,-1,1.5,-1,2.8,4.2,-1,-1,1.2,2.0,-1,3.5,-1,1.9,-1]
+n_simulations = 1000
+n_trades = 100  # forward-looking
+
+all_equity = []
+for _ in range(n_simulations):
+    sample = np.random.choice(trades, size=n_trades, replace=True)
+    equity = np.cumsum(sample)
+    all_equity.append(equity)
+
+all_equity = np.array(all_equity)
+
+# Plot
+plt.figure(figsize=(12, 5))
+for eq in all_equity[:100]:
+    plt.plot(eq, alpha=0.05, color='#06b6d4')
+plt.plot(np.median(all_equity, axis=0), color='white', linewidth=2, label='Median')
+plt.axhline(0, color='#ef4444', linestyle='--', alpha=0.5)
+plt.title(f'Monte Carlo — {n_simulations} simulations of {n_trades} trades')
+plt.xlabel('Trade number')
+plt.ylabel('Cumulative R')
+plt.legend()
+plt.tight_layout()
+plt.show()
+
+worst_drawdown = np.min(np.min(all_equity, axis=1))
+pct_profitable = np.sum(all_equity[:,-1] > 0) / n_simulations * 100
+print(f"Worst case drawdown: {worst_drawdown:.1f}R")
+print(f"Profitable after {n_trades} trades: {pct_profitable:.0f}% of simulations")</div>
+  <div class="lbox def"><span class="blbl">Interpreting Monte Carlo results</span><p>If 90%+ of simulations are profitable after 100 trades, your edge is robust. If the worst-case drawdown in any simulation exceeds your psychological tolerance, reduce position sizing until it doesn't. The Monte Carlo output is the statistical answer to "how bad can it get?" — far more honest than the average backtest line.</p></div>
+</div>
+
+<!-- M07 -->
+<div class="lsh" id="m7"><div class="lsn">07</div><div><h2>Automated Signal Detection</h2><p>Using Python to scan for setup conditions across multiple instruments</p></div></div>
+<div class="lb">
+  <p>Once your edge is defined with precise conditions, Python can scan historical data for every occurrence automatically — removing the selection bias of manual scanning and processing years of data in seconds.</p>
+  <div class="code">import yfinance as yf
+import pandas as pd
+import numpy as np
+
+def detect_signals(symbol, period="1y"):
+    """Detect simple pullback-to-EMA signals as an example framework."""
+    df = yf.download(symbol, period=period, interval="1d", progress=False)
+    
+    # Calculate EMAs
+    df['ema_20'] = df['Close'].ewm(span=20).mean()
+    df['ema_50'] = df['Close'].ewm(span=50).mean()
+    
+    # Signal: price pulls back to EMA20 in uptrend (EMA20 > EMA50)
+    df['uptrend']     = df['ema_20'] > df['ema_50']
+    df['near_ema20']  = abs(df['Close'] - df['ema_20']) / df['ema_20'] < 0.01  # within 1%
+    df['signal']      = df['uptrend'] & df['near_ema20']
+    
+    signals = df[df['signal']].copy()
+    return signals[['Close', 'ema_20', 'ema_50']].round(2)
+
+# Scan multiple instruments
+symbols = ['BTC-USD', 'ETH-USD', 'SOL-USD']
+for sym in symbols:
+    sigs = detect_signals(sym)
+    print(f"\n{sym}: {len(sigs)} signals found")
+    print(sigs.tail(3))</div>
+  <div class="lbox warn"><span class="blbl">Automation vs discretion</span><p>Automated signal detection is a scanning tool, not an execution tool. At Level 6, signals are identified programmatically but executed with the structural and confluence filters from Levels 2–5. Full automation (algorithmic trading) introduces execution infrastructure requirements beyond the scope of the Academy curriculum.</p></div>
+</div>
+
+<!-- M08 -->
+<div class="lsh" id="m8"><div class="lsn">08</div><div><h2>Statistical Hypothesis Testing</h2><p>Proving your edge is real, not random</p></div></div>
+<div class="lb">
+  <p>The t-test allows you to statistically determine whether your strategy's positive expectancy is significantly different from zero — or whether it could plausibly be explained by random chance.</p>
+  <div class="code">from scipy import stats
+import numpy as np
+
+# Your backtest trade results in R
+trades = [-1,-1,1.8,-1,2.3,3.1,-1,1.5,-1,2.8,4.2,-1,-1,1.2,2.0,-1,3.5,-1,1.9,-1]
+
+# One-sample t-test against null hypothesis (expectancy = 0)
+t_stat, p_value = stats.ttest_1samp(trades, 0)
+
+print(f"Sample size: {len(trades)}")
+print(f"Mean expectancy: {np.mean(trades):.3f}R per trade")
+print(f"T-statistic: {t_stat:.3f}")
+print(f"P-value: {p_value:.4f}")
+
+if p_value < 0.05:
+    print("→ Edge is STATISTICALLY SIGNIFICANT (p < 0.05)")
+    print("  Less than 5% probability this result is random luck")
+else:
+    print("→ Edge is NOT statistically significant — need more data or stronger edge")</div>
+  <div class="lbox def"><span class="blbl">Interpreting p-value</span><p>p < 0.05 means there is less than 5% probability that your results occurred by random chance. This is the standard threshold for statistical significance. p < 0.01 means less than 1% probability — very high confidence. If your p-value is above 0.05 with 100+ trades, your edge is not statistically proven — continue collecting data or revise the strategy.</p></div>
+</div>
+
+<!-- M09 -->
+<div class="lsh" id="m9"><div class="lsn">09</div><div><h2>Correlation Matrix for Multi-Asset Portfolios</h2><p>Quantifying the hidden relationships between your positions</p></div></div>
+<div class="lb">
+  <p>Level 3 introduced inter-market correlations conceptually. Level 6 calculates them precisely using Python — giving you an empirical, data-driven correlation matrix rather than approximations.</p>
+  <div class="code">import yfinance as yf
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Download price data for key assets
+assets = {
+    'BTC': 'BTC-USD', 'ETH': 'ETH-USD', 'SOL': 'SOL-USD',
+    'US100': 'QQQ', 'Gold': 'GLD', 'DXY': 'UUP'
+}
+
+prices = {}
+for name, symbol in assets.items():
+    data = yf.download(symbol, period="1y", interval="1d", progress=False)
+    prices[name] = data['Close']
+
+import pandas as pd
+df = pd.DataFrame(prices).dropna()
+returns = df.pct_change().dropna()
+corr = returns.corr()
+
+# Plot heatmap
+plt.figure(figsize=(8, 6))
+sns.heatmap(corr, annot=True, fmt='.2f', cmap='RdYlGn',
+            center=0, vmin=-1, vmax=1,
+            annot_kws={"size": 10})
+plt.title('Asset Return Correlation Matrix (1Y daily)')
+plt.tight_layout()
+plt.show()
+
+print("\nHighest correlations:")
+print(corr.unstack().sort_values(ascending=False).drop_duplicates().head(8))</div>
+</div>
+
+<!-- M10 -->
+<div class="lsh" id="m10"><div class="lsn">10</div><div><h2>Regime Classification with Data</h2><p>Algorithmically identifying market regimes from price data</p></div></div>
+<div class="lb">
+  <p>Level 4 taught you to identify market regimes manually. Level 6 teaches you to classify them algorithmically — creating a data-driven regime filter that can be applied consistently across instruments and timeframes.</p>
+  <div class="code">import yfinance as yf
+import pandas as pd
+import numpy as np
+
+def classify_regime(symbol, period="1y"):
+    df = yf.download(symbol, period=period, interval="1d", progress=False)
+    close = df['Close']
+    
+    # Simple regime classification using EMAs and ATR
+    ema20 = close.ewm(span=20).mean()
+    ema50 = close.ewm(span=50).mean()
+    ema200 = close.ewm(span=200).mean()
+    
+    high_low_range = df['High'] - df['Low']
+    atr = high_low_range.rolling(14).mean()
+    atr_pct = atr / close * 100
+    
+    def get_regime(row):
+        if row['ema20'] > row['ema50'] > row['ema200']:
+            return 'EXPANSION' if row['atr_pct'] < 3 else 'VOLATILE_BULL'
+        elif row['ema20'] < row['ema50'] < row['ema200']:
+            return 'BREAKDOWN' if row['atr_pct'] > 4 else 'DOWNTREND'
+        elif abs(row['ema20'] - row['ema50']) / row['ema50'] < 0.02:
+            return 'COMPRESSION'
+        else:
+            return 'TRANSITION'
+    
+    df['ema20'] = ema20; df['ema50'] = ema50; df['ema200'] = ema200
+    df['atr_pct'] = atr_pct
+    df['regime'] = df.apply(get_regime, axis=1)
+    
+    print(f"\n{symbol} — Regime distribution (last {period}):")
+    print(df['regime'].value_counts())
+    print(f"\nCurrent regime: {df['regime'].iloc[-1]}")
+    return df
+
+classify_regime('BTC-USD')</div>
+</div>
+
+<!-- M11 -->
+<div class="lsh" id="m11"><div class="lsn">11</div><div><h2>Systematic vs Discretionary Hybrid Framework</h2><p>Combining quantitative rules with structural discretion</p></div></div>
+<div class="lb">
+  <p>Pure systematic trading (100% algorithmic) requires significant infrastructure and removes the structural reading advantages of Levels 1–5. Pure discretionary trading loses the consistency advantages of quantitative rule-following. The hybrid framework — the approach used by most successful individual traders at Level 6+ — combines systematic filtering with discretionary confirmation.</p>
+  <table class="ltable">
+    <thead><tr><th>Component</th><th>Systematic (algorithmic)</th><th>Discretionary (manual)</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Regime identification</strong></td><td>EMA classification script runs daily</td><td>—</td></tr>
+      <tr><td><strong>Asset selection</strong></td><td>Correlation matrix + momentum scan</td><td>Final selection based on structure quality</td></tr>
+      <tr><td><strong>Setup detection</strong></td><td>Python alerts when price approaches defined zones</td><td>—</td></tr>
+      <tr><td><strong>Entry confirmation</strong></td><td>—</td><td>LTF CHoCH / OB reaction confirmed manually</td></tr>
+      <tr><td><strong>Position sizing</strong></td><td>Fixed formula: Account × % ÷ stop distance</td><td>—</td></tr>
+      <tr><td><strong>Risk management</strong></td><td>Automated stops via platform alerts</td><td>Active management if structure changes</td></tr>
+      <tr><td><strong>Performance tracking</strong></td><td>Excel/Python auto-updates metrics</td><td>Weekly qualitative review</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- M12 -->
+<div class="lsh" id="m12"><div class="lsn">12</div><div><h2>Building Your Quantitative Trading Toolkit</h2><p>Your personal Python library for ongoing analysis</p></div></div>
+<div class="lb">
+  <p>The capstone of Level 6 is assembling all individual scripts into a personal toolkit — a collection of reusable Python functions you can run before each session to get a data-driven market overview in under 5 minutes.</p>
+  <h4>Your Level 6 toolkit components</h4>
+  <ul class="llist">
+    <li><strong>regime_scanner.py:</strong> Runs on your watchlist, prints current regime for each instrument</li>
+    <li><strong>correlation_daily.py:</strong> Outputs current 30-day correlation matrix — flags any new concentration risk</li>
+    <li><strong>performance_tracker.py:</strong> Reads your trade log CSV, calculates all 7 metrics + rolling 20-trade expectancy</li>
+    <li><strong>zone_alert.py:</strong> Flags when instruments are within 1% of key EMA or support/resistance levels</li>
+    <li><strong>montecarlo_check.py:</strong> Runs 1,000 simulations on last 50 trades, outputs worst-case and median projections</li>
+  </ul>
+  <div class="lbox key"><span class="blbl">From Level 6 to Level 7</span><p>Level 6 gives you quantitative tools for personal trading. Level 7 applies the same rigor to managing capital for others — prop firm challenges, funded account management, compliance, investor reporting and the operational structure of professional trading businesses.</p></div>
+</div>
+
+<!-- CERT -->
+<div id="cert" style="margin-top:52px;">
+  <div class="academy-section-title"><span class="academy-kicker">Level 6 Certification</span><h2>Quantitative Analysis & Backtesting Exam</h2></div>
+  <div class="lquiz" style="margin-top:18px;">
+    <form class="academy-quiz-form" id="quiz6">
+      <div class="lq"><h3>1. A Sortino ratio is preferable to Sharpe ratio for trading strategies because:</h3>
+        <label><input type="radio" name="q1" value="a"> it is easier to calculate</label>
+        <label><input type="radio" name="q1" value="b"> it only penalizes downside volatility, not upside variance — more appropriate for asymmetric return distributions</label>
+        <label><input type="radio" name="q1" value="c"> it incorporates transaction costs automatically</label>
+      </div>
+      <div class="lq"><h3>2. A Monte Carlo simulation of your trading strategy primarily answers:</h3>
+        <label><input type="radio" name="q2" value="a"> whether your strategy will be profitable next month</label>
+        <label><input type="radio" name="q2" value="b"> what range of equity curves is possible if your edge is real but outcomes occur in different random sequences</label>
+        <label><input type="radio" name="q2" value="c"> which instruments your strategy works best on</label>
+      </div>
+      <div class="lq"><h3>3. A p-value of 0.03 from a t-test on your backtest results means:</h3>
+        <label><input type="radio" name="q3" value="a"> the strategy has a 3% win rate</label>
+        <label><input type="radio" name="q3" value="b"> there is only a 3% probability that the positive expectancy occurred by random chance — statistically significant</label>
+        <label><input type="radio" name="q3" value="c"> the strategy needs 3 more months of data before conclusions can be drawn</label>
+      </div>
+      <div class="lq"><h3>4. Heavy left-tail distribution in your loser outcomes (losses beyond –2R) indicates:</h3>
+        <label><input type="radio" name="q4" value="a"> the strategy is capturing large retracement moves effectively</label>
+        <label><input type="radio" name="q4" value="b"> stop losses are being moved or missed in execution — a process failure that destroys positive expectancy</label>
+        <label><input type="radio" name="q4" value="c"> the strategy should only be used in low-volatility environments</label>
+      </div>
+      <div class="lq"><h3>5. The hybrid systematic-discretionary framework keeps which component fully discretionary?</h3>
+        <label><input type="radio" name="q5" value="a"> position sizing calculation</label>
+        <label><input type="radio" name="q5" value="b"> LTF entry confirmation — the structural judgment that requires human pattern recognition</label>
+        <label><input type="radio" name="q5" value="c"> regime classification</label>
+      </div>
+      <div class="lq"><h3>6. Profit Factor of 1.8 means:</h3>
+        <label><input type="radio" name="q6" value="a"> the strategy wins 80% of trades</label>
+        <label><input type="radio" name="q6" value="b"> gross profit is 1.8x gross loss — for every $1 lost, $1.80 is gained</label>
+        <label><input type="radio" name="q6" value="c"> the strategy produces 1.8R expectancy per trade</label>
+      </div>
+      <div class="lq"><h3>7. The primary advantage of Python backtesting over manual backtesting is:</h3>
+        <label><input type="radio" name="q7" value="a"> Python results are always more accurate than manual testing</label>
+        <label><input type="radio" name="q7" value="b"> processing 5+ years of data and 1,000+ occurrences in seconds — achieving statistical confidence that manual testing cannot reach practically</label>
+        <label><input type="radio" name="q7" value="c"> Python eliminates the need for a trading plan</label>
+      </div>
+      <div class="lq"><h3>8. A rolling 30-day correlation between BTC and US100 of 0.82 should make you:</h3>
+        <label><input type="radio" name="q8" value="a"> trade both instruments simultaneously for maximum diversification</label>
+        <label><input type="radio" name="q8" value="b"> aware that holding longs in both simultaneously creates high hidden concentration to the risk-on macro theme</label>
+        <label><input type="radio" name="q8" value="c"> avoid all crypto positions until the correlation drops below 0.5</label>
+      </div>
+      <button type="button" class="academy-btn academy-btn-primary" onclick="submitQuiz('quiz6',['b','b','b','b','b','b','b','b'],'r6')">Validate Certification</button>
+      <div id="r6" class="academy-quiz-result"></div>
+    </form>
+    <form method="POST" action="{{ url_for('academy.academy_complete_level', level='level6', lang_code=current_lang) }}" style="margin-top:14px;">
+      <button class="academy-btn academy-btn-secondary" type="submit">Mark Level 6 Complete</button>
+    </form>
+  </div>
+</div>
+
+{% else %}
+<div class="llock"><div style="font-size:44px;">🔒</div><h3>Level 6 — VIP Only</h3>
+<p>Level 6 unlocks Python/Excel backtesting, Sharpe & Sortino ratios, Monte Carlo simulation, automated signal detection, statistical hypothesis testing and correlation matrix construction.</p>
+<a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-btn academy-btn-gold" style="display:inline-block;margin-top:4px;">Upgrade to VIP — Unlock Level 6</a></div>
+{% endif %}
+
+</div>
+<aside class="lsidebar">
+  {% set p = academy_progress.level6 if academy_progress and academy_progress.level6 is defined else 0 %}
+  <div class="lprogcard"><div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:12px;font-weight:600;color:var(--mu);">Progress</span><strong style="color:var(--l6);">{{ p }}%</strong></div><div class="ltrack"><div class="lfill" style="width:{{ p }}%;"></div></div><div style="font-size:11px;color:var(--mu);margin-top:5px;">VIP only</div></div>
+  <div class="ltoc"><h3>Contents</h3>
+    <a href="#m1"><span class="n">01</span>Python Setup</a>
+    <a href="#m2"><span class="n">02</span>Excel Backtesting</a>
+    <a href="#m3"><span class="n">03</span>Sharpe & Sortino</a>
+    <a href="#m4"><span class="n">04</span>Max Drawdown</a>
+    <a href="#m5"><span class="n">05</span>Win Distribution</a>
+    <a href="#m6"><span class="n">06</span>Monte Carlo</a>
+    <a href="#m7"><span class="n">07</span>Signal Detection</a>
+    <a href="#m8"><span class="n">08</span>Hypothesis Testing</a>
+    <a href="#m9"><span class="n">09</span>Correlation Matrix</a>
+    <a href="#m10"><span class="n">10</span>Regime Classification</a>
+    <a href="#m11"><span class="n">11</span>Systematic Hybrid</a>
+    <a href="#m12"><span class="n">12</span>Quantitative Toolkit</a>
+    <a href="#cert" style="color:var(--l6);margin-top:7px;"><span class="n">★</span>Certification</a>
+  </div>
+</aside>
+</div></div></section>
+{% endblock %}
+{% block extra_js %}<script src="{{ url_for('static', filename='academy.js') }}"></script>{% endblock %}

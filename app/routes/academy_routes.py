@@ -114,6 +114,28 @@ def academy_level_4():
     return render_template("academy/level4.html", **academy_context())
 
 
+
+
+@academy_bp.route("/academy/level-5")
+@academy_bp.route("/<lang_code>/academy/level-5")
+@login_required
+def academy_level_5(lang_code=None):
+    normalize_lang(lang_code)
+    return render_template("academy/level5.html", ...)
+
+@academy_bp.route("/academy/level-6")
+@academy_bp.route("/<lang_code>/academy/level-6")
+@login_required
+def academy_level_6(lang_code=None):
+    normalize_lang(lang_code)
+    return render_template("academy/level6.html", ...)
+
+@academy_bp.route("/academy/level-7")
+@academy_bp.route("/<lang_code>/academy/level-7")
+@login_required
+def academy_level_7(lang_code=None):
+    normalize_lang(lang_code)
+    return render_template("academy/level7.html", ...)
 # =========================================================
 # UPGRADE
 # =========================================================

@@ -1,0 +1,451 @@
+{% set academy_level = "level7" %}
+{% set academy_total_lessons = 12 %}
+{% extends "base.html" %}
+{% block title %}Academy Level 7 — Professional Account Management | VelWolef{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='academy.css') }}">
+<style>
+:root{--l7:#a855f7;--l7d:rgba(168,85,247,.1);--l7b:rgba(168,85,247,.28);--s:#111520;--br:rgba(255,255,255,.07);--tx:#c8d0e0;--mu:#6b7588;--gr:#22c55e;--re:#ef4444;--am:#f59e0b;--go:#d4a843;}
+.lhero{background:linear-gradient(135deg,#0a0d13 0%,#120a1a 60%,#0a0d13 100%);border-bottom:1px solid var(--l7b);padding:48px 0;}
+.lbadge{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;background:var(--l7d);border:1px solid var(--l7b);color:#d8b4fe;margin-right:8px;margin-bottom:20px;}
+.lbadge.vip{background:rgba(212,168,67,.1);border-color:rgba(212,168,67,.25);color:#fde68a;}
+.lhero h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;line-height:1.1;color:#fff;margin-bottom:16px;}
+.lhero h1 em{font-style:normal;color:var(--l7);}
+.lhero p.sub{font-size:1rem;color:var(--tx);line-height:1.75;max-width:580px;margin-bottom:28px;}
+.lstats{display:flex;gap:28px;flex-wrap:wrap;margin-bottom:28px;}
+.lstat .num{font-size:1.5rem;font-weight:800;color:var(--l7);display:block;}
+.lstat .lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);}
+.lgrid{display:grid;grid-template-columns:1fr 290px;gap:24px;align-items:start;}
+.lsidebar{position:sticky;top:80px;}
+.ltoc{background:var(--s);border:1px solid var(--l7b);border-radius:12px;padding:16px;}
+.ltoc h3{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#d8b4fe;margin-bottom:10px;}
+.ltoc a{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:6px;font-size:12px;color:var(--mu);text-decoration:none;transition:all .15s;}
+.ltoc a:hover{background:var(--l7d);color:#fff;}
+.ltoc .n{font-size:10px;font-weight:700;color:var(--l7);width:18px;flex-shrink:0;}
+.lsh{display:flex;align-items:center;gap:14px;margin:42px 0 20px;padding-bottom:12px;border-bottom:1px solid var(--br);}
+.lsn{width:36px;height:36px;border-radius:8px;background:var(--l7d);border:1px solid var(--l7b);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--l7);flex-shrink:0;}
+.lsh h2{font-size:1.15rem;font-weight:700;color:#fff;margin-bottom:2px;}
+.lsh p{font-size:11px;color:var(--mu);}
+.lb p{font-size:14px;color:var(--tx);line-height:1.8;margin-bottom:12px;}
+.lb h3{font-size:1rem;font-weight:700;color:#fff;margin-bottom:9px;}
+.lb h4{font-size:.88rem;font-weight:600;color:#d8b4fe;margin:16px 0 6px;}
+.lbox{border-radius:9px;padding:15px 17px;margin:14px 0;}
+.lbox.def{background:rgba(168,85,247,.05);border-left:3px solid var(--l7);}
+.lbox.key{background:rgba(251,191,36,.05);border-left:3px solid var(--am);}
+.lbox.warn{background:rgba(239,68,68,.05);border-left:3px solid var(--re);}
+.lbox.ex{background:rgba(34,197,94,.05);border-left:3px solid var(--gr);}
+.lbox.gold{background:rgba(212,168,67,.05);border-left:3px solid var(--go);}
+.blbl{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:5px;}
+.lbox.def .blbl{color:#d8b4fe;}.lbox.key .blbl{color:var(--am);}.lbox.warn .blbl{color:var(--re);}.lbox.ex .blbl{color:var(--gr);}.lbox.gold .blbl{color:var(--go);}
+.lbox p{margin:0;font-size:13px;color:var(--tx);line-height:1.7;}
+.llist{list-style:none;padding:0;margin:10px 0;}
+.llist li{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid var(--br);font-size:13px;color:var(--tx);}
+.llist li:last-child{border-bottom:none;}
+.llist li::before{content:"→";color:var(--l7);flex-shrink:0;}
+.lcards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0;}
+.lcard{background:var(--s);border:1px solid var(--br);border-radius:10px;padding:14px 16px;}
+.lcard h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--mu);margin-bottom:8px;}
+.lcard ul{list-style:none;padding:0;margin:0;}
+.lcard ul li{font-size:12px;color:var(--tx);padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.lcard ul li:last-child{border-bottom:none;}
+.lcard ul li::before{content:"• ";color:var(--l7);}
+.ltable{width:100%;border-collapse:collapse;margin:13px 0;}
+.ltable th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);padding:9px 12px;border-bottom:1px solid var(--br);text-align:left;}
+.ltable td{font-size:13px;color:var(--tx);padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.04);}
+.ltable tr:last-child td{border-bottom:none;}
+.lquiz{background:var(--s);border:1px solid var(--l7b);border-radius:12px;padding:24px;}
+.lq{margin-bottom:18px;}
+.lq h3{font-size:14px;font-weight:600;color:#fff;margin-bottom:9px;}
+.lq label{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:7px;cursor:pointer;font-size:13px;color:var(--tx);border:1px solid var(--br);margin-bottom:5px;transition:all .15s;}
+.lq label:hover{background:var(--l7d);border-color:var(--l7b);}
+.lq input[type=radio]{accent-color:var(--l7);}
+.lprogcard{background:var(--s);border:1px solid var(--br);border-radius:12px;padding:17px;margin-bottom:13px;}
+.ltrack{height:4px;background:rgba(255,255,255,.07);border-radius:2px;margin:7px 0;overflow:hidden;}
+.lfill{height:100%;background:var(--l7);border-radius:2px;}
+.llock{background:linear-gradient(135deg,#0a0d13,#120a1a);border:1px solid var(--l7b);border-radius:14px;padding:36px;text-align:center;margin-top:32px;}
+.llock h3{color:#fff;font-size:1.2rem;margin:14px 0 8px;}
+.llock p{color:var(--tx);font-size:13px;line-height:1.7;margin-bottom:20px;}
+.lcert-final{background:linear-gradient(135deg,rgba(168,85,247,.05),rgba(212,168,67,.05));border:1px solid var(--l7b);border-radius:16px;padding:40px;text-align:center;}
+.lcert-final h2{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:8px;}
+.lcert-final p{color:var(--tx);font-size:14px;line-height:1.7;max-width:500px;margin:0 auto 24px;}
+@media(max-width:900px){.lgrid{grid-template-columns:1fr;}.lsidebar{display:none;}.lcards{grid-template-columns:1fr;}}
+</style>
+{% endblock %}
+
+{% block content %}
+{% if not is_vip %}<script>document.addEventListener("DOMContentLoaded",function(){document.body.dataset.autoUpgradePopup="true";});</script>{% endif %}
+
+<section class="lhero">
+  <div class="academy-shell">
+    <div class="academy-breadcrumb"><a href="{{ url_for('academy.academy_index', lang_code=current_lang) }}">Academy</a><span>/</span><span>Level 7</span></div>
+    <span class="lbadge">Level 7 — Final</span><span class="lbadge vip">VIP Only</span>
+    <h1>Professional<br><em>Account Management</em></h1>
+    <p class="sub">Level 7 is the culmination of the Academy: how to operate as a professional trader managing capital beyond your own — prop firm challenges, funded accounts, external capital management, institutional reporting, compliance and the business of professional trading.</p>
+    <div class="lstats">
+      <div class="lstat"><span class="num">12</span><span class="lbl">Modules</span></div>
+      <div class="lstat"><span class="num">6h+</span><span class="lbl">Content</span></div>
+      <div class="lstat"><span class="num">1</span><span class="lbl">Master Certification</span></div>
+    </div>
+    <div class="academy-actions">
+      {% if is_vip %}
+      <a href="#m1" class="academy-btn academy-btn-primary">Start Module 1</a>
+      <a href="#cert" class="academy-btn academy-btn-secondary">Go to Master Certification</a>
+      {% else %}
+      <a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-btn academy-btn-gold">Upgrade to VIP — Unlock Level 7</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="academy-section">
+<div class="academy-shell">
+<div class="lgrid">
+<div>
+
+<div class="academy-academic-block" style="margin-top:36px;">
+  <span class="academy-box-label">Level 7 — Overview</span>
+  <h3>The complete professional trading curriculum — final level</h3>
+  <p>Levels 1–6 built your personal trading system: foundations, execution, planning, institutional desk logic, edge validation and quantitative analysis. Level 7 applies that system in a professional context — where capital is not only yours, accountability is formal, reporting is required, and compliance is non-negotiable.</p>
+  <div class="lcards">
+    <div class="lcard"><h4>New concepts in Level 7</h4><ul>
+      <li>Prop firm evaluation structure & rules</li>
+      <li>Funded account risk management</li>
+      <li>Drawdown limits & daily loss rules</li>
+      <li>Track record construction</li>
+      <li>Monthly investor reporting</li>
+      <li>Capital raising basics</li>
+      <li>Compliance & regulatory framework</li>
+      <li>AML & KYC for traders</li>
+      <li>Fund structure types (SMA, LP, etc.)</li>
+      <li>Fee structures — 2/20 and alternatives</li>
+      <li>Scaling a trading operation</li>
+      <li>Master certification — full curriculum review</li>
+    </ul></div>
+    <div class="lcard"><h4>Prerequisites</h4><ul><li>All levels 1–6 completed</li><li>Minimum 6 months live trading</li></ul>
+    <h4 style="margin-top:12px;">Access</h4><ul><li>VIP plan only</li></ul>
+    <h4 style="margin-top:12px;">Certification</h4><ul><li>Master certification — covers all 7 levels</li><li>VelWolef Academy Master badge</li></ul></div>
+  </div>
+</div>
+
+{% if is_vip %}
+
+<!-- M01 -->
+<div class="lsh" id="m1"><div class="lsn">01</div><div><h2>The Prop Firm Landscape</h2><p>Understanding the professional evaluation ecosystem</p></div></div>
+<div class="lb">
+  <p>Proprietary trading firms (prop firms) provide capital to traders who demonstrate consistent profitability through a structured evaluation. Passing a prop firm challenge is the most accessible path to managing significant capital without personal risk — but it requires understanding the rules precisely, because many are designed to fail undisciplined traders.</p>
+  <table class="ltable">
+    <thead><tr><th>Firm type</th><th>Model</th><th>Evaluation</th><th>Typical split</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Two-phase evaluation</strong></td><td>Phase 1: profit target. Phase 2: consistency. Funded if both passed.</td><td>8–10% profit target, 5% daily loss, 10% max drawdown</td><td>70–85% to trader</td></tr>
+      <tr><td><strong>One-phase challenge</strong></td><td>Single phase with higher profit target</td><td>10% profit target, 5% daily loss</td><td>75–80% to trader</td></tr>
+      <tr><td><strong>Instant funding</strong></td><td>No evaluation — smaller initial capital</td><td>Ongoing profit target and loss limits</td><td>50–70% to trader</td></tr>
+      <tr><td><strong>Revenue share</strong></td><td>No evaluation fee — lower profit split</td><td>Monthly consistency requirements</td><td>50–60% to trader</td></tr>
+    </tbody>
+  </table>
+  <div class="lbox warn"><span class="blbl">Prop firm selection criteria</span><p>Before paying any evaluation fee, verify: regulated or reputable history (check community reviews), clear payout history, realistic drawdown rules, no hidden "scaling plan" that limits payouts, and transparent rule documentation. Many prop firms have failed to pay traders — due diligence is not optional.</p></div>
+</div>
+
+<!-- M02 -->
+<div class="lsh" id="m2"><div class="lsn">02</div><div><h2>Funded Account Risk Management</h2><p>Operating under hard constraints — the professional discipline test</p></div></div>
+<div class="lb">
+  <p>Managing a funded account is the ultimate test of every discipline principle in Levels 1–6. The rules are strict, the consequences of violation are immediate (account closure), and the psychological pressure of trading someone else's capital is significant.</p>
+  <h4>The 3 critical rules of funded account management</h4>
+  <ul class="llist">
+    <li><strong>Daily loss limit (typically 4–5%):</strong> If your account loses this % in one day, it closes automatically. Strategy: never risk more than 1% per trade. After 2 consecutive losses in a day, stop trading for that session — you are 2 trades from account closure.</li>
+    <li><strong>Maximum total drawdown (typically 8–10%):</strong> If cumulative losses reach this from the starting balance, account closes. Strategy: treat 6% drawdown as your personal red alert. Do not wait for the firm's limit — your drawdown protocol must trigger first.</li>
+    <li><strong>Consistency rule (some firms):</strong> No single day's profit can exceed a defined % of total profit. Strategy: if you have an exceptional day, scale down for the rest of the evaluation period to avoid violating consistency requirements.</li>
+  </ul>
+  <div class="lbox gold"><span class="blbl">The funded account mindset shift</span><p>Your personal trading uses 1–2% risk per trade. On a funded account, you may need to reduce to 0.5% per trade to ensure the daily loss limit is not breached even by 3 consecutive losses. Funded account success rewards capital preservation over profit maximization — the opposite of what most traders instinctively pursue.</p></div>
+</div>
+
+<!-- M03 -->
+<div class="lsh" id="m3"><div class="lsn">03</div><div><h2>Building a Verified Track Record</h2><p>The foundation of professional credibility</p></div></div>
+<div class="lb">
+  <p>A track record is a verified, auditable history of trading performance. It is the single most important asset for any trader seeking external capital — without it, you are asking investors to trust claims, not evidence.</p>
+  <h4>Track record requirements for institutional credibility</h4>
+  <ul class="llist">
+    <li><strong>Minimum duration:</strong> 12 months of live trading. 6 months is insufficient — it cannot span multiple market regimes.</li>
+    <li><strong>Verification:</strong> Brokerage statements, not screenshots. Myfxbook or third-party audit service for Forex. On-chain proof for crypto.</li>
+    <li><strong>Risk-adjusted metrics:</strong> Absolute return is meaningless without context. A 40% return achieved through 50% drawdown is not investable. Sharpe ratio and max drawdown are the minimum required metrics.</li>
+    <li><strong>Consistency evidence:</strong> Monthly breakdown showing no single "lucky month" distorts the average. Investors need to see consistency, not outliers.</li>
+  </ul>
+  <div class="lbox def"><span class="blbl">Myfxbook verified track record</span><p>For Forex accounts, Myfxbook.com provides free, broker-verified performance tracking that is widely accepted by prop firms and private investors. Connect your broker account, enable "Gain Chart" public sharing. For crypto, use a portfolio tracker with API connection (CoinStats, Koinly) combined with brokerage statement exports.</p></div>
+  <table class="ltable">
+    <thead><tr><th>Metric</th><th>Retail acceptable</th><th>Investor-quality</th></tr></thead>
+    <tbody>
+      <tr><td>Annual return</td><td>>15%</td><td>>25% net of fees</td></tr>
+      <tr><td>Max drawdown</td><td><25%</td><td><10%</td></tr>
+      <tr><td>Sharpe ratio</td><td>>0.5</td><td>>1.5</td></tr>
+      <tr><td>Win rate</td><td>>40%</td><td>Less important than Sharpe & MDD</td></tr>
+      <tr><td>Track record length</td><td>6 months</td><td>24+ months spanning bull and bear</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- M04 -->
+<div class="lsh" id="m4"><div class="lsn">04</div><div><h2>Investor Reporting — Monthly & Quarterly</h2><p>Communicating performance clearly and professionally</p></div></div>
+<div class="lb">
+  <p>Professional traders who manage external capital produce formal monthly reports. These documents serve two functions: they maintain investor trust through transparency, and they force the trader to analyze performance rigorously and explain it clearly.</p>
+  <h4>Monthly report structure</h4>
+  <ul class="llist">
+    <li><strong>Executive summary (1 paragraph):</strong> Performance this month, key market conditions, strategy behavior, outlook.</li>
+    <li><strong>Performance metrics:</strong> Monthly return %, drawdown from high-water mark, Sharpe ratio, trades taken, win rate.</li>
+    <li><strong>Equity curve chart:</strong> Cumulative performance since inception — monthly granularity.</li>
+    <li><strong>Attribution analysis:</strong> Which markets, strategies or regimes drove performance? What detracted?</li>
+    <li><strong>Risk metrics:</strong> Max daily loss, current drawdown, exposure by asset class.</li>
+    <li><strong>Outlook:</strong> Current market regime assessment, positioning rationale for next month.</li>
+    <li><strong>Verification:</strong> Brokerage statement or third-party verification link.</li>
+  </ul>
+  <div class="lbox key"><span class="blbl">Transparency builds trust</span><p>Never hide a bad month in a report. Explain poor performance clearly: what caused it, whether it was strategy-driven or random variance, and what specific protocol changes (if any) are being implemented. Investors who discover hidden problems destroy relationships. Investors who see transparent acknowledgment of difficulties and clear responses often become long-term partners.</p></div>
+</div>
+
+<!-- M05 -->
+<div class="lsh" id="m5"><div class="lsn">05</div><div><h2>Capital Raising — First Principles</h2><p>How professional traders access external capital</p></div></div>
+<div class="lb">
+  <p>Capital raising is not about selling — it is about demonstrating evidence and removing risk for the capital provider. The track record from Module 3 is the foundation. The process is structured to build trust incrementally.</p>
+  <h4>The 4-stage capital raising progression</h4>
+  <ul class="llist">
+    <li><strong>Stage 1 — Prop firm capital:</strong> Cheapest credibility test. Pass a prop firm evaluation to prove you can manage disciplined risk under rules. Scale to the maximum allocation available ($100K–$1M).</li>
+    <li><strong>Stage 2 — Friends & family:</strong> First external capital with low formal requirements. Structure as a performance fee arrangement with full transparency. Minimum 12-month track record required.</li>
+    <li><strong>Stage 3 — Accredited investors:</strong> Formal agreements required (consult a lawyer). Minimum 24-month track record, formal reporting, clear fee structure, risk disclosure documentation.</li>
+    <li><strong>Stage 4 — Institutional capital:</strong> Fund structure required (SMA or LP). 3+ year track record minimum. External auditor. Regulatory registration depending on jurisdiction and AUM.</li>
+  </ul>
+  <div class="lbox warn"><span class="blbl">Legal warning</span><p>Managing capital for others without proper regulatory registration is illegal in most jurisdictions above certain thresholds. Before accepting any external capital, consult a financial lawyer in your jurisdiction. The rules differ significantly between countries — this module provides education, not legal advice.</p></div>
+</div>
+
+<!-- M06 -->
+<div class="lsh" id="m6"><div class="lsn">06</div><div><h2>Compliance & Regulatory Framework</h2><p>What professional traders must know about regulation</p></div></div>
+<div class="lb">
+  <p>The regulatory landscape for professional traders varies by jurisdiction, strategy type and capital amount. This module provides an educational overview — not legal advice. Always consult qualified legal and compliance professionals before managing external capital.</p>
+  <table class="ltable">
+    <thead><tr><th>Jurisdiction</th><th>Regulatory body</th><th>Registration threshold</th><th>Key requirement</th></tr></thead>
+    <tbody>
+      <tr><td><strong>United States</strong></td><td>SEC / CFTC / NFA</td><td>$150M+ AUM for RIA exemption</td><td>Investment Adviser registration or exemption</td></tr>
+      <tr><td><strong>European Union</strong></td><td>ESMA / national regulators</td><td>€500K AUM in most jurisdictions</td><td>MiFID II compliance, AIFMD for funds</td></tr>
+      <tr><td><strong>United Kingdom</strong></td><td>FCA</td><td>Any regulated activity</td><td>FCA authorization or appointed representative</td></tr>
+      <tr><td><strong>UAE</strong></td><td>DFSA / SCA</td><td>Variable by emirate</td><td>License from relevant authority</td></tr>
+    </tbody>
+  </table>
+  <div class="lbox def"><span class="blbl">Safe harbor — the 15-client rule (US)</span><p>In the US, investment advisers with fewer than 15 clients and under $25M AUM may qualify for an exemption from SEC registration under the Investment Advisers Act. However, state registration may still be required. This is an educational overview only — verify current thresholds with a qualified securities attorney.</p></div>
+  <h4>Minimum compliance checklist for any external capital</h4>
+  <ul class="llist">
+    <li>Written investment management agreement signed by all parties</li>
+    <li>Clear fee structure disclosed in writing before capital is received</li>
+    <li>Risk disclosure document detailing all material risks</li>
+    <li>Separate trading account — never commingled with personal funds</li>
+    <li>Monthly statements provided to all capital providers</li>
+    <li>Legal counsel confirming structure is compliant in your jurisdiction</li>
+  </ul>
+</div>
+
+<!-- M07 -->
+<div class="lsh" id="m7"><div class="lsn">07</div><div><h2>AML & KYC for Professional Traders</h2><p>Anti-money laundering obligations and know-your-customer procedures</p></div></div>
+<div class="lb">
+  <p>Any professional trader managing third-party capital must understand Anti-Money Laundering (AML) and Know-Your-Customer (KYC) obligations. Even small operations face legal exposure if they accept funds from unverified sources.</p>
+  <h4>KYC requirements for capital acceptance</h4>
+  <ul class="llist">
+    <li><strong>Identity verification:</strong> Government-issued ID (passport or national ID) for all capital providers</li>
+    <li><strong>Source of funds:</strong> Documentation showing the legitimate origin of invested capital</li>
+    <li><strong>Address verification:</strong> Recent utility bill or bank statement confirming residential address</li>
+    <li><strong>Politically Exposed Persons (PEP) check:</strong> Mandatory screening for government officials or their close associates</li>
+    <li><strong>Record retention:</strong> All KYC documents must be retained for minimum 5–7 years depending on jurisdiction</li>
+  </ul>
+  <div class="lbox warn"><span class="blbl">AML red flags — when to refuse capital</span><p>Refuse any capital from: sources that cannot explain the origin of funds; cash or cryptocurrency from anonymous wallets with no verifiable history; investors who request unusual transaction structures; individuals on international sanctions lists (OFAC, UN, EU). Accepting funds from these sources exposes you to serious criminal liability regardless of intent.</p></div>
+</div>
+
+<!-- M08 -->
+<div class="lsh" id="m8"><div class="lsn">08</div><div><h2>Fund Structure Types</h2><p>SMA, LP, LLC — choosing the right legal vehicle</p></div></div>
+<div class="lb">
+  <p>As a professional trader scales beyond a few informal capital providers, a formal legal structure becomes necessary for investor protection, tax efficiency and operational clarity.</p>
+  <table class="ltable">
+    <thead><tr><th>Structure</th><th>Full name</th><th>Best for</th><th>Key advantages</th></tr></thead>
+    <tbody>
+      <tr><td><strong>SMA</strong></td><td>Separately Managed Account</td><td>1–10 sophisticated investors</td><td>Simplest — investor keeps own account, manager has limited power of attorney</td></tr>
+      <tr><td><strong>LP</strong></td><td>Limited Partnership</td><td>Multiple investors, formal fund</td><td>Liability protection, flexible fee structures, established legal framework</td></tr>
+      <tr><td><strong>LLC</strong></td><td>Limited Liability Company</td><td>Small US operations</td><td>Flexible, pass-through taxation, limited liability</td></tr>
+      <tr><td><strong>Cayman Fund</strong></td><td>Cayman Islands LLC/LP</td><td>International investors, larger AUM</td><td>Tax efficiency, investor familiarity, offshore regulatory framework</td></tr>
+    </tbody>
+  </table>
+  <div class="lbox key"><span class="blbl">Start with SMA</span><p>The Separately Managed Account model requires the least legal complexity — the investor maintains their own brokerage account and grants you a limited power of attorney to trade it. This means no fund registration, lower legal costs, and full transparency for the investor. It is the recommended structure for first external capital up to $1–2M.</p></div>
+</div>
+
+<!-- M09 -->
+<div class="lsh" id="m9"><div class="lsn">09</div><div><h2>Fee Structures — 2/20 and Alternatives</h2><p>How professional traders get paid for performance</p></div></div>
+<div class="lb">
+  <p>The fee structure defines how a trader is compensated for managing external capital. It must be disclosed clearly, agreed in writing before capital is received, and structured to align the trader's incentives with the investor's interests.</p>
+  <table class="ltable">
+    <thead><tr><th>Structure</th><th>Description</th><th>Best for</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Management fee only</strong></td><td>1–2% annual fee on AUM, charged monthly</td><td>Lower-risk, consistent strategies</td></tr>
+      <tr><td><strong>Performance fee only</strong></td><td>20–30% of profits above high-water mark</td><td>Aligns incentives — pay only for results</td></tr>
+      <tr><td><strong>2/20</strong></td><td>2% management + 20% performance above HWM</td><td>Institutional standard for hedge funds</td></tr>
+      <tr><td><strong>1/10 (accessible version)</strong></td><td>1% management + 10% performance</td><td>Early-stage operators attracting first capital</td></tr>
+      <tr><td><strong>Profit split only</strong></td><td>30–50% of net profits — no management fee</td><td>Prop firm model, friends & family</td></tr>
+    </tbody>
+  </table>
+  <div class="lbox def"><span class="blbl">High-water mark</span><p>A high-water mark ensures performance fees are only charged on new all-time highs of the investor's account value. If the account drops 10% and then recovers 10%, no performance fee is owed — the trader must first make back the losses before earning performance fees on new profits. This critical investor protection should be in every fee agreement.</p></div>
+</div>
+
+<!-- M10 -->
+<div class="lsh" id="m10"><div class="lsn">10</div><div><h2>Scaling a Trading Operation</h2><p>The operational challenges that emerge at $1M, $10M and $100M AUM</p></div></div>
+<div class="lb">
+  <p>Most trading strategies work differently at scale. Strategies that produce excellent results at $50K capital face execution challenges, slippage issues and structural limitations at $5M. Understanding these scaling challenges before they occur prevents the performance degradation that destroys track records at the exact moment external capital arrives.</p>
+  <h4>The 3 scaling challenges</h4>
+  <ul class="llist">
+    <li><strong>Market impact:</strong> At $100K, your orders don't move markets. At $10M in a small-cap crypto, your entry itself creates slippage. Scale requires either moving to higher-liquidity instruments, longer timeframes, or splitting entries across time.</li>
+    <li><strong>Strategy capacity:</strong> Every edge has a maximum capital capacity. A scalping strategy may generate +2% monthly on $50K but only +0.3% on $5M because the entry zones can't absorb the full position. Know your strategy's capacity limit before marketing to investors.</li>
+    <li><strong>Operational complexity:</strong> Managing one account requires 1 person. Managing 20 SMAs requires systems, reporting, compliance and potentially additional staff. Build systems before they are needed — not after.</li>
+  </ul>
+  <div class="lbox key"><span class="blbl">Strategy capacity test</span><p>To estimate your strategy's capacity, track slippage on entries as you increase position size. If you consistently experience more than 0.3% slippage at a given size, you have reached the liquidity ceiling for that setup type. The maximum capital for that strategy is approximately the size at which slippage starts degrading your edge.</p></div>
+</div>
+
+<!-- M11 -->
+<div class="lsh" id="m11"><div class="lsn">11</div><div><h2>The Professional Trader's Business Infrastructure</h2><p>Systems, technology and operations for a sustainable trading business</p></div></div>
+<div class="lb">
+  <p>A professional trading business requires infrastructure beyond a good strategy and a brokerage account. This module covers the operational systems that allow a trader to scale, delegate and maintain performance quality as complexity increases.</p>
+  <div class="lcards">
+    <div class="lcard"><h4>Technology stack</h4><ul>
+      <li>TradingView Pro+ (multi-device, alerts)</li>
+      <li>Python environment (Level 6 toolkit)</li>
+      <li>CRM for investor communication</li>
+      <li>Excel/Google Sheets for performance tracking</li>
+      <li>Myfxbook or third-party verification</li>
+      <li>Secure password manager for account access</li>
+    </ul></div>
+    <div class="lcard"><h4>Operational documents</h4><ul>
+      <li>Investment Management Agreement (per investor)</li>
+      <li>Risk Disclosure Document</li>
+      <li>Monthly/quarterly report template</li>
+      <li>KYC file per investor</li>
+      <li>Trading journal (personal system document)</li>
+      <li>Drawdown response protocol (written)</li>
+    </ul></div>
+    <div class="lcard"><h4>Daily operational routine</h4><ul>
+      <li>Pre-market: planning protocol (Level 3)</li>
+      <li>Session: execution only (Level 4)</li>
+      <li>Post-session: journal + performance update</li>
+      <li>Weekly: investor email / performance note</li>
+      <li>Monthly: formal report sent to all investors</li>
+      <li>Quarterly: strategy audit (Level 5)</li>
+    </ul></div>
+    <div class="lcard"><h4>Risk governance</h4><ul>
+      <li>Hard daily loss limit per account</li>
+      <li>Weekly max loss limit across all accounts</li>
+      <li>Monthly drawdown threshold triggers review</li>
+      <li>Independent drawdown protocol enforced</li>
+      <li>No co-mingling of personal and client funds</li>
+      <li>External backup for all trading accounts</li>
+    </ul></div>
+  </div>
+</div>
+
+<!-- M12 -->
+<div class="lsh" id="m12"><div class="lsn">12</div><div><h2>From Student to Professional Operator — The Full Journey</h2><p>Integrating all 7 levels into a complete professional identity</p></div></div>
+<div class="lb">
+  <p>Level 7 completes the Academy curriculum. You have traveled from defining what a trade is (Level 1) to managing external capital professionally (Level 7). This final module integrates all levels into a coherent professional framework — the complete system of a VelWolef Academy graduate.</p>
+  <table class="ltable">
+    <thead><tr><th>Level</th><th>What it built</th><th>Applied in professional context as</th></tr></thead>
+    <tbody>
+      <tr><td><strong>L1 — Foundations</strong></td><td>Trade hypothesis, risk, R:R, journal</td><td>Daily decision discipline, stop placement, position sizing formula</td></tr>
+      <tr><td><strong>L2 — Execution</strong></td><td>BOS, OB, liquidity, confluence scoring</td><td>Entry quality standard, setup grading filter, LTF timing</td></tr>
+      <tr><td><strong>L3 — Operator</strong></td><td>Top-down, scenarios, inter-market, exposure</td><td>Pre-session protocol, asset selection, portfolio exposure management</td></tr>
+      <tr><td><strong>L4 — Desk</strong></td><td>Regime, portfolio of ideas, review framework</td><td>Macro overlay, idea ranking, 6-dimension performance review</td></tr>
+      <tr><td><strong>L5 — Edge</strong></td><td>Statistical validation, biases, psychology</td><td>Strategy document, edge maintenance protocol, investor confidence</td></tr>
+      <tr><td><strong>L6 — Quant</strong></td><td>Python, Sharpe, Monte Carlo, t-test</td><td>Investor reporting metrics, strategy robustness proof, automated monitoring</td></tr>
+      <tr><td><strong>L7 — Professional</strong></td><td>Prop firms, track record, compliance, funds</td><td>Capital management structure, investor agreements, regulatory compliance</td></tr>
+    </tbody>
+  </table>
+  <div class="lbox gold"><span class="blbl">The final standard</span><p>A VelWolef Academy graduate operates with: a statistically validated, documented edge (L5); quantitative performance metrics that satisfy institutional review (L6); a professional reporting and compliance framework for managing external capital (L7); and the psychological and operational infrastructure to sustain consistent performance across multiple market regimes over years, not months. This is not theoretical — every module has given you the specific framework to implement it.</p></div>
+</div>
+
+<!-- MASTER CERTIFICATION -->
+<div id="cert" style="margin-top:52px;">
+  <div class="lcert-final" style="margin-bottom:28px;">
+    <div style="font-size:48px;margin-bottom:12px;">🏆</div>
+    <h2>VelWolef Academy — Master Certification</h2>
+    <p>This final exam covers all 7 levels of the curriculum. Passing awards the VelWolef Academy Master badge — the complete professional trader certification.</p>
+  </div>
+  <div class="lquiz">
+    <form class="academy-quiz-form" id="quiz7">
+      <div class="lq"><h3>1. A funded account daily loss limit of 5% with a 0.5% risk per trade means:</h3>
+        <label><input type="radio" name="q1" value="a"> you can take unlimited trades as long as each is under 0.5%</label>
+        <label><input type="radio" name="q1" value="b"> after 10 consecutive maximum losses in one day, the account closes — your personal red alert should trigger after 7 losses (3.5%)</label>
+        <label><input type="radio" name="q1" value="c"> the daily loss limit only applies to losing days</label>
+      </div>
+      <div class="lq"><h3>2. A high-water mark in a performance fee agreement protects investors by:</h3>
+        <label><input type="radio" name="q2" value="a"> limiting the maximum annual fee to 20% of AUM</label>
+        <label><input type="radio" name="q2" value="b"> ensuring performance fees are only charged on new all-time highs — the trader must recover losses before earning fees again</label>
+        <label><input type="radio" name="q2" value="c"> guaranteeing a minimum return to investors each year</label>
+      </div>
+      <div class="lq"><h3>3. A Separately Managed Account (SMA) structure is recommended for first external capital because:</h3>
+        <label><input type="radio" name="q3" value="a"> it offers the highest fee potential of all fund structures</label>
+        <label><input type="radio" name="q3" value="b"> the investor keeps their own account with full transparency and no fund registration is required — lowest complexity for first capital</label>
+        <label><input type="radio" name="q3" value="c"> it provides the best tax efficiency for international investors</label>
+      </div>
+      <div class="lq"><h3>4. Strategy capacity is limited by:</h3>
+        <label><input type="radio" name="q4" value="a"> the number of setups per month the strategy generates</label>
+        <label><input type="radio" name="q4" value="b"> the liquidity available at the entry zones — beyond a certain position size, your own orders create slippage that degrades the edge</label>
+        <label><input type="radio" name="q4" value="c"> the maximum leverage available at the broker</label>
+      </div>
+      <div class="lq"><h3>5. An investor-quality track record requires (minimum):</h3>
+        <label><input type="radio" name="q5" value="a"> 6 months of profitable trading with screenshots of P&L</label>
+        <label><input type="radio" name="q5" value="b"> 24+ months of verified, auditable performance including Sharpe ratio above 1.5 and max drawdown below 10%</label>
+        <label><input type="radio" name="q5" value="c"> 12 months of Myfxbook data with any positive return</label>
+      </div>
+      <div class="lq"><h3>6. The correct response to discovering a potential AML red flag from an investor is:</h3>
+        <label><input type="radio" name="q6" value="a"> accept the capital but document the concern</label>
+        <label><input type="radio" name="q6" value="b"> refuse the capital and document the refusal — accepting funds from suspicious sources creates criminal liability regardless of intent</label>
+        <label><input type="radio" name="q6" value="c"> consult the investor directly about the source of funds before deciding</label>
+      </div>
+      <div class="lq"><h3>7. The complete professional trading framework integrates all 7 levels as:</h3>
+        <label><input type="radio" name="q7" value="a"> independent modules that can be applied separately</label>
+        <label><input type="radio" name="q7" value="b"> a cumulative system where each level adds a layer — foundations → execution → planning → institutional → edge → quantitative → professional capital management</label>
+        <label><input type="radio" name="q7" value="c"> a hierarchy where only Level 7 matters for professional traders</label>
+      </div>
+      <div class="lq"><h3>8. Monthly investor reporting serves primarily to:</h3>
+        <label><input type="radio" name="q8" value="a"> satisfy regulatory requirements in all jurisdictions</label>
+        <label><input type="radio" name="q8" value="b"> maintain investor trust through transparency and force the trader to analyze performance rigorously — hiding a bad month damages relationships; transparent explanation builds them</label>
+        <label><input type="radio" name="q8" value="c"> justify the management fee charged monthly</label>
+      </div>
+      <button type="button" class="academy-btn academy-btn-primary" onclick="submitQuiz('quiz7',['b','b','b','b','b','b','b','b'],'r7')">Validate Master Certification</button>
+      <div id="r7" class="academy-quiz-result"></div>
+    </form>
+    <form method="POST" action="{{ url_for('academy.academy_complete_level', level='level7', lang_code=current_lang) }}" style="margin-top:14px;">
+      <button class="academy-btn academy-btn-secondary" type="submit">Complete Level 7 — Claim Master Badge</button>
+    </form>
+  </div>
+</div>
+
+{% else %}
+<div class="llock"><div style="font-size:44px;">🔒</div><h3>Level 7 — VIP Only</h3>
+<p>The final level of the Academy. Unlocks prop firm strategy, funded account risk management, track record construction, investor reporting, compliance, fund structures and the Master Certification covering all 7 levels.</p>
+<a href="{{ url_for('academy.academy_upgrade', lang_code=current_lang) }}" class="academy-btn academy-btn-gold" style="display:inline-block;margin-top:4px;">Upgrade to VIP — Unlock Level 7</a></div>
+{% endif %}
+
+</div>
+<aside class="lsidebar">
+  {% set p = academy_progress.level7 if academy_progress and academy_progress.level7 is defined else 0 %}
+  <div class="lprogcard"><div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:12px;font-weight:600;color:var(--mu);">Progress</span><strong style="color:var(--l7);">{{ p }}%</strong></div><div class="ltrack"><div class="lfill" style="width:{{ p }}%;"></div></div><div style="font-size:11px;color:var(--mu);margin-top:5px;">VIP only — Final level</div></div>
+  <div class="ltoc"><h3>Contents</h3>
+    <a href="#m1"><span class="n">01</span>Prop Firm Landscape</a>
+    <a href="#m2"><span class="n">02</span>Funded Account Risk</a>
+    <a href="#m3"><span class="n">03</span>Track Record</a>
+    <a href="#m4"><span class="n">04</span>Investor Reporting</a>
+    <a href="#m5"><span class="n">05</span>Capital Raising</a>
+    <a href="#m6"><span class="n">06</span>Compliance & Regulation</a>
+    <a href="#m7"><span class="n">07</span>AML & KYC</a>
+    <a href="#m8"><span class="n">08</span>Fund Structures</a>
+    <a href="#m9"><span class="n">09</span>Fee Structures</a>
+    <a href="#m10"><span class="n">10</span>Scaling Operations</a>
+    <a href="#m11"><span class="n">11</span>Business Infrastructure</a>
+    <a href="#m12"><span class="n">12</span>The Full Journey</a>
+    <a href="#cert" style="color:var(--l7);margin-top:7px;"><span class="n">🏆</span>Master Certification</a>
+  </div>
+  <div class="lprogcard" style="margin-top:13px;background:linear-gradient(135deg,rgba(168,85,247,.05),rgba(212,168,67,.05));border-color:var(--l7b);">
+    <h3 style="font-size:13px;font-weight:700;color:#fff;margin-bottom:7px;">🏆 Academy Complete</h3>
+    <p style="font-size:12px;color:var(--tx);line-height:1.6;">Completing all 7 levels awards the VelWolef Academy Master badge — the full professional trading curriculum from foundations to institutional capital management.</p>
+  </div>
+</aside>
+</div></div></section>
+{% endblock %}
+{% block extra_js %}<script src="{{ url_for('static', filename='academy.js') }}"></script>{% endblock %}
