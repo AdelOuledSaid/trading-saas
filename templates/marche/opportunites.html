@@ -29,10 +29,13 @@
                 <div class="ac-ticker-wrap">
                     <div class="ac-ticker">
                         <span>{{ t("markets_opportunites_signal_engine_active", "SIGNAL ENGINE ACTIVE") }}</span>
-                        <span>{{ t("markets_opportunites_sol_high_conviction", "SOL / HIGH CONVICTION") }}</span>
-                        <span>{{ t("markets_opportunites_link_arming", "LINK / ARMING") }}</span>
-                        <span>{{ t("markets_opportunites_avax_pressure_building", "AVAX / PRESSURE BUILDING") }}</span>
-                        <span>{{ t("markets_opportunites_near_watch_mode", "NEAR / WATCH MODE") }}</span>
+                        {% for opp in opportunities[:4] %}
+                        <span>{{ opp.ticker }} / {{ opp.state }}</span>
+                        {% endfor %}
+                        {% if not opportunities %}
+                        <span>SOL / HIGH CONVICTION</span>
+                        <span>LINK / ARMING</span>
+                        {% endif %}
                         <span>{{ t("markets_opportunites_execution_window_open", "EXECUTION WINDOW / OPEN") }}</span>
                     </div>
                 </div>
@@ -94,8 +97,8 @@
 
                                 <div class="ac-core-center">
                                     <small>{{ t("markets_opportunites_primary_focus", "PRIMARY FOCUS") }}</small>
-                                    <strong>SOL</strong>
-                                    <span>{{ t("markets_opportunites_conviction_92", "Conviction 92") }}</span>
+                                    <strong>{% if dominant %}{{ dominant.ticker }}{% else %}SOL{% endif %}</strong>
+                                    <span>Score {{ dominant.score if dominant else 92 }}</span>
                                 </div>
 
                                 <div class="ac-node n1">
@@ -155,7 +158,7 @@
                     <div class="ac-panel-head">
                         <div>
                             <span class="ac-mini-chip">{{ t("markets_opportunites_focus_chart", "Focus Chart") }}</span>
-                            <h3>{{ t("markets_opportunites_solusdt_dominant_structure", "SOLUSDT / dominant structure") }}</h3>
+                            <h3>{% if dominant %}{{ dominant.ticker }}USDT / {{ dominant.state }}{% else %}SOLUSDT / dominant structure{% endif %}</h3>
                         </div>
                         <div class="ac-panel-signal">
                             <span class="pulse"></span>
@@ -168,7 +171,7 @@
                         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
                         {
                             "autosize": true,
-                            "symbol": "BINANCE:SOLUSDT",
+                            "symbol": "{% if dominant %}{{ dominant.tv }}{% else %}BINANCE:SOLUSDT{% endif %}",
                             "interval": "240",
                             "timezone": "Europe/Paris",
                             "theme": "dark",
@@ -223,97 +226,30 @@
             </div>
 
             <div class="ac-board">
-                <article class="ac-asset featured tilt-card">
+                {% for opp in opportunities %}
+                <article class="ac-asset{% if loop.first %} featured tilt-card{% else %} tilt-card{% endif %}">
                     <div class="ac-asset-top">
-                        <span class="ticker">SOL</span>
-                        <span class="state live">{{ t("markets_opportunites_triggering_2", "TRIGGERING") }}</span>
+                        <span class="ticker">{{ opp.ticker }}</span>
+                        <span class="state {{ opp.state_class }}">{{ opp.state }}</span>
                     </div>
-                    <h3>{{ t("markets_opportunites_solana", "Solana") }}</h3>
-                    <p>{{ t("markets_opportunites_structure_dominante_leadership_visible_moteur_principal_du_board", "Structure dominante. Leadership visible. Moteur principal du board.") }}</p>
-
+                    <h3>{{ opp.name }}</h3>
+                    <p>{{ opp.description }}</p>
                     <div class="ac-meter">
                         <div class="ac-meter-top">
-                            <span>{{ t("markets_opportunites_conviction_score", "Conviction Score") }}</span>
-                            <strong>92</strong>
+                            <span>{{ t("markets_opportunites_conviction_score", "Belief Score") }}</span>
+                            <strong>{{ opp.score }}</strong>
                         </div>
-                        <div class="ac-meter-bar"><span style="width:92%"></span></div>
+                        <div class="ac-meter-bar"><span style="width:{{ opp.score }}%"></span></div>
                     </div>
-
                     <div class="ac-asset-grid">
-                        <div><span>{{ t("markets_opportunites_bias", "Bias") }}</span><strong>{{ t("markets_opportunites_expansion", "Expansion") }}</strong></div>
-                        <div><span>{{ t("markets_opportunites_tier", "Tier") }}</span><strong>{{ t("markets_opportunites_a", "A+") }}</strong></div>
-                        <div><span>{{ t("markets_opportunites_window", "Window") }}</span><strong>{{ t("markets_opportunites_open", "Open") }}</strong></div>
+                        <div><span>{{ t("markets_opportunites_bias", "BIAS") }}</span><strong>{{ opp.bias }}</strong></div>
+                        <div><span>{{ t("markets_opportunites_tier", "TIER") }}</span><strong>{{ opp.tier }}</strong></div>
+                        <div><span>{{ t("markets_opportunites_window", "WINDOW") }}</span><strong>{{ opp.window }}</strong></div>
                     </div>
                 </article>
-
-                <article class="ac-asset tilt-card">
-                    <div class="ac-asset-top">
-                        <span class="ticker">{{ t("markets_opportunites_link", "LINK") }}</span>
-                        <span class="state arming">{{ t("markets_opportunites_arming", "ARMING") }}</span>
-                    </div>
-                    <h3>{{ t("markets_opportunites_chainlink", "Chainlink") }}</h3>
-                    <p>{{ t("markets_opportunites_compression_nette_et_energie_sous_la_surface_a_surveiller_de_tres_pres", "Compression nette et énergie sous la surface. À surveiller de très près.") }}</p>
-
-                    <div class="ac-meter">
-                        <div class="ac-meter-top">
-                            <span>{{ t("markets_opportunites_conviction_score", "Conviction Score") }}</span>
-                            <strong>87</strong>
-                        </div>
-                        <div class="ac-meter-bar"><span style="width:87%"></span></div>
-                    </div>
-
-                    <div class="ac-asset-grid">
-                        <div><span>{{ t("markets_opportunites_bias", "Bias") }}</span><strong>{{ t("markets_opportunites_breakout", "Breakout") }}</strong></div>
-                        <div><span>{{ t("markets_opportunites_tier", "Tier") }}</span><strong>A</strong></div>
-                        <div><span>{{ t("markets_opportunites_window", "Window") }}</span><strong>{{ t("markets_opportunites_watching", "Watching") }}</strong></div>
-                    </div>
-                </article>
-
-                <article class="ac-asset tilt-card">
-                    <div class="ac-asset-top">
-                        <span class="ticker">{{ t("markets_opportunites_avax", "AVAX") }}</span>
-                        <span class="state pressure">{{ t("markets_opportunites_pressure", "PRESSURE") }}</span>
-                    </div>
-                    <h3>{{ t("markets_opportunites_avalanche", "Avalanche") }}</h3>
-                    <p>{{ t("markets_opportunites_reprise_interessante_mais_validation_encore_necessaire_sur_la_hierarchie", "Reprise intéressante mais validation encore nécessaire sur la hiérarchie globale.") }}</p>
-
-                    <div class="ac-meter">
-                        <div class="ac-meter-top">
-                            <span>{{ t("markets_opportunites_conviction_score", "Conviction Score") }}</span>
-                            <strong>76</strong>
-                        </div>
-                        <div class="ac-meter-bar"><span style="width:76%"></span></div>
-                    </div>
-
-                    <div class="ac-asset-grid">
-                        <div><span>{{ t("markets_opportunites_bias", "Bias") }}</span><strong>{{ t("markets_opportunites_rebound", "Rebound") }}</strong></div>
-                        <div><span>{{ t("markets_opportunites_tier", "Tier") }}</span><strong>{{ t("markets_opportunites_b", "B+") }}</strong></div>
-                        <div><span>{{ t("markets_opportunites_window", "Window") }}</span><strong>{{ t("markets_opportunites_monitor", "Monitor") }}</strong></div>
-                    </div>
-                </article>
-
-                <article class="ac-asset tilt-card">
-                    <div class="ac-asset-top">
-                        <span class="ticker">{{ t("markets_opportunites_near", "NEAR") }}</span>
-                        <span class="state watch">{{ t("markets_opportunites_watch", "WATCH") }}</span>
-                    </div>
-                    <h3>{{ t("markets_opportunites_near", "NEAR") }}</h3>
-                    <p>{{ t("markets_opportunites_veille_active_actif_secondaire_capable_de_monter_dans_la_hierarchie_sur", "Veille active. Actif secondaire capable de monter dans la hiérarchie sur confirmation.") }}</p>
-
-                    <div class="ac-meter">
-                        <div class="ac-meter-top">
-                            <span>{{ t("markets_opportunites_conviction_score", "Conviction Score") }}</span>
-                            <strong>68</strong>
-                        </div>
-                        <div class="ac-meter-bar"><span style="width:68%"></span></div>
-                    </div>
-
-                    <div class="ac-asset-grid">
-                        <div><span>{{ t("markets_opportunites_bias", "Bias") }}</span><strong>{{ t("markets_opportunites_pending", "Pending") }}</strong></div>
-                        <div><span>{{ t("markets_opportunites_tier", "Tier") }}</span><strong>B</strong></div>
-                        <div><span>{{ t("markets_opportunites_window", "Window") }}</span><strong>{{ t("markets_opportunites_standby", "Standby") }}</strong></div>
-                    </div>
-                </article>
+                {% else %}
+                <p style="color:#787b86;padding:40px 20px;text-align:center;">Loading live opportunities...</p>
+                {% endfor %}
             </div>
         </div>
     </section>

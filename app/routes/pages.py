@@ -195,7 +195,19 @@ def market_forex(lang_code=None):
 @pages_bp.route("/<lang_code>/markets/opportunities")
 def market_opportunities(lang_code=None):
     normalize_lang(lang_code)
-    return render_template("marche/opportunites.html")
+    try:
+        from app.services.opportunities_service import get_opportunities_cached
+        opportunities = get_opportunities_cached()
+    except Exception as e:
+        current_app.logger.error("Opportunities service error: %s", e)
+        opportunities = []
+
+    dominant = opportunities[0] if opportunities else None
+    return render_template(
+        "marche/opportunites.html",
+        opportunities=opportunities,
+        dominant=dominant,
+    )
 
 
 @pages_bp.route("/marches/sentiment")

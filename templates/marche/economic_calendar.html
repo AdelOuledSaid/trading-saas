@@ -59,8 +59,9 @@
     </div>
 
     {% if fallback_mode %}
-    <div class="eco-fallback-banner">
-        {{ t('macro_fallback_mode', 'Macro intelligence mode active') }}
+    <div class="eco-fallback-banner" style="background:rgba(41,98,255,0.08);border:1px solid rgba(41,98,255,0.2);border-radius:8px;padding:8px 14px;font-size:12px;color:#6b9cf4;display:flex;align-items:center;gap:8px;">
+        <span>📡</span>
+        <span>{{ t("economic_calendar_fallback_note", "Typical macro events displayed. Connect a live API for real-time data.") }}</span>
     </div>
     {% endif %}
 
@@ -177,7 +178,7 @@
         <div class="eco-table-head">
             <div>
                 <h2>{{ t('macro_event_feed', 'Macro Event Feed') }}</h2>
-                <p>{{ t('macro_event_feed_desc', 'Calendrier filtré selon ta vue active et tes critères de recherche.') }}</p>
+                <p>{{ t('macro_event_feed_desc', 'Calendar filtered according to your active view and your search criteria.') }}</p>
             </div>
         </div>
 
@@ -239,7 +240,7 @@
                     {% else %}
                     <tr>
                         <td colspan="7" class="eco-empty">
-                            {{ t('no_events_for_filters', 'Aucun événement disponible pour ces filtres.') }}
+                            {{ t('no_events_for_filters', 'No events available for these filters.') }}
                         </td>
                     </tr>
                     {% endfor %}
@@ -298,7 +299,7 @@
         </article>
         {% else %}
         <div class="eco-empty-card">
-            {{ t('no_events_for_filters', 'Aucun événement disponible pour ces filtres.') }}
+            {{ t('no_events_for_filters', 'No events available for these filters.') }}
         </div>
         {% endfor %}
     </div>
