@@ -171,14 +171,31 @@
 .l4-question { margin-bottom: 24px; }
 .l4-question h3 { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 12px; }
 .l4-question label {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 14px; border-radius: 8px; cursor: pointer;
-  font-size: 13px; color: var(--l4-text);
-  border: 1px solid var(--l4-border); margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--l4-text);
+  border: 1px solid var(--l4-border);
+  margin-bottom: 6px;
   transition: all .15s;
+  text-align: left;
 }
 .l4-question label:hover { background: var(--l4-gold-dim); border-color: var(--l4-gold-border); }
-.l4-question input[type="radio"] { accent-color: var(--l4-gold); }
+.l4-question input[type="radio"] {
+  accent-color: var(--l4-gold);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin: 0;
+}
+.l4-question label span {
+  flex: 1;
+  line-height: 1.5;
+}
 
 /* Progress */
 .l4-progress-card {
@@ -237,6 +254,20 @@
   .l4-grid { grid-template-columns: 1fr; }
   .l4-sidebar { display: none; }
   .l4-card-grid { grid-template-columns: 1fr; }
+}
+
+/* Quiz fix level4 */
+.l4-question label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  text-align: left !important;
+}
+.l4-question input[type="radio"] {
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0 !important;
+  margin: 0 !important;
 }
 </style>
 {% endblock %}
@@ -935,72 +966,72 @@
 
               <div class="l4-question">
                 <h3>1. Market regime mapping is used primarily to:</h3>
-                <label><input type="radio" name="q1" value="a"> predict every individual candle</label>
-                <label><input type="radio" name="q1" value="b"> identify the dominant forces that structure the space of credible opportunities</label>
-                <label><input type="radio" name="q1" value="c"> choose maximum leverage settings</label>
+                <label><input type="radio" name="q1" value="a"> <span>predict every individual candle</span></label>
+                <label><input type="radio" name="q1" value="b"> <span>identify the dominant forces that structure the space of credible opportunities</span></label>
+                <label><input type="radio" name="q1" value="c"> <span>choose maximum leverage settings</span></label>
               </div>
 
               <div class="l4-question">
                 <h3>2. An institutional reading of correlations aims to:</h3>
-                <label><input type="radio" name="q2" value="a"> prove that all assets are independent</label>
-                <label><input type="radio" name="q2" value="b"> detect hidden bets expressed through multiple assets simultaneously</label>
-                <label><input type="radio" name="q2" value="c"> avoid analyzing the dollar index</label>
+                <label><input type="radio" name="q2" value="a"> <span>prove that all assets are independent</span></label>
+                <label><input type="radio" name="q2" value="b"> <span>detect hidden bets expressed through multiple assets simultaneously</span></label>
+                <label><input type="radio" name="q2" value="c"> <span>avoid analyzing the dollar index</span></label>
               </div>
 
               <div class="l4-question">
                 <h3>3. Risk allocation in a desk framework means:</h3>
-                <label><input type="radio" name="q3" value="a"> mechanically distributing the same risk to every trade</label>
-                <label><input type="radio" name="q3" value="b"> ranking position sizes according to the relative quality of convictions</label>
-                <label><input type="radio" name="q3" value="c"> automatically increasing size after a winning trade</label>
+                <label><input type="radio" name="q3" value="a"> <span>mechanically distributing the same risk to every trade</span></label>
+                <label><input type="radio" name="q3" value="b"> <span>ranking position sizes according to the relative quality of convictions</span></label>
+                <label><input type="radio" name="q3" value="c"> <span>automatically increasing size after a winning trade</span></label>
               </div>
 
               <div class="l4-question">
                 <h3>4. A Tier 2 drawdown protocol (5–10% from equity peak) requires:</h3>
-                <label><input type="radio" name="q4" value="a"> immediately doubling size to recover faster</label>
-                <label><input type="radio" name="q4" value="b"> reducing position sizes by 50% and reviewing the last 10 trades</label>
-                <label><input type="radio" name="q4" value="c"> switching to a completely different strategy</label>
+                <label><input type="radio" name="q4" value="a"> <span>immediately doubling size to recover faster</span></label>
+                <label><input type="radio" name="q4" value="b"> <span>reducing position sizes by 50% and reviewing the last 10 trades</span></label>
+                <label><input type="radio" name="q4" value="c"> <span>switching to a completely different strategy</span></label>
               </div>
 
               <div class="l4-question">
                 <h3>5. In a scaling model, the "scout" position is:</h3>
-                <label><input type="radio" name="q5" value="a"> the largest position, entered at full conviction</label>
-                <label><input type="radio" name="q5" value="b"> 25–33% of planned size, entered at the structural zone before full confirmation</label>
-                <label><input type="radio" name="q5" value="c"> a safety position to hedge against adverse moves</label>
+                <label><input type="radio" name="q5" value="a"> <span>the largest position, entered at full conviction</span></label>
+                <label><input type="radio" name="q5" value="b"> <span>25–33% of planned size, entered at the structural zone before full confirmation</span></label>
+                <label><input type="radio" name="q5" value="c"> <span>a safety position to hedge against adverse moves</span></label>
               </div>
 
               <div class="l4-question">
                 <h3>6. Hidden concentration risk occurs when:</h3>
-                <label><input type="radio" name="q6" value="a"> you hold too many different currency pairs</label>
-                <label><input type="radio" name="q6" value="b"> multiple positions express the same underlying macro directional bet</label>
-                <label><input type="radio" name="q6" value="c"> you have too many winning trades simultaneously</label>
+                <label><input type="radio" name="q6" value="a"> <span>you hold too many different currency pairs</span></label>
+                <label><input type="radio" name="q6" value="b"> <span>multiple positions express the same underlying macro directional bet</span></label>
+                <label><input type="radio" name="q6" value="c"> <span>you have too many winning trades simultaneously</span></label>
               </div>
 
               <div class="l4-question">
                 <h3>7. The London-NY overlap session (13:00–16:00 UTC) is rated "Very High" quality because:</h3>
-                <label><input type="radio" name="q7" value="a"> fewer traders are active, making moves more predictable</label>
-                <label><input type="radio" name="q7" value="b"> it has the highest volume and the most reliable directional moves</label>
-                <label><input type="radio" name="q7" value="c"> economic news is never released during this window</label>
+                <label><input type="radio" name="q7" value="a"> <span>fewer traders are active, making moves more predictable</span></label>
+                <label><input type="radio" name="q7" value="b"> <span>it has the highest volume and the most reliable directional moves</span></label>
+                <label><input type="radio" name="q7" value="c"> <span>economic news is never released during this window</span></label>
               </div>
 
               <div class="l4-question">
                 <h3>8. In a high-volatility regime (VIX above 35), the correct position sizing adjustment is:</h3>
-                <label><input type="radio" name="q8" value="a"> increase size to capitalize on larger price swings</label>
-                <label><input type="radio" name="q8" value="b"> reduce size by 50–75% to maintain constant risk exposure with wider stops</label>
-                <label><input type="radio" name="q8" value="c"> keep size exactly the same and adjust stop loss only</label>
+                <label><input type="radio" name="q8" value="a"> <span>increase size to capitalize on larger price swings</span></label>
+                <label><input type="radio" name="q8" value="b"> <span>reduce size by 50–75% to maintain constant risk exposure with wider stops</span></label>
+                <label><input type="radio" name="q8" value="c"> <span>keep size exactly the same and adjust stop loss only</span></label>
               </div>
 
               <div class="l4-question">
                 <h3>9. A pro review framework measures primarily:</h3>
-                <label><input type="radio" name="q9" value="a"> only the profit or loss of the last trade</label>
-                <label><input type="radio" name="q9" value="b"> the consistency of the process and the quality of decisions across all 6 dimensions</label>
-                <label><input type="radio" name="q9" value="c"> the win rate over the past 30 days</label>
+                <label><input type="radio" name="q9" value="a"> <span>only the profit or loss of the last trade</span></label>
+                <label><input type="radio" name="q9" value="b"> <span>the consistency of the process and the quality of decisions across all 6 dimensions</span></label>
+                <label><input type="radio" name="q9" value="c"> <span>the win rate over the past 30 days</span></label>
               </div>
 
               <div class="l4-question">
                 <h3>10. Level 4 transforms a trader because it:</h3>
-                <label><input type="radio" name="q10" value="a"> teaches more entry patterns to memorize</label>
-                <label><input type="radio" name="q10" value="b"> replaces the isolated setup with a logic of system, desk, portfolio, and process continuity</label>
-                <label><input type="radio" name="q10" value="c"> eliminates all market uncertainty through advanced indicators</label>
+                <label><input type="radio" name="q10" value="a"> <span>teaches more entry patterns to memorize</span></label>
+                <label><input type="radio" name="q10" value="b"> <span>replaces the isolated setup with a logic of system, desk, portfolio, and process continuity</span></label>
+                <label><input type="radio" name="q10" value="c"> <span>eliminates all market uncertainty through advanced indicators</span></label>
               </div>
 
               <button type="button" class="academy-btn academy-btn-primary"

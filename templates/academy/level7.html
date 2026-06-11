@@ -69,6 +69,22 @@
 .lcert-final h2{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:8px;}
 .lcert-final p{color:var(--tx);font-size:14px;line-height:1.7;max-width:500px;margin:0 auto 24px;}
 @media(max-width:900px){.lgrid{grid-template-columns:1fr;}.lsidebar{display:none;}.lcards{grid-template-columns:1fr;}}
+
+/* Quiz fix — radio + text alignment */
+.lq label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 10px 14px !important;
+  text-align: left !important;
+}
+.lq input[type="radio"] {
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+  cursor: pointer;
+}
 </style>
 {% endblock %}
 

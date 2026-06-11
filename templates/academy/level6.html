@@ -65,6 +65,22 @@
 .llock p{color:var(--tx);font-size:13px;line-height:1.7;margin-bottom:20px;}
 .code{background:#0d1117;border:1px solid var(--br);border-radius:8px;padding:14px 16px;font-family:'Courier New',monospace;font-size:12px;color:#a5f3fc;margin:14px 0;overflow-x:auto;}
 @media(max-width:900px){.lgrid{grid-template-columns:1fr;}.lsidebar{display:none;}.lcards{grid-template-columns:1fr;}}
+
+/* Quiz fix — radio + text alignment */
+.lq label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 10px 14px !important;
+  text-align: left !important;
+}
+.lq input[type="radio"] {
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+  cursor: pointer;
+}
 </style>
 {% endblock %}
 
