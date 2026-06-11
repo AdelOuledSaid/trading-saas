@@ -81,15 +81,15 @@
             <div class="results-proof-right">
                 <div class="proof-card metric-glow">
                     <strong>{{ t('liquidated_longs', 'Longs liquidés') }}</strong>
-                    <span id="longsBox">{{ summary.long_value or "$0.0M" }} • {{ summary.long_count or 0 }} {{ t("markets_liquidations_evenements", "événements") }}</span>
+                    <span id="longsBox">{{ summary.long_value or "$0.0M" }} • {{ summary.long_count or 0 }} {{ t("markets_liquidations_evenements", "events") }}</span>
                 </div>
                 <div class="proof-card metric-glow blue-glow">
                     <strong>{{ t('liquidated_shorts', 'Shorts liquidés') }}</strong>
-                    <span id="shortsBox">{{ summary.short_value or "$0.0M" }} • {{ summary.short_count or 0 }} {{ t("markets_liquidations_evenements", "événements") }}</span>
+                    <span id="shortsBox">{{ summary.short_value or "$0.0M" }} • {{ summary.short_count or 0 }} {{ t("markets_liquidations_evenements", "events") }}</span>
                 </div>
                 <div class="proof-card metric-glow">
                     <strong>{{ t("markets_liquidations_high_impact", "High Impact") }}</strong>
-                    <span id="highImpactBox">{{ summary.high_impact_count or 0 }} {{ t("markets_liquidations_alertes_a_fort_impact", "alertes à fort impact") }}</span>
+                    <span id="highImpactBox">{{ summary.high_impact_count or 0 }} {{ t("markets_liquidations_alertes_a_fort_impact", "high impact alerts") }}</span>
                 </div>
             </div>
         </div>
@@ -291,7 +291,7 @@
                 {% else %}
                     <div class="proof-card">
                         <strong>{{ t("markets_liquidations_aucune_liquidation_majeure", "Aucune liquidation majeure") }}</strong>
-                        <span>{{ t("markets_liquidations_les_prochains_evenements_importants_apparaitront_ici", "Les prochains événements importants apparaîtront ici.") }}</span>
+                        <span>{{ t("markets_liquidations_les_prochains_evenements_importants_apparaitront_ici", "Next major events will appear here.") }}</span>
                     </div>
                 {% endif %}
             </div>
@@ -352,7 +352,7 @@
     <div class="section-container">
         <div class="section-title">
             <span>{{ t("markets_liquidations_filtres", "Filtres") }}</span>
-            <h2>{{ t("markets_liquidations_filtrer_les_evenements", "Filtrer les événements") }}</h2>
+            <h2>{{ t("markets_liquidations_filtrer_les_evenements", "Filtrer les events") }}</h2>
             <p>
                 {{ t("markets_liquidations_les_filtres_permettent_d_isoler_rapidement_un_actif_un_cote_du_marche_un", "Les filtres permettent d’isoler rapidement un actif, un côté du marché,                 un niveau d’impact ou un nombre d’événements plus adapté à ton analyse.") }}
             </p>
@@ -399,7 +399,7 @@
                 </div>
 
                 <div style="margin-top:22px;">
-                    <strong class="liq-block-title">{{ t("markets_liquidations_nombre_d_evenements", "Nombre d’événements") }}</strong>
+                    <strong class="liq-block-title">{{ t("markets_liquidations_nombre_d_evenements", "Nombre d’events") }}</strong>
                     <div class="liq-filters">
                         <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, side=active_filters.side, impact=active_filters.impact, limit=6) }}"
                            class="filter-chip {% if active_filters.limit == 6 %}active{% endif %}">6</a>
@@ -477,7 +477,7 @@
                     {% else %}
                         <tr>
                             <td colspan="10" class="empty-live-row">
-                                {{ t('no_live_event_now', 'Aucun événement live pour le moment.') }}
+                                {{ t('no_live_event_now', 'No live events at the moment.') }}
                             </td>
                         </tr>
                     {% endif %}
@@ -670,15 +670,15 @@ document.addEventListener("DOMContentLoaded", function () {
         if (miniBias) miniBias.textContent = summary.dominant_bias || "Neutral";
 
         if (longsBox) {
-            longsBox.textContent = `${summary.long_value || "$0.0M"} • ${summary.long_count || 0} événements`;
+            longsBox.textContent = `${summary.long_value || "$0.0M"} • ${summary.long_count || 0} events`;
         }
 
         if (shortsBox) {
-            shortsBox.textContent = `${summary.short_value || "$0.0M"} • ${summary.short_count || 0} événements`;
+            shortsBox.textContent = `${summary.short_value || "$0.0M"} • ${summary.short_count || 0} events`;
         }
 
         if (highImpactBox) {
-            highImpactBox.textContent = `${summary.high_impact_count || 0} alertes à fort impact`;
+            highImpactBox.textContent = `${summary.high_impact_count || 0} high impact alerts`;
         }
 
         if (ratioText) {
@@ -744,7 +744,7 @@ document.addEventListener("DOMContentLoaded", function () {
             tbody.innerHTML = `
                 <tr>
                     <td colspan="10" class="empty-live-row">
-                        {{ t('no_live_event_now', 'Aucun événement live pour le moment.') }}
+                        {{ t('no_live_event_now', 'No live events at the moment.') }}
                     </td>
                 </tr>
             `;
@@ -775,7 +775,7 @@ document.addEventListener("DOMContentLoaded", function () {
             box.innerHTML = `
                 <div class="proof-card">
                     <strong>Aucune liquidation majeure</strong>
-                    <span>Les prochains événements importants apparaîtront ici.</span>
+                    <span>Next major events will appear here.</span>
                 </div>
             `;
             return;
