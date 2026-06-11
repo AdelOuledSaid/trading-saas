@@ -258,9 +258,61 @@ def mini_course(signal_id, lang_code=None):
 
     signal = Signal.query.get_or_404(signal_id)
 
+    rr = None
+    if signal.entry_price and signal.stop_loss and signal.take_profit:
+        risk   = abs(signal.entry_price - signal.stop_loss)
+        reward = abs(signal.take_profit - signal.entry_price)
+        rr = f"{reward/risk:.1f}" if risk > 0 else "-"
+
+    asset  = signal.asset or "N/A"
+    action = signal.action or "N/A"
+    trend  = signal.market_trend or "-"
+    reason = signal.reason or "No additional context provided for this trade."
+
+    data = {
+        "rr": rr or "-",
+        "ai_summary": (
+            f"{asset} {action} setup with {signal.confidence or 0:.0f}% confidence. "
+            f"Entry at {signal.entry_price}, SL at {signal.stop_loss}, TP at {signal.take_profit}. "
+            f"Market trend: {trend}."
+        ),
+        "reason": reason,
+        "objective": (
+            f"Target: {signal.take_profit} — R:R {rr or '-'}. "
+            "Take profit at the defined structural level."
+        ),
+        "invalidation": (
+            f"Stop loss at {signal.stop_loss}. "
+            "Thesis invalidated if price closes beyond the stop level."
+        ),
+        "execution_plan": (
+            f"Enter {action} on {signal.timeframe or 'N/A'} timeframe. "
+            "Wait for candle confirmation before entry. "
+            "Set stop loss immediately. Do not move SL against the position."
+        ),
+        "strengths": [
+            f"Confidence score: {signal.confidence or 0:.0f}%",
+            f"Clear entry at {signal.entry_price}",
+            f"Defined risk: SL at {signal.stop_loss}",
+            f"R:R ratio: {rr or '-'}",
+        ],
+        "risks": [
+            "Market can reverse before reaching the target",
+            "Low liquidity periods can cause slippage",
+            f"Trend ({trend}) can shift unexpectedly",
+            "News events can invalidate technical setups",
+        ],
+        "mistake_to_avoid": (
+            "Do not move your stop loss to avoid a loss. "
+            "Do not add to a losing position. "
+            "Exit at your predefined stop if the thesis is invalidated."
+        ),
+    }
+
     return render_template(
         "learn/mini_course.html",
         signal=signal,
+        data=data,
         current_lang=normalize_lang(lang_code)
     )
 
