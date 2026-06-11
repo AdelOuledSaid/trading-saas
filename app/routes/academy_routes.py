@@ -17,6 +17,10 @@ def get_user_plan():
         return "free"
 
 
+def is_basic():
+    return get_user_plan() in ["basic", "premium", "vip"]
+
+
 def is_premium():
     return get_user_plan() in ["premium", "vip"]
 
@@ -26,7 +30,7 @@ def is_vip():
 
 
 def has_academy_plus():
-    return get_user_plan() in ["premium", "vip"]
+    return get_user_plan() in ["basic", "premium", "vip"]
 
 
 def academy_progress():
@@ -49,6 +53,7 @@ def update_progress(progress):
 def academy_context():
     return {
         "user_plan": get_user_plan(),
+        "is_basic": is_basic(),
         "is_premium": is_premium(),
         "is_vip": is_vip(),
         "has_academy_plus": has_academy_plus(),
@@ -81,8 +86,8 @@ def academy_level_1():
 
 @academy_bp.route("/academy/level-2")
 def academy_level_2():
-    if not is_premium():
-        flash("Le niveau 2 est reserve aux plans Premium et VIP.", "warning")
+    if not is_basic():
+        flash("Level 2 requires a Basic, Premium or VIP plan.", "warning")
         return redirect(url_for("academy.academy_upgrade"))
 
     return render_template("academy/level2.html", **academy_context())
@@ -94,8 +99,8 @@ def academy_level_2():
 
 @academy_bp.route("/academy/level-3")
 def academy_level_3():
-    if not is_premium():
-        flash("Le niveau 3 est reserve aux plans Premium et VIP.", "warning")
+    if not is_basic():
+        flash("Level 3 requires a Basic, Premium or VIP plan.", "warning")
         return redirect(url_for("academy.academy_upgrade"))
 
     return render_template("academy/level3.html", **academy_context())
@@ -107,8 +112,8 @@ def academy_level_3():
 
 @academy_bp.route("/academy/level-4")
 def academy_level_4():
-    if not is_vip():
-        flash("Le niveau 4 Pro est reserve au plan VIP.", "warning")
+    if not is_premium():
+        flash("Level 4 requires a Premium or VIP plan.", "warning")
         return redirect(url_for("academy.academy_upgrade"))
 
     return render_template("academy/level4.html", **academy_context())
@@ -121,21 +126,30 @@ def academy_level_4():
 @login_required
 def academy_level_5(lang_code=None):
     normalize_lang(lang_code)
-    return render_template("academy/level5.html")
+    if not is_premium():
+        flash("Level 5 requires a Premium or VIP plan.", "warning")
+        return redirect(url_for("academy.academy_upgrade"))
+    return render_template("academy/level5.html", **academy_context())
 
 @academy_bp.route("/academy/level-6")
 @academy_bp.route("/<lang_code>/academy/level-6")
 @login_required
 def academy_level_6(lang_code=None):
     normalize_lang(lang_code)
-    return render_template("academy/level6.html")
+    if not is_vip():
+        flash("Level 6 requires a VIP plan.", "warning")
+        return redirect(url_for("academy.academy_upgrade"))
+    return render_template("academy/level6.html", **academy_context())
 
 @academy_bp.route("/academy/level-7")
 @academy_bp.route("/<lang_code>/academy/level-7")
 @login_required
 def academy_level_7(lang_code=None):
     normalize_lang(lang_code)
-    return render_template("academy/level7.html")
+    if not is_vip():
+        flash("Level 7 requires a VIP plan.", "warning")
+        return redirect(url_for("academy.academy_upgrade"))
+    return render_template("academy/level7.html", **academy_context())
 # =========================================================
 # UPGRADE
 # =========================================================
@@ -159,31 +173,50 @@ def academy_complete_level(level):
         progress["level2"] = max(progress.get("level2", 0), 10)
 
     elif level == "level2":
-        if not is_premium():
-            flash("Le niveau 2 est reserve aux plans Premium et VIP.", "warning")
+        if not is_basic():
+            flash("Level 2 requires a Basic plan or above.", "warning")
             return redirect(url_for("academy.academy_upgrade"))
 
         progress["level2"] = 100
         progress["level3"] = max(progress.get("level3", 0), 10)
 
     elif level == "level3":
-        if not is_premium():
-            flash("Le niveau 3 est reserve aux plans Premium et VIP.", "warning")
+        if not is_basic():
+            flash("Level 3 requires a Basic plan or above.", "warning")
             return redirect(url_for("academy.academy_upgrade"))
 
         progress["level3"] = 100
         progress["level4"] = max(progress.get("level4", 0), 10)
 
     elif level == "level4":
-        if not is_vip():
-            flash("Le niveau 4 Pro est reserve au plan VIP.", "warning")
+        if not is_premium():
+            flash("Level 4 requires a Premium or VIP plan.", "warning")
             return redirect(url_for("academy.academy_upgrade"))
 
         progress["level4"] = 100
         progress["certificate_ready"] = True
 
+    elif level == "level5":
+        if not is_premium():
+            flash("Level 5 requires a Premium or VIP plan.", "warning")
+            return redirect(url_for("academy.academy_upgrade"))
+        progress["level5"] = 100
+
+    elif level == "level6":
+        if not is_vip():
+            flash("Level 6 requires a VIP plan.", "warning")
+            return redirect(url_for("academy.academy_upgrade"))
+        progress["level6"] = 100
+
+    elif level == "level7":
+        if not is_vip():
+            flash("Level 7 requires a VIP plan.", "warning")
+            return redirect(url_for("academy.academy_upgrade"))
+        progress["level7"] = 100
+        progress["master_certificate"] = True
+
     else:
-        flash("Niveau invalide.", "danger")
+        flash("Invalid level.", "danger")
         return redirect(url_for("academy.academy_index"))
 
     update_progress(progress)
