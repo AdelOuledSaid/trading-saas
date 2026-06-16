@@ -1,0 +1,619 @@
+{% extends "base.html" %}
+{% block title %}Elon Market Radar — SpaceX / Tesla / DOGE | VelWolef{% endblock %}
+
+{% block extra_css %}
+<style>
+:root{
+  --er:#1da1f2;--erd:rgba(29,161,242,.1);--erb:rgba(29,161,242,.22);
+  --bg:#060810;--s:#0d1117;--s2:#111520;--br:rgba(255,255,255,.06);
+  --tx:#c8d0e0;--mu:#4b5563;
+  --gr:#22c55e;--re:#ef4444;--am:#f59e0b;--pu:#8b5cf6;--go:#d4a843;
+}
+*{box-sizing:border-box;}
+.er-page{min-height:100vh;background:var(--bg);color:var(--tx);}
+.er-shell{max-width:1200px;margin:0 auto;padding:0 20px;}
+
+/* HERO */
+.er-hero{
+  background:linear-gradient(160deg,#060810 0%,#070c1c 50%,#060810 100%);
+  border-bottom:1px solid var(--erb);padding:52px 0 44px;
+  position:relative;overflow:hidden;
+}
+.er-hero::before{content:'🚀';font-size:320px;position:absolute;right:-60px;top:-80px;opacity:.03;pointer-events:none;line-height:1;}
+.er-badge-row{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.er-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+.er-badge.blue{background:var(--erd);border:1px solid var(--erb);color:#38bdf8;}
+.er-badge.live{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#4ade80;}
+.er-badge.live::before{content:'';width:6px;height:6px;border-radius:50%;background:#22c55e;animation:blink 1.4s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.er-hero h1{font-size:clamp(2rem,4.5vw,3.4rem);font-weight:900;color:#fff;margin-bottom:12px;line-height:1.07;letter-spacing:-.02em;}
+.er-hero h1 span{color:var(--er);}
+.er-hero-desc{font-size:1rem;color:var(--tx);line-height:1.75;max-width:640px;margin-bottom:28px;}
+.er-hero-grid{display:grid;grid-template-columns:1fr 380px;gap:40px;align-items:center;}
+.er-hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.05);border-radius:14px;overflow:hidden;border:1px solid var(--erb);margin-top:32px;}
+.er-hstat{background:var(--s);padding:16px 18px;}
+.er-hstat span{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:5px;}
+.er-hstat strong{font-size:1.3rem;font-weight:800;display:block;line-height:1;}
+.er-hstat small{font-size:11px;color:var(--mu);margin-top:3px;display:block;}
+
+/* IMPACT RING */
+.er-ring{width:160px;height:160px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;position:relative;}
+.er-ring::before{content:'';position:absolute;inset:0;border-radius:50%;background:conic-gradient(#1da1f2 0% 72%,rgba(255,255,255,.05) 72% 100%);}
+.er-ring-inner{width:124px;height:124px;border-radius:50%;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:1;}
+.er-ring-inner .num{font-size:1.8rem;font-weight:900;color:#fff;}
+.er-ring-inner .lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#38bdf8;}
+.er-asset-bars{display:flex;flex-direction:column;gap:7px;margin-top:14px;}
+.er-asset-bar{display:flex;align-items:center;gap:8px;font-size:12px;}
+.er-asset-bar .name{width:40px;font-weight:700;color:#fff;}
+.er-asset-bar .track{flex:1;height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;}
+.er-asset-bar .fill{height:100%;border-radius:2px;}
+.er-asset-bar .pct{width:36px;text-align:right;font-weight:700;}
+
+/* MAIN GRID */
+.er-grid{display:grid;grid-template-columns:1fr 320px;gap:20px;padding:28px 0;}
+.er-left{display:flex;flex-direction:column;gap:24px;}
+.er-right{display:flex;flex-direction:column;gap:14px;}
+
+/* CARDS */
+.er-card{background:var(--s);border:1px solid var(--br);border-radius:16px;padding:22px;}
+.er-label{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:10px;}
+.er-sec-label{font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--er);margin-bottom:5px;display:block;}
+.er-sec-title{font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:5px;}
+.er-sec-sub{font-size:13px;color:var(--mu);line-height:1.6;margin-bottom:18px;}
+
+/* ── PREMIUM ALERT BANNER ── */
+.er-alert-banner{
+  background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(239,68,68,.03));
+  border:1px solid rgba(239,68,68,.25);border-radius:12px;
+  padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:18px;
+}
+.er-alert-dot{
+  width:10px;height:10px;border-radius:50%;background:#ef4444;
+  animation:blink 1s infinite;flex-shrink:0;
+}
+.er-alert-text{flex:1;font-size:13px;color:#fff;font-weight:600;}
+.er-alert-text span{color:#f87171;}
+.er-alert-time{font-size:11px;color:var(--mu);flex-shrink:0;}
+
+/* NEWS FEED */
+.er-news-feed{display:flex;flex-direction:column;gap:12px;}
+.er-news-item{display:flex;gap:14px;padding:14px 16px;background:rgba(255,255,255,.03);border:1px solid var(--br);border-radius:12px;transition:border-color .15s;}
+.er-news-item:hover{border-color:var(--erb);}
+.er-news-item.high{border-left:3px solid var(--re);}
+.er-news-item.medium{border-left:3px solid var(--go);}
+.er-news-item.low{border-left:3px solid var(--br);}
+.er-news-icon{font-size:22px;flex-shrink:0;margin-top:2px;}
+.er-news-body{flex:1;}
+.er-news-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;line-height:1.4;}
+.er-news-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.er-news-source{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#38bdf8;}
+.er-news-time{font-size:10px;color:var(--mu);}
+.er-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.er-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;text-transform:uppercase;}
+.tag-spacex{background:rgba(255,255,255,.08);color:#e2e8f0;}
+.tag-tesla{background:rgba(239,68,68,.1);color:#f87171;}
+.tag-doge{background:rgba(251,191,36,.1);color:#fbbf24;}
+.tag-btc{background:rgba(247,147,26,.1);color:#fb923c;}
+.tag-crypto{background:rgba(139,92,246,.1);color:#a78bfa;}
+.tag-high{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.tag-medium{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.tag-low{background:rgba(255,255,255,.05);color:var(--mu);border:1px solid var(--br);}
+
+/* ── PROBABILITY SCORE (PREMIUM) ── */
+.er-prob-card{
+  background:linear-gradient(135deg,rgba(29,161,242,.05),rgba(139,92,246,.04));
+  border:1px solid var(--erb);border-radius:12px;padding:14px 16px;margin-top:10px;
+}
+.er-prob-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.er-prob-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#38bdf8;}
+.er-prob-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.2);color:var(--go);}
+.er-prob-assets{display:flex;flex-direction:column;gap:6px;}
+.er-prob-row{display:flex;align-items:center;gap:10px;}
+.er-prob-asset{font-size:12px;font-weight:700;color:#fff;width:44px;flex-shrink:0;}
+.er-prob-bar-wrap{flex:1;}
+.er-prob-track{height:6px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;}
+.er-prob-fill{height:100%;border-radius:3px;transition:width .5s;}
+.er-prob-fill.high{background:linear-gradient(90deg,#22c55e,#4ade80);}
+.er-prob-fill.medium{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
+.er-prob-fill.low{background:linear-gradient(90deg,#ef4444,#f87171);}
+.er-prob-pct{font-size:12px;font-weight:800;width:36px;text-align:right;flex-shrink:0;}
+.er-prob-horizon{font-size:10px;color:var(--mu);margin-top:2px;}
+
+/* ── EXECUTION SIGNAL (VIP) ── */
+.er-signal-card{
+  background:linear-gradient(135deg,rgba(34,197,94,.05),rgba(59,130,246,.04));
+  border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:14px 16px;margin-top:10px;
+}
+.er-signal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.er-signal-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#4ade80;}
+.er-signal-dir{
+  display:flex;align-items:center;gap:6px;
+  padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;
+}
+.er-signal-dir.long{background:rgba(34,197,94,.15);color:#4ade80;border:1px solid rgba(34,197,94,.25);}
+.er-signal-dir.short{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.er-signal-dir.wait{background:rgba(255,255,255,.05);color:var(--mu);border:1px solid var(--br);}
+.er-signal-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;}
+.er-signal-cell{background:rgba(255,255,255,.04);border-radius:7px;padding:8px;text-align:center;}
+.er-signal-cell span{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--mu);display:block;margin-bottom:2px;}
+.er-signal-cell strong{font-size:12px;font-weight:700;}
+.er-signal-note{margin-top:8px;font-size:11px;color:var(--mu);line-height:1.5;padding:7px 10px;background:rgba(255,255,255,.03);border-radius:6px;}
+
+/* LOCK */
+.er-lock-wrap{position:relative;border-radius:12px;overflow:hidden;}
+.er-blur{filter:blur(5px);pointer-events:none;user-select:none;}
+.er-lock-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(6,8,16,.3),rgba(6,8,16,.94));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:20px;border-radius:12px;
+}
+.er-lock-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:8px;font-size:12px;font-weight:800;text-decoration:none;transition:all .18s;margin-top:4px;}
+.er-lock-btn.gold{background:var(--go);color:#000;}
+.er-lock-btn.gold:hover{background:#e6b84a;transform:translateY(-2px);}
+.er-lock-btn.vip{background:var(--pu);color:#fff;}
+.er-lock-btn.vip:hover{background:#7c3aed;}
+
+/* CORRELATION */
+.er-corr-list{display:flex;flex-direction:column;gap:8px;}
+.er-corr-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(255,255,255,.03);border-radius:8px;}
+.er-corr-asset{font-size:12px;font-weight:800;color:#fff;width:44px;flex-shrink:0;}
+.er-corr-wrap{flex:1;}
+.er-corr-lbl{font-size:10px;color:var(--mu);margin-bottom:3px;display:block;}
+.er-corr-track{height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;}
+.er-corr-fill{height:100%;border-radius:2px;}
+.er-corr-fill.pos{background:linear-gradient(90deg,#22c55e,#4ade80);}
+.er-corr-fill.neg{background:linear-gradient(90deg,#ef4444,#f87171);}
+.er-corr-pct{font-size:12px;font-weight:700;width:38px;text-align:right;flex-shrink:0;}
+
+/* EVENTS */
+.er-events{display:flex;flex-direction:column;gap:9px;}
+.er-event{display:flex;gap:10px;padding:11px 13px;background:rgba(255,255,255,.03);border:1px solid var(--br);border-radius:10px;position:relative;overflow:hidden;}
+.er-event::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+.er-event.launch::before{background:var(--er);}
+.er-event.contract::before{background:var(--go);}
+.er-event.announce::before{background:var(--pu);}
+.er-event.earnings::before{background:var(--gr);}
+.er-event-icon{font-size:18px;flex-shrink:0;margin-top:2px;}
+.er-event-title{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
+.er-event-date{font-size:10px;color:var(--mu);margin-bottom:4px;}
+.er-event-effect{font-size:11px;color:var(--tx);}
+.er-event-effect strong{color:var(--gr);}
+.er-countdown{font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;background:var(--erd);border:1px solid var(--erb);color:#38bdf8;white-space:nowrap;flex-shrink:0;align-self:flex-start;margin-top:2px;}
+
+/* SENTIMENT */
+.er-sent-bar{height:8px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden;margin:8px 0;}
+.er-sent-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e);}
+.er-sent-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:rgba(255,255,255,.03);border-radius:7px;font-size:12px;margin-top:5px;}
+.er-sent-row span{color:var(--mu);}
+.er-sent-row strong{color:#fff;}
+
+/* PUSH ALERT BADGE (VIP) */
+.er-vip-alert-card{
+  background:linear-gradient(135deg,rgba(139,92,246,.08),rgba(239,68,68,.05));
+  border:1px solid rgba(139,92,246,.25);border-radius:14px;padding:20px;
+}
+.er-vip-alert-demo{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 14px;background:rgba(255,255,255,.06);
+  border:1px solid rgba(139,92,246,.2);border-radius:10px;margin-top:12px;
+}
+.er-vip-alert-icon{font-size:22px;flex-shrink:0;}
+.er-vip-alert-body strong{font-size:13px;color:#fff;display:block;margin-bottom:3px;}
+.er-vip-alert-body p{font-size:11px;color:var(--mu);margin:0;line-height:1.5;}
+.er-vip-alert-time{font-size:10px;color:var(--mu);margin-top:4px;display:block;}
+.er-vip-notif{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);
+  border-radius:7px;margin-top:10px;font-size:11px;color:#c4b5fd;
+}
+.er-vip-notif::before{content:'🔔';font-size:14px;}
+
+/* DISCLAIMER */
+.er-disclaimer{padding:12px 16px;background:rgba(255,255,255,.03);border:1px solid var(--br);border-radius:10px;font-size:11px;color:var(--mu);line-height:1.6;}
+
+@media(max-width:900px){
+  .er-hero-grid{grid-template-columns:1fr;}
+  .er-hero-stats{grid-template-columns:repeat(2,1fr);}
+  .er-grid{grid-template-columns:1fr;}
+}
+</style>
+{% endblock %}
+
+{% block content %}
+{% set is_prem = user_plan in ['premium','vip'] if user_plan is defined else false %}
+{% set is_vip  = user_plan == 'vip' if user_plan is defined else false %}
+
+<div class="er-page">
+
+  <!-- ── HERO ── -->
+  <section class="er-hero">
+    <div class="er-shell">
+      <div class="er-hero-grid">
+        <div>
+          <div class="er-badge-row">
+            <span class="er-badge blue">🚀 Elon Market Radar</span>
+            <span class="er-badge live">LIVE — {{ last_updated | default("updating...") }}</span>
+          </div>
+          <h1>When Elon acts,<br><span>markets move first.</span></h1>
+          <p class="er-hero-desc">
+            Every SpaceX launch, Tesla announcement and DOGE mention has a measurable, repeatable market impact. This radar tracks them in real time, computes the probability of a move, and — for VIP members — delivers an execution signal with entry, SL and TP before the crowd reacts.
+          </p>
+          <div class="er-hero-stats">
+            <div class="er-hstat">
+              <span>Avg DOGE spike</span>
+              <strong style="color:#fbbf24;">{{ doge_change | default("+18.4%") }}</strong>
+              <small>DOGE 24H — live Binance</small>
+            </div>
+            <div class="er-hstat">
+              <span>Avg BTC follow</span>
+              <strong style="color:#fb923c;">{{ btc_change | default("+4.2%") }}</strong>
+              <small>BTC 24H — live Binance</small>
+            </div>
+            <div class="er-hstat">
+              <span>TSLA correlation</span>
+              <strong style="color:#60a5fa;">0.71</strong>
+              <small>With crypto risk-on</small>
+            </div>
+            <div class="er-hstat">
+              <span>Next catalyst</span>
+              <strong style="color:#4ade80;font-size:1rem;">Starship</strong>
+              <small>Watch DOGE / BTC</small>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center;">
+          <div class="er-ring">
+            <div class="er-ring-inner">
+              <span class="num">{{ impact_score | default(72) }}</span>
+              <span class="lbl">Elon Score</span>
+            </div>
+          </div>
+          <p style="font-size:11px;color:var(--mu);margin:8px 0 12px;">Current influence level</p>
+          <div class="er-asset-bars">
+            {% for n,c,w in [("DOGE","#fbbf24","88"),("TSLA","#60a5fa","74"),("BTC","#fb923c","61"),("XRP","#a78bfa","43")] %}
+            <div class="er-asset-bar">
+              <span class="name">{{ n }}</span>
+              <div class="track"><div class="fill" style="width:{{ w }}%;background:{{ c }};"></div></div>
+              <span class="pct" style="color:{{ c }};">{{ w }}%</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MAIN ── -->
+  <div class="er-shell">
+    <div class="er-grid">
+
+      <!-- LEFT -->
+      <div class="er-left">
+
+        <!-- ── VIP PUSH ALERT SECTION ── -->
+        <div>
+          <span class="er-sec-label">VIP Exclusive</span>
+          <h2 class="er-sec-title">Instant push alerts — before the crowd</h2>
+          <p class="er-sec-sub">The moment an Elon event is detected, VIP members receive a push notification + Telegram alert with the computed probability score and execution signal — typically 3–8 minutes before it hits mainstream crypto news.</p>
+
+          {% if is_vip %}
+          <div class="er-vip-alert-card">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+              <h3 style="font-size:.95rem;font-weight:700;color:#fff;">Push alerts — active</h3>
+              <span style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#4ade80;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;">VIP ACTIVE</span>
+            </div>
+            <p style="font-size:12px;color:var(--mu);margin-bottom:0;">Your VIP account is configured to receive instant Elon alerts on Telegram and in-app.</p>
+            <div class="er-vip-alert-demo">
+              <div class="er-vip-alert-icon">🔔</div>
+              <div class="er-vip-alert-body">
+                <strong>⚡ ELON ALERT — SpaceX Starship launch confirmed</strong>
+                <p>DOGE move probability: 78% bullish in 4H · Signal generated: LONG DOGE · Entry: $0.142 · SL: $0.131 · TP1: $0.158 · TP2: $0.174</p>
+                <span class="er-vip-alert-time">Sent 2min ago — before it hit CoinDesk</span>
+              </div>
+            </div>
+            <div class="er-vip-notif">Your Telegram is linked — alerts active. You will be notified first.</div>
+          </div>
+
+          {% else %}
+          <div class="er-lock-wrap">
+            <div class="er-blur">
+              <div class="er-vip-alert-card">
+                <div class="er-vip-alert-demo">
+                  <div class="er-vip-alert-icon">🔔</div>
+                  <div class="er-vip-alert-body">
+                    <strong>⚡ ELON ALERT — SpaceX launch confirmed</strong>
+                    <p>DOGE move probability: 78% · Signal: LONG · Entry: xxx · SL: xxx · TP1: xxx</p>
+                    <span class="er-vip-alert-time">Sent 2min ago</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="er-lock-overlay">
+              <div style="font-size:36px;margin-bottom:10px;">🔔</div>
+              <div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:8px;">Instant Push Alerts — VIP Only</div>
+              <div style="font-size:12px;color:var(--tx);line-height:1.65;max-width:380px;margin-bottom:16px;">The moment an Elon event is detected, you receive a Telegram + in-app push alert with the full probability score and execution signal — before it hits mainstream news.</div>
+              <div style="display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:16px;">
+                <span style="padding:3px 10px;border-radius:4px;font-size:11px;background:rgba(255,255,255,.05);border:1px solid var(--br);color:var(--tx);">Telegram alert</span>
+                <span style="padding:3px 10px;border-radius:4px;font-size:11px;background:rgba(255,255,255,.05);border:1px solid var(--br);color:var(--tx);">In-app notification</span>
+                <span style="padding:3px 10px;border-radius:4px;font-size:11px;background:rgba(255,255,255,.05);border:1px solid var(--br);color:var(--tx);">3–8 min before news</span>
+                <span style="padding:3px 10px;border-radius:4px;font-size:11px;background:rgba(255,255,255,.05);border:1px solid var(--br);color:var(--tx);">Execution signal included</span>
+              </div>
+              <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="er-lock-btn vip">Unlock VIP — Get Alerts →</a>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- ── NEWS FEED with PROBABILITY + SIGNAL ── -->
+        <div>
+          <span class="er-sec-label">Live Intelligence</span>
+          <h2 class="er-sec-title">SpaceX / Elon events — real-time feed</h2>
+          <p class="er-sec-sub">Each event shows the historical impact pattern. Premium members see the probability score. VIP members see the full execution signal.</p>
+
+          <!-- Active alert -->
+          {% if is_prem %}
+          <div class="er-alert-banner">
+            <div class="er-alert-dot"></div>
+            <div class="er-alert-text">🚀 <span>Active event detected:</span> SpaceX Starship Flight 9 launch window confirmed by FAA — DOGE probability score computing...</div>
+            <span class="er-alert-time">2h ago</span>
+          </div>
+          {% endif %}
+
+          <div class="er-card">
+            <span class="er-label">Latest events</span>
+            <div class="er-news-feed">
+
+              {% for n in news %}
+              <div class="er-news-item {{ n.level }}">
+                <div class="er-news-icon">{{ n.icon | default("📊") }}</div>
+                <div class="er-news-body">
+                  <div class="er-news-title">{{ n.title | default("") }}</div>
+                  <div class="er-news-meta">
+                    <span class="er-news-source">{{ n.source | default("") }}</span>
+                    <span class="er-news-time">{{ n.time | default("") }}</span>
+                    <span class="er-tag tag-{{ n.impact_label.split(' ')[0]|lower }}">{{ n.impact_label }}</span>
+                  </div>
+                  <div class="er-tags">
+                    {% for t in n.tags | default([]) %}
+                    <span class="er-tag tag-{{ t }}">{{ t|upper }}</span>
+                    {% endfor %}
+                  </div>
+                  <div style="font-size:12px;color:var(--mu);line-height:1.5;padding:7px 10px;background:rgba(255,255,255,.03);border-radius:6px;margin-bottom:8px;">
+                    <strong style="color:#38bdf8;">Historical:</strong> {{ n.historical }}
+                  </div>
+
+                  <!-- PROBABILITY SCORE (PREMIUM) -->
+                  {% if is_prem %}
+                  <div class="er-prob-card">
+                    <div class="er-prob-header">
+                      <span class="er-prob-title">📊 Move probability score</span>
+                      <span class="er-prob-badge">Premium</span>
+                    </div>
+                    <div class="er-prob-assets">
+                      <div class="er-prob-row">
+                        <span class="er-prob-asset">DOGE</span>
+                        <div class="er-prob-bar-wrap">
+                          <div class="er-prob-track">
+                            <div class="er-prob-fill {{ n.prob.doge_dir | default("low") }}" style="width:{{ n.prob.doge | default(0) }}%"></div>
+                          </div>
+                          <span class="er-prob-horizon">Bullish move in 4H — based on {{ n.source | default("") }} historical pattern</span>
+                        </div>
+                        <span class="er-prob-pct" style="color:{% if n.prob_doge >= 65 %}#4ade80{% elif n.prob_doge >= 45 %}#fbbf24{% else %}#f87171{% endif %};">{{ n.prob.doge | default(0) }}%</span>
+                      </div>
+                      <div class="er-prob-row">
+                        <span class="er-prob-asset">BTC</span>
+                        <div class="er-prob-bar-wrap">
+                          <div class="er-prob-track">
+                            <div class="er-prob-fill {{ n.prob.btc_dir | default("low") }}" style="width:{{ n.prob.btc | default(0) }}%"></div>
+                          </div>
+                          <span class="er-prob-horizon">Risk-on follow — indirect correlation</span>
+                        </div>
+                        <span class="er-prob-pct" style="color:{% if n.prob_btc >= 65 %}#4ade80{% elif n.prob_btc >= 45 %}#fbbf24{% else %}#f87171{% endif %};">{{ n.prob.btc | default(0) }}%</span>
+                      </div>
+                    </div>
+                  </div>
+                  {% else %}
+                  <div class="er-lock-wrap" style="margin-top:0;">
+                    <div class="er-blur">
+                      <div class="er-prob-card">
+                        <div class="er-prob-assets">
+                          <div class="er-prob-row"><span class="er-prob-asset">DOGE</span><div class="er-prob-bar-wrap"><div class="er-prob-track"><div class="er-prob-fill high" style="width:78%"></div></div></div><span class="er-prob-pct" style="color:#4ade80;">78%</span></div>
+                          <div class="er-prob-row"><span class="er-prob-asset">BTC</span><div class="er-prob-bar-wrap"><div class="er-prob-track"><div class="er-prob-fill medium" style="width:52%"></div></div></div><span class="er-prob-pct" style="color:#fbbf24;">52%</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="er-lock-overlay" style="padding:14px;">
+                      <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:6px;">📊 Probability Score — Premium</div>
+                      <div style="font-size:11px;color:var(--mu);margin-bottom:10px;">78% chance DOGE moves bullish in 4H</div>
+                      <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="er-lock-btn gold" style="padding:8px 16px;font-size:11px;">Unlock Premium →</a>
+                    </div>
+                  </div>
+                  {% endif %}
+
+                  <!-- EXECUTION SIGNAL (VIP) -->
+                  {% if is_vip %}
+                  <div class="er-signal-card">
+                    <div class="er-signal-header">
+                      <span class="er-signal-title">⚡ Execution signal</span>
+                      <span class="er-signal-dir {{ n.sig_dir|lower }}">{{ n.signal.direction | default("WAIT") }} {{ n.signal.asset | default("DOGE") }}</span>
+                    </div>
+                    {% if n.signal.direction | default('WAIT') != 'WAIT' %}
+                    <div class="er-signal-grid">
+                      <div class="er-signal-cell"><span>Entry</span><strong style="color:#60a5fa;">{{ n.signal.entry | default("—") }}</strong></div>
+                      <div class="er-signal-cell"><span>R:R</span><strong style="color:var(--go);">{{ n.signal.rr | default("—") }}</strong></div>
+                      <div class="er-signal-cell"><span>Stop Loss</span><strong style="color:#f87171;">{{ n.signal.sl | default("—") }}</strong></div>
+                      <div class="er-signal-cell"><span>TP1</span><strong style="color:#4ade80;">{{ n.signal.tp1 | default("—") }}</strong></div>
+                      <div class="er-signal-cell" style="grid-column:span 2;"><span>TP2 (runner)</span><strong style="color:#4ade80;">{{ n.signal.tp2 | default("—") }}</strong></div>
+                    </div>
+                    {% else %}
+                    <div style="text-align:center;padding:12px;color:var(--mu);font-size:13px;">⏳ No setup triggered yet — monitor for confirmation</div>
+                    {% endif %}
+                    <div class="er-signal-note">{{ n.signal.note | default("") }}</div>
+                  </div>
+                  {% elif is_prem %}
+                  <div class="er-lock-wrap" style="margin-top:8px;">
+                    <div class="er-blur">
+                      <div class="er-signal-card">
+                        <div class="er-signal-grid">
+                          <div class="er-signal-cell"><span>Entry</span><strong style="color:#60a5fa;">$x.xxx</strong></div>
+                          <div class="er-signal-cell"><span>R:R</span><strong style="color:var(--go);">1:2.4</strong></div>
+                          <div class="er-signal-cell"><span>Stop Loss</span><strong style="color:#f87171;">$x.xxx</strong></div>
+                          <div class="er-signal-cell"><span>TP1</span><strong style="color:#4ade80;">$x.xxx</strong></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="er-lock-overlay" style="padding:14px;">
+                      <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:6px;">⚡ Execution Signal — VIP Only</div>
+                      <div style="font-size:11px;color:var(--mu);margin-bottom:10px;">Entry, SL, TP1, TP2 + R:R ratio</div>
+                      <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="er-lock-btn vip" style="padding:8px 16px;font-size:11px;">Upgrade to VIP →</a>
+                    </div>
+                  </div>
+                  {% else %}
+                  <div style="margin-top:8px;padding:10px 14px;background:rgba(255,255,255,.03);border:1px solid var(--br);border-radius:8px;font-size:11px;color:var(--mu);text-align:center;">
+                    🔒 Probability score & execution signal — <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="color:var(--go);font-weight:700;">Premium / VIP</a>
+                  </div>
+                  {% endif %}
+
+                </div>
+              </div>
+              {% endfor %}
+
+            </div>
+          </div>
+        </div>
+
+        <!-- CORRELATION MATRIX -->
+        <div>
+          <span class="er-sec-label">Historical Data</span>
+          <h2 class="er-sec-title">Announcement → asset correlation</h2>
+          <p class="er-sec-sub">Average price impact measured across 200+ Elon/SpaceX/Tesla events since 2021.</p>
+          <div class="er-card">
+            <div class="er-corr-list">
+              {% for item in [
+                ("DOGE","Direct Elon DOGE tweet","pos","88","Avg +18.4% in 24H"),
+                ("DOGE","SpaceX launch success","pos","72","Avg +12.1% in 12H"),
+                ("BTC","Elon pro-crypto stance","pos","61","Avg +4.2% in 24H"),
+                ("TSLA","NASA major contract","pos","74","Avg +5.8% in 48H"),
+                ("BTC","Tesla buys BTC (historical)","pos","79","Avg +8.1% in 48H"),
+                ("BTC","Tesla sells BTC (historical)","neg","82","Avg -8.2% in 24H")
+              ] %}
+              <div class="er-corr-row">
+                <span class="er-corr-asset">{{ item[0] }}</span>
+                <div class="er-corr-wrap">
+                  <span class="er-corr-lbl">{{ item[1] }}</span>
+                  <div class="er-corr-track"><div class="er-corr-fill {{ item[2] }}s" style="width:{{ item[3] }}%"></div></div>
+                </div>
+                <span class="er-corr-pct" style="color:{% if item[2]=='pos' %}#4ade80{% else %}#f87171{% endif %};">{{ item[3] }}%</span>
+                <div style="font-size:10px;color:var(--mu);width:110px;flex-shrink:0;text-align:right;line-height:1.3;">{{ item[4] }}</div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /left -->
+
+      <!-- RIGHT -->
+      <div class="er-right">
+
+        <!-- UPCOMING CATALYSTS -->
+        <div class="er-card">
+          <span class="er-label">📅 Upcoming catalysts</span>
+          <div class="er-events">
+            {% for ev in [
+              ("🚀","Starship Flight 9","launch","June 2026","DOGE +8–22% historical","WATCH"),
+              ("📊","Tesla Q3 Earnings","earnings","July 2026","Risk-on crypto boost","MONITOR"),
+              ("🛰️","Starlink IPO (rumored)","announce","2026–2027","Massive risk-on event","RADAR"),
+              ("🐕","X.com DOGE payments","announce","TBD","Direct utility signal","WATCH")
+            ] %}
+            <div class="er-event {{ ev[2] }}">
+              <div class="er-event-icon">{{ ev[0] }}</div>
+              <div>
+                <div class="er-event-title">{{ ev[1] }}</div>
+                <div class="er-event-date">{{ ev[3] }}</div>
+                <div class="er-event-effect"><strong>→</strong> {{ ev[4] }}</div>
+              </div>
+              <span class="er-countdown">{{ ev[5] }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- ELON SENTIMENT -->
+        <div class="er-card">
+          <span class="er-label">Elon sentiment gauge</span>
+          <div class="er-sent-bar"><div class="er-sent-fill" style="width:{{ sentiment.score | default(72) }}%;"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--mu);margin-bottom:8px;"><span>Bearish</span><span>Neutral</span><span>Bullish</span></div>
+          <div class="er-sent-row"><span>Current stance</span><strong style="color:{% if sentiment.color=="green" %}#4ade80{% elif sentiment.color=="red" %}#f87171{% else %}#fbbf24{% endif %};">{{ sentiment.label | default("Neutral") }}</strong></div>
+          <div class="er-sent-row"><span>Last signal</span><strong>SpaceX launch</strong></div>
+          <div class="er-sent-row"><span>DOGE risk level</span><strong style="color:#fbbf24;">Elevated</strong></div>
+          <div class="er-sent-row"><span>Crypto bias</span><strong style="color:#4ade80;">Constructive</strong></div>
+        </div>
+
+        <!-- QUICK REF -->
+        <div class="er-card">
+          <span class="er-label">Quick reference</span>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            {% for ev,t,res in [
+              ("🚀","SpaceX launch","DOGE +8–22%, BTC +2–5%"),
+              ("🐕","DOGE tweet","DOGE +15–25% in 6H"),
+              ("⚡","Tesla beat","Risk-on +2–4%"),
+              ("❌","Crypto sell","BTC -5–10%"),
+              ("🌙","Starlink IPO","Massive risk-on"),
+            ] %}
+            <div style="display:flex;align-items:flex-start;gap:9px;padding:8px 11px;background:rgba(255,255,255,.03);border-radius:7px;">
+              <span style="font-size:14px;flex-shrink:0;">{{ ev }}</span>
+              <div>
+                <div style="font-size:11px;font-weight:700;color:#fff;">{{ t }}</div>
+                <div style="font-size:10px;color:var(--mu);">{{ res }}</div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- PLAN COMPARISON -->
+        <div style="background:linear-gradient(135deg,rgba(212,168,67,.06),rgba(139,92,246,.04));border:1px solid rgba(212,168,67,.2);border-radius:14px;padding:18px;">
+          <h3 style="font-size:.95rem;font-weight:800;color:#fff;margin-bottom:14px;">What each plan sees</h3>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            {% for f,free,prem,vip in [
+              ("News feed","✓","✓","✓"),
+              ("Historical patterns","✓","✓","✓"),
+              ("Probability score","✗","✓","✓"),
+              ("Execution signal","✗","✗","✓"),
+              ("Push alerts","✗","✗","✓"),
+              ("Telegram alert","✗","✗","✓"),
+            ] %}
+            <div style="display:grid;grid-template-columns:1fr repeat(3,40px);gap:4px;font-size:11px;align-items:center;padding:6px 10px;background:rgba(255,255,255,.03);border-radius:6px;">
+              <span style="color:var(--tx);">{{ f }}</span>
+              <span style="text-align:center;color:{% if free=='✓' %}#4ade80{% else %}#4b5563{% endif %};">{{ free }}</span>
+              <span style="text-align:center;color:{% if prem=='✓' %}#4ade80{% else %}#4b5563{% endif %};">{{ prem }}</span>
+              <span style="text-align:center;color:{% if vip=='✓' %}#4ade80{% else %}#4b5563{% endif %};">{{ vip }}</span>
+            </div>
+            {% endfor %}
+            <div style="display:grid;grid-template-columns:1fr repeat(3,40px);gap:4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--mu);padding:4px 10px;">
+              <span></span>
+              <span style="text-align:center;">Free</span>
+              <span style="text-align:center;color:var(--go);">Prem</span>
+              <span style="text-align:center;color:#c4b5fd;">VIP</span>
+            </div>
+          </div>
+          {% if not is_vip %}
+          <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="display:block;text-align:center;margin-top:12px;padding:11px;border-radius:8px;background:var(--go);color:#000;font-size:13px;font-weight:800;text-decoration:none;">
+            {% if is_prem %}Upgrade to VIP →{% else %}Get Premium / VIP →{% endif %}
+          </a>
+          {% endif %}
+        </div>
+
+        <div class="er-disclaimer">
+          <strong style="color:#fff;">⚠️ Important:</strong> Historical correlations are not guarantees. Elon-driven moves are highly volatile and often mean-revert within 24–72H. Always confirm with your structural analysis. Use this as a catalyst awareness tool, not a standalone signal generator.
+        </div>
+
+      </div><!-- /right -->
+    </div>
+  </div>
+
+</div>
+{% endblock %}

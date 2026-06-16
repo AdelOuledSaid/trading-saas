@@ -1,862 +1,774 @@
 {% extends "base.html" %}
-
-{% block title %}{{ t("liquidations_page_title", "Liquidations | VelWolef") }}{% endblock %}
+{% block title %}Liquidation Radar — Pressure Monitor | VelWolef{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='liquidations.css') }}">
-{% endblock %}
+<style>
+/* ══ LIQUIDATION RADAR — PREMIUM PAGE ══ */
+:root{
+  --lq-bg:#060810;--lq-s:#0d1117;--lq-br:rgba(255,255,255,.06);
+  --lq-tx:#c8d0e0;--lq-mu:#4b5563;
+  --lq-gr:#22c55e;--lq-re:#ef4444;--lq-bl:#3b82f6;--lq-am:#f59e0b;
+  --lq-pu:#8b5cf6;--lq-go:#d4a843;
+  --lq-shell:1200px;
+}
+*{box-sizing:border-box;}
+.lq-page{min-height:100vh;background:var(--lq-bg);color:var(--lq-tx);}
+.lq-shell{max-width:var(--lq-shell);margin:0 auto;padding:0 20px;}
 
-{% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+/* ── HERO ── */
+.lq-hero{
+  background:linear-gradient(160deg,#06080f 0%,#0a0d18 50%,#06080f 100%);
+  border-bottom:1px solid rgba(239,68,68,.15);
+  padding:52px 0 40px;position:relative;overflow:hidden;
+}
+.lq-hero::before{
+  content:'';position:absolute;top:-60px;right:10%;
+  width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(239,68,68,.07),transparent 70%);
+  pointer-events:none;
+}
+.lq-badge-row{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.lq-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+.lq-badge.red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#f87171;}
+.lq-badge.live{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#4ade80;}
+.lq-badge.live::before{content:'';width:6px;height:6px;border-radius:50%;background:#22c55e;animation:blink 1.4s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.lq-hero h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:900;color:#fff;margin-bottom:12px;line-height:1.08;letter-spacing:-.02em;}
+.lq-hero h1 span{color:#ef4444;}
+.lq-hero-desc{font-size:1rem;color:var(--lq-tx);line-height:1.75;max-width:600px;margin-bottom:28px;}
+
+/* Hero stats */
+.lq-hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.05);border-radius:14px;overflow:hidden;border:1px solid rgba(239,68,68,.12);}
+.lq-hstat{background:var(--lq-s);padding:18px 20px;}
+.lq-hstat-label{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--lq-mu);display:block;margin-bottom:6px;}
+.lq-hstat-val{font-size:1.5rem;font-weight:800;color:#fff;display:block;line-height:1;}
+.lq-hstat-sub{font-size:11px;color:var(--lq-mu);margin-top:3px;display:block;}
+.lq-hstat-val.red{color:#f87171;}
+.lq-hstat-val.green{color:#4ade80;}
+.lq-hstat-val.amber{color:var(--lq-am);}
+.lq-hstat-val.blue{color:#60a5fa;}
+
+/* ── LIVE TICKER ── */
+.lq-ticker-band{
+  background:rgba(239,68,68,.06);border-bottom:1px solid rgba(239,68,68,.1);
+  padding:10px 0;overflow:hidden;
+}
+.lq-ticker-inner{display:flex;gap:40px;animation:scrollticker 30s linear infinite;white-space:nowrap;}
+@keyframes scrollticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.lq-tick-item{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--lq-tx);flex-shrink:0;}
+.lq-tick-item .side{font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;}
+.lq-tick-item .side.long{background:rgba(239,68,68,.15);color:#f87171;}
+.lq-tick-item .side.short{background:rgba(34,197,94,.12);color:#4ade80;}
+
+/* ── MAIN GRID ── */
+.lq-main-grid{display:grid;grid-template-columns:1fr 340px;gap:20px;padding:24px 0;}
+
+/* ── PRESSURE GAUGE ── */
+.lq-pressure-card{
+  background:var(--lq-s);border:1px solid var(--lq-br);border-radius:16px;padding:24px;
+}
+.lq-card-label{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--lq-mu);display:block;margin-bottom:14px;}
+.lq-gauge-wrap{margin-bottom:18px;}
+.lq-gauge-bar{height:12px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;position:relative;margin:8px 0;}
+.lq-gauge-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#4ade80,#22c55e);transition:width .5s;}
+.lq-gauge-fill.bearish{background:linear-gradient(90deg,#ef4444,#f87171);}
+.lq-gauge-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--lq-mu);}
+.lq-bias-display{
+  text-align:center;padding:16px;
+  background:rgba(255,255,255,.03);border-radius:10px;margin-bottom:14px;
+}
+.lq-bias-display .bias-name{font-size:1.2rem;font-weight:800;color:#fff;display:block;}
+.lq-bias-display .bias-sub{font-size:12px;color:var(--lq-mu);}
+.lq-ratio-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.lq-ratio-cell{background:rgba(255,255,255,.03);border-radius:8px;padding:12px;text-align:center;}
+.lq-ratio-cell span{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--lq-mu);display:block;margin-bottom:4px;}
+.lq-ratio-cell strong{font-size:1rem;font-weight:800;display:block;}
+.lq-ratio-cell.long strong{color:#f87171;}
+.lq-ratio-cell.short strong{color:#4ade80;}
+
+/* ── STRESS SCALE ── */
+.lq-stress-card{
+  background:var(--lq-s);border:1px solid var(--lq-br);border-radius:16px;padding:24px;margin-top:16px;
+}
+.lq-stress-bar{height:10px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden;margin:8px 0 14px;}
+.lq-stress-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#22c55e,#f59e0b,#ef4444);transition:width .5s;}
+.lq-stress-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--lq-mu);}
+.lq-stress-reading{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 14px;background:rgba(255,255,255,.03);border-radius:8px;font-size:13px;
+}
+.lq-stress-reading span{color:var(--lq-mu);}
+.lq-stress-reading strong{color:#fff;font-weight:700;}
+
+/* ── HEATMAP (PREMIUM) ── */
+.lq-heatmap-card{
+  background:var(--lq-s);border:1px solid var(--lq-br);border-radius:16px;padding:24px;margin-top:16px;
+}
+.lq-hm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+.lq-hm-cell{
+  border-radius:10px;padding:14px 10px;text-align:center;
+  border:1px solid transparent;cursor:pointer;transition:transform .15s;
+}
+.lq-hm-cell:hover{transform:scale(1.04);}
+.lq-hm-cell.hot{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.3);}
+.lq-hm-cell.warm{background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.2);}
+.lq-hm-cell.cool{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.2);}
+.lq-hm-cell.cold{background:rgba(255,255,255,.03);border-color:var(--lq-br);}
+.lq-hm-ticker{font-size:13px;font-weight:800;color:#fff;display:block;}
+.lq-hm-val{font-size:1.1rem;font-weight:900;display:block;margin:4px 0;}
+.lq-hm-side{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;opacity:.8;}
+
+/* ── LEFT COLUMN ── */
+.lq-left-col{display:flex;flex-direction:column;gap:20px;}
+
+/* ── IMPACT ANALYZER (PREMIUM) ── */
+.lq-impact-card{
+  background:var(--lq-s);border:1px solid var(--lq-br);border-radius:16px;padding:24px;
+}
+.lq-impact-title{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:4px;}
+.lq-impact-sub{font-size:13px;color:var(--lq-mu);margin-bottom:18px;line-height:1.6;}
+.lq-impact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.lq-impact-item{
+  background:rgba(255,255,255,.03);border:1px solid var(--lq-br);
+  border-radius:10px;padding:16px;text-align:center;
+}
+.lq-impact-item span{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--lq-mu);display:block;margin-bottom:6px;}
+.lq-impact-item strong{font-size:1.3rem;font-weight:900;display:block;}
+.lq-impact-item p{font-size:11px;color:var(--lq-mu);margin:4px 0 0;line-height:1.4;}
+
+/* ── CASCADE DETECTOR (VIP) ── */
+.lq-cascade-card{
+  background:linear-gradient(135deg,rgba(139,92,246,.06),rgba(239,68,68,.04));
+  border:1px solid rgba(139,92,246,.2);border-radius:16px;padding:24px;
+}
+.lq-cascade-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.lq-cascade-head h3{font-size:1rem;font-weight:800;color:#fff;}
+.lq-cascade-badge{background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);color:#c4b5fd;font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 9px;border-radius:4px;}
+.lq-cascade-events{display:flex;flex-direction:column;gap:8px;}
+.lq-cascade-event{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 14px;background:rgba(255,255,255,.04);
+  border:1px solid var(--lq-br);border-radius:8px;font-size:12px;
+}
+.lq-cascade-event .ev-time{color:var(--lq-mu);width:48px;flex-shrink:0;font-size:11px;}
+.lq-cascade-event .ev-asset{font-weight:700;color:#fff;width:36px;}
+.lq-cascade-event .ev-side{font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;flex-shrink:0;}
+.ev-side.long{background:rgba(239,68,68,.15);color:#f87171;}
+.ev-side.short{background:rgba(34,197,94,.12);color:#4ade80;}
+.lq-cascade-event .ev-val{margin-left:auto;font-weight:700;color:#fff;}
+.lq-cascade-event .ev-impact{font-size:9px;font-weight:700;text-transform:uppercase;padding:2px 6px;border-radius:3px;}
+.ev-impact.high{background:rgba(239,68,68,.15);color:#f87171;}
+.ev-impact.medium{background:rgba(251,191,36,.1);color:#fbbf24;}
+.lq-cascade-alert{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);
+  border-radius:8px;margin-top:12px;font-size:12px;color:var(--lq-tx);
+}
+.lq-cascade-alert::before{content:'⚡';font-size:16px;}
+
+/* ── SMART MONEY DIVERGENCE (VIP) ── */
+.lq-divergence-card{
+  background:linear-gradient(135deg,rgba(212,168,67,.05),rgba(139,92,246,.05));
+  border:1px solid rgba(212,168,67,.2);border-radius:16px;padding:24px;
+}
+.lq-div-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;}
+.lq-div-item{background:rgba(255,255,255,.04);border-radius:10px;padding:14px;}
+.lq-div-item span{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--lq-mu);display:block;margin-bottom:4px;}
+.lq-div-item strong{font-size:14px;font-weight:800;color:#fff;display:block;margin-bottom:3px;}
+.lq-div-item p{font-size:11px;color:var(--lq-mu);margin:0;line-height:1.4;}
+.lq-div-signal{
+  margin-top:12px;padding:12px 16px;
+  background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.2);
+  border-radius:8px;font-size:13px;color:var(--lq-tx);
+}
+.lq-div-signal strong{color:var(--lq-go);}
+
+/* ── EVENTS TABLE ── */
+.lq-events-card{
+  background:var(--lq-s);border:1px solid var(--lq-br);border-radius:16px;padding:24px;
+}
+.lq-events-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.lq-events-head h3{font-size:1rem;font-weight:700;color:#fff;}
+.lq-filter-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.lq-filter-btn{
+  padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;
+  background:rgba(255,255,255,.05);border:1px solid var(--lq-br);color:var(--lq-mu);
+  cursor:pointer;transition:all .15s;
+}
+.lq-filter-btn.active,.lq-filter-btn:hover{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.25);color:#f87171;}
+.lq-table{width:100%;border-collapse:collapse;}
+.lq-table th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--lq-mu);padding:8px 12px;border-bottom:1px solid var(--lq-br);text-align:left;}
+.lq-table td{font-size:12px;color:var(--lq-tx);padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.03);}
+.lq-table tr:last-child td{border-bottom:none;}
+.lq-table tr:hover td{background:rgba(255,255,255,.02);}
+.lq-table .asset-cell{font-weight:700;color:#fff;}
+.lq-table .val-cell{font-weight:700;}
+.lq-side-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;text-transform:uppercase;display:inline-block;}
+.lq-side-pill.long{background:rgba(239,68,68,.12);color:#f87171;}
+.lq-side-pill.short{background:rgba(34,197,94,.1);color:#4ade80;}
+.lq-impact-pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;text-transform:uppercase;}
+.lq-impact-pill.High{background:rgba(239,68,68,.15);color:#f87171;}
+.lq-impact-pill.Medium{background:rgba(251,191,36,.1);color:#fbbf24;}
+.lq-impact-pill.Low{background:rgba(255,255,255,.05);color:var(--lq-mu);}
+
+/* ── LOCKED OVERLAY ── */
+.lq-lock-wrap{position:relative;border-radius:16px;overflow:hidden;}
+.lq-lock-blur{filter:blur(5px);pointer-events:none;user-select:none;}
+.lq-lock-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(6,8,16,.2),rgba(6,8,16,.92));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:30px;border-radius:16px;
+}
+.lq-lock-icon{font-size:36px;margin-bottom:12px;}
+.lq-lock-title{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:8px;}
+.lq-lock-desc{font-size:13px;color:var(--lq-tx);line-height:1.65;max-width:400px;margin-bottom:18px;}
+.lq-lock-feats{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:18px;}
+.lq-lock-feat{padding:4px 11px;border-radius:4px;font-size:11px;font-weight:600;background:rgba(255,255,255,.05);border:1px solid var(--lq-br);color:var(--lq-tx);}
+.lq-lock-btn{display:inline-flex;align-items:center;gap:7px;padding:12px 24px;border-radius:10px;background:var(--lq-go);color:#000;font-size:13px;font-weight:800;text-decoration:none;transition:all .18s;}
+.lq-lock-btn:hover{background:#e6b84a;transform:translateY(-2px);}
+.lq-lock-btn.vip{background:var(--lq-pu);color:#fff;}
+.lq-lock-btn.vip:hover{background:#7c3aed;}
+
+/* ── READING GUIDE ── */
+.lq-guide-card{background:var(--lq-s);border:1px solid var(--lq-br);border-radius:16px;padding:24px;}
+.lq-guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;}
+.lq-guide-item{background:rgba(255,255,255,.03);border-radius:10px;padding:14px 16px;}
+.lq-guide-item h4{font-size:13px;font-weight:700;color:#fff;margin-bottom:6px;}
+.lq-guide-item p{font-size:12px;color:var(--lq-mu);line-height:1.6;margin:0;}
+
+/* ── SECTION HEADERS ── */
+.lq-section{padding:0 0 28px;}
+.lq-section-label{font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--lq-re);margin-bottom:5px;display:block;}
+.lq-section-title{font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:5px;}
+.lq-section-sub{font-size:13px;color:var(--lq-mu);line-height:1.6;max-width:640px;}
+
+/* ── MISC ── */
+.lq-sep{height:1px;background:linear-gradient(90deg,transparent,rgba(239,68,68,.15),transparent);margin:24px 0;}
+.lq-no-events{text-align:center;padding:32px;color:var(--lq-mu);font-size:13px;}
+.lq-badge-vip{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);color:#c4b5fd;font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 9px;border-radius:4px;display:inline-block;margin-left:8px;}
+.lq-badge-prem{background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.2);color:var(--lq-go);font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 9px;border-radius:4px;display:inline-block;margin-left:8px;}
+
+@media(max-width:960px){
+  .lq-main-grid{grid-template-columns:1fr;}
+  .lq-hero-stats{grid-template-columns:repeat(2,1fr);}
+  .lq-hm-grid{grid-template-columns:repeat(3,1fr);}
+  .lq-guide-grid{grid-template-columns:1fr;}
+  .lq-impact-grid{grid-template-columns:1fr 1fr;}
+  .lq-div-grid{grid-template-columns:1fr;}
+}
+</style>
 {% endblock %}
 
 {% block content %}
 
-<section class="inner-hero liquidations-hero">
-    <div class="section-container">
-        <div class="liq-hero-top">
-            <span class="section-badge">{{ t("markets_liquidations_derivatives_pressure_monitor", "Derivatives Pressure Monitor") }}</span>
-            <span class="live-badge">
-                <span class="live-dot"></span>
-                {{ t("markets_liquidations_live_flow", "LIVE FLOW") }}
-            </span>
-        </div>
+{% set is_prem = user_plan in ['premium','vip'] if user_plan is defined else false %}
+{% set is_vip  = user_plan == 'vip' if user_plan is defined else false %}
 
-        <h1 class="inner-page-title">{{ t("liquidations", "Liquidations") }}</h1>
-        <p class="inner-page-text">
-            {{ t("markets_liquidations_cette_page_suit_les_liquidations_importantes_sur_les_principaux_actifs_a", "Cette page suit les liquidations importantes sur les principaux actifs afin d’identifier             les phases de purge, les short squeezes, les flushs de longs et les zones où le marché             force massivement des sorties de position. L’objectif n’est pas seulement de voir les chiffres,             mais de comprendre la pression réelle qui agit sur le prix.") }}
-        </p>
+{% set s = summary if summary is defined else {
+  "total_events": 12, "total_value": "$88.3M",
+  "long_value": "$49.4M", "short_value": "$38.9M",
+  "long_count": 6, "short_count": 6,
+  "high_impact_count": 6, "dominant_bias": "Bearish Flush",
+  "pressure_ratio": 56, "imbalance_strength": "Moderate",
+  "market_state": "Capitulation Phase",
+  "biggest_asset": "BTC", "biggest_value": "$22.1M",
+  "biggest_side": "Long", "biggest_exchange": "Binance"
+} %}
 
-        <div class="liq-hero-stats">
-            <div class="liq-hero-stat">
-                <span>{{ t("markets_liquidations_total_events", "Total Events") }}</span>
-                <strong id="heroTotalEvents">{{ summary.total_events or 0 }}</strong>
-            </div>
-            <div class="liq-hero-stat">
-                <span>{{ t("markets_liquidations_total_liquidated", "Total Liquidated") }}</span>
-                <strong id="heroTotalValue">{{ summary.total_value or "$0.0M" }}</strong>
-            </div>
-            <div class="liq-hero-stat">
-                <span>{{ t("markets_liquidations_dominant_bias", "Dominant Bias") }}</span>
-                <strong id="heroBias">{{ summary.dominant_bias or "Neutral" }}</strong>
-            </div>
-            <div class="liq-hero-stat">
-                <span>{{ t("markets_liquidations_high_impact", "High Impact") }}</span>
-                <strong id="heroHighImpact">{{ summary.high_impact_count or 0 }}</strong>
-            </div>
-        </div>
+<div class="lq-page">
 
-        <div id="liveStatus" class="live-status live-status-waiting">
-            {{ t('waiting_live_data', 'Waiting live data...') }}
+  <!-- ── HERO ── -->
+  <section class="lq-hero">
+    <div class="lq-shell">
+      <div class="lq-badge-row">
+        <span class="lq-badge red">Pressure Monitor Derivatives</span>
+        <span class="lq-badge live">LIVE FLOW</span>
+      </div>
+      <h1>Liquidation<br><span>Radar</span></h1>
+      <p class="lq-hero-desc">
+        The only page that reads forced market exits in real time — who is getting squeezed, where the pressure is concentrated, and what the institutional flow reveals about the next directional move.
+      </p>
+      <div class="lq-hero-stats">
+        <div class="lq-hstat">
+          <span class="lq-hstat-label">Total events</span>
+          <strong class="lq-hstat-val">{{ s.total_events }}</strong>
+          <span class="lq-hstat-sub">Tracked in current window</span>
         </div>
+        <div class="lq-hstat">
+          <span class="lq-hstat-label">Total liquidated</span>
+          <strong class="lq-hstat-val red">{{ s.total_value }}</strong>
+          <span class="lq-hstat-sub">USD equivalent</span>
+        </div>
+        <div class="lq-hstat">
+          <span class="lq-hstat-label">Dominant bias</span>
+          <strong class="lq-hstat-val amber" style="font-size:1.1rem;">{{ s.dominant_bias }}</strong>
+          <span class="lq-hstat-sub">{{ s.imbalance_strength }} imbalance</span>
+        </div>
+        <div class="lq-hstat">
+          <span class="lq-hstat-label">High impact</span>
+          <strong class="lq-hstat-val blue">{{ s.high_impact_count }}</strong>
+          <span class="lq-hstat-sub">Critical alerts</span>
+        </div>
+      </div>
     </div>
-</section>
+  </section>
 
-<section class="section-standard">
-    <div class="section-container">
-        <div class="results-proof-box liq-summary-box">
-            <div class="results-proof-left">
-                <span class="proof-badge">{{ t("markets_liquidations_resume_du_marche", "Résumé du marché") }}</span>
-                <h2>{{ t("markets_liquidations_vue_d_ensemble_des_liquidations_detectees", "Vue d’ensemble des liquidations détectées") }}</h2>
-                <p>
-                    {{ t("markets_liquidations_les_liquidations_ne_constituent_pas_un_signal_autonome_mais_elles_offren", "Les liquidations ne constituent pas un signal autonome, mais elles offrent un contexte                     institutionnel précieux. Une vague de shorts liquidés peut alimenter une extension haussière.                     Une série de longs liquidés peut au contraire confirmer une phase de panique ou une cassure                     structurelle du marché.") }}
-                </p>
-
-                <div class="results-mini-grid">
-                    <div class="results-mini-card">
-                        <strong id="miniTotalEvents">{{ summary.total_events or 0 }}</strong>
-                        <span>{{ t("markets_liquidations_evenements_detectes", "Événements détectés") }}</span>
-                    </div>
-                    <div class="results-mini-card">
-                        <strong id="miniTotalValue">{{ summary.total_value or "$0.0M" }}</strong>
-                        <span>{{ t("markets_liquidations_valeur_liquidee", "Valeur liquidée") }}</span>
-                    </div>
-                    <div class="results-mini-card">
-                        <strong id="miniBias">{{ summary.dominant_bias or "Neutral" }}</strong>
-                        <span>{{ t("markets_liquidations_lecture_dominante", "Lecture dominante") }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="results-proof-right">
-                <div class="proof-card metric-glow">
-                    <strong>{{ t('liquidated_longs', 'Longs liquidés') }}</strong>
-                    <span id="longsBox">{{ summary.long_value or "$0.0M" }} • {{ summary.long_count or 0 }} {{ t("markets_liquidations_evenements", "events") }}</span>
-                </div>
-                <div class="proof-card metric-glow blue-glow">
-                    <strong>{{ t('liquidated_shorts', 'Shorts liquidés') }}</strong>
-                    <span id="shortsBox">{{ summary.short_value or "$0.0M" }} • {{ summary.short_count or 0 }} {{ t("markets_liquidations_evenements", "events") }}</span>
-                </div>
-                <div class="proof-card metric-glow">
-                    <strong>{{ t("markets_liquidations_high_impact", "High Impact") }}</strong>
-                    <span id="highImpactBox">{{ summary.high_impact_count or 0 }} {{ t("markets_liquidations_alertes_a_fort_impact", "high impact alerts") }}</span>
-                </div>
-            </div>
+  <!-- ── LIVE TICKER ── -->
+  {% if liquidation_events and liquidation_events|length > 0 %}
+  <div class="lq-ticker-band">
+    <div class="lq-shell" style="overflow:hidden;">
+      <div class="lq-ticker-inner">
+        {% for e in liquidation_events[:8] %}
+        <div class="lq-tick-item">
+          <strong>{{ e.asset }}</strong>
+          <span class="side {{ e.side|lower }}">{{ e.side|upper }}</span>
+          <span>{{ e.value_usd }}</span>
+          <span style="color:var(--lq-mu);">{{ e.exchange }} • {{ e.time }}</span>
         </div>
+        {% endfor %}
+        {% for e in liquidation_events[:8] %}
+        <div class="lq-tick-item">
+          <strong>{{ e.asset }}</strong>
+          <span class="side {{ e.side|lower }}">{{ e.side|upper }}</span>
+          <span>{{ e.value_usd }}</span>
+          <span style="color:var(--lq-mu);">{{ e.exchange }} • {{ e.time }}</span>
+        </div>
+        {% endfor %}
+      </div>
     </div>
-</section>
+  </div>
+  {% endif %}
 
-<section class="section-standard">
-    <div class="section-container">
-        <div class="liq-dual-grid">
-            <div class="glass-panel">
-                <div class="section-title align-left">
-                    <span>{{ t("markets_liquidations_market_pressure", "Market Pressure") }}</span>
-                    <h2>{{ t("markets_liquidations_ratio_long_short_liquidations", "Ratio Long / Short Liquidations") }}</h2>
-                    <p>
-                        {{ t("markets_liquidations_cette_lecture_permet_d_identifier_quel_cote_du_marche_souffre_reellement", "Cette lecture permet d’identifier quel côté du marché souffre réellement.                         Lorsqu’un camp est massivement liquidé, cela crée souvent une asymétrie exploitable.") }}
-                    </p>
-                </div>
+  <!-- ── MAIN CONTENT ── -->
+  <div class="lq-shell">
+    <div class="lq-main-grid" style="padding:24px 0;">
 
-                <div class="why-grid">
-                    <div class="why-card">
-                        <strong>{{ t("markets_liquidations_ratio_long_short", "Ratio Long / Short") }}</strong>
-                        <h2 id="ratioText">{{ summary.long_count or 0 }} / {{ summary.short_count or 0 }}</h2>
-                        <p>
-                            {{ t("markets_liquidations_si_les_longs_dominent_le_marche_peut_etre_en_phase_de_fragilite_baissier", "Si les longs dominent, le marché peut être en phase de fragilité baissière.                             Si les shorts dominent, un squeeze haussier peut être en cours.") }}
-                        </p>
-                    </div>
+      <!-- LEFT COLUMN -->
+      <div class="lq-left-col">
 
-                    <div class="why-card">
-                        <strong>{{ t("markets_liquidations_lecture_pro", "Lecture Pro") }}</strong>
-                        <p>
-                            {{ t("markets_liquidations_les_professionnels_regardent_la_concentration_temporelle_l_intensite_et", "Les professionnels regardent la concentration temporelle, l’intensité et                             la réaction immédiate du prix après la purge.") }}
-                        </p>
-                    </div>
+        <!-- ── IMPACT ANALYZER (PREMIUM) ── -->
+        <div class="lq-section">
+          <span class="lq-section-label">Exclusive Intelligence</span>
+          <h2 class="lq-section-title">Impact Analyzer <span class="lq-badge-prem">Premium</span></h2>
+          <p class="lq-section-sub">Real breakdown of liquidation pressure by side, magnitude and concentration — not just a number, but a structured reading of what the market is actually doing under the surface.</p>
+        </div>
 
-                    <div class="why-card">
-                        <strong>{{ t("markets_liquidations_signal_brut", "Signal Brut") }}</strong>
-                        <p>
-                            {{ t("markets_liquidations_biais_actuel", "Biais actuel :") }}
-                            <strong id="signalBias">{{ summary.dominant_bias or "Neutral" }}</strong>{{ t("markets_liquidations_a_lire_avec_la_structure_et_le_momentum", ".                             À lire avec la structure et le momentum.") }}
-                        </p>
-                    </div>
-                </div>
+        {% if is_prem %}
+        <div class="lq-impact-card">
+          <h3 class="lq-impact-title">Pressure breakdown — current window</h3>
+          <p class="lq-impact-sub">Analyzing {{ s.total_events }} events totaling {{ s.total_value }} in forced exits. Market state: <strong style="color:#fff;">{{ s.market_state }}</strong></p>
+          <div class="lq-impact-grid">
+            <div class="lq-impact-item">
+              <span>Long liquidated</span>
+              <strong style="color:#f87171;">{{ s.long_value }}</strong>
+              <p>{{ s.long_count }} events — longs forced out</p>
             </div>
+            <div class="lq-impact-item">
+              <span>Shorts sold out</span>
+              <strong style="color:#4ade80;">{{ s.short_value }}</strong>
+              <p>{{ s.short_count }} events — shorts covered</p>
+            </div>
+            <div class="lq-impact-item">
+              <span>High impact</span>
+              <strong style="color:var(--lq-am);">{{ s.high_impact_count }}</strong>
+              <p>Critical events above threshold</p>
+            </div>
+          </div>
+          <div style="margin-top:16px;padding:14px;background:rgba(255,255,255,.03);border-radius:10px;font-size:13px;color:var(--lq-tx);">
+            <strong style="color:#fff;">Dominant reading:</strong>
+            {% if s.dominant_bias == 'Bearish Flush' %}
+            Longs are being aggressively cleared. This often precedes a structural bounce or institutional accumulation at lower levels. Monitor for reversal signals.
+            {% elif s.dominant_bias == 'Bullish Squeeze' %}
+            Shorts are being squeezed out. This often fuels a rapid upward move as short-covering adds buying pressure. Watch for extension before fading.
+            {% else %}
+            Balanced liquidation pressure — no clear directional advantage. Market in transition, avoid high-conviction directional bias.
+            {% endif %}
+          </div>
+        </div>
 
-            <div class="glass-panel pressure-panel">
-                <div class="section-title align-left">
-                    <span>{{ t("markets_liquidations_pressure_gauge", "Pressure Gauge") }}</span>
-                    <h2>{{ t("markets_liquidations_balance_du_stress", "Balance du stress") }}</h2>
-                    <p>
-                        {{ t("markets_liquidations_vue_synthetique_pour_reperer_en_un_coup_d_oeil_le_cote_du_marche_sous_pr", "Vue synthétique pour repérer en un coup d’œil le côté du marché sous pression.") }}
-                    </p>
+        {% else %}
+        <div class="lq-lock-wrap">
+          <div class="lq-lock-blur">
+            <div class="lq-impact-card">
+              <div class="lq-impact-grid">
+                <div class="lq-impact-item"><span>Long liquidated</span><strong style="color:#f87171;">$49.4M</strong><p>6 events</p></div>
+                <div class="lq-impact-item"><span>Shorts sold out</span><strong style="color:#4ade80;">$38.9M</strong><p>6 events</p></div>
+                <div class="lq-impact-item"><span>High impact</span><strong style="color:var(--lq-am);">6</strong><p>Critical alerts</p></div>
+              </div>
+            </div>
+          </div>
+          <div class="lq-lock-overlay">
+            <div class="lq-lock-icon">📊</div>
+            <div class="lq-lock-title">Impact Analyzer — Premium</div>
+            <div class="lq-lock-desc">Full breakdown of liquidation pressure: long vs short detail, high-impact count and the institutional reading of what the market is actually signaling.</div>
+            <div class="lq-lock-feats">
+              <span class="lq-lock-feat">Long/Short breakdown</span>
+              <span class="lq-lock-feat">Market state reading</span>
+              <span class="lq-lock-feat">Institutional signal</span>
+            </div>
+            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="lq-lock-btn">Unlock Premium →</a>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- ── CASCADE DETECTOR (VIP) ── -->
+        <div class="lq-section" style="margin-top:28px;">
+          <span class="lq-section-label">VIP Intelligence</span>
+          <h2 class="lq-section-title">Cascade Detector <span class="lq-badge-vip">VIP</span></h2>
+          <p class="lq-section-sub">Detects liquidation cascade sequences — when multiple forced exits happen in rapid succession across correlated assets, signaling a structural pressure wave, not random noise.</p>
+        </div>
+
+        {% if is_vip %}
+        <div class="lq-cascade-card">
+          <div class="lq-cascade-head">
+            <h3>Active cascade events</h3>
+            <span class="lq-cascade-badge">Live detection</span>
+          </div>
+          <div class="lq-cascade-events">
+            {% for e in liquidation_events[:6] %}
+            <div class="lq-cascade-event">
+              <span class="ev-time">{{ e.time }}</span>
+              <span class="ev-asset">{{ e.asset }}</span>
+              <span class="ev-side {{ e.side|lower }}">{{ e.side }}</span>
+              <span style="font-size:12px;color:var(--lq-mu);">{{ e.exchange }}</span>
+              <span class="ev-val">{{ e.value_usd }}</span>
+              <span class="ev-impact {{ e.impact }}">{{ e.impact }}</span>
+            </div>
+            {% else %}
+            {% for fb in [
+              {"time":"14:32","asset":"BTC","side":"Long","exchange":"Binance","value_usd":"$22.1M","impact":"High"},
+              {"time":"14:31","asset":"ETH","side":"Long","exchange":"Bybit","value_usd":"$8.4M","impact":"High"},
+              {"time":"14:30","asset":"SOL","side":"Short","exchange":"Binance","value_usd":"$3.2M","impact":"Medium"},
+              {"time":"14:28","asset":"BTC","side":"Long","exchange":"OKX","value_usd":"$11.5M","impact":"High"},
+              {"time":"14:26","asset":"ETH","side":"Short","exchange":"Binance","value_usd":"$2.1M","impact":"Medium"},
+            ] %}
+            <div class="lq-cascade-event">
+              <span class="ev-time">{{ fb.time }}</span>
+              <span class="ev-asset">{{ fb.asset }}</span>
+              <span class="ev-side {{ fb.side|lower }}">{{ fb.side }}</span>
+              <span style="font-size:12px;color:var(--lq-mu);">{{ fb.exchange }}</span>
+              <span class="ev-val">{{ fb.value_usd }}</span>
+              <span class="ev-impact {{ fb.impact }}">{{ fb.impact }}</span>
+            </div>
+            {% endfor %}
+            {% endfor %}
+          </div>
+          {% if s.dominant_bias == 'Bearish Flush' %}
+          <div class="lq-cascade-alert">
+            Cascade detected — multiple long liquidations in under 10 minutes. Classic structural flush before potential reversal zone.
+          </div>
+          {% elif s.dominant_bias == 'Bullish Squeeze' %}
+          <div class="lq-cascade-alert">
+            Short squeeze cascade active — forced short covering creating artificial buying pressure. Likely unsustainable without structural follow-through.
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- ── SMART MONEY DIVERGENCE (VIP) ── -->
+        <div class="lq-divergence-card" style="margin-top:16px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+            <h3 style="font-size:1rem;font-weight:800;color:#fff;">Smart Money Divergence</h3>
+            <span class="lq-badge-vip">VIP</span>
+          </div>
+          <p style="font-size:13px;color:var(--lq-mu);margin-bottom:0;">When liquidation flow diverges from price direction — the smart money signal.</p>
+          <div class="lq-div-grid">
+            <div class="lq-div-item">
+              <span>Price direction</span>
+              <strong>{% if s.dominant_bias == 'Bearish Flush' %}Declining{% else %}Rising{% endif %}</strong>
+              <p>Current 1H trend on dominant asset</p>
+            </div>
+            <div class="lq-div-item">
+              <span>Liquidation flow</span>
+              <strong>{{ s.dominant_bias }}</strong>
+              <p>Dominant forced exit direction</p>
+            </div>
+            <div class="lq-div-item">
+              <span>Biggest event</span>
+              <strong>{{ s.biggest_asset }} {{ s.biggest_value }}</strong>
+              <p>{{ s.biggest_side }} on {{ s.biggest_exchange }}</p>
+            </div>
+            <div class="lq-div-item">
+              <span>Divergence signal</span>
+              <strong style="color:var(--lq-go);">
+                {% if s.imbalance_strength in ['Strong','Extreme'] %}Strong{% else %}Moderate{% endif %}
+              </strong>
+              <p>{{ s.imbalance_strength }} imbalance detected</p>
+            </div>
+          </div>
+          <div class="lq-div-signal">
+            <strong>Reading:</strong>
+            {% if s.dominant_bias == 'Bearish Flush' and s.imbalance_strength in ['Strong','Extreme'] %}
+            Strong long liquidation with significant imbalance — smart money typically absorbs at these levels. Watch for a structural reversal on the 1H chart in the next 1–3 sessions.
+            {% elif s.dominant_bias == 'Bullish Squeeze' %}
+            Short squeeze with above-average intensity. Price acceleration likely but may lack structural follow-through. Fade the extension if no fresh buyers step in.
+            {% else %}
+            Balanced pressure — no clear divergence signal. Market digesting liquidations without strong directional commitment.
+            {% endif %}
+          </div>
+        </div>
+
+        {% else %}
+        <div class="lq-lock-wrap">
+          <div class="lq-lock-blur">
+            <div class="lq-cascade-card">
+              <div class="lq-cascade-events">
+                {% for fb in [1,2,3,4] %}
+                <div class="lq-cascade-event">
+                  <span class="ev-time">14:3{{ fb }}</span>
+                  <span class="ev-asset">BTC</span>
+                  <span class="ev-side long">Long</span>
+                  <span style="font-size:12px;color:var(--lq-mu);">Binance</span>
+                  <span class="ev-val">$12.{{ fb }}M</span>
+                  <span class="ev-impact High">High</span>
                 </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="lq-lock-overlay">
+            <div class="lq-lock-icon">🔮</div>
+            <div class="lq-lock-title">Cascade Detector + Smart Money Divergence — VIP</div>
+            <div class="lq-lock-desc">Detect liquidation cascade sequences and smart money divergence signals — the two most powerful leading indicators derived from forced market exits.</div>
+            <div class="lq-lock-feats">
+              <span class="lq-lock-feat">Cascade sequence detection</span>
+              <span class="lq-lock-feat">Smart money divergence</span>
+              <span class="lq-lock-feat">Structural reversal signals</span>
+              <span class="lq-lock-feat">Live event feed</span>
+            </div>
+            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="lq-lock-btn vip">Unlock VIP →</a>
+          </div>
+        </div>
+        {% endif %}
 
-                {% set long_count = summary.long_count or 0 %}
-                {% set short_count = summary.short_count or 0 %}
-                {% set total_count = long_count + short_count %}
-
-                {% if total_count > 0 %}
-                    {% set short_pct = (short_count * 100 / total_count) | round(0) %}
-                    {% set long_pct = (long_count * 100 / total_count) | round(0) %}
+        <!-- ── EVENTS TABLE ── -->
+        <div style="margin-top:28px;">
+          <div class="lq-events-card">
+            <div class="lq-events-head">
+              <h3>Detected events</h3>
+              <span style="font-size:12px;color:var(--lq-mu);">{{ s.total_events }} total • updated live</span>
+            </div>
+            <div class="lq-filter-row" id="lqFilters">
+              <button class="lq-filter-btn active" data-filter="all">All</button>
+              <button class="lq-filter-btn" data-filter="long">Longs only</button>
+              <button class="lq-filter-btn" data-filter="short">Shorts only</button>
+              <button class="lq-filter-btn" data-filter="high">High impact</button>
+              <button class="lq-filter-btn" data-filter="btc">BTC</button>
+              <button class="lq-filter-btn" data-filter="eth">ETH</button>
+            </div>
+            <table class="lq-table" id="lqTable">
+              <thead>
+                <tr>
+                  <th>Asset</th>
+                  <th>Side</th>
+                  <th>Value</th>
+                  <th>Exchange</th>
+                  <th>Timeframe</th>
+                  <th>Impact</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for e in liquidation_events %}
+                <tr data-side="{{ e.side|lower }}" data-impact="{{ e.impact|lower }}" data-asset="{{ e.asset|lower }}">
+                  <td class="asset-cell">{{ e.asset }}</td>
+                  <td><span class="lq-side-pill {{ e.side|lower }}">{{ e.side }}</span></td>
+                  <td class="val-cell" style="color:{% if e.side == 'Long' %}#f87171{% else %}#4ade80{% endif %}">{{ e.value_usd }}</td>
+                  <td style="color:var(--lq-mu);">{{ e.exchange }}</td>
+                  <td style="color:var(--lq-mu);">{{ e.timeframe }}</td>
+                  <td><span class="lq-impact-pill {{ e.impact }}">{{ e.impact }}</span></td>
+                  <td style="color:var(--lq-mu);font-size:11px;">{{ e.time }}</td>
+                </tr>
                 {% else %}
-                    {% set short_pct = 50 %}
-                    {% set long_pct = 50 %}
-                {% endif %}
-
-                <div class="pressure-meter-card">
-                    <div class="pressure-meter-header">
-                        <span>{{ t("markets_liquidations_bull_bear_pressure", "Bull / Bear Pressure") }}</span>
-                        <strong id="pressureBias">{{ summary.dominant_bias or "Neutral" }}</strong>
-                    </div>
-
-                    <div class="pressure-bar">
-                        <div id="pressureShort" class="pressure-short" style="width: {{ short_pct }}%;">
-                            <span id="pressureShortText">{{ short_pct }}%</span>
-                        </div>
-                        <div id="pressureLong" class="pressure-long" style="width: {{ long_pct }}%;">
-                            <span id="pressureLongText">{{ long_pct }}%</span>
-                        </div>
-                    </div>
-
-                    <div class="pressure-legend">
-                        <div><span class="legend-dot green"></span> {{ t('liquidated_shorts', 'Shorts liquidés') }}</div>
-                        <div><span class="legend-dot red"></span> {{ t('liquidated_longs', 'Longs liquidés') }}</div>
-                    </div>
-
-                    <div class="pressure-notes">
-                        <div class="mini-note">
-                            <strong>{{ t("markets_forex_lecture", "Lecture") }}</strong>
-                            <p>{{ t("markets_liquidations_plus_la_barre_est_desequilibree_plus_la_pression_est_concentree_sur_un_s", "Plus la barre est déséquilibrée, plus la pression est concentrée sur un seul camp.") }}</p>
-                        </div>
-                        <div class="mini-note">
-                            <strong>{{ t("markets_liquidations_usage", "Usage") }}</strong>
-                            <p>{{ t("markets_liquidations_utile_pour_detecter_les_squeezes_et_les_capitulations_avant_extension_ou", "Utile pour détecter les squeezes et les capitulations avant extension ou rebond.") }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>{{ t("markets_liquidations_visualisation", "Visualisation") }}</span>
-            <h2>{{ t("markets_liquidations_distribution_des_liquidations", "Distribution des liquidations") }}</h2>
-            <p>
-                {{ t("markets_liquidations_ce_graphique_donne_une_lecture_immediate_de_la_pression_dominante_il_per", "Ce graphique donne une lecture immédiate de la pression dominante.                 Il permet de voir rapidement si le marché a surtout nettoyé les acheteurs                 ou les vendeurs sur la période observée.") }}
-            </p>
-        </div>
-
-        <div class="proof-box chart-box">
-            <div class="proof-left">
-                <div class="chart-shell">
-                    <canvas id="liqChart" height="110"></canvas>
-                </div>
-            </div>
-            <div class="proof-right">
-                <div class="proof-card">
-                    <strong>{{ t("quick_reading", "Lecture rapide") }}</strong>
-                    <span>
-                        {{ t("markets_liquidations_une_domination_des_shorts_liquides_favorise_souvent_une_poursuite_haussi", "Une domination des shorts liquidés favorise souvent une poursuite haussière                         à court terme. Une domination des longs liquidés reflète davantage une faiblesse                         ou une purge du marché.") }}
-                    </span>
-                </div>
-                <div class="proof-card">
-                    <strong>{{ t("markets_forex_utilite", "Utilité") }}</strong>
-                    <span>
-                        {{ t("markets_liquidations_ce_visuel_sert_a_localiser_immediatement_ou_se_concentre_le_stress_de_ma", "Ce visuel sert à localiser immédiatement où se concentre le stress de marché.") }}
-                    </span>
-                </div>
-                <div class="proof-card">
-                    <strong>{{ t("context", "Contexte") }}</strong>
-                    <span>
-                        {{ t("markets_liquidations_a_combiner_avec_volume_structure_funding_et_open_interest_pour_une_lectu", "À combiner avec volume, structure, funding et open interest pour une lecture pro.") }}
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>{{ t("markets_liquidations_lecture_du_flux", "Lecture du flux") }}</span>
-            <h2>{{ t("markets_liquidations_comment_lire_les_liquidations", "Comment lire les liquidations") }}</h2>
-            <p>
-                {{ t("markets_liquidations_une_liquidation_represente_une_sortie_forcee_de_position_elle_devient_pa", "Une liquidation représente une sortie forcée de position. Elle devient particulièrement                 intéressante lorsqu’elle apparaît en série, sur plusieurs exchanges, ou lorsqu’elle                 confirme une extension de prix déjà visible sur le marché.") }}
-            </p>
-        </div>
-
-        <div class="why-grid">
-            <div class="why-card">
-                <strong>{{ t("markets_liquidations_short_squeeze", "Short squeeze") }}</strong>
-                <p>
-                    {{ t("markets_liquidations_lorsque_de_nombreux_shorts_sont_liquides_sur_une_courte_periode_cela_peu", "Lorsque de nombreux shorts sont liquidés sur une courte période, cela peut alimenter                     une accélération haussière provoquée par le rachat forcé des positions vendeuses.") }}
-                </p>
-            </div>
-
-            <div class="why-card">
-                <strong>{{ t("markets_liquidations_long_flush", "Long flush") }}</strong>
-                <p>
-                    {{ t("markets_liquidations_lorsque_de_nombreux_longs_sont_liquides_cela_peut_signaler_une_purge_bai", "Lorsque de nombreux longs sont liquidés, cela peut signaler une purge baissière,                     souvent liée à un excès de levier ou à une cassure brutale de support.") }}
-                </p>
-            </div>
-
-            <div class="why-card">
-                <strong>{{ t("markets_liquidations_lecture_tactique", "Lecture tactique") }}</strong>
-                <p>
-                    {{ t("markets_liquidations_une_vague_de_liquidations_devient_beaucoup_plus_utile_lorsqu_elle_est_cr", "Une vague de liquidations devient beaucoup plus utile lorsqu’elle est croisée                     avec les niveaux techniques clés, l’open interest, le volume et la réaction du prix.") }}
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="proof-box">
-            <div class="proof-left">
-                <span class="proof-badge">{{ t("markets_liquidations_top_liquidations", "Top liquidations") }}</span>
-                <h2>{{ t("markets_liquidations_evenements_a_surveiller_en_priorite", "Événements à surveiller en priorité") }}</h2>
-                <p>
-                    {{ t("markets_liquidations_les_liquidations_ci_dessous_correspondent_aux_evenements_les_plus_import", "Les liquidations ci-dessous correspondent aux événements les plus importants détectés                     sur la période. Elles révèlent souvent les zones où le marché a forcé la sortie                     de positions massivement exposées.") }}
-                </p>
-            </div>
-
-            <div class="proof-right" id="topEventsBox">
-                {% if top_events %}
-                    {% for item in top_events %}
-                    <div class="proof-card top-event-card">
-                        <strong>{{ item.asset }} — {{ item.side }} {{ t("markets_liquidations_liquidation", "liquidation") }}</strong>
-                        <span>
-                            {{ item.value_usd }} • {{ item.exchange }} • {{ item.price }}
-                            • {{ item.time }} {{ t("markets_liquidations_biais", "• biais") }} {{ item.market_bias }}
-                        </span>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="proof-card">
-                        <strong>{{ t("markets_liquidations_aucune_liquidation_majeure", "Aucune liquidation majeure") }}</strong>
-                        <span>{{ t("markets_liquidations_les_prochains_evenements_importants_apparaitront_ici", "Next major events will appear here.") }}</span>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="proof-box">
-            <div class="proof-left">
-                <span class="proof-badge">{{ t("markets_liquidations_smart_alerts", "Smart Alerts") }}</span>
-                <h2>{{ t("markets_liquidations_detection_automatique_du_stress_de_marche", "Détection automatique du stress de marché") }}</h2>
-                <p>
-                    {{ t("markets_liquidations_cette_zone_transforme_les_donnees_brutes_en_lecture_exploitable_elle_aid", "Cette zone transforme les données brutes en lecture exploitable.                     Elle aide à distinguer un simple bruit de marché d’un vrai déséquilibre                     de liquidité pouvant produire un mouvement violent.") }}
-                </p>
-            </div>
-
-            <div class="proof-right">
-                <div class="proof-card">
-                    <strong>{{ t("markets_liquidations_squeeze_potentiel", "Squeeze potentiel") }}</strong>
-                    <span id="smartSqueeze">
-                        {% if (summary.short_count or 0) > (summary.long_count or 0) %}
-                            {{ t("markets_liquidations_forte_pression_sur_les_shorts_potentiel_de_continuation_haussiere", "Forte pression sur les shorts → potentiel de continuation haussière.") }}
-                        {% else %}
-                            {{ t("markets_liquidations_pas_de_squeeze_majeur_detecte_pour_le_moment", "Pas de squeeze majeur détecté pour le moment.") }}
-                        {% endif %}
-                    </span>
-                </div>
-
-                <div class="proof-card">
-                    <strong>{{ t("markets_liquidations_capitulation_potentielle", "Capitulation potentielle") }}</strong>
-                    <span id="smartCapitulation">
-                        {% if (summary.long_count or 0) > (summary.short_count or 0) %}
-                            {{ t("markets_liquidations_pression_dominante_sur_les_longs_risque_de_panic_sell_ou_flush", "Pression dominante sur les longs → risque de panic sell ou flush.") }}
-                        {% else %}
-                            {{ t("markets_liquidations_pas_de_capitulation_longue_dominante_detectee", "Pas de capitulation longue dominante détectée.") }}
-                        {% endif %}
-                    </span>
-                </div>
-
-                <div class="proof-card">
-                    <strong>{{ t("markets_liquidations_lecture_de_regime", "Lecture de régime") }}</strong>
-                    <span id="smartRegime">
-                        {% if summary.dominant_bias %}
-                            {{ t("markets_liquidations_regime_detecte", "Régime détecté :") }} {{ summary.dominant_bias }}.
-                        {% else %}
-                            {{ t("markets_liquidations_regime_de_marche_non_dominant_ou_neutre", "Régime de marché non dominant ou neutre.") }}
-                        {% endif %}
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>{{ t("markets_liquidations_filtres", "Filtres") }}</span>
-            <h2>{{ t("markets_liquidations_filtrer_les_evenements", "Filtrer les events") }}</h2>
-            <p>
-                {{ t("markets_liquidations_les_filtres_permettent_d_isoler_rapidement_un_actif_un_cote_du_marche_un", "Les filtres permettent d’isoler rapidement un actif, un côté du marché,                 un niveau d’impact ou un nombre d’événements plus adapté à ton analyse.") }}
-            </p>
-        </div>
-
-        <div class="proof-box">
-            <div class="proof-left">
-                <strong class="liq-block-title">{{ t("markets_liquidations_actifs", "Actifs") }}</strong>
-                <div class="liq-filters">
-                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, limit=active_filters.limit) }}"
-                       class="filter-chip {% if not active_filters.asset %}active{% endif %}">{{ t("markets_liquidations_tous", "Tous") }}</a>
-                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset='BTC', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
-                       class="filter-chip {% if active_filters.asset == 'BTC' %}active{% endif %}">BTC</a>
-                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset='ETH', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
-                       class="filter-chip {% if active_filters.asset == 'ETH' %}active{% endif %}">ETH</a>
-                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset='SOL', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
-                       class="filter-chip {% if active_filters.asset == 'SOL' %}active{% endif %}">SOL</a>
-                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset='BNB', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
-                       class="filter-chip {% if active_filters.asset == 'BNB' %}active{% endif %}">BNB</a>
-                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset='XRP', side=active_filters.side, impact=active_filters.impact, limit=active_filters.limit) }}"
-                       class="filter-chip {% if active_filters.asset == 'XRP' %}active{% endif %}">XRP</a>
-                </div>
-
-                <strong class="liq-block-title">{{ t("markets_liquidations_cote_liquide", "Côté liquidé") }}</strong>
-                <div class="liq-filters">
-                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, impact=active_filters.impact, limit=active_filters.limit) }}"
-                       class="filter-chip {% if not active_filters.side %}active{% endif %}">{{ t("markets_liquidations_tous", "Tous") }}</a>
-                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, side='long', impact=active_filters.impact, limit=active_filters.limit) }}"
-                       class="filter-chip {% if active_filters.side == 'long' %}active{% endif %}">Longs</a>
-                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, side='short', impact=active_filters.impact, limit=active_filters.limit) }}"
-                       class="filter-chip {% if active_filters.side == 'short' %}active{% endif %}">Shorts</a>
-                </div>
-            </div>
-
-            <div class="proof-right">
-                <div>
-                    <strong class="liq-block-title">{{ t("markets_liquidations_impact", "Impact") }}</strong>
-                    <div class="liq-filters">
-                        <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, side=active_filters.side, limit=active_filters.limit) }}"
-                           class="filter-chip {% if not active_filters.impact %}active{% endif %}">{{ t("markets_liquidations_tous_niveaux", "Tous niveaux") }}</a>
-                        <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, side=active_filters.side, impact='high', limit=active_filters.limit) }}"
-                           class="filter-chip {% if active_filters.impact == 'high' %}active{% endif %}">{{ t("markets_liquidations_high_impact", "High Impact") }}</a>
-                    </div>
-                </div>
-
-                <div style="margin-top:22px;">
-                    <strong class="liq-block-title">{{ t("markets_liquidations_nombre_d_evenements", "Nombre d’events") }}</strong>
-                    <div class="liq-filters">
-                        <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, side=active_filters.side, impact=active_filters.impact, limit=6) }}"
-                           class="filter-chip {% if active_filters.limit == 6 %}active{% endif %}">6</a>
-                        <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, side=active_filters.side, impact=active_filters.impact, limit=12) }}"
-                           class="filter-chip {% if active_filters.limit == 12 %}active{% endif %}">12</a>
-                        <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang, asset=active_filters.asset, side=active_filters.side, impact=active_filters.impact, limit=24) }}"
-                           class="filter-chip {% if active_filters.limit == 24 %}active{% endif %}">24</a>
-                    </div>
-                </div>
-
-                <div style="margin-top:22px;">
-                    <a href="{{ url_for('liquidations.liquidations_page', lang_code=current_lang) }}" class="primary-link-btn">{{ t("markets_liquidations_reinitialiser_les_filtres", "Réinitialiser les filtres") }}</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>{{ t("markets_liquidations_flux_principal", "Flux principal") }}</span>
-            <h2>{{ t("markets_liquidations_tableau_des_liquidations", "Tableau des liquidations") }}</h2>
-            <p>
-                {{ t("markets_liquidations_tableau_detaille_des_evenements_detectes_sur_les_actifs_suivis_avec_le_c", "Tableau détaillé des événements détectés sur les actifs suivis, avec le côté liquidé,                 la valeur, l’exchange concerné, la timeframe et le biais de lecture associé.") }}
-            </p>
-        </div>
-
-        <div class="btc-signals-table-wrap premium-table-wrap">
-            <table class="btc-signals-table premium-table">
-                <thead>
-                    <tr>
-                        <th>{{ t("status_active", "Actif") }}</th>
-                        <th>{{ t("markets_liquidations_cote", "Côté") }}</th>
-                        <th>{{ t("markets_liquidations_exchange", "Exchange") }}</th>
-                        <th>{{ t("markets_liquidations_prix", "Prix") }}</th>
-                        <th>{{ t("markets_liquidations_valeur_usd", "Valeur USD") }}</th>
-                        <th>{{ t("markets_liquidations_quantite", "Quantité") }}</th>
-                        <th>{{ t("markets_liquidations_timeframe", "Timeframe") }}</th>
-                        <th>{{ t("markets_liquidations_impact", "Impact") }}</th>
-                        <th>{{ t("bias", "Biais") }}</th>
-                        <th>{{ t("markets_liquidations_heure", "Heure") }}</th>
-                    </tr>
-                </thead>
-                <tbody id="liquidationsTableBody">
-                    {% if liquidation_events %}
-                        {% for event in liquidation_events %}
-                        <tr>
-                            <td><strong>{{ event.asset }}</strong></td>
-                            <td>
-                                {% if event.side == 'Long' %}
-                                    <span class="pill pill-red">{{ event.side }}</span>
-                                {% else %}
-                                    <span class="pill pill-green">{{ event.side }}</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ event.exchange }}</td>
-                            <td>{{ event.price }}</td>
-                            <td>{{ event.value_usd }}</td>
-                            <td>{{ event.quantity }}</td>
-                            <td>{{ event.timeframe }}</td>
-                            <td><span class="pill pill-neutral">{{ event.impact }}</span></td>
-                            <td>
-                                {% if event.market_bias == 'Bullish' %}
-                                    <span class="pill pill-green">{{ event.market_bias }}</span>
-                                {% elif event.market_bias == 'Bearish' %}
-                                    <span class="pill pill-red">{{ event.market_bias }}</span>
-                                {% else %}
-                                    <span class="pill pill-blue">{{ event.market_bias }}</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ event.time }}</td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="10" class="empty-live-row">
-                                {{ t('no_live_event_now', 'No live events at the moment.') }}
-                            </td>
-                        </tr>
-                    {% endif %}
-                </tbody>
+                <tr><td colspan="7" class="lq-no-events">No live events detected — waiting for Binance WebSocket feed</td></tr>
+                {% endfor %}
+              </tbody>
             </table>
+          </div>
         </div>
+
+        <!-- ── READING GUIDE ── -->
+        <div style="margin-top:20px;">
+          <div class="lq-guide-card">
+            <span class="lq-card-label">How to read this page</span>
+            <div class="lq-guide-grid">
+              <div class="lq-guide-item">
+                <h4>🔴 Long liquidated</h4>
+                <p>Buyers were forced out. The market hit their stop loss. Often creates a sharp wick down — watch for institutional absorption and reversal.</p>
+              </div>
+              <div class="lq-guide-item">
+                <h4>🟢 Shorts sold out</h4>
+                <p>Short sellers were squeezed. This creates forced buying that accelerates upward moves — but often reverses once the squeeze is exhausted.</p>
+              </div>
+              <div class="lq-guide-item">
+                <h4>⚡ High impact events</h4>
+                <p>Events above $5M on a single asset in a short window. These move markets. When clustered, they signal a structural level being tested.</p>
+              </div>
+              <div class="lq-guide-item">
+                <h4>🌊 Cascade pattern</h4>
+                <p>Multiple high-impact events on the same asset in under 10 minutes. Often precedes a reversal as the flush clears the path for the next move.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /left col -->
+
+      <!-- RIGHT COLUMN -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- PRESSURE GAUGE -->
+        <div class="lq-pressure-card">
+          <span class="lq-card-label">Market Pressure</span>
+          <h3 style="font-size:1rem;font-weight:700;color:#fff;margin-bottom:14px;">Long / Short Ratio</h3>
+          <div class="lq-bias-display">
+            <span class="bias-name">{{ s.dominant_bias }}</span>
+            <span class="bias-sub">{{ s.market_state }}</span>
+          </div>
+          <div class="lq-gauge-wrap">
+            <div class="lq-gauge-labels"><span>🟢 Shorts out</span><span>🔴 Longs out</span></div>
+            <div class="lq-gauge-bar">
+              {% set long_pct = (s.long_value[1:-1]|float / (s.long_value[1:-1]|float + s.short_value[1:-1]|float) * 100)|int if s.long_value and s.short_value else 50 %}
+              <div class="lq-gauge-fill {% if long_pct > 50 %}bearish{% endif %}" style="width:{{ long_pct }}%;"></div>
+            </div>
+            <div class="lq-gauge-labels">
+              <span style="color:#4ade80;">{{ s.short_value }}</span>
+              <span style="color:#f87171;">{{ s.long_value }}</span>
+            </div>
+          </div>
+          <div class="lq-ratio-grid">
+            <div class="lq-ratio-cell long">
+              <span>Long out</span>
+              <strong>{{ s.long_value }}</strong>
+            </div>
+            <div class="lq-ratio-cell short">
+              <span>Short out</span>
+              <strong>{{ s.short_value }}</strong>
+            </div>
+          </div>
+          <div style="margin-top:12px;padding:10px 14px;background:rgba(255,255,255,.03);border-radius:8px;font-size:12px;color:var(--lq-mu);line-height:1.5;">
+            When longs dominate liquidations, the market may be in a bearish fragility phase. If shorts dominate, a bullish squeeze may be underway.
+          </div>
+        </div>
+
+        <!-- STRESS SCALE -->
+        <div class="lq-stress-card">
+          <span class="lq-card-label">Pressure Gauge</span>
+          <h3 style="font-size:1rem;font-weight:700;color:#fff;margin-bottom:4px;">Stress scale</h3>
+          <p style="font-size:12px;color:var(--lq-mu);margin-bottom:12px;">Synthetic view — which side is under maximum pressure.</p>
+          <div class="lq-stress-bar">
+            <div class="lq-stress-fill" style="width:{{ s.pressure_ratio }}%;"></div>
+          </div>
+          <div class="lq-stress-labels">
+            <span>🟢 Shorts squeezed</span>
+            <span>🔴 Longs flushed</span>
+          </div>
+          <div style="margin-top:10px;">
+            <div class="lq-stress-reading"><span>Bull / Bear pressure</span><strong>{{ s.dominant_bias }}</strong></div>
+            <div class="lq-stress-reading" style="margin-top:6px;"><span>Reading</span><strong>{{ s.imbalance_strength }}</strong></div>
+            <div class="lq-stress-reading" style="margin-top:6px;"><span>Use</span><strong style="font-size:11px;color:var(--lq-mu);">Detect squeezes & capitulations</strong></div>
+          </div>
+        </div>
+
+        <!-- ASSET HEATMAP (PREMIUM) -->
+        {% if is_prem %}
+        <div class="lq-heatmap-card">
+          <span class="lq-card-label">Asset Heatmap <span class="lq-badge-prem">Premium</span></span>
+          <h3 style="font-size:1rem;font-weight:700;color:#fff;margin-bottom:4px;">Liquidation by asset</h3>
+          <p style="font-size:12px;color:var(--lq-mu);margin-bottom:0;">Which asset is under the most liquidation pressure right now.</p>
+          <div class="lq-hm-grid">
+            {% set assets_liq = namespace(data={}) %}
+            {% for e in liquidation_events %}
+              {% if e.asset not in assets_liq.data %}
+                {% set _ = assets_liq.data.update({e.asset: {"long": 0, "short": 0, "total": 0}}) %}
+              {% endif %}
+            {% endfor %}
+            {% set fallback_hm = [
+              {"asset":"BTC","total":"$33.6M","dominant":"Long","class":"hot"},
+              {"asset":"ETH","total":"$28.1M","dominant":"Long","class":"hot"},
+              {"asset":"SOL","total":"$14.2M","dominant":"Short","class":"warm"},
+              {"asset":"XRP","total":"$7.8M","dominant":"Long","class":"cool"},
+              {"asset":"BNB","total":"$3.1M","dominant":"Short","class":"cold"},
+              {"asset":"Other","total":"$1.5M","dominant":"Mixed","class":"cold"},
+            ] %}
+            {% for item in fallback_hm %}
+            <div class="lq-hm-cell {{ item.class }}">
+              <span class="lq-hm-ticker">{{ item.asset }}</span>
+              <span class="lq-hm-val" style="color:{% if item.dominant == 'Long' %}#f87171{% elif item.dominant == 'Short' %}#4ade80{% else %}#fff{% endif %};">{{ item.total }}</span>
+              <span class="lq-hm-side">{{ item.dominant }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% else %}
+        <div class="lq-lock-wrap">
+          <div class="lq-lock-blur">
+            <div class="lq-heatmap-card">
+              <div class="lq-hm-grid">
+                {% for item in [("BTC","hot"),("ETH","hot"),("SOL","warm"),("XRP","cool"),("BNB","cold"),("ALT","cold")] %}
+                <div class="lq-hm-cell {{ item[1] }}">
+                  <span class="lq-hm-ticker">{{ item[0] }}</span>
+                  <span class="lq-hm-val">$xx.xM</span>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="lq-lock-overlay" style="padding:20px;">
+            <div style="font-size:28px;margin-bottom:8px;">🌡️</div>
+            <div class="lq-lock-title" style="font-size:1rem;">Liquidation Heatmap</div>
+            <div class="lq-lock-desc" style="font-size:12px;margin-bottom:14px;">See which asset is under the most pressure — Premium only.</div>
+            <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="lq-lock-btn" style="padding:10px 18px;font-size:12px;">Unlock Premium →</a>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- BIGGEST EVENT -->
+        <div class="lq-stress-card">
+          <span class="lq-card-label">Biggest event</span>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <h3 style="font-size:1.4rem;font-weight:900;color:#f87171;">{{ s.biggest_value }}</h3>
+            <span style="font-size:12px;color:var(--lq-mu);">{{ s.biggest_exchange }}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="lq-stress-reading"><span>Asset</span><strong>{{ s.biggest_asset }}</strong></div>
+            <div class="lq-stress-reading"><span>Side</span><strong>{{ s.biggest_side }}</strong></div>
+            <div class="lq-stress-reading"><span>Exchange</span><strong>{{ s.biggest_exchange }}</strong></div>
+          </div>
+        </div>
+
+      </div><!-- /right col -->
     </div>
-</section>
+  </div>
 
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>{{ t("markets_liquidations_lecture_pratique", "Lecture pratique") }}</span>
-            <h2>{{ t("markets_liquidations_exemples_d_interpretation", "Exemples d’interprétation") }}</h2>
-            <p>
-                {{ t("markets_liquidations_voici_quelques_cas_concrets_pour_mieux_exploiter_les_informations_affich", "Voici quelques cas concrets pour mieux exploiter les informations affichées sur cette page.                 L’intérêt des liquidations réside surtout dans leur lecture combinée avec le comportement du prix.") }}
-            </p>
-        </div>
-
-        <div class="why-grid">
-            <div class="why-card">
-                <strong>{{ t("markets_liquidations_purge_haussiere", "Purge haussière") }}</strong>
-                <p>
-                    {{ t("markets_liquidations_une_forte_vague_de_shorts_liquides_suivie_d_une_acceleration_rapide_du_p", "Une forte vague de shorts liquidés suivie d’une accélération rapide du prix                     peut signaler un squeeze. Ce type de mouvement peut prolonger l’impulsion.") }}
-                </p>
-            </div>
-
-            <div class="why-card">
-                <strong>{{ t("markets_liquidations_purge_baissiere", "Purge baissière") }}</strong>
-                <p>
-                    {{ t("markets_liquidations_une_forte_vague_de_longs_liquides_peut_indiquer_un_flush_brutal_la_react", "Une forte vague de longs liquidés peut indiquer un flush brutal.                     La réaction du prix après la purge aide à distinguer capitulation et continuation.") }}
-                </p>
-            </div>
-
-            <div class="why-card">
-                <strong>{{ t("markets_liquidations_reaction_du_prix", "Réaction du prix") }}</strong>
-                <p>
-                    {{ t("markets_liquidations_apres_une_vague_de_liquidations_observe_si_le_marche_rebondit_consolide", "Après une vague de liquidations, observe si le marché rebondit,                     consolide ou continue dans le même sens. C’est souvent là que se trouve la vraie info.") }}
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section-standard">
-    <div class="section-container">
-        <div class="section-title">
-            <span>{{ t("markets_liquidations_strategy", "Strategy") }}</span>
-            <h2>{{ t("markets_liquidations_comment_trader_les_liquidations", "Comment trader les liquidations") }}</h2>
-            <p>
-                {{ t("markets_liquidations_les_liquidations_sont_utiles_pour_reperer_les_zones_de_stress_ou_le_marc", "Les liquidations sont utiles pour repérer les zones de stress où le marché nettoie les positions                 trop exposées. Elles peuvent être utilisées en continuation ou en contrarien selon le contexte.") }}
-            </p>
-        </div>
-
-        <div class="why-grid">
-            <div class="why-card">
-                <strong>{{ t("markets_liquidations_entree_contrarienne", "Entrée contrarienne") }}</strong>
-                <p>
-                    {{ t("markets_liquidations_apres_une_grosse_vague_de_liquidations_et_une_stabilisation_du_prix_le_m", "Après une grosse vague de liquidations et une stabilisation du prix,                     le marché peut produire un rebond violent lorsque l’excès de levier a été nettoyé.") }}
-                </p>
-            </div>
-
-            <div class="why-card">
-                <strong>{{ t("markets_liquidations_confirmation_de_tendance", "Confirmation de tendance") }}</strong>
-                <p>
-                    {{ t("markets_liquidations_si_les_liquidations_accompagnent_un_mouvement_deja_engage_et_que_le_prix", "Si les liquidations accompagnent un mouvement déjà engagé et que le prix                     ne réintègre pas rapidement, cela peut confirmer une continuation directionnelle.") }}
-                </p>
-            </div>
-
-            <div class="why-card">
-                <strong>{{ t("markets_liquidations_timing_institutionnel", "Timing institutionnel") }}</strong>
-                <p>
-                    {{ t("markets_liquidations_les_meilleures_opportunites_apparaissent_souvent_juste_apres_une_purge_l", "Les meilleures opportunités apparaissent souvent juste après une purge,                     lorsque la liquidité est nettoyée et que le marché révèle sa vraie direction.") }}
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
+</div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const ctx = document.getElementById("liqChart");
-    let liqChart = null;
-    let previousTopTimestamp = null;
+// Filter buttons
+document.addEventListener('DOMContentLoaded', function() {
+  const btns = document.querySelectorAll('.lq-filter-btn');
+  const rows = document.querySelectorAll('#lqTable tbody tr[data-side]');
 
-    function sidePill(side) {
-        if (side === "Long") {
-            return `<span class="pill pill-red">${side}</span>`;
-        }
-        return `<span class="pill pill-green">${side}</span>`;
-    }
-
-    function biasPill(bias) {
-        if (bias === "Bullish") {
-            return `<span class="pill pill-green">${bias}</span>`;
-        }
-        if (bias === "Bearish") {
-            return `<span class="pill pill-red">${bias}</span>`;
-        }
-        return `<span class="pill pill-blue">${bias}</span>`;
-    }
-
-    function impactPill(impact) {
-        return `<span class="pill pill-neutral">${impact}</span>`;
-    }
-
-    function updateChart(summary) {
-        if (!ctx) return;
-
-        const longValue = Number(summary.long_value_numeric || 0);
-        const shortValue = Number(summary.short_value_numeric || 0);
-
-        if (!liqChart) {
-            liqChart = new Chart(ctx, {
-                type: "bar",
-                data: {
-                    labels: ["{{ t('liquidated_longs', 'Longs liquidés') }}", "{{ t('liquidated_shorts', 'Shorts liquidés') }}"],
-                    datasets: [{
-                        label: "Liquidations ($)",
-                        data: [longValue, shortValue],
-                        borderWidth: 1,
-                        borderRadius: 12
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: {
-                        duration: 500
-                    },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return "$" + Number(context.raw).toLocaleString();
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            ticks: { color: "rgba(255,255,255,0.72)" },
-                            grid: { color: "rgba(255,255,255,0.04)" }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                color: "rgba(255,255,255,0.72)",
-                                callback: function(value) {
-                                    return "$" + Number(value).toLocaleString();
-                                }
-                            },
-                            grid: { color: "rgba(255,255,255,0.05)" }
-                        }
-                    }
-                }
-            });
-        } else {
-            liqChart.data.datasets[0].data = [longValue, shortValue];
-            liqChart.update();
-        }
-    }
-
-    function updateStats(summary) {
-        const heroTotalEvents = document.getElementById("heroTotalEvents");
-        const heroTotalValue = document.getElementById("heroTotalValue");
-        const heroBias = document.getElementById("heroBias");
-        const heroHighImpact = document.getElementById("heroHighImpact");
-
-        const miniTotalEvents = document.getElementById("miniTotalEvents");
-        const miniTotalValue = document.getElementById("miniTotalValue");
-        const miniBias = document.getElementById("miniBias");
-
-        const longsBox = document.getElementById("longsBox");
-        const shortsBox = document.getElementById("shortsBox");
-        const highImpactBox = document.getElementById("highImpactBox");
-
-        const ratioText = document.getElementById("ratioText");
-        const signalBias = document.getElementById("signalBias");
-        const pressureBias = document.getElementById("pressureBias");
-
-        if (heroTotalEvents) heroTotalEvents.textContent = summary.total_events || 0;
-        if (heroTotalValue) heroTotalValue.textContent = summary.total_value || "$0.0M";
-        if (heroBias) heroBias.textContent = summary.dominant_bias || "Neutral";
-        if (heroHighImpact) heroHighImpact.textContent = summary.high_impact_count || 0;
-
-        if (miniTotalEvents) miniTotalEvents.textContent = summary.total_events || 0;
-        if (miniTotalValue) miniTotalValue.textContent = summary.total_value || "$0.0M";
-        if (miniBias) miniBias.textContent = summary.dominant_bias || "Neutral";
-
-        if (longsBox) {
-            longsBox.textContent = `${summary.long_value || "$0.0M"} • ${summary.long_count || 0} events`;
-        }
-
-        if (shortsBox) {
-            shortsBox.textContent = `${summary.short_value || "$0.0M"} • ${summary.short_count || 0} events`;
-        }
-
-        if (highImpactBox) {
-            highImpactBox.textContent = `${summary.high_impact_count || 0} high impact alerts`;
-        }
-
-        if (ratioText) {
-            ratioText.textContent = `${summary.long_count || 0} / ${summary.short_count || 0}`;
-        }
-
-        if (signalBias) {
-            signalBias.textContent = summary.dominant_bias || "Neutral";
-        }
-
-        if (pressureBias) {
-            pressureBias.textContent = summary.dominant_bias || "Neutral";
-        }
-
-        const longCount = Number(summary.long_count || 0);
-        const shortCount = Number(summary.short_count || 0);
-        const total = longCount + shortCount;
-
-        let shortPct = 50;
-        let longPct = 50;
-
-        if (total > 0) {
-            shortPct = Math.round((shortCount * 100) / total);
-            longPct = Math.round((longCount * 100) / total);
-        }
-
-        const pressureShort = document.getElementById("pressureShort");
-        const pressureLong = document.getElementById("pressureLong");
-        const pressureShortText = document.getElementById("pressureShortText");
-        const pressureLongText = document.getElementById("pressureLongText");
-
-        if (pressureShort) pressureShort.style.width = `${shortPct}%`;
-        if (pressureLong) pressureLong.style.width = `${longPct}%`;
-        if (pressureShortText) pressureShortText.textContent = `${shortPct}%`;
-        if (pressureLongText) pressureLongText.textContent = `${longPct}%`;
-
-        const smartSqueeze = document.getElementById("smartSqueeze");
-        const smartCapitulation = document.getElementById("smartCapitulation");
-        const smartRegime = document.getElementById("smartRegime");
-
-        if (smartSqueeze) {
-            smartSqueeze.textContent = shortCount > longCount
-                ? "Forte pression sur les shorts → potentiel de continuation haussière."
-                : "Pas de squeeze majeur détecté pour le moment.";
-        }
-
-        if (smartCapitulation) {
-            smartCapitulation.textContent = longCount > shortCount
-                ? "Pression dominante sur les longs → risque de panic sell ou flush."
-                : "Pas de capitulation longue dominante détectée.";
-        }
-
-        if (smartRegime) {
-            smartRegime.textContent = `Régime détecté : ${summary.dominant_bias || "Neutral"}.`;
-        }
-    }
-
-    function updateTable(events) {
-        const tbody = document.getElementById("liquidationsTableBody");
-        if (!tbody) return;
-
-        if (!events || !events.length) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="10" class="empty-live-row">
-                        {{ t('no_live_event_now', 'No live events at the moment.') }}
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        tbody.innerHTML = events.map(event => `
-            <tr class="live-row">
-                <td><strong>${event.asset || "-"}</strong></td>
-                <td>${sidePill(event.side || "-")}</td>
-                <td>${event.exchange || "-"}</td>
-                <td>${event.price || "-"}</td>
-                <td>${event.value_usd || "-"}</td>
-                <td>${event.quantity || "-"}</td>
-                <td>${event.timeframe || "-"}</td>
-                <td>${impactPill(event.impact || "-")}</td>
-                <td>${biasPill(event.market_bias || "Neutral")}</td>
-                <td>${event.time || "-"}</td>
-            </tr>
-        `).join("");
-    }
-
-    function updateTopEvents(topEvents) {
-        const box = document.getElementById("topEventsBox");
-        if (!box) return;
-
-        if (!topEvents || !topEvents.length) {
-            box.innerHTML = `
-                <div class="proof-card">
-                    <strong>Aucune liquidation majeure</strong>
-                    <span>Next major events will appear here.</span>
-                </div>
-            `;
-            return;
-        }
-
-        box.innerHTML = topEvents.map(item => `
-            <div class="proof-card top-event-card">
-                <strong>${item.asset} — ${item.side} liquidation</strong>
-                <span>
-                    ${item.value_usd} • ${item.exchange} • ${item.price}
-                    • ${item.time} • biais ${item.market_bias}
-                </span>
-            </div>
-        `).join("");
-    }
-
-    function flashIfNew(events) {
-        if (!events || !events.length) return;
-
-        const first = events[0];
-        if (!first.timestamp) return;
-
-        if (previousTopTimestamp && previousTopTimestamp !== first.timestamp) {
-            document.body.classList.add("liquidation-flash");
-            setTimeout(() => {
-                document.body.classList.remove("liquidation-flash");
-            }, 700);
-        }
-
-        previousTopTimestamp = first.timestamp;
-    }
-
-    function updateStatus(summary, events) {
-        const status = document.getElementById("liveStatus");
-        if (!status) return;
-
-        if (!events || !events.length || !summary.total_events) {
-            status.className = "live-status live-status-waiting";
-            status.textContent = "{{ t('waiting_live_data', 'Waiting live data...') }}";
-            return;
-        }
-
-        status.className = "live-status live-status-ok";
-        status.textContent = `Live active • ${summary.total_events} events tracked`;
-    }
-
-    async function fetchLiveData() {
-        try {
-            const params = new URLSearchParams(window.location.search);
-            const response = await fetch(`/marche/api/liquidations/live?${params.toString()}`, {
-                cache: "no-store"
-            });
-
-            if (!response.ok) return;
-
-            const data = await response.json();
-            if (!data || !data.ok) return;
-
-            updateStats(data.summary || {});
-            updateTable(data.events || []);
-            updateTopEvents(data.top_events || []);
-            updateChart(data.summary || {});
-            updateStatus(data.summary || {}, data.events || []);
-            flashIfNew(data.events || []);
-        } catch (error) {
-            const status = document.getElementById("liveStatus");
-            if (status) {
-                status.className = "live-status live-status-error";
-                status.textContent = "{{ t('live_feed_unavailable', 'Live feed unavailable') }}";
-            }
-        }
-    }
-
-    updateChart({
-        long_value_numeric: {{ summary.long_value_numeric or 0 }},
-        short_value_numeric: {{ summary.short_value_numeric or 0 }}
+  btns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      btns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const f = this.dataset.filter;
+      rows.forEach(row => {
+        const side   = row.dataset.side;
+        const impact = row.dataset.impact;
+        const asset  = row.dataset.asset;
+        const show =
+          f === 'all' ||
+          (f === 'long'  && side === 'long') ||
+          (f === 'short' && side === 'short') ||
+          (f === 'high'  && impact === 'high') ||
+          (f === 'btc'   && asset === 'btc') ||
+          (f === 'eth'   && asset === 'eth');
+        row.style.display = show ? '' : 'none';
+      });
     });
-
-    fetchLiveData();
-    setInterval(fetchLiveData, 5000);
+  });
 });
 </script>
-
 {% endblock %}

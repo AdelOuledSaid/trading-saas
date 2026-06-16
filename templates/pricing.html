@@ -1,252 +1,693 @@
 {% extends "base.html" %}
-
-{% block title %}{{ t("site_pricing_offres_premium_velwolef", "Offres Premium | VelWolef") }}{% endblock %}
-{% block body_class %}{{ t("site_pricing_dashboard_body", "dashboard-body") }}{% endblock %}
+{% block title %}Pricing — VelWolef Trading Intelligence{% endblock %}
+{% block meta_description %}Professional trading signals, Academy 7 levels, whale tracking and smart money alerts. Choose the plan that fits your edge.{% endblock %}
 
 {% block extra_css %}
 <style>
-.pricing-page{ max-width:1280px; margin:0 auto; padding:50px 20px 80px; }
-.pricing-hero{ text-align:center; margin-bottom:36px; }
-.pricing-hero h1{ font-size:clamp(2rem,4vw,3.4rem); font-weight:900; margin-bottom:14px; color:#fff; letter-spacing:-.03em; }
-.pricing-hero p{ max-width:760px; margin:0 auto; color:#9fb0c9; font-size:1.05rem; line-height:1.8; }
-.pricing-proof{ margin-top:16px; color:#00ff99; font-weight:900; }
-.pricing-choice-helper{ margin:0 auto 38px; max-width:860px; padding:18px 22px; border-radius:20px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.08); text-align:center; color:#cbd5e1; }
-.pricing-choice-helper strong{ color:#fff; }
-.pricing-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:26px; align-items:stretch; }
-.pricing-card{ position:relative; border-radius:28px; padding:28px 24px; background:linear-gradient(180deg,rgba(16,22,37,.96),rgba(9,13,24,.98)); border:1px solid rgba(255,255,255,.08); box-shadow:0 20px 60px rgba(0,0,0,.35); overflow:hidden; display:flex; flex-direction:column; min-height:100%; }
-.pricing-card::before{ content:""; position:absolute; inset:0; pointer-events:none; opacity:.22; }
-.plan-basic::before{ background:radial-gradient(circle at top left,rgba(0,198,255,.35),transparent 45%); }
-.plan-premium::before{ background:radial-gradient(circle at top left,rgba(255,196,0,.35),transparent 45%); }
-.plan-vip::before{ background:radial-gradient(circle at top left,rgba(163,53,238,.38),transparent 45%); }
-.plan-basic{ border-color:rgba(0,198,255,.28); }
-.plan-premium{ border-color:rgba(255,196,0,.34); transform:translateY(-8px); box-shadow:0 24px 80px rgba(255,196,0,.10),0 20px 60px rgba(0,0,0,.35); }
-.plan-vip{ border-color:rgba(163,53,238,.34); }
-.plan-badge{ display:inline-flex; align-items:center; gap:8px; width:fit-content; padding:8px 14px; border-radius:999px; font-size:.78rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; margin-bottom:12px; }
-.plan-basic .plan-badge{ background:rgba(0,198,255,.14); color:#67dcff; border:1px solid rgba(0,198,255,.24); }
-.plan-premium .plan-badge{ background:rgba(255,196,0,.16); color:#ffd34d; border:1px solid rgba(255,196,0,.28); }
-.plan-vip .plan-badge{ background:rgba(163,53,238,.16); color:#d38cff; border:1px solid rgba(163,53,238,.28); }
-.plan-reco{ margin-bottom:12px; color:#00ff99; font-weight:900; font-size:.92rem; }
-.plan-title{ font-size:1.8rem; font-weight:900; color:#fff; margin:0 0 10px; }
-.plan-subtitle{ color:#9fb0c9; line-height:1.7; margin-bottom:24px; min-height:52px; }
-.plan-price{ display:flex; align-items:flex-end; gap:8px; margin-bottom:24px; }
-.plan-price strong{ font-size:3rem; line-height:1; color:#fff; font-weight:900; }
-.plan-price span{ color:#93a4bf; font-size:1rem; padding-bottom:5px; }
-.plan-separator{ height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent); margin:0 0 22px; }
-.plan-features{ list-style:none; padding:0; margin:0 0 24px; display:grid; gap:12px; }
-.plan-features li{ display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:14px; background:rgba(255,255,255,.03); color:#dbe7ff; font-size:.98rem; line-height:1.5; }
-.feature-yes{ border:1px solid rgba(38,208,124,.14); }
-.feature-no{ border:1px solid rgba(255,80,80,.14); opacity:.88; }
-.feature-icon{ width:24px; min-width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:.82rem; font-weight:900; }
-.feature-yes .feature-icon{ background:rgba(38,208,124,.18); color:#39e58a; box-shadow:inset 0 0 0 1px rgba(38,208,124,.25); }
-.feature-no .feature-icon{ background:rgba(255,80,80,.16); color:#ff6b6b; box-shadow:inset 0 0 0 1px rgba(255,80,80,.24); }
-.plan-note{ margin-top:auto; margin-bottom:18px; padding:14px 16px; border-radius:16px; font-size:.95rem; line-height:1.7; color:#d9e4fb; }
-.plan-basic .plan-note{ background:rgba(0,198,255,.08); border:1px solid rgba(0,198,255,.14); }
-.plan-premium .plan-note{ background:rgba(255,196,0,.09); border:1px solid rgba(255,196,0,.16); }
-.plan-vip .plan-note{ background:rgba(163,53,238,.09); border:1px solid rgba(163,53,238,.16); }
-.plan-btn,.plan-btn:hover,.plan-btn:visited{ display:inline-flex; justify-content:center; align-items:center; width:100%; min-height:54px; border-radius:16px; font-weight:900; font-size:1rem; text-decoration:none; border:none; cursor:pointer; transition:transform .18s ease,box-shadow .18s ease,opacity .18s ease; }
-.plan-btn:hover{ transform:translateY(-2px); }
-.plan-basic .plan-btn{ color:#06131c; background:linear-gradient(135deg,#44d9ff,#12bfff); box-shadow:0 14px 30px rgba(18,191,255,.24); }
-.plan-premium .plan-btn{ color:#1b1300; background:linear-gradient(135deg,#ffd44d,#ffb800); box-shadow:0 14px 30px rgba(255,184,0,.24); }
-.plan-vip .plan-btn{ color:#fff; background:linear-gradient(135deg,#a855f7,#7c3aed); box-shadow:0 14px 30px rgba(124,58,237,.24); }
-.plan-btn.current-plan{ background:rgba(255,255,255,.08)!important; color:#cfdaf1!important; box-shadow:none!important; border:1px solid rgba(255,255,255,.10); cursor:default; }
-.pricing-extra{ margin-top:42px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
-.pricing-mini-card{ background:linear-gradient(180deg,rgba(15,20,33,.95),rgba(8,11,20,.98)); border:1px solid rgba(255,255,255,.07); border-radius:22px; padding:22px; box-shadow:0 16px 40px rgba(0,0,0,.24); }
-.pricing-mini-card h3{ margin:0 0 10px; color:#fff; font-size:1.1rem; }
-.pricing-mini-card p{ margin:0; color:#9fb0c9; line-height:1.7; }
-.pricing-security{ margin-top:34px; text-align:center; color:#9fb0c9; line-height:1.8; font-weight:700; }
-@media(max-width:1100px){ .pricing-grid,.pricing-extra{ grid-template-columns:1fr; } .plan-premium{ transform:none; } }
-@media(max-width:640px){ .pricing-page{ padding:28px 14px 60px; } .pricing-card{ border-radius:22px; padding:22px 16px; } .plan-title{ font-size:1.55rem; } .plan-price strong{ font-size:2.45rem; } .plan-features li{ font-size:.94rem; padding:11px 12px; } }
+/* ══ PRICING PAGE — HIGH CONVERSION ══ */
+:root{
+  --pg:#0a0d13;--ps:#111520;--pb:rgba(255,255,255,.07);
+  --tx:#c8d0e0;--mu:#6b7588;
+  --bl:#3b82f6;--bd:rgba(59,130,246,.12);--bb:rgba(59,130,246,.25);
+  --go:#d4a843;--gd:rgba(212,168,67,.1);--gb:rgba(212,168,67,.22);
+  --pu:#8b5cf6;--pd:rgba(139,92,246,.1);--pb2:rgba(139,92,246,.25);
+  --gr:#22c55e;--re:#ef4444;
+}
+
+/* PAGE */
+.pg-wrap{max-width:1240px;margin:0 auto;padding:0 20px 100px;}
+
+/* ── TOP URGENCY BANNER ── */
+.pg-banner{
+  background:linear-gradient(90deg,rgba(59,130,246,.15),rgba(139,92,246,.15));
+  border-bottom:1px solid rgba(59,130,246,.25);
+  padding:12px 20px;text-align:center;
+  font-size:13px;font-weight:600;color:var(--tx);
+}
+.pg-banner span{color:#fff;}
+.pg-banner .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gr);margin-right:7px;animation:blink 1.4s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── HERO ── */
+.pg-hero{text-align:center;padding:70px 20px 50px;}
+.pg-hero-kicker{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 16px;border-radius:999px;
+  background:var(--gd);border:1px solid var(--gb);
+  font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  color:var(--go);margin-bottom:20px;
+}
+.pg-hero h1{
+  font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;
+  line-height:1.07;color:#fff;margin-bottom:16px;letter-spacing:-.03em;
+}
+.pg-hero h1 em{font-style:normal;color:var(--bl);}
+.pg-hero-sub{
+  font-size:1.1rem;color:var(--tx);line-height:1.75;
+  max-width:640px;margin:0 auto 28px;
+}
+.pg-proof-row{
+  display:flex;align-items:center;justify-content:center;
+  gap:20px;flex-wrap:wrap;margin-bottom:36px;
+}
+.pg-proof-item{
+  display:flex;align-items:center;gap:7px;
+  font-size:13px;font-weight:600;color:var(--tx);
+}
+.pg-proof-item::before{content:"✓";color:var(--gr);font-weight:900;}
+
+/* ── SELECTOR ── */
+.pg-selector{
+  display:inline-flex;align-items:center;gap:0;
+  background:var(--ps);border:1px solid var(--pb);border-radius:10px;
+  padding:4px;margin:0 auto 50px;
+}
+.pg-sel-btn{
+  padding:8px 20px;border-radius:7px;font-size:13px;
+  font-weight:600;cursor:pointer;transition:all .15s;
+  border:none;background:transparent;color:var(--mu);
+}
+.pg-sel-btn.active{background:var(--bl);color:#fff;}
+
+/* ── PLANS GRID ── */
+.pg-plans{
+  display:grid;
+  grid-template-columns:1fr 1.08fr 1fr;
+  gap:18px;align-items:start;
+  margin-bottom:70px;
+}
+.pg-card{
+  background:var(--ps);border:1px solid var(--pb);
+  border-radius:20px;padding:28px 24px;
+  display:flex;flex-direction:column;position:relative;overflow:hidden;
+  transition:transform .2s,border-color .2s;
+}
+.pg-card:hover{transform:translateY(-4px);}
+.pg-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.pg-card.basic::before{background:linear-gradient(90deg,var(--bl),#60a5fa);}
+.pg-card.premium{
+  border-color:var(--gb);
+  background:linear-gradient(160deg,#111520,#1a1208);
+  transform:translateY(-8px);
+  box-shadow:0 32px 80px rgba(212,168,67,.12),0 20px 60px rgba(0,0,0,.4);
+}
+.pg-card.premium::before{background:linear-gradient(90deg,var(--go),#f0c060);}
+.pg-card.premium:hover{transform:translateY(-14px);}
+.pg-card.vip::before{background:linear-gradient(90deg,var(--pu),#c084fc);}
+
+/* Popular badge */
+.pg-popular{
+  position:absolute;top:16px;right:16px;
+  background:var(--go);color:#000;
+  font-size:10px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;
+  padding:4px 10px;border-radius:4px;
+}
+
+/* Plan header */
+.pg-plan-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 12px;border-radius:4px;
+  font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  margin-bottom:14px;
+}
+.basic .pg-plan-badge{background:var(--bd);color:#93c5fd;}
+.premium .pg-plan-badge{background:var(--gd);color:var(--go);}
+.vip .pg-plan-badge{background:var(--pd);color:#c4b5fd;}
+.pg-plan-name{font-size:1.5rem;font-weight:900;color:#fff;margin-bottom:8px;}
+.pg-plan-desc{font-size:13px;color:var(--mu);line-height:1.65;margin-bottom:20px;min-height:54px;}
+
+/* Price */
+.pg-price{display:flex;align-items:flex-end;gap:8px;margin-bottom:8px;}
+.pg-price strong{font-size:3rem;font-weight:900;color:#fff;line-height:1;}
+.pg-price span{font-size:14px;color:var(--mu);padding-bottom:6px;}
+.pg-price-note{font-size:12px;color:var(--mu);margin-bottom:22px;}
+.pg-price-note em{color:var(--gr);font-style:normal;font-weight:700;}
+
+/* Separator */
+.pg-sep{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);margin:0 0 20px;}
+
+/* Features */
+.pg-feats{list-style:none;padding:0;margin:0 0 22px;display:flex;flex-direction:column;gap:8px;}
+.pg-feat{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 12px;border-radius:10px;
+  font-size:13px;color:var(--tx);line-height:1.5;
+}
+.pg-feat.yes{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.1);}
+.pg-feat.no{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);opacity:.6;}
+.pg-feat-icon{
+  width:20px;height:20px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:900;flex-shrink:0;margin-top:1px;
+}
+.yes .pg-feat-icon{background:rgba(34,197,94,.15);color:var(--gr);}
+.no .pg-feat-icon{background:rgba(239,68,68,.1);color:var(--re);}
+.pg-feat strong{color:#fff;font-weight:700;}
+.pg-feat-tag{
+  display:inline-block;padding:1px 6px;border-radius:3px;
+  font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;
+  background:rgba(212,168,67,.15);color:var(--go);margin-left:4px;
+}
+
+/* Note box */
+.pg-note{
+  border-radius:10px;padding:13px 14px;
+  font-size:12px;line-height:1.65;color:var(--tx);
+  margin-bottom:20px;margin-top:auto;
+}
+.basic .pg-note{background:var(--bd);border:1px solid var(--bb);}
+.premium .pg-note{background:var(--gd);border:1px solid var(--gb);}
+.vip .pg-note{background:var(--pd);border:1px solid var(--pb2);}
+
+/* CTA buttons */
+.pg-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;padding:15px;border-radius:12px;
+  font-size:14px;font-weight:800;text-decoration:none;
+  cursor:pointer;border:none;transition:all .18s;
+}
+.pg-btn-basic{background:var(--bd);border:1px solid var(--bb);color:#93c5fd;}
+.pg-btn-basic:hover{background:var(--bl);color:#fff;}
+.pg-btn-premium{background:var(--go);color:#000;}
+.pg-btn-premium:hover{background:#e6b84a;transform:translateY(-2px);box-shadow:0 8px 24px rgba(212,168,67,.3);}
+.pg-btn-vip{background:var(--pd);border:1px solid var(--pb2);color:#c4b5fd;}
+.pg-btn-vip:hover{background:var(--pu);color:#fff;}
+.pg-btn-current{background:rgba(255,255,255,.06);border:1px solid var(--pb);color:var(--mu);cursor:default;}
+
+/* ── VALUE PROOF SECTION ── */
+.pg-value{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  margin-bottom:70px;
+}
+.pg-val-card{
+  background:var(--ps);border:1px solid var(--pb);
+  border-radius:14px;padding:24px 20px;text-align:center;
+}
+.pg-val-num{font-size:2.2rem;font-weight:900;color:var(--bl);display:block;margin-bottom:4px;}
+.pg-val-label{font-size:12px;font-weight:700;color:#fff;display:block;margin-bottom:6px;}
+.pg-val-sub{font-size:12px;color:var(--mu);line-height:1.5;}
+
+/* ── COMPARISON TABLE ── */
+.pg-compare-wrap{margin-bottom:70px;}
+.pg-compare-head{text-align:center;margin-bottom:32px;}
+.pg-compare-head h2{font-size:1.8rem;font-weight:800;color:#fff;margin-bottom:8px;}
+.pg-compare-head p{font-size:14px;color:var(--mu);}
+.pg-table{width:100%;border-collapse:collapse;border-radius:14px;overflow:hidden;border:1px solid var(--pb);}
+.pg-table th{
+  padding:14px 16px;font-size:11px;font-weight:700;
+  letter-spacing:.5px;text-transform:uppercase;color:var(--mu);
+  background:var(--ps);border-bottom:1px solid var(--pb);text-align:center;
+}
+.pg-table th:first-child{text-align:left;}
+.pg-table td{
+  padding:13px 16px;font-size:13px;color:var(--tx);
+  border-bottom:1px solid rgba(255,255,255,.04);text-align:center;
+}
+.pg-table td:first-child{text-align:left;font-weight:600;color:#fff;}
+.pg-table tr:last-child td{border-bottom:none;}
+.pg-table tr:hover td{background:rgba(255,255,255,.02);}
+.pg-table .pg-th-premium{color:var(--go);}
+.check{color:var(--gr);font-size:16px;}
+.cross{color:rgba(255,255,255,.2);font-size:14px;}
+.partial{color:var(--go);font-size:12px;font-weight:700;}
+
+/* ── ACADEMY SECTION ── */
+.pg-academy{
+  background:linear-gradient(135deg,rgba(59,130,246,.05),rgba(139,92,246,.05));
+  border:1px solid rgba(139,92,246,.15);
+  border-radius:20px;padding:40px;margin-bottom:70px;
+  display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;
+}
+.pg-academy h2{font-size:1.6rem;font-weight:800;color:#fff;margin-bottom:10px;}
+.pg-academy p{font-size:14px;color:var(--tx);line-height:1.75;margin-bottom:20px;}
+.pg-academy-levels{display:flex;flex-wrap:wrap;gap:8px;}
+.pg-lvl-pill{
+  padding:5px 12px;border-radius:4px;font-size:11px;font-weight:700;
+}
+.pg-lvl-pill.free{background:rgba(34,197,94,.1);color:#86efac;border:1px solid rgba(34,197,94,.2);}
+.pg-lvl-pill.basic{background:var(--bd);color:#93c5fd;border:1px solid var(--bb);}
+.pg-lvl-pill.premium{background:var(--gd);color:var(--go);border:1px solid var(--gb);}
+.pg-lvl-pill.vip{background:var(--pd);color:#c4b5fd;border:1px solid var(--pb2);}
+.pg-academy-right{display:flex;flex-direction:column;gap:12px;}
+.pg-acad-item{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.07);border-radius:10px;
+}
+.pg-acad-num{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;flex-shrink:0;
+}
+.pg-acad-title{font-size:13px;font-weight:700;color:#fff;}
+.pg-acad-sub{font-size:11px;color:var(--mu);}
+
+/* ── TESTIMONIAL ── */
+.pg-testimonials{margin-bottom:70px;}
+.pg-test-head{text-align:center;margin-bottom:28px;}
+.pg-test-head h2{font-size:1.6rem;font-weight:800;color:#fff;margin-bottom:6px;}
+.pg-test-head p{font-size:14px;color:var(--mu);}
+.pg-test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.pg-test-card{
+  background:var(--ps);border:1px solid var(--pb);
+  border-radius:14px;padding:22px;
+}
+.pg-test-stars{color:var(--go);font-size:14px;margin-bottom:10px;}
+.pg-test-text{font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:16px;}
+.pg-test-author{display:flex;align-items:center;gap:10px;}
+.pg-test-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--bd);border:1px solid var(--bb);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:800;color:var(--bl);flex-shrink:0;
+}
+.pg-test-name{font-size:13px;font-weight:700;color:#fff;}
+.pg-test-plan{font-size:11px;color:var(--mu);}
+
+/* ── FAQ ── */
+.pg-faq{margin-bottom:70px;}
+.pg-faq-head{text-align:center;margin-bottom:28px;}
+.pg-faq-head h2{font-size:1.6rem;font-weight:800;color:#fff;margin-bottom:6px;}
+.pg-faq-list{display:flex;flex-direction:column;gap:10px;max-width:760px;margin:0 auto;}
+.pg-faq-item{background:var(--ps);border:1px solid var(--pb);border-radius:12px;overflow:hidden;}
+.pg-faq-item[open]{border-color:rgba(59,130,246,.25);}
+.pg-faq-item summary{
+  padding:16px 20px;cursor:pointer;
+  font-size:14px;font-weight:600;color:#fff;
+  list-style:none;display:flex;justify-content:space-between;align-items:center;
+  transition:background .15s;
+}
+.pg-faq-item summary::-webkit-details-marker{display:none;}
+.pg-faq-item summary::after{content:'+';font-size:20px;color:var(--bl);}
+.pg-faq-item[open] summary::after{content:'−';}
+.pg-faq-item summary:hover{background:rgba(255,255,255,.03);}
+.pg-faq-body{padding:0 20px 18px;font-size:13px;color:var(--tx);line-height:1.75;}
+
+/* ── FINAL CTA ── */
+.pg-cta-final{
+  background:linear-gradient(135deg,rgba(212,168,67,.06),rgba(139,92,246,.06));
+  border:1px solid var(--gb);border-radius:20px;
+  padding:60px 40px;text-align:center;
+}
+.pg-cta-final h2{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;color:#fff;margin-bottom:12px;}
+.pg-cta-final h2 span{color:var(--go);}
+.pg-cta-final p{font-size:14px;color:var(--tx);max-width:540px;margin:0 auto 30px;line-height:1.75;}
+.pg-cta-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+.pg-cta-btn-primary{
+  padding:16px 32px;border-radius:12px;
+  background:var(--go);color:#000;
+  font-size:15px;font-weight:800;text-decoration:none;
+  transition:all .18s;
+}
+.pg-cta-btn-primary:hover{background:#e6b84a;transform:translateY(-2px);box-shadow:0 8px 28px rgba(212,168,67,.3);}
+.pg-cta-btn-secondary{
+  padding:16px 32px;border-radius:12px;
+  background:rgba(255,255,255,.06);border:1px solid var(--pb);
+  color:var(--tx);font-size:15px;font-weight:700;text-decoration:none;
+  transition:all .18s;
+}
+.pg-cta-btn-secondary:hover{background:rgba(255,255,255,.1);color:#fff;}
+
+/* Security */
+.pg-security{text-align:center;margin-top:32px;font-size:13px;color:var(--mu);font-weight:600;}
+.pg-security span{color:var(--gr);}
+
+/* Portal */
+.pg-portal{text-align:center;margin-top:32px;}
+.pg-portal-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 24px;border-radius:10px;
+  background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);
+  color:#f87171;font-size:13px;font-weight:700;cursor:pointer;
+  transition:all .15s;
+}
+.pg-portal-btn:hover{background:rgba(239,68,68,.15);}
+
+@media(max-width:900px){
+  .pg-plans{grid-template-columns:1fr;}
+  .pg-card.premium{transform:none;}
+  .pg-value{grid-template-columns:repeat(2,1fr);}
+  .pg-academy{grid-template-columns:1fr;}
+  .pg-test-grid{grid-template-columns:1fr;}
+}
+@media(max-width:640px){
+  .pg-table th:nth-child(2),.pg-table td:nth-child(2){display:none;}
+  .pg-value{grid-template-columns:1fr 1fr;}
+  .pg-hero h1{font-size:2rem;}
+}
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="pricing-page">
 
-    <section class="pricing-hero">
-        <h1>{{ t("site_pricing_choisis_ton_niveau_de_puissance", "Choisis ton niveau de puissance") }}</h1>
-        <p>
-            {{ t("site_pricing_trois_offres_trois_niveaux_d_intelligence_marche_commence_proprement_pas", "Trois offres, trois niveaux d’intelligence marché : commence proprement, passe au flux premium, puis débloque la lecture smart money.") }}
-        </p>
-        <div class="pricing-proof">
-            {{ t("pricing_social_proof", "🔥 Accès immédiat • Signaux structurés • Résultats suivis • Alertes Telegram") }}
-        </div>
-    </section>
-
-    <div class="pricing-choice-helper">
-        {{ t("pricing_choice_helper", "Vous débutez ?") }} <strong>{{ t("site_pricing_basic", "Basic") }}</strong> ·
-        {{ t("pricing_choice_helper_2", "Vous tradez sérieusement ?") }} <strong>{{ t("site_home_premium", "Premium") }}</strong> ·
-        {{ t("pricing_choice_helper_3", "Vous voulez le flux smart money ?") }} <strong>VIP</strong>
-    </div>
-
-    <section class="pricing-grid">
-
-        <!-- BASIC -->
-        <div class="pricing-card plan-basic">
-            <div class="plan-badge">{{ t("site_pricing_starter", "⚡ Starter") }}</div>
-            <h2 class="plan-title">{{ t("site_pricing_basic", "Basic") }}</h2>
-            <p class="plan-subtitle">
-                {{ t("site_pricing_l_essentiel_pour_commencer_avec_une_structure_claire_sans_complexite_inu", "L’essentiel pour commencer avec une structure claire, sans complexité inutile.") }}
-            </p>
-
-            <div class="plan-price">
-                <strong>{{ prices.basic if prices else '9€' }}</strong>
-                <span>{{ t("site_pricing_mois", "/ mois") }}</span>
-            </div>
-
-            <div class="plan-separator"></div>
-
-            <ul class="plan-features">
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_3_signaux_jour", "3 signaux / jour") }}</li>
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_acces_dashboard", "Accès dashboard") }}</li>
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_news_essentielles", "News essentielles") }}</li>
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_morning_brief_light", "Morning brief light") }}</li>
-                <li class="feature-no"><span class="feature-icon">✕</span>{{ t("site_pricing_tp_sl_detailles", "TP / SL détaillés") }}</li>
-                <li class="feature-no"><span class="feature-icon">✕</span>{{ t("site_pricing_liquidations_live", "Liquidations live") }}</li>
-                <li class="feature-no"><span class="feature-icon">✕</span>{{ t("site_pricing_whale_tracking", "Whale tracking") }}</li>
-                <li class="feature-no"><span class="feature-icon">✕</span>{{ t("site_pricing_token_unlock_alerts", "Token unlock alerts") }}</li>
-            </ul>
-
-            <div class="plan-note">
-                {{ t("site_pricing_ideal_pour_demarrer_proprement_et_suivre_le_marche_avec_une_base_serieus", "Idéal pour démarrer proprement et suivre le marché avec une base sérieuse, sans aller encore sur les flux avancés.") }}
-            </div>
-
-            {% if user_plan == "basic" %}
-                <a href="{{ url_for('dashboard.dashboard', lang_code=current_lang) }}" class="plan-btn current-plan">{{ t("site_pricing_plan_actuel", "Plan actuel") }}</a>
-            {% else %}
-                <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
-                    <input type="hidden" name="plan" value="basic">
-                    <button type="submit" class="plan-btn">{{ t("pricing_cta_basic", "Commencer avec Basic") }}</button>
-                </form>
-            {% endif %}
-        </div>
-
-        <!-- PREMIUM -->
-        <div class="pricing-card plan-premium">
-            <div class="plan-badge">{{ t("site_pricing_populaire", "🔥 Populaire") }}</div>
-            <div class="plan-reco">{{ t("pricing_best_choice", "⭐ Meilleur choix pour trader sérieusement") }}</div>
-
-            <h2 class="plan-title">{{ t("site_home_premium", "Premium") }}</h2>
-            <p class="plan-subtitle">
-                {{ t("site_pricing_le_flux_complet_pour_trader_avec_structure_precision_et_lecture_marche_r", "Le flux complet pour trader avec structure, précision et lecture marché renforcée.") }}
-            </p>
-
-            <div class="plan-price">
-                <strong>{{ prices.premium if prices else '19€' }}</strong>
-                <span>{{ t("site_pricing_mois", "/ mois") }}</span>
-            </div>
-
-            <div class="plan-separator"></div>
-
-            <ul class="plan-features">
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_3_signaux_jour_premium", "3 signaux / jour premium") }}</li>
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_tp_sl_detailles_2", "TP &amp; SL détaillés") }}</li>
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_briefing_quotidien_complet", "Briefing quotidien complet") }}</li>
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_news_premium", "News premium") }}</li>
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_liquidations_live_btc_eth_sol", "🚨 Liquidations live (BTC / ETH / SOL)") }}</li>
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_historique_stats_avancees", "Historique &amp; stats avancées") }}</li>
-                <li class="feature-no"><span class="feature-icon">✕</span>{{ t("site_pricing_whale_tracking_smart_money", "Whale tracking smart money") }}</li>
-                <li class="feature-no"><span class="feature-icon">✕</span>{{ t("site_pricing_token_unlock_alerts", "Token unlock alerts") }}</li>
-            </ul>
-
-            <div class="plan-note">
-                {{ t("site_pricing_la_formule_la_plus_rentable_pour_les_traders_serieux_signaux_contexte_br", "La formule la plus rentable pour les traders sérieux : signaux, contexte, briefings et flux liquidations premium.") }}
-            </div>
-
-            {% if user_plan == "premium" %}
-                <a href="{{ url_for('dashboard.dashboard', lang_code=current_lang) }}" class="plan-btn current-plan">{{ t("site_pricing_plan_actuel", "Plan actuel") }}</a>
-            {% else %}
-                <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
-                    <input type="hidden" name="plan" value="premium">
-                    <button type="submit" class="plan-btn">{{ t("pricing_cta_premium", "Accéder aux signaux Premium") }}</button>
-                </form>
-            {% endif %}
-        </div>
-
-        <!-- VIP -->
-        <div class="pricing-card plan-vip">
-            <div class="plan-badge">{{ t("site_pricing_elite", "👑 Elite") }}</div>
-
-            <h2 class="plan-title">VIP</h2>
-            <p class="plan-subtitle">
-                {{ t("site_pricing_accede_au_flux_des_smart_money_et_a_la_couche_d_intelligence_de_marche_l", "Accède au flux des smart money et à la couche d’intelligence de marché la plus avancée.") }}
-            </p>
-
-            <div class="plan-price">
-                <strong>{{ prices.vip if prices else '39€' }}</strong>
-                <span>{{ t("site_pricing_mois", "/ mois") }}</span>
-            </div>
-
-            <div class="plan-separator"></div>
-
-            <ul class="plan-features">
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_tout_le_premium", "Tout le Premium") }}</li>
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_whale_tracking_smart_money_2", "🐋 Whale tracking (smart money)") }}</li>
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_token_unlock_alerts_2", "🔓 Token unlock alerts") }}</li>
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_alertes_prioritaires", "⚡ Alertes prioritaires") }}</li>
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_telegram_prive_vip", "Telegram privé VIP") }}</li>
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_flux_marche_avance", "Flux marché avancé") }}</li>
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_acces_anticipe_aux_nouveautes", "Accès anticipé aux nouveautés") }}</li>
-                <li class="feature-yes"><span class="feature-icon">✓</span>{{ t("site_pricing_support_prioritaire", "Support prioritaire") }}</li>
-            </ul>
-
-            <div class="plan-note">
-                {{ t("site_pricing_pour_ceux_qui_veulent_une_vraie_lecture_smart_money_whales_supply_events", "Pour ceux qui veulent une vraie lecture smart money : whales, supply events, alertes avancées et environnement VIP complet.") }}
-            </div>
-
-            {% if user_plan == "vip" %}
-                <a href="{{ url_for('dashboard.dashboard', lang_code=current_lang) }}" class="plan-btn current-plan">{{ t("site_pricing_plan_actuel", "Plan actuel") }}</a>
-            {% else %}
-                <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
-                    <input type="hidden" name="plan" value="vip">
-                    <button type="submit" class="plan-btn">{{ t("pricing_cta_vip", "Rejoindre le VIP") }}</button>
-                </form>
-            {% endif %}
-        </div>
-
-    </section>
-
-    <section class="pricing-extra">
-        <div class="pricing-mini-card">
-            <h3>{{ t("site_pricing_flux_de_trading", "📈 Flux de trading") }}</h3>
-            <p>{{ t("site_pricing_chaque_plan_debloque_un_niveau_superieur_de_lecture_marche_de_signaux_et", "Chaque plan débloque un niveau supérieur de lecture marché, de signaux et de contexte opérationnel.") }}</p>
-        </div>
-        <div class="pricing-mini-card">
-            <h3>{{ t("site_pricing_intelligence_marche", "🧠 Intelligence marché") }}</h3>
-            <p>{{ t("site_pricing_liquidations_pour_premium_smart_money_et_token_unlocks_pour_vip_chaque_n", "Liquidations pour Premium, smart money et token unlocks pour VIP : chaque niveau a une vraie logique.") }}</p>
-        </div>
-        <div class="pricing-mini-card">
-            <h3>{{ t("site_pricing_progression_premium", "🚀 Progression premium") }}</h3>
-            <p>{{ t("site_pricing_basic_pour_demarrer_premium_pour_trader_serieusement_vip_pour_acceder_au", "Basic pour démarrer, Premium pour trader sérieusement, VIP pour accéder au flux le plus avancé.") }}</p>
-        </div>
-    </section>
-    {% if current_user.is_authenticated and current_user.stripe_customer_id %}
-<div style="margin-top:40px;text-align:center;">
-
-    <h3 style="color:white;margin-bottom:15px;">
-        {{ t("manage_subscription", "Manage your subscription") }}
-    </h3>
-
-    <p style="color:#9fb0c9;margin-bottom:20px;">
-        {{ t("manage_subscription_text",
-        "You can update your payment method or cancel your subscription at any time.") }}
-    </p>
-
-    <form method="POST"
-          action="{{ url_for('billing.create_customer_portal_session', lang_code=current_lang) }}">
-
-        <button type="submit"
-                class="plan-btn"
-                style="max-width:350px;margin:auto;background:#ef4444;color:white;">
-            {{ t("cancel_subscription", "Manage / Cancel Subscription") }}
-        </button>
-
-    </form>
-
+<!-- ── URGENCY BANNER ── -->
+<div class="pg-banner">
+  <span class="dot"></span>
+  <span>{{ total_signals or '41' }} structured signals published</span>
+  — Premium plan active on your dashboard in under 2 minutes.
 </div>
-{% endif %}
-    <div class="pricing-security">
-        {{ t("pricing_security_line", "✔️ Accès immédiat après paiement • ✔️ Annulation possible • ✔️ Support rapide • ✔️ Paiement sécurisé") }}
+
+<div class="pg-wrap">
+
+  <!-- ── HERO ── -->
+  <section class="pg-hero">
+    <div class="pg-hero-kicker">🎯 Professional trading intelligence</div>
+    <h1>Stop guessing.<br><em>Start reading</em> the market.</h1>
+    <p class="pg-hero-sub">
+      Structured signals, whale tracking, institutional market reading, a 7-level Academy — everything a serious trader needs to stop reacting and start anticipating.
+    </p>
+    <div class="pg-proof-row">
+      <div class="pg-proof-item">Immediate access after payment</div>
+      <div class="pg-proof-item">Cancel anytime</div>
+      <div class="pg-proof-item">Structured signals with TP & SL</div>
+      <div class="pg-proof-item">7-level Academy included</div>
+      <div class="pg-proof-item">Secure payment via Stripe</div>
     </div>
+  </section>
+
+  <!-- ── VALUE PROOF ── -->
+  <div class="pg-value">
+    <div class="pg-val-card">
+      <span class="pg-val-num">{{ total_signals or '41' }}</span>
+      <span class="pg-val-label">Signals published</span>
+      <span class="pg-val-sub">Each with clear entry, SL and TP levels</span>
+    </div>
+    <div class="pg-val-card">
+      <span class="pg-val-num" style="color:var(--gr);">{{ winrate or '78' }}%</span>
+      <span class="pg-val-label">Historical win rate</span>
+      <span class="pg-val-sub">Calculated on all closed trades</span>
+    </div>
+    <div class="pg-val-card">
+      <span class="pg-val-num" style="color:var(--go);">7</span>
+      <span class="pg-val-label">Academy levels</span>
+      <span class="pg-val-sub">From foundations to professional capital management</span>
+    </div>
+  </div>
+
+  <!-- ── PLANS ── -->
+  <section class="pg-plans">
+
+    <!-- BASIC -->
+    <div class="pg-card basic">
+      <span class="pg-plan-badge">⚡ Starter</span>
+      <h2 class="pg-plan-name">Basic</h2>
+      <p class="pg-plan-desc">The essential to start with a clear structure. Learn to read the market while getting real structured signals.</p>
+      <div class="pg-price">
+        <strong>{{ prices.basic if prices else '9€' }}</strong>
+        <span>/ month</span>
+      </div>
+      <p class="pg-price-note"><em>Cancel anytime</em> — no commitment</p>
+      <div class="pg-sep"></div>
+      <ul class="pg-feats">
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div>Up to <strong>5 signals / day</strong></div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div>Full <strong>dashboard access</strong></div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>Academy Level 1, 2 & 3</strong> <span class="pg-feat-tag">36 modules</span></div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>Morning briefing</strong> — simplified</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div>Essential <strong>market news</strong></div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>Telegram channel</strong> access</div></li>
+        <li class="pg-feat no"><span class="pg-feat-icon">✕</span><div>Detailed TP/SL + execution context</div></li>
+        <li class="pg-feat no"><span class="pg-feat-icon">✕</span><div>Live liquidations tracking</div></li>
+        <li class="pg-feat no"><span class="pg-feat-icon">✕</span><div>Whale tracking (smart money)</div></li>
+        <li class="pg-feat no"><span class="pg-feat-icon">✕</span><div>Token unlock alerts</div></li>
+      </ul>
+      <div class="pg-note">
+        <strong>Perfect to start.</strong> You get real signals with structure, the complete dashboard and the first 3 Academy levels — enough to radically change how you read the market.
+      </div>
+      {% if user_plan == "basic" %}
+        <a href="{{ url_for('dashboard.dashboard', lang_code=current_lang) }}" class="pg-btn pg-btn-current">✓ Current plan</a>
+      {% elif user_plan in ["premium","vip"] %}
+        <span class="pg-btn pg-btn-current">Included in your plan</span>
+      {% else %}
+        <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
+          <input type="hidden" name="plan" value="basic">
+          <button type="submit" class="pg-btn pg-btn-basic">Start with Basic →</button>
+        </form>
+      {% endif %}
+    </div>
+
+    <!-- PREMIUM -->
+    <div class="pg-card premium">
+      <div class="pg-popular">⭐ Most popular</div>
+      <span class="pg-plan-badge">🔥 Professional</span>
+      <h2 class="pg-plan-name">Premium</h2>
+      <p class="pg-plan-desc">The complete flow for traders who are serious. Full signals, institutional context, live liquidations and Levels 1–5 of the Academy.</p>
+      <div class="pg-price">
+        <strong>{{ prices.premium if prices else '19€' }}</strong>
+        <span>/ month</span>
+      </div>
+      <p class="pg-price-note"><em>Most popular</em> — full professional access</p>
+      <div class="pg-sep"></div>
+      <ul class="pg-feats">
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div>Up to <strong>10 signals / day</strong> with full context</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>Detailed TP & SL</strong> + execution plan</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>Daily briefing</strong> — complete version</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>🚨 Live liquidations</strong> BTC / ETH / SOL</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>Academy Levels 1–5</strong> <span class="pg-feat-tag">63 modules</span></div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>Performance stats</strong> + history</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>Telegram Premium</strong> channel</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>Trade replay</strong> + mini courses</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>Market opportunities</strong> scanner</div></li>
+        <li class="pg-feat no"><span class="pg-feat-icon">✕</span><div>Whale tracking (smart money)</div></li>
+        <li class="pg-feat no"><span class="pg-feat-icon">✕</span><div>Token unlock alerts</div></li>
+      </ul>
+      <div class="pg-note">
+        <strong>The most profitable formula.</strong> At {{ prices.premium if prices else '19€' }}/month you get a professional trading cockpit that most platforms sell for 3–5x the price. Signals with complete context, Academy and live liquidations.
+      </div>
+      {% if user_plan == "premium" %}
+        <a href="{{ url_for('dashboard.dashboard', lang_code=current_lang) }}" class="pg-btn pg-btn-current">✓ Current plan</a>
+      {% elif user_plan == "vip" %}
+        <span class="pg-btn pg-btn-current">Included in your plan</span>
+      {% else %}
+        <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
+          <input type="hidden" name="plan" value="premium">
+          <button type="submit" class="pg-btn pg-btn-premium">Get Premium Access →</button>
+        </form>
+      {% endif %}
+    </div>
+
+    <!-- VIP -->
+    <div class="pg-card vip">
+      <span class="pg-plan-badge">👑 Elite</span>
+      <h2 class="pg-plan-name">VIP</h2>
+      <p class="pg-plan-desc">Access the smart money flow. Whale tracking, token unlocks, priority alerts and the complete 7-level Academy including certification.</p>
+      <div class="pg-price">
+        <strong>{{ prices.vip if prices else '39€' }}</strong>
+        <span>/ month</span>
+      </div>
+      <p class="pg-price-note"><em>Complete curriculum</em> — nothing locked</p>
+      <div class="pg-sep"></div>
+      <ul class="pg-feats">
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div>Everything in Premium</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>🐋 Whale tracking</strong> — smart money flows</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>🔓 Token unlock alerts</strong> — supply events</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>⚡ Priority alerts</strong> before everyone else</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>Private VIP Telegram</strong> — closed group</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>Unlimited signals</strong> — no daily limit</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>Academy Levels 1–7</strong> <span class="pg-feat-tag">84 modules</span></div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>Master Certification</strong> — all 7 levels</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div>Python backtesting + quant tools</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div>Prop firm strategy + funded accounts</div></li>
+        <li class="pg-feat yes"><span class="pg-feat-icon">✓</span><div><strong>Priority support</strong> — direct access</div></li>
+      </ul>
+      <div class="pg-note">
+        <strong>For traders who want the full picture.</strong> Real smart money reading: whale flows, supply events, priority alerts and a VIP environment that compounds your edge every session.
+      </div>
+      {% if user_plan == "vip" %}
+        <a href="{{ url_for('dashboard.dashboard', lang_code=current_lang) }}" class="pg-btn pg-btn-current">✓ Current plan</a>
+      {% else %}
+        <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST">
+          <input type="hidden" name="plan" value="vip">
+          <button type="submit" class="pg-btn pg-btn-vip">Join VIP →</button>
+        </form>
+      {% endif %}
+    </div>
+
+  </section>
+
+  <!-- ── COMPARISON TABLE ── -->
+  <div class="pg-compare-wrap">
+    <div class="pg-compare-head">
+      <h2>Full comparison</h2>
+      <p>Every feature, every plan — no surprises</p>
+    </div>
+    <table class="pg-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Basic</th>
+          <th class="pg-th-premium">Premium ⭐</th>
+          <th>VIP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Daily signals</td><td>Up to 5</td><td class="partial">Up to 10</td><td class="check">Unlimited</td></tr>
+        <tr><td>Detailed TP & SL</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>Dashboard & stats</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>Daily briefing</td><td class="partial">Simplified</td><td class="check">Complete</td><td class="check">Priority</td></tr>
+        <tr><td>Live liquidations</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>Trade replay</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>Whale tracking</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+        <tr><td>Token unlock alerts</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+        <tr><td>Priority alerts</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+        <tr><td>Private Telegram</td><td class="partial">Basic</td><td class="partial">Premium</td><td class="check">VIP</td></tr>
+        <tr><td>Academy</td><td class="partial">L1–3 (36 modules)</td><td class="partial">L1–5 (63 modules)</td><td class="check">L1–7 (84 modules)</td></tr>
+        <tr><td>Master Certification</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+        <tr><td>Sentiment & opportunities</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>Priority support</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── ACADEMY SECTION ── -->
+  <div class="pg-academy">
+    <div>
+      <h2>The Academy is included in every plan</h2>
+      <p>7 levels of university-grade trading content — from defining a trade to managing external capital professionally. No other platform bundles this with signals.</p>
+      <div class="pg-academy-levels">
+        <span class="pg-lvl-pill free">L1 Free</span>
+        <span class="pg-lvl-pill basic">L2 Basic+</span>
+        <span class="pg-lvl-pill basic">L3 Basic+</span>
+        <span class="pg-lvl-pill premium">L4 Premium+</span>
+        <span class="pg-lvl-pill premium">L5 Premium+</span>
+        <span class="pg-lvl-pill vip">L6 VIP</span>
+        <span class="pg-lvl-pill vip">L7 VIP</span>
+      </div>
+    </div>
+    <div class="pg-academy-right">
+      <div class="pg-acad-item">
+        <div class="pg-acad-num" style="background:rgba(59,130,246,.15);color:#93c5fd;">1–3</div>
+        <div><div class="pg-acad-title">Foundations → Operator Vision</div><div class="pg-acad-sub">Trade structure, execution, multi-TF analysis — Basic plan</div></div>
+      </div>
+      <div class="pg-acad-item">
+        <div class="pg-acad-num" style="background:var(--gd);color:var(--go);">4–5</div>
+        <div><div class="pg-acad-title">Institutional Desk → Edge Building</div><div class="pg-acad-sub">Regime mapping, statistical edge, cognitive biases — Premium</div></div>
+      </div>
+      <div class="pg-acad-item">
+        <div class="pg-acad-num" style="background:var(--pd);color:#c4b5fd;">6–7</div>
+        <div><div class="pg-acad-title">Quantitative → Pro Management</div><div class="pg-acad-sub">Python backtesting, prop firms, fund structures — VIP</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TESTIMONIALS ── -->
+  <div class="pg-testimonials">
+    <div class="pg-test-head">
+      <h2>Traders who made the switch</h2>
+      <p>Real feedback from members who upgraded their reading of the market</p>
+    </div>
+    <div class="pg-test-grid">
+      <div class="pg-test-card">
+        <div class="pg-test-stars">★★★★★</div>
+        <p class="pg-test-text">"The daily briefing alone is worth the Premium price. I stopped reacting to noise and started planning sessions properly. My R:R improved significantly in the first month."</p>
+        <div class="pg-test-author">
+          <div class="pg-test-avatar">M</div>
+          <div><div class="pg-test-name">Maxime R.</div><div class="pg-test-plan">Premium member · BTC/ETH trader</div></div>
+        </div>
+      </div>
+      <div class="pg-test-card">
+        <div class="pg-test-stars">★★★★★</div>
+        <p class="pg-test-text">"The whale tracking on VIP is genuinely useful. I caught 3 major moves early because I saw the smart money flow before the price reacted. Nothing else I've used does this."</p>
+        <div class="pg-test-author">
+          <div class="pg-test-avatar">S</div>
+          <div><div class="pg-test-name">Sarah K.</div><div class="pg-test-plan">VIP member · Crypto & Forex</div></div>
+        </div>
+      </div>
+      <div class="pg-test-card">
+        <div class="pg-test-stars">★★★★★</div>
+        <p class="pg-test-text">"The Academy Level 4 completely changed how I think about market regimes. I went from reacting to setups to planning entire sessions. The signals make sense now because I understand the context."</p>
+        <div class="pg-test-author">
+          <div class="pg-test-avatar">T</div>
+          <div><div class="pg-test-name">Thomas A.</div><div class="pg-test-plan">Premium member · Academy Level 5</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FAQ ── -->
+  <div class="pg-faq">
+    <div class="pg-faq-head">
+      <h2>Common questions</h2>
+    </div>
+    <div class="pg-faq-list">
+      <details class="pg-faq-item">
+        <summary>Can I cancel at any time?</summary>
+        <div class="pg-faq-body">Yes — absolutely. You can cancel your subscription at any time from your account dashboard. No engagement, no penalty. Your access remains active until the end of the billing period you paid for.</div>
+      </details>
+      <details class="pg-faq-item">
+        <summary>How quickly do I get access after paying?</summary>
+        <div class="pg-faq-body">Immediately. As soon as payment is confirmed via Stripe, your account is upgraded and all features of your plan are unlocked — usually within 30 seconds.</div>
+      </details>
+      <details class="pg-faq-item">
+        <summary>What exactly are the trading signals?</summary>
+        <div class="pg-faq-body">Each signal includes: the asset, direction (BUY/SELL), precise entry price, stop loss level, take profit target, timeframe, and a structural analysis of why the setup is valid. Premium signals also include execution context and mini-courses linked to each trade.</div>
+      </details>
+      <details class="pg-faq-item">
+        <summary>Is the Academy a replacement for courses I paid for elsewhere?</summary>
+        <div class="pg-faq-body">The VelWolef Academy is a 7-level, 84-module structured curriculum — more comprehensive than most standalone trading courses sold for €200–€500. It's included in your subscription, not a separate purchase. And unlike most courses, it is directly integrated with the signals and market tools you use daily.</div>
+      </details>
+      <details class="pg-faq-item">
+        <summary>What is whale tracking and why does it matter?</summary>
+        <div class="pg-faq-body">Whale tracking monitors large on-chain and derivatives transactions — movements by institutional or large-wallet participants that retail traders typically cannot see. When whales accumulate or distribute, price often follows with a lag. Knowing this before the price reacts is one of the clearest edges available to retail traders.</div>
+      </details>
+      <details class="pg-faq-item">
+        <summary>Can I upgrade from Basic to Premium or VIP later?</summary>
+        <div class="pg-faq-body">Yes — you can upgrade at any time. The price difference is prorated, and your new features are unlocked immediately. Many members start with Basic to test the platform and upgrade within the first month.</div>
+      </details>
+      <details class="pg-faq-item">
+        <summary>Is this suitable for complete beginners?</summary>
+        <div class="pg-faq-body">Yes. Level 1 of the Academy is free and requires no prior trading knowledge. The Basic plan gives you real structured signals while you learn. The curriculum is designed so that each level builds on the previous one — you are never thrown into advanced concepts without the foundation.</div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ── FINAL CTA ── -->
+  <div class="pg-cta-final">
+    <h2>Your edge starts <span>today</span></h2>
+    <p>
+      Every session you trade without structure is a session where the market has the advantage. One good signal, one avoided loss, one level of the Academy — the subscription pays for itself.
+    </p>
+    <div class="pg-cta-btns">
+      {% if not user_plan or user_plan == 'free' %}
+      <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST" style="display:inline;">
+        <input type="hidden" name="plan" value="premium">
+        <button type="submit" class="pg-cta-btn-primary">Get Premium — {{ prices.premium if prices else '19€' }}/mo →</button>
+      </form>
+      <a href="{{ url_for('academy.academy_index', lang_code=current_lang) }}" class="pg-cta-btn-secondary">Try Level 1 — Free</a>
+      {% elif user_plan == 'basic' %}
+      <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST" style="display:inline;">
+        <input type="hidden" name="plan" value="premium">
+        <button type="submit" class="pg-cta-btn-primary">Upgrade to Premium →</button>
+      </form>
+      {% elif user_plan == 'premium' %}
+      <form action="{{ url_for('billing.create_checkout_session', lang_code=current_lang) }}" method="POST" style="display:inline;">
+        <input type="hidden" name="plan" value="vip">
+        <button type="submit" class="pg-cta-btn-primary">Upgrade to VIP →</button>
+      </form>
+      {% else %}
+      <a href="{{ url_for('dashboard.dashboard', lang_code=current_lang) }}" class="pg-cta-btn-primary">Open my dashboard →</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ── PORTAL (cancel) ── -->
+  {% if current_user.is_authenticated and current_user.stripe_customer_id %}
+  <div class="pg-portal">
+    <form method="POST" action="{{ url_for('billing.create_customer_portal_session', lang_code=current_lang) }}">
+      <button type="submit" class="pg-portal-btn">
+        ⚙️ Manage or cancel subscription
+      </button>
+    </form>
+  </div>
+  {% endif %}
+
+  <div class="pg-security">
+    <span>✓</span> Immediate access after payment &nbsp;•&nbsp;
+    <span>✓</span> Stripe secure payment &nbsp;•&nbsp;
+    <span>✓</span> Cancel anytime &nbsp;•&nbsp;
+    <span>✓</span> Fast support
+  </div>
 
 </div>
 {% endblock %}

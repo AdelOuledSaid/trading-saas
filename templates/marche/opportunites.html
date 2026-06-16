@@ -1,375 +1,786 @@
 {% extends "base.html" %}
-
-{% block title %}{{ t("alpha_console_page_title", "Alpha Console | VelWolef") }}{% endblock %}
+{% block title %}Alpha Console — Market Opportunities | VelWolef{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='opportunites.css') }}">
+<style>
+/* ══ ALPHA CONSOLE — ENRICHED ══ */
+:root{
+  --ac-blue:#3b82f6;--ac-bd:rgba(59,130,246,.12);--ac-bb:rgba(59,130,246,.28);
+  --ac-gold:#d4a843;--ac-gd:rgba(212,168,67,.1);--ac-gb:rgba(212,168,67,.25);
+  --ac-pu:#8b5cf6;--ac-pd:rgba(139,92,246,.1);--ac-pb:rgba(139,92,246,.25);
+  --ac-gr:#22c55e;--ac-re:#ef4444;--ac-am:#f59e0b;
+  --ac-s:#111520;--ac-br:rgba(255,255,255,.07);--ac-tx:#c8d0e0;--ac-mu:#6b7588;
+}
+
+/* ── STAT BAND ── */
+.ac-stat-band{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px;}
+.ac-stat-card{background:rgba(255,255,255,.04);border:1px solid var(--ac-br);border-radius:10px;padding:14px 16px;}
+.ac-stat-card span{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ac-mu);display:block;margin-bottom:4px;}
+.ac-stat-card strong{font-size:14px;font-weight:700;color:#fff;display:block;margin-bottom:2px;}
+.ac-stat-card small{font-size:11px;color:var(--ac-mu);}
+
+/* ── METRICS STRIP ── */
+.ac-live-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:rgba(255,255,255,.06);border-radius:14px;overflow:hidden;
+  border:1px solid var(--ac-br);margin:40px 0;
+}
+.ac-live-metric{background:#0a0d13;padding:20px 22px;}
+.ac-lm-label{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ac-mu);display:block;margin-bottom:6px;}
+.ac-lm-val{font-size:1.5rem;font-weight:800;color:#fff;display:block;line-height:1;}
+.ac-lm-sub{font-size:11px;color:var(--ac-mu);margin-top:4px;display:block;}
+.ac-lm-val.green{color:var(--ac-gr);}
+.ac-lm-val.blue{color:var(--ac-blue);}
+.ac-lm-val.gold{color:var(--ac-gold);}
+.ac-lm-val.pu{color:var(--ac-pu);}
+
+/* ── ROTATION PANEL ── */
+.ac-rotation-panel{
+  background:var(--ac-s);border:1px solid var(--ac-bb);border-radius:16px;
+  padding:28px;margin-bottom:32px;
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;
+}
+.ac-rot-head span{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ac-blue);display:block;margin-bottom:6px;}
+.ac-rot-head h3{font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:6px;}
+.ac-rot-head p{font-size:13px;color:var(--ac-tx);line-height:1.6;}
+.ac-rot-bars{display:flex;flex-direction:column;gap:10px;}
+.ac-rot-bar-row{display:flex;flex-direction:column;gap:4px;}
+.ac-rot-bar-label{display:flex;justify-content:space-between;font-size:11px;font-weight:600;}
+.ac-rot-bar-label span{color:var(--ac-mu);}
+.ac-rot-bar-label strong{color:#fff;}
+.ac-rot-track{height:6px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;}
+.ac-rot-fill{height:100%;border-radius:3px;transition:width .6s;}
+.rot-btc{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
+.rot-eth{background:linear-gradient(90deg,#3b82f6,#60a5fa);}
+.rot-alts{background:linear-gradient(90deg,#8b5cf6,#c084fc);}
+.ac-rot-phase{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 12px;border-radius:4px;margin-top:10px;
+  font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;
+  background:var(--ac-bd);border:1px solid var(--ac-bb);color:#93c5fd;
+}
+
+/* ── BOARD CARDS ENRICHED ── */
+.ac-board{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:50px;}
+
+.ac-asset{
+  background:var(--ac-s);border:1px solid var(--ac-br);
+  border-radius:16px;padding:22px;position:relative;overflow:hidden;
+  transition:border-color .2s,transform .2s;display:flex;flex-direction:column;gap:0;
+}
+.ac-asset::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.ac-asset.featured{border-color:var(--ac-bb);}
+.ac-asset.featured::before{background:linear-gradient(90deg,var(--ac-blue),#60a5fa);}
+.ac-asset:hover{transform:translateY(-4px);border-color:rgba(59,130,246,.3);}
+
+/* Asset header */
+.ac-asset-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.ac-asset-ticker-row{display:flex;align-items:center;gap:10px;}
+.ac-ticker-name{font-size:1.1rem;font-weight:800;color:#fff;}
+.ac-ticker-price{font-size:12px;color:var(--ac-mu);}
+.ac-state-badge{font-size:10px;font-weight:700;letter-spacing:.5px;padding:3px 9px;border-radius:4px;text-transform:uppercase;}
+.state-trigger,.state-triggering{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.2);}
+.state-arming{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.state-pressure,.state-elevated{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.state-watch{background:rgba(139,92,246,.1);color:#a78bfa;border:1px solid rgba(139,92,246,.2);}
+.state-standby{background:rgba(255,255,255,.05);color:var(--ac-mu);border:1px solid var(--ac-br);}
+
+/* Score bar */
+.ac-score-row{margin-bottom:14px;}
+.ac-score-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.ac-score-top span{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ac-mu);}
+.ac-score-top strong{font-size:14px;font-weight:800;color:#fff;}
+.ac-score-bar{height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;}
+.ac-score-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--ac-blue),var(--ac-pu));}
+
+/* Change + meta */
+.ac-change-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.ac-change{font-size:13px;font-weight:700;padding:2px 8px;border-radius:4px;}
+.ac-change.up{background:rgba(34,197,94,.1);color:#4ade80;}
+.ac-change.down{background:rgba(239,68,68,.1);color:#f87171;}
+.ac-asset-desc{font-size:12px;color:var(--ac-mu);line-height:1.55;margin-bottom:14px;}
+
+/* Grid stats */
+.ac-mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:16px;}
+.ac-mini-cell{background:rgba(255,255,255,.04);border-radius:7px;padding:8px;text-align:center;}
+.ac-mini-cell span{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--ac-mu);display:block;margin-bottom:2px;}
+.ac-mini-cell strong{font-size:11px;font-weight:700;color:#e2e8f0;}
+
+/* Timer */
+.ac-timer{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 12px;border-radius:8px;
+  background:rgba(255,255,255,.03);border:1px solid var(--ac-br);
+  font-size:11px;color:var(--ac-mu);margin-bottom:12px;
+}
+.ac-timer-dot{width:6px;height:6px;border-radius:50%;background:var(--ac-gr);animation:blink 1.4s infinite;flex-shrink:0;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.ac-timer strong{color:#fff;}
+
+/* Divider */
+.ac-divider{height:1px;background:rgba(255,255,255,.06);margin:14px 0;}
+
+/* ── PREMIUM LOCKED SECTION ── */
+.ac-premium-wrapper{position:relative;margin-top:0;}
+.ac-premium-lock{
+  position:absolute;inset:0;z-index:10;
+  background:linear-gradient(to bottom,rgba(10,13,19,.2) 0%,rgba(10,13,19,.97) 40%);
+  border-radius:16px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:40px;
+}
+.ac-lock-icon{font-size:40px;margin-bottom:14px;}
+.ac-lock-title{font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:8px;}
+.ac-lock-desc{font-size:13px;color:var(--ac-tx);line-height:1.7;max-width:480px;margin-bottom:22px;}
+.ac-lock-features{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:24px;}
+.ac-lock-feat{
+  padding:5px 12px;border-radius:4px;font-size:11px;font-weight:700;
+  background:rgba(255,255,255,.05);border:1px solid var(--ac-br);color:var(--ac-tx);
+}
+.ac-lock-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 28px;border-radius:10px;
+  background:var(--ac-gold);color:#000;
+  font-size:14px;font-weight:800;text-decoration:none;
+  transition:all .18s;
+}
+.ac-lock-btn:hover{background:#e6b84a;transform:translateY(-2px);}
+.ac-blurred{filter:blur(6px);pointer-events:none;user-select:none;}
+
+/* ── LIQUIDITY ZONES (premium) ── */
+.ac-liq-panel{
+  background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.15);
+  border-radius:10px;padding:14px;margin-bottom:12px;
+}
+.ac-liq-title{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#f87171;margin-bottom:10px;display:block;}
+.ac-liq-zones{display:flex;flex-direction:column;gap:6px;}
+.ac-liq-zone{display:flex;justify-content:space-between;align-items:center;font-size:12px;}
+.ac-liq-zone span{color:var(--ac-mu);}
+.ac-liq-zone strong{color:#fff;font-weight:700;}
+.ac-liq-zone .dist{font-size:10px;padding:2px 7px;border-radius:3px;}
+.dist-near{background:rgba(239,68,68,.1);color:#f87171;}
+.dist-far{background:rgba(255,255,255,.05);color:var(--ac-mu);}
+
+/* ── EXECUTION SIGNAL (premium) ── */
+.ac-exec-panel{
+  background:rgba(34,197,94,.04);border:1px solid rgba(34,197,94,.15);
+  border-radius:10px;padding:14px;
+}
+.ac-exec-title{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:10px;}
+.ac-exec-title.long{color:var(--ac-gr);}
+.ac-exec-title.short{color:var(--ac-re);}
+.ac-exec-title.wait{color:var(--ac-mu);}
+.ac-exec-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.ac-exec-cell{background:rgba(255,255,255,.04);border-radius:6px;padding:8px;text-align:center;}
+.ac-exec-cell span{font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--ac-mu);display:block;margin-bottom:2px;}
+.ac-exec-cell strong{font-size:11px;font-weight:700;color:#e2e8f0;}
+.ac-exec-cell.entry strong{color:var(--ac-blue);}
+.ac-exec-cell.sl strong{color:var(--ac-re);}
+.ac-exec-cell.tp strong{color:var(--ac-gr);}
+.ac-exec-cell.rr strong{color:var(--ac-gold);}
+.ac-exec-wait{text-align:center;padding:14px;color:var(--ac-mu);font-size:13px;}
+
+/* Heatmap section */
+.ac-heatmap{margin:48px 0;}
+.ac-hm-head{margin-bottom:20px;}
+.ac-hm-head h2{font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:4px;}
+.ac-hm-head p{font-size:13px;color:var(--ac-mu);}
+.ac-hm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.ac-hm-cell{
+  border-radius:12px;padding:20px 16px;text-align:center;
+  position:relative;overflow:hidden;cursor:pointer;
+  transition:transform .15s;border:1px solid transparent;
+}
+.ac-hm-cell:hover{transform:scale(1.04);}
+.ac-hm-ticker{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:2px;}
+.ac-hm-score{font-size:1.6rem;font-weight:900;color:#fff;margin:6px 0;}
+.ac-hm-state{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;opacity:.8;}
+.ac-hm-change{font-size:12px;font-weight:700;margin-top:4px;}
+/* Color by score */
+.hm-hot   {background:rgba(34,197,94,.2);border-color:rgba(34,197,94,.3);}
+.hm-warm  {background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.25);}
+.hm-cool  {background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.2);}
+.hm-cold  {background:rgba(255,255,255,.04);border-color:var(--ac-br);}
+
+/* Sections */
+.ac-section-label{font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--ac-blue);margin-bottom:6px;display:block;}
+.ac-section-title{font-size:1.5rem;font-weight:800;color:#fff;margin-bottom:6px;}
+.ac-section-sub{font-size:14px;color:var(--ac-mu);margin-bottom:28px;line-height:1.65;}
+
+/* Sequence */
+.ac-sequence{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative;margin-bottom:60px;}
+.ac-seq-line{position:absolute;top:20px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,rgba(59,130,246,.5),rgba(139,92,246,.5));z-index:0;}
+.ac-step{position:relative;z-index:1;text-align:center;padding:32px 12px 20px;}
+.ac-step>span{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,.1);background:#0a0d13;font-size:12px;font-weight:800;color:var(--ac-mu);margin-bottom:10px;}
+.ac-step.done>span{border-color:var(--ac-blue);color:var(--ac-blue);background:rgba(59,130,246,.1);}
+.ac-step.current>span{border-color:var(--ac-pu);color:#fff;background:var(--ac-pu);box-shadow:0 0 16px rgba(139,92,246,.5);}
+.ac-step h4{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.ac-step p{font-size:11px;color:var(--ac-mu);line-height:1.5;}
+
+/* Final CTA */
+.ac-final-box{
+  background:radial-gradient(ellipse at center,rgba(59,130,246,.07),transparent 70%);
+  border:1px solid var(--ac-br);border-radius:20px;
+  padding:72px 40px;text-align:center;
+}
+.ac-final-box h2{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;color:#fff;margin:14px 0 12px;}
+.ac-final-box h2 span{color:var(--ac-blue);display:block;}
+.ac-final-box p{font-size:14px;color:var(--ac-mu);max-width:520px;margin:0 auto 28px;line-height:1.7;}
+
+@media(max-width:900px){
+  .ac-live-strip{grid-template-columns:repeat(2,1fr);}
+  .ac-rotation-panel{grid-template-columns:1fr;}
+  .ac-hm-grid{grid-template-columns:repeat(2,1fr);}
+  .ac-sequence{grid-template-columns:1fr 1fr;gap:12px;}
+  .ac-seq-line{display:none;}
+  .ac-stat-band{grid-template-columns:1fr;}
+}
+</style>
 {% endblock %}
 
 {% block content %}
+
+{% set is_premium_plus = user_plan in ['premium','vip'] if user_plan is defined else false %}
+
 <div class="ac-page" id="acPage">
+  <div class="ac-bg">
+    <div class="ac-grid"></div>
+    <div class="ac-noise"></div>
+    <div class="ac-vignette"></div>
+    <div class="ac-mouse-glow" id="mouseGlow"></div>
+    <div class="ac-top-beam"></div>
+  </div>
 
-    <div class="ac-bg">
-        <div class="ac-grid"></div>
-        <div class="ac-noise"></div>
-        <div class="ac-vignette"></div>
-        <div class="ac-mouse-glow" id="mouseGlow"></div>
-        <div class="ac-top-beam"></div>
+  <!-- ── HERO ── -->
+  <section class="ac-hero">
+    <div class="ac-shell">
+
+      <div class="ac-topline">
+        <div class="ac-brand">
+          <span class="ac-dot"></span>
+          <span>VelWolef / Alpha Console</span>
+        </div>
+        <div class="ac-ticker-wrap">
+          <div class="ac-ticker">
+            <span>⚡ SIGNAL ENGINE ACTIVE</span>
+            {% for opp in opportunities[:4] %}<span>{{ opp.ticker }} / {{ opp.state }}</span>{% endfor %}
+            {% if not opportunities %}<span>SOL / TRIGGERING</span><span>LINK / ARMING</span>{% endif %}
+            <span>EXECUTION WINDOW / OPEN</span>
+            <span>ROTATION TRACKER / LIVE</span>
+            <span>LIQUIDITY ZONES / MAPPED</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ac-hero-grid">
+        <div class="ac-copy">
+          <div class="ac-chip">Market Domination Interface</div>
+          <h1>
+            The market<br>
+            <span>moves fast.</span><br>
+            We read it<br>
+            <span>clearly.</span>
+          </h1>
+          <p class="ac-lead">
+            The Alpha Console doesn't just show charts. It computes a real-time conviction score for each asset, maps where capital is rotating, identifies liquidity zones where stop hunts will occur — and gives you a precise execution signal. Tools you won't find anywhere else.
+          </p>
+          <div class="ac-cta-row">
+            <a href="#board" class="ac-btn ac-btn-primary">Enter the console</a>
+            <a href="#heatmap" class="ac-btn ac-btn-ghost">View asset heatmap</a>
+          </div>
+          <div class="ac-stat-band">
+            <div class="ac-stat-card">
+              <span>Engine</span>
+              <strong>AI Scoring</strong>
+              <small>Live Binance data</small>
+            </div>
+            <div class="ac-stat-card">
+              <span>Layer</span>
+              <strong>Conviction Matrix</strong>
+              <small>Momentum + volume + structure</small>
+            </div>
+            <div class="ac-stat-card">
+              <span>Exclusive</span>
+              <strong>Liquidity Map</strong>
+              <small>Stop hunt zones — Premium</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="ac-visual">
+          <div class="ac-core-frame">
+            <div class="ac-frame-lines"></div>
+            <div class="ac-core-panel">
+              <div class="ac-core-header">
+                <span class="ac-core-badge">Dominant Asset</span>
+                <span class="ac-core-live">LIVE</span>
+              </div>
+              <div class="ac-core-main">
+                <div class="ac-core-ring ring-a"></div>
+                <div class="ac-core-ring ring-b"></div>
+                <div class="ac-core-ring ring-c"></div>
+                <div class="ac-core-center">
+                  <small>PRIMARY FOCUS</small>
+                  <strong>{% if dominant %}{{ dominant.ticker }}{% elif opportunities %}{{ opportunities[0].ticker }}{% else %}SOL{% endif %}</strong>
+                  <span>Score {% if dominant %}{{ dominant.score }}{% elif opportunities %}{{ opportunities[0].score }}{% else %}75{% endif %}</span>
+                </div>
+                {% set nodes = opportunities[1:5] if opportunities|length > 1 else [{"ticker":"LINK","state":"ARMING"},{"ticker":"AVAX","state":"PRESSURE"},{"ticker":"SUI","state":"ACCEL"},{"ticker":"NEAR","state":"WATCH"}] %}
+                <div class="ac-node n1"><b>{{ nodes[0].ticker if nodes|length > 0 else 'LINK' }}</b><small>{{ nodes[0].state if nodes|length > 0 else 'ARMING' }}</small></div>
+                <div class="ac-node n2"><b>{{ nodes[1].ticker if nodes|length > 1 else 'AVAX' }}</b><small>{{ nodes[1].state if nodes|length > 1 else 'PRESSURE' }}</small></div>
+                <div class="ac-node n3"><b>{{ nodes[2].ticker if nodes|length > 2 else 'SUI' }}</b><small>{{ nodes[2].state if nodes|length > 2 else 'ACCEL' }}</small></div>
+                <div class="ac-node n4"><b>{{ nodes[3].ticker if nodes|length > 3 else 'NEAR' }}</b><small>{{ nodes[3].state if nodes|length > 3 else 'WATCH' }}</small></div>
+              </div>
+              <div class="ac-core-footer">
+                <div><span>Tier</span><strong>{% if opportunities %}{{ opportunities[0].tier }}{% else %}A+{% endif %}</strong></div>
+                <div><span>Bias</span><strong>{% if opportunities %}{{ opportunities[0].bias }}{% else %}Bullish{% endif %}</strong></div>
+                <div><span>Window</span><strong>{% if opportunities %}{{ opportunities[0].window }}{% else %}Active{% endif %}</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE METRICS STRIP -->
+      <div class="ac-live-strip">
+        <div class="ac-live-metric">
+          <span class="ac-lm-label">Active opportunities</span>
+          <strong class="ac-lm-val green">{{ opportunities|length if opportunities else '6' }}</strong>
+          <span class="ac-lm-sub">Scored in real time</span>
+        </div>
+        <div class="ac-live-metric">
+          <span class="ac-lm-label">Top AI score</span>
+          <strong class="ac-lm-val blue">{{ opportunities[0].score if opportunities else '75' }}/100</strong>
+          <span class="ac-lm-sub">{{ opportunities[0].ticker if opportunities else 'SOL' }} — {{ opportunities[0].state if opportunities else 'TRIGGERING' }}</span>
+        </div>
+        <div class="ac-live-metric">
+          <span class="ac-lm-label">Capital rotation</span>
+          <strong class="ac-lm-val gold" style="font-size:1rem;">
+            {% if opportunities and opportunities[0].rotation %}{{ opportunities[0].rotation.phase }}{% else %}BTC Dominance{% endif %}
+          </strong>
+          <span class="ac-lm-sub">{% if opportunities and opportunities[0].rotation %}{{ opportunities[0].rotation.direction }}{% else %}Capital concentrated in BTC{% endif %}</span>
+        </div>
+        <div class="ac-live-metric">
+          <span class="ac-lm-label">Execution window</span>
+          <strong class="ac-lm-val pu">OPEN</strong>
+          <span class="ac-lm-sub">London-NY overlap active</span>
+        </div>
+      </div>
+
     </div>
+  </section>
 
-    <section class="ac-hero">
-        <div class="ac-shell">
+  <!-- ── ROTATION PANEL (PREMIUM) ── -->
+  <section class="ac-section">
+    <div class="ac-shell">
+      <span class="ac-section-label">Exclusive Intelligence</span>
+      <h2 class="ac-section-title">Capital rotation tracker</h2>
+      <p class="ac-section-sub">Where is the real money flowing right now — BTC, ETH or altcoins? This reading is computed from live Binance volume data every 3 minutes.</p>
 
-            <div class="ac-topline">
-                <div class="ac-brand">
-                    <span class="ac-dot"></span>
-                    <span>{{ t("markets_opportunites_velwolef_alpha_console", "VelWolef / Alpha Console") }}</span>
-                </div>
-
-                <div class="ac-ticker-wrap">
-                    <div class="ac-ticker">
-                        <span>{{ t("markets_opportunites_signal_engine_active", "SIGNAL ENGINE ACTIVE") }}</span>
-                        {% for opp in opportunities[:4] %}
-                        <span>{{ opp.ticker }} / {{ opp.state }}</span>
-                        {% endfor %}
-                        {% if not opportunities %}
-                        <span>SOL / HIGH CONVICTION</span>
-                        <span>LINK / ARMING</span>
-                        {% endif %}
-                        <span>{{ t("markets_opportunites_execution_window_open", "EXECUTION WINDOW / OPEN") }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ac-hero-grid">
-                <div class="ac-copy">
-                    <div class="ac-chip">{{ t("markets_opportunites_market_domination_interface", "Market Domination Interface") }}</div>
-
-                    <h1>
-                        {{ t("markets_opportunites_le_marche", "Le marché") }}
-                        <span>{{ t("markets_opportunites_hurle_partout", "hurle partout.") }}</span>
-                        {{ t("markets_opportunites_nous_ecoutons", "Nous écoutons") }}
-                        <span>{{ t("markets_opportunites_ce_qui_compte", "ce qui compte.") }}</span>
-                    </h1>
-
-                    <p class="ac-lead">
-                        {{ t("markets_opportunites_alpha_console_transforme_le_chaos_en_hierarchie_visuelle_elle_detecte_co", "Alpha Console transforme le chaos en hiérarchie visuelle.                         Elle détecte, comprime, priorise et met sous projecteur les actifs                         qui peuvent réellement imposer le rythme du marché.") }}
-                    </p>
-
-                    <div class="ac-cta-row">
-                        <a href="#core" class="ac-btn ac-btn-primary">{{ t("markets_opportunites_entrer_dans_la_console", "Entrer dans la console") }}</a>
-                        <a href="#board" class="ac-btn ac-btn-ghost">{{ t("markets_opportunites_voir_les_cibles_actives", "Voir les cibles actives") }}</a>
-                    </div>
-
-                    <div class="ac-stat-band">
-                        <div class="ac-stat-card">
-                            <span>{{ t("markets_opportunites_engine", "Engine") }}</span>
-                            <strong>{{ t("markets_opportunites_signal_core", "Signal Core") }}</strong>
-                            <small>{{ t("markets_opportunites_tri_agressif", "Tri agressif") }}</small>
-                        </div>
-                        <div class="ac-stat-card">
-                            <span>{{ t("markets_opportunites_layer", "Layer") }}</span>
-                            <strong>{{ t("markets_opportunites_conviction_matrix", "Conviction Matrix") }}</strong>
-                            <small>{{ t("markets_opportunites_lecture_premium", "Lecture premium") }}</small>
-                        </div>
-                        <div class="ac-stat-card">
-                            <span>{{ t("markets_opportunites_mode", "Mode") }}</span>
-                            <strong>{{ t("markets_opportunites_execution_first", "Execution First") }}</strong>
-                            <small>{{ t("markets_opportunites_timing_decisif", "Timing décisif") }}</small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="ac-visual">
-                    <div class="ac-core-frame">
-                        <div class="ac-frame-lines"></div>
-
-                        <div class="ac-core-panel">
-                            <div class="ac-core-header">
-                                <span class="ac-core-badge">{{ t("markets_opportunites_dominant_asset", "Dominant Asset") }}</span>
-                                <span class="ac-core-live">LIVE</span>
-                            </div>
-
-                            <div class="ac-core-main">
-                                <div class="ac-core-ring ring-a"></div>
-                                <div class="ac-core-ring ring-b"></div>
-                                <div class="ac-core-ring ring-c"></div>
-
-                                <div class="ac-core-center">
-                                    <small>{{ t("markets_opportunites_primary_focus", "PRIMARY FOCUS") }}</small>
-                                    <strong>{% if dominant %}{{ dominant.ticker }}{% else %}SOL{% endif %}</strong>
-                                    <span>Score {{ dominant.score if dominant else 92 }}</span>
-                                </div>
-
-                                <div class="ac-node n1">
-                                    <b>{{ t("markets_opportunites_link", "LINK") }}</b>
-                                    <small>{{ t("markets_opportunites_arming", "ARMING") }}</small>
-                                </div>
-                                <div class="ac-node n2">
-                                    <b>{{ t("markets_opportunites_avax", "AVAX") }}</b>
-                                    <small>{{ t("markets_opportunites_pressure", "PRESSURE") }}</small>
-                                </div>
-                                <div class="ac-node n3">
-                                    <b>{{ t("markets_opportunites_sui", "SUI") }}</b>
-                                    <small>{{ t("markets_opportunites_accel", "ACCEL") }}</small>
-                                </div>
-                                <div class="ac-node n4">
-                                    <b>{{ t("markets_opportunites_near", "NEAR") }}</b>
-                                    <small>{{ t("markets_opportunites_watch", "WATCH") }}</small>
-                                </div>
-                            </div>
-
-                            <div class="ac-core-footer">
-                                <div>
-                                    <span>{{ t("markets_opportunites_tier", "Tier") }}</span>
-                                    <strong>{{ t("markets_opportunites_a", "A+") }}</strong>
-                                </div>
-                                <div>
-                                    <span>{{ t("markets_opportunites_bias", "Bias") }}</span>
-                                    <strong>{{ t("markets_opportunites_bullish_expansion", "Bullish Expansion") }}</strong>
-                                </div>
-                                <div>
-                                    <span>{{ t("markets_opportunites_window", "Window") }}</span>
-                                    <strong>{{ t("markets_opportunites_active", "Active") }}</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+      {% if is_premium_plus %}
+      {% set rot = opportunities[0].rotation if opportunities and True else {"phase":"Unknown","btc_share":33,"eth_share":33,"alts_share":34,"direction":"Loading..."} %}
+      <div class="ac-rotation-panel">
+        <div class="ac-rot-head">
+          <span>Live rotation signal</span>
+          <h3>{{ rot.phase }}</h3>
+          <p>{{ rot.direction }}<br><small style="color:var(--ac-mu);">Updated every 3 minutes from live Binance trading volume</small></p>
+          <span class="ac-rot-phase">{{ rot.phase }}</span>
         </div>
-    </section>
-
-    <section class="ac-section" id="core">
-        <div class="ac-shell">
-            <div class="ac-section-head">
-                <div>
-                    <span class="ac-overline">{{ t("markets_opportunites_core_engine", "Core Engine") }}</span>
-                    <h2>{{ t("markets_opportunites_le_centre_de_pression", "Le centre de pression") }}</h2>
-                </div>
-                <p>
-                    {{ t("markets_opportunites_cette_zone_n_affiche_pas_juste_un_graphique_elle_met_en_scene_l_actif_qu", "Cette zone n’affiche pas juste un graphique. Elle met en scène l’actif                     qui concentre l’attention, la liquidité et le potentiel d’exécution.") }}
-                </p>
-            </div>
-
-            <div class="ac-core-grid">
-                <article class="ac-panel ac-chart-panel">
-                    <div class="ac-panel-head">
-                        <div>
-                            <span class="ac-mini-chip">{{ t("markets_opportunites_focus_chart", "Focus Chart") }}</span>
-                            <h3>{% if dominant %}{{ dominant.ticker }}USDT / {{ dominant.state }}{% else %}SOLUSDT / dominant structure{% endif %}</h3>
-                        </div>
-                        <div class="ac-panel-signal">
-                            <span class="pulse"></span>
-                            {{ t("markets_opportunites_tracking_en_direct", "Tracking en direct") }}
-                        </div>
-                    </div>
-
-                    <div class="tradingview-widget-container ac-tv-box">
-                        <div class="tradingview-widget-container__widget"></div>
-                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-                        {
-                            "autosize": true,
-                            "symbol": "{% if dominant %}{{ dominant.tv }}{% else %}BINANCE:SOLUSDT{% endif %}",
-                            "interval": "240",
-                            "timezone": "Europe/Paris",
-                            "theme": "dark",
-                            "style": "1",
-                            "locale": "{{ current_lang|default('en') }}",
-                            "allow_symbol_change": true,
-                            "calendar": false,
-                            "withdateranges": true,
-                            "details": true,
-                            "support_host": "https://www.tradingview.com"
-                        }
-                        </script>
-                    </div>
-                </article>
-
-                <div class="ac-side-column">
-                    <article class="ac-panel ac-signal-panel tilt-card">
-                        <span class="ac-mini-chip">{{ t("markets_opportunites_high_conviction_signal", "High Conviction Signal") }}</span>
-                        <h3>{{ t("markets_opportunites_le_leader_ne_demande_pas_l_autorisation_au_marche", "Le leader ne demande pas l’autorisation au marché") }}</h3>
-                        <p>
-                            {{ t("markets_opportunites_quand_un_actif_surperforme_recupere_proprement_et_attire_la_rotation_ava", "Quand un actif surperforme, récupère proprement et attire la rotation                             avant les autres, il ne suit plus le flux. Il devient le flux.") }}
-                        </p>
-
-                        <div class="ac-feature-list">
-                            <div><span>{{ t("markets_opportunites_state", "State") }}</span><strong>{{ t("markets_opportunites_triggering", "Triggering") }}</strong></div>
-                            <div><span>{{ t("markets_opportunites_heat", "Heat") }}</span><strong>{{ t("markets_opportunites_elevated", "Elevated") }}</strong></div>
-                            <div><span>{{ t("markets_opportunites_tier", "Tier") }}</span><strong>{{ t("markets_opportunites_execution_a", "Execution A+") }}</strong></div>
-                        </div>
-                    </article>
-
-                    <article class="ac-panel ac-quote-panel tilt-card">
-                        <span class="ac-mini-chip">{{ t("markets_opportunites_manifesto", "Manifesto") }}</span>
-                        <blockquote>
-                            {{ t("markets_opportunites_nous_ne_filtrons_pas_le_marche_pour_voir_plus_de_choses_nous_le_filtrons", "Nous ne filtrons pas le marché pour voir plus de choses.                             Nous le filtrons pour voir plus clair.") }}
-                        </blockquote>
-                    </article>
-                </div>
-            </div>
+        <div class="ac-rot-bars">
+          <div class="ac-rot-bar-row">
+            <div class="ac-rot-bar-label"><span>₿ Bitcoin</span><strong>{{ rot.btc_share }}%</strong></div>
+            <div class="ac-rot-track"><div class="ac-rot-fill rot-btc" style="width:{{ rot.btc_share }}%"></div></div>
+          </div>
+          <div class="ac-rot-bar-row">
+            <div class="ac-rot-bar-label"><span>Ξ Ethereum</span><strong>{{ rot.eth_share }}%</strong></div>
+            <div class="ac-rot-track"><div class="ac-rot-fill rot-eth" style="width:{{ rot.eth_share }}%"></div></div>
+          </div>
+          <div class="ac-rot-bar-row">
+            <div class="ac-rot-bar-label"><span>⬡ Altcoins</span><strong>{{ rot.alts_share }}%</strong></div>
+            <div class="ac-rot-track"><div class="ac-rot-fill rot-alts" style="width:{{ rot.alts_share }}%"></div></div>
+          </div>
+          <p style="font-size:11px;color:var(--ac-mu);margin-top:8px;">
+            When BTC dominates, trade BTC. When alts dominate, rotate to leaders. This is where the edge is.
+          </p>
         </div>
-    </section>
-
-    <section class="ac-section" id="board">
-        <div class="ac-shell">
-            <div class="ac-section-head">
-                <div>
-                    <span class="ac-overline">{{ t("markets_opportunites_conviction_board", "Conviction Board") }}</span>
-                    <h2>{{ t("markets_opportunites_les_cibles_qui_sortent_du_bruit", "Les cibles qui sortent du bruit") }}</h2>
-                </div>
-                <p>
-                    {{ t("markets_opportunites_chaque_carte_agit_comme_une_capsule_d_execution_score_etat_fenetre_et_pr", "Chaque carte agit comme une capsule d’exécution : score, état, fenêtre et pression.") }}
-                </p>
+      </div>
+      {% else %}
+      <div style="position:relative;">
+        <!-- Blurred preview -->
+        <div class="ac-blurred">
+          <div class="ac-rotation-panel">
+            <div class="ac-rot-head">
+              <span>Live rotation signal</span>
+              <h3>BTC Dominance Phase</h3>
+              <p>Capital concentrated in BTC — altcoin rotation not yet active.</p>
             </div>
-
-            <div class="ac-board">
-                {% for opp in opportunities %}
-                <article class="ac-asset{% if loop.first %} featured tilt-card{% else %} tilt-card{% endif %}">
-                    <div class="ac-asset-top">
-                        <span class="ticker">{{ opp.ticker }}</span>
-                        <span class="state {{ opp.state_class }}">{{ opp.state }}</span>
-                    </div>
-                    <h3>{{ opp.name }}</h3>
-                    <p>{{ opp.description }}</p>
-                    <div class="ac-meter">
-                        <div class="ac-meter-top">
-                            <span>{{ t("markets_opportunites_conviction_score", "Belief Score") }}</span>
-                            <strong>{{ opp.score }}</strong>
-                        </div>
-                        <div class="ac-meter-bar"><span style="width:{{ opp.score }}%"></span></div>
-                    </div>
-                    <div class="ac-asset-grid">
-                        <div><span>{{ t("markets_opportunites_bias", "BIAS") }}</span><strong>{{ opp.bias }}</strong></div>
-                        <div><span>{{ t("markets_opportunites_tier", "TIER") }}</span><strong>{{ opp.tier }}</strong></div>
-                        <div><span>{{ t("markets_opportunites_window", "WINDOW") }}</span><strong>{{ opp.window }}</strong></div>
-                    </div>
-                </article>
-                {% else %}
-                <p style="color:#787b86;padding:40px 20px;text-align:center;">Loading live opportunities...</p>
-                {% endfor %}
+            <div class="ac-rot-bars">
+              <div class="ac-rot-bar-row">
+                <div class="ac-rot-bar-label"><span>₿ Bitcoin</span><strong>58%</strong></div>
+                <div class="ac-rot-track"><div class="ac-rot-fill rot-btc" style="width:58%"></div></div>
+              </div>
+              <div class="ac-rot-bar-row">
+                <div class="ac-rot-bar-label"><span>Ξ Ethereum</span><strong>24%</strong></div>
+                <div class="ac-rot-track"><div class="ac-rot-fill rot-eth" style="width:24%"></div></div>
+              </div>
+              <div class="ac-rot-bar-row">
+                <div class="ac-rot-bar-label"><span>⬡ Altcoins</span><strong>18%</strong></div>
+                <div class="ac-rot-track"><div class="ac-rot-fill rot-alts" style="width:18%"></div></div>
+              </div>
             </div>
+          </div>
         </div>
-    </section>
-
-    <section class="ac-section">
-        <div class="ac-shell">
-            <div class="ac-section-head">
-                <div>
-                    <span class="ac-overline">{{ t("markets_opportunites_execution_sequence", "Execution Sequence") }}</span>
-                    <h2>{{ t("markets_opportunites_le_marche_en_5_etats", "Le marché en 5 états") }}</h2>
-                </div>
-                <p>
-                    {{ t("markets_opportunites_une_opportunite_serieuse_n_apparait_pas_d_un_coup_elle_traverse_une_sequ", "Une opportunité sérieuse n’apparaît pas d’un coup. Elle traverse une séquence.") }}
-                </p>
-            </div>
-
-            <div class="ac-sequence">
-                <div class="ac-seq-line"></div>
-
-                <div class="ac-step done">
-                    <span>01</span>
-                    <h4>{{ t("markets_opportunites_scan", "Scan") }}</h4>
-                    <p>{{ t("markets_opportunites_tri_lecture_suppression_du_bruit", "Tri, lecture, suppression du bruit.") }}</p>
-                </div>
-                <div class="ac-step done">
-                    <span>02</span>
-                    <h4>{{ t("structure", "Structure") }}</h4>
-                    <p>{{ t("markets_opportunites_detection_des_leaders_et_des_anomalies", "Détection des leaders et des anomalies.") }}</p>
-                </div>
-                <div class="ac-step current">
-                    <span>03</span>
-                    <h4>{{ t("markets_open_interest_pressure", "Pressure") }}</h4>
-                    <p>{{ t("markets_opportunites_concentration_d_energie_et_preparation_du_move", "Concentration d’énergie et préparation du move.") }}</p>
-                </div>
-                <div class="ac-step">
-                    <span>04</span>
-                    <h4>{{ t("markets_opportunites_trigger", "Trigger") }}</h4>
-                    <p>{{ t("markets_opportunites_timing_lisible_execution_propre", "Timing lisible, exécution propre.") }}</p>
-                </div>
-                <div class="ac-step">
-                    <span>05</span>
-                    <h4>{{ t("markets_opportunites_management", "Management") }}</h4>
-                    <p>{{ t("markets_opportunites_protection_de_la_qualite_et_gestion_du_momentum", "Protection de la qualité et gestion du momentum.") }}</p>
-                </div>
-            </div>
+        <div class="ac-premium-lock" style="position:absolute;inset:0;border-radius:16px;background:linear-gradient(to bottom,rgba(10,13,19,.3),rgba(10,13,19,.95));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;">
+          <div style="font-size:36px;margin-bottom:12px;">🔄</div>
+          <div class="ac-lock-title">Capital Rotation Tracker — Premium</div>
+          <div class="ac-lock-desc">Know in real time where the money is flowing: BTC accumulation, ETH rotation or altcoin season. This data is recomputed every 3 minutes from live Binance volume.</div>
+          <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ac-lock-btn">Unlock with Premium →</a>
         </div>
-    </section>
+      </div>
+      {% endif %}
+    </div>
+  </section>
 
-    <section class="ac-section">
-        <div class="ac-shell">
-            <div class="ac-section-head">
-                <div>
-                    <span class="ac-overline">{{ t("markets_opportunites_velocity_scan", "Velocity Scan") }}</span>
-                    <h2>{{ t("markets_opportunites_vue_multi_actifs", "Vue multi-actifs") }}</h2>
-                </div>
-                <p>
-                    {{ t("markets_opportunites_une_lecture_globale_pour_voir_qui_accelere_qui_compresse_et_qui_prend_vr", "Une lecture globale pour voir qui accélère, qui compresse, et qui prend vraiment le lead.") }}
-                </p>
-            </div>
-
-            <article class="ac-panel ac-overview">
-                <div class="ac-panel-head">
-                    <div>
-                        <span class="ac-mini-chip">{{ t("markets_opportunites_watch_surface", "Watch Surface") }}</span>
-                        <h3>{{ t("markets_opportunites_multi_asset_overview", "Multi-asset overview") }}</h3>
-                    </div>
-                </div>
-
-                <div class="tradingview-widget-container ac-tv-box">
-                    <div class="tradingview-widget-container__widget"></div>
-                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
-                    {
-                        "colorTheme": "dark",
-                        "dateRange": "12M",
-                        "showChart": true,
-                        "locale": "{{ current_lang|default('en') }}",
-                        "isTransparent": true,
-                        "showSymbolLogo": true,
-                        "width": "100%",
-                        "height": "540",
-                        "tabs": [
-                            {
-                                "title": "Velocity Scan",
-                                "symbols": [
-                                    { "s": "BINANCE:SOLUSDT", "d": "Solana" },
-                                    { "s": "BINANCE:AVAXUSDT", "d": "Avalanche" },
-                                    { "s": "BINANCE:LINKUSDT", "d": "Chainlink" },
-                                    { "s": "BINANCE:SUIUSDT", "d": "SUI" },
-                                    { "s": "BINANCE:ARBUSDT", "d": "Arbitrum" },
-                                    { "s": "BINANCE:NEARUSDT", "d": "NEAR" }
-                                ]
-                            }
-                        ],
-                        "support_host": "https://www.tradingview.com"
-                    }
-                    </script>
-                </div>
-            </article>
+  <!-- ── ASSET HEATMAP ── -->
+  <section class="ac-section" id="heatmap">
+    <div class="ac-shell">
+      <div class="ac-heatmap">
+        <div class="ac-hm-head">
+          <span class="ac-section-label">Visual Intelligence</span>
+          <h2 class="ac-section-title">Asset Heatmap — who is heating up</h2>
+          <p style="font-size:13px;color:var(--ac-mu);">Green = high conviction and momentum. Yellow = watching. Grey = compression. The heatmap updates every session.</p>
         </div>
-    </section>
-
-    <section class="ac-final">
-        <div class="ac-shell">
-            <div class="ac-final-box">
-                <span class="ac-overline">{{ t("markets_opportunites_velwolef_edge", "VelWolef Edge") }}</span>
-                <h2>
-                    {{ t("markets_opportunites_les_autres_regardent_le_marche", "Les autres regardent le marché.") }}
-                    <span>{{ t("markets_opportunites_toi_tu_regardes_la_hierarchie_cachee", "Toi, tu regardes la hiérarchie cachée.") }}</span>
-                </h2>
-                <p>
-                    {{ t("markets_opportunites_cette_page_ne_cherche_pas_a_etre_jolie_elle_cherche_a_marquer_imposer_do", "Cette page ne cherche pas à être jolie. Elle cherche à marquer, imposer, dominer                     et faire comprendre immédiatement que ton produit n’est pas un outil de plus.") }}
-                </p>
-
-                <div class="ac-cta-row center">
-                    <a href="{{ url_for('signals.signals_page', lang_code=current_lang) }}" class="ac-btn ac-btn-primary">{{ t('open_global_view', 'Ouvrir la vue globale') }}</a>
-                    <a href="{{ url_for('signals.results', lang_code=current_lang) }}" class="ac-btn ac-btn-ghost">{{ t('see_history', 'Voir l’historique') }}</a>
-                </div>
-            </div>
+        <div class="ac-hm-grid">
+          {% for opp in opportunities[:8] %}
+          {% set hm_class = 'hm-hot' if opp.score >= 70 else 'hm-warm' if opp.score >= 55 else 'hm-cool' if opp.score >= 40 else 'hm-cold' %}
+          <div class="ac-hm-cell {{ hm_class }}">
+            <div class="ac-hm-ticker">{{ opp.ticker }}</div>
+            <div class="ac-hm-score">{{ opp.score }}</div>
+            <div class="ac-hm-state">{{ opp.state }}</div>
+            <div class="ac-hm-change {% if opp.change >= 0 %}" style="color:#4ade80;">+{% else %}" style="color:#f87171;">{% endif %}{{ opp.change }}%</div>
+          </div>
+          {% else %}
+          {% for fb in [{"ticker":"SOL","score":75,"state":"TRIGGERING","change":2.4},{"ticker":"ETH","score":68,"state":"ARMING","change":1.1},{"ticker":"LINK","score":61,"state":"ARMING","change":0.8},{"ticker":"BTC","score":64,"state":"ARMING","change":0.5},{"ticker":"AVAX","score":48,"state":"PRESSURE","change":-1.2},{"ticker":"SUI","score":55,"state":"WATCH","change":3.1},{"ticker":"NEAR","score":38,"state":"STANDBY","change":-0.4},{"ticker":"APT","score":42,"state":"WATCH","change":0.2}] %}
+          {% set hm_class = 'hm-hot' if fb.score >= 70 else 'hm-warm' if fb.score >= 55 else 'hm-cool' if fb.score >= 40 else 'hm-cold' %}
+          <div class="ac-hm-cell {{ hm_class }}">
+            <div class="ac-hm-ticker">{{ fb.ticker }}</div>
+            <div class="ac-hm-score">{{ fb.score }}</div>
+            <div class="ac-hm-state">{{ fb.state }}</div>
+            <div class="ac-hm-change {% if fb.change >= 0 %}" style="color:#4ade80;">+{% else %}" style="color:#f87171;">{% endif %}{{ fb.change }}%</div>
+          </div>
+          {% endfor %}
+          {% endfor %}
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONVICTION BOARD ── -->
+  <section class="ac-section" id="board">
+    <div class="ac-shell">
+      <span class="ac-section-label">Conviction Board</span>
+      <h2 class="ac-section-title">Active targets — full detail</h2>
+      <p class="ac-section-sub">
+        Each card shows: AI score, change, description, execution window timer.
+        {% if is_premium_plus %}Premium features unlocked: liquidity zones + execution signal.{% else %}<strong style="color:var(--ac-gold);">Premium unlocks: liquidity zones & execution signals on every card.</strong>{% endif %}
+      </p>
+
+      <div class="ac-board">
+        {% set display_opps = opportunities %}
+
+        {% for opp in display_opps %}
+          {%- set win_min = opp.window_min | default(0) -%}
+          {%- set liq     = opp.liquidity  | default(None) -%}
+          {%- set sig     = opp.signal     | default(None) -%}
+          {%- set pfmt    = opp.price_fmt  | default("—") -%}
+          {%- set vfmt    = opp.volume_fmt | default("—") -%}
+          <article class="ac-asset {% if loop.first %}featured{% endif %}">
+
+          <!-- Header -->
+          <div class="ac-asset-top">
+            <div class="ac-asset-ticker-row">
+              <span class="ac-ticker-name">{{ opp.ticker }}</span>
+              <span class="ac-ticker-price">{{ pfmt }}</span>
+            </div>
+            <span class="ac-state-badge {{ opp.state_class }}">{{ opp.state }}</span>
+          </div>
+
+          <!-- Score bar -->
+          <div class="ac-score-row">
+            <div class="ac-score-top">
+              <span>AI conviction score</span>
+              <strong>{{ opp.score }}/100</strong>
+            </div>
+            <div class="ac-score-bar">
+              <div class="ac-score-fill" style="width:{{ opp.score }}%"></div>
+            </div>
+          </div>
+
+          <!-- Change & volume -->
+          <div class="ac-change-row">
+            <span class="ac-change {% if opp.change >= 0 %}up{% else %}down{% endif %}">
+              {% if opp.change >= 0 %}+{% endif %}{{ opp.change }}%
+            </span>
+            <span style="font-size:11px;color:var(--ac-mu);">24h • Vol {{ vfmt }}</span>
+          </div>
+
+          <!-- Description -->
+          <p class="ac-asset-desc">{{ opp.description }}</p>
+
+          <!-- Mini grid -->
+          <div class="ac-mini-grid">
+            <div class="ac-mini-cell"><span>Bias</span><strong>{{ opp.bias }}</strong></div>
+            <div class="ac-mini-cell"><span>Tier</span><strong>{{ opp.tier }}</strong></div>
+            <div class="ac-mini-cell"><span>Heat</span><strong>{{ opp.heat }}</strong></div>
+          </div>
+
+          <!-- Execution window timer -->
+          {% if win_min is defined and win_min > 0 %}
+          <div class="ac-timer">
+            <span class="ac-timer-dot"></span>
+            Execution window: <strong>{{ opp.window }}</strong>
+            — Est. <strong>{{ win_min | default(0) }}min</strong> remaining
+          </div>
+          {% else %}
+          <div class="ac-timer" style="opacity:.4;">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--ac-mu);flex-shrink:0;display:inline-block;"></span>
+            No active execution window
+          </div>
+          {% endif %}
+
+          <!-- PREMIUM SECTION: Liquidity + Signal -->
+          {% if is_premium_plus %}
+          <div class="ac-divider"></div>
+
+          <!-- Liquidity zones -->
+          <div class="ac-liq-panel">
+            <span class="ac-liq-title">🎯 Liquidity zones — stop hunt targets</span>
+            <div class="ac-liq-zones">
+              <div class="ac-liq-zone">
+                <span>Buy-side (above)</span>
+                <strong>{{ liq.buy_side if liq else '—' }}</strong>
+                <span class="dist {% if liq and liq.nearest == 'buy-side' %}dist-near{% else %}dist-far{% endif %}">
+                  +{{ liq.nearest_dist if liq else '—' }}%
+                </span>
+              </div>
+              <div class="ac-liq-zone">
+                <span>Sell-side (below)</span>
+                <strong>{{ liq.sell_side if liq else '—' }}</strong>
+                <span class="dist {% if liq and liq.nearest == 'sell-side' %}dist-near{% else %}dist-far{% endif %}">
+                  -{{ liq.nearest_dist if liq else '—' }}%
+                </span>
+              </div>
+              <div class="ac-liq-zone" style="margin-top:4px;padding-top:8px;border-top:1px solid rgba(255,255,255,.05);">
+                <span>Nearest target</span>
+                <strong style="color:var(--ac-am);">{{ liq.nearest|upper if liq else '—' }}</strong>
+                <span style="font-size:10px;color:var(--ac-mu);">24h range: {{ liq.range_pct if liq else '—' }}%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Execution signal -->
+          
+          {% if sig is not none and sig and sig.direction != 'WAIT' %}
+          <div class="ac-exec-panel">
+            <span class="ac-exec-title {% if sig.direction == 'LONG' %}long{% elif sig.direction == 'SHORT' %}short{% else %}wait{% endif %}">
+              {% if sig.direction == 'LONG' %}📈 LONG SIGNAL{% elif sig.direction == 'SHORT' %}📉 SHORT SIGNAL{% else %}⏳ WAIT — no signal yet{% endif %}
+            </span>
+            <div class="ac-exec-grid">
+              <div class="ac-exec-cell entry"><span>Entry</span><strong>{{ sig.entry }}</strong></div>
+              <div class="ac-exec-cell rr"><span>R:R</span><strong>1:{{ sig.rr }}</strong></div>
+              <div class="ac-exec-cell sl"><span>Stop Loss</span><strong>{{ sig.sl }}</strong></div>
+              <div class="ac-exec-cell tp"><span>TP1</span><strong>{{ sig.tp1 }}</strong></div>
+              <div class="ac-exec-cell tp" style="grid-column:span 2;"><span>TP2 (runner)</span><strong>{{ sig.tp2 }}</strong></div>
+            </div>
+          </div>
+          {% else %}
+          <div class="ac-exec-panel" style="background:rgba(255,255,255,.02);border-color:var(--ac-br);">
+            <div class="ac-exec-wait">⏳ Setup not yet triggered — monitor for confirmation</div>
+          </div>
+          {% endif %}
+
+          {% else %}
+          <!-- LOCKED for free/basic -->
+          <div class="ac-divider"></div>
+          <div style="position:relative;border-radius:10px;overflow:hidden;">
+            <div class="ac-blurred" style="padding:12px;">
+              <div class="ac-liq-panel">
+                <span class="ac-liq-title">🎯 Liquidity zones</span>
+                <div class="ac-liq-zones">
+                  <div class="ac-liq-zone"><span>Buy-side</span><strong>xxx.xx</strong><span class="dist dist-near">+2.3%</span></div>
+                  <div class="ac-liq-zone"><span>Sell-side</span><strong>xxx.xx</strong><span class="dist dist-far">-2.8%</span></div>
+                </div>
+              </div>
+              <div class="ac-exec-panel" style="margin-top:8px;">
+                <div class="ac-exec-grid">
+                  <div class="ac-exec-cell entry"><span>Entry</span><strong>xxx.xx</strong></div>
+                  <div class="ac-exec-cell rr"><span>R:R</span><strong>1:2.2</strong></div>
+                  <div class="ac-exec-cell sl"><span>SL</span><strong>xxx.xx</strong></div>
+                  <div class="ac-exec-cell tp"><span>TP1</span><strong>xxx.xx</strong></div>
+                </div>
+              </div>
+            </div>
+            <div style="position:absolute;inset:0;background:rgba(10,13,19,.85);display:flex;align-items:center;justify-content:center;border-radius:10px;">
+              <div style="text-align:center;">
+                <div style="font-size:20px;margin-bottom:6px;">🔒</div>
+                <div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:4px;">Premium feature</div>
+                <div style="font-size:11px;color:var(--ac-mu);margin-bottom:10px;">Liquidity zones + execution signal</div>
+                <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" style="font-size:11px;font-weight:700;color:var(--ac-gold);text-decoration:none;padding:5px 12px;border:1px solid var(--ac-gb);border-radius:4px;background:var(--ac-gd);">Upgrade →</a>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CORE CHART ── -->
+  <section class="ac-section" id="core">
+    <div class="ac-shell">
+      <span class="ac-section-label">Core Engine</span>
+      <h2 class="ac-section-title">Focus chart — dominant asset</h2>
+      <p class="ac-section-sub">Live chart of the highest-scored asset, updated in real time.</p>
+
+      <div class="ac-core-grid">
+        <article class="ac-panel ac-chart-panel">
+          <div class="ac-panel-head">
+            <div>
+              <span class="ac-mini-chip">Focus Chart</span>
+              <h3>{% if dominant %}{{ dominant.ticker }}USDT{% elif opportunities %}{{ opportunities[0].ticker }}USDT — {{ opportunities[0].state }}{% else %}SOLUSDT / Dominant structure{% endif %}</h3>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ac-gr);font-weight:600;">
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--ac-gr);animation:blink 1.5s infinite;"></span>
+              Live tracking
+            </div>
+          </div>
+          <div class="tradingview-widget-container ac-tv-box">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+            {
+              "autosize": true,
+              "symbol": "{% if dominant %}{{ dominant.tv }}{% elif opportunities %}{{ opportunities[0].tv }}{% else %}BINANCE:SOLUSDT{% endif %}",
+              "interval": "240",
+              "timezone": "Europe/Paris",
+              "theme": "dark",
+              "style": "1",
+              "locale": "{{ current_lang|default('en') }}",
+              "allow_symbol_change": true,
+              "calendar": false,
+              "withdateranges": true,
+              "details": true,
+              "support_host": "https://www.tradingview.com"
+            }
+            </script>
+          </div>
+        </article>
+
+        <div class="ac-side-column">
+          <article class="ac-panel tilt-card" style="padding:20px;">
+            <span class="ac-mini-chip">High Conviction Signal</span>
+            <h3 style="font-size:1.05rem;font-weight:700;color:#fff;margin:8px 0 10px;line-height:1.35;">The leader doesn't ask the market for permission</h3>
+            <p style="font-size:13px;color:var(--ac-mu);line-height:1.7;margin-bottom:16px;">When an asset outperforms, recovers cleanly and attracts rotation before the others — it no longer follows the flow. It becomes the flow.</p>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.04);border-radius:6px;font-size:12px;"><span style="color:var(--ac-mu);">State</span><strong style="color:#fff;">Triggering</strong></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.04);border-radius:6px;font-size:12px;"><span style="color:var(--ac-mu);">Heat</span><strong style="color:#fff;">Elevated</strong></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.04);border-radius:6px;font-size:12px;"><span style="color:var(--ac-mu);">Tier</span><strong style="color:#fff;">Execution A+</strong></div>
+            </div>
+          </article>
+          <article class="ac-panel tilt-card" style="padding:20px;margin-top:16px;">
+            <span class="ac-mini-chip">Desk Philosophy</span>
+            <blockquote style="font-size:15px;font-style:italic;color:#e2e8f0;line-height:1.7;border-left:3px solid var(--ac-blue);padding-left:16px;margin:10px 0 0;">
+              We don't filter the market to see more things. We filter it to see more clearly.
+            </blockquote>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EXECUTION SEQUENCE ── -->
+  <section class="ac-section">
+    <div class="ac-shell">
+      <span class="ac-section-label">Execution Sequence</span>
+      <h2 class="ac-section-title">The market in 5 states</h2>
+      <p class="ac-section-sub">A serious opportunity doesn't appear suddenly. Every asset in this console is placed precisely on this sequence.</p>
+      <div class="ac-sequence">
+        <div class="ac-seq-line"></div>
+        <div class="ac-step done"><span>01</span><h4>Scan</h4><p>Sort, read, suppress noise from real signal.</p></div>
+        <div class="ac-step done"><span>02</span><h4>Structure</h4><p>Identify leaders and structural anomalies on HTF.</p></div>
+        <div class="ac-step current"><span>03</span><h4>Pressure</h4><p>Energy concentration and move preparation.</p></div>
+        <div class="ac-step"><span>04</span><h4>Trigger</h4><p>Readable timing, clean structural entry.</p></div>
+        <div class="ac-step"><span>05</span><h4>Management</h4><p>Quality protection and momentum management.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MULTI-ASSET VIEW ── -->
+  <section class="ac-section">
+    <div class="ac-shell">
+      <span class="ac-section-label">Velocity Scan</span>
+      <h2 class="ac-section-title">Multi-asset overview</h2>
+      <p class="ac-section-sub">Who is accelerating, who is compressing, who is taking the lead.</p>
+      <article class="ac-panel ac-overview">
+        <div class="tradingview-widget-container ac-tv-box">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+          {
+            "colorTheme":"dark","dateRange":"12M","showChart":true,
+            "locale":"{{ current_lang|default('en') }}","isTransparent":true,
+            "showSymbolLogo":true,"width":"100%","height":"540",
+            "tabs":[
+              {"title":"Alpha Targets","symbols":[
+                {"s":"BINANCE:SOLUSDT","d":"Solana"},{"s":"BINANCE:AVAXUSDT","d":"Avalanche"},
+                {"s":"BINANCE:LINKUSDT","d":"Chainlink"},{"s":"BINANCE:SUIUSDT","d":"SUI"},
+                {"s":"BINANCE:ARBUSDT","d":"Arbitrum"},{"s":"BINANCE:NEARUSDT","d":"NEAR"}
+              ]},
+              {"title":"Majors","symbols":[
+                {"s":"BINANCE:BTCUSDT","d":"Bitcoin"},{"s":"BINANCE:ETHUSDT","d":"Ethereum"},
+                {"s":"TVC:DXY","d":"Dollar Index"},{"s":"NASDAQ:QQQ","d":"US100"}
+              ]}
+            ],
+            "support_host":"https://www.tradingview.com"
+          }
+          </script>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── FINAL CTA ── -->
+  <section class="ac-final">
+    <div class="ac-shell">
+      <div class="ac-final-box">
+        <span style="font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--ac-blue);">VelWolef Edge</span>
+        <h2 style="font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;color:#fff;margin:14px 0 12px;">
+          Others look at the market.
+          <span style="color:var(--ac-blue);display:block;">You read the hidden hierarchy.</span>
+        </h2>
+        <p style="font-size:14px;color:var(--ac-mu);max-width:520px;margin:0 auto 28px;line-height:1.7;">
+          The Alpha Console computes what no chart shows you: where capital is rotating, where stop hunts will occur, and which asset has the real structural edge right now. All of this, updated every 3 minutes.
+        </p>
+        {% if not is_premium_plus %}
+        <div class="ac-lock-features" style="margin-bottom:24px;">
+          <span class="ac-lock-feat">🔄 Capital rotation tracker</span>
+          <span class="ac-lock-feat">🎯 Liquidity zone mapping</span>
+          <span class="ac-lock-feat">📈 Execution signals (entry/SL/TP)</span>
+          <span class="ac-lock-feat">⏱️ Execution window timer</span>
+        </div>
+        {% endif %}
+        <div class="ac-cta-row center">
+          {% if is_premium_plus %}
+          <a href="{{ url_for('signals.signals_page', lang_code=current_lang) }}" class="ac-btn ac-btn-primary">Open signal feed</a>
+          <a href="{{ url_for('signals.results', lang_code=current_lang) }}" class="ac-btn ac-btn-ghost">View trade history</a>
+          {% else %}
+          <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="ac-btn ac-btn-primary">Unlock Premium features →</a>
+          <a href="{{ url_for('signals.signals_page', lang_code=current_lang) }}" class="ac-btn ac-btn-ghost">See signals</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
 
 </div>
 
