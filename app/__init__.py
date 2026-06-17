@@ -297,4 +297,15 @@ def create_app():
         except Exception as e:
             print(f"[Liquidations] Auto-start skipped: {e}")
 
+    # ✅ AUTO START ELON RADAR ALERTS
+    if not app.config.get('TESTING'):
+        def _start_elon():
+            import time
+            time.sleep(8)  # attendre que l'app soit complètement prête
+            from app.services.elon_alert_service import start_monitoring
+            start_monitoring()
+        import threading
+        threading.Thread(target=_start_elon, daemon=True, name="ElonRadar").start()
+        print("[ElonRadar] Alert monitoring scheduled")
+
     return app

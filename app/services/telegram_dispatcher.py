@@ -256,20 +256,29 @@ def format_briefing_message(
     title: str,
     tier: str,
 ) -> str:
-
+    from datetime import datetime
     tier_normalized = (tier or "").lower()
+    today = datetime.utcnow().strftime("%A %d %B %Y")
 
     if tier_normalized == "vip":
-        signature = "— <b>Velwolf Private Desk</b>"
+        tier_header = "👑 <b>VIP PRIVATE DESK</b>"
+        signature   = "━━━━━━━━━━━━━━━━━━━━\n💎 <b>VelWolef Private Desk</b> — VIP Exclusive"
     elif tier_normalized == "premium":
-        signature = "— <b>Velwolf Intelligence Desk</b>"
+        tier_header = "🔥 <b>PREMIUM INTELLIGENCE DESK</b>"
+        signature   = "━━━━━━━━━━━━━━━━━━━━\n💎 <b>VelWolef Intelligence Desk</b> — Premium"
     elif tier_normalized == "basic":
-        signature = "— <b>Velwolf Market Desk</b>"
+        tier_header = "⚡ <b>MARKET DESK</b>"
+        signature   = "━━━━━━━━━━━━━━━━━━━━\n💎 <b>VelWolef Market Desk</b> — Basic"
     else:
-        signature = "— <b>Velwolf Market Desk</b>"
+        tier_header = "📊 <b>MARKET NOTE</b>"
+        signature   = "━━━━━━━━━━━━━━━━━━━━\n💎 <b>VelWolef</b>"
 
-    header = f"<b>{title}</b>\n\n"
-    body = (briefing_content or "").strip()
+    header = (
+        f"{tier_header}\n"
+        f"📅 {today}\n"
+        f"━━━━━━━━━━━━━━━━━━━━\n\n"
+    )
+    body   = (briefing_content or "").strip()
     footer = f"\n\n{signature}"
 
     message = header + body + footer
@@ -293,37 +302,31 @@ def _get_plan_briefing_content(tier: str, fallback_content: str = "") -> str:
 
 def _build_public_briefing_content(base_content: str) -> str:
     text = (base_content or "").strip()
+    clean = " ".join(text.split())
 
-    if not text:
-        return (
-            "🏛 <b>MARKET MORNING NOTE</b>\n\n"
-            "<b>Market Regime</b>\n"
-            "• volatility picking up\n"
-            "• selective flows across major assets\n"
-            "• no clear short-term direction\n\n"
-            "<b>Desk Read</b>\n"
-            "• technical zones being tested\n"
-            "• caution before breakout confirmation\n"
-            "• risk management remains priority\n\n"
-            "🔒 <b>Limited Access</b>\n"
-            "The full plan, execution levels and session scenarios are reserved for Premium and VIP members."
-        )
+    # Extraire un teaser de 300 chars max — propre
+    teaser = clean[:300].rstrip()
+    if len(clean) > 300:
+        # Couper à la dernière phrase complète
+        last_dot = teaser.rfind(".")
+        if last_dot > 100:
+            teaser = teaser[:last_dot + 1]
+        else:
+            teaser += "..."
 
-    clean_text = " ".join(text.split())
-    teaser = clean_text[:500].rstrip()
-    if len(clean_text) > 500:
-        teaser += "..."
+    if not teaser:
+        teaser = "Market in transition — key zones being tested across major assets."
 
     return (
-        "🏛 <b>MARKET MORNING NOTE</b>\n\n"
-        "<b>Market Regime</b>\n"
+        "📊 <b>Market Morning Note</b>\n\n"
         f"{teaser}\n\n"
-        "<b>Desk Read</b>\n"
-        "• confirmation comes before engagement\n"
-        "• watch reactions around key zones\n"
-        "• beware of acceleration without flow confirmation\n\n"
-        "🔒 <b>Limited Access</b>\n"
-        "The full plan, execution levels and session scenarios are reserved for Premium and VIP members."
+        "━━━━━━━━━━━━━━━━━━━━\n"
+        "🔒 <b>What Premium & VIP get:</b>\n"
+        "• Full regime reading + directional bias\n"
+        "• Session scenarios A / B / C\n"
+        "• Execution zones with entry, SL and TP\n"
+        "• Asset-by-asset structured plan\n\n"
+        "👉 Upgrade at <b>velwolef.com/pricing</b>"
     )
 
 
@@ -331,10 +334,12 @@ def _build_premium_second_content(base_content: str) -> str:
     return (
         base_content.strip()
         + "\n\n━━━━━━━━━━━━━━━━━━"
-        + "\n📍 <b>Premium Update</b>"
-        + "\n- setups to keep under watch"
-        + "\n- beware of breakouts without volume"
-        + "\n- confirmation before adding new exposure"
+        + "\n📍 <b>Premium Session Focus</b>\n"
+        + "\n• Prioritize setups with volume confirmation"
+        + "\n• Avoid entries before key level validation"
+        + "\n• R:R minimum 1:2 on all new positions"
+        + "\n• Reduce size on overlapping correlations"
+        + "\n\n⚡ <b>Execution reminder:</b> wait for the candle close — not the wick."
     )
 
 
@@ -342,12 +347,19 @@ def _build_vip_second_content(base_content: str) -> str:
     return (
         base_content.strip()
         + "\n\n━━━━━━━━━━━━━━━━━━"
-        + "\n🔒 <b>VIP Opportunity Map</b>"
-        + "\n- setups under watch"
-        + "\n- priority reaction zones"
-        + "\n- momentum needs confirmation"
-        + "\n- beware of false breakouts"
-        + "\n- fast adjustments according to session flow"
+        + "\n👑 <b>VIP Opportunity Map</b>\n"
+        + "\n🎯 <b>Priority zones:</b>"
+        + "\n• HTF reaction levels — wait for confirmation before execution"
+        + "\n• Avoid chasing — let the setup come to the entry"
+        + "\n• OB / FVG confluence = highest quality setups"
+        + "\n\n📐 <b>Risk protocol:</b>"
+        + "\n• Max 2 positions simultaneously"
+        + "\n• SL defined before entry — never after"
+        + "\n• Scale out at TP1, run the runner to TP2"
+        + "\n\n🧠 <b>Desk mindset:</b>"
+        + "\n• One good trade beats five average ones"
+        + "\n• Structure > price action > indicators"
+        + "\n• If unclear — no trade is a valid trade"
     )
 
 
@@ -631,7 +643,7 @@ def send_morning_briefings() -> dict:
     if get_rules("basic").allow_morning_brief:
         msg_basic = format_briefing_message(
             briefing_content=_get_plan_briefing_content("basic", raw_content),
-            title="Market Brief",
+            title="Daily Market Brief",
             tier="basic",
         )
 
@@ -650,11 +662,7 @@ def send_morning_briefings() -> dict:
     if get_rules("premium").allow_morning_brief:
         premium_content = (
             _get_plan_briefing_content("premium", raw_content)
-            + "\n\n━━━━━━━━━━━━━━━━━━"
-            + "\n<b>Session Plan</b>\n"
-            + "• main directional scenarios\n"
-            + "• priority execution zones\n"
-            + "• validation required before execution"
+            + "\n\n" + _build_premium_second_content("")
         )
 
         msg_premium = format_briefing_message(
