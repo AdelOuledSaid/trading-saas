@@ -366,14 +366,14 @@
             <div class="er-news-feed">
 
               {% for n in news %}
-              <div class="er-news-item {{ n.level }}">
+              <div class="er-news-item {{ n.level | default('low') }}">
                 <div class="er-news-icon">{{ n.icon | default("📊") }}</div>
                 <div class="er-news-body">
                   <div class="er-news-title">{{ n.title | default("") }}</div>
                   <div class="er-news-meta">
                     <span class="er-news-source">{{ n.source | default("") }}</span>
                     <span class="er-news-time">{{ n.time | default("") }}</span>
-                    <span class="er-tag tag-{{ n.impact_label.split(' ')[0]|lower }}">{{ n.impact_label }}</span>
+                    <span class="er-tag tag-{{ n.level | default('low') }}">{{ n.level | default('low') | capitalize }} impact</span>
                   </div>
                   <div class="er-tags">
                     {% for t in n.tags | default([]) %}
@@ -396,21 +396,21 @@
                         <span class="er-prob-asset">DOGE</span>
                         <div class="er-prob-bar-wrap">
                           <div class="er-prob-track">
-                            <div class="er-prob-fill {{ n.prob.doge_dir | default("low") }}" style="width:{{ n.prob.doge | default(0) }}%"></div>
+                            <div class="er-prob-fill {{ (n.prob.doge_dir if n.prob is defined and n.prob else "low") | default("low") }}" style="width:{{ (n.prob.doge if n.prob is defined and n.prob else 0) | default(0) if n.prob is defined and n.prob else 0 }}%"></div>
                           </div>
                           <span class="er-prob-horizon">Bullish move in 4H — based on {{ n.source | default("") }} historical pattern</span>
                         </div>
-                        <span class="er-prob-pct" style="color:{% if n.prob_doge >= 65 %}#4ade80{% elif n.prob_doge >= 45 %}#fbbf24{% else %}#f87171{% endif %};">{{ n.prob.doge | default(0) }}%</span>
+                        <span class="er-prob-pct" style="color:{% if ((n.prob.doge if n.prob is defined and n.prob else 0) if n.prob is defined and n.prob else 0) >= 65 %}#4ade80{% elif ((n.prob.doge if n.prob is defined and n.prob else 0) if n.prob is defined and n.prob else 0) >= 45 %}#fbbf24{% else %}#f87171{% endif %};">{{ (n.prob.doge if n.prob is defined and n.prob else 0) | default(0) }}%</span>
                       </div>
                       <div class="er-prob-row">
                         <span class="er-prob-asset">BTC</span>
                         <div class="er-prob-bar-wrap">
                           <div class="er-prob-track">
-                            <div class="er-prob-fill {{ n.prob.btc_dir | default("low") }}" style="width:{{ n.prob.btc | default(0) }}%"></div>
+                            <div class="er-prob-fill {{ (n.prob.btc_dir if n.prob is defined and n.prob else "low") | default("low") }}" style="width:{{ (n.prob.btc if n.prob is defined and n.prob else 0) | default(0) if n.prob is defined and n.prob else 0 }}%"></div>
                           </div>
                           <span class="er-prob-horizon">Risk-on follow — indirect correlation</span>
                         </div>
-                        <span class="er-prob-pct" style="color:{% if n.prob_btc >= 65 %}#4ade80{% elif n.prob_btc >= 45 %}#fbbf24{% else %}#f87171{% endif %};">{{ n.prob.btc | default(0) }}%</span>
+                        <span class="er-prob-pct" style="color:{% if ((n.prob.btc if n.prob is defined and n.prob else 0)  if n.prob is defined and n.prob else 0) >= 65 %}#4ade80{% elif ((n.prob.btc if n.prob is defined and n.prob else 0)  if n.prob is defined and n.prob else 0) >= 45 %}#fbbf24{% else %}#f87171{% endif %};">{{ (n.prob.btc if n.prob is defined and n.prob else 0) | default(0) }}%</span>
                       </div>
                     </div>
                   </div>
@@ -437,20 +437,20 @@
                   <div class="er-signal-card">
                     <div class="er-signal-header">
                       <span class="er-signal-title">⚡ Execution signal</span>
-                      <span class="er-signal-dir {{ n.sig_dir|lower }}">{{ n.signal.direction | default("WAIT") }} {{ n.signal.asset | default("DOGE") }}</span>
+                      <span class="er-signal-dir {{ ((n.signal.direction if n.signal is defined and n.signal else "WAIT") if n.signal is defined and n.signal else "WAIT")|lower }}">{{ ((n.signal.direction if n.signal is defined and n.signal else "WAIT") if n.signal is defined and n.signal else "WAIT") }} {{ ((n.signal.asset if n.signal is defined and n.signal else "DOGE") if n.signal is defined and n.signal else "DOGE") }}</span>
                     </div>
-                    {% if n.signal.direction | default('WAIT') != 'WAIT' %}
+                    {% if ((n.signal.direction if n.signal is defined and n.signal else "WAIT") if n.signal is defined and n.signal else 'WAIT') != 'WAIT' %}
                     <div class="er-signal-grid">
-                      <div class="er-signal-cell"><span>Entry</span><strong style="color:#60a5fa;">{{ n.signal.entry | default("—") }}</strong></div>
-                      <div class="er-signal-cell"><span>R:R</span><strong style="color:var(--go);">{{ n.signal.rr | default("—") }}</strong></div>
-                      <div class="er-signal-cell"><span>Stop Loss</span><strong style="color:#f87171;">{{ n.signal.sl | default("—") }}</strong></div>
-                      <div class="er-signal-cell"><span>TP1</span><strong style="color:#4ade80;">{{ n.signal.tp1 | default("—") }}</strong></div>
-                      <div class="er-signal-cell" style="grid-column:span 2;"><span>TP2 (runner)</span><strong style="color:#4ade80;">{{ n.signal.tp2 | default("—") }}</strong></div>
+                      <div class="er-signal-cell"><span>Entry</span><strong style="color:#60a5fa;">{{ ((n.signal.entry if n.signal is defined and n.signal else "—") if n.signal is defined and n.signal else "—") }}</strong></div>
+                      <div class="er-signal-cell"><span>R:R</span><strong style="color:var(--go);">{{ ((n.signal.rr if n.signal is defined and n.signal else "—") if n.signal is defined and n.signal else "—") }}</strong></div>
+                      <div class="er-signal-cell"><span>Stop Loss</span><strong style="color:#f87171;">{{ ((n.signal.sl if n.signal is defined and n.signal else "—") if n.signal is defined and n.signal else "—") }}</strong></div>
+                      <div class="er-signal-cell"><span>TP1</span><strong style="color:#4ade80;">{{ ((n.signal.tp1 if n.signal is defined and n.signal else "—") if n.signal is defined and n.signal else "—") }}</strong></div>
+                      <div class="er-signal-cell" style="grid-column:span 2;"><span>TP2 (runner)</span><strong style="color:#4ade80;">{{ ((n.signal.tp2 if n.signal is defined and n.signal else "—") if n.signal is defined and n.signal else "—") }}</strong></div>
                     </div>
                     {% else %}
                     <div style="text-align:center;padding:12px;color:var(--mu);font-size:13px;">⏳ No setup triggered yet — monitor for confirmation</div>
                     {% endif %}
-                    <div class="er-signal-note">{{ n.signal.note | default("") }}</div>
+                    <div class="er-signal-note">{{ ((n.signal.note if n.signal is defined and n.signal else "") if n.signal is defined and n.signal else "") }}</div>
                   </div>
                   {% elif is_prem %}
                   <div class="er-lock-wrap" style="margin-top:8px;">
