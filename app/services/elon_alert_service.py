@@ -94,7 +94,29 @@ NEWS_RSS = [
 ]
 
 # ── État ─────────────────────────────────────────────────────────
-_sent_hashes: Set[str] = set()
+import json
+
+# Fichier de persistance : evite de rejouer d'anciennes alertes apres un redemarrage
+_SENT_FILE = os.environ.get("ELON_SENT_FILE", "/tmp/elon_sent_hashes.json")
+
+
+def _load_sent() -> Set[str]:
+    try:
+        with open(_SENT_FILE) as f:
+            return set(json.load(f))
+    except Exception:
+        return set()
+
+
+def _save_sent() -> None:
+    try:
+        with open(_SENT_FILE, "w") as f:
+            json.dump(list(_sent_hashes), f)
+    except Exception as e:
+        print(f"[ElonAlert] ⚠️  save sent failed: {e}")
+
+
+_sent_hashes: Set[str] = _load_sent()
 _topic_cooldown: Dict[str, float] = {}   # topic → timestamp dernier envoi
 _COOLDOWN_SECONDS = 3600  # 1h entre 2 alertes du même topic
 _running = False
@@ -157,18 +179,60 @@ def _get_emoji(title: str) -> str:
 
 
 def _get_impact_text(title: str) -> str:
+    """
+    Lecture qualitative de la direction possible — PAS une prevision chiffree.
+    Aucun pourcentage n'est invente. On indique seulement les actifs a
+    surveiller et un biais directionnel, a confirmer sur le graphique.
+    """
     t = title.lower()
+
+    # Evenement baissier explicite
+    if "sells bitcoin" in t or "sold bitcoin" in t:
+        return (
+            "📉 Biais : prudence / *risk-off* possible\n"
+            "👀 A surveiller : *BTC*\n"
+            "🔎 Reaction a confirmer sur le graphique"
+        )
+
+    # Evenement haussier fort (achat / tresorerie / paiement)
+    if (
+        "buys bitcoin" in t or "bought bitcoin" in t
+        or "bitcoin treasury" in t
+        or "doge payment" in t or "dogecoin payment" in t
+    ):
+        return (
+            "📈 Biais : *risk-on* possible\n"
+            "👀 A surveiller : *BTC*, *DOGE*\n"
+            "🔎 Direction a confirmer avant toute decision"
+        )
+
+    # Mentions DOGE / Dogecoin
     if "doge" in t or "dogecoin" in t:
-        return "📈 *DOGE* → avg +18% in 24H\n📈 *BTC* → risk-on +2-5%"
+        return (
+            "🐕 Biais : *DOGE* sensible aux propos d'Elon Musk\n"
+            "👀 A surveiller : *DOGE*, et *BTC* par correlation\n"
+            "🔎 Ampleur incertaine — a confirmer sur le graphique"
+        )
+
+    # Lancement / Starship
     if "starship" in t or "launch" in t:
-        return "📈 *DOGE* → avg +12% in 12H\n📈 *BTC* → sentiment boost"
-    if "buys bitcoin" in t or "bitcoin treasury" in t:
-        return "📈 *BTC* → avg +8% in 48H\n📈 Full risk-on signal"
-    if "sells bitcoin" in t:
-        return "📉 *BTC* → avg -8% in 24H\n⚠️ Reduce long exposure"
+        return (
+            "🚀 Biais : sentiment crypto potentiellement positif\n"
+            "👀 A surveiller : *DOGE*, *BTC*\n"
+            "🔎 Effet souvent court et incertain"
+        )
+
+    # NASA / contrats
     if "nasa" in t:
-        return "📈 *TSLA* → avg +5% in 48H\n📈 *BTC* → mild risk-on"
-    return "📊 Monitor DOGE / BTC for reaction"
+        return (
+            "⚡ Biais : possible soutien sur *TSLA*\n"
+            "👀 A surveiller : *TSLA*, *BTC* (correlation faible)"
+        )
+
+    return (
+        "📊 A surveiller : *DOGE* / *BTC*\n"
+        "🔎 Direction a confirmer sur le graphique"
+    )
 
 
 def _format_message(title: str, source: str, link: str, score: int) -> str:
@@ -184,11 +248,12 @@ def _format_message(title: str, source: str, link: str, score: int) -> str:
 📰 {source}
 
 ━━━━━━━━━━━━━━━━━━
-📊 *Expected impact*
+🧭 *Lecture rapide* (a confirmer)
 {impact}
 
 🔗 [Read more]({link})
 ━━━━━━━━━━━━━━━━━━
+⚠️ _Information, pas un conseil en investissement. Verifiez vous-meme avant toute decision._
 🔒 _VIP — VelWolef Elon Radar_"""
 
 
@@ -220,7 +285,8 @@ def send_telegram(message: str) -> bool:
 
 def _process_item(title: str, source: str, link: str, summary: str = "") -> None:
     """Pipeline complet : score → cooldown → envoi."""
-    h = _hash(title)
+    # Dedup sur le lien (plus fiable que le titre, qui varie d'un flux a l'autre)
+    h = _hash(link or title)
     if h in _sent_hashes:
         return  # déjà envoyé
 
@@ -239,12 +305,14 @@ def _process_item(title: str, source: str, link: str, summary: str = "") -> None
     if send_telegram(msg):
         _sent_hashes.add(h)
         _set_cooldown(topic)
+        _save_sent()  # persister pour survivre aux redemarrages
 
         # Garder max 1000 hashes
         if len(_sent_hashes) > 1000:
             old = list(_sent_hashes)[:200]
             for o in old:
                 _sent_hashes.discard(o)
+            _save_sent()
 
 
 def _check_tweets() -> None:
