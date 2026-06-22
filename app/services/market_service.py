@@ -53,12 +53,36 @@ def format_currency(value, decimals=0):
     return f"${value:,.{decimals}f}"
 
 
-def get_btc_data():
-    crypto = get_crypto_market_live("bitcoin")
-    btc = crypto.get("bitcoin", {})
+def _get_btc_from_binance():
+    """Fallback Binance — 100% gratuit, sans limite."""
+    import requests as _req
+    try:
+        r = _req.get(
+            "https://api.binance.com/api/v3/ticker/24hr",
+            params={"symbol": "BTCUSDT"},
+            timeout=5
+        )
+        d = r.json()
+        price  = float(d.get("lastPrice", 0))
+        change = float(d.get("priceChangePercent", 0))
+        return price, change
+    except Exception:
+        return None, None
 
-    price = safe_float(btc.get("usd"))
-    change = safe_float(btc.get("usd_24h_change"))
+
+def get_btc_data():
+    # Essai 1 : CoinGecko (cache 30min)
+    try:
+        crypto = get_crypto_market_live("bitcoin")
+        btc    = crypto.get("bitcoin", {})
+        price  = safe_float(btc.get("usd"))
+        change = safe_float(btc.get("usd_24h_change"))
+    except Exception:
+        price = change = None
+
+    # Essai 2 : Binance (gratuit, sans limite)
+    if not price:
+        price, change = _get_btc_from_binance()
 
     if not price:
         raise ValueError("Prix BTC introuvable")
@@ -154,10 +178,10 @@ def get_market_updates():
         return cached or []
 
 
-@cache.memoize(timeout=600)
+@cache.memoize(timeout=1800)
 def get_crypto_market_live(ids="bitcoin,ethereum"):
     """
-    Cache 10 minutes pour éviter les erreurs CoinGecko 429.
+    Cache 30 minutes pour éviter les erreurs CoinGecko 429.
     Si CoinGecko bloque, on retourne la dernière donnée valide.
     """
     url = "https://api.coingecko.com/api/v3/simple/price"
