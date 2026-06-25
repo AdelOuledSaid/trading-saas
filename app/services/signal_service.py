@@ -199,3 +199,39 @@ def auto_update_signal_status(price_map: dict):
             print("Auto status error:", e)
 
     return updated
+
+# =========================
+# PUBLIC RESULTS SUMMARY (home page)
+# =========================
+from app.extensions import cache  # noqa: E402
+
+
+@cache.memoize(timeout=300)
+def get_public_results_summary():
+    """Real, published win rate + closed-trade count for the home page.
+
+    Mirrors the PUBLIC logic of the Results page: the win rate is capped
+    at 73%. Remove the min(..., 73) below to display the true rate.
+    """
+    signals = Signal.query.filter_by(is_deleted=False).all()
+
+    win_signals = sum(
+        1 for s in signals
+        if s.status == "WIN" or (s.result_percent is not None and s.result_percent > 0)
+    )
+    loss_signals = sum(
+        1 for s in signals
+        if s.status == "LOSS" or (s.result_percent is not None and s.result_percent < 0)
+    )
+    closed_signals = win_signals + loss_signals
+
+    real_winrate = round((win_signals / closed_signals) * 100, 2) if closed_signals > 0 else 0
+    public_winrate = min(real_winrate, 73)
+
+    return {
+        "winrate": public_winrate,
+        "real_winrate": real_winrate,
+        "closed_signals": closed_signals,
+        "win_signals": win_signals,
+        "loss_signals": loss_signals,
+    }

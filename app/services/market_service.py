@@ -212,6 +212,77 @@ def get_market_updates():
         return cached or []
 
 
+# CoinGecko frequently blocks/rate-limits cloud server IPs. These map to
+# Binance pairs so we can fall back to a source that works from servers.
+CG_TO_BINANCE = {
+    "bitcoin": "BTCUSDT",
+    "ethereum": "ETHUSDT",
+    "solana": "SOLUSDT",
+    "binancecoin": "BNBUSDT",
+    "ripple": "XRPUSDT",
+    "cardano": "ADAUSDT",
+    "dogecoin": "DOGEUSDT",
+}
+
+
+def _crypto_from_binance(ids):
+    """Fallback for get_crypto_market_live. Returns the SAME shape as
+    CoinGecko /simple/price so downstream code needs no changes."""
+    wanted = [i.strip().lower() for i in ids.split(",") if i.strip()]
+    symbol_map = {cg: CG_TO_BINANCE[cg] for cg in wanted if cg in CG_TO_BINANCE}
+    if not symbol_map:
+        return {}
+
+    try:
+        resp = requests.get(
+            "https://api.binance.com/api/v3/ticker/24hr",
+            timeout=10,
+            headers={"User-Agent": "VelWolf/1.0"},
+        )
+        resp.raise_for_status()
+        by_symbol = {row.get("symbol"): row for row in resp.json()}
+
+        result = {}
+        for cg_id, bsym in symbol_map.items():
+            row = by_symbol.get(bsym)
+            if not row:
+                continue
+            result[cg_id] = {
+                "usd": safe_float(row.get("lastPrice")),
+                "usd_24h_change": safe_float(row.get("priceChangePercent")),
+                "usd_24h_vol": safe_float(row.get("quoteVolume")),
+                "usd_market_cap": None,  # not provided by Binance ticker
+            }
+        return result
+
+    except Exception as e:
+        current_app.logger.warning("Binance crypto fallback failed: %s", repr(e))
+        return {}
+
+
+def _global_from_coinpaprika():
+    """Fallback for get_global_market_live (BTC dominance). No API key needed."""
+    try:
+        r = requests.get(
+            "https://api.coinpaprika.com/v1/global",
+            timeout=10,
+            headers={"User-Agent": "VelWolf/1.0"},
+        )
+        r.raise_for_status()
+        d = r.json()
+        return {
+            "market_cap_usd": safe_float(d.get("market_cap_usd")),
+            "volume_usd": safe_float(d.get("volume_24h_usd")),
+            "btc_dominance": safe_float(d.get("bitcoin_dominance_percentage")),
+            "active_cryptos": d.get("cryptocurrencies_number", 0),
+            "markets": 0,
+            "market_cap_change_24h": safe_float(d.get("market_cap_change_24h")),
+        }
+    except Exception as e:
+        current_app.logger.warning("CoinPaprika global fallback failed: %s", repr(e))
+        return None
+
+
 @cache.memoize(timeout=1800)
 def get_crypto_market_live(ids="bitcoin,ethereum"):
     """
@@ -242,13 +313,27 @@ def get_crypto_market_live(ids="bitcoin,ethereum"):
 
         if data:
             cache.set(backup_key, data, timeout=3600)
+            return data
 
-        return data or {}
+        # CoinGecko answered but empty -> try Binance
+        binance_data = _crypto_from_binance(ids)
+        if binance_data:
+            cache.set(backup_key, binance_data, timeout=3600)
+        return binance_data
 
     except Exception as e:
         current_app.logger.warning("CoinGecko crypto fallback utilisé: %s", repr(e))
+
         cached = cache.get(backup_key)
-        return cached or {}
+        if cached:
+            return cached
+
+        # No cache yet (common on a fresh server where CoinGecko is blocked):
+        # pull live prices from Binance instead of returning empty.
+        binance_data = _crypto_from_binance(ids)
+        if binance_data:
+            cache.set(backup_key, binance_data, timeout=3600)
+        return binance_data
 
 
 @cache.memoize(timeout=900)
@@ -284,6 +369,12 @@ def get_global_market_live():
 
         if cached:
             return cached
+
+        # CoinGecko blocked and no cache -> CoinPaprika gives BTC dominance.
+        paprika = _global_from_coinpaprika()
+        if paprika:
+            cache.set(GLOBAL_MARKET_BACKUP_KEY, paprika, timeout=3600)
+            return paprika
 
         return {
             "market_cap_usd": 0,

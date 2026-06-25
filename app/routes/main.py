@@ -6,6 +6,7 @@ from app.services.market_service import (
     get_crypto_command_center,
 )
 from app.services.news_digest_service import prepare_digest_articles
+from app.services.signal_service import get_public_results_summary
 from app.services.telegram_dispatcher import (
     send_morning_briefings,
     send_second_briefings,
@@ -53,11 +54,13 @@ def home(lang_code):
 
     market_updates = get_market_updates()
     market = get_market_overview()
+    results_summary = get_public_results_summary()
 
     return render_template(
         "home.html",
         market_updates=market_updates,
         market=market,
+        results_summary=results_summary,
         current_lang=current_lang
     )
 
