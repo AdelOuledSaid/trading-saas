@@ -9,6 +9,30 @@ CRYPTO_LIVE_BACKUP_KEY = "crypto_live_backup_v2"
 GLOBAL_MARKET_BACKUP_KEY = "global_market_backup_v2"
 FEAR_GREED_BACKUP_KEY = "fear_greed_backup_v2"
 
+# Only accept "Market Updates" articles from reputable finance/crypto outlets.
+# NewsAPI matches these against the article's source domain.
+TRUSTED_NEWS_DOMAINS = ",".join([
+    "coindesk.com",
+    "cointelegraph.com",
+    "decrypt.co",
+    "theblock.co",
+    "bloomberg.com",
+    "reuters.com",
+    "cnbc.com",
+    "marketwatch.com",
+    "investing.com",
+    "forbes.com",
+])
+
+# Last-resort filter: the title must contain at least one of these,
+# otherwise the article is treated as off-topic and dropped.
+RELEVANT_KEYWORDS = [
+    "bitcoin", "btc", "ethereum", "eth", "crypto", "blockchain", "token",
+    "solana", "sol", "xrp", "etf", "stablecoin",
+    "gold", "xau", "nasdaq", "us100", "s&p", "sp500", "dow jones",
+    "fed", "interest rate", "inflation", "treasury", "dollar",
+]
+
 
 def coingecko_headers():
     headers = {
@@ -137,10 +161,12 @@ def get_market_updates():
 
     url = "https://newsapi.org/v2/everything"
     params = {
-        "q": '(bitcoin OR btc OR ethereum OR eth OR gold OR "nasdaq" OR "us100" OR crypto)',
+        "q": '(bitcoin OR ethereum OR crypto OR "nasdaq 100" OR us100 OR "gold price" OR xau)',
+        "searchIn": "title",            # match the headline only, never the body
+        "domains": TRUSTED_NEWS_DOMAINS,  # only reputable finance/crypto sources
         "language": "en",
         "sortBy": "publishedAt",
-        "pageSize": 6,
+        "pageSize": 20,                 # over-fetch, then keep the 6 cleanest
         "apiKey": config.NEWS_API_KEY,
     }
 
@@ -151,26 +177,34 @@ def get_market_updates():
 
         articles = []
         for article in data.get("articles", []):
-            image_url = article.get("urlToImage")
             title = article.get("title")
-            source = (article.get("source") or {}).get("name", "Source")
             article_url = article.get("url")
-            description = article.get("description") or ""
 
             if not title or not article_url:
                 continue
 
+            # Final safety net: drop anything whose title has no finance keyword.
+            lowered = title.lower()
+            if not any(keyword in lowered for keyword in RELEVANT_KEYWORDS):
+                continue
+
             articles.append({
                 "title": title,
-                "description": description,
-                "image": image_url,
-                "source": source,
+                "description": article.get("description") or "",
+                "image": article.get("urlToImage"),
+                "source": (article.get("source") or {}).get("name", "Source"),
                 "url": article_url,
             })
 
-        articles = articles[:6]
-        cache.set(NEWS_BACKUP_CACHE_KEY, articles, timeout=3600)
-        return articles
+            if len(articles) >= 6:
+                break
+
+        if articles:
+            cache.set(NEWS_BACKUP_CACHE_KEY, articles, timeout=3600)
+            return articles
+
+        # Nothing clean came back: show the last good batch, never raw junk.
+        return cache.get(NEWS_BACKUP_CACHE_KEY) or []
 
     except Exception as e:
         current_app.logger.warning("Market Updates fallback utilisé: %s", repr(e))
