@@ -1994,10 +1994,10 @@
   "site_home_chargement_des_marches": "Loading markets...",
   "site_home_velwolef_ai_signals_plateforme_premium": "VelWolef • AI Signals • Premium Platform",
   "site_home_ai_driven": "AI Driven",
-  "site_home_le_site_qui_ne_montre_pas": "Not just a site that shows",
-  "site_home_des_signaux": "signals,",
-  "site_home_mais_une_vraie": "but a real",
-  "site_home_machine_de_decision": "decision machine.",
+  "site_home_le_site_qui_ne_montre_pas": "Trade with a real edge.",
+  "site_home_des_signaux": "AI Signals • Live Results • Academy",
+  "site_home_mais_une_vraie": "A platform built",
+  "site_home_machine_de_decision": "to trade with precision.",
   "site_home_velwolef_transforme_le_bruit_du_marche_en_execution_claire_signaux_resul": "VelWolef transforms market noise into clear execution. Signals, results, dashboard, Trading Lab and visual intelligence come together in an experience designed to captivate, convince and convert.",
   "site_home_voir_les_resultats": "See the results",
   "site_home_winrate_affiche": "Win rate",
@@ -2028,7 +2028,7 @@
   "site_home_btc_d": "BTC.D",
   "site_home_f_g": "F&G",
   "site_home_un_vrai_centre_de_commandement_pour_lire_filtrer_et_executer": "A true command center to read, filter and execute.",
-  "site_home_velwolef_ne_ressemble_pas_a_une_simple_landing_page_c_est_une_interface": "VelWolef isn’t just another landing page. It’s an interface built to convey a sense of control, momentum and depth.",
+  "site_home_velwolef_ne_ressemble_pas_a_une_simple_landing_page_c_est_une_interface": "Clear signals, transparent results, structured training. A complete platform to level up.",
   "site_home_premium": "Premium",
   "site_home_lecture_marche": "Market reading",
   "site_home_clarte_immediate": "Immediate clarity",
@@ -4254,5 +4254,8 @@
   "footer_bitcoin_analysis": "Bitcoin analysis",
   "footer_crypto_analysis": "Crypto analysis",
   "footer_trading_results": "Trading results",
-  "site_home_voir_resultats_verifies": "See all verified results"
+  "site_home_voir_resultats_verifies": "See all verified results",
+  "nav_group_markets": "Markets",
+  "nav_group_flow": "Flow & On-chain",
+  "nav_group_intel": "Intel"
 }

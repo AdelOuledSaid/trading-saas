@@ -33,7 +33,9 @@
                     <a href="{{ url_for('signals.eth_signals_page', lang_code=lang) }}">Ethereum</a>
                     <a href="{{ url_for('signals.signals_gold', lang_code=lang) }}">Gold</a>
                     <a href="{{ url_for('signals.signals_us100', lang_code=lang) }}">US100</a>
-                    <a href="{{ url_for('signals.results', lang_code=lang) }}">{{ t("history") }}</a>
+                    <div style="border-top:1px solid rgba(255,255,255,.08);margin:6px 0;"></div>
+                    <a href="{{ url_for('signals.results', lang_code=lang) }}">{{ t("results") }}</a>
+                    <a href="{{ url_for('replay.my_performance', lang_code=lang) }}">🎯 {{ t("performance") }}</a>
                 </div>
             </div>
 
@@ -43,16 +45,19 @@
                     {{ t("market", "Markets") }} ▾
                 </button>
                 <div class="nav-dropdown-menu">
+                    <div style="padding:4px 14px;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:4px;">{{ t("nav_group_markets", "Marchés") }}</div>
                     <a href="{{ url_for('pages.market_crypto', lang_code=lang) }}">{{ t("crypto") }}</a>
                     <a href="{{ url_for('pages.market_forex', lang_code=lang) }}">{{ t("forex") }}</a>
                     <a href="{{ url_for('pages.market_opportunities', lang_code=lang) }}">{{ t("opportunities") }}</a>
                     <a href="{{ url_for('pages.market_sentiment', lang_code=lang) }}">{{ t("sentiment") }}</a>
-                    <a href="{{ url_for('economic_calendar.economic_calendar', lang_code=lang) }}">{{ t("economic_calendar") }}</a>
+                    <div style="padding:4px 14px;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:4px;">{{ t("nav_group_flow", "Flux & On-chain") }}</div>
                     <a href="/{{ lang }}/markets/whales">🐋 {{ t("whales", "Whales") }}</a>
                     <a href="{{ url_for('token_unlocks.token_unlocks_page', lang_code=lang) }}">{{ t("token_unlocks") }}</a>
-                    <a href="{{ url_for('news_feed.news_feed', lang_code=lang) }}">📰 {{ t("news") }}</a>
                     <a href="{{ url_for('liquidations.liquidations_page', lang_code=lang) }}">{{ t("liquidations") }}</a>
                     <a href="{{ url_for('open_interest.open_interest_page', lang_code=lang) }}">{{ t("open_interest") }}</a>
+                    <div style="padding:4px 14px;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:4px;">{{ t("nav_group_intel", "Intel") }}</div>
+                    <a href="{{ url_for('economic_calendar.economic_calendar', lang_code=lang) }}">{{ t("economic_calendar") }}</a>
+                    <a href="{{ url_for('news_feed.news_feed', lang_code=lang) }}">📰 {{ t("news") }}</a>
                     <a href="{{ url_for('pages.elon_radar', lang_code=lang) }}">🚀 Elon Radar</a>
                 </div>
             </div>
@@ -90,17 +95,6 @@
                     <a href="{{ url_for('academy.academy_level_7', lang_code=lang) }}">🏆 Level 7 — Pro Management</a>
                     <div style="border-top:1px solid rgba(255,255,255,.08);margin:6px 0;"></div>
                     <a href="{{ url_for('academy.academy_upgrade', lang_code=lang) }}">💎 Upgrade Plan</a>
-                </div>
-            </div>
-
-            <!-- PERFORMANCE -->
-            <div class="nav-dropdown">
-                <button class="nav-drop-btn" type="button">
-                    {{ t("performance", "Performance") }} ▾
-                </button>
-                <div class="nav-dropdown-menu">
-                    <a href="{{ url_for('signals.results', lang_code=lang) }}">{{ t("results") }}</a>
-                    <a href="{{ url_for('replay.my_performance', lang_code=lang) }}">🎯 {{ t("performance") }}</a>
                 </div>
             </div>
 
