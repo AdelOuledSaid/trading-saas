@@ -4258,5 +4258,7 @@
   "nav_group_markets": "Markets",
   "nav_group_flow": "Flow & On-chain",
   "nav_group_intel": "Intel",
-  "site_home_rejoindre_telegram": "Join our Telegram"
+  "site_home_rejoindre_telegram": "Join our Telegram",
+  "site_results_fallback_reason_featured": "Clean setup with readable market structure and disciplined execution.",
+  "site_results_fallback_reason_history": "Technical analysis available in the detailed replay."
 }

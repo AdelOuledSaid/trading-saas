@@ -1,0 +1,138 @@
+/* =========================================================
+   RESULTS PAGE — "PRO" POLISH LAYER
+   Loaded AFTER results.css. Purely additive: remove this
+   <link> to revert. Uses the existing --rs-* design tokens.
+========================================================= */
+
+/* ---------- Tabular numbers (clean alignment) ---------- */
+.results-body .rs-metric strong,
+.results-body .rs-stat strong,
+.results-body .rs-strip-card strong,
+.results-body .rs-proof-card strong,
+.results-body .rs-side-list li,
+.results-body .rs-mini-pill,
+.results-body .rs-eq-tip-val,
+.results-body .rs-eq-badge {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+    letter-spacing: 0.2px;
+}
+
+/* ---------- P&L colour helpers ---------- */
+.results-body .rs-pnl-pos { color: #4ade80 !important; }
+.results-body .rs-pnl-neg { color: #f87171 !important; }
+.results-body .rs-stat-red {
+    border-color: rgba(239, 68, 68, 0.28);
+    background:
+        radial-gradient(120% 140% at 0% 0%, rgba(239,68,68,0.10), transparent 60%),
+        var(--rs-bg-card);
+}
+.results-body .rs-stat-red .rs-stat-tag { color: #fca5a5; }
+
+/* ---------- Card hover refinement ---------- */
+.results-body .rs-card {
+    transition: transform .28s cubic-bezier(.2,.7,.3,1),
+                border-color .28s ease, box-shadow .28s ease;
+    will-change: transform;
+}
+.results-body .rs-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(96, 165, 250, 0.42);
+    box-shadow: 0 26px 64px rgba(2, 6, 23, 0.5);
+}
+.results-body .rs-featured-card:hover {
+    border-color: rgba(124, 58, 237, 0.45);
+}
+
+/* ---------- Stat cards ---------- */
+.results-body .rs-stat {
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+.results-body .rs-stat:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--rs-shadow-md);
+}
+
+/* ---------- Status pills ---------- */
+.results-body .status-pill { letter-spacing: .5px; font-weight: 800; }
+.results-body .status-win  { box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.35); }
+.results-body .status-loss { box-shadow: inset 0 0 0 1px rgba(239, 68, 68, 0.35); }
+.results-body .status-open { box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.28); }
+
+/* ---------- Asset badge + action ---------- */
+.results-body .rs-badge-asset { letter-spacing: .4px; }
+.results-body .rs-action { transition: filter .2s ease; }
+
+/* ---------- Buttons micro-interaction ---------- */
+.results-body .learn-btn,
+.results-body .rs-upgrade-btn,
+.results-body .hero-btn-primary {
+    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+}
+.results-body .learn-btn:hover,
+.results-body .rs-upgrade-btn:hover,
+.results-body .hero-btn-primary:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+}
+
+/* ---------- Result metric emphasis ---------- */
+.results-body .rs-metric-win strong  { text-shadow: 0 0 18px rgba(34, 197, 94, 0.25); }
+.results-body .rs-metric-loss strong { text-shadow: 0 0 18px rgba(239, 68, 68, 0.25); }
+
+/* =========================================================
+   INTERACTIVE EQUITY CHART OVERLAY
+========================================================= */
+.results-body .rs-equity-chart { position: relative; }
+
+/* vertical crosshair following the cursor */
+.results-body .rs-eq-cross {
+    position: absolute; top: 8px; bottom: 8px; width: 1px;
+    background: linear-gradient(180deg,
+        rgba(96,165,250,0) 0%, rgba(96,165,250,.55) 50%, rgba(96,165,250,0) 100%);
+    transform: translateX(-0.5px);
+    pointer-events: none; display: none; z-index: 3;
+}
+
+/* moving dot on the curve */
+.results-body .rs-eq-hoverdot {
+    position: absolute; width: 12px; height: 12px; border-radius: 50%;
+    background: #fff; border: 3px solid var(--c, #22c55e);
+    box-shadow: 0 0 0 4px rgba(34,197,94,.18), 0 0 16px var(--c, #22c55e);
+    transform: translate(-50%, -50%);
+    pointer-events: none; display: none; z-index: 4;
+}
+
+/* floating tooltip */
+.results-body .rs-eq-tip {
+    position: absolute; display: none; pointer-events: none; z-index: 5;
+    background: rgba(8, 13, 26, 0.94);
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    border-radius: 11px; padding: 8px 12px; min-width: 104px;
+    box-shadow: 0 14px 34px rgba(2, 6, 23, 0.55);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+.results-body .rs-eq-tip-idx {
+    display: block; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .6px; color: #94a3b8;
+}
+.results-body .rs-eq-tip-val {
+    display: block; font-size: 16px; font-weight: 800; margin-top: 2px;
+}
+
+/* high / low markers on the curve */
+.results-body .rs-eq-badge {
+    position: absolute; pointer-events: none; z-index: 2;
+    font-size: 10px; font-weight: 800; white-space: nowrap;
+    padding: 2px 8px; border-radius: 999px;
+    color: var(--c, #22c55e);
+    background: rgba(8, 13, 26, 0.9);
+    border: 1px solid var(--c, #22c55e);
+}
+.results-body .rs-eq-hi { transform: translate(-50%, -150%); }
+.results-body .rs-eq-lo { transform: translate(-50%, 55%); }
+
+/* slightly taller, breathable chart on desktop */
+@media (min-width: 900px) {
+    .results-body .rs-equity-chart { min-height: 300px; }
+}
