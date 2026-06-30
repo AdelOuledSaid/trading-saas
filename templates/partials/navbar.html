@@ -22,6 +22,8 @@
              <!-- AI -->
             
             <a href="{{ url_for('technical_analysis.technical_analysis_page', lang_code=lang) }}">{{ t("Analyse IA") }}</a>
+
+            <a href="{{ url_for('signals.results', lang_code=lang) }}">{{ t("results", "Résultats") }}</a>
             <!-- SIGNALS -->
             <div class="nav-dropdown">
                 <button class="nav-drop-btn" type="button">
@@ -34,7 +36,6 @@
                     <a href="{{ url_for('signals.signals_gold', lang_code=lang) }}">Gold</a>
                     <a href="{{ url_for('signals.signals_us100', lang_code=lang) }}">US100</a>
                     <div style="border-top:1px solid rgba(255,255,255,.08);margin:6px 0;"></div>
-                    <a href="{{ url_for('signals.results', lang_code=lang) }}">{{ t("results") }}</a>
                     <a href="{{ url_for('replay.my_performance', lang_code=lang) }}">🎯 {{ t("performance") }}</a>
                 </div>
             </div>
