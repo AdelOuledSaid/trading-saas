@@ -3,7 +3,10 @@ from datetime import datetime
 from typing import List, Dict, Optional
 
 
-BINANCE_SPOT_BASE_URL = "https://api.binance.com"
+BINANCE_SPOT_BASE_URLS = [
+    "https://data-api.binance.vision",  # public market-data mirror, not geo-restricted
+    "https://api.binance.com",          # fallback (geo-blocked from some IPs -> HTTP 451)
+]
 
 
 INTERVAL_MAP = {
@@ -53,8 +56,6 @@ def fetch_klines(
     timeout: int = 10,
 ) -> List[Dict]:
     endpoint = "/api/v3/uiKlines" if use_ui_klines else "/api/v3/klines"
-    url = f"{BINANCE_SPOT_BASE_URL}{endpoint}"
-
     params = {
         "symbol": symbol,
         "interval": interval,
@@ -63,15 +64,29 @@ def fetch_klines(
         "limit": min(limit, 1000),
     }
 
-    response = requests.get(url, params=params, timeout=timeout)
-    if response.status_code != 200:
-        raise BinanceMarketServiceError(
-            f"Binance klines error {response.status_code}: {response.text}"
-        )
+    # Binance geo-restricts api.binance.com from many cloud/datacenter IPs
+    # (HTTP 451). The data-api.binance.vision mirror serves the same public
+    # market data without that restriction, so we try it first.
+    data = None
+    last_error = "no base url tried"
+    for base in BINANCE_SPOT_BASE_URLS:
+        try:
+            response = requests.get(f"{base}{endpoint}", params=params, timeout=timeout)
+        except requests.RequestException as exc:
+            last_error = repr(exc)
+            continue
 
-    data = response.json()
-    if not isinstance(data, list):
-        raise BinanceMarketServiceError("Unexpected Binance response format.")
+        if response.status_code == 200:
+            payload = response.json()
+            if isinstance(payload, list):
+                data = payload
+                break
+            last_error = "Unexpected Binance response format."
+        else:
+            last_error = f"{response.status_code}: {response.text[:200]}"
+
+    if data is None:
+        raise BinanceMarketServiceError(f"Binance klines error {last_error}")
 
     candles: List[Dict] = []
     for idx, row in enumerate(data):

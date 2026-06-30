@@ -234,11 +234,24 @@ def _crypto_from_binance(ids):
         return {}
 
     try:
-        resp = requests.get(
-            "https://api.binance.com/api/v3/ticker/24hr",
-            timeout=10,
-            headers={"User-Agent": "VelWolf/1.0"},
-        )
+        resp = None
+        # Binance blocks api.binance.com from many server IPs (HTTP 451);
+        # the data-api.binance.vision mirror is not geo-restricted.
+        for base in ("https://data-api.binance.vision", "https://api.binance.com"):
+            try:
+                r = requests.get(
+                    f"{base}/api/v3/ticker/24hr",
+                    timeout=10,
+                    headers={"User-Agent": "VelWolf/1.0"},
+                )
+                if r.status_code == 200:
+                    resp = r
+                    break
+            except requests.RequestException:
+                continue
+
+        if resp is None:
+            return {}
         resp.raise_for_status()
         by_symbol = {row.get("symbol"): row for row in resp.json()}
 
