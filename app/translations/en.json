@@ -4278,5 +4278,6 @@
   "trust_tg_label": "Public Telegram channel members",
   "trust_winrate_label": "Win rate verified on %s trades",
   "trust_live_label": "Since the last published signal",
-  "trust_updated": "Continuously updated feed"
+  "trust_updated": "Continuously updated feed",
+  "footer_risk_disclaimer": "Risk warning: VelWolef provides signals, analysis and educational content for informational and educational purposes only. This does not constitute investment advice, a solicitation or a recommendation to buy or sell any asset. Trading cryptocurrencies, currencies, indices and other instruments carries a high risk of loss and may not be suitable for all investors: you may lose all or part of your capital. Past performance is not indicative of future results and no return is guaranteed. Only trade with capital you can afford to lose, and consult an independent financial advisor if necessary. VelWolef cannot be held liable for any losses resulting from the use of its content."
 }
