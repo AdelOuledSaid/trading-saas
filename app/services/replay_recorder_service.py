@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
-from flask import has_request_context, request
+from flask import has_request_context, request, current_app
 
 from app.extensions import db
 from app.models import Signal, TradeReplay, ReplayCandle, ReplayEvent
@@ -198,14 +198,18 @@ def ensure_trade_replay_for_signal(signal: Signal) -> Optional[TradeReplay]:
     if binance_symbol:
         provider_symbol = binance_symbol
         provider_interval = map_timeframe_to_binance_interval(signal.timeframe or "15m")
-        candles_data = fetch_klines(
-            symbol=provider_symbol,
-            interval=provider_interval,
-            start_time_ms=dt_to_ms(replay_start),
-            end_time_ms=dt_to_ms(replay_end),
-            limit=300,
-            use_ui_klines=True,
-        )
+        try:
+            candles_data = fetch_klines(
+                symbol=provider_symbol,
+                interval=provider_interval,
+                start_time_ms=dt_to_ms(replay_start),
+                end_time_ms=dt_to_ms(replay_end),
+                limit=300,
+                use_ui_klines=True,
+            )
+        except Exception as exc:
+            current_app.logger.warning("Replay Binance fetch failed for %s: %s", asset, repr(exc))
+            candles_data = []
 
     # 2) GOLD / US100 via Twelve Data
     else:
@@ -213,14 +217,18 @@ def ensure_trade_replay_for_signal(signal: Signal) -> Optional[TradeReplay]:
         if td_symbol:
             provider_symbol = td_symbol
             provider_interval = map_timeframe_to_twelvedata_interval(signal.timeframe or "15m")
-            candles_data = fetch_time_series(
-                symbol=provider_symbol,
-                interval=provider_interval,
-                start_date=replay_start,
-                end_date=replay_end,
-                outputsize=300,
-                timezone="UTC",
-            )
+            try:
+                candles_data = fetch_time_series(
+                    symbol=provider_symbol,
+                    interval=provider_interval,
+                    start_date=replay_start,
+                    end_date=replay_end,
+                    outputsize=300,
+                    timezone="UTC",
+                )
+            except Exception as exc:
+                current_app.logger.warning("Replay TwelveData fetch failed for %s: %s", asset, repr(exc))
+                candles_data = []
 
     if not candles_data:
         return None
