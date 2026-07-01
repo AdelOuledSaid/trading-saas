@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang | default('en') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — VelWolef</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: radial-gradient(120% 120% at 50% 0%, #0a1430 0%, #050816 55%, #03050e 100%);
+            color: #f8fafc; padding: 24px; position: relative; overflow: hidden;
+        }
+        .err-glow {
+            position: absolute; width: 620px; height: 620px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(59,130,246,.18), transparent 60%);
+            top: -200px; left: 50%; transform: translateX(-50%); pointer-events: none;
+        }
+        .err-card { position: relative; text-align: center; max-width: 540px; width: 100%; }
+        .err-logo { height: 44px; margin-bottom: 30px; opacity: .95; }
+        .err-code {
+            font-size: clamp(96px, 22vw, 158px); font-weight: 900; line-height: 1; letter-spacing: -4px;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 42%, #7c3aed 100%);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        .err-title { font-size: 24px; font-weight: 800; margin-top: 12px; }
+        .err-text { color: #94a3b8; font-size: 15px; line-height: 1.65; margin-top: 12px; }
+        .err-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 32px; }
+        .err-btn {
+            display: inline-flex; align-items: center; gap: 8px; padding: 13px 24px;
+            border-radius: 12px; font-weight: 700; font-size: 14px; text-decoration: none; transition: .2s ease;
+        }
+        .err-btn-primary {
+            background: linear-gradient(135deg, #2563eb, #7c3aed); color: #fff;
+            box-shadow: 0 14px 32px rgba(37,99,235,.35);
+        }
+        .err-btn-primary:hover { transform: translateY(-2px); filter: brightness(1.08); }
+        .err-btn-ghost { border: 1px solid rgba(148,163,184,.3); color: #cbd5e1; }
+        .err-btn-ghost:hover { border-color: rgba(96,165,250,.6); color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="err-glow"></div>
+    <div class="err-card">
+        <img class="err-logo" src="{{ url_for('static', filename='logo.png') }}" alt="VelWolef">
+        <div class="err-code">404</div>
+        <h1 class="err-title">{{ t("err_404_title", "Page introuvable") }}</h1>
+        <p class="err-text">{{ t("err_404_text", "La page que vous cherchez n'existe pas ou a été déplacée. Vérifiez l'adresse ou revenez à l'accueil.") }}</p>
+        <div class="err-actions">
+            <a class="err-btn err-btn-primary" href="/">{{ t("err_back_home", "Retour à l'accueil") }}</a>
+            <a class="err-btn err-btn-ghost" href="/{{ current_lang | default('en') }}/results">{{ t("results", "Résultats") }}</a>
+        </div>
+    </div>
+</body>
+</html>

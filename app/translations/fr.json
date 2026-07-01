@@ -4138,5 +4138,11 @@
   "nav_group_intel": "Intel",
   "site_home_rejoindre_telegram": "Rejoindre le Telegram",
   "site_results_fallback_reason_featured": "Setup propre avec structure de marché lisible et exécution disciplinée.",
-  "site_results_fallback_reason_history": "Analyse technique disponible dans le replay détaillé."
+  "site_results_fallback_reason_history": "Analyse technique disponible dans le replay détaillé.",
+  "err_404_title": "Page introuvable",
+  "err_404_text": "La page que vous cherchez n'existe pas ou a été déplacée. Vérifiez l'adresse ou revenez à l'accueil.",
+  "err_500_title": "Erreur serveur",
+  "err_500_text": "Une erreur interne est survenue de notre côté. L'équipe est prévenue. Réessayez dans un instant ou revenez à l'accueil.",
+  "err_back_home": "Retour à l'accueil",
+  "err_retry": "Réessayer"
 }

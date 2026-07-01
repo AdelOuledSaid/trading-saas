@@ -308,4 +308,20 @@ def create_app():
         threading.Thread(target=_start_elon, daemon=True, name="ElonRadar").start()
         print("[ElonRadar] Alert monitoring scheduled")
 
+    # ----- Custom error pages -----
+    @app.errorhandler(404)
+    def _handle_404(error):
+        from flask import render_template, g
+        lang = getattr(g, "current_lang", DEFAULT_LANG)
+        return render_template("errors/404.html", current_lang=lang), 404
+
+    @app.errorhandler(500)
+    def _handle_500(error):
+        from flask import render_template, g
+        lang = getattr(g, "current_lang", DEFAULT_LANG)
+        try:
+            return render_template("errors/500.html", current_lang=lang), 500
+        except Exception:
+            return "Internal Server Error", 500
+
     return app

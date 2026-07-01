@@ -4260,5 +4260,11 @@
   "nav_group_intel": "Intel",
   "site_home_rejoindre_telegram": "Join our Telegram",
   "site_results_fallback_reason_featured": "Clean setup with readable market structure and disciplined execution.",
-  "site_results_fallback_reason_history": "Technical analysis available in the detailed replay."
+  "site_results_fallback_reason_history": "Technical analysis available in the detailed replay.",
+  "err_404_title": "Page not found",
+  "err_404_text": "The page you're looking for doesn't exist or has moved. Check the address or head back home.",
+  "err_500_title": "Server error",
+  "err_500_text": "An internal error occurred on our side. The team has been notified. Try again in a moment or head back home.",
+  "err_back_home": "Back to home",
+  "err_retry": "Try again"
 }
