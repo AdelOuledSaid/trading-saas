@@ -7,6 +7,7 @@ from app.services.market_service import (
 )
 from app.services.news_digest_service import prepare_digest_articles
 from app.services.signal_service import get_public_results_summary
+from app.services.trust_service import get_last_signal_minutes, get_telegram_member_count
 from app.services.telegram_dispatcher import (
     send_morning_briefings,
     send_second_briefings,
@@ -55,12 +56,16 @@ def home(lang_code):
     market_updates = get_market_updates()
     market = get_market_overview()
     results_summary = get_public_results_summary()
+    last_signal_minutes = get_last_signal_minutes()
+    telegram_members = get_telegram_member_count()
 
     return render_template(
         "home.html",
         market_updates=market_updates,
         market=market,
         results_summary=results_summary,
+        last_signal_minutes=last_signal_minutes,
+        telegram_members=telegram_members,
         current_lang=current_lang
     )
 

@@ -4144,5 +4144,17 @@
   "err_500_title": "Erreur serveur",
   "err_500_text": "Une erreur interne est survenue de notre côté. L'équipe est prévenue. Réessayez dans un instant ou revenez à l'accueil.",
   "err_back_home": "Retour à l'accueil",
-  "err_retry": "Réessayer"
+  "err_retry": "Réessayer",
+  "unit_min": "min",
+  "unit_h": "h",
+  "unit_d": "j",
+  "site_home_last_signal_fmt": "Dernier signal il y a %s %s",
+  "site_home_flux_actif": "Actif",
+  "trust_kicker": "Preuve, pas promesses",
+  "trust_title": "Des résultats vérifiables, en temps réel",
+  "trust_desc": "Pas de témoignages anonymes — des chiffres publics, un canal ouvert et un flux que vous pouvez vérifier vous-même.",
+  "trust_tg_label": "Membres du canal Telegram public",
+  "trust_winrate_label": "Winrate vérifié sur %s trades",
+  "trust_live_label": "Depuis le dernier signal publié",
+  "trust_updated": "Flux mis à jour en continu"
 }

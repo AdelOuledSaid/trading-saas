@@ -4266,5 +4266,17 @@
   "err_500_title": "Server error",
   "err_500_text": "An internal error occurred on our side. The team has been notified. Try again in a moment or head back home.",
   "err_back_home": "Back to home",
-  "err_retry": "Try again"
+  "err_retry": "Try again",
+  "unit_min": "min",
+  "unit_h": "h",
+  "unit_d": "d",
+  "site_home_last_signal_fmt": "Last signal %s %s ago",
+  "site_home_flux_actif": "Active",
+  "trust_kicker": "Proof, not promises",
+  "trust_title": "Verifiable results, in real time",
+  "trust_desc": "No anonymous testimonials — public numbers, an open channel and a feed you can verify yourself.",
+  "trust_tg_label": "Public Telegram channel members",
+  "trust_winrate_label": "Win rate verified on %s trades",
+  "trust_live_label": "Since the last published signal",
+  "trust_updated": "Continuously updated feed"
 }
