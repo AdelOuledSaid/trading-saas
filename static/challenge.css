@@ -1,0 +1,66 @@
+/* ===== Défi Trading — shared ===== */
+.cg-dir { font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 999px; letter-spacing: .5px; }
+.cg-dir.buy { background: rgba(34,197,94,.15); color: #4ade80; }
+.cg-dir.sell { background: rgba(239,68,68,.15); color: #f87171; }
+.cg-asset { font-size: 18px; font-weight: 900; color: #f8fafc; }
+.cg-btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 22px; border-radius: 12px; font-weight: 700; font-size: 14px; border: none; cursor: pointer; text-decoration: none; transition: .18s ease; font-family: inherit; }
+.cg-btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.cg-btn-close { background: rgba(239,68,68,.15); color: #f87171; border: 1px solid rgba(239,68,68,.3); }
+.cg-btn-hold { background: linear-gradient(135deg,#2563eb,#7c3aed); color: #fff; }
+.cg-btn-partial { background: rgba(245,158,11,.15); color: #fbbf24; border: 1px solid rgba(245,158,11,.3); }
+.cg-btn-share { background: rgba(34,197,94,.15); color: #4ade80; border: 1px solid rgba(34,197,94,.3); }
+.cg-btn-ghost { background: transparent; color: #cbd5e1; border: 1px solid rgba(148,163,184,.3); }
+.cg-empty { color: #94a3b8; font-size: 14px; text-align: center; padding: 24px; }
+
+/* ===== Landing ===== */
+.cg-home { max-width: 1100px; margin: 0 auto; padding: 48px 20px 72px; }
+.cg-home-hero { text-align: center; max-width: 640px; margin: 0 auto 40px; }
+.cg-kicker { display: inline-block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #4ade80; background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.25); padding: 5px 14px; border-radius: 999px; margin-bottom: 16px; }
+.cg-home-hero h1 { font-size: clamp(30px,6vw,48px); font-weight: 900; color: #f8fafc; margin: 0 0 14px; }
+.cg-home-hero p { color: #94a3b8; font-size: 16px; line-height: 1.6; margin: 0 0 22px; }
+.cg-steps { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.cg-step { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #cbd5e1; background: rgba(148,163,184,.06); border: 1px solid rgba(148,163,184,.12); padding: 8px 14px; border-radius: 999px; }
+.cg-step span { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: #3b82f6; color: #fff; font-size: 11px; font-weight: 800; }
+.cg-home-grid { display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; }
+@media (max-width: 820px) { .cg-home-grid { grid-template-columns: 1fr; } }
+.cg-challenges { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 14px; }
+.cg-card { display: flex; flex-direction: column; gap: 8px; background: rgba(11,18,32,.85); border: 1px solid rgba(96,165,250,.18); border-radius: 16px; padding: 18px; text-decoration: none; transition: .2s ease; }
+.cg-card:hover { transform: translateY(-4px); border-color: rgba(96,165,250,.45); box-shadow: 0 20px 44px rgba(2,6,23,.45); }
+.cg-card-top { display: flex; align-items: center; justify-content: space-between; }
+.cg-card-tf { font-size: 12px; color: #94a3b8; }
+.cg-card-play { margin-top: 4px; font-size: 13px; font-weight: 700; color: #60a5fa; }
+.cg-lb-panel { background: rgba(11,18,32,.85); border: 1px solid rgba(148,163,184,.14); border-radius: 16px; padding: 18px; }
+.cg-lb-panel h3 { margin: 0 0 14px; font-size: 15px; font-weight: 800; color: #f8fafc; }
+.cg-lb-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(148,163,184,.08); }
+.cg-lb-rank { width: 22px; font-weight: 800; color: #64748b; font-size: 13px; }
+.cg-lb-name { flex: 1; color: #cbd5e1; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cg-lb-score { font-weight: 800; color: #4ade80; font-variant-numeric: tabular-nums; }
+.cg-lb-cta { display: block; margin-top: 16px; font-size: 13px; font-weight: 700; color: #60a5fa; text-decoration: none; }
+
+/* ===== Player ===== */
+.cg-wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px 60px; }
+.cg-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.cg-back { color: #94a3b8; text-decoration: none; font-size: 13px; font-weight: 600; }
+.cg-back:hover { color: #fff; }
+.cg-sig { display: flex; align-items: center; gap: 10px; }
+.cg-phase { font-size: 12px; font-weight: 700; color: #93c5fd; background: rgba(59,130,246,.1); border: 1px solid rgba(96,165,250,.25); padding: 5px 12px; border-radius: 999px; }
+.cg-chart { width: 100%; height: 420px; background: rgba(5,8,22,.6); border: 1px solid rgba(148,163,184,.12); border-radius: 16px; overflow: hidden; }
+@media (max-width: 600px) { .cg-chart { height: 320px; } }
+
+.cg-decision { flex-direction: column; align-items: center; gap: 14px; margin-top: 20px; }
+.cg-decision-q { font-size: 18px; font-weight: 800; color: #f8fafc; margin: 0; text-align: center; }
+.cg-decision-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+.cg-result { margin-top: 20px; background: rgba(11,18,32,.9); border: 1px solid rgba(148,163,184,.14); border-radius: 18px; padding: 22px; }
+.cg-score { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; }
+.cg-score-ring { width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(#22c55e 0deg, rgba(148,163,184,.15) 0deg); flex-shrink: 0; }
+.cg-score-ring span { width: 66px; height: 66px; border-radius: 50%; background: #0b1220; display: grid; place-items: center; font-size: 24px; font-weight: 900; color: #f8fafc; }
+.cg-verdict { font-size: 20px; font-weight: 900; margin-bottom: 6px; }
+.cg-verdict.good { color: #4ade80; }
+.cg-verdict.medium { color: #fbbf24; }
+.cg-verdict.bad { color: #f87171; }
+.cg-detail { font-size: 14px; color: #cbd5e1; line-height: 1.6; }
+.cg-submit-row { display: flex; gap: 10px; margin-bottom: 12px; }
+.cg-pseudo { flex: 1; background: rgba(148,163,184,.08); border: 1px solid rgba(148,163,184,.2); border-radius: 10px; padding: 11px 14px; color: #f8fafc; font-size: 14px; outline: none; }
+.cg-pseudo:focus { border-color: rgba(96,165,250,.6); }
+.cg-result-actions { display: flex; gap: 10px; flex-wrap: wrap; }

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='challenge.css') }}">{% endblock %}
+{% block content %}
+<div class="cg-wrap">
+  <div class="cg-head">
+    <a href="{{ url_for('challenge.challenge_home', lang_code=current_lang) }}" class="cg-back">← {{ t('challenge_back','Tous les défis') }}</a>
+    <div class="cg-sig">
+      <span id="cg-asset" class="cg-asset">{{ asset }}</span>
+      <span id="cg-dir" class="cg-dir {{ 'sell' if direction=='SELL' else 'buy' }}">{{ direction }}</span>
+    </div>
+    <span id="cg-phase" class="cg-phase">{{ t('loading','Chargement…') }}</span>
+  </div>
+
+  <div id="cg-chart" class="cg-chart"></div>
+
+  <div id="cg-decision" class="cg-decision" style="display:none;">
+    <p class="cg-decision-q">{{ t('decision_q','Tu tiens ou tu coupes ?') }}</p>
+    <div class="cg-decision-btns">
+      <button data-choice="close" class="cg-btn cg-btn-close">{{ t('d_close','Fermer') }}</button>
+      <button data-choice="hold" class="cg-btn cg-btn-hold">{{ t('d_hold','Conserver') }}</button>
+      <button data-choice="partial" class="cg-btn cg-btn-partial">{{ t('d_partial','Alléger') }}</button>
+    </div>
+  </div>
+
+  <div id="cg-result" class="cg-result" style="display:none;">
+    <div class="cg-score">
+      <div id="cg-score-ring" class="cg-score-ring"><span id="cg-score-val">0</span></div>
+      <div class="cg-score-txt">
+        <div id="cg-verdict" class="cg-verdict"></div>
+        <div id="cg-detail" class="cg-detail"></div>
+      </div>
+    </div>
+    <div id="cg-submit-row" class="cg-submit-row">
+      <input id="cg-pseudo" maxlength="40" placeholder="{{ t('your_name','Ton pseudo') }}" class="cg-pseudo">
+      <button id="cg-submit-btn" class="cg-btn cg-btn-hold">{{ t('submit_score','Enregistrer') }}</button>
+    </div>
+    <div class="cg-result-actions">
+      <button id="cg-share-btn" class="cg-btn cg-btn-share">{{ t('share','Partager mon score') }}</button>
+      <a href="{{ url_for('challenge.challenge_home', lang_code=current_lang) }}" class="cg-btn cg-btn-ghost">{{ t('another','Autre défi') }}</a>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+window.CHALLENGE = {
+  replayId: {{ replay_id }},
+  apiBase: "/{{ current_lang }}/api/defi/{{ replay_id }}",
+  leaderboardBase: "/{{ current_lang }}/api/defi/leaderboard",
+  i18n: {
+    "entry": {{ t('entry','Entrée') | tojson }},
+    "decision_moment": {{ t('decision_moment','Moment de décision') | tojson }},
+    "revealing": {{ t('revealing','Révélation…') | tojson }},
+    "error": {{ t('challenge_data_error','Données indisponibles') | tojson }},
+    "result": {{ t('result','Résultat') | tojson }},
+    "d_close": {{ t('d_close','Fermer') | tojson }},
+    "d_hold": {{ t('d_hold','Conserver') | tojson }},
+    "d_partial": {{ t('d_partial','Alléger') | tojson }},
+    "verdict_good": {{ t('verdict_good','Bien joué !') | tojson }},
+    "verdict_medium": {{ t('verdict_medium','Pas mal') | tojson }},
+    "verdict_bad": {{ t('verdict_bad','Raté') | tojson }},
+    "your_choice": {{ t('your_choice','Ton choix') | tojson }},
+    "ideal_choice": {{ t('ideal_choice','Idéal') | tojson }},
+    "trade_result": {{ t('trade_result','Résultat du trade') | tojson }},
+    "score_saved": {{ t('score_saved','Score enregistré !') | tojson }},
+    "share_text": {{ t('share_text', "J'ai scoré {s}/100 au Défi Trading VelWolef. Tu fais mieux ?") | tojson }}
+  }
+};
+</script>
+<script src="{{ url_for('static', filename='js/challenge_game.js') }}"></script>
+{% endblock %}

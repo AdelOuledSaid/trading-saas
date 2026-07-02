@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='challenge.css') }}">{% endblock %}
+{% block content %}
+<section class="cg-home">
+  <div class="cg-home-hero">
+    <span class="cg-kicker">{{ t('challenge_kicker','Gratuit · sans inscription') }}</span>
+    <h1>{{ t('challenge_title','Le Défi Trading') }}</h1>
+    <p>{{ t('challenge_intro','De vrais signaux passés. À toi de décider, bougie par bougie : tu tiens ou tu coupes ? Bats le marché et grimpe au classement.') }}</p>
+    <div class="cg-steps">
+      <div class="cg-step"><span>1</span>{{ t('challenge_step1','Choisis un signal') }}</div>
+      <div class="cg-step"><span>2</span>{{ t('challenge_step2','Décide au bon moment') }}</div>
+      <div class="cg-step"><span>3</span>{{ t('challenge_step3','Compare ton score') }}</div>
+    </div>
+  </div>
+
+  <div class="cg-home-grid">
+    <div class="cg-challenges">
+      {% for c in challenges %}
+      <a href="{{ url_for('challenge.challenge_play', lang_code=current_lang, replay_id=c.replay_id) }}" class="cg-card">
+        <div class="cg-card-top">
+          <span class="cg-asset">{{ c.asset }}</span>
+          <span class="cg-dir {{ 'sell' if c.direction=='SELL' else 'buy' }}">{{ c.direction }}</span>
+        </div>
+        <div class="cg-card-tf">{{ c.timeframe }}</div>
+        <span class="cg-card-play">{{ t('play','Jouer') }} →</span>
+      </a>
+      {% else %}
+      <p class="cg-empty">{{ t('challenge_empty','De nouveaux défis arrivent très bientôt.') }}</p>
+      {% endfor %}
+    </div>
+
+    <aside class="cg-lb-panel">
+      <h3>{{ t('leaderboard','Classement') }}</h3>
+      <div id="cg-leaderboard" class="cg-lb">
+        {% for s in leaderboard %}
+        <div class="cg-lb-row">
+          <span class="cg-lb-rank">{{ loop.index }}</span>
+          <span class="cg-lb-name">{{ s.pseudo }}</span>
+          <span class="cg-lb-score">{{ s.score }}</span>
+        </div>
+        {% else %}
+        <p class="cg-empty">{{ t('leaderboard_empty','Sois le premier au classement.') }}</p>
+        {% endfor %}
+      </div>
+      <a href="{{ url_for('billing.pricing', lang_code=current_lang) }}" class="cg-lb-cta">{{ t('challenge_upsell','Envie des signaux en direct ? Voir les offres →') }}</a>
+    </aside>
+  </div>
+</section>
+{% endblock %}
