@@ -25,6 +25,30 @@ def get_last_signal_minutes():
     return max(int(delta.total_seconds() // 60), 0)
 
 
+@cache.memoize(timeout=120)
+def get_teaser_signal():
+    """Safe, public-facing preview of the latest signal for the home teaser.
+
+    Returns only non-sensitive fields (asset, direction, timeframe, age). The
+    real entry/SL/TP are intentionally NOT included, so the locked levels can
+    never be read from the page source — the teaser is genuinely gated.
+    """
+    last = (
+        Signal.query
+        .filter_by(is_deleted=False)
+        .order_by(Signal.created_at.desc())
+        .first()
+    )
+    if not last:
+        return None
+    return {
+        "asset": last.asset,
+        "action": (last.action or "").upper(),
+        "timeframe": last.timeframe or "—",
+        "market_trend": getattr(last, "market_trend", None) or "—",
+    }
+
+
 @cache.memoize(timeout=600)
 def get_telegram_member_count():
     """Live public-channel subscriber count via the Telegram Bot API.

@@ -4294,5 +4294,10 @@
   "calc_err_risk": "Enter a valid risk value.",
   "calc_err_levels": "This signal doesn't have complete entry / SL / TP.",
   "calc_err_sl": "The stop-loss must differ from the entry.",
-  "units": "units"
+  "units": "units",
+  "teaser_kicker": "Free preview",
+  "teaser_title": "The latest signal, live",
+  "teaser_desc": "Asset and direction visible. The exact levels (entry, stop, target) are reserved for members.",
+  "teaser_unlock_text": "Unlock the exact levels of this signal and all the others.",
+  "teaser_unlock_btn": "Unlock signals"
 }

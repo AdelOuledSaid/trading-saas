@@ -4172,5 +4172,10 @@
   "calc_err_risk": "Entrez un risque valide.",
   "calc_err_levels": "Ce signal n'a pas d'entrée / SL / TP complets.",
   "calc_err_sl": "Le stop-loss doit différer de l'entrée.",
-  "units": "unités"
+  "units": "unités",
+  "teaser_kicker": "Aperçu gratuit",
+  "teaser_title": "Le dernier signal, en direct",
+  "teaser_desc": "Actif et direction visibles. Les niveaux exacts (entrée, stop, objectif) sont réservés aux membres.",
+  "teaser_unlock_text": "Débloquez les niveaux exacts de ce signal et de tous les autres.",
+  "teaser_unlock_btn": "Débloquer les signaux"
 }
