@@ -10,6 +10,7 @@ from app.models.replay import (
 )
 
 from app.models.telegram_dispatch_log import TelegramDispatchLog
+from app.models.challenge import ChallengeScore
 
 from app.extensions import db
 from app.models.token_unlock_event import TokenUnlockEvent

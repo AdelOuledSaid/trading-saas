@@ -264,6 +264,7 @@ def create_app():
     from app.routes.signals import signals_bp
     from app.routes.admin import admin_bp
     from app.routes.replay import replay_bp
+    from app.routes.challenge import challenge_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
@@ -275,6 +276,7 @@ def create_app():
     app.register_blueprint(signals_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(replay_bp)
+    app.register_blueprint(challenge_bp)
     app.register_blueprint(manual_signal_bp)
     app.register_blueprint(economic_calendar_bp)
     app.register_blueprint(token_unlocks_bp)
