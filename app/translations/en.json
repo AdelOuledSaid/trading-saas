@@ -4279,5 +4279,20 @@
   "trust_winrate_label": "Win rate verified on %s trades",
   "trust_live_label": "Since the last published signal",
   "trust_updated": "Continuously updated feed",
-  "footer_risk_disclaimer": "Risk warning: VelWolef provides signals, analysis and educational content for informational and educational purposes only. This does not constitute investment advice, a solicitation or a recommendation to buy or sell any asset. Trading cryptocurrencies, currencies, indices and other instruments carries a high risk of loss and may not be suitable for all investors: you may lose all or part of your capital. Past performance is not indicative of future results and no return is guaranteed. Only trade with capital you can afford to lose, and consult an independent financial advisor if necessary. VelWolef cannot be held liable for any losses resulting from the use of its content."
+  "footer_risk_disclaimer": "Risk warning: VelWolef provides signals, analysis and educational content for informational and educational purposes only. This does not constitute investment advice, a solicitation or a recommendation to buy or sell any asset. Trading cryptocurrencies, currencies, indices and other instruments carries a high risk of loss and may not be suitable for all investors: you may lose all or part of your capital. Past performance is not indicative of future results and no return is guaranteed. Only trade with capital you can afford to lose, and consult an independent financial advisor if necessary. VelWolef cannot be held liable for any losses resulting from the use of its content.",
+  "calc_my_position": "Calculate my position",
+  "calc_title": "Position calculator",
+  "calc_capital": "Your capital",
+  "calc_risk": "Risk per trade",
+  "calc_position_size": "Position size",
+  "calc_position_value": "Position value",
+  "calc_potential_loss": "Potential loss",
+  "calc_potential_gain": "Potential gain",
+  "calc_rr": "Risk / reward ratio",
+  "calc_note": "For guidance only. This is not investment advice.",
+  "calc_err_capital": "Enter a valid capital amount.",
+  "calc_err_risk": "Enter a valid risk value.",
+  "calc_err_levels": "This signal doesn't have complete entry / SL / TP.",
+  "calc_err_sl": "The stop-loss must differ from the entry.",
+  "units": "units"
 }
