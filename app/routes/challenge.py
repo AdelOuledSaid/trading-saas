@@ -2,7 +2,7 @@ import re
 from datetime import datetime, timezone
 
 from flask import Blueprint, render_template, jsonify, request, abort
-from sqlalchemy import desc
+from sqlalchemy import desc, or_, and_
 
 from app.extensions import db
 from app.models import TradeReplay, Signal, ChallengeScore
@@ -53,11 +53,19 @@ def _f(value):
 
 
 def _closed_replays_query():
-    """Replays whose signal is CLOSED (levels already public on the Results page)."""
+    """Replays of WINNING signals only (status WIN or positive result).
+    Their levels are already public on the Results page, so guests can replay
+    them with no premium leak."""
     return (
         TradeReplay.query
         .join(Signal, TradeReplay.signal_id == Signal.id)
-        .filter(Signal.is_deleted == False, Signal.status != "OPEN")  # noqa: E712
+        .filter(
+            Signal.is_deleted == False,  # noqa: E712
+            or_(
+                Signal.status == "WIN",
+                and_(Signal.result_percent.isnot(None), Signal.result_percent > 0),
+            ),
+        )
     )
 
 
@@ -65,7 +73,12 @@ def _is_public_challenge(replay):
     if not replay:
         return False
     sig = Signal.query.get(replay.signal_id)
-    return bool(sig and not sig.is_deleted and (sig.status or "").upper() != "OPEN")
+    if not sig or sig.is_deleted:
+        return False
+    return bool(
+        sig.status == "WIN"
+        or (sig.result_percent is not None and sig.result_percent > 0)
+    )
 
 
 def _engine_for(replay):
