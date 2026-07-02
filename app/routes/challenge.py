@@ -1,4 +1,5 @@
 import re
+from datetime import datetime, timezone
 
 from flask import Blueprint, render_template, jsonify, request, abort
 from sqlalchemy import desc
@@ -19,6 +20,36 @@ challenge_bp = Blueprint("challenge", __name__)
 
 MAX_CHALLENGES = 8
 _PSEUDO_RE = re.compile(r"^[\w \-.]{2,40}$", re.UNICODE)
+
+
+def _to_unix_seconds(value):
+    """lightweight-charts needs intraday time as a Unix timestamp in seconds
+    (a number). Candles here carry an ISO string, which the chart would read as
+    a business day -> all same-day candles merge into one bar. Convert it."""
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        v = float(value)
+        return int(v / 1000) if v > 1e12 else int(v)  # ms -> s if needed
+    if isinstance(value, datetime):
+        return int(value.timestamp())
+    try:
+        s = str(value).strip().replace("Z", "+00:00")
+        dt = datetime.fromisoformat(s)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return int(dt.timestamp())
+    except Exception:
+        return None
+
+
+def _f(value):
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
 
 
 def _closed_replays_query():
@@ -109,11 +140,18 @@ def challenge_data(replay_id, lang_code="fr"):
     except Exception:
         return jsonify({"error": "data_unavailable"}), 503
 
-    slim = [
-        {"time": c["time"], "open": c["open"], "high": c["high"], "low": c["low"], "close": c["close"]}
-        for c in candles
-        if c.get("time") is not None
-    ]
+    slim = []
+    for c in candles:
+        ts = _to_unix_seconds(c.get("time"))
+        if ts is None:
+            continue
+        slim.append({
+            "time": ts,
+            "open": _f(c.get("open")),
+            "high": _f(c.get("high")),
+            "low": _f(c.get("low")),
+            "close": _f(c.get("close")),
+        })
     return jsonify({
         "asset": replay.symbol,
         "direction": (replay.direction or "").upper(),
