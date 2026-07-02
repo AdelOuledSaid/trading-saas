@@ -35,10 +35,22 @@
       crosshair: { mode: 0 },
       handleScroll: false, handleScale: false,
     });
-    series = chart.addCandlestickSeries({
+    var candleOpts = {
       upColor: "#22c55e", downColor: "#ef4444", borderVisible: false,
       wickUpColor: "#22c55e", wickDownColor: "#ef4444",
-    });
+    };
+    try {
+      if (typeof chart.addCandlestickSeries === "function") {
+        series = chart.addCandlestickSeries(candleOpts);          // lightweight-charts v3/v4
+      } else if (LW.CandlestickSeries && typeof chart.addSeries === "function") {
+        series = chart.addSeries(LW.CandlestickSeries, candleOpts); // v5+
+      } else {
+        throw new Error("CandlestickSeries unavailable");
+      }
+    } catch (e) {
+      setStatus(t("error", "Données indisponibles"));
+      return false;
+    }
     window.addEventListener("resize", function () {
       if (chart) chart.applyOptions({ width: el("cg-chart").clientWidth, height: el("cg-chart").clientHeight });
     });
