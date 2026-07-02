@@ -24,7 +24,7 @@
             <a href="{{ url_for('technical_analysis.technical_analysis_page', lang_code=lang) }}">{{ t("Analyse IA") }}</a>
 
             <a href="{{ url_for('signals.results', lang_code=lang) }}">{{ t("results", "Résultats") }}</a>
-            <a href="{{ url_for('challenge.challenge_home', lang_code=lang) }}" class="nav-defi">{{ t("nav_defi", "Défi") }}</a>
+            <a href="/{{ lang }}/defi" class="nav-defi">{{ t("nav_defi", "Défi") }}</a>
             <!-- SIGNALS -->
             <div class="nav-dropdown">
                 <button class="nav-drop-btn" type="button">
