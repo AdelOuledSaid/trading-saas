@@ -31,7 +31,7 @@
       layout: { background: { color: "transparent" }, textColor: "#94a3b8" },
       grid: { vertLines: { color: "rgba(148,163,184,0.06)" }, horzLines: { color: "rgba(148,163,184,0.06)" } },
       rightPriceScale: { borderColor: "rgba(148,163,184,0.15)" },
-      timeScale: { borderColor: "rgba(148,163,184,0.15)", timeVisible: true },
+      timeScale: { borderColor: "rgba(148,163,184,0.15)", timeVisible: true, barSpacing: 8, minBarSpacing: 4, rightOffset: 3 },
       crosshair: { mode: 0 },
       handleScroll: false, handleScale: false,
     });
@@ -63,11 +63,22 @@
   }
 
   function start() {
-    var di = (typeof data.decision_index === "number" && data.decision_index > 2)
-      ? data.decision_index : Math.floor(data.candles.length * 0.6);
-    data._decisionIdx = Math.min(di, data.candles.length - 2);
+    var n = data.candles.length;
+    var di = data.decision_index;
+    // Client-side pause point is for UX only (scoring is 100% server-side),
+    // so pick a point that always leaves a readable amount of context.
+    if (typeof di !== "number" || di < 8 || di > n - 2) {
+      di = Math.floor(n * 0.62);
+    }
+    data._decisionIdx = Math.max(3, Math.min(di, n - 2));
     revealUpTo(data._decisionIdx);
-    chart.timeScale().fitContent();
+    var shown = data._decisionIdx + 1;
+    if (shown >= 25) {
+      chart.timeScale().fitContent();
+    } else {
+      chart.timeScale().applyOptions({ barSpacing: 12 });
+      try { chart.timeScale().scrollToPosition(3, false); } catch (e) {}
+    }
     drawPriceLines();
     el("cg-asset").textContent = data.asset || "—";
     var dir = el("cg-dir");
@@ -99,6 +110,7 @@
     revealTimer = setInterval(function () {
       i++;
       revealUpTo(i);
+      try { chart.timeScale().fitContent(); } catch (e) {}
       if (i >= end) { clearInterval(revealTimer); showResult(choice, res); }
     }, 110);
   }
